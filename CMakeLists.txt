@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.9)
+project(ekg VERSION 1.0.0 DESCRIPTION "ez build gui")
+
+set(LIBRARY_OUTPUT_PATH ../libs)
+set(PROJECT_VERSION 1.0)
+file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
+file(GLOB_RECURSE HEADER_FILES ekg/*.hpp)
+
+include(GNUInstallDirs)
+
+# Generate shared lib (DLL).
+add_library(ekg STATIC ${SOURCE_FILES})
+
+set_target_properties(ekg PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION 1)
+set_target_properties(ekg PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+target_include_directories(ekg PUBLIC .)
+target_link_libraries(ekg SDL2main SDL2 SDL2_image opengl32)
+
+configure_file(ekg.pc.in ekg.pc @ONLY)
+
+install(TARGETS ekg LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${CMAKE_BINARY_DIR}/ekg.pc DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
