@@ -1,7 +1,0 @@
-C:/Users/Diyng/Documents/GitHub/bicudo/ekg/cmake-build-debug/CMakeFiles/ekg.dir
-C:/Users/Diyng/Documents/GitHub/bicudo/ekg/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/Diyng/Documents/GitHub/bicudo/ekg/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-C:/Users/Diyng/Documents/GitHub/bicudo/ekg/cmake-build-debug/CMakeFiles/list_install_components.dir
-C:/Users/Diyng/Documents/GitHub/bicudo/ekg/cmake-build-debug/CMakeFiles/install.dir
-C:/Users/Diyng/Documents/GitHub/bicudo/ekg/cmake-build-debug/CMakeFiles/install/local.dir
-C:/Users/Diyng/Documents/GitHub/bicudo/ekg/cmake-build-debug/CMakeFiles/install/strip.dir
