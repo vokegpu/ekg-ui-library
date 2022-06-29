@@ -82,7 +82,7 @@ void ekg_core::swap_buffers() {
         if (element->get_flag().flag_dead) {
             delete element;
             this->update_buffer[i] = nullptr;
-            this->sizeof_render_buffer--;
+            this->sizeof_update_buffer--;
 
             continue;
         }

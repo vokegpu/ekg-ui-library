@@ -2,10 +2,9 @@
 #ifndef EKG_OPENGL_H
 #define EKG_OPENGL_H
 
-//
-// FOR NOW THERE IS NO MACRO FOR OPENGL ES.
-// SO I AM INCLUDING ONLY THE X86 VERSION (OPENGL 3+)
-//
-#include <GL/glew.h>
-
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    #include <GL/glew.h>
+#elif __ANDROID__
+    #include <SDL_opengles2.h>
+#endif
 #endif

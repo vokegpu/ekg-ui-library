@@ -1,7 +1,7 @@
 # EKG
 EKG now support Windows/Linux, the project is totally build in a context SDL2 and OpenGL, be sure you have setup correctly.
 
-In the code you look for something like that:
+In the code you look something like that:
 ```
 /* Start of something. */
 ekg_do_something();
