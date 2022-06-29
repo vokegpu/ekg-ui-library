@@ -16,7 +16,7 @@ void ekg_abstract_element::on_update() {
 
 }
 
-void ekg_abstract_element::on_render() {
+void ekg_abstract_element::on_reload_draw() {
     utility::log("sou linda! qwdiuwqiu");
 }
 

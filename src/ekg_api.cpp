@@ -107,7 +107,8 @@ float api::motion(SDL_Event &sdl_event, float x, float y) {
 void api::send_output(const char *output) {
     switch (EKG_CPU_PLATFORM) {
         case api::cpu::X86: {
-            std::cout << ("[EKG] %s", output) << "\n";
+            std::string str = "[EKG] " + std::string(output);
+            std::cout << str.c_str() << "\n";
             break;
         }
 

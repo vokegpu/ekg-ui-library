@@ -96,7 +96,7 @@ public:
     /*
      * "Draw" components present in element.
      */
-    virtual void on_render();
+    virtual void on_reload_draw();
 
     /* End of abstract methods. */
 };

@@ -3,6 +3,7 @@
 #define EKG_CORE_H
 
 #include "ekg_abstract_element.hpp"
+#include "ekg_gpu.hpp"
 #include <array>
 
 /**
@@ -10,6 +11,9 @@
  */
 class ekg_core {
 protected:
+    // For work with modern GPU we need to modify all buffers safe (thinks in performance).
+    ekg_gpu_data_handler gpu;
+
     // Instances of SDL2.
     SDL_Window* sdl_window_instance;
 
@@ -29,6 +33,9 @@ protected:
     // 0 refresh; 1 fix stack;
     uint8_t todo_flags;
 
+    /*
+     * Pass new modified buffers to update buffers.
+     */
     void swap_buffers();
 public:
     void add_element(ekg_abstract_element* element);

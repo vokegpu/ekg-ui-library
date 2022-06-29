@@ -56,12 +56,7 @@ void ekg_core::process_update_section() {
 }
 
 void ekg_core::process_render_section() {
-    for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
-        ekg_abstract_element* element = this->render_buffer[i];
 
-        // Call render method from all elements.
-        element->on_render();
-    }
 }
 
 void ekg_core::add_element(ekg_abstract_element *element) {
@@ -71,6 +66,7 @@ void ekg_core::add_element(ekg_abstract_element *element) {
     utility::add(this->todo_flags, utility::action::REFRESH);
 }
 
+/* Start of swap buffers. */
 void ekg_core::swap_buffers() {
     // Clean the buffer render (not delete).
     this->sizeof_render_buffer = 0;
@@ -107,4 +103,8 @@ void ekg_core::swap_buffers() {
             this->render_buffer[this->sizeof_render_buffer++] = elements;
         }
     }
+
+    // Clean after push the buffers into main update buffer.
+    this->concurrent_buffer.clear();
 }
+/* End of swap buffers. */

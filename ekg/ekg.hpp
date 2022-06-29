@@ -39,6 +39,21 @@ namespace ekg {
     void quit();
 
     /*
+     * Poll events of GUI.
+     */
+    void events(SDL_Event &sdl_event);
+
+    /*
+     * Update the GUI context.
+     */
+    void update(float dt);
+
+    /*
+     * Render all GUI.
+     */
+    void render();
+
+    /*
      * Set the font used in render.
      */
     void set_font(const char* path);
@@ -47,18 +62,14 @@ namespace ekg {
      * The core instance of EKG.
      **/
     struct core {
-    protected:
-        static ekg_core instance;
     public:
+        static ekg_core instance;
+        static float delta_time;
+
         /*
          * Init the core of EKG.
          */
         static void init();
-
-        /*
-         * Add direct element.
-         */
-        static void add(ekg_abstract_element* &element);
     };
 };
 
