@@ -108,3 +108,7 @@ void ekg_core::swap_buffers() {
     this->concurrent_buffer.clear();
 }
 /* End of swap buffers. */
+
+void ekg_core::set_instances(SDL_Window *&sdl_window) {
+    this->sdl_window_instance = sdl_window;
+}

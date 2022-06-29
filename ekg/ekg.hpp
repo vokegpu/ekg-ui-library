@@ -31,7 +31,7 @@ namespace ekg {
     /*
      * Init EKG.
      */
-    void init();
+    void init(SDL_Window* &sdl_window);
 
     /*
      * Shutdown and delete stuff of EKG.
