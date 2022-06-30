@@ -1,5 +1,5 @@
 # EKG
-EKG now support Windows/Linux, the project is totally build in a context SDL2 and OpenGL, be sure you have setup correctly.
+EKG now support Windows/Linux, the project is totally built in a context SDL2 and OpenGL, be sure you have setup correctly.
 
 In the code you look something like that:
 ```
