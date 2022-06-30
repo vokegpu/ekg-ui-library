@@ -122,3 +122,56 @@ void api::send_output(const char *output) {
 void api::OpenGL::init() {
     utility::log("API OpenGL initialised.");
 }
+
+void api::OpenGL::compile_program(api::OpenGL::program &program, const char *vertex_src, const char *fragment_src) {
+    GLuint vertex_shader, fragment_shader;
+    bool flag = true;
+
+    if (!api::OpenGL::compile_shader(vertex_shader, GL_VERTEX_SHADER, vertex_src)) {
+        utility::log("Could not compile vertex shader.");
+        flag = false;
+    }
+
+    if (!api::OpenGL::compile_shader(fragment_shader, GL_FRAGMENT_SHADER, fragment_src)) {
+        utility::log("Could not compile fragment shader.");
+        flag = false;
+    }
+
+    if (flag) {
+        program.program = glCreateProgram();
+
+        glAttachShader(program.program, vertex_shader);
+        glAttachShader(program.program, fragment_shader);
+        glLinkProgram(program.program);
+
+        GLint program_compile_status = GL_FALSE;
+        glGetProgramiv(program.program, GL_LINK_STATUS, &program_compile_status);
+
+        if (program_compile_status != GL_TRUE) {
+            char log[256];
+            glGetProgramInfoLog(program.program, 256, NULL, log);
+
+            utility::log("Could not link program.");
+        }
+
+        program.compiled = program_compile_status;
+    }
+}
+
+bool api::OpenGL::compile_shader(GLuint &shader_id, GLuint mode, const char *src) {
+    shader_id = glCreateShader(mode);
+
+    glShaderSource(shader_id, 1, &src, NULL);
+    glCompileShader(shader_id);
+
+    GLint shader_compile_status = GL_FALSE;
+    glGetShaderiv(shader_id, GL_COMPILE_STATUS, &shader_compile_status);
+
+    if (shader_compile_status != GL_TRUE) {
+        char log[256];
+        glGetShaderInfoLog(shader_id, 256, NULL, log);
+        return false;
+    }
+
+    return true;
+}

@@ -8,8 +8,11 @@
  * Instead we draw directly everything we just draw using batch mode.
  **/
 struct ekg_gpu_data {
-    GLuint data;
+    std::vector<GLuint> data;
     uint32_t id;
+
+    void alloc();
+    void free(uint32_t index);
 };
 
 /**
@@ -17,12 +20,14 @@ struct ekg_gpu_data {
  **/
 class ekg_gpu_data_handler {
 protected:
-    ekg_gpu_data gpu_data_vao;
     std::vector<ekg_gpu_data> gpu_data_list;
-    bool should_reload_element_array_buffer;
+    api::OpenGL::program default_program;
 
     uint8_t primitive_draw_size;
     GLuint primitive_draw_mode;
+    GLuint vertex_arr_attrib;
+
+    bool should_reload_element_array_buffer;
 public:
     void init();
     void remove_stored_data(ekg_gpu_data &data);
@@ -33,7 +38,7 @@ public:
 /**
  * Functions to draw shapes and stuff.
  **/
-namespace draw {
+namespace gpu {
     void shape();
 };
 

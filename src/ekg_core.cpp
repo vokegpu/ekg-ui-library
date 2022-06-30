@@ -112,3 +112,7 @@ void ekg_core::swap_buffers() {
 void ekg_core::set_instances(SDL_Window *&sdl_window) {
     this->sdl_window_instance = sdl_window;
 }
+
+void ekg_core::init() {
+    this->gpu.init();
+}

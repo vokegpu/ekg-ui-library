@@ -11,13 +11,13 @@ std::string ekg::get_version() {
 void ekg::init(SDL_Window* &sdl_window) {
    api::init();
    api::OpenGL::init();
-   ekg::core::init();
 
     if (EKG_CPU_PLATFORM == api::cpu::ARM) {
         // TODO Init SDL2 log to ARM platform.
     }
 
     ekg::core::instance.set_instances(sdl_window);
+    ekg::core::init();
 }
 
 void ekg::quit() {
@@ -43,4 +43,5 @@ void ekg::render() {
 
 void ekg::core::init() {
     utility::log("Core initialised.");
+    ekg::core::instance.init();
 }

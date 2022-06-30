@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(ekg VERSION 1.0.0 DESCRIPTION "ez build gui")
 
-set(LIBRARY_OUTPUT_PATH ../libs)
+set(LIBRARY_OUTPUT_PATH ../lib)
 set(PROJECT_VERSION 1.0)
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
 file(GLOB_RECURSE HEADER_FILES ekg/*.hpp)

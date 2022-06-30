@@ -43,6 +43,9 @@ struct ekg_cpu_timing {
  * Here we will choose which to use. \n
  **/
 namespace api {
+    /*
+     * Platform supported.
+     */
     enum cpu {
         X86, ARM
     };
@@ -93,6 +96,16 @@ namespace api {
              GLuint program;
              bool compiled;
          };
+
+         /*
+          * Returns true if shader is compiled else false.
+          */
+         bool compile_shader(GLuint &shader_id, GLuint mode, const char* src);
+
+         /*
+          * Compile OpenGL program for use.
+          */
+         void compile_program(api::OpenGL::program &program, const char* vertex_src, const char* fragment_src);
      };
 
      /**

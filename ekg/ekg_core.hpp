@@ -38,6 +38,7 @@ protected:
      */
     void swap_buffers();
 public:
+    void init();
     void set_instances(SDL_Window* &sdl_window);
     void add_element(ekg_abstract_element* element);
 
