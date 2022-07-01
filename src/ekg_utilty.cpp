@@ -53,3 +53,29 @@ void utility::stack::add(uint32_t id) {
         this->ids.push_back(id);
     }
 }
+
+bool ekgmath::rect::collide_aabb_with_point(float px, float py) {
+    return px > this->x && px < this->x + this->w && py > this->y && py < this->y + this->h;
+}
+
+float ekgmath::lerp(float a, float b, float t) {
+    return a + (b - a) * t
+}
+
+ekgmath::vec4::vec4() {
+
+}
+
+ekgmath::vec4::vec4(float val_x, float val_y, float val_z, float val_w) {
+    this->x = val_x;
+    this->y = val_y;
+    this->z = val_z;
+    this->w = val_w;
+}
+
+ekgmath::vec4::vec4(uint32_t red, uint32_t green, uint32_t blue, uint32_t alpha) {
+    this->x = (float) red / 255.0f;
+    this->y = (float) green / 255.0f;
+    this->z = (float) blue / 255.0f;
+    this->w = (float) alpha / 255.0f;
+}

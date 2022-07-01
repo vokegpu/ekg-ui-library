@@ -6,6 +6,39 @@
 #include <vector>
 
 /**
+ * EKG math utils.
+ **/
+namespace ekgmath {
+    /**
+     * Store position and size AB.
+     **/
+    struct rect {
+        float x, y, w, h;
+
+        /*
+         * Collide point aabb with this rect.
+         */
+        bool collide_aabb_with_point(float px, float py);
+    };
+
+    /*
+     * Interpolation linear, used to animations or calcs.
+     */
+    float lerp(float a, float b, float t);
+
+    /*
+     * Vec4 class.
+     */
+    struct vec4 {
+        float x, y, z, w;
+
+        vec4();
+        vec4(float val_x, float val_y, float val_z, float val_w);
+        vec4(uint32_t red, uint32_t green, uint32_t blue, uint32_t alpha = 255);
+    };
+};
+
+/**
  * Utilities of EKG used on the background GUI.
  **/
 namespace utility {

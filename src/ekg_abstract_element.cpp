@@ -1,5 +1,13 @@
 #include <ekg/ekg_abstract_element.hpp>
 
+ekg_abstract_element::ekg_abstract_element() {
+
+}
+
+ekg_abstract_element::~ekg_abstract_element() {
+
+}
+
 void ekg_abstract_element::on_pre_event_update(SDL_Event &sdl_event) {
 
 }
@@ -16,8 +24,8 @@ void ekg_abstract_element::on_update() {
 
 }
 
-void ekg_abstract_element::on_reload_draw() {
-    utility::log("sou linda! qwdiuwqiu");
+void ekg_abstract_element::on_draw_refresh() {
+
 }
 
 void ekg_abstract_element::set_element_id(uint32_t new_element_id) {
@@ -54,4 +62,24 @@ utility::visibility ekg_abstract_element::get_visibility() {
 
 utility::stack &ekg_abstract_element::get_children_stack() {
     return this->children_stack;
+}
+
+void ekg_abstract_element::set_master_id(uint32_t id) {
+    this->master_id = id;
+}
+
+uint32_t ekg_abstract_element::get_master_id() {
+    return this->master_id;
+}
+
+void ekg_abstract_element::on_killed() {
+
+}
+
+void ekg_abstract_element::on_sync() {
+
+}
+
+ekgmath::rect ekg_abstract_element::get_rect() {
+    return this->rect;
 }

@@ -12,7 +12,7 @@
 class ekg_core {
 protected:
     // For work with modern GPU we need to modify all buffers safe (thinks in performance).
-    ekg_gpu_data_handler gpu;
+    ekg_gpu_data_handler gpu_handler;
 
     // Instances of SDL2.
     SDL_Window* sdl_window_instance;
@@ -38,6 +38,8 @@ protected:
      */
     void swap_buffers();
 public:
+    ekg_gpu_data_handler &get_gpu_handler();
+
     void init();
     void set_instances(SDL_Window* &sdl_window);
     void add_element(ekg_abstract_element* element);

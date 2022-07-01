@@ -1,4 +1,4 @@
-#include <ekg/ekg_gpu.hpp>
+#include <ekg/ekg.hpp>
 
 void ekg_gpu_data_handler::init() {
     switch (EKG_CPU_PLATFORM) {
@@ -77,12 +77,21 @@ void ekg_gpu_data_handler::init() {
     this->primitive_draw_mode = GL_TRIANGLES;
 }
 
-void ekg_gpu_data_handler::remove_stored_data(ekg_gpu_data &data) {
+void ekg_gpu_data_handler::remove_stored_data(uint32_t data_id) {
+    int32_t index = -1;
 
-}
+    for (uint32_t i = 0; i < this->gpu_data_list.size(); i++) {
+        ekg_gpu_data data = this->gpu_data_list.at(i);
 
-void ekg_gpu_data_handler::store_data_or_reload(ekg_gpu_data &data) {
+        if (data.id == data_id) {
+            data.free();
+            index = i;
+        }
+    }
 
+    if (index != -1) {
+        this->gpu_data_list.erase(this->gpu_data_list.begin() + index);
+    }
 }
 
 void ekg_gpu_data_handler::draw() {
@@ -91,10 +100,117 @@ void ekg_gpu_data_handler::draw() {
     glBindVertexArray(0);
 }
 
-void ekg_gpu_data::alloc() {
+bool ekg_gpu_data_handler::get_gpu_data_by_id(ekg_gpu_data &data, uint32_t id) {
+    for (ekg_gpu_data &gpu_data : this->gpu_data_list) {
+        if (gpu_data.id == id) {
+            data = gpu_data;
+            return true;
+        }
+    }
 
+    return false;
+}
+
+void ekg_gpu_data_handler::store_or_push(ekg_gpu_data &data, uint32_t id) {
+    bool flag = this->get_gpu_data_by_id(data, id);
+
+    if (!flag) {
+        this->gpu_data_list.push_back(data);
+    }
+}
+
+void ekg_gpu_data_handler::start() {
+    this->primitive_draw_size = 0;
+    this->flag = true;
+}
+
+void ekg_gpu_data_handler::end() {
+    for (ekg_gpu_data &gpu_data : this->gpu_data_list) {
+        this->primitive_draw_size += 6;
+        this->primitive_draw_size += 6 * gpu_data.data.size();
+    }
+
+    this->flag = false;
+}
+
+bool ekg_gpu_data_handler::get_flag() {
+    return this->flag;
+}
+
+uint32_t ekg_gpu_data_handler::get_flag_id() {
+    return this->flag_id;
+}
+
+void ekg_gpu_data_handler::bind(uint32_t id) {
+    this->flag_id = id;
 }
 
 void ekg_gpu_data::free(uint32_t index) {
-    glDeleteBuffers(GL_BUFFER_OB, this->data.at(index));
+    glDeleteBuffers(GL_ARRAY_BUFFER, &this->data.at(index));
+}
+
+void ekg_gpu_data::batch() {
+    this->iterator_call_buffer = 0;
+}
+
+void ekg_gpu_data::bind() {
+    GLuint buffer;
+    this->flag_has_gen_buffer = false;
+
+    if (this->data.size() == this->iterator) {
+        glGenBuffers(1, &buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+        this->flag_has_gen_buffer = true;
+        this->data.push_back(buffer);
+        this->iterator++;
+    } else {
+        glBindBuffer(GL_ARRAY_BUFFER, this->data.at(this->iterator_call_buffer));
+    }
+
+    this->iterator_call_buffer++;
+}
+
+void ekg_gpu_data::free() {
+    for (GLuint ids : this->data) {
+        glDeleteBuffers(GL_ARRAY_BUFFER, &ids);
+    }
+
+    this->data.clear();
+}
+
+void gpu::rectangle(ekgmath::rect &rect, ekgmath::vec4 &color_vec) {
+    if (!ekg::core::instance.get_gpu_handler().get_flag()) {
+        return;
+    }
+
+    ekg_gpu_data data;
+    ekg::core::instance.get_gpu_handler().store_or_push(data, ekg::core::instance.get_gpu_handler().get_flag_id());
+
+    data.batch();
+    data.bind();
+
+    if (data.flag_has_gen_buffer) {
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 18, ALLOCATE_ARR_VERTEX, GL_DYNAMIC_DRAW);
+    } else {
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 18, ALLOCATE_ARR_VERTEX);
+    }
+
+    data.bind();
+
+    if (data.flag_has_gen_buffer) {
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 18, ALLOCATE_ARR_VERTEX, GL_DYNAMIC_DRAW);
+    } else {
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 18, ALLOCATE_ARR_VERTEX);
+    }
+
+    data.free();
+}
+
+void gpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_vec) {
+
+}
+
+void gpu::circle(float x, float y, float r, ekgmath::vec4 &color_vec4) {
+
 }

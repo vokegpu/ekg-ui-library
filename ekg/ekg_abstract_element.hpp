@@ -13,6 +13,8 @@
  **/
 class ekg_abstract_element {
 protected:
+    uint32_t master_id;
+
     // Element description.
     std::string element_tag;
     uint8_t element_type;
@@ -22,8 +24,29 @@ protected:
     utility::flag flag;
     utility::visibility visibility;
     utility::stack children_stack;
+
+    // Metrics of element.
+    ekgmath::rect rect;
 public:
+    ekg_abstract_element();
+    ~ekg_abstract_element();
+
     /* Start of setters and getters. */
+
+    /*
+     * Get the current rect.
+     */
+    ekgmath::rect get_rect();
+
+    /*
+     * Set the master id of this element object.
+     */
+    void set_master_id(uint32_t id);
+
+    /*
+     * Get parent master id element.
+     */
+    uint32_t get_master_id();
 
     /*
      * Get the flags of element.
@@ -74,6 +97,16 @@ public:
     /* Start of abstract methods. */
 
     /*
+     * Called when the element just die.
+     */
+    virtual void on_killed();
+
+    /*
+     * Sync data element stuff.
+     */
+    virtual void on_sync();
+
+    /*
      * Update before process events.
      */
     virtual void on_pre_event_update(SDL_Event &sdl_event);
@@ -96,7 +129,7 @@ public:
     /*
      * "Draw" components present in element.
      */
-    virtual void on_reload_draw();
+    virtual void on_draw_refresh();
 
     /* End of abstract methods. */
 };
