@@ -9,7 +9,7 @@
     #define GLEW_STATIC
     #include <GL/glew.h>
 #elif __ANDROID__
-    //#include <SDL_opengles2.h>
+    #include <SDL_opengles2.h>
 #elif __linux
     #define GLEW_STATIC
     #include <GL/glew.h>

@@ -96,12 +96,14 @@ void ekg_gpu_data_handler::remove_stored_data(uint32_t data_id) {
 }
 
 void ekg_gpu_data_handler::draw() {
+    utility::log("hello sou linda " + std::to_string(this->primitive_draw_size));
+
     glBindVertexArray(this->vertex_arr_attrib);
     glDrawArrays(this->primitive_draw_mode, 0, this->primitive_draw_size);
     glBindVertexArray(0);
 }
 
-bool ekg_gpu_data_handler::get_gpu_data_by_id(ekg_gpu_data &data, uint32_t id) {
+bool ekg_gpu_data_handler::get_data_by_id(ekg_gpu_data &data, uint32_t id) {
     for (ekg_gpu_data &gpu_data : this->gpu_data_list) {
         if (gpu_data.id == id) {
             data = gpu_data;
@@ -112,8 +114,8 @@ bool ekg_gpu_data_handler::get_gpu_data_by_id(ekg_gpu_data &data, uint32_t id) {
     return false;
 }
 
-void ekg_gpu_data_handler::store_or_push(ekg_gpu_data &data, uint32_t id) {
-    bool flag = this->get_gpu_data_by_id(data, id);
+void ekg_gpu_data_handler::access_or_store(ekg_gpu_data &data, uint32_t id) {
+    bool flag = this->get_data_by_id(data, id);
 
     if (!flag) {
         this->gpu_data_list.push_back(data);
@@ -127,7 +129,8 @@ void ekg_gpu_data_handler::start() {
 
 void ekg_gpu_data_handler::end() {
     for (ekg_gpu_data &gpu_data : this->gpu_data_list) {
-        this->primitive_draw_size += 6;
+        utility::log(std::to_string(gpu_data.data.size()));
+
         this->primitive_draw_size += 6 * gpu_data.data.size();
     }
 
@@ -146,8 +149,17 @@ void ekg_gpu_data_handler::bind(uint32_t id) {
     this->flag_id = id;
 }
 
+void ekg_gpu_data_handler::redirect_data(ekg_gpu_data &data) {
+    for (ekg_gpu_data &gpu_data : this->gpu_data_list) {
+        if (gpu_data.id == data.id) {
+            gpu_data = data;
+            break;
+        }
+    }
+}
+
 void ekg_gpu_data::free(uint32_t index) {
-    glDeleteBuffers(1, &this->data.at(index));
+    //glDeleteBuffers(1, &this->data.at(index));
 }
 
 void ekg_gpu_data::batch() {
@@ -158,7 +170,7 @@ void ekg_gpu_data::bind() {
     GLuint buffer;
     this->flag_has_gen_buffer = false;
 
-    if (this->data.size() == this->iterator) {
+    if (this->data.size() == this->iterator || this->data.empty()) {
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
@@ -167,14 +179,13 @@ void ekg_gpu_data::bind() {
         this->iterator++;
     } else {
         glBindBuffer(GL_ARRAY_BUFFER, this->data.at(this->iterator_call_buffer));
+        this->iterator_call_buffer++;
     }
-
-    this->iterator_call_buffer++;
 }
 
 void ekg_gpu_data::free() {
     for (GLuint ids : this->data) {
-        glDeleteBuffers(1, &ids);
+        //glDeleteBuffers(1, &ids);
     }
 
     this->data.clear();
@@ -193,9 +204,9 @@ void gpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_vec
     gpu::push_arr_vertex(x, y, w, h);
     gpu::push_arr_vertex_color_rgba(color_vec.x, color_vec.y, color_vec.z, color_vec.w);
 
-    // Create or get a current isntance.
+    // Create or get a current instance.
     ekg_gpu_data data;
-    ekg::core::instance.get_gpu_handler().store_or_push(data, ekg::core::instance.get_gpu_handler().get_flag_id());
+    ekg::core::instance.get_gpu_handler().access_or_store(data, ekg::core::instance.get_gpu_handler().get_flag_id());
 
     // Start data catch.
     data.batch();
@@ -224,7 +235,7 @@ void gpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_vec
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
     // End data catch.
-    data.free();
+    ekg::core::instance.get_gpu_handler().redirect_data(data);
 }
 
 void gpu::rectangle(ekgmath::rect &rect, ekgmath::vec4 &color_vec) {
@@ -234,7 +245,6 @@ void gpu::rectangle(ekgmath::rect &rect, ekgmath::vec4 &color_vec) {
 void gpu::circle(float x, float y, float r, ekgmath::vec4 &color_vec4) {
 
 }
-
 void gpu::push_arr_vertex(float &x, float &y, float &w, float &h) {
     uint8_t it = 0;
 
@@ -301,4 +311,13 @@ void gpu::push_arr_vertex_tex_coords(float &x, float &y, float &w, float &h) {
     ALLOCATE_ARR_VERTEX[it++] = y;
     ALLOCATE_ARR_VERTEX[it++] = x;
     ALLOCATE_ARR_VERTEX[it++] = y;
+}
+
+void gpu::invoke(uint32_t id) {
+    ekg::core::instance.get_gpu_handler().start();
+    ekg::core::instance.get_gpu_handler().bind(id);
+}
+
+void gpu::revoke() {
+    ekg::core::instance.get_gpu_handler().end();
 }

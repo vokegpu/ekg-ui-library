@@ -1,17 +1,17 @@
 #include <ekg/ekg_utility.hpp>
 #include <ekg/ekg_api.hpp>
 
-void utility::log(const char *log) {
-    api::send_output(log);
+void utility::log(const std::string &log) {
+    api::send_output(log.c_str());
 }
 
 bool utility::contains(uint8_t &flags, uint8_t target) {
-    return flags & target;
+    return (flags & target) != 0;
 }
 
 bool utility::remove(uint8_t &flags, uint8_t target) {
     bool flag_contains = flags & target;
-    flags = flags & ~(target);
+    flags &= ~(target);
     return flag_contains;
 }
 
@@ -58,8 +58,12 @@ bool ekgmath::rect::collide_aabb_with_point(float px, float py) {
     return px > this->x && px < this->x + this->w && py > this->y && py < this->y + this->h;
 }
 
-float ekgmath::lerp(float a, float b, float t) {
+float ekgmath::lerpf(float a, float b, float t) {
     return a + (b - a) * t;
+}
+
+float ekgmath::clampf(float val, float min, float max) {
+    return val > min ? (val < max ? val : max) : min;
 }
 
 ekgmath::vec4::vec4() {

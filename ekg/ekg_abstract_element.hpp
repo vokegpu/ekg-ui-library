@@ -12,13 +12,12 @@
  * Create elements connected by abstract element class.
  **/
 class ekg_abstract_element {
-protected:
+public:
     uint32_t master_id;
 
     // Element description.
-    std::string element_tag;
-    uint8_t element_type;
-    uint32_t element_id;
+    uint8_t type;
+    uint32_t id;
 
     // States and collections.
     utility::flag flag;
@@ -31,69 +30,6 @@ public:
     ekg_abstract_element();
     ~ekg_abstract_element();
 
-    /* Start of setters and getters. */
-
-    /*
-     * Get the current rect.
-     */
-    ekgmath::rect get_rect();
-
-    /*
-     * Set the master id of this element object.
-     */
-    void set_master_id(uint32_t id);
-
-    /*
-     * Get parent master id element.
-     */
-    uint32_t get_master_id();
-
-    /*
-     * Get the flags of element.
-     */
-    utility::flag &get_flag();
-
-    /*
-     * Set the element tag.
-     */
-    void set_tag(std::string &tag);
-
-    /*
-     * Get the current element tag.
-     */
-    std::string get_tag();
-
-    /*
-     * Set a new element id to the element.
-     */
-    void set_element_id(uint32_t new_element_id);
-
-    /*
-     * Get the current element id.
-     */
-    uint32_t get_element_id();
-
-    /*
-     * Get the type of element.
-     */
-    uint8_t get_element_type();
-
-    /*
-     * Set the current element visibility.
-     */
-    void set_visibility(utility::visibility enum_visibility);
-
-    /*
-     * Get the current element visibility.
-     */
-    utility::visibility get_visibility();
-
-    /*
-     * Get parent stack.
-     */
-    utility::stack &get_children_stack();
-
-    /* End of setters and getters. */
     /* Start of abstract methods. */
 
     /*

@@ -44,13 +44,49 @@ public:
     bool get_flag();
     uint32_t get_flag_id();
 
+    /*
+     * Init the GPU handler.
+     */
     void init();
-    bool get_gpu_data_by_id(ekg_gpu_data &data, uint32_t id);
+
+    /*
+     * Get the stored GPU data from cache.
+     */
+    bool get_data_by_id(ekg_gpu_data &data, uint32_t id);
+
+    /*
+     * Remove GPU data stored from cache.
+     */
     void remove_stored_data(uint32_t data_id);
-    void store_or_push(ekg_gpu_data &data, uint32_t id);
+
+    /*
+     * Get GPU data from cache or store if not exists.
+     */
+    void access_or_store(ekg_gpu_data &data, uint32_t id);
+
+    /*
+     * Redirect concurrent GPU data to cache.
+     */
+    void redirect_data(ekg_gpu_data &data);
+
+    /*
+     * Start GPU access section and setup GPU flags before access.
+     */
     void start();
+
+    /*
+     * Bind GPU data.
+     */
     void bind(uint32_t id);
+
+    /*
+     * End GPU access section.
+     */
     void end();
+
+    /*
+     * Draw ALLs GPU data.
+     */
     void draw();
 };
 
@@ -58,6 +94,16 @@ public:
  * Functions to draw shapes.
  **/
 namespace gpu {
+    /*
+     * Invoke GPU to transfer data and cache data.
+     */
+    void invoke(uint32_t id);
+
+    /*
+     * Confirm GPU changes.
+     */
+    void revoke();
+    
     /*
      * Push modal shape to CPU before GPU.
      */

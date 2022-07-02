@@ -11,7 +11,7 @@
 static uint64_t EKG_ACTIVE_CALLBACK_MS_DELAY;
 
 /**
- * Analyse the display touch input and store to later be use.
+ * Analyse the display touch input and redirect_data to later be use.
  **/
 struct {
     float last_down_x;

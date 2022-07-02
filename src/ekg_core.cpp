@@ -7,15 +7,15 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
     for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
         ekg_abstract_element* element = this->render_buffer[i];
 
-        if (element == nullptr || element->get_flag().flag_dead) {
+        if (element == nullptr || element->flag.flag_dead) {
             continue;
         }
 
         // Verify point overlap.
         element->on_pre_event_update(sdl_event);
 
-        if (element->get_visibility() == utility::visibility::VISIBLE && element->get_flag().flag_over) {
-            this->focused_element_id = element->get_element_id();
+        if (element->visibility == utility::visibility::VISIBLE && element->flag.flag_over) {
+            this->focused_element_id = element->id;
         }
 
         element->on_post_event_update(sdl_event);
@@ -27,17 +27,17 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
     for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
         ekg_abstract_element* element = this->render_buffer[i];
 
-        if (element == nullptr || element->get_flag().flag_dead) {
+        if (element == nullptr || element->flag.flag_dead) {
             continue;
         }
 
-        if (element->get_element_id() == this->focused_element_id) {
+        if (element->id == this->focused_element_id) {
             element->on_pre_event_update(sdl_event);
         }
 
         element->on_event(sdl_event);
 
-        if (element->get_visibility() == utility::visibility::VISIBLE) {
+        if (element->visibility == utility::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = element;
         }
     }
@@ -60,7 +60,7 @@ void ekg_core::process_render_section() {
 }
 
 void ekg_core::add_element(ekg_abstract_element *element) {
-    element->set_element_id(this->last_id_used++);
+    element->id = this->last_id_used++;
     this->concurrent_buffer.push_back(element);
     element->on_draw_refresh();
 
@@ -80,7 +80,7 @@ void ekg_core::swap_buffers() {
             continue;
         }
 
-        if (element->get_flag().flag_dead) {
+        if (element->flag.flag_dead) {
             delete element;
             this->update_buffer[i] = nullptr;
             this->sizeof_update_buffer--;
@@ -88,7 +88,7 @@ void ekg_core::swap_buffers() {
             continue;
         }
 
-        if (element->get_visibility() == utility::visibility::VISIBLE) {
+        if (element->visibility == utility::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = element;
         }
     }
@@ -100,7 +100,7 @@ void ekg_core::swap_buffers() {
 
         this->update_buffer[this->sizeof_update_buffer++] = elements;
 
-        if (elements->get_visibility() == utility::visibility::VISIBLE) {
+        if (elements->visibility == utility::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = elements;
         }
     }

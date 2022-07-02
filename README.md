@@ -7,7 +7,9 @@ In the code you look something like that:
 ekg_do_something();
 /* End of something. */
 ```
-I use this style code to find easy something in a big file (if you think, is easy to write start of... end of...).
+I use this style code to find easy something in a big file (if you think, is easy to write invoke of... end of...).
+
+The reason for EKG has all fields public in element UI (not interface accessible from user) is for stay avoid of wrong actions/events in widget.
 
 EKG uses `SDL_image` `SDL_ttf` to handler font and images file.
 For implement EKG in your project first you need to add all these libs.

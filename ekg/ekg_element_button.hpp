@@ -10,6 +10,11 @@
  **/
 class ekg_button : public ekg_abstract_element  {
 public:
+    std::string text;
+
+    float min_text_width;
+    float min_text_height;
+
     ekg_button();
     ~ekg_button();
 

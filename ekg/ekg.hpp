@@ -6,6 +6,7 @@
 #include <string>
 
 #include "ekg_core.hpp"
+#include "ekg_element_button.hpp"
 
 /**
  * EKG - ez build gui \n
@@ -71,6 +72,28 @@ namespace ekg {
          */
         static void init();
     };
+
+    /**
+     * Button element.
+     **/
+    struct button {
+    protected:
+        ekg_button* element;
+    public:
+        button(ekg_button* &element);
+        ~button();
+
+        void set_text(std::string &text);
+        std::string get_text();
+
+        void set_width(float val);
+        float get_width();
+
+        void set_height(float val);
+        float get_height();
+    };
+
+    ekg::button* create_button(std::string text);
 };
 
 #endif

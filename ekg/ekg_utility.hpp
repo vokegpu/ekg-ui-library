@@ -24,7 +24,12 @@ namespace ekgmath {
     /*
      * Interpolation linear, used to animations or calcs.
      */
-    float lerp(float a, float b, float t);
+    float lerpf(float a, float b, float t);
+
+    /*
+     * Clamp float min and max.
+     */
+    float clampf(float val, float min, float max);
 
     /*
      * Vec4 class.
@@ -44,7 +49,7 @@ namespace utility {
     /*
      * Send output log.
      */
-    void log(const char* log);
+    void log(const std::string &log);
 
     /*
      * Find target flag from flags.
@@ -73,7 +78,7 @@ namespace utility {
     };
 
     /**
-     * Resource used in EKG to store some data.
+     * Resource used in EKG to redirect_data some data.
      **/
     struct resource {
         const char* path;
@@ -83,7 +88,7 @@ namespace utility {
     };
 
     /**
-     * Stack object to store ids.
+     * Stack object to redirect_data ids.
      **/
     struct stack {
         // A vector to handle the ids.
@@ -116,8 +121,8 @@ namespace utility {
      * Actions in EKG core.
      **/
     enum action {
-        REFRESH   = 1 << 1,
-        FIX_STACK = 1 << 2
+        REFRESH   = 1 << 0,
+        FIX_STACK = 1 << 1
     };
 };
 
