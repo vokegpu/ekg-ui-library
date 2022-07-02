@@ -1,4 +1,5 @@
 #include <ekg/ekg.hpp>
+#include <ekg/ekg_gpu.hpp>
 
 void ekg_gpu_data_handler::init() {
     switch (EKG_CPU_PLATFORM) {
@@ -146,7 +147,7 @@ void ekg_gpu_data_handler::bind(uint32_t id) {
 }
 
 void ekg_gpu_data::free(uint32_t index) {
-    glDeleteBuffers(GL_ARRAY_BUFFER, &this->data.at(index));
+    glDeleteBuffers(1, &this->data.at(index));
 }
 
 void ekg_gpu_data::batch() {
@@ -173,44 +174,131 @@ void ekg_gpu_data::bind() {
 
 void ekg_gpu_data::free() {
     for (GLuint ids : this->data) {
-        glDeleteBuffers(GL_ARRAY_BUFFER, &ids);
+        glDeleteBuffers(1, &ids);
     }
 
     this->data.clear();
 }
 
-void gpu::rectangle(ekgmath::rect &rect, ekgmath::vec4 &color_vec) {
+void ekg_gpu_data::unbind() {
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void gpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_vec) {
     if (!ekg::core::instance.get_gpu_handler().get_flag()) {
         return;
     }
 
+    // Alloc arrays in CPU.
+    gpu::push_arr_vertex(x, y, w, h);
+    gpu::push_arr_vertex_color_rgba(color_vec.x, color_vec.y, color_vec.z, color_vec.w);
+
+    // Create or get a current isntance.
     ekg_gpu_data data;
     ekg::core::instance.get_gpu_handler().store_or_push(data, ekg::core::instance.get_gpu_handler().get_flag_id());
 
+    // Start data catch.
     data.batch();
     data.bind();
 
+    // Pass vertex positions to GPU.
     if (data.flag_has_gen_buffer) {
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 18, ALLOCATE_ARR_VERTEX, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, ALLOCATE_ARR_VERTEX, GL_DYNAMIC_DRAW);
     } else {
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 18, ALLOCATE_ARR_VERTEX);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 12, ALLOCATE_ARR_VERTEX);
     }
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
     data.bind();
 
+    // Pass vertex colors to GPU.
     if (data.flag_has_gen_buffer) {
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 18, ALLOCATE_ARR_VERTEX, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 18, ALLOCATE_ARR_VERTEX_COLOR_RGBA, GL_DYNAMIC_DRAW);
     } else {
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 18, ALLOCATE_ARR_VERTEX);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 18, ALLOCATE_ARR_VERTEX_COLOR_RGBA);
     }
 
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+
+    // End data catch.
     data.free();
 }
 
-void gpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_vec) {
-
+void gpu::rectangle(ekgmath::rect &rect, ekgmath::vec4 &color_vec) {
+    gpu::rectangle(rect.x, rect.y, rect.w, rect.h, color_vec);
 }
 
 void gpu::circle(float x, float y, float r, ekgmath::vec4 &color_vec4) {
 
+}
+
+void gpu::push_arr_vertex(float &x, float &y, float &w, float &h) {
+    uint8_t it = 0;
+
+    ALLOCATE_ARR_VERTEX[it++] = x;
+    ALLOCATE_ARR_VERTEX[it++] = y;
+    ALLOCATE_ARR_VERTEX[it++] = x;
+    ALLOCATE_ARR_VERTEX[it++] = y + h;
+    ALLOCATE_ARR_VERTEX[it++] = x + w;
+    ALLOCATE_ARR_VERTEX[it++] = y + h;
+    ALLOCATE_ARR_VERTEX[it++] = x + w;
+    ALLOCATE_ARR_VERTEX[it++] = y + h;
+    ALLOCATE_ARR_VERTEX[it++] = x + w;
+    ALLOCATE_ARR_VERTEX[it++] = y;
+    ALLOCATE_ARR_VERTEX[it++] = x;
+    ALLOCATE_ARR_VERTEX[it++] = y;
+}
+
+void gpu::push_arr_vertex_color_rgba(float &r, float &g, float &b, float &a) {
+    uint8_t it = 0;
+
+    ALLOCATE_ARR_VERTEX[it++] = r;
+    ALLOCATE_ARR_VERTEX[it++] = g;
+    ALLOCATE_ARR_VERTEX[it++] = b;
+    ALLOCATE_ARR_VERTEX[it++] = a;
+
+    ALLOCATE_ARR_VERTEX[it++] = r;
+    ALLOCATE_ARR_VERTEX[it++] = g;
+    ALLOCATE_ARR_VERTEX[it++] = b;
+    ALLOCATE_ARR_VERTEX[it++] = a;
+
+    ALLOCATE_ARR_VERTEX[it++] = r;
+    ALLOCATE_ARR_VERTEX[it++] = g;
+    ALLOCATE_ARR_VERTEX[it++] = b;
+    ALLOCATE_ARR_VERTEX[it++] = a;
+
+    ALLOCATE_ARR_VERTEX[it++] = r;
+    ALLOCATE_ARR_VERTEX[it++] = g;
+    ALLOCATE_ARR_VERTEX[it++] = b;
+    ALLOCATE_ARR_VERTEX[it++] = a;
+
+    ALLOCATE_ARR_VERTEX[it++] = r;
+    ALLOCATE_ARR_VERTEX[it++] = g;
+    ALLOCATE_ARR_VERTEX[it++] = b;
+    ALLOCATE_ARR_VERTEX[it++] = a;
+
+    ALLOCATE_ARR_VERTEX[it++] = r;
+    ALLOCATE_ARR_VERTEX[it++] = g;
+    ALLOCATE_ARR_VERTEX[it++] = b;
+    ALLOCATE_ARR_VERTEX[it++] = a;
+}
+
+void gpu::push_arr_vertex_tex_coords(float &x, float &y, float &w, float &h) {
+    uint8_t it = 0;
+
+    ALLOCATE_ARR_VERTEX[it++] = x;
+    ALLOCATE_ARR_VERTEX[it++] = y;
+    ALLOCATE_ARR_VERTEX[it++] = x;
+    ALLOCATE_ARR_VERTEX[it++] = y + h;
+    ALLOCATE_ARR_VERTEX[it++] = x + w;
+    ALLOCATE_ARR_VERTEX[it++] = y + h;
+    ALLOCATE_ARR_VERTEX[it++] = x + w;
+    ALLOCATE_ARR_VERTEX[it++] = y + h;
+    ALLOCATE_ARR_VERTEX[it++] = x + w;
+    ALLOCATE_ARR_VERTEX[it++] = y;
+    ALLOCATE_ARR_VERTEX[it++] = x;
+    ALLOCATE_ARR_VERTEX[it++] = y;
 }

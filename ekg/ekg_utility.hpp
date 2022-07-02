@@ -33,7 +33,6 @@ namespace ekgmath {
         float x, y, z, w;
 
         vec4();
-        vec4(float val_x, float val_y, float val_z, float val_w);
         vec4(uint32_t red, uint32_t green, uint32_t blue, uint32_t alpha = 255);
     };
 };

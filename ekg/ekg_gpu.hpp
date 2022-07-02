@@ -5,7 +5,7 @@
 #include "ekg_utility.hpp"
 
 /* Start of allocated arrays. */
-static float ALLOCATE_ARR_VERTEX[18];
+static float ALLOCATE_ARR_VERTEX[12];
 static float ALLOCATE_ARR_VERTEX_COLOR_RGBA[24];
 static float ALLOCATE_ARR_TEX_COORDS[12];
 /* End of allocated arrays. */
@@ -23,6 +23,7 @@ struct ekg_gpu_data {
 
     void batch();
     void bind();
+    void unbind();
 };
 
 /**
@@ -57,6 +58,21 @@ public:
  * Functions to draw shapes.
  **/
 namespace gpu {
+    /*
+     * Push modal shape to CPU before GPU.
+     */
+    void push_arr_vertex(float &x, float &y, float &w, float &h);
+
+    /*
+     * Push color rgba to CPU before GPU.
+     */
+    void push_arr_vertex_color_rgba(float &r, float &g, float &b, float &a);
+
+    /*
+     * Push texture coordinates to CPU before GPU.
+     */
+    void push_arr_vertex_tex_coords(float &x, float &y, float &w, float &h);
+
     /*
      * Draw rectangle.
      */

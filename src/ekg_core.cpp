@@ -56,12 +56,13 @@ void ekg_core::process_update_section() {
 }
 
 void ekg_core::process_render_section() {
-
+    this->gpu_handler.draw();
 }
 
 void ekg_core::add_element(ekg_abstract_element *element) {
     element->set_element_id(this->last_id_used++);
     this->concurrent_buffer.push_back(element);
+    element->on_draw_refresh();
 
     utility::add(this->todo_flags, utility::action::REFRESH);
 }

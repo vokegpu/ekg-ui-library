@@ -59,18 +59,11 @@ bool ekgmath::rect::collide_aabb_with_point(float px, float py) {
 }
 
 float ekgmath::lerp(float a, float b, float t) {
-    return a + (b - a) * t
+    return a + (b - a) * t;
 }
 
 ekgmath::vec4::vec4() {
 
-}
-
-ekgmath::vec4::vec4(float val_x, float val_y, float val_z, float val_w) {
-    this->x = val_x;
-    this->y = val_y;
-    this->z = val_z;
-    this->w = val_w;
 }
 
 ekgmath::vec4::vec4(uint32_t red, uint32_t green, uint32_t blue, uint32_t alpha) {
