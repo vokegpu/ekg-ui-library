@@ -9,6 +9,16 @@
  * EKG math utils.
  **/
 namespace ekgmath {
+    /*
+     * Vec4 class.
+     */
+    struct vec4 {
+        float x, y, z, w;
+
+        vec4();
+        vec4(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+    };
+
     /**
      * Store position and size AB.
      **/
@@ -32,14 +42,9 @@ namespace ekgmath {
     float clampf(float val, float min, float max);
 
     /*
-     * Vec4 class.
+     * Calc. ortho projection mat4x4.
      */
-    struct vec4 {
-        float x, y, z, w;
-
-        vec4();
-        vec4(uint32_t red, uint32_t green, uint32_t blue, uint32_t alpha = 255);
-    };
+    void ortho2d(float* mat, float left, float right, float bottom, float top);
 };
 
 /**

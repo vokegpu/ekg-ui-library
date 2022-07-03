@@ -66,11 +66,41 @@ float ekgmath::clampf(float val, float min, float max) {
     return val > min ? (val < max ? val : max) : min;
 }
 
+void ekgmath::ortho2d(float *mat, float left, float right, float bottom, float top) {
+    const float z_near = -1.0f;
+    const float z_far = 1.0f;
+    const float inv_z = 1.0f / (z_far - z_near);
+    const float inv_y = 1.0f / (top - bottom);
+    const float inv_x = 1.0f / (right - left);
+
+    uint8_t i = 0;
+
+    mat[i++] = 2.0f * inv_x;
+    mat[i++] = 0.0f;
+    mat[i++] = 0.0f;
+    mat[i++] = 0.0f;
+
+    mat[i++] = 0.0f;
+    mat[i++] = 2.0f * inv_y;
+    mat[i++] = 0.0f;
+    mat[i++] = 0.0f;
+
+    mat[i++] = 0.0f;
+    mat[i++] = 0.0f;
+    mat[i++] = -2.0f * inv_z;
+    mat[i++] = 0.0f;
+
+    mat[i++] = -(right + left) * inv_x;
+    mat[i++] = -(top + bottom) * inv_y;
+    mat[i++] = -(z_far + z_near) * inv_z;
+    mat[i++] = 1.0f;
+}
+
 ekgmath::vec4::vec4() {
 
 }
 
-ekgmath::vec4::vec4(uint32_t red, uint32_t green, uint32_t blue, uint32_t alpha) {
+ekgmath::vec4::vec4(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
     this->x = (float) red / 255.0f;
     this->y = (float) green / 255.0f;
     this->z = (float) blue / 255.0f;

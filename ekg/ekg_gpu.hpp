@@ -15,7 +15,7 @@ static float ALLOCATE_ARR_TEX_COORDS[12];
  **/
 struct ekg_gpu_data {
     std::vector<GLuint> data;
-    uint32_t id, iterator, iterator_call_buffer;
+    uint32_t id = 0, iterator = 0, iterator_call_buffer = 0, vertex_size = 0;
     bool flag_has_gen_buffer;
 
     void free(uint32_t index);
@@ -33,6 +33,7 @@ class ekg_gpu_data_handler {
 protected:
     std::vector<ekg_gpu_data> gpu_data_list;
     api::OpenGL::program default_program;
+    ekg_gpu_data concurrent_gpu_data;
 
     uint8_t primitive_draw_size;
     GLuint primitive_draw_mode;
@@ -40,9 +41,13 @@ protected:
 
     bool flag;
     uint32_t flag_id;
+
+    float mat4x4_ortho[16];
 public:
     bool get_flag();
     uint32_t get_flag_id();
+
+    ekg_gpu_data &get_concurrent_gpu_data();
 
     /*
      * Init the GPU handler.
@@ -85,6 +90,11 @@ public:
     void end();
 
     /*
+     * Update matrix.
+     */
+    void calc_view_ortho_2d();
+
+    /*
      * Draw ALLs GPU data.
      */
     void draw();
@@ -97,12 +107,22 @@ namespace gpu {
     /*
      * Invoke GPU to transfer data and cache data.
      */
-    void invoke(uint32_t id);
+    void invoke();
+
+    /*
+     * Inject data.
+     */
+    void inject(uint8_t id);
 
     /*
      * Confirm GPU changes.
      */
     void revoke();
+
+    /*
+     * Return concurrent GPU data synchronized with CPU cache.
+     */
+    ekg_gpu_data &data();
     
     /*
      * Push modal shape to CPU before GPU.

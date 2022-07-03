@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 #include "ekg_opengl.hpp"
+#include <string>
 
 /*
  * Press event cool down/wait ms delay.
@@ -95,6 +96,16 @@ namespace api {
          struct program {
              GLuint program;
              bool compiled;
+
+             /*
+              * Use the shader program.
+              */
+             void use();
+
+             /*
+              * Pass uniform float arr with size of 16 floats.
+              */
+             void set_mat4x4(const std::string &uniform_name, float* mat4x4);
          };
 
          /*

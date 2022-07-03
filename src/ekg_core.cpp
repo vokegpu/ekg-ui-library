@@ -56,6 +56,7 @@ void ekg_core::process_update_section() {
 }
 
 void ekg_core::process_render_section() {
+    this->gpu_handler.calc_view_ortho_2d();
     this->gpu_handler.draw();
 }
 

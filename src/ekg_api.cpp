@@ -144,6 +144,9 @@ void api::OpenGL::compile_program(api::OpenGL::program &program, const char *ver
         glAttachShader(program.program, fragment_shader);
         glLinkProgram(program.program);
 
+        glDeleteShader(vertex_shader);
+        glDeleteShader(fragment_shader);
+
         GLint program_compile_status = GL_FALSE;
         glGetProgramiv(program.program, GL_LINK_STATUS, &program_compile_status);
 
@@ -174,4 +177,12 @@ bool api::OpenGL::compile_shader(GLuint &shader_id, GLuint mode, const char *src
     }
 
     return true;
+}
+
+void api::OpenGL::program::use() {
+    glUseProgram(this->program);
+}
+
+void api::OpenGL::program::set_mat4x4(const std::string &uniform_name, float *mat4x4) {
+    glUniformMatrix4fv(glGetUniformLocation(this->program, uniform_name.c_str()), 1, GL_FALSE, mat4x4);
 }
