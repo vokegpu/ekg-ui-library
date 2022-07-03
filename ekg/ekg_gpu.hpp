@@ -37,7 +37,7 @@ protected:
 
     uint8_t primitive_draw_size;
     GLuint primitive_draw_mode;
-    GLuint vertex_arr_attrib;
+    GLuint vertex_arr_object;
 
     bool flag;
     uint32_t flag_id;
@@ -48,6 +48,7 @@ public:
     uint32_t get_flag_id();
 
     ekg_gpu_data &get_concurrent_gpu_data();
+    GLuint &get_vertex_array_object();
 
     /*
      * Init the GPU handler.
@@ -123,6 +124,11 @@ namespace gpu {
      * Return concurrent GPU data synchronized with CPU cache.
      */
     ekg_gpu_data &data();
+
+    /*
+     * Bind main vertex array object.
+     */
+    void vao();
     
     /*
      * Push modal shape to CPU before GPU.

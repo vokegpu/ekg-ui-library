@@ -33,38 +33,8 @@ void ekg_gpu_data_handler::init() {
                                        "float most_longest_fragmentcoord;\n"
                                        "\n"
                                        "void main() {\n"
-                                       "\tvec4 fragcolor = varying_fragcolor;\n"
-                                       "\n"
-                                       "\tif (u_set_texture) {\n"
-                                       "\t\tfragcolor = texture2D(u_active_texture, varying_fragcolor.xy);\n"
-                                       "\t}\n"
-                                       "\n"
-                                       "\t// Get the fragment color position.\n"
-                                       "\tvec2 fragcoord = vec2(gl_FragCoord.x, u_viewport_height - gl_FragCoord.y);\n"
-                                       "\n"
-                                       "\tif (u_set_radius) {\n"
-                                       "\t\tfloat r = u_radius_dist / 2.0f;\n"
-                                       "\n"
-                                       "\t\t// First calc. the diff from the center and middle of top square.\n"
-                                       "\t\tfloat square_x = u_center_x;\n"
-                                       "\t\tfloat square_y = u_center_y - r;\n"
-                                       "\n"
-                                       "\t\tfloat diff_square_x = u_center_x - square_x;\n"
-                                       "\t\tfloat diff_square_y = u_center_y - square_y;\n"
-                                       "\n"
-                                       "\t\t// Get the fragment pos diff from the center.\n"
-                                       "\t\tfloat dx = u_center_x - fragcoord.x;\n"
-                                       "\t\tfloat dy = u_center_y - fragcoord.y;\n"
-                                       "\n"
-                                       "\t\t// Calc. the distances.\n"
-                                       "\t\tfloat dist_square_center = (diff_square_x * diff_square_x + diff_square_y * diff_square_y);\n"
-                                       "\t\tfloat dist_fragment_center = (dx * dx + dy * dy);\n"
-                                       "\n"
-                                       "\t\t// Compare them and remove alpha if out of bounding circle.\n"
-                                       "\t\tif (dist_fragment_center > dist_square_center) {\n"
-                                       "\t\t\tfragcolor.a = 0.0f;\n"
-                                       "\t\t}\n"
-                                       "\t}\n"
+                                       "vec4 fragcolor = varying_fragcolor;\n"
+                                       "gl_FragColor = fragcolor;\n"
                                        "}";
 
             api::OpenGL::compile_program(this->default_program, vertex_src, fragment_src);
@@ -72,7 +42,7 @@ void ekg_gpu_data_handler::init() {
         }
     }
     
-    glGenVertexArrays(1, &this->vertex_arr_attrib);
+    glGenVertexArrays(1, &this->vertex_arr_object);
 
     this->primitive_draw_size = 0; // 6 vertex.
     this->primitive_draw_mode = GL_TRIANGLES;
@@ -97,7 +67,7 @@ void ekg_gpu_data_handler::remove_stored_data(uint32_t data_id) {
 }
 
 void ekg_gpu_data_handler::draw() {
-    glBindVertexArray(this->vertex_arr_attrib);
+    glBindVertexArray(this->vertex_arr_object);
 
     this->default_program.use();
     this->default_program.set_mat4x4("u_matrix", this->mat4x4_ortho);
@@ -133,17 +103,9 @@ void ekg_gpu_data_handler::start() {
 
     // Use us shader program.
     this->default_program.use();
-
-    // Bind us VAO.
-    glBindVertexArray(this->vertex_arr_attrib);
 }
 
 void ekg_gpu_data_handler::end() {
-    // Un bind VAO.
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glUseProgram(0);
-
     // Calc final draw size.
     for (ekg_gpu_data &gpu_data : this->gpu_data_list) {
         this->primitive_draw_size += gpu_data.vertex_size;
@@ -184,6 +146,10 @@ void ekg_gpu_data_handler::calc_view_ortho_2d() {
     ekgmath::ortho2d(this->mat4x4_ortho, 0, viewport[2], viewport[3], 0);
 }
 
+GLuint &ekg_gpu_data_handler::get_vertex_array_object() {
+    return this->vertex_arr_object;
+}
+
 void ekg_gpu_data::free(uint32_t index) {
     //glDeleteBuffers(1, &this->data.at(index));
 }
@@ -203,11 +169,11 @@ void ekg_gpu_data::bind() {
 
         this->flag_has_gen_buffer = true;
         this->iterator++;
+        this->iterator_call_buffer = this->iterator;
     } else {
         glBindBuffer(GL_ARRAY_BUFFER, this->data.at(this->iterator_call_buffer));
+        this->iterator_call_buffer++;
     }
-
-    this->iterator_call_buffer++;
 }
 
 void ekg_gpu_data::free() {
@@ -234,6 +200,9 @@ void gpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_vec
     gpu::data().bind();
     gpu::data().vertex_size = 6;
 
+    // Bind VAO.
+    gpu::vao();
+
     // Pass vertex positions to GPU.
     if (gpu::data().flag_has_gen_buffer) {
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, ALLOCATE_ARR_VERTEX, GL_DYNAMIC_DRAW);
@@ -243,14 +212,15 @@ void gpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_vec
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
-   // gpu::data().bind();
-//
-   // // Pass vertex colors to GPU.
-   // if (gpu::data().flag_has_gen_buffer) {
-   //     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, ALLOCATE_ARR_VERTEX_COLOR_RGBA, GL_DYNAMIC_DRAW);
-   // } else {
-   //     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 24, ALLOCATE_ARR_VERTEX_COLOR_RGBA);
-   // }
+    gpu::data().bind();
+    gpu::vao();
+
+    // Pass vertex colors to GPU.
+    if (gpu::data().flag_has_gen_buffer) {
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, ALLOCATE_ARR_VERTEX_COLOR_RGBA, GL_DYNAMIC_DRAW);
+    } else {
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 24, ALLOCATE_ARR_VERTEX_COLOR_RGBA);
+    }
 
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
@@ -353,4 +323,8 @@ void gpu::inject(uint8_t id) {
 
 ekg_gpu_data &gpu::data() {
     return ekg::core::instance.get_gpu_handler().get_concurrent_gpu_data();
+}
+
+void gpu::vao() {
+    glBindVertexArray(ekg::core::instance.get_gpu_handler().get_vertex_array_object());
 }
