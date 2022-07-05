@@ -9,10 +9,10 @@ std::string ekg::get_version() {
 }
 
 void ekg::init(SDL_Window* &sdl_window) {
-   api::init();
-   api::OpenGL::init();
+   ekgapi::init();
+   ekgapi::OpenGL::init();
 
-    if (EKG_CPU_PLATFORM == api::cpu::ARM) {
+    if (EKG_CPU_PLATFORM == ekgapi::cpu::ARM) {
         // TODO Init SDL2 log to ARM platform.
     }
 
@@ -28,7 +28,7 @@ void ekg::set_font(const char *path) {
 
 }
 
-void ekg::events(SDL_Event &sdl_event) {
+void ekg::poll_event(SDL_Event &sdl_event) {
     ekg::core::instance.process_event_section(sdl_event);
 }
 
@@ -43,18 +43,18 @@ void ekg::render() {
 
 ekg::button* ekg::create_button(std::string text) {
     auto button_worker = new ekg_button();
-    auto button = new ekg::button(button_worker);
+    auto button = new ekg::button((ekg_button*&) button_worker);
 
     button->set_text(text);
 
     // Add into context handler.
-    ekg::core::instance.add_element((ekg_abstract_element*) button_worker);
+    ekg::core::instance.add_element((ekg_abstract_element*&) button_worker);
 
     return button;
 }
 
 void ekg::core::init() {
-    utility::log("Core initialised.");
+    ekgutil::log("Core initialised.");
     ekg::core::instance.init();
 }
 

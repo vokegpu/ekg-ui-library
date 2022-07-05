@@ -20,9 +20,9 @@ public:
     uint32_t id;
 
     // States and collections.
-    utility::flag flag;
-    utility::visibility visibility;
-    utility::stack children_stack;
+    ekgutil::flag flag;
+    ekgutil::visibility visibility;
+    ekgutil::stack children_stack;
 
     // Metrics of element.
     ekgmath::rect rect;
@@ -43,17 +43,17 @@ public:
     virtual void on_sync();
 
     /*
-     * Update before process events.
+     * Update before process poll_event.
      */
     virtual void on_pre_event_update(SDL_Event &sdl_event);
 
     /*
-     * Process events.
+     * Process poll_event.
      */
     virtual void on_event(SDL_Event &sdl_event);
 
     /*
-     * Update after process events.
+     * Update after process poll_event.
      */
     virtual void on_post_event_update(SDL_Event &sdl_event);
 

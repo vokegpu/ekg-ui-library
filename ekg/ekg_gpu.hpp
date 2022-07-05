@@ -3,6 +3,7 @@
 
 #include "ekg_api.hpp"
 #include "ekg_utility.hpp"
+#include <array>
 
 /* Start of allocated arrays. */
 static float ALLOCATE_ARR_VERTEX[12];
@@ -15,8 +16,9 @@ static float ALLOCATE_ARR_TEX_COORDS[12];
  **/
 struct ekg_gpu_data {
     std::vector<GLuint> data;
+
     uint32_t id = 0, iterator = 0, iterator_call_buffer = 0, vertex_size = 0;
-    bool flag_has_gen_buffer;
+    bool flag_has_gen_buffer = false;
 
     void free(uint32_t index);
     void free();
@@ -27,13 +29,26 @@ struct ekg_gpu_data {
 };
 
 /**
+ * Store GPU data VAO final.
+ **/
+struct ekg_gpu_vao {
+    GLuint vao = 0;
+    uint16_t size = 0;
+};
+
+/**
  * Handler all data sent to GPU.
  **/
 class ekg_gpu_data_handler {
 protected:
     std::vector<ekg_gpu_data> gpu_data_list;
-    api::OpenGL::program default_program;
+    std::array<ekg_gpu_vao, 2048> vao_buffer;
+
+    ekgapi::OpenGL::program default_program;
     ekg_gpu_data concurrent_gpu_data;
+
+    uint16_t vao_iterator;
+    uint16_t sizeof_vao_buffer;
 
     uint8_t primitive_draw_size;
     GLuint primitive_draw_mode;
@@ -44,11 +59,31 @@ protected:
 
     float mat4x4_ortho[16];
 public:
+    /*
+     * Get if GPU handler is performing some task.
+     */
     bool get_flag();
+
+    /*
+     * Get focused GPU data id from cache.
+     */
     uint32_t get_flag_id();
 
-    ekg_gpu_data &get_concurrent_gpu_data();
+    /*
+     * deprecated ...
+     */
     GLuint &get_vertex_array_object();
+
+    /*
+     * Get the current GPU data.
+     */
+    ekg_gpu_data &get_concurrent_gpu_data();
+
+
+    /*
+     * Bind VAO to GPU vao list.
+     */
+    void bind();
 
     /*
      * Init the GPU handler.
@@ -104,7 +139,17 @@ public:
 /**
  * Functions to draw shapes.
  **/
-namespace gpu {
+namespace ekggpu {
+    /*
+     * Bind immediate vertices vertex array buffer.
+     */
+    void vertex();
+
+    /*
+     * Bind immediate vertices material vertex array object.
+     */
+    void material();
+
     /*
      * Invoke GPU to transfer data and cache data.
      */
@@ -133,17 +178,17 @@ namespace gpu {
     /*
      * Push modal shape to CPU before GPU.
      */
-    void push_arr_vertex(float &x, float &y, float &w, float &h);
+    void push_arr_vertex(float x, float y, float w, float h);
 
     /*
      * Push color rgba to CPU before GPU.
      */
-    void push_arr_vertex_color_rgba(float &r, float &g, float &b, float &a);
+    void push_arr_vertex_color_rgba(float r, float g, float b, float a);
 
     /*
      * Push texture coordinates to CPU before GPU.
      */
-    void push_arr_vertex_tex_coords(float &x, float &y, float &w, float &h);
+    void push_arr_vertex_tex_coords(float x, float y, float w, float h);
 
     /*
      * Draw rectangle.

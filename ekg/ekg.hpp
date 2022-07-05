@@ -40,9 +40,9 @@ namespace ekg {
     void quit();
 
     /*
-     * Poll events of GUI.
+     * Poll poll_event of GUI.
      */
-    void events(SDL_Event &sdl_event);
+    void poll_event(SDL_Event &sdl_event);
 
     /*
      * Update the GUI context.

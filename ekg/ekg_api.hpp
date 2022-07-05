@@ -20,7 +20,7 @@ struct {
 } ekg_display_touch_input;
 
 /**
- * Make the CPU count ticks to be use in api.
+ * Make the CPU count ticks to be use in ekgapi.
  **/
 struct ekg_cpu_timing {
     static uint64_t last_ticks;
@@ -43,7 +43,7 @@ struct ekg_cpu_timing {
  * \n
  * Here we will choose which to use. \n
  **/
-namespace api {
+namespace ekgapi {
     /*
      * Platform supported.
      */
@@ -52,7 +52,7 @@ namespace api {
     };
 
     /*
-     * Init the api.
+     * Init the ekgapi.
      */
     void init();
 
@@ -61,25 +61,23 @@ namespace api {
      */
     void send_output(const char* output);
 
-    /*
-     * Mouse left click or finger touch.
-     */
-    bool input1(SDL_Event &sdl_event);
+    bool input_down_right(SDL_Event &sdl_event, float &x, float &y);
+    bool input_down_left(SDL_Event &sdl_event, float &x, float &y);
+    bool input_down_middle(SDL_Event &sdl_event, float &x, float &y);
 
-    /*
-     * Mouse right click.
-     */
-    bool input2(SDL_Event &sdl_event);
-
-    /*
-     * Mouse middle click.
-     */
-    bool input3(SDL_Event &sdl_event);
+    bool input_up_right(SDL_Event &sdl_event, float &x, float &y);
+    bool input_up_left(SDL_Event &sdl_event, float &x, float &y);
+    bool input_up_middle(SDL_Event &sdl_event, float &x, float &y);
 
     /*
      * Detect scroll or calc. scroll from previous moving click.
      */
-    float motion(SDL_Event &sdl_event, float x, float y);
+    void scroll(SDL_Event &sdl_event, float &y);
+
+    /*
+     * Get pos input.
+     */
+    bool motion(SDL_Event &sdl_event, float &x, float &y);
 
     /**
      * The OpenGL functions.
@@ -116,7 +114,7 @@ namespace api {
          /*
           * Compile OpenGL program for use.
           */
-         void compile_program(api::OpenGL::program &program, const char* vertex_src, const char* fragment_src);
+         void compile_program(ekgapi::OpenGL::program &program, const char* vertex_src, const char* fragment_src);
      };
 
      /**
@@ -130,6 +128,6 @@ namespace api {
 /**
  * Current project platform.
  **/
-static api::cpu EKG_CPU_PLATFORM;
+static ekgapi::cpu EKG_CPU_PLATFORM;
 
 #endif

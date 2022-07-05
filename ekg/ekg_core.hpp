@@ -21,7 +21,7 @@ protected:
     std::array<ekg_abstract_element*, 512> update_buffer;
     std::array<ekg_abstract_element*, 512> render_buffer;
 
-    uint16_t sizeof_render_buffer, sizeof_update_buffer;
+    uint16_t sizeof_render_buffer = 0, sizeof_update_buffer = 0;
     uint32_t last_id_used;
 
     uint32_t focused_element_id;
@@ -42,7 +42,7 @@ public:
 
     void init();
     void set_instances(SDL_Window* &sdl_window);
-    void add_element(ekg_abstract_element* element);
+    void add_element(ekg_abstract_element* &element);
 
     void process_event_section(SDL_Event &event);
     void process_update_section();

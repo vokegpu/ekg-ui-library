@@ -1,26 +1,26 @@
 #include <ekg/ekg_utility.hpp>
 #include <ekg/ekg_api.hpp>
 
-void utility::log(const std::string &log) {
-    api::send_output(log.c_str());
+void ekgutil::log(const std::string &log) {
+    ekgapi::send_output(log.c_str());
 }
 
-bool utility::contains(uint8_t &flags, uint8_t target) {
+bool ekgutil::contains(uint8_t &flags, uint8_t target) {
     return (flags & target) != 0;
 }
 
-bool utility::remove(uint8_t &flags, uint8_t target) {
+bool ekgutil::remove(uint8_t &flags, uint8_t target) {
     bool flag_contains = flags & target;
     flags &= ~(target);
     return flag_contains;
 }
 
-bool utility::add(uint8_t &flags, uint8_t val_flag) {
+bool ekgutil::add(uint8_t &flags, uint8_t val_flag) {
     flags |= val_flag;
     return true;
 }
 
-bool utility::stack::contains(uint32_t id) {
+bool ekgutil::stack::contains(uint32_t id) {
     for (uint32_t _ids : this->ids) {
         if (_ids == id) {
             return true;
@@ -30,7 +30,7 @@ bool utility::stack::contains(uint32_t id) {
     return false;
 }
 
-bool utility::stack::remove(uint32_t id) {
+bool ekgutil::stack::remove(uint32_t id) {
     int32_t index = -1;
 
     for (uint32_t i = 0; i < this->ids.size(); i++) {
@@ -48,7 +48,7 @@ bool utility::stack::remove(uint32_t id) {
     return false;
 }
 
-void utility::stack::add(uint32_t id) {
+void ekgutil::stack::add(uint32_t id) {
     if (!this->contains(id)) {
         this->ids.push_back(id);
     }
@@ -101,6 +101,10 @@ ekgmath::vec4::vec4() {
 }
 
 ekgmath::vec4::vec4(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
+    this->color(red, green, blue, alpha);
+}
+
+void ekgmath::vec4::color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
     this->x = (float) red / 255.0f;
     this->y = (float) green / 255.0f;
     this->z = (float) blue / 255.0f;

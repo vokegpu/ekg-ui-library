@@ -17,6 +17,11 @@ namespace ekgmath {
 
         vec4();
         vec4(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+
+        /*
+         * Convert 0 - 255 RGBA to normalised value 0.0 - 1.0.
+         */
+        void color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
     };
 
     /**
@@ -50,7 +55,7 @@ namespace ekgmath {
 /**
  * Utilities of EKG used on the background GUI.
  **/
-namespace utility {
+namespace ekgutil {
     /*
      * Send output log.
      */
@@ -72,14 +77,14 @@ namespace utility {
     bool add(uint8_t &flags, uint8_t val_flag);
 
     /**
-     * Flag events in a unique place.
+     * Flag poll_event in a unique place.
      **/
     struct flag {
-        bool flag_over;
-        bool flag_highlight;
-        bool flag_activy;
-        bool flag_focused;
-        bool flag_dead;
+        bool flag_over = false;
+        bool flag_highlight = false;
+        bool flag_activy = false;
+        bool flag_focused = false;
+        bool flag_dead = false;
     };
 
     /**
@@ -126,8 +131,9 @@ namespace utility {
      * Actions in EKG core.
      **/
     enum action {
-        REFRESH   = 1 << 0,
-        FIX_STACK = 1 << 1
+        SWAPBUFFERS = 1 << 0,
+        FIXSTACK    = 1 << 1,
+        REFRESH     = 1 << 2
     };
 };
 

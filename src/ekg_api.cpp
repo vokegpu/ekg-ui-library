@@ -16,124 +16,182 @@ bool ekg_cpu_timing::endif(uint64_t ms) {
     return SDL_GetTicks64() - last_ticks > ms;
 }
 
-bool api::input1(SDL_Event &sdl_event) {
-    switch (sdl_event.type) {
-        case SDL_FINGERUP: {
-            ekg_cpu_timing::clock_going_on = false;
-            return true;
-        }
-
-        case SDL_FINGERDOWN: {
-            return true;
-        }
-
-        case SDL_MOUSEBUTTONDOWN: {
-            return sdl_event.motion.type == SDL_BUTTON_LEFT;
-        }
-
-        case SDL_MOUSEBUTTONUP: {
-            ekg_cpu_timing::clock_going_on = false;
-            return sdl_event.motion.type == SDL_BUTTON_LEFT;
-        }
-    }
-
-    return false;
-}
-
-bool api::input2(SDL_Event &sdl_event) {
-    switch (sdl_event.type) {
-        case SDL_FINGERUP: {
-            return ekg_cpu_timing::endif(EKG_ACTIVE_CALLBACK_MS_DELAY);
-        }
-
-        case SDL_FINGERDOWN: {
-            ekg_display_touch_input.last_down_x = sdl_event.tfinger.x;
-            ekg_display_touch_input.last_down_y = sdl_event.tfinger.y;
-
-            return true;
-        }
-
-        case SDL_MOUSEBUTTONDOWN: {
-            return sdl_event.motion.type == SDL_BUTTON_RIGHT;
-        }
-
-        case SDL_MOUSEBUTTONUP: {
-            ekg_cpu_timing::clock_going_on = false;
-            return sdl_event.motion.type == SDL_BUTTON_RIGHT;
-        }
-    }
-
-    return false;
-}
-
-bool api::input3(SDL_Event &sdl_event) {
-    switch (sdl_event.type) {
-        case SDL_MOUSEBUTTONDOWN: {
-            return sdl_event.motion.type == SDL_BUTTON_MIDDLE;
-        }
-
-        case SDL_MOUSEBUTTONUP: {
-            ekg_cpu_timing::clock_going_on = false;
-            return sdl_event.motion.type == SDL_BUTTON_MIDDLE;
-        }
-    }
-
-    return false;
-}
-
-void api::init() {
+void ekgapi::init() {
     EKG_ACTIVE_CALLBACK_MS_DELAY = 500;
-    EKG_CPU_PLATFORM = api::cpu::X86;
+    EKG_CPU_PLATFORM = ekgapi::cpu::X86;
 }
 
-float api::motion(SDL_Event &sdl_event, float x, float y) {
+void ekgapi::scroll(SDL_Event &sdl_event, float &y) {
     if (!ekg_cpu_timing::clock_going_on) {
-        return 0.0f;
+        return;
     }
 
     switch (sdl_event.type) {
         case SDL_FINGERMOTION: {
-            return y - ekg_display_touch_input.last_down_y;
+            y = sdl_event.tfinger.y - ekg_display_touch_input.last_down_y;
         }
 
         case SDL_MOUSEWHEEL: {
-            return sdl_event.wheel.preciseY;
+            y = sdl_event.wheel.preciseY;
         }
     }
-
-    return 0.0f;
 }
 
-void api::send_output(const char *output) {
+void ekgapi::send_output(const char *output) {
     switch (EKG_CPU_PLATFORM) {
-        case api::cpu::X86: {
+        case ekgapi::cpu::X86: {
             std::string str = "[EKG] " + std::string(output);
             std::cout << str.c_str() << "\n";
             break;
         }
 
-        case api::cpu::ARM: {
+        case ekgapi::cpu::ARM: {
             //SDL_Log("[EKG] %s", output);
             break;
         }
     }
 }
 
-void api::OpenGL::init() {
-    utility::log("API OpenGL initialised.");
+bool ekgapi::input_down_right(SDL_Event &sdl_event, float &x, float &y) {
+    switch (sdl_event.type) {
+        case SDL_MOUSEBUTTONDOWN: {
+            x = (float) sdl_event.motion.x;
+            y = (float) sdl_event.motion.y;
+            return sdl_event.motion.type == SDL_BUTTON_RIGHT;
+        }
+
+        case SDL_FINGERDOWN: {
+            x = (float) sdl_event.tfinger.x;
+            y = (float) sdl_event.tfinger.y;
+
+            ekg_display_touch_input.last_down_x = sdl_event.tfinger.x;
+            ekg_display_touch_input.last_down_y = sdl_event.tfinger.y;
+            ekg_cpu_timing::start();
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
-void api::OpenGL::compile_program(api::OpenGL::program &program, const char *vertex_src, const char *fragment_src) {
+bool ekgapi::input_down_left(SDL_Event &sdl_event, float &x, float &y) {
+    switch (sdl_event.type) {
+        case SDL_MOUSEBUTTONDOWN: {
+            x = (float) sdl_event.motion.x;
+            y = (float) sdl_event.motion.y;
+            return sdl_event.motion.type == SDL_BUTTON_LEFT;
+        }
+
+        case SDL_FINGERDOWN: {
+            x = (float) sdl_event.tfinger.x;
+            y = (float) sdl_event.tfinger.y;
+
+            ekg_display_touch_input.last_down_x = sdl_event.tfinger.x;
+            ekg_display_touch_input.last_down_y = sdl_event.tfinger.y;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ekgapi::input_down_middle(SDL_Event &sdl_event, float &x, float &y) {
+    switch (sdl_event.type) {
+        case SDL_MOUSEBUTTONDOWN: {
+            x = (float) sdl_event.motion.x;
+            y = (float) sdl_event.motion.y;
+            return sdl_event.motion.type == SDL_BUTTON_MIDDLE;
+        }
+    }
+
+    return false;
+}
+
+bool ekgapi::input_up_right(SDL_Event &sdl_event, float &x, float &y) {
+    switch (sdl_event.type) {
+        case SDL_MOUSEBUTTONUP: {
+            x = (float) sdl_event.motion.x;
+            y = (float) sdl_event.motion.y;
+            return sdl_event.motion.type == SDL_BUTTON_RIGHT;
+        }
+
+        case SDL_FINGERUP: {
+            x = (float) sdl_event.tfinger.x;
+            y = (float) sdl_event.tfinger.y;
+
+            return ekg_cpu_timing::endif(EKG_ACTIVE_CALLBACK_MS_DELAY);
+        }
+    }
+
+    return false;
+}
+
+bool ekgapi::input_up_left(SDL_Event &sdl_event, float &x, float &y) {
+    switch (sdl_event.type) {
+        case SDL_MOUSEBUTTONUP: {
+            x = (float) sdl_event.motion.x;
+            y = (float) sdl_event.motion.y;
+            return sdl_event.motion.type == SDL_BUTTON_LEFT;
+        }
+
+        case SDL_FINGERUP: {
+            x = (float) sdl_event.tfinger.x;
+            y = (float) sdl_event.tfinger.y;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ekgapi::input_up_middle(SDL_Event &sdl_event, float &x, float &y) {
+    switch (sdl_event.type) {
+        case SDL_MOUSEBUTTONUP: {
+            x = (float) sdl_event.motion.x;
+            y = (float) sdl_event.motion.y;
+            return sdl_event.motion.type == SDL_BUTTON_MIDDLE;
+        }
+    }
+
+    return false;
+}
+
+bool ekgapi::motion(SDL_Event &sdl_event, float &x, float &y) {
+    switch (sdl_event.type) {
+        case SDL_MOUSEMOTION: {
+            x = (float) sdl_event.motion.x;
+            y = (float) sdl_event.motion.y;
+            return true;
+        }
+
+        case SDL_FINGERMOTION: {
+            x = (float) sdl_event.tfinger.x;
+            y = (float) sdl_event.tfinger.y;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void ekgapi::OpenGL::init() {
+    ekgutil::log("API OpenGL initialised.");
+}
+
+void ekgapi::OpenGL::compile_program(ekgapi::OpenGL::program &program, const char *vertex_src, const char *fragment_src) {
     GLuint vertex_shader, fragment_shader;
     bool flag = true;
 
-    if (!api::OpenGL::compile_shader(vertex_shader, GL_VERTEX_SHADER, vertex_src)) {
-        utility::log("Could not compile vertex shader.");
+    if (!ekgapi::OpenGL::compile_shader(vertex_shader, GL_VERTEX_SHADER, vertex_src)) {
+        ekgutil::log("Could not compile vertex shader.");
         flag = false;
     }
 
-    if (!api::OpenGL::compile_shader(fragment_shader, GL_FRAGMENT_SHADER, fragment_src)) {
-        utility::log("Could not compile fragment shader.");
+    if (!ekgapi::OpenGL::compile_shader(fragment_shader, GL_FRAGMENT_SHADER, fragment_src)) {
+        ekgutil::log("Could not compile fragment shader.");
         flag = false;
     }
 
@@ -154,14 +212,14 @@ void api::OpenGL::compile_program(api::OpenGL::program &program, const char *ver
             char log[256];
             glGetProgramInfoLog(program.program, 256, NULL, log);
 
-            utility::log("Could not link program.");
+            ekgutil::log("Could not link program.");
         }
 
         program.compiled = program_compile_status;
     }
 }
 
-bool api::OpenGL::compile_shader(GLuint &shader_id, GLuint mode, const char *src) {
+bool ekgapi::OpenGL::compile_shader(GLuint &shader_id, GLuint mode, const char *src) {
     shader_id = glCreateShader(mode);
 
     glShaderSource(shader_id, 1, &src, NULL);
@@ -179,10 +237,10 @@ bool api::OpenGL::compile_shader(GLuint &shader_id, GLuint mode, const char *src
     return true;
 }
 
-void api::OpenGL::program::use() {
+void ekgapi::OpenGL::program::use() {
     glUseProgram(this->program);
 }
 
-void api::OpenGL::program::set_mat4x4(const std::string &uniform_name, float *mat4x4) {
+void ekgapi::OpenGL::program::set_mat4x4(const std::string &uniform_name, float *mat4x4) {
     glUniformMatrix4fv(glGetUniformLocation(this->program, uniform_name.c_str()), 1, GL_FALSE, mat4x4);
 }

@@ -4,8 +4,8 @@
 void ekg_core::process_event_section(SDL_Event &sdl_event) {
     this->focused_element_id = 0;
 
-    for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
-        ekg_abstract_element* element = this->render_buffer[i];
+    for (uint32_t i = 0; i < this->sizeof_update_buffer; i++) {
+        ekg_abstract_element* &element = this->update_buffer[i];
 
         if (element == nullptr || element->flag.flag_dead) {
             continue;
@@ -14,7 +14,7 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
         // Verify point overlap.
         element->on_pre_event_update(sdl_event);
 
-        if (element->visibility == utility::visibility::VISIBLE && element->flag.flag_over) {
+        if (element->visibility == ekgutil::visibility::VISIBLE && element->flag.flag_over) {
             this->focused_element_id = element->id;
         }
 
@@ -24,8 +24,8 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
     this->sizeof_render_buffer = 0;
     this->render_buffer.fill(nullptr);
 
-    for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
-        ekg_abstract_element* element = this->render_buffer[i];
+    for (uint32_t i = 0; i < this->sizeof_update_buffer; i++) {
+        ekg_abstract_element* &element = this->update_buffer[i];
 
         if (element == nullptr || element->flag.flag_dead) {
             continue;
@@ -37,35 +37,57 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
 
         element->on_event(sdl_event);
 
-        if (element->visibility == utility::visibility::VISIBLE) {
+        if (element->visibility == ekgutil::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = element;
         }
     }
 
-    if (utility::contains(this->todo_flags, utility::action::REFRESH)) {
+    if (ekgutil::contains(this->todo_flags, ekgutil::action::SWAPBUFFERS)) {
         this->swap_buffers();
-        utility::remove(this->todo_flags, utility::action::REFRESH);
+        ekgutil::remove(this->todo_flags, ekgutil::action::SWAPBUFFERS);
     }
 }
 
 void ekg_core::process_update_section() {
-    if (utility::contains(this->todo_flags, utility::REFRESH)) {
+    if (ekgutil::contains(this->todo_flags, ekgutil::SWAPBUFFERS)) {
         this->swap_buffers();
-        utility::remove(this->todo_flags, utility::REFRESH);
+        ekgutil::remove(this->todo_flags, ekgutil::SWAPBUFFERS);
     }
 }
 
 void ekg_core::process_render_section() {
+    ekggpu::vao();
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
     this->gpu_handler.calc_view_ortho_2d();
     this->gpu_handler.draw();
+
+    if (this->sizeof_render_buffer != 0) {
+        ekggpu::invoke();
+
+        for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
+            ekg_abstract_element *&element = this->render_buffer[i];
+            element->on_draw_refresh();
+        }
+
+        ekggpu::revoke();
+
+        this->sizeof_render_buffer = 0;
+        this->render_buffer.fill(nullptr);
+    }
+
+    glBindVertexArray(0);
 }
 
-void ekg_core::add_element(ekg_abstract_element *element) {
+void ekg_core::add_element(ekg_abstract_element* &element) {
     element->id = this->last_id_used++;
     this->concurrent_buffer.push_back(element);
     element->on_draw_refresh();
+    element->visibility = ekgutil::visibility::VISIBLE;
 
-    utility::add(this->todo_flags, utility::action::REFRESH);
+    ekgutil::add(this->todo_flags, ekgutil::action::SWAPBUFFERS);
 }
 
 /* Start of swap buffers. */
@@ -75,7 +97,7 @@ void ekg_core::swap_buffers() {
     this->render_buffer.fill(nullptr);
 
     for (uint32_t i = 0; i < this->sizeof_update_buffer; i++) {
-        ekg_abstract_element* element = this->update_buffer[i];
+        ekg_abstract_element* &element = this->update_buffer[i];
 
         if (element == nullptr) {
             continue;
@@ -89,7 +111,7 @@ void ekg_core::swap_buffers() {
             continue;
         }
 
-        if (element->visibility == utility::visibility::VISIBLE) {
+        if (element->visibility == ekgutil::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = element;
         }
     }
@@ -101,7 +123,7 @@ void ekg_core::swap_buffers() {
 
         this->update_buffer[this->sizeof_update_buffer++] = elements;
 
-        if (elements->visibility == utility::visibility::VISIBLE) {
+        if (elements->visibility == ekgutil::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = elements;
         }
     }

@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 project(ekg VERSION 1.0.0 DESCRIPTION "ez build gui")
+message("-- Preparing EKG setup")
 
 set(LIBRARY_OUTPUT_PATH ../lib)
 set(PROJECT_VERSION 1.0)
@@ -9,14 +10,20 @@ file(GLOB_RECURSE HEADER_FILES ekg/*.hpp)
 include(GNUInstallDirs)
 
 # Generate shared lib (DLL).
+message("-- Creating static lib")
 add_library(ekg STATIC ${SOURCE_FILES})
 
+message("-- Configuring static lib")
 set_target_properties(ekg PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION 1)
 set_target_properties(ekg PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 target_include_directories(ekg PUBLIC .)
-target_link_libraries(ekg SDL2main SDL2 SDL2_image opengl32)
+target_link_libraries(ekg mingw32 SDL2main glew32 SDL2 SDL2_image opengl32)
 
+message("-- Setting configure file")
 configure_file(ekg.pc.in ekg.pc @ONLY)
 
+message("-- Ending EKG CMake")
 install(TARGETS ekg LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(FILES ${CMAKE_BINARY_DIR}/ekg.pc DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
+
+message("-- EKG lib successfully done")
