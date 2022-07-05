@@ -56,11 +56,6 @@ void ekg_core::process_update_section() {
 }
 
 void ekg_core::process_render_section() {
-    ekggpu::vao();
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-
     this->gpu_handler.calc_view_ortho_2d();
     this->gpu_handler.draw();
 
@@ -77,8 +72,6 @@ void ekg_core::process_render_section() {
         this->sizeof_render_buffer = 0;
         this->render_buffer.fill(nullptr);
     }
-
-    glBindVertexArray(0);
 }
 
 void ekg_core::add_element(ekg_abstract_element* &element) {

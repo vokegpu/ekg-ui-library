@@ -217,6 +217,7 @@ void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_
 
     // Bind a concurrent VAO.
     ekg::core::instance.get_gpu_handler().bind();
+    glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
     ekggpu::data().bind();
@@ -228,6 +229,7 @@ void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 24, ALLOCATE_ARR_VERTEX_COLOR_RGBA);
     }
 
+    glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
     ekggpu::data().unbind();
