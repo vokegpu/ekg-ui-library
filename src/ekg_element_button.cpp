@@ -44,7 +44,6 @@ void ekg_button::on_post_event_update(SDL_Event &sdl_event) {
 
 void ekg_button::on_draw_refresh() {
     ekg_abstract_element::on_draw_refresh();
-    ekggpu::inject(this->master_id);
 
     ekgmath::vec4 color(255, 0, 255, 100);
     ekggpu::rectangle(this->rect, color);

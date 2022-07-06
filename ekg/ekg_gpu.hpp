@@ -6,27 +6,11 @@
 #include <array>
 
 /**
- * Store GPU data.
+ * Store GPU data for update at once.
  **/
 struct ekg_gpu_data {
-    uint32_t id = 0;
-    uint32_t vertex_count = 0;
-
-    std::vector<float> vertices;
-    std::vector<float> materials;
-
-    /*
-     * Reset vertex count and clean data.
-     */
-    void batch();
-};
-
-/**
- * Store GPU data VAO final.
- **/
-struct ekg_gpu_vao {
-    GLuint vao = 0;
-    uint16_t size = 0;
+    GLint data = 0;
+    GLint raw = 0;
 };
 
 /**
@@ -34,51 +18,27 @@ struct ekg_gpu_vao {
  **/
 class ekg_gpu_data_handler {
 protected:
-    std::vector<ekg_gpu_data> gpu_data_list;
-    ekgapi::OpenGL::program default_program;
-    ekg_gpu_data concurrent_gpu_data;
+    std::vector<GLfloat> cached_vertices;
+    std::vector<GLfloat> cached_vertices_materials;
+    std::vector<ekg_gpu_data> cached_data;
+
+    GLint index_start_arr[1024];
+    GLint index_end_arr[1024];
 
     GLuint vertex_buffer_arr;
     GLuint vertex_buf_object_vertex_positions;
     GLuint vertex_buf_object_vertex_materials;
 
-    uint32_t sizeof_vertices;
-    uint32_t sizeof_buffer_vertex_positions;
-    uint32_t sizeof_buffer_vertex_materials;
-
-    GLint fans_starts[1024];
-    GLsizei fans_sizes[1024];
+    ekgapi::OpenGL::program default_program;
+    uint32_t amount_of_draw_iterations;
 
     float mat4x4_ortho[16];
-
-    bool flag;
-    uint32_t flag_id;
 public:
     /*
-     * Get if GPU handler is performing some task.
+     * Get current GPU cached vertices.
      */
-    bool get_flag();
-
-    /*
-     * Get focused GPU data id from cache.
-     */
-    uint32_t get_flag_id();
-
-    /*
-     * deprecated ...
-     */
-    GLuint &get_vertex_array_object();
-
-    /*
-     * Get the current GPU data.
-     */
-    ekg_gpu_data &get_concurrent_gpu_data();
-
-
-    /*
-     * Bind VAO to GPU vao list.
-     */
-    void bind();
+    std::vector<float> &get_cached_vertices();
+    std::vector<float> &get_cached_vertices_materials();
 
     /*
      * Init the GPU handler.
@@ -86,34 +46,14 @@ public:
     void init();
 
     /*
-     * Get the stored GPU data from cache.
+     * Bind GPU data.
      */
-    bool get_data_by_id(ekg_gpu_data &data, uint32_t id);
-
-    /*
-     * Remove GPU data stored from cache.
-     */
-    void remove_stored_data(uint32_t data_id);
-
-    /*
-     * Get GPU data from cache or store if not exists.
-     */
-    void access_or_store(ekg_gpu_data &data, uint32_t id);
-
-    /*
-     * Redirect concurrent GPU data to cache.
-     */
-    void redirect_data(ekg_gpu_data &data);
+    void bind(ekg_gpu_data &gpu_data);
 
     /*
      * Start GPU access section and setup GPU flags before access.
      */
     void start();
-
-    /*
-     * Bind GPU data.
-     */
-    void bind(uint32_t id);
 
     /*
      * End GPU access section.
@@ -141,19 +81,9 @@ namespace ekggpu {
     void invoke();
 
     /*
-     * Inject data.
-     */
-    void inject(uint8_t id);
-
-    /*
      * Confirm GPU changes.
      */
     void revoke();
-
-    /*
-     * Return concurrent GPU data synchronized with CPU cache.
-     */
-    ekg_gpu_data &data();
     
     /*
      * Push modal shape to CPU before GPU.

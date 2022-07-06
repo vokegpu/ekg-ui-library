@@ -63,93 +63,48 @@ void ekg_gpu_data_handler::init() {
     glBindVertexArray(0);
 }
 
-void ekg_gpu_data_handler::remove_stored_data(uint32_t data_id) {
-    int32_t index = -1;
-
-    for (uint32_t i = 0; i < this->gpu_data_list.size(); i++) {
-        ekg_gpu_data data = this->gpu_data_list.at(i);
-
-        if (data.id == data_id) {
-            index = (int32_t) i;
-            break;
-        }
-    }
-
-    if (index != -1) {
-        this->gpu_data_list.erase(this->gpu_data_list.begin() + index);
-    }
-}
-
 void ekg_gpu_data_handler::draw() {
     this->default_program.use();
     this->default_program.set_mat4x4("u_matrix", this->mat4x4_ortho);
 
     glBindVertexArray(this->vertex_buffer_arr);
-    glMultiDrawArrays(GL_TRIANGLE_FAN, this->fans_starts, this->fans_sizes, this->sizeof_vertices);
+    glMultiDrawArrays(GL_TRIANGLE_FAN, this->index_start_arr, this->index_end_arr, this->amount_of_draw_iterations);
     glBindVertexArray(0);
 }
 
-bool ekg_gpu_data_handler::get_data_by_id(ekg_gpu_data &data, uint32_t id) {
-    for (ekg_gpu_data &gpu_data : this->gpu_data_list) {
-        if (gpu_data.id == id) {
-            data = gpu_data;
-            return true;
-        }
-    }
-
-    return false;
-}
-
-void ekg_gpu_data_handler::access_or_store(ekg_gpu_data &data, uint32_t id) {
-    if (!this->get_data_by_id(data, id)) {
-        this->gpu_data_list.push_back(data);
-    }
-}
-
 void ekg_gpu_data_handler::start() {
-    this->sizeof_vertices = 0;
-    this->flag = true;
+    this->amount_of_draw_iterations = 0;
 }
 
 void ekg_gpu_data_handler::end() {
-    this->flag = false;
-
-    uint32_t sizeof_index = 0;
-    uint32_t sizeof_i = 0;
-
-    for (ekg_gpu_data &gpu_data : this->gpu_data_list) {
-        this->sizeof_vertices += sizeof(float) * gpu_data.vertex_count;
-    }
-
     // Refresh VAO.
-    glBindVertexArray(this->vertex_buffer_arr);
     glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_positions);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * );
-}
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
 
-bool ekg_gpu_data_handler::get_flag() {
-    return this->flag;
-}
+    glBindVertexArray(this->vertex_buffer_arr);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
-uint32_t ekg_gpu_data_handler::get_flag_id() {
-    return this->flag_id;
-}
+    glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_materials);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices_materials.size(), &this->cached_vertices_materials[0], GL_STATIC_DRAW);
 
-void ekg_gpu_data_handler::bind(uint32_t id) {
-    this->flag_id = id;
-}
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-void ekg_gpu_data_handler::redirect_data(ekg_gpu_data &data) {
-    for (ekg_gpu_data &gpu_data : this->gpu_data_list) {
-        if (gpu_data.id == data.id) {
-            gpu_data = data;
-            break;
-        }
+    for (uint32_t i = 0; i < this->cached_data.size(); i++) {
+        ekg_gpu_data &gpu_data = this->cached_data.at(i);
+
+        // Pass start and end reference.
+        this->index_start_arr[i] = gpu_data.raw;
+        this->index_end_arr[i] = gpu_data.data;
     }
-}
 
-ekg_gpu_data &ekg_gpu_data_handler::get_concurrent_gpu_data() {
-    return this->concurrent_gpu_data;
+    // "Free memory".
+    this->cached_vertices.clear();
+    this->cached_vertices_materials.clear();
+    this->cached_data.clear();
 }
 
 void ekg_gpu_data_handler::calc_view_ortho_2d() {
@@ -159,18 +114,30 @@ void ekg_gpu_data_handler::calc_view_ortho_2d() {
     ekgmath::ortho2d(this->mat4x4_ortho, 0, viewport[2], viewport[3], 0);
 }
 
-void ekg_gpu_data_handler::bind() {
+std::vector<float> &ekg_gpu_data_handler::get_cached_vertices() {
+    return this->cached_vertices;
+}
 
+std::vector<float> &ekg_gpu_data_handler::get_cached_vertices_materials() {
+    return this->cached_vertices_materials;
+}
+
+void ekg_gpu_data_handler::bind(ekg_gpu_data &gpu_data) {
+    gpu_data.raw = this->cached_vertices.size();
+    this->cached_data.push_back(gpu_data);
 }
 
 void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_vec) {
     // Alloc arrays in CPU.
-    ekggpu::push_arr_vertex(ekggpu::data().vertices, x, y, w, h);
-    ekggpu::push_arr_vertex_color_rgba(ekggpu::data().materials, color_vec.x, color_vec.y, color_vec.z, color_vec.w);
-    ekggpu::data().vertex_count += 6;
+    ekggpu::push_arr_vertex(ekg::core::instance.get_gpu_handler().get_cached_vertices(), x, y, w, h);
+    ekggpu::push_arr_vertex_color_rgba(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), color_vec.x, color_vec.y, color_vec.z, color_vec.w);
 
-    // End data catch.
-    ekg::core::instance.get_gpu_handler().redirect_data(ekggpu::data());
+    // Generate a GPU data.
+    ekg_gpu_data gpu_data;
+    gpu_data.data = 6;
+
+    // Bind GPU data into GPU handler.
+    ekg::core::instance.get_gpu_handler().bind(gpu_data);
 }
 
 void ekggpu::rectangle(ekgmath::rect &rect, ekgmath::vec4 &color_vec) {
@@ -259,21 +226,4 @@ void ekggpu::invoke() {
 
 void ekggpu::revoke() {
     ekg::core::instance.get_gpu_handler().end();
-}
-
-void ekggpu::inject(uint8_t id) {
-    ekg::core::instance.get_gpu_handler().bind(id);
-    ekg::core::instance.get_gpu_handler().access_or_store(ekg::core::instance.get_gpu_handler().get_concurrent_gpu_data(), id);
-
-    ekggpu::data().batch();
-}
-
-ekg_gpu_data &ekggpu::data() {
-    return ekg::core::instance.get_gpu_handler().get_concurrent_gpu_data();
-}
-
-void ekg_gpu_data::batch() {
-    this->vertex_count = 0;
-    this->vertices.clear();
-    this->materials.clear();
 }
