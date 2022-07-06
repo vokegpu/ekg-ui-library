@@ -2,6 +2,9 @@
 #ifndef EKG_OPENGL_H
 #define EKG_OPENGL_H
 
+#define GLEW_STATIC
+#include <GL/glew.h>
+
 #ifdef _WIN64
     #define GLEW_STATIC
     #include <GL/glew.h>

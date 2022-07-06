@@ -5,27 +5,20 @@
 #include "ekg_utility.hpp"
 #include <array>
 
-/* Start of allocated arrays. */
-static float ALLOCATE_ARR_VERTEX[12];
-static float ALLOCATE_ARR_VERTEX_COLOR_RGBA[24];
-static float ALLOCATE_ARR_TEX_COORDS[12];
-/* End of allocated arrays. */
-
 /**
- * Instead we draw directly everything we just draw using batch mode.
+ * Store GPU data.
  **/
 struct ekg_gpu_data {
-    std::vector<GLuint> data;
+    uint32_t id = 0;
+    uint32_t vertex_count = 0;
 
-    uint32_t id = 0, iterator = 0, iterator_call_buffer = 0, vertex_size = 0;
-    bool flag_has_gen_buffer = false;
+    std::vector<float> vertices;
+    std::vector<float> materials;
 
-    void free(uint32_t index);
-    void free();
-
+    /*
+     * Reset vertex count and clean data.
+     */
     void batch();
-    void bind();
-    void unbind();
 };
 
 /**
@@ -42,22 +35,24 @@ struct ekg_gpu_vao {
 class ekg_gpu_data_handler {
 protected:
     std::vector<ekg_gpu_data> gpu_data_list;
-    std::array<ekg_gpu_vao, 2048> vao_buffer;
-
     ekgapi::OpenGL::program default_program;
     ekg_gpu_data concurrent_gpu_data;
 
-    uint16_t vao_iterator;
-    uint16_t sizeof_vao_buffer;
+    GLuint vertex_buffer_arr;
+    GLuint vertex_buf_object_vertex_positions;
+    GLuint vertex_buf_object_vertex_materials;
 
-    uint8_t primitive_draw_size;
-    GLuint primitive_draw_mode;
-    GLuint vertex_arr_object;
+    uint32_t sizeof_vertices;
+    uint32_t sizeof_buffer_vertex_positions;
+    uint32_t sizeof_buffer_vertex_materials;
+
+    GLint fans_starts[1024];
+    GLsizei fans_sizes[1024];
+
+    float mat4x4_ortho[16];
 
     bool flag;
     uint32_t flag_id;
-
-    float mat4x4_ortho[16];
 public:
     /*
      * Get if GPU handler is performing some task.
@@ -141,16 +136,6 @@ public:
  **/
 namespace ekggpu {
     /*
-     * Bind immediate vertices vertex array buffer.
-     */
-    void vertex();
-
-    /*
-     * Bind immediate vertices material vertex array object.
-     */
-    void material();
-
-    /*
      * Invoke GPU to transfer data and cache data.
      */
     void invoke();
@@ -169,26 +154,21 @@ namespace ekggpu {
      * Return concurrent GPU data synchronized with CPU cache.
      */
     ekg_gpu_data &data();
-
-    /*
-     * Bind main vertex array object.
-     */
-    void vao();
     
     /*
      * Push modal shape to CPU before GPU.
      */
-    void push_arr_vertex(float x, float y, float w, float h);
+    void push_arr_vertex(std::vector<float> &vec_arr, float x, float y, float w, float h);
 
     /*
      * Push color rgba to CPU before GPU.
      */
-    void push_arr_vertex_color_rgba(float r, float g, float b, float a);
+    void push_arr_vertex_color_rgba(std::vector<float> &vec_arr, float r, float g, float b, float a);
 
     /*
      * Push texture coordinates to CPU before GPU.
      */
-    void push_arr_vertex_tex_coords(float x, float y, float w, float h);
+    void push_arr_vertex_tex_coords(std::vector<float> &vec_arr, float x, float y, float w, float h);
 
     /*
      * Draw rectangle.

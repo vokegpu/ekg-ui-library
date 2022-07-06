@@ -17,7 +17,7 @@ message("-- Configuring static lib")
 set_target_properties(ekg PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION 1)
 set_target_properties(ekg PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 target_include_directories(ekg PUBLIC .)
-target_link_libraries(ekg mingw32 SDL2main glew32 SDL2 SDL2_image opengl32)
+target_link_libraries(ekg mingw32 glew32 SDL2 SDL2_image)
 
 message("-- Setting configure file")
 configure_file(ekg.pc.in ekg.pc @ONLY)
