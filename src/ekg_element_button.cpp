@@ -2,10 +2,7 @@
 #include <ekg/ekg_gpu.hpp>
 
 ekg_button::ekg_button() {
-    this->rect.x = 20;
-    this->rect.y = 20;
-    this->rect.w = 200;
-    this->rect.h = 200;
+
 }
 
 ekg_button::~ekg_button() {
@@ -44,15 +41,4 @@ void ekg_button::on_post_event_update(SDL_Event &sdl_event) {
 
 void ekg_button::on_draw_refresh() {
     ekg_abstract_element::on_draw_refresh();
-
-    ekgmath::vec4 color(255, 0, 255, 100);
-    ekggpu::rectangle(this->rect, color);
-
-    if (this->flag.flag_over) {
-        color.color(255, 255, 255, 50);
-        //ekggpu::rectangle(this->rect, color);
-    }
-
-    color.color(0, 0, 255, 100);
-    ekggpu::rectangle(this->rect, color);
 }
