@@ -42,23 +42,21 @@ void ekg_gpu_data_handler::init() {
         }
     }
 
+    // Gen the objects (VAO and VBO).
     glGenVertexArrays(1, &this->vertex_buffer_arr);
     glGenBuffers(1, &this->vertex_buf_object_vertex_positions);
     glGenBuffers(1, &this->vertex_buf_object_vertex_materials);
 
+    // Configure the buffers (peek ekg_gpu_data_handler::end to explain).
     glBindVertexArray(this->vertex_buffer_arr);
     glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_positions);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, 0, GL_DYNAMIC_DRAW);
-
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
     glEnableVertexAttribArray(0);
-
     glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_materials);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, 0, GL_DYNAMIC_DRAW);
-
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) 0);
     glEnableVertexAttribArray(1);
-
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
@@ -67,6 +65,7 @@ void ekg_gpu_data_handler::draw() {
     this->default_program.use();
     this->default_program.set_mat4x4("u_matrix", this->mat4x4_ortho);
 
+    // Bind VAO and draw the two VBO(s).
     glBindVertexArray(this->vertex_buffer_arr);
     glMultiDrawArrays(GL_TRIANGLE_FAN, this->index_start_arr, this->index_end_arr, this->amount_of_draw_iterations);
     glBindVertexArray(0);
@@ -77,22 +76,28 @@ void ekg_gpu_data_handler::start() {
 }
 
 void ekg_gpu_data_handler::end() {
-    // Refresh VAO.
+    // Bind the vertex positions vbo and alloc new data to GPU.
     glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_positions);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
 
+    // Bind vao and pass attrib data to VAO.
     glBindVertexArray(this->vertex_buffer_arr);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
+    // Bind vertex materials and alloc new data to GPU.
     glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_materials);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices_materials.size(), &this->cached_vertices_materials[0], GL_STATIC_DRAW);
 
+    // Enable the second location attrib (pass to VAO) from shader.
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    // Unbind vbo(s) and vao.
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    // Iterate all cached GPU data and pass to draw fans.
     for (uint32_t i = 0; i < this->cached_data.size(); i++) {
         ekg_gpu_data &gpu_data = this->cached_data.at(i);
 
@@ -101,7 +106,7 @@ void ekg_gpu_data_handler::end() {
         this->index_end_arr[i] = gpu_data.data;
     }
 
-    // "Free memory".
+    // Clean the previous data.
     this->cached_vertices.clear();
     this->cached_vertices_materials.clear();
     this->cached_data.clear();
