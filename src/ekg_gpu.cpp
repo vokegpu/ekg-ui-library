@@ -65,14 +65,23 @@ void ekg_gpu_data_handler::draw() {
     this->default_program.use();
     this->default_program.set_mat4x4("u_matrix", this->mat4x4_ortho);
 
-    // Bind VAO and draw the two VBO(s).
-    glBindVertexArray(this->vertex_buffer_arr);
-    glMultiDrawArrays(GL_TRIANGLE_FAN, this->index_start_arr, this->index_end_arr, this->amount_of_draw_iterations);
-    glBindVertexArray(0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Simulate glMultiDrawArrays.
+    for (uint32_t i = 0; i < this->amount_of_draw_iterations; i++) {
+        // Bind VAO and draw the two VBO(s).
+        glBindVertexArray(this->vertex_buffer_arr);
+        glDrawArrays(GL_TRIANGLE_FAN, this->index_start_arr[i], this->index_end_arr[i]);
+        glBindVertexArray(0);
+    }
+
+    //glMultiDrawArrays(GL_TRIANGLE_FAN, this->index_start_arr, this->index_end_arr, this->amount_of_draw_iterations);
 }
 
 void ekg_gpu_data_handler::start() {
     this->amount_of_draw_iterations = 0;
+    this->amount_of_data = 0;
 }
 
 void ekg_gpu_data_handler::end() {
@@ -82,16 +91,16 @@ void ekg_gpu_data_handler::end() {
 
     // Bind vao and pass attrib data to VAO.
     glBindVertexArray(this->vertex_buffer_arr);
-    glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+    glEnableVertexAttribArray(0);
 
     // Bind vertex materials and alloc new data to GPU.
     glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_materials);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices_materials.size(), &this->cached_vertices_materials[0], GL_STATIC_DRAW);
 
     // Enable the second location attrib (pass to VAO) from shader.
-    glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+    glEnableVertexAttribArray(1);
 
     // Unbind vbo(s) and vao.
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -128,8 +137,13 @@ std::vector<float> &ekg_gpu_data_handler::get_cached_vertices_materials() {
 }
 
 void ekg_gpu_data_handler::bind(ekg_gpu_data &gpu_data) {
-    gpu_data.raw = this->cached_vertices.size();
+    // Set the raw with previous amount of data.
+    gpu_data.raw = this->amount_of_data;
     this->cached_data.push_back(gpu_data);
+
+    // Update draw calls time and amount of data handled.
+    this->amount_of_draw_iterations += 1;
+    this->amount_of_data += gpu_data.data;
 }
 
 void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_vec) {

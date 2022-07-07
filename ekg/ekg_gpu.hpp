@@ -29,15 +29,20 @@ protected:
     GLuint vertex_buf_object_vertex_positions;
     GLuint vertex_buf_object_vertex_materials;
 
-    ekgapi::OpenGL::program default_program;
     uint32_t amount_of_draw_iterations;
+    uint32_t amount_of_data;
 
+    ekgapi::OpenGL::program default_program;
     float mat4x4_ortho[16];
 public:
     /*
      * Get current GPU cached vertices.
      */
     std::vector<float> &get_cached_vertices();
+
+    /*
+     * Get current GPU cached vertices with materials (texture coordinates UV or color RGBA).
+     */
     std::vector<float> &get_cached_vertices_materials();
 
     /*

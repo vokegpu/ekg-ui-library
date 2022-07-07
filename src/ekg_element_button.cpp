@@ -50,7 +50,7 @@ void ekg_button::on_draw_refresh() {
 
     if (this->flag.flag_over) {
         color.color(255, 255, 255, 50);
-        ekggpu::rectangle(this->rect, color);
+        //ekggpu::rectangle(this->rect, color);
     }
 
     color.color(0, 0, 255, 100);
