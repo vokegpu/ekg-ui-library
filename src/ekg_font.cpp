@@ -64,11 +64,11 @@ bool ekg_font::reload() {
     }
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glActiveTexture(GL_TEXTURE0);
-
     glGenTextures(1, &this->bitmap_texture_id);
+
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, this->bitmap_texture_id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, (int32_t) this->texture_width, (int32_t) this->texture_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, (void*) 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, (int32_t) this->texture_width, (int32_t) this->texture_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, nullptr);
 
     float offset = 0.0f;
 
@@ -77,7 +77,7 @@ bool ekg_font::reload() {
             continue;
         }
 
-        ekg_char_data char_data;
+        ekg_char_data &char_data = this->char_list[i];
 
         char_data.x = float(offset) / (float) this->texture_width;
         char_data.width = (float) this->glyph_slot->bitmap.width;
@@ -89,8 +89,6 @@ bool ekg_font::reload() {
 
         glTexSubImage2D(GL_TEXTURE_2D, 0, (int32_t) offset, 0, (int32_t) char_data.width, (int32_t) char_data.height, GL_ALPHA, GL_UNSIGNED_BYTE, this->glyph_slot->bitmap.buffer);
         offset += char_data.width;
-
-        this->char_list[i] = char_data;
     }
 
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -136,10 +134,10 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
         texture_h = render_h / (float) this->texture_height;
 
         ekggpu::push_arr_vertex(ekg::core::instance.get_gpu_handler().get_cached_vertices(), render_x, render_y, render_w, render_h);
-        ekggpu::push_arr_vertex_color_rgba(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
+        ekggpu::push_arr_vertex_tex_coords(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
 
         x += char_data.texture_x;
-        this->previous = (uint32_t) *i;
+        this->previous = (uint8_t) *i;
     }
 
     // Generate a GPU data.

@@ -30,7 +30,6 @@ void ekg_gpu_data_handler::init() {
                                        "\n"
                                        "    if (u_bool_set_texture) {\n"
                                        "        fragcolor = texture2D(u_sampler2d_texture_active, varying_material.xy);\n"
-                                       "        fragcolor = vec4(fragcolor.xyz - u_vec4_texture_color.xyz, u_vec4_texture_color.z);\n"
                                        "    }\n"
                                        "\n"
                                        "    gl_FragColor = fragcolor;\n"
@@ -81,10 +80,10 @@ void ekg_gpu_data_handler::draw() {
         this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
 
         if (current_texture_active != 0) {
-            this->default_program.set_int("u_set_texture_active", gpu_data.texture_slot);
-
+            glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, gpu_data.texture);
-            glActiveTexture(GL_TEXTURE0 + gpu_data.texture_slot);
+            
+            this->default_program.set_int("u_sampler2d_texture_active", 0);
         }
 
         glDrawArrays(GL_TRIANGLE_FAN, gpu_data.raw, gpu_data.data);
@@ -106,15 +105,6 @@ void ekg_gpu_data_handler::end() {
     // Bind the vertex positions vbo and alloc new data to GPU.
     glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_positions);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
-
-    // Pass texture to active slots.
-    if (this->amount_of_texture_data_allocated != 0) {
-        for (uint8_t i = 0; i < this->amount_of_texture_data_allocated; i++) {
-            // Actually there is a very dangerous limit.
-            glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture(GL_TEXTURE_2D, this->cached_textures.at(i));
-        }
-    }
 
     // Bind vao and pass attrib data to VAO.
     glBindVertexArray(this->vertex_buffer_arr);
