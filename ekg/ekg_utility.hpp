@@ -12,11 +12,11 @@ namespace ekgmath {
     /*
      * Vec4 class.
      */
-    struct vec4 {
+    struct vec4f {
         float x, y, z, w;
 
-        vec4();
-        vec4(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+        vec4f();
+        vec4f(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
 
         /*
          * Convert 0 - 255 RGBA to normalised value 0.0 - 1.0.

@@ -96,15 +96,15 @@ void ekgmath::ortho2d(float *mat, float left, float right, float bottom, float t
     mat[i++] = 1.0f;
 }
 
-ekgmath::vec4::vec4() {
+ekgmath::vec4f::vec4f() {
 
 }
 
-ekgmath::vec4::vec4(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
+ekgmath::vec4f::vec4f(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
     this->color(red, green, blue, alpha);
 }
 
-void ekgmath::vec4::color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
+void ekgmath::vec4f::color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
     this->x = (float) red / 255.0f;
     this->y = (float) green / 255.0f;
     this->z = (float) blue / 255.0f;

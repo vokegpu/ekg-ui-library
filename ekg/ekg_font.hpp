@@ -79,7 +79,7 @@ public:
 	/*
 	 * Send data coordinates data to GPU.
 	 */
-	void render(const std::string &text, float x, float y, ekgmath::vec4 &color);
+	void render(const std::string &text, float x, float y, ekgmath::vec4f &color);
 };
 
 /*
@@ -89,7 +89,7 @@ namespace ekgfont {
 	/*
 	 * Render one simple text.
 	 */
-	void render(const std::string &text, float x, float y, ekgmath::vec4 &color);
+	void render(const std::string &text, float x, float y, ekgmath::vec4f &color);
 };
 
 #endif

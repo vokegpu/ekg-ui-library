@@ -102,7 +102,7 @@ bool ekg_font::reload() {
     return this->flag_font_bitmap_generated;
 }
 
-void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4 &color) {
+void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f &color) {
     if (!this->flag_ft_library_initialised || !this->flag_font_loaded || !this->flag_font_bitmap_generated) {
         return;
     }
@@ -154,6 +154,5 @@ void ekg_font::quit() {
     FT_Done_Face(this->face);
 }
 
-void ekgfont::render(const std::string &text, float x, float y, ekgmath::vec4 &color) {
-
+void ekgfont::render(const std::string &text, float x, float y, ekgmath::vec4f &color) {
 }

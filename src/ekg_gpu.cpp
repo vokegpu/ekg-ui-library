@@ -7,21 +7,21 @@ void ekg_gpu_data_handler::init() {
             const char* vertex_src = "#version 330 core\n"
                                      "\n"
                                      "layout (location = 0) in vec2 attrib_pos;\n"
-                                     "layout (location = 1) in vec4 attrib_fragcolor;\n"
+                                     "layout (location = 1) in vec4f attrib_fragcolor;\n"
                                      "\n"
-                                     "out vec4 varying_fragcolor;\n"
+                                     "out vec4f varying_fragcolor;\n"
                                      "uniform mat4 u_matrix;\n"
                                      "\n"
                                      "void main() {\n"
-                                     "\tgl_Position = u_matrix * vec4(attrib_pos, 0, 1);\n"
+                                     "\tgl_Position = u_matrix * vec4f(attrib_pos, 0, 1);\n"
                                      "\tvarying_fragcolor = attrib_fragcolor;\n"
                                      "}";
 
             const char* fragment_src = "#version 330 core\n"
                                        "\n"
-                                       "in vec4 varying_fragcolor;\n"
+                                       "in vec4f varying_fragcolor;\n"
                                        "\n"
-                                       "uniform vec4 u_texture_color;\n"
+                                       "uniform vec4f u_texture_color;\n"
                                        "uniform float u_viewport_height;\n"
                                        "\n"
                                        "uniform bool u_set_texture, u_set_texture_color_filter, u_set_radius, u_set_outline;\n"
@@ -33,7 +33,7 @@ void ekg_gpu_data_handler::init() {
                                        "float most_longest_fragmentcoord;\n"
                                        "\n"
                                        "void main() {\n"
-                                       "vec4 fragcolor = varying_fragcolor;\n"
+                                       "vec4f fragcolor = varying_fragcolor;\n"
                                        "gl_FragColor = fragcolor;\n"
                                        "}";
 
@@ -155,7 +155,7 @@ void ekg_gpu_data_handler::quit() {
     // TODO delete the current VAO and VBO(s) buffers
 }
 
-void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_vec) {
+void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec) {
     // Alloc arrays in CPU.
     ekggpu::push_arr_vertex(ekg::core::instance.get_gpu_handler().get_cached_vertices(), x, y, w, h);
     ekggpu::push_arr_vertex_color_rgba(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), color_vec.x, color_vec.y, color_vec.z, color_vec.w);
@@ -168,11 +168,11 @@ void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_
     ekg::core::instance.get_gpu_handler().bind(gpu_data);
 }
 
-void ekggpu::rectangle(ekgmath::rect &rect, ekgmath::vec4 &color_vec) {
+void ekggpu::rectangle(ekgmath::rect &rect, ekgmath::vec4f &color_vec) {
     ekggpu::rectangle(rect.x, rect.y, rect.w, rect.h, color_vec);
 }
 
-void ekggpu::circle(float x, float y, float r, ekgmath::vec4 &color_vec4) {
+void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec4) {
 
 }
 

@@ -1,5 +1,6 @@
 #include <ekg/ekg_element_button.hpp>
 #include <ekg/ekg_gpu.hpp>
+#include <ekg/ekg_font.hpp>
 
 ekg_button::ekg_button() {
 
@@ -41,4 +42,8 @@ void ekg_button::on_post_event_update(SDL_Event &sdl_event) {
 
 void ekg_button::on_draw_refresh() {
     ekg_abstract_element::on_draw_refresh();
+
+    ekgmath::vec4f color(190, 190, 190, 200);
+    ekggpu::rectangle(10, 10, 200, 200, color);
+    ekgfont::render("oi sou lidna", 10, 10, color);
 }
