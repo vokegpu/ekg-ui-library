@@ -45,5 +45,9 @@ void ekg_button::on_draw_refresh() {
 
     ekgmath::vec4f color(190, 190, 190, 200);
     ekggpu::rectangle(10, 10, 200, 200, color);
+
+    color.color(190, 0, 190, 255);
+    ekggpu::rectangle(10, 10, 200, 200, color);
+
     ekgfont::render("oi sou lidna", 10, 10, color);
 }

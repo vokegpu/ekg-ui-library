@@ -231,6 +231,7 @@ bool ekgapi::OpenGL::compile_shader(GLuint &shader_id, GLuint mode, const char *
     if (shader_compile_status != GL_TRUE) {
         char log[256];
         glGetShaderInfoLog(shader_id, 256, NULL, log);
+        ekgutil::log(log);
         return false;
     }
 

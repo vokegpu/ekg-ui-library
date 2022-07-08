@@ -7,21 +7,21 @@ void ekg_gpu_data_handler::init() {
             const char* vertex_src = "#version 330 core\n"
                                      "\n"
                                      "layout (location = 0) in vec2 attrib_pos;\n"
-                                     "layout (location = 1) in vec4f attrib_fragcolor;\n"
+                                     "layout (location = 1) in vec4 attrib_fragcolor;\n"
                                      "\n"
-                                     "out vec4f varying_fragcolor;\n"
+                                     "out vec4 varying_fragcolor;\n"
                                      "uniform mat4 u_matrix;\n"
                                      "\n"
                                      "void main() {\n"
-                                     "\tgl_Position = u_matrix * vec4f(attrib_pos, 0, 1);\n"
+                                     "\tgl_Position = u_matrix * vec4(attrib_pos, 0, 1);\n"
                                      "\tvarying_fragcolor = attrib_fragcolor;\n"
                                      "}";
 
             const char* fragment_src = "#version 330 core\n"
                                        "\n"
-                                       "in vec4f varying_fragcolor;\n"
+                                       "in vec4 varying_fragcolor;\n"
                                        "\n"
-                                       "uniform vec4f u_texture_color;\n"
+                                       "uniform vec4 u_texture_color;\n"
                                        "uniform float u_viewport_height;\n"
                                        "\n"
                                        "uniform bool u_set_texture, u_set_texture_color_filter, u_set_radius, u_set_outline;\n"
@@ -33,7 +33,7 @@ void ekg_gpu_data_handler::init() {
                                        "float most_longest_fragmentcoord;\n"
                                        "\n"
                                        "void main() {\n"
-                                       "vec4f fragcolor = varying_fragcolor;\n"
+                                       "vec4 fragcolor = varying_fragcolor;\n"
                                        "gl_FragColor = fragcolor;\n"
                                        "}";
 
@@ -51,12 +51,16 @@ void ekg_gpu_data_handler::init() {
     glBindVertexArray(this->vertex_buffer_arr);
     glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_positions);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, 0, GL_DYNAMIC_DRAW);
+
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
     glEnableVertexAttribArray(0);
+
     glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_materials);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, 0, GL_DYNAMIC_DRAW);
+
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) 0);
     glEnableVertexAttribArray(1);
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
@@ -68,13 +72,15 @@ void ekg_gpu_data_handler::draw() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    // Bind VAO and draw the two VBO(s).
+    glBindVertexArray(this->vertex_buffer_arr);
+
     // Simulate glMultiDrawArrays.
     for (uint32_t i = 0; i < this->amount_of_draw_iterations; i++) {
-        // Bind VAO and draw the two VBO(s).
-        glBindVertexArray(this->vertex_buffer_arr);
         glDrawArrays(GL_TRIANGLE_FAN, this->index_start_arr[i], this->index_end_arr[i]);
-        glBindVertexArray(0);
     }
+
+    glBindVertexArray(0);
 
     //glMultiDrawArrays(GL_TRIANGLE_FAN, this->index_start_arr, this->index_end_arr, this->amount_of_draw_iterations);
 }
@@ -139,7 +145,7 @@ std::vector<float> &ekg_gpu_data_handler::get_cached_vertices_materials() {
 
 void ekg_gpu_data_handler::bind(ekg_gpu_data &gpu_data) {
     // Set the raw with previous amount of data.
-    gpu_data.raw = this->amount_of_data;
+    gpu_data.raw = (GLint) this->amount_of_data;
     this->cached_data.push_back(gpu_data);
 
     // Update draw calls time and amount of data handled.
