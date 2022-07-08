@@ -30,7 +30,7 @@ void ekg_gpu_data_handler::init() {
                                        "\n"
                                        "    if (u_bool_set_texture) {\n"
                                        "        fragcolor = texture2D(u_sampler2d_texture_active, varying_material.xy);\n"
-                                       "        fragcolor = vec4(fragcolor.xyz - u_vec4_texture_color, u_vec4_texture_color.z);\n"
+                                       "        fragcolor = vec4(fragcolor.xyz - u_vec4_texture_color.xyz, u_vec4_texture_color.z);\n"
                                        "    }\n"
                                        "\n"
                                        "    gl_FragColor = fragcolor;\n"
@@ -77,14 +77,18 @@ void ekg_gpu_data_handler::draw() {
 
     // Simulate glMultiDrawArrays.
     for (uint32_t i = 0; i < this->amount_of_draw_iterations; i++) {
-        current_texture_active = this->index_texture_active_arr[i];
+        ekg_gpu_data &gpu_data = this->concurrent_cpu_data[i];
+        this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
 
-        if (current_texture_active != -1) {
-            this->default_program.set_int("u_set_texture_active", (int32_t) current_texture_active);
-            this->default_program.set_int("u_set_texture_active", (int32_t) current_texture_active);
+        if (current_texture_active != 0) {
+            this->default_program.set_int("u_set_texture_active", gpu_data.texture_slot);
+
+            glBindTexture(GL_TEXTURE_2D, gpu_data.texture);
+            glActiveTexture(GL_TEXTURE0 + gpu_data.texture_slot);
         }
 
-        glDrawArrays(GL_TRIANGLE_FAN, this->index_start_arr[i], this->index_end_arr[i]);
+        glDrawArrays(GL_TRIANGLE_FAN, gpu_data.raw, gpu_data.data);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     glBindVertexArray(0);
@@ -107,10 +111,8 @@ void ekg_gpu_data_handler::end() {
     if (this->amount_of_texture_data_allocated != 0) {
         for (uint8_t i = 0; i < this->amount_of_texture_data_allocated; i++) {
             // Actually there is a very dangerous limit.
-            glActiveTexture(GL_TEXTURE + i);
+            glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, this->cached_textures.at(i));
-
-            this->
         }
     }
 
@@ -132,19 +134,17 @@ void ekg_gpu_data_handler::end() {
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
 
-    // Iterate all cached GPU data and pass to draw fans.
+    // Iterate all cached GPU data and pass to CPU arr.
     for (uint32_t i = 0; i < this->cached_data.size(); i++) {
         ekg_gpu_data &gpu_data = this->cached_data.at(i);
-
-        // Pass start and end reference.
-        this->index_start_arr[i] = gpu_data.raw;
-        this->index_end_arr[i] = gpu_data.data;
+        this->concurrent_cpu_data[i] = gpu_data;
     }
 
     // Clean the previous data.
     this->cached_vertices.clear();
     this->cached_vertices_materials.clear();
     this->cached_data.clear();
+    this->cached_textures.clear();
 }
 
 void ekg_gpu_data_handler::calc_view_ortho_2d() {
@@ -172,9 +172,25 @@ void ekg_gpu_data_handler::bind(ekg_gpu_data &gpu_data) {
     this->amount_of_data += gpu_data.data;
 }
 
-void ekg_gpu_data_handler::bind_texture(GLuint &object_id) {
-    this->cached_textures.push_back(object_id);
-    this->amount_of_texture_data_allocated++;
+void ekg_gpu_data_handler::bind_texture(ekg_gpu_data &gpu_data, GLuint &object_id) {
+    bool flag_has_cached = false;
+
+    for (uint8_t i = 0; i < this->cached_textures.size(); i++) {
+        GLuint &textures = this->cached_textures.at(i);
+
+        if (textures == object_id) {
+            flag_has_cached = true;
+            gpu_data.texture_slot = (uint8_t) i;
+            break;
+        }
+    }
+
+    gpu_data.texture = object_id;
+
+    if (!flag_has_cached) {
+        gpu_data.texture_slot = this->amount_of_texture_data_allocated++;
+        cached_textures.push_back(object_id);
+    }
 }
 
 void ekg_gpu_data_handler::quit() {

@@ -35,6 +35,8 @@ bool ekg_font::load(const std::string &f_ont_path) {
         return false;
     }
 
+    FT_Set_Pixel_Sizes(this->face, 0, 18);
+
     this->flag_font_loaded = true;
     this->texture_width = 0;
     this->texture_height = 0;
@@ -68,7 +70,6 @@ bool ekg_font::reload() {
     glBindTexture(GL_TEXTURE_2D, this->bitmap_texture_id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, (int32_t) this->texture_width, (int32_t) this->texture_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, (void*) 0);
 
-    this->glyph_slot = this->face->glyph;
     float offset = 0.0f;
 
     for (uint8_t i = 0; i < 128; i++) {
@@ -78,7 +79,7 @@ bool ekg_font::reload() {
 
         ekg_char_data char_data;
 
-        char_data.x = offset / (float) this->texture_width;
+        char_data.x = float(offset) / (float) this->texture_width;
         char_data.width = (float) this->glyph_slot->bitmap.width;
         char_data.height = (float) this->glyph_slot->bitmap.rows;
 
@@ -87,7 +88,9 @@ bool ekg_font::reload() {
         char_data.texture_x = (float) (this->glyph_slot->advance.x >> 6);
 
         glTexSubImage2D(GL_TEXTURE_2D, 0, (int32_t) offset, 0, (int32_t) char_data.width, (int32_t) char_data.height, GL_ALPHA, GL_UNSIGNED_BYTE, this->glyph_slot->bitmap.buffer);
-        offset = char_data.width;
+        offset += char_data.width;
+
+        this->char_list[i] = char_data;
     }
 
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -108,13 +111,10 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     }
 
     const char* char_str = text.c_str();
-    const uint32_t str_len = strlen(char_str);
+    const int32_t str_len = strlen(char_str);
 
     float render_x = 0, render_y = 0, render_w = 0, render_h = 0;
     float texture_x = 0, texture_y = 0, texture_w = 0, texture_h = 0;
-
-    // Generate a GPU data.
-    ekg_gpu_data gpu_data;
 
     for (const char* i = char_str; *i; i++) {
         if (this->use_kerning && this->previous && *i) {
@@ -125,7 +125,7 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
         // Get char from list and update metrics/positions of each char.
         ekg_char_data &char_data = this->char_list[*i];
 
-        render_x = x + char_data.texture_x;
+        render_x = x + char_data.left;
         render_y = y + ((float) this->texture_height - char_data.top);
 
         render_w = char_data.width;
@@ -136,16 +136,20 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
         texture_h = render_h / (float) this->texture_height;
 
         ekggpu::push_arr_vertex(ekg::core::instance.get_gpu_handler().get_cached_vertices(), render_x, render_y, render_w, render_h);
-        ekggpu::push_arr_vertex_tex_coords(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
+        ekggpu::push_arr_vertex_color_rgba(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
 
         x += char_data.texture_x;
-        this->previous = (int32_t) *i;
+        this->previous = (uint32_t) *i;
     }
 
+    // Generate a GPU data.
+    ekg_gpu_data gpu_data;
+
     // Each char quad has 6 vertices, so we multiply 6 by length of text.
-    gpu_data.data += (GLint) (6 * str_len);
+    gpu_data.data = (GLint) (6 * str_len);
 
     // Send data to GPU.
+    ekg::core::instance.get_gpu_handler().bind_texture(gpu_data, this->bitmap_texture_id);
     ekg::core::instance.get_gpu_handler().bind(gpu_data);
 }
 

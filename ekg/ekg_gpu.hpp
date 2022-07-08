@@ -10,14 +10,12 @@
  * Store GPU data for update at once.
  **/
 struct ekg_gpu_data {
+    GLuint texture = 0;
+    uint8_t texture_slot = 0;
+
     GLint data = 0;
     GLint raw = 0;
 };
-
-/**
- * Store active texture.
- **/
-
 
 /**
  * Handler all data sent to GPU.
@@ -29,9 +27,7 @@ protected:
     std::vector<ekg_gpu_data> cached_data;
     std::vector<GLuint> cached_textures;
 
-    GLint index_start_arr[1024];
-    GLint index_end_arr[1024];
-    GLint index_texture_active_arr[1024];
+    ekg_gpu_data concurrent_cpu_data[4048];
 
     GLuint vertex_buffer_arr;
     GLuint vertex_buf_object_vertex_positions;
@@ -72,7 +68,7 @@ public:
     /*
      * Alloc texture to the concurrent cached texture list.
      */
-    void bind_texture(GLuint &object_id);
+    void bind_texture(ekg_gpu_data &gpu_data, GLuint &object_id);
 
     /*
      * Start GPU access section and setup GPU flags before access.
