@@ -86,6 +86,16 @@ public:
  * Make easy the communication.
  */
 namespace ekgfont {
+    /*
+     * Get the width size of text displayed.
+     */
+    float get_text_width(const std::string &text);
+
+    /*
+     * Get the height size of text displayed.
+     */
+    float get_text_height(const std::string &text);
+
 	/*
 	 * Render one simple text.
 	 */

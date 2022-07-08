@@ -7,34 +7,33 @@ void ekg_gpu_data_handler::init() {
             const char* vertex_src = "#version 330 core\n"
                                      "\n"
                                      "layout (location = 0) in vec2 attrib_pos;\n"
-                                     "layout (location = 1) in vec4 attrib_fragcolor;\n"
+                                     "layout (location = 1) in vec4 attrib_material;\n"
                                      "\n"
-                                     "out vec4 varying_fragcolor;\n"
-                                     "uniform mat4 u_matrix;\n"
+                                     "out vec4 varying_material;\n"
+                                     "uniform mat4 u_mat_matrix;\n"
                                      "\n"
                                      "void main() {\n"
-                                     "\tgl_Position = u_matrix * vec4(attrib_pos, 0, 1);\n"
-                                     "\tvarying_fragcolor = attrib_fragcolor;\n"
+                                     "    gl_Position = u_mat_matrix * vec4(attrib_pos.xy, 0, 1);\n"
+                                     "    varying_material = attrib_material;\n"
                                      "}";
 
             const char* fragment_src = "#version 330 core\n"
                                        "\n"
-                                       "in vec4 varying_fragcolor;\n"
+                                       "in vec4 varying_material;\n"
                                        "\n"
-                                       "uniform vec4 u_texture_color;\n"
-                                       "uniform float u_viewport_height;\n"
-                                       "\n"
-                                       "uniform bool u_set_texture, u_set_texture_color_filter, u_set_radius, u_set_outline;\n"
-                                       "uniform float u_center_x, u_center_y;\n"
-                                       "\n"
-                                       "uniform float u_radius_dist, u_outline_thickness;\n"
-                                       "uniform sampler2D u_active_texture;\n"
-                                       "\n"
-                                       "float most_longest_fragmentcoord;\n"
+                                       "uniform sampler2D u_sampler2d_texture_active;\n"
+                                       "uniform bool u_bool_set_texture;\n"
+                                       "uniform vec4 u_vec4_texture_color;\n"
                                        "\n"
                                        "void main() {\n"
-                                       "vec4 fragcolor = varying_fragcolor;\n"
-                                       "gl_FragColor = fragcolor;\n"
+                                       "    vec4 fragcolor = varying_material;\n"
+                                       "\n"
+                                       "    if (u_bool_set_texture) {\n"
+                                       "        fragcolor = texture2D(u_sampler2d_texture_active, varying_material.xy);\n"
+                                       "        fragcolor = vec4(fragcolor.xyz - u_vec4_texture_color, u_vec4_texture_color.z);\n"
+                                       "    }\n"
+                                       "\n"
+                                       "    gl_FragColor = fragcolor;\n"
                                        "}";
 
             ekgapi::OpenGL::compile_program(this->default_program, vertex_src, fragment_src);
@@ -67,16 +66,24 @@ void ekg_gpu_data_handler::init() {
 
 void ekg_gpu_data_handler::draw() {
     this->default_program.use();
-    this->default_program.set_mat4x4("u_matrix", this->mat4x4_ortho);
+    this->default_program.set_mat4x4("u_mat_matrix", this->mat4x4_ortho);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Bind VAO and draw the two VBO(s).
     glBindVertexArray(this->vertex_buffer_arr);
+    GLuint current_texture_active = 0;
 
     // Simulate glMultiDrawArrays.
     for (uint32_t i = 0; i < this->amount_of_draw_iterations; i++) {
+        current_texture_active = this->index_texture_active_arr[i];
+
+        if (current_texture_active != -1) {
+            this->default_program.set_int("u_set_texture_active", (int32_t) current_texture_active);
+            this->default_program.set_int("u_set_texture_active", (int32_t) current_texture_active);
+        }
+
         glDrawArrays(GL_TRIANGLE_FAN, this->index_start_arr[i], this->index_end_arr[i]);
     }
 
@@ -96,6 +103,17 @@ void ekg_gpu_data_handler::end() {
     glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_positions);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
 
+    // Pass texture to active slots.
+    if (this->amount_of_texture_data_allocated != 0) {
+        for (uint8_t i = 0; i < this->amount_of_texture_data_allocated; i++) {
+            // Actually there is a very dangerous limit.
+            glActiveTexture(GL_TEXTURE + i);
+            glBindTexture(GL_TEXTURE_2D, this->cached_textures.at(i));
+
+            this->
+        }
+    }
+
     // Bind vao and pass attrib data to VAO.
     glBindVertexArray(this->vertex_buffer_arr);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
@@ -111,6 +129,7 @@ void ekg_gpu_data_handler::end() {
 
     // Unbind vbo(s) and vao.
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
     glBindVertexArray(0);
 
     // Iterate all cached GPU data and pass to draw fans.
@@ -154,7 +173,8 @@ void ekg_gpu_data_handler::bind(ekg_gpu_data &gpu_data) {
 }
 
 void ekg_gpu_data_handler::bind_texture(GLuint &object_id) {
-    this->alloc_texture_arr[this->amount_of_texture_data_allocated++] = object_id;
+    this->cached_textures.push_back(object_id);
+    this->amount_of_texture_data_allocated++;
 }
 
 void ekg_gpu_data_handler::quit() {
@@ -237,21 +257,33 @@ void ekggpu::push_arr_vertex_color_rgba(std::vector<float> &vec_arr, float r, fl
 void ekggpu::push_arr_vertex_tex_coords(std::vector<float> &vec_arr, float x, float y, float w, float h) {
     vec_arr.push_back(x);
     vec_arr.push_back(y);
+    vec_arr.push_back(0.0f);
+    vec_arr.push_back(0.0f);
 
     vec_arr.push_back(x);
     vec_arr.push_back(y + h);
+    vec_arr.push_back(0.0f);
+    vec_arr.push_back(0.0f);
 
     vec_arr.push_back(x + w);
     vec_arr.push_back(y + h);
+    vec_arr.push_back(0.0f);
+    vec_arr.push_back(0.0f);
 
     vec_arr.push_back(x + w);
     vec_arr.push_back(y + h);
+    vec_arr.push_back(0.0f);
+    vec_arr.push_back(0.0f);
 
     vec_arr.push_back(x + w);
     vec_arr.push_back(y);
+    vec_arr.push_back(0.0f);
+    vec_arr.push_back(0.0f);
 
     vec_arr.push_back(x);
     vec_arr.push_back(y);
+    vec_arr.push_back(0.0f);
+    vec_arr.push_back(0.0f);
 }
 
 void ekggpu::invoke() {

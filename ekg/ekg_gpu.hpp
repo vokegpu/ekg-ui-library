@@ -15,6 +15,11 @@ struct ekg_gpu_data {
 };
 
 /**
+ * Store active texture.
+ **/
+
+
+/**
  * Handler all data sent to GPU.
  **/
 class ekg_gpu_data_handler {
@@ -22,10 +27,11 @@ protected:
     std::vector<GLfloat> cached_vertices;
     std::vector<GLfloat> cached_vertices_materials;
     std::vector<ekg_gpu_data> cached_data;
+    std::vector<GLuint> cached_textures;
 
     GLint index_start_arr[1024];
     GLint index_end_arr[1024];
-    GLuint alloc_texture_arr[128];
+    GLint index_texture_active_arr[1024];
 
     GLuint vertex_buffer_arr;
     GLuint vertex_buf_object_vertex_positions;
@@ -33,7 +39,7 @@ protected:
 
     uint32_t amount_of_draw_iterations;
     uint32_t amount_of_data;
-    uint32_t amount_of_texture_data_allocated;
+    uint8_t amount_of_texture_data_allocated;
 
     ekgapi::OpenGL::program default_program;
     float mat4x4_ortho[16];

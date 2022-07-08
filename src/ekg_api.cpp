@@ -245,3 +245,11 @@ void ekgapi::OpenGL::program::use() {
 void ekgapi::OpenGL::program::set_mat4x4(const std::string &uniform_name, float *mat4x4) {
     glUniformMatrix4fv(glGetUniformLocation(this->program, uniform_name.c_str()), 1, GL_FALSE, mat4x4);
 }
+
+void ekgapi::OpenGL::program::set_int(const std::string &uniform_name, int32_t val) {
+    glUniform1i(glGetUniformLocation(this->program, uniform_name.c_str()), val);
+}
+
+void ekgapi::OpenGL::program::set_vec4f(const std::string &uniform_name, const float *vec4) {
+    glUniform4fv(glGetUniformLocation(this->program, uniform_name.c_str()), 1, vec4);
+}

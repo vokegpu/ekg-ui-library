@@ -104,6 +104,16 @@ namespace ekgapi {
               * Pass uniform float arr with size of 16 floats.
               */
              void set_mat4x4(const std::string &uniform_name, float* mat4x4);
+
+             /*
+              * Pass uniform float arr with size of 4 floats.
+              */
+             void set_vec4f(const std::string &uniform_name, const float* vec4);
+
+             /*
+              * Pass uniform int32.
+              */
+             void set_int(const std::string &uniform_name, int32_t val);
          };
 
          /*

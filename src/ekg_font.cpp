@@ -155,4 +155,13 @@ void ekg_font::quit() {
 }
 
 void ekgfont::render(const std::string &text, float x, float y, ekgmath::vec4f &color) {
+    ekg::core::instance.get_font_manager().render(text, x, y, color);
+}
+
+float ekgfont::get_text_width(const std::string &text) {
+    return ekg::core::instance.get_font_manager().get_text_width(text);
+}
+
+float ekgfont::get_text_height(const std::string &text) {
+    return ekg::core::instance.get_font_manager().get_text_height(text);
 }
