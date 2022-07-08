@@ -21,11 +21,14 @@ void ekg::init(SDL_Window* &sdl_window) {
 }
 
 void ekg::quit() {
-
+    ekg::core::instance.quit();
 }
 
 void ekg::set_font(const char *path) {
+    const std::string string = std::string(path);
+    ekg::core::instance.get_font_manager().load(string);
 
+    if (ekg::core::instance.get_font_manager().reload()) {}
 }
 
 void ekg::poll_event(SDL_Event &sdl_event) {
@@ -56,6 +59,10 @@ ekg::button* ekg::create_button(std::string text) {
 void ekg::core::init() {
     ekgutil::log("Core initialised.");
     ekg::core::instance.init();
+}
+
+void ekg::core::quit() {
+    ekg::core::instance.quit();
 }
 
 ekg::button::button(ekg_button* &element) {

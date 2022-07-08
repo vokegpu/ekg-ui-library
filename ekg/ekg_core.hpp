@@ -3,7 +3,7 @@
 #define EKG_CORE_H
 
 #include "ekg_abstract_element.hpp"
-#include "ekg_gpu.hpp"
+#include "ekg_font.hpp"
 #include <array>
 
 /**
@@ -13,6 +13,9 @@ class ekg_core {
 protected:
     // For work with modern GPU we need to modify all buffers safe (thinks in performance).
     ekg_gpu_data_handler gpu_handler;
+
+    // Font manager to handle and display (draw) chars at screen.
+    ekg_font font_manager;
 
     // Instances of SDL2.
     SDL_Window* sdl_window_instance;
@@ -38,14 +41,49 @@ protected:
      */
     void swap_buffers();
 public:
+    /*
+     * Access core EKG GPU handler.
+     */
     ekg_gpu_data_handler &get_gpu_handler();
 
+    /*
+     * Get the main font manager.
+     */
+    ekg_font &get_font_manager();
+
+    /*
+     * Init core of EKG.
+     */
     void init();
+
+    /*
+     * Shutdown EKG core.
+     */
+    void quit();
+
+    /*
+     * Set concurrent SDL window instance.
+     */
     void set_instances(SDL_Window* &sdl_window);
+
+    /*
+     * Add element into EKG context.
+     */
     void add_element(ekg_abstract_element* &element);
 
+    /*
+     * Poll events in EKG.
+     */
     void process_event_section(SDL_Event &event);
+
+    /*
+     * Update the GUI.
+     */
     void process_update_section();
+
+    /*
+     * Draw the all EKG elements.
+     */
     void process_render_section();
 };
 

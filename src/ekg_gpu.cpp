@@ -82,6 +82,7 @@ void ekg_gpu_data_handler::draw() {
 void ekg_gpu_data_handler::start() {
     this->amount_of_draw_iterations = 0;
     this->amount_of_data = 0;
+    this->amount_of_texture_data_allocated = 0;
 }
 
 void ekg_gpu_data_handler::end() {
@@ -144,6 +145,14 @@ void ekg_gpu_data_handler::bind(ekg_gpu_data &gpu_data) {
     // Update draw calls time and amount of data handled.
     this->amount_of_draw_iterations += 1;
     this->amount_of_data += gpu_data.data;
+}
+
+void ekg_gpu_data_handler::bind_texture(GLuint &object_id) {
+    this->alloc_texture_arr[this->amount_of_texture_data_allocated++] = object_id;
+}
+
+void ekg_gpu_data_handler::quit() {
+    // TODO delete the current VAO and VBO(s) buffers
 }
 
 void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4 &color_vec) {

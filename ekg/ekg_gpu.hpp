@@ -1,5 +1,6 @@
 #pragma once
 #ifndef EKG_GPU_H
+#define EKG_GPU_H
 
 #include "ekg_api.hpp"
 #include "ekg_utility.hpp"
@@ -24,6 +25,7 @@ protected:
 
     GLint index_start_arr[1024];
     GLint index_end_arr[1024];
+    GLuint alloc_texture_arr[128];
 
     GLuint vertex_buffer_arr;
     GLuint vertex_buf_object_vertex_positions;
@@ -31,6 +33,7 @@ protected:
 
     uint32_t amount_of_draw_iterations;
     uint32_t amount_of_data;
+    uint32_t amount_of_texture_data_allocated;
 
     ekgapi::OpenGL::program default_program;
     float mat4x4_ortho[16];
@@ -51,9 +54,19 @@ public:
     void init();
 
     /*
+     * Free memory GPU buffers.
+     */
+    void quit();
+
+    /*
      * Bind GPU data.
      */
     void bind(ekg_gpu_data &gpu_data);
+
+    /*
+     * Alloc texture to the concurrent cached texture list.
+     */
+    void bind_texture(GLuint &object_id);
 
     /*
      * Start GPU access section and setup GPU flags before access.
@@ -80,6 +93,11 @@ public:
  * Functions to draw shapes.
  **/
 namespace ekggpu {
+    /*
+     * Bind texture to be used after.
+     */
+    void alloc_texture(GLuint gl_object);
+
     /*
      * Invoke GPU to transfer data and cache data.
      */

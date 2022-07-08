@@ -132,8 +132,18 @@ void ekg_core::set_instances(SDL_Window *&sdl_window) {
 
 void ekg_core::init() {
     this->gpu_handler.init();
+    this->font_manager.init();
 }
 
 ekg_gpu_data_handler &ekg_core::get_gpu_handler() {
     return this->gpu_handler;
+}
+
+ekg_font &ekg_core::get_font_manager() {
+    return this->font_manager;
+}
+
+void ekg_core::quit() {
+    this->gpu_handler.quit();
+    this->font_manager.quit();
 }

@@ -71,6 +71,11 @@ namespace ekg {
          * Init the core of EKG.
          */
         static void init();
+
+        /*
+         * Shutdown free all.
+         */
+        static void quit();
     };
 
     /**

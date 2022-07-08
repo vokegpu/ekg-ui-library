@@ -1,10 +1,26 @@
 #pragma once
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #ifndef EKG_FONT_H
 #define EKG_FONT_H
 
-#include "ekg_gpu.h"
-#include <f2build.h>
-#include FT_FREETYPE_H
+#include "ekg_gpu.hpp"
+
+/**
+ * Store char data (position, metrics and reference).
+ **/
+struct ekg_char_data {
+    float x = 0.0f;
+    float texture_x = 0.0f;
+
+    float width = 0.0f;
+    float height = 0.0f;
+
+    float top = 0.0f;
+    float left = 0.0f;
+};
 
 /**
  * Font manager to configure, load, display/draw/render chars.
@@ -16,16 +32,19 @@ protected:
 	FT_GlyphSlot glyph_slot;
 	FT_Bool use_kerning;
 	FT_UInt previous;
-	FT_Vector_ previou_char_vec;
+	FT_Vector_ previous_char_vec;
 
-	float texture_width;
-	float texture_height;
+	uint32_t texture_width;
+    uint32_t texture_height;
 
 	GLuint bitmap_texture_id;
-	const std::string &font_path;
+	std::string font_path;
 
 	bool flag_font_loaded = false;
 	bool flag_font_bitmap_generated = false;
+    bool flag_ft_library_initialised = false;
+
+    ekg_char_data char_list[256];
 public:
 	/*
 	 * Get text width from font metrics.
@@ -41,6 +60,11 @@ public:
 	 * Prepare the EKG font manager.
 	 */
 	void init();
+
+    /*
+     * Free FT library.
+     */
+    void quit();
 
 	/*
 	 *
@@ -59,7 +83,7 @@ public:
 };
 
 /*
- * Make easy the communcation.
+ * Make easy the communication.
  */
 namespace ekgfont {
 	/*
