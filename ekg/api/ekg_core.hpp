@@ -2,7 +2,7 @@
 #ifndef EKG_CORE_H
 #define EKG_CORE_H
 
-#include "ekg/impl/ekg_ui_element.hpp"
+#include "ekg/impl/ekg_ui_element_abstract.hpp"
 #include "ekg_font.hpp"
 #include <array>
 
@@ -41,6 +41,11 @@ protected:
      */
     void swap_buffers();
 public:
+    /*
+     * Dispatch an event in core.
+     */
+    void dispatch_todo_event(uint8_t flag);
+
     /*
      * Access core EKG GPU handler.
      */

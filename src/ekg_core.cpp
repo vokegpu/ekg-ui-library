@@ -1,4 +1,5 @@
-#include "ekg/api/ekg_core.hpp"
+#include <ekg/api/ekg_core.hpp>
+#include <ekg/ekg.hpp>
 #include <list>
 
 void ekg_core::process_event_section(SDL_Event &sdl_event) {
@@ -7,15 +8,15 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
     for (uint32_t i = 0; i < this->sizeof_update_buffer; i++) {
         ekg_element* &element = this->update_buffer[i];
 
-        if (element == nullptr || element->flag.flag_dead) {
+        if (element == nullptr || element->access_flag().flag_dead) {
             continue;
         }
 
         // Verify point overlap.
         element->on_pre_event_update(sdl_event);
 
-        if (element->visibility == ekgutil::visibility::VISIBLE && element->flag.flag_over) {
-            this->focused_element_id = element->id;
+        if (element->get_visibility() == ekg::visibility::VISIBLE && element->access_flag().flag_over) {
+            this->focused_element_id = element->get_id();
         }
 
         element->on_post_event_update(sdl_event);
@@ -27,17 +28,17 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
     for (uint32_t i = 0; i < this->sizeof_update_buffer; i++) {
         ekg_element* &element = this->update_buffer[i];
 
-        if (element == nullptr || element->flag.flag_dead) {
+        if (element == nullptr || element->access_flag().flag_dead) {
             continue;
         }
 
-        if (element->id == this->focused_element_id) {
+        if (element->get_id() == this->focused_element_id) {
             element->on_pre_event_update(sdl_event);
         }
 
         element->on_event(sdl_event);
 
-        if (element->visibility == ekgutil::visibility::VISIBLE) {
+        if (element->get_visibility() == ekg::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = element;
         }
     }
@@ -56,10 +57,8 @@ void ekg_core::process_update_section() {
 }
 
 void ekg_core::process_render_section() {
-    this->gpu_handler.calc_view_ortho_2d();
-    this->gpu_handler.draw();
-
-    if (this->sizeof_render_buffer != 0) {
+    if (ekgutil::contains(this->todo_flags, ekgutil::action::REFRESH)) {
+        ekgutil::remove(this->todo_flags, ekgutil::action::REFRESH);
         ekggpu::invoke();
 
         for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
@@ -68,18 +67,17 @@ void ekg_core::process_render_section() {
         }
 
         ekggpu::revoke();
-
-        this->sizeof_render_buffer = 0;
-        this->render_buffer.fill(nullptr);
     }
+
+    this->gpu_handler.calc_view_ortho_2d();
+    this->gpu_handler.draw();
 }
 
 void ekg_core::add_element(ekg_element* &element) {
-    element->id = this->last_id_used++;
-    this->concurrent_buffer.push_back(element);
-    element->on_draw_refresh();
-    element->visibility = ekgutil::visibility::VISIBLE;
+    element->set_id(this->last_id_used++);
+    element->set_visibility(ekg::visibility::VISIBLE);
 
+    this->concurrent_buffer.push_back(element);
     ekgutil::add(this->todo_flags, ekgutil::action::SWAPBUFFERS);
 }
 
@@ -96,7 +94,7 @@ void ekg_core::swap_buffers() {
             continue;
         }
 
-        if (element->flag.flag_dead) {
+        if (element->access_flag().flag_dead) {
             delete element;
             this->update_buffer[i] = nullptr;
             this->sizeof_update_buffer--;
@@ -104,7 +102,7 @@ void ekg_core::swap_buffers() {
             continue;
         }
 
-        if (element->visibility == ekgutil::visibility::VISIBLE) {
+        if (element->get_visibility() == ekg::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = element;
         }
     }
@@ -116,7 +114,7 @@ void ekg_core::swap_buffers() {
 
         this->update_buffer[this->sizeof_update_buffer++] = elements;
 
-        if (elements->visibility == ekgutil::visibility::VISIBLE) {
+        if (elements->get_visibility() == ekg::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = elements;
         }
     }
@@ -146,4 +144,8 @@ ekg_font &ekg_core::get_font_manager() {
 void ekg_core::quit() {
     this->gpu_handler.quit();
     this->font_manager.quit();
+}
+
+void ekg_core::dispatch_todo_event(uint8_t flag) {
+    ekgutil::add(this->todo_flags, flag);
 }

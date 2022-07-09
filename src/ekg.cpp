@@ -1,5 +1,5 @@
 #include <ekg/ekg.hpp>
-#include "ekg/api/ekg_api.hpp"
+#include <ekg/api/ekg_api.hpp>
 
 ekg_core ekg::core::instance;
 float ekg::core::delta_time = 0.0f;
@@ -44,16 +44,24 @@ void ekg::render() {
     ekg::core::instance.process_render_section();
 }
 
-ekg::button* ekg::create_button(std::string text) {
+ekg_button* ekg::button(std::string text) {
     auto button_worker = new ekg_button();
-    auto button = new ekg::button((ekg_button*&) button_worker);
-
-    button->set_text(text);
+    button_worker->set_text(text);
 
     // Add into context handler.
     ekg::core::instance.add_element((ekg_element*&) button_worker);
 
-    return button;
+    return button_worker;
+}
+
+ekg_frame* ekg::frame() {
+    auto frame_worker = new ekg_frame();
+    frame_worker->set_size(300, 300);
+
+    // Add into context handler.
+    ekg::core::instance.add_element((ekg_element*&) frame_worker);
+
+    return frame_worker;
 }
 
 void ekg::core::init() {
@@ -63,49 +71,4 @@ void ekg::core::init() {
 
 void ekg::core::quit() {
     ekg::core::instance.quit();
-}
-
-ekg::button::button(ekg_button* &element) {
-    this->element = element;
-}
-
-ekg::button::~button() {
-
-}
-
-void ekg::button::set_width(float val) {
-    val = ekgmath::clampf(val, this->element->min_text_width, 12666.0f);
-
-    if (this->element->rect.h != val) {
-        this->element->rect.h = val;
-        this->element->on_sync();
-    }
-}
-
-float ekg::button::get_width() {
-    return this->element->rect.w;
-}
-
-void ekg::button::set_height(float val) {
-    val = ekgmath::clampf(val, this->element->min_text_height, 12666.0f);
-
-    if (this->element->rect.h != val) {
-        this->element->rect.h = val;
-        this->element->on_sync();
-    }
-}
-
-float ekg::button::get_height() {
-    return this->element->rect.h;
-}
-
-void ekg::button::set_text(std::string &text) {
-    if (this->element->text != text) {
-        this->element->text = text;
-        this->element->on_sync();
-    }
-}
-
-std::string ekg::button::get_text() {
-    return this->element->text;
 }

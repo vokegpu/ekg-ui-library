@@ -60,6 +60,49 @@ namespace ekg {
      */
     void set_font(const char* path);
 
+    /*
+     * Create button UI.
+     */
+    ekg_button* button(std::string text);
+
+    /*
+     * Create frame UI.
+     */
+    ekg_frame* frame();
+
+    /**
+     * Visibility of elements in screen.
+     **/
+    enum visibility {
+        VISIBLE, LOW_PRIORITY, NONE
+    };
+
+    /**
+     * Dock areas.
+     **/
+    enum dock {
+        UNDEFINED    = 1 << 0,
+        CENTER       = 1 << 1,
+
+        TOP          = 1 << 2,
+        TOP_LEFT     = 1 << 3,
+        TOP_RIGHT    = 1 << 4,
+
+        BOTTOM       = 1 << 5,
+        BOTTOM_LEFT  = 1 << 6,
+        BOTTOM_RIGHT = 1 << 7,
+
+        LEFT         = 1 << 8,
+        LEFT_TOP     = 1 << 9,
+        LEFT_BOTTOM  = 1 << 10,
+
+        RIGHT        = 1 << 11,
+        RIGHT_TOP    = 1 << 12,
+        RIGHT_BOTTOM = 1 << 13,
+
+        FULL = 1 << 14
+    };
+
     /**
      * The core instance of EKG.
      **/
@@ -78,28 +121,6 @@ namespace ekg {
          */
         static void quit();
     };
-
-    /**
-     * Button element.
-     **/
-    struct button {
-    protected:
-        ekg_button* element;
-    public:
-        button(ekg_button* &element);
-        ~button();
-
-        void set_text(std::string &text);
-        std::string get_text();
-
-        void set_width(float val);
-        float get_width();
-
-        void set_height(float val);
-        float get_height();
-    };
-
-    ekg::button* create_button(std::string text);
 };
 
 #endif

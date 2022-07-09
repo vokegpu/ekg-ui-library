@@ -1,5 +1,5 @@
-#include "ekg/api/ekg_api.hpp"
-#include "ekg/api/ekg_utility.hpp"
+#include <ekg/api/ekg_api.hpp>
+#include <ekg/api/ekg_utility.hpp>
 
 uint64_t ekg_cpu_timing::last_ticks = 0;
 bool ekg_cpu_timing::clock_going_on = false;

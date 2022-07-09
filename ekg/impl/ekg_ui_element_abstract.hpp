@@ -1,6 +1,6 @@
 #pragma once
-#ifndef EKG_ABSTRACT_ELEMENT_H
-#define EKG_ABSTRACT_ELEMENT_H
+#ifndef EKG_UI_ELEMENT_ABSTRACT_H
+#define EKG_UI_ELEMENT_ABSTRACT_H
 
 #include <iostream>
 #include <string>
@@ -14,23 +14,37 @@
  * # Description: Invisible element, abstract \n
  **/
 class ekg_element {
-public:
+protected:
+    uint8_t type;
+
+    uint32_t id;
+    uint32_t visibility;
     uint32_t master_id;
 
-    // Element description.
-    uint8_t type;
-    uint32_t id;
-
-    // States and collections.
     ekgutil::flag flag;
-    ekgutil::visibility visibility;
     ekgutil::stack children_stack;
-
-    // Metrics of element.
     ekgmath::rect rect;
 public:
     ekg_element();
     ~ekg_element();
+
+    void set_id(uint32_t element_id);
+    uint32_t get_type();
+
+    void set_visibility(uint32_t visible);
+    uint32_t get_visibility();
+
+    void set_master_id(uint32_t element_id);
+    uint32_t get_id();
+
+    ekgutil::flag &access_flag();
+    ekgutil::stack &access_children_stack();
+
+    float get_x();
+    float get_y();
+
+    float get_width();
+    float get_height();
 
     /* Start of abstract methods. */
 

@@ -60,3 +60,14 @@ void ekg_button::on_draw_refresh() {
     color.color(255, 255, 255, 255);
     ekgfont::render(this->text, this->rect.x, this->rect.y, color);
 }
+
+void ekg_button::set_text(std::string &string) {
+    if (this->text != string) {
+        this->text = string;
+        this->on_sync();
+    }
+}
+
+std::string ekg_button::get_text() {
+    return this->text;
+}

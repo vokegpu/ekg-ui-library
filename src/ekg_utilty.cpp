@@ -16,6 +16,10 @@ bool ekgutil::remove(uint8_t &flags, uint8_t target) {
 }
 
 bool ekgutil::add(uint8_t &flags, uint8_t val_flag) {
+    if (ekgutil::contains(flags, val_flag)) {
+        return false;
+    }
+
     flags |= val_flag;
     return true;
 }
