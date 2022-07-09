@@ -1,5 +1,5 @@
-#include <ekg/ekg_utility.hpp>
-#include <ekg/ekg_api.hpp>
+#include "ekg/api/ekg_utility.hpp"
+#include "ekg/api/ekg_api.hpp"
 
 void ekgutil::log(const std::string &log) {
     ekgapi::send_output(log.c_str());

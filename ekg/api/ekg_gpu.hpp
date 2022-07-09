@@ -15,6 +15,8 @@ struct ekg_gpu_data {
 
     GLint data = 0;
     GLint raw = 0;
+
+    float color[4];
 };
 
 /**
@@ -27,7 +29,7 @@ protected:
     std::vector<ekg_gpu_data> cached_data;
     std::vector<GLuint> cached_textures;
 
-    ekg_gpu_data concurrent_cpu_data[4048];
+    ekg_gpu_data gpu_data_list[4048];
 
     GLuint vertex_buffer_arr;
     GLuint vertex_buf_object_vertex_positions;

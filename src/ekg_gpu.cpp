@@ -1,5 +1,5 @@
 #include <ekg/ekg.hpp>
-#include <ekg/ekg_gpu.hpp>
+#include "ekg/api/ekg_gpu.hpp"
 
 void ekg_gpu_data_handler::init() {
     switch (EKG_CPU_PLATFORM) {
@@ -23,13 +23,14 @@ void ekg_gpu_data_handler::init() {
                                        "\n"
                                        "uniform sampler2D u_sampler2d_texture_active;\n"
                                        "uniform bool u_bool_set_texture;\n"
-                                       "uniform vec4 u_vec4_texture_color;\n"
+                                       "uniform vec4 u_vec4_color;\n"
                                        "\n"
                                        "void main() {\n"
                                        "    vec4 fragcolor = varying_material;\n"
                                        "\n"
                                        "    if (u_bool_set_texture) {\n"
                                        "        fragcolor = texture2D(u_sampler2d_texture_active, varying_material.xy);\n"
+                                       "        fragcolor = vec4(fragcolor.xyz - ((1.0f - u_vec4_color.xyz) - 1.0f), fragcolor.w - (1.0f - u_vec4_color.w));\n"
                                        "    }\n"
                                        "\n"
                                        "    gl_FragColor = fragcolor;\n"
@@ -72,27 +73,25 @@ void ekg_gpu_data_handler::draw() {
 
     // Bind VAO and draw the two VBO(s).
     glBindVertexArray(this->vertex_buffer_arr);
-    GLuint current_texture_active = 0;
 
     // Simulate glMultiDrawArrays.
     for (uint32_t i = 0; i < this->amount_of_draw_iterations; i++) {
-        ekg_gpu_data &gpu_data = this->concurrent_cpu_data[i];
+        ekg_gpu_data &gpu_data = this->gpu_data_list[i];
         this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
 
-        if (current_texture_active != 0) {
-            glActiveTexture(GL_TEXTURE0);
+        if (gpu_data.texture != 0) {
+            glActiveTexture(GL_TEXTURE0 + gpu_data.texture_slot);
             glBindTexture(GL_TEXTURE_2D, gpu_data.texture);
-            
-            this->default_program.set_int("u_sampler2d_texture_active", 0);
+
+            this->default_program.set_vec4f("u_vec4_color", gpu_data.color);
+            this->default_program.set_int("u_sampler2d_texture_active", gpu_data.texture_slot);
         }
 
-        glDrawArrays(GL_TRIANGLE_FAN, gpu_data.raw, gpu_data.data);
+        glDrawArrays(GL_TRIANGLES, gpu_data.raw, gpu_data.data);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     glBindVertexArray(0);
-
-    //glMultiDrawArrays(GL_TRIANGLE_FAN, this->index_start_arr, this->index_end_arr, this->amount_of_draw_iterations);
 }
 
 void ekg_gpu_data_handler::start() {
@@ -126,8 +125,7 @@ void ekg_gpu_data_handler::end() {
 
     // Iterate all cached GPU data and pass to CPU arr.
     for (uint32_t i = 0; i < this->cached_data.size(); i++) {
-        ekg_gpu_data &gpu_data = this->cached_data.at(i);
-        this->concurrent_cpu_data[i] = gpu_data;
+        this->gpu_data_list[i] = this->cached_data.at(i);
     }
 
     // Clean the previous data.
@@ -165,7 +163,7 @@ void ekg_gpu_data_handler::bind(ekg_gpu_data &gpu_data) {
 void ekg_gpu_data_handler::bind_texture(ekg_gpu_data &gpu_data, GLuint &object_id) {
     bool flag_has_cached = false;
 
-    for (uint8_t i = 0; i < this->cached_textures.size(); i++) {
+    for (uint8_t i = 0; i < (uint8_t) this->cached_textures.size(); i++) {
         GLuint &textures = this->cached_textures.at(i);
 
         if (textures == object_id) {

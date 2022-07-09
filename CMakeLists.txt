@@ -4,8 +4,8 @@ message("-- Preparing EKG setup")
 
 set(LIBRARY_OUTPUT_PATH ../lib)
 set(PROJECT_VERSION 1.0)
-file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
-file(GLOB_RECURSE HEADER_FILES ekg/*.hpp)
+file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
+file(GLOB_RECURSE HEADER_FILES "ekg/*.hpp")
 
 include(GNUInstallDirs)
 

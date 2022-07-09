@@ -45,7 +45,18 @@ protected:
     bool flag_ft_library_initialised = false;
 
     ekg_char_data char_list[256];
+    uint8_t font_size;
 public:
+    /*
+     * Set size of font.
+     */
+    void set_size(uint8_t size);
+
+    /*
+     * Refresh font.
+     */
+    void refresh();
+
 	/*
 	 * Get text width from font metrics.
 	 */
@@ -67,7 +78,7 @@ public:
     void quit();
 
 	/*
-	 *
+	 * Load font.
 	 */
 	bool load(const std::string &f_ont_path);
 
@@ -79,7 +90,7 @@ public:
 	/*
 	 * Send data coordinates data to GPU.
 	 */
-	void render(const std::string &text, float x, float y, ekgmath::vec4f &color);
+	void render(const std::string &text, float x, float y, ekgmath::vec4f &color_vec);
 };
 
 /*
@@ -99,7 +110,7 @@ namespace ekgfont {
 	/*
 	 * Render one simple text.
 	 */
-	void render(const std::string &text, float x, float y, ekgmath::vec4f &color);
+	void render(const std::string &text, float x, float y, ekgmath::vec4f &color_vec);
 };
 
 #endif

@@ -1,11 +1,11 @@
-#include <ekg/ekg_core.hpp>
+#include "ekg/api/ekg_core.hpp"
 #include <list>
 
 void ekg_core::process_event_section(SDL_Event &sdl_event) {
     this->focused_element_id = 0;
 
     for (uint32_t i = 0; i < this->sizeof_update_buffer; i++) {
-        ekg_abstract_element* &element = this->update_buffer[i];
+        ekg_element* &element = this->update_buffer[i];
 
         if (element == nullptr || element->flag.flag_dead) {
             continue;
@@ -25,7 +25,7 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
     this->render_buffer.fill(nullptr);
 
     for (uint32_t i = 0; i < this->sizeof_update_buffer; i++) {
-        ekg_abstract_element* &element = this->update_buffer[i];
+        ekg_element* &element = this->update_buffer[i];
 
         if (element == nullptr || element->flag.flag_dead) {
             continue;
@@ -63,7 +63,7 @@ void ekg_core::process_render_section() {
         ekggpu::invoke();
 
         for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
-            ekg_abstract_element *&element = this->render_buffer[i];
+            ekg_element *&element = this->render_buffer[i];
             element->on_draw_refresh();
         }
 
@@ -74,7 +74,7 @@ void ekg_core::process_render_section() {
     }
 }
 
-void ekg_core::add_element(ekg_abstract_element* &element) {
+void ekg_core::add_element(ekg_element* &element) {
     element->id = this->last_id_used++;
     this->concurrent_buffer.push_back(element);
     element->on_draw_refresh();
@@ -90,7 +90,7 @@ void ekg_core::swap_buffers() {
     this->render_buffer.fill(nullptr);
 
     for (uint32_t i = 0; i < this->sizeof_update_buffer; i++) {
-        ekg_abstract_element* &element = this->update_buffer[i];
+        ekg_element* &element = this->update_buffer[i];
 
         if (element == nullptr) {
             continue;
@@ -109,7 +109,7 @@ void ekg_core::swap_buffers() {
         }
     }
 
-    for (ekg_abstract_element* &elements : this->concurrent_buffer) {
+    for (ekg_element* &elements : this->concurrent_buffer) {
         if (elements == nullptr) {
             continue;
         }

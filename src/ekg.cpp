@@ -1,5 +1,5 @@
 #include <ekg/ekg.hpp>
-#include <ekg/ekg_api.hpp>
+#include "ekg/api/ekg_api.hpp"
 
 ekg_core ekg::core::instance;
 float ekg::core::delta_time = 0.0f;
@@ -51,7 +51,7 @@ ekg::button* ekg::create_button(std::string text) {
     button->set_text(text);
 
     // Add into context handler.
-    ekg::core::instance.add_element((ekg_abstract_element*&) button_worker);
+    ekg::core::instance.add_element((ekg_element*&) button_worker);
 
     return button;
 }

@@ -2,7 +2,7 @@
 #ifndef EKG_CORE_H
 #define EKG_CORE_H
 
-#include "ekg_abstract_element.hpp"
+#include "ekg/impl/ekg_ui_element.hpp"
 #include "ekg_font.hpp"
 #include <array>
 
@@ -21,8 +21,8 @@ protected:
     SDL_Window* sdl_window_instance;
 
     // Buffers to we handle in game.
-    std::array<ekg_abstract_element*, 512> update_buffer;
-    std::array<ekg_abstract_element*, 512> render_buffer;
+    std::array<ekg_element*, 512> update_buffer;
+    std::array<ekg_element*, 512> render_buffer;
 
     uint16_t sizeof_render_buffer = 0, sizeof_update_buffer = 0;
     uint32_t last_id_used;
@@ -31,7 +31,7 @@ protected:
     uint32_t last_focused_element_id;
 
     // Concurrent buffers to prevent memory leak/segment fault or invalid elements.
-    std::vector<ekg_abstract_element*> concurrent_buffer;
+    std::vector<ekg_element*> concurrent_buffer;
 
     // 0 refresh; 1 fix stack;
     uint8_t todo_flags;
@@ -69,7 +69,7 @@ public:
     /*
      * Add element into EKG context.
      */
-    void add_element(ekg_abstract_element* &element);
+    void add_element(ekg_element* &element);
 
     /*
      * Poll events in EKG.

@@ -6,12 +6,14 @@
 #include <string>
 #include <SDL2/SDL.h>
 
-#include "ekg_utility.hpp"
+#include "ekg/api/ekg_utility.hpp"
 
 /**
- * Create elements connected by abstract element class.
+ * # UI \n
+ * # Type: Abstract \n
+ * # Description: Invisible element, abstract \n
  **/
-class ekg_abstract_element {
+class ekg_element {
 public:
     uint32_t master_id;
 
@@ -27,8 +29,8 @@ public:
     // Metrics of element.
     ekgmath::rect rect;
 public:
-    ekg_abstract_element();
-    ~ekg_abstract_element();
+    ekg_element();
+    ~ekg_element();
 
     /* Start of abstract methods. */
 

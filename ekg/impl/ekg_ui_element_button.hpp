@@ -1,14 +1,14 @@
 #ifndef EKG_ELEMENT_BUTTON_H
 #define EKG_ELEMENT_BUTTON_H
 
-#include "ekg_abstract_element.hpp"
+#include "ekg_ui_element.hpp"
 
 /**
- * Element UI Button \n
+ * Element GUI Button \n
  * Type: Widget
  * Description: Button widget, check box or boolean mode.
  **/
-class ekg_button : public ekg_abstract_element  {
+class ekg_button : public ekg_element  {
 public:
     std::string text;
 

@@ -5,8 +5,9 @@
 #include <iostream>
 #include <string>
 
-#include "ekg_core.hpp"
-#include "ekg_element_button.hpp"
+#include "ekg/api/ekg_core.hpp"
+#include "ekg/impl/ekg_ui_element_button.hpp"
+#include "ekg/impl/ekg_ui_element_frame.hpp"
 
 /**
  * EKG - ez build gui \n

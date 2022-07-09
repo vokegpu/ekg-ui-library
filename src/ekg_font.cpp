@@ -1,12 +1,35 @@
-#include <ekg/ekg_font.hpp>
+#include "ekg/api/ekg_font.hpp"
 #include <ekg/ekg.hpp>
 
 float ekg_font::get_text_width(const std::string &text) {
-    return 0;
+    this->previous = 0;
+    FT_Vector vec;
+
+    float start_x = 0;
+    float render_x = 0;
+    float text_width = 0;
+
+    for (const char* i = text.c_str(); *i; i++) {
+        if (this->use_kerning && this->previous && *i) {
+            FT_Get_Kerning(this->face, this->previous, *i, 0, &vec);
+            start_x += (float) (vec.x >> 6);
+        }
+
+        ekg_char_data &char_data = this->char_list[*i];
+
+        render_x = start_x + (float) char_data.left;
+        start_x += char_data.texture_x;
+
+        this->previous = (uint8_t) *i;
+        text_width = render_x + char_data.width;
+    }
+
+    return text_width;
 }
 
 float ekg_font::get_text_height(const std::string &text) {
-    return 0;
+    // TODO \n calc. height.
+    return (float) this->texture_height;
 }
 
 void ekg_font::init() {
@@ -19,7 +42,7 @@ void ekg_font::init() {
 
     this->flag_ft_library_initialised = true;
     this->load(this->font_path);
-    this->reload();
+    this->refresh();
 }
 
 bool ekg_font::load(const std::string &f_ont_path) {
@@ -35,24 +58,7 @@ bool ekg_font::load(const std::string &f_ont_path) {
         return false;
     }
 
-    FT_Set_Pixel_Sizes(this->face, 0, 18);
-
     this->flag_font_loaded = true;
-    this->texture_width = 0;
-    this->texture_height = 0;
-
-    this->use_kerning = FT_HAS_KERNING(this->face);
-    this->glyph_slot = this->face->glyph;
-
-    for (uint8_t i = 0; i < 128; i++) {
-        if (FT_Load_Char(this->face, i, FT_LOAD_RENDER)) {
-            continue;
-        }
-
-        this->texture_width += (uint32_t) this->glyph_slot->bitmap.width;
-        this->texture_height = std::max(this->texture_height, (uint32_t) this->glyph_slot->bitmap.rows);
-    }
-
     return this->flag_font_loaded;
 }
 
@@ -64,9 +70,11 @@ bool ekg_font::reload() {
     }
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glGenTextures(1, &this->bitmap_texture_id);
 
-    glActiveTexture(GL_TEXTURE0);
+    if (this->bitmap_texture_id == 0) {
+        glGenTextures(1, &this->bitmap_texture_id);
+    }
+
     glBindTexture(GL_TEXTURE_2D, this->bitmap_texture_id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, (int32_t) this->texture_width, (int32_t) this->texture_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, nullptr);
 
@@ -103,13 +111,13 @@ bool ekg_font::reload() {
     return this->flag_font_bitmap_generated;
 }
 
-void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f &color) {
+void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f &color_vec) {
     if (!this->flag_ft_library_initialised || !this->flag_font_loaded || !this->flag_font_bitmap_generated) {
         return;
     }
 
     const char* char_str = text.c_str();
-    const int32_t str_len = strlen(char_str);
+    const size_t str_len = strlen(char_str);
 
     float render_x = 0, render_y = 0, render_w = 0, render_h = 0;
     float texture_x = 0, texture_y = 0, texture_w = 0, texture_h = 0;
@@ -146,6 +154,12 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     // Each char quad has 6 vertices, so we multiply 6 by length of text.
     gpu_data.data = (GLint) (6 * str_len);
 
+    // Pass color of texture.
+    gpu_data.color[0] = color_vec.x;
+    gpu_data.color[1] = color_vec.y;
+    gpu_data.color[2] = color_vec.z;
+    gpu_data.color[3] = color_vec.x;
+
     // Send data to GPU.
     ekg::core::instance.get_gpu_handler().bind_texture(gpu_data, this->bitmap_texture_id);
     ekg::core::instance.get_gpu_handler().bind(gpu_data);
@@ -156,8 +170,41 @@ void ekg_font::quit() {
     FT_Done_Face(this->face);
 }
 
-void ekgfont::render(const std::string &text, float x, float y, ekgmath::vec4f &color) {
-    ekg::core::instance.get_font_manager().render(text, x, y, color);
+void ekg_font::set_size(uint8_t size) {
+    if (!this->flag_font_loaded) {
+        return;
+    }
+
+    this->font_size = size;
+}
+
+void ekg_font::refresh() {
+    if (this->font_size == 0) {
+        this->set_size(36);
+    }
+
+    FT_Set_Pixel_Sizes(this->face, 0, this->font_size);
+
+    this->texture_width = 0;
+    this->texture_height = 0;
+
+    this->use_kerning = FT_HAS_KERNING(this->face);
+    this->glyph_slot = this->face->glyph;
+
+    for (uint8_t i = 0; i < 128; i++) {
+        if (FT_Load_Char(this->face, i, FT_LOAD_RENDER)) {
+            continue;
+        }
+
+        this->texture_width += (uint32_t) this->glyph_slot->bitmap.width;
+        this->texture_height = std::max(this->texture_height, (uint32_t) this->glyph_slot->bitmap.rows);
+    }
+
+    this->reload();
+}
+
+void ekgfont::render(const std::string &text, float x, float y, ekgmath::vec4f &color_vec) {
+    ekg::core::instance.get_font_manager().render(text, x, y, color_vec);
 }
 
 float ekgfont::get_text_width(const std::string &text) {
