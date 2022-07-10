@@ -1,5 +1,6 @@
 #include <ekg/api/ekg_api.hpp>
 #include <ekg/api/ekg_utility.hpp>
+#include <ekg/ekg.hpp>
 
 uint64_t ekg_cpu_timing::last_ticks = 0;
 bool ekg_cpu_timing::clock_going_on = false;
@@ -57,7 +58,7 @@ bool ekgapi::input_down_right(SDL_Event &sdl_event, float &x, float &y) {
         case SDL_MOUSEBUTTONDOWN: {
             x = (float) sdl_event.motion.x;
             y = (float) sdl_event.motion.y;
-            return sdl_event.motion.type == SDL_BUTTON_RIGHT;
+            return sdl_event.button.button == SDL_BUTTON_RIGHT;
         }
 
         case SDL_FINGERDOWN: {
@@ -80,7 +81,7 @@ bool ekgapi::input_down_left(SDL_Event &sdl_event, float &x, float &y) {
         case SDL_MOUSEBUTTONDOWN: {
             x = (float) sdl_event.motion.x;
             y = (float) sdl_event.motion.y;
-            return sdl_event.motion.type == SDL_BUTTON_LEFT;
+            return sdl_event.button.button == SDL_BUTTON_LEFT;
         }
 
         case SDL_FINGERDOWN: {
@@ -102,11 +103,15 @@ bool ekgapi::input_down_middle(SDL_Event &sdl_event, float &x, float &y) {
         case SDL_MOUSEBUTTONDOWN: {
             x = (float) sdl_event.motion.x;
             y = (float) sdl_event.motion.y;
-            return sdl_event.motion.type == SDL_BUTTON_MIDDLE;
+            return sdl_event.button.button == SDL_BUTTON_MIDDLE;
         }
     }
 
     return false;
+}
+
+bool ekgapi::any_input_down(SDL_Event &sdl_event) {
+    return sdl_event.type == SDL_FINGERDOWN || sdl_event.type == SDL_MOUSEBUTTONDOWN;
 }
 
 bool ekgapi::input_up_right(SDL_Event &sdl_event, float &x, float &y) {
@@ -114,7 +119,7 @@ bool ekgapi::input_up_right(SDL_Event &sdl_event, float &x, float &y) {
         case SDL_MOUSEBUTTONUP: {
             x = (float) sdl_event.motion.x;
             y = (float) sdl_event.motion.y;
-            return sdl_event.motion.type == SDL_BUTTON_RIGHT;
+            return sdl_event.button.button == SDL_BUTTON_RIGHT;
         }
 
         case SDL_FINGERUP: {
@@ -133,7 +138,7 @@ bool ekgapi::input_up_left(SDL_Event &sdl_event, float &x, float &y) {
         case SDL_MOUSEBUTTONUP: {
             x = (float) sdl_event.motion.x;
             y = (float) sdl_event.motion.y;
-            return sdl_event.motion.type == SDL_BUTTON_LEFT;
+            return sdl_event.button.button == SDL_BUTTON_LEFT;
         }
 
         case SDL_FINGERUP: {
@@ -152,11 +157,19 @@ bool ekgapi::input_up_middle(SDL_Event &sdl_event, float &x, float &y) {
         case SDL_MOUSEBUTTONUP: {
             x = (float) sdl_event.motion.x;
             y = (float) sdl_event.motion.y;
-            return sdl_event.motion.type == SDL_BUTTON_MIDDLE;
+            return sdl_event.button.button == SDL_BUTTON_MIDDLE;
         }
     }
 
     return false;
+}
+
+bool ekgapi::any_input_up(SDL_Event &sdl_event, float &x, float &y) {
+    return sdl_event.type == SDL_FINGERUP || sdl_event.type == SDL_MOUSEBUTTONUP;
+}
+
+bool ekgapi::any_input_up(SDL_Event &sdl_event) {
+    return sdl_event.type == SDL_FINGERUP || sdl_event.type == SDL_MOUSEBUTTONUP;
 }
 
 bool ekgapi::motion(SDL_Event &sdl_event, float &x, float &y) {
@@ -175,6 +188,23 @@ bool ekgapi::motion(SDL_Event &sdl_event, float &x, float &y) {
     }
 
     return false;
+}
+
+bool ekgapi::set(bool &old, bool &current, bool value) {
+    current = value;
+
+    if (old != current) {
+        old = current;
+        ekg::core::instance.dispatch_todo_event(ekgutil::action::REFRESH);
+    }
+
+    return current;
+}
+
+bool ekgapi::set_direct(bool &old, bool &current, bool value) {
+    current = value;
+    old = current;
+    return current;
 }
 
 void ekgapi::OpenGL::init() {

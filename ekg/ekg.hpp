@@ -81,26 +81,13 @@ namespace ekg {
      * Dock areas.
      **/
     enum dock {
-        UNDEFINED    = 1 << 0,
-        CENTER       = 1 << 1,
-
-        TOP          = 1 << 2,
-        TOP_LEFT     = 1 << 3,
-        TOP_RIGHT    = 1 << 4,
-
-        BOTTOM       = 1 << 5,
-        BOTTOM_LEFT  = 1 << 6,
-        BOTTOM_RIGHT = 1 << 7,
-
-        LEFT         = 1 << 8,
-        LEFT_TOP     = 1 << 9,
-        LEFT_BOTTOM  = 1 << 10,
-
-        RIGHT        = 1 << 11,
-        RIGHT_TOP    = 1 << 12,
-        RIGHT_BOTTOM = 1 << 13,
-
-        FULL = 1 << 14
+        UNDEFINED = 1 << 0,
+        CENTER    = 1 << 1,
+        TOP       = 1 << 2,
+        BOTTOM    = 1 << 3,
+        LEFT      = 1 << 4,
+        RIGHT     = 1 << 5,
+        FULL      = 1 << 6
     };
 
     /**

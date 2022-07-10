@@ -18,7 +18,7 @@ public:
     ekg_button();
     ~ekg_button();
 
-    void set_text(std::string &string);
+    void set_text(const std::string &string);
     std::string get_text();
 
     void on_killed() override;

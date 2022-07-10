@@ -16,8 +16,17 @@ private:
     float min_width;
     float min_height;
 
-    uint32_t enum_flags_draggable_dock;
-    uint32_t enum_flags_resizable_dock;
+    bool no_resizable = false, dragging = false;
+    bool no_draggable = false, resizing = false;
+
+    uint16_t enum_target_resize_dock;
+    uint16_t enum_target_drag_dock;
+
+    uint16_t enum_flags_resize_dock;
+    uint16_t enum_flags_drag_dock;
+
+    float offset_drag_dock;
+    float offset_resize_dock;
 
     std::string tag;
 public:
@@ -32,6 +41,18 @@ public:
 
     void set_min_height(float min);
     float get_min_height();
+
+    void set_resize_dock(uint16_t dock);
+    uint16_t get_resize_dock();
+
+    void set_resize_offset(float offset);
+    float get_resize_offset();
+
+    void set_drag_dock(uint16_t dock);
+    uint16_t get_drag_dock();
+
+    void set_drag_offset(float offset);
+    float get_drag_offset();
 
     void set_size(float width, float height);
     void set_pos(float x, float y);

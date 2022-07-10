@@ -61,13 +61,31 @@ namespace ekgapi {
      */
     void send_output(const char* output);
 
+    /*
+     * Set synchronized flag value.
+     */
+    bool set(bool &old, bool &current, bool value);
+
+    /*
+     * Set non synchronized flag value.
+     */
+    bool set_direct(bool &old, bool &current, bool value);
+
+    /* Start of input down. */
     bool input_down_right(SDL_Event &sdl_event, float &x, float &y);
     bool input_down_left(SDL_Event &sdl_event, float &x, float &y);
     bool input_down_middle(SDL_Event &sdl_event, float &x, float &y);
+    bool any_input_down(SDL_Event &sdl_event, float &x, float &y);
+    bool any_input_down(SDL_Event &sdl_event);
+    /* End of input down. */
 
+    /* Start of input up. */
     bool input_up_right(SDL_Event &sdl_event, float &x, float &y);
     bool input_up_left(SDL_Event &sdl_event, float &x, float &y);
     bool input_up_middle(SDL_Event &sdl_event, float &x, float &y);
+    bool any_input_up(SDL_Event &sdl_event, float &x, float &y);
+    bool any_input_up(SDL_Event &sdl_event);
+    /* End of input up. */
 
     /*
      * Detect scroll or calc. scroll from previous moving click.

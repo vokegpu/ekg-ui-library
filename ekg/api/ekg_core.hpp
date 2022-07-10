@@ -21,26 +21,38 @@ protected:
     SDL_Window* sdl_window_instance;
 
     // Buffers to we handle in game.
-    std::array<ekg_element*, 512> update_buffer;
     std::array<ekg_element*, 512> render_buffer;
+    std::vector<ekg_element*> data_invisible_to_memory;
+    std::vector<ekg_element*> data;
 
-    uint16_t sizeof_render_buffer = 0, sizeof_update_buffer = 0;
-    uint32_t last_id_used;
+    uint16_t sizeof_render_buffer = 0;
+    uint32_t last_id_used = 0;
 
     uint32_t focused_element_id;
     uint32_t last_focused_element_id;
+    uint32_t forced_focused_element_id;
 
     // Concurrent buffers to prevent memory leak/segment fault or invalid elements.
     std::vector<ekg_element*> concurrent_buffer;
 
     // 0 refresh; 1 fix stack;
-    uint8_t todo_flags;
+    uint16_t todo_flags;
 
     /*
      * Pass new modified buffers to update buffers.
      */
     void swap_buffers();
+
+    /*
+     * Reload and move correctly the positions of GUI layout (stack).
+     */
+    void fix_stack();
 public:
+    /*
+     * Force to fix stack (reorder).
+     */
+    void force_reorder_stack(uint32_t &id);
+
     /*
      * Dispatch an event in core.
      */
@@ -75,6 +87,11 @@ public:
      * Add element into EKG context.
      */
     void add_element(ekg_element* &element);
+
+    /*
+     * Find for element in GUI context.
+     */
+    bool find_element(ekg_element* &element, uint32_t id);
 
     /*
      * Poll events in EKG.

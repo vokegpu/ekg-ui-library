@@ -23,6 +23,9 @@ protected:
 
     ekgutil::flag flag;
     ekgutil::stack children_stack;
+
+    ekgmath::rect scaled;
+    ekgmath::rect cache;
     ekgmath::rect rect;
 public:
     ekg_element();
@@ -45,6 +48,8 @@ public:
 
     float get_width();
     float get_height();
+
+    void collect_stack(ekgutil::stack &stack);
 
     /* Start of abstract methods. */
 

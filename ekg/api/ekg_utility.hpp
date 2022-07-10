@@ -34,6 +34,11 @@ namespace ekgmath {
          * Collide point aabb with this rect.
          */
         bool collide_aabb_with_point(float px, float py);
+
+        void operator += (ekgmath::rect &r) {
+            this->x += r.x;
+            this->y += r.y;
+        }
     };
 
     /*
@@ -64,27 +69,38 @@ namespace ekgutil {
     /*
      * Find target flag from flags.
      */
-    bool contains(uint8_t &flags, uint8_t target);
+    bool contains(uint16_t &flags, uint16_t target);
 
     /*
      * Remove some target flag from flags.
      */
-    bool remove(uint8_t &flags, uint8_t target);
+    bool remove(uint16_t &flags, uint16_t target);
 
     /*
      * Add flag into flags.
      */
-    bool add(uint8_t &flags, uint8_t val_flag);
+    bool add(uint16_t &flags, uint16_t val_flag);
+
+    /*
+     * Capture the dock based on a bound.
+     */
+    bool find_axis_dock(uint16_t &target, float px, float py, float offset, ekgmath::rect &rect);
 
     /**
-     * Flag poll_event in a unique place.
+     * Store flags to sync GUI with UI.
      **/
     struct flag {
-        bool flag_over = false;
-        bool flag_highlight = false;
-        bool flag_activy = false;
-        bool flag_focused = false;
-        bool flag_dead = false;
+        bool old_over = false;
+        bool old_highlight = false;
+        bool old_activy = false;
+        bool old_focused = false;
+        bool old_dead = false;
+
+        bool over = false;
+        bool highlight = false;
+        bool activy = false;
+        bool focused = false;
+        bool dead = false;
     };
 
     /**

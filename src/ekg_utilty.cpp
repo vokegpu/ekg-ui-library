@@ -1,27 +1,56 @@
-#include "ekg/api/ekg_utility.hpp"
-#include "ekg/api/ekg_api.hpp"
+#include <ekg/api/ekg_utility.hpp>
+#include <ekg/api/ekg_api.hpp>
+#include <ekg/ekg.hpp>
 
 void ekgutil::log(const std::string &log) {
     ekgapi::send_output(log.c_str());
 }
 
-bool ekgutil::contains(uint8_t &flags, uint8_t target) {
+bool ekgutil::contains(uint16_t &flags, uint16_t target) {
     return (flags & target) != 0;
 }
 
-bool ekgutil::remove(uint8_t &flags, uint8_t target) {
+bool ekgutil::remove(uint16_t &flags, uint16_t target) {
     bool flag_contains = flags & target;
     flags &= ~(target);
     return flag_contains;
 }
 
-bool ekgutil::add(uint8_t &flags, uint8_t val_flag) {
+bool ekgutil::add(uint16_t &flags, uint16_t val_flag) {
     if (ekgutil::contains(flags, val_flag)) {
         return false;
     }
 
     flags |= val_flag;
     return true;
+}
+
+bool ekgutil::find_axis_dock(uint16_t &target, float px, float py, float offset, ekgmath::rect &rect) {
+    target = ekg::dock::UNDEFINED;
+
+    if (!rect.collide_aabb_with_point(px, py)) {
+        return false;
+    }
+
+    float x = rect.x;
+    float y = rect.y;
+    float w = rect.w;
+    float h = rect.h;
+
+    bool phase1 = px > x && px < x + offset;
+    bool phase2 = py > y && py < y + offset;
+    bool phase3 = px > x + w - offset && px < x + w;
+    bool phase4 = py > y + h - offset && py < y + h;
+    bool phase5 = px > x + (w / 2) - offset && px < x + (w / 2) + offset &&
+                  py > y + (h / 2) - offset && py > y + (h / 2) + offset;
+
+    target = phase1 ? target | ekg::dock::LEFT   : target;
+    target = phase2 ? target | ekg::dock::TOP    : target;
+    target = phase3 ? target | ekg::dock::RIGHT  : target;
+    target = phase4 ? target | ekg::dock::BOTTOM : target;
+    target = phase5 ? target | ekg::dock::CENTER : target;
+
+    return target != ekg::dock::UNDEFINED;
 }
 
 bool ekgutil::stack::contains(uint32_t id) {

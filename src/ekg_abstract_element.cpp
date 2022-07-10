@@ -38,6 +38,13 @@ void ekg_element::on_sync() {
 
 void ekg_element::set_id(uint32_t element_id) {
     this->id = element_id;
+
+    if (element_id == 0) {
+        this->scaled.x = 0;
+        this->scaled.y = 0;
+        this->scaled.w = 0;
+        this->scaled.h = 0;
+    }
 }
 
 uint32_t ekg_element::get_type() {
@@ -82,4 +89,16 @@ float ekg_element::get_width() {
 
 float ekg_element::get_height() {
     return this->rect.h;
+}
+
+void ekg_element::collect_stack(ekgutil::stack &stack) {
+    if (stack.contains(this->id)) {
+        return;
+    }
+
+    stack.add(this->id);
+
+    for (uint32_t &ids : this->children_stack.ids) {
+        stack.add(ids);
+    }
 }

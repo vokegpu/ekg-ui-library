@@ -31,19 +31,30 @@ void ekg_button::on_pre_event_update(SDL_Event &sdl_event) {
     float y = 0;
 
     if (ekgapi::motion(sdl_event, x, y)) {
-        this->flag.flag_over = this->rect.collide_aabb_with_point(x, y);
-        this->flag.flag_highlight = this->flag.flag_over;
+        ekgapi::set_direct(this->flag.old_over, this->flag.over, this->rect.collide_aabb_with_point(x, y));
     }
 }
 
 void ekg_button::on_event(SDL_Event &sdl_event) {
     ekg_element::on_event(sdl_event);
+
+    float x = 0;
+    float y = 0;
+
+    if (ekgapi::motion(sdl_event, x, y)) {
+        ekgapi::set(this->flag.old_highlight, this->flag.highlight, this->flag.over);
+    }
 }
 
 void ekg_button::on_post_event_update(SDL_Event &sdl_event) {
     ekg_element::on_post_event_update(sdl_event);
 
-    this->flag.flag_over = false;
+    float x = 0;
+    float y = 0;
+
+    if (ekgapi::motion(sdl_event, x, y)) {
+        ekgapi::set_direct(this->flag.old_over, this->flag.over, false);
+    }
 }
 
 void ekg_button::on_draw_refresh() {
@@ -52,16 +63,16 @@ void ekg_button::on_draw_refresh() {
     ekgmath::vec4f color(255, 255, 255, 50);
     ekggpu::rectangle(this->rect, color);
 
-    if (this->flag.flag_highlight) {
+    if (this->flag.highlight) {
         color.color(255, 255, 255, 50);
         ekggpu::rectangle(this->rect, color);
     }
 
-    color.color(255, 255, 255, 255);
+    color.color(0, 0, 0, 255);
     ekgfont::render(this->text, this->rect.x, this->rect.y, color);
 }
 
-void ekg_button::set_text(std::string &string) {
+void ekg_button::set_text(const std::string &string) {
     if (this->text != string) {
         this->text = string;
         this->on_sync();

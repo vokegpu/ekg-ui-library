@@ -3,19 +3,29 @@
 #include <list>
 
 void ekg_core::process_event_section(SDL_Event &sdl_event) {
+    // We do not need to track others events here.
+    bool should_not_end_segment = (
+            sdl_event.type == SDL_FINGERDOWN      || sdl_event.type == SDL_FINGERUP ||
+            sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
+            sdl_event.type == SDL_MOUSEMOTION     || sdl_event.type == SDL_FINGERMOTION ||
+            sdl_event.type == SDL_KEYDOWN         || sdl_event.type == SDL_KEYUP
+    );
+
+    if (!should_not_end_segment) {
+        return;
+    }
+
     this->focused_element_id = 0;
 
-    for (uint32_t i = 0; i < this->sizeof_update_buffer; i++) {
-        ekg_element* &element = this->update_buffer[i];
-
-        if (element == nullptr || element->access_flag().flag_dead) {
+    for (ekg_element* &element : this->data) {
+        if (element == nullptr || element->access_flag().dead) {
             continue;
         }
 
         // Verify point overlap.
         element->on_pre_event_update(sdl_event);
 
-        if (element->get_visibility() == ekg::visibility::VISIBLE && element->access_flag().flag_over) {
+        if (element->get_visibility() == ekg::visibility::VISIBLE && element->access_flag().over) {
             this->focused_element_id = element->get_id();
         }
 
@@ -25,10 +35,8 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
     this->sizeof_render_buffer = 0;
     this->render_buffer.fill(nullptr);
 
-    for (uint32_t i = 0; i < this->sizeof_update_buffer; i++) {
-        ekg_element* &element = this->update_buffer[i];
-
-        if (element == nullptr || element->access_flag().flag_dead) {
+    for (ekg_element* &element : this->data) {
+        if (element == nullptr || element->access_flag().dead) {
             continue;
         }
 
@@ -44,8 +52,15 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
     }
 
     if (ekgutil::contains(this->todo_flags, ekgutil::action::SWAPBUFFERS)) {
-        this->swap_buffers();
         ekgutil::remove(this->todo_flags, ekgutil::action::SWAPBUFFERS);
+        this->swap_buffers();
+    }
+
+    if (ekgapi::any_input_down(sdl_event) && (this->focused_element_id != 0 || this->forced_focused_element_id != 0) || ekgutil::contains(this->todo_flags, ekgutil::action::FIXSTACK)) {
+        ekgutil::remove(this->todo_flags, ekgutil::action::FIXSTACK);
+        ekgutil::add(this->todo_flags, ekgutil::action::REFRESH);
+
+        this->fix_stack();
     }
 }
 
@@ -53,6 +68,11 @@ void ekg_core::process_update_section() {
     if (ekgutil::contains(this->todo_flags, ekgutil::SWAPBUFFERS)) {
         this->swap_buffers();
         ekgutil::remove(this->todo_flags, ekgutil::SWAPBUFFERS);
+    }
+
+    if (ekgutil::contains(this->todo_flags, ekgutil::action::FIXSTACK)) {
+        ekgutil::remove(this->todo_flags, ekgutil::action::FIXSTACK);
+        this->fix_stack();
     }
 }
 
@@ -87,20 +107,20 @@ void ekg_core::swap_buffers() {
     this->sizeof_render_buffer = 0;
     this->render_buffer.fill(nullptr);
 
-    for (uint32_t i = 0; i < this->sizeof_update_buffer; i++) {
-        ekg_element* &element = this->update_buffer[i];
+    this->data_invisible_to_memory = this->data;
+    this->data.clear();
 
+    for (ekg_element* &element : this->data_invisible_to_memory) {
         if (element == nullptr) {
             continue;
         }
 
-        if (element->access_flag().flag_dead) {
+        if (element->access_flag().dead) {
             delete element;
-            this->update_buffer[i] = nullptr;
-            this->sizeof_update_buffer--;
-
             continue;
         }
+
+        this->data.push_back(element);
 
         if (element->get_visibility() == ekg::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = element;
@@ -112,7 +132,7 @@ void ekg_core::swap_buffers() {
             continue;
         }
 
-        this->update_buffer[this->sizeof_update_buffer++] = elements;
+        this->data.push_back(elements);
 
         if (elements->get_visibility() == ekg::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = elements;
@@ -123,6 +143,79 @@ void ekg_core::swap_buffers() {
     this->concurrent_buffer.clear();
 }
 /* End of swap buffers. */
+
+/* Start of fix stack. */
+void ekg_core::fix_stack() {
+    if (this->focused_element_id == 0 && this->forced_focused_element_id == 0) {
+        return;
+    }
+
+    if (this->focused_element_id == 0) {
+        this->focused_element_id = this->forced_focused_element_id;
+    }
+
+    ekgutil::stack concurrent_all_data_stack;
+    ekgutil::stack concurrent_focused_stack;
+    ekgutil::stack concurrent_data_stack;
+
+    for (ekg_element* &elements : this->data) {
+        if (elements == nullptr) {
+            continue;
+        }
+
+        if (concurrent_focused_stack.contains(elements->get_id())) {
+            continue;
+        }
+
+        concurrent_data_stack.ids.clear();
+        elements->collect_stack(concurrent_data_stack);
+
+        if (concurrent_data_stack.contains(this->focused_element_id)) {
+            concurrent_focused_stack = concurrent_data_stack;
+        } else {
+            concurrent_all_data_stack.add(elements->get_id());
+        }
+    }
+
+    this->sizeof_render_buffer = 0;
+    this->render_buffer.fill(nullptr);
+    this->data_invisible_to_memory.clear();
+
+    for (uint32_t ids : concurrent_all_data_stack.ids) {
+        ekg_element* element;
+
+        if (!this->find_element(element, ids)) {
+            continue;
+        }
+
+        this->data_invisible_to_memory.push_back(element);
+
+        if (element->get_visibility() == ekg::visibility::VISIBLE) {
+            this->render_buffer[this->sizeof_render_buffer++] = element;
+        }
+    }
+
+    for (uint32_t ids : concurrent_focused_stack.ids) {
+        ekg_element* element;
+
+        if (!this->find_element(element, ids)) {
+            continue;
+        }
+
+        this->data_invisible_to_memory.push_back(element);
+
+        if (element->get_visibility() == ekg::visibility::VISIBLE) {
+            this->render_buffer[this->sizeof_render_buffer++] = element;
+        }
+    }
+
+    this->data.clear();
+    this->data = this->data_invisible_to_memory;
+    this->data_invisible_to_memory.clear();
+
+    this->forced_focused_element_id = 0;
+}
+/* End of fix stack. */
 
 void ekg_core::set_instances(SDL_Window *&sdl_window) {
     this->sdl_window_instance = sdl_window;
@@ -148,4 +241,29 @@ void ekg_core::quit() {
 
 void ekg_core::dispatch_todo_event(uint8_t flag) {
     ekgutil::add(this->todo_flags, flag);
+}
+
+bool ekg_core::find_element(ekg_element *&element, uint32_t id) {
+    element = nullptr;
+
+    for (ekg_element* &elements : this->concurrent_buffer) {
+        if (elements != nullptr && elements->get_id() == id) {
+            element = elements;
+            return true;
+        }
+    }
+
+    for (ekg_element* &elements : this->data) {
+        if (elements != nullptr && elements->get_id() == id) {
+            element = elements;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void ekg_core::force_reorder_stack(uint32_t &id) {
+    this->forced_focused_element_id = id;
+    this->dispatch_todo_event(ekgutil::action::FIXSTACK);
 }
