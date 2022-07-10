@@ -28,7 +28,6 @@ float ekg_font::get_text_width(const std::string &text) {
 }
 
 float ekg_font::get_text_height(const std::string &text) {
-    // TODO \n calc. height.
     return (float) this->texture_height;
 }
 

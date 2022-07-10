@@ -2,7 +2,7 @@
 #ifndef EKG_CORE_H
 #define EKG_CORE_H
 
-#include "ekg/impl/ekg_ui_element_abstract.hpp"
+#include <ekg/impl/ekg_ui_element_abstract.hpp>
 #include "ekg_font.hpp"
 #include <array>
 

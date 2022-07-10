@@ -6,7 +6,7 @@
 #include <string>
 #include <SDL2/SDL.h>
 
-#include "ekg/api/ekg_utility.hpp"
+#include <ekg/api/ekg_utility.hpp>
 
 /**
  * # UI \n

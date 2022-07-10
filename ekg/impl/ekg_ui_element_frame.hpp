@@ -30,6 +30,8 @@ private:
 
     std::string tag;
 public:
+    ekgmath::vec4f bg_color;
+
     void set_tag(std::string &string);
     std::string get_tag();
 
@@ -56,6 +58,7 @@ public:
 
     void set_size(float width, float height);
     void set_pos(float x, float y);
+    void set(float x, float y, float width, float height);
 
     void on_sync() override;
     void on_pre_event_update(SDL_Event &sdl_event) override;

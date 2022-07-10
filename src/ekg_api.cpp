@@ -110,6 +110,25 @@ bool ekgapi::input_down_middle(SDL_Event &sdl_event, float &x, float &y) {
     return false;
 }
 
+bool ekgapi::any_input_down(SDL_Event &sdl_event, float &x, float &y) {
+    switch (sdl_event.type) {
+        case SDL_FINGERDOWN: {
+            x = (float) sdl_event.tfinger.x;
+            y = (float) sdl_event.tfinger.y;
+            return true;
+        }
+
+        case SDL_MOUSEBUTTONDOWN: {
+            x = (float) sdl_event.button.x;
+            y = (float) sdl_event.button.y;
+            return true;
+        }
+    }
+
+
+    return false;
+}
+
 bool ekgapi::any_input_down(SDL_Event &sdl_event) {
     return sdl_event.type == SDL_FINGERDOWN || sdl_event.type == SDL_MOUSEBUTTONDOWN;
 }
@@ -165,7 +184,22 @@ bool ekgapi::input_up_middle(SDL_Event &sdl_event, float &x, float &y) {
 }
 
 bool ekgapi::any_input_up(SDL_Event &sdl_event, float &x, float &y) {
-    return sdl_event.type == SDL_FINGERUP || sdl_event.type == SDL_MOUSEBUTTONUP;
+    switch (sdl_event.type) {
+        case SDL_FINGERUP: {
+            x = (float) sdl_event.tfinger.x;
+            y = (float) sdl_event.tfinger.y;
+            return true;
+        }
+
+        case SDL_MOUSEBUTTONUP: {
+            x = (float) sdl_event.button.x;
+            y = (float) sdl_event.button.y;
+            return true;
+        }
+    }
+
+
+    return false;
 }
 
 bool ekgapi::any_input_up(SDL_Event &sdl_event) {
