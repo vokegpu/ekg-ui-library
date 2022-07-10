@@ -47,11 +47,11 @@ void ekg_frame::on_event(SDL_Event &sdl_event) {
         this->resizing = false;
         this->dragging = false;
     } else if (ekgapi::motion(sdl_event, x, y)) {
-        if (!this->no_draggable && this->dragging && this->enum_target_drag_dock != ekg::dock::UNDEFINED) {
+        if (!this->no_draggable && !this->resizing && this->dragging && this->enum_target_drag_dock != ekg::dock::UNDEFINED) {
             this->set_pos(x - this->cache.x, y - this->cache.y);
         }
 
-        if (!this->no_resizable && this->resizing && this->enum_target_resize_dock != ekg::dock::UNDEFINED) {
+        if (!this->no_resizable && !this->dragging && this->resizing && this->enum_target_resize_dock != ekg::dock::UNDEFINED) {
             bool top    = ekgutil::contains(this->enum_target_resize_dock, ekg::dock::TOP);
             bool bottom = ekgutil::contains(this->enum_target_resize_dock, ekg::dock::BOTTOM);
             bool left   = ekgutil::contains(this->enum_target_resize_dock, ekg::dock::LEFT);
@@ -177,6 +177,19 @@ void ekg_frame::set(float x, float y, float width, float height) {
         this->rect += this->scaled;
         this->on_sync();
     }
+}
+
+void ekg_frame::place(ekg_element* &element, float x, float y) {
+    if (element->get_id() == 0 || element->get_id() == this->id || this->children_stack.contains(element->get_id())) {
+        return;
+    }
+
+    this->children_stack.add(ids);
+
+    element->set_master_id(this->id);
+    element->access_scaled().copy(this->rect);
+
+    ekg::core::instance.dispatch_todo_event(ekgutil::action::UPDATERECT);
 }
 
 void ekg_frame::set_resize_dock(uint16_t dock) {

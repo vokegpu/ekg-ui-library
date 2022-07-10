@@ -35,6 +35,11 @@ namespace ekgmath {
          */
         bool collide_aabb_with_point(float px, float py);
 
+        /*
+         * Copy position and size.
+         */
+        void copy(ekgmath::rect &r);
+
         void operator += (ekgmath::rect &r) {
             this->x += r.x;
             this->y += r.y;
@@ -142,7 +147,8 @@ namespace ekgutil {
     enum action {
         SWAPBUFFERS = 1 << 0,
         FIXSTACK    = 1 << 1,
-        REFRESH     = 1 << 2
+        REFRESH     = 1 << 2,
+        UPDATERECT  = 1 << 3
     };
 };
 

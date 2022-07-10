@@ -91,6 +91,13 @@ bool ekgmath::rect::collide_aabb_with_point(float px, float py) {
     return px > this->x && px < this->x + this->w && py > this->y && py < this->y + this->h;
 }
 
+void ekgmath::rect::copy(ekgmath::rect &r) {
+    this->x = r.x;
+    this->y = r.y;
+    this->w = r.w;
+    this->h = r.h;
+}
+
 float ekgmath::lerpf(float a, float b, float t) {
     return a + (b - a) * t;
 }

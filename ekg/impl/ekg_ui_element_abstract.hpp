@@ -42,6 +42,7 @@ public:
 
     ekgutil::flag &access_flag();
     ekgutil::stack &access_children_stack();
+    ekgmath::rect &access_scaled();
 
     float get_x();
     float get_y();

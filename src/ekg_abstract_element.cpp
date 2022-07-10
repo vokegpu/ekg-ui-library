@@ -75,6 +75,10 @@ ekgutil::stack &ekg_element::access_children_stack() {
     return this->children_stack;
 }
 
+ekgmath::rect &ekg_element::access_scaled() {
+    return this->scaled;
+}
+
 float ekg_element::get_x() {
     return this->rect.x;
 }
