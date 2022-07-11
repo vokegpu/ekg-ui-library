@@ -47,6 +47,16 @@ protected:
      * Reload and move correctly the positions of GUI layout (stack).
      */
     void fix_stack();
+
+    /*
+     * Fix position and size of all elements.
+     */
+    void fix_rects();
+
+    /*
+     * Fix position and size of n element.
+     */
+    void fix_rect(ekg_element* &element, ekgutil::stack &cached_stack);
 public:
     /*
      * Force to fix stack (reorder).

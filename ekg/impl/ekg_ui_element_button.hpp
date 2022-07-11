@@ -21,6 +21,8 @@ public:
     void set_text(const std::string &string);
     std::string get_text();
 
+    void set_size(float width, float height) override;
+    void set_pos(float x, float y) override;
     void on_killed() override;
     void on_sync() override;
     void on_pre_event_update(SDL_Event &sdl_event) override;

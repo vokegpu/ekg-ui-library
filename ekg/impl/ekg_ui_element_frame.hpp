@@ -55,13 +55,12 @@ public:
 
     void set_drag_offset(float offset);
     float get_drag_offset();
-
-    void set_size(float width, float height);
-    void set_pos(float x, float y);
     
     void set(float x, float y, float width, float height);
-    void place(ekg_element* &element, float x, float y);
+    void place(ekg_element* element, float x, float y);
 
+    void set_size(float width, float height) override;
+    void set_pos(float x, float y) override;
     void on_sync() override;
     void on_pre_event_update(SDL_Event &sdl_event) override;
     void on_event(SDL_Event &sdl_event) override;

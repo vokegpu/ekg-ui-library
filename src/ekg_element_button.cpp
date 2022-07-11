@@ -82,3 +82,18 @@ void ekg_button::set_text(const std::string &string) {
 std::string ekg_button::get_text() {
     return this->text;
 }
+
+void ekg_button::set_size(float width, float height) {
+    ekg_element::set_size(width, height);
+
+    if (this->rect.w != width || this->rect.h != height) {
+        this->rect.w = width;
+        this->rect.h = height;
+
+        this->on_sync();
+    }
+}
+
+void ekg_button::set_pos(float x, float y) {
+    ekg_element::set_pos(x, y);
+}

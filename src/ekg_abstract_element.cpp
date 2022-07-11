@@ -40,10 +40,7 @@ void ekg_element::set_id(uint32_t element_id) {
     this->id = element_id;
 
     if (element_id == 0) {
-        this->scaled.x = 0;
-        this->scaled.y = 0;
-        this->scaled.w = 0;
-        this->scaled.h = 0;
+        this->scaled = {0.0f, 0.0f, 0.0f, 0.0f};
     }
 }
 
@@ -75,7 +72,7 @@ ekgutil::stack &ekg_element::access_children_stack() {
     return this->children_stack;
 }
 
-ekgmath::rect &ekg_element::access_scaled() {
+ekgmath::rect &ekg_element::access_scaled_rect() {
     return this->scaled;
 }
 
@@ -105,4 +102,53 @@ void ekg_element::collect_stack(ekgutil::stack &stack) {
     for (uint32_t &ids : this->children_stack.ids) {
         stack.add(ids);
     }
+}
+
+bool ekg_element::is_mother() {
+    return !this->children_stack.ids.empty();
+}
+
+bool ekg_element::has_mother() {
+    return this->master_id != 0;
+}
+
+void ekg_element::set_pos(float x, float y) {
+    x += this->scaled.x;
+    y += this->scaled.y;
+
+    if (this->has_mother() && (this->rect.x != x || this->rect.y != y)) {
+        x -= this->scaled.x;
+        y -= this->scaled.y;
+
+        this->sync_x = x;
+        this->sync_y = y;
+
+        this->on_sync_position();
+        this->on_sync();
+    } else if (!this->has_mother() && (this->rect.x != x || this->rect.y != y)) {
+        this->rect.x = x;
+        this->rect.y = y;
+
+        this->on_sync_position();
+        this->on_sync();
+    }
+}
+
+void ekg_element::set_size(float width, float height) {
+
+}
+
+void ekg_element::on_sync_position() {
+    if (this->has_mother()) {
+        this->rect.x = this->scaled.x + this->sync_x;
+        this->rect.y = this->scaled.y + this->sync_y;
+    }
+}
+
+float ekg_element::get_sync_x() {
+    return this->sync_x;
+}
+
+float ekg_element::get_sync_y() {
+    return  this->sync_y;
 }

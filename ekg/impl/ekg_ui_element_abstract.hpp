@@ -27,9 +27,15 @@ protected:
     ekgmath::rect scaled;
     ekgmath::rect cache;
     ekgmath::rect rect;
+
+    float sync_x;
+    float sync_y;
 public:
     ekg_element();
     ~ekg_element();
+
+    bool is_mother();
+    bool has_mother();
 
     void set_id(uint32_t element_id);
     uint32_t get_type();
@@ -42,7 +48,7 @@ public:
 
     ekgutil::flag &access_flag();
     ekgutil::stack &access_children_stack();
-    ekgmath::rect &access_scaled();
+    ekgmath::rect &access_scaled_rect();
 
     float get_x();
     float get_y();
@@ -50,9 +56,23 @@ public:
     float get_width();
     float get_height();
 
+    float get_sync_x();
+    float get_sync_y();
+
     void collect_stack(ekgutil::stack &stack);
+    void on_sync_position();
 
     /* Start of abstract methods. */
+
+    /*
+     * Set position of element.
+     */
+    virtual void set_pos(float x, float y);
+
+    /*
+     * Set size of element.
+     */
+    virtual void set_size(float width, float height);
 
     /*
      * Called when the element just die.

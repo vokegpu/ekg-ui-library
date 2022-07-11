@@ -66,8 +66,13 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
 
 void ekg_core::process_update_section() {
     if (ekgutil::contains(this->todo_flags, ekgutil::SWAPBUFFERS)) {
-        this->swap_buffers();
         ekgutil::remove(this->todo_flags, ekgutil::SWAPBUFFERS);
+        this->swap_buffers();
+    }
+
+    if (ekgutil::contains(this->todo_flags, ekgutil::action::FIXRECTS)) {
+        ekgutil::remove(this->todo_flags, ekgutil::action::FIXSTACK);
+        this->fix_rects();
     }
 
     if (ekgutil::contains(this->todo_flags, ekgutil::action::FIXSTACK)) {
@@ -94,7 +99,7 @@ void ekg_core::process_render_section() {
 }
 
 void ekg_core::add_element(ekg_element* &element) {
-    element->set_id(this->last_id_used++);
+    element->set_id(++this->last_id_used);
     element->set_visibility(ekg::visibility::VISIBLE);
 
     this->concurrent_buffer.push_back(element);
@@ -181,6 +186,8 @@ void ekg_core::fix_stack() {
     this->render_buffer.fill(nullptr);
     this->data_invisible_to_memory.clear();
 
+    ekg_element* element;
+
     for (uint32_t ids : concurrent_all_data_stack.ids) {
         ekg_element* element;
 
@@ -196,8 +203,6 @@ void ekg_core::fix_stack() {
     }
 
     for (uint32_t ids : concurrent_focused_stack.ids) {
-        ekg_element* element;
-
         if (!this->find_element(element, ids)) {
             continue;
         }
@@ -216,6 +221,42 @@ void ekg_core::fix_stack() {
     this->forced_focused_element_id = 0;
 }
 /* End of fix stack. */
+
+/* Start of fix rects. */
+void ekg_core::fix_rects() {
+    ekgutil::stack cached_stack;
+
+    for (ekg_element* &element : this->data) {
+        if (element == nullptr || element->access_flag().dead) {
+            continue;
+        }
+
+        this->fix_rect(element, cached_stack);
+    }
+}
+
+void ekg_core::fix_rect(ekg_element *&element, ekgutil::stack &cached_stack) {
+    if (cached_stack.contains(element->get_id()) || !element->is_mother()) {
+        return;
+    }
+
+    cached_stack.add(element->get_id());
+
+    ekg_element* instance;
+
+    for (uint32_t &ids : element->access_children_stack().ids) {
+        if (cached_stack.contains(ids) || !this->find_element(instance, ids)) {
+            continue;
+        }
+
+        instance->access_scaled_rect() = {element->get_x(), element->get_y(), element->get_width(), element->get_height()};
+        instance->on_sync_position();
+
+        cached_stack.add(ids);
+        this->fix_rect(instance, cached_stack);
+    }
+}
+/* End of fix rects. */
 
 void ekg_core::set_instances(SDL_Window *&sdl_window) {
     this->sdl_window_instance = sdl_window;

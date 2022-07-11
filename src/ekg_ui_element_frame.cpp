@@ -9,6 +9,16 @@ void ekg_frame::on_sync() {
     this->rect.h = this->rect.h < this->min_height ? this->min_height : this->rect.h;
 
     ekg::core::instance.dispatch_todo_event(ekgutil::action::REFRESH);
+    ekg_element* element;
+
+    for (uint32_t &ids : this->children_stack.ids) {
+        if (!ekg::core::instance.find_element(element, ids) || element->access_flag().dead) {
+            continue;
+        }
+
+        element->access_scaled_rect().copy(this->rect);
+        element->set_pos(element->get_sync_x(), element->get_sync_y());
+    }
 }
 
 void ekg_frame::on_pre_event_update(SDL_Event &sdl_event) {
@@ -25,19 +35,19 @@ void ekg_frame::on_pre_event_update(SDL_Event &sdl_event) {
 void ekg_frame::on_event(SDL_Event &sdl_event) {
     ekg_element::on_event(sdl_event);
 
-    float x = 0;
-    float y = 0;
+    float mx = 0;
+    float my = 0;
 
-    if (ekgapi::input_down_left(sdl_event, x, y)) {
-        if (this->flag.over && !this->no_draggable && (ekgutil::find_axis_dock(this->enum_target_drag_dock, x, y, this->offset_drag_dock, this->rect) && ekgutil::contains(this->enum_flags_drag_dock, this->enum_target_drag_dock)) || ekgutil::contains(this->enum_flags_drag_dock, ekg::dock::FULL)) {
-            this->cache.x = x - this->rect.x;
-            this->cache.y = y - this->rect.y;
+    if (ekgapi::input_down_left(sdl_event, mx, my)) {
+        if (this->flag.over && !this->no_draggable && (ekgutil::find_axis_dock(this->enum_target_drag_dock, mx, my, this->offset_drag_dock, this->rect) && ekgutil::contains(this->enum_flags_drag_dock, this->enum_target_drag_dock)) || ekgutil::contains(this->enum_flags_drag_dock, ekg::dock::FULL)) {
+            this->cache.x = mx - this->rect.x;
+            this->cache.y = my - this->rect.y;
             this->dragging = true;
         }
-        
-        if (this->flag.over && !this->no_resizable && (ekgutil::find_axis_dock(this->enum_target_resize_dock, x, y, this->offset_resize_dock, this->rect) && ekgutil::contains(this->enum_flags_resize_dock, this->enum_target_resize_dock) || ekgutil::contains(this->enum_flags_drag_dock, ekg::dock::FULL))) {
-            this->cache.x = x - this->rect.x;
-            this->cache.y = y - this->rect.y;
+
+        if (this->flag.over && !this->no_resizable && (ekgutil::find_axis_dock(this->enum_target_resize_dock, mx, my, this->offset_resize_dock, this->rect) && ekgutil::contains(this->enum_flags_resize_dock, this->enum_target_resize_dock) || ekgutil::contains(this->enum_flags_drag_dock, ekg::dock::FULL))) {
+            this->cache.x = mx - this->rect.x;
+            this->cache.y = my - this->rect.y;
             this->cache.w = this->rect.x + this->rect.w;
             this->cache.h = this->rect.y + this->rect.h;
 
@@ -46,9 +56,9 @@ void ekg_frame::on_event(SDL_Event &sdl_event) {
     } else if (ekgapi::any_input_up(sdl_event)) {
         this->resizing = false;
         this->dragging = false;
-    } else if (ekgapi::motion(sdl_event, x, y)) {
+    } else if (ekgapi::motion(sdl_event, mx, my)) {
         if (!this->no_draggable && !this->resizing && this->dragging && this->enum_target_drag_dock != ekg::dock::UNDEFINED) {
-            this->set_pos(x - this->cache.x, y - this->cache.y);
+            this->set_pos(mx - this->cache.x, my - this->cache.y);
         }
 
         if (!this->no_resizable && !this->dragging && this->resizing && this->enum_target_resize_dock != ekg::dock::UNDEFINED) {
@@ -64,21 +74,21 @@ void ekg_frame::on_event(SDL_Event &sdl_event) {
             float sh = this->rect.h;
 
             if (left) {
-                px = x - this->cache.x;
+                px = mx - this->cache.x;
                 sw = this->cache.w - px;
             }
 
             if (right) {
-                sw = (x - this->cache.x) - px + (this->cache.w - px);
+                sw = (mx - this->cache.x) - px + (this->cache.w - px);
             }
 
             if (top) {
-                py = y - this->cache.y;
+                py = my - this->cache.y;
                 sh = this->cache.h - py;
             }
 
             if (bottom) {
-                sh = (y - this->cache.y) - py + (this->cache.h - py);
+                sh = (my - this->cache.y) - py + (this->cache.h - py);
             }
 
             set(px, py, sw, sh);
@@ -156,40 +166,24 @@ void ekg_frame::set_size(float width, float height) {
 }
 
 void ekg_frame::set_pos(float x, float y) {
-    if (this->rect.x != x || this->rect.y != y) {
-        this->rect.x = x;
-        this->rect.y = y;
-        this->rect += this->scaled;
-        this->on_sync();
-    }
+    ekg_element::set_pos(x, y);
 }
 
 void ekg_frame::set(float x, float y, float width, float height) {
-    width = width < this->min_width ? this->min_width : width;
-    height = height < this->min_height ? this->min_height : height;
-
-    if (this->rect.x != x || this->rect.y != y || this->rect.w != width || this->rect.h != height) {
-        this->rect.x = x;
-        this->rect.y = y;
-        this->rect.w = width;
-        this->rect.h = height;
-
-        this->rect += this->scaled;
-        this->on_sync();
-    }
+    set_pos(x, y);
+    set_size(width, height);
 }
 
-void ekg_frame::place(ekg_element* &element, float x, float y) {
+void ekg_frame::place(ekg_element* element, float x, float y) {
     if (element->get_id() == 0 || element->get_id() == this->id || this->children_stack.contains(element->get_id())) {
         return;
     }
 
-    this->children_stack.add(ids);
+    this->children_stack.add(element->get_id());
 
     element->set_master_id(this->id);
-    element->access_scaled().copy(this->rect);
-
-    ekg::core::instance.dispatch_todo_event(ekgutil::action::UPDATERECT);
+    element->access_scaled_rect().copy(this->rect);
+    element->set_pos(x, y);
 }
 
 void ekg_frame::set_resize_dock(uint16_t dock) {

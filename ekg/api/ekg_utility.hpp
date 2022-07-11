@@ -148,7 +148,7 @@ namespace ekgutil {
         SWAPBUFFERS = 1 << 0,
         FIXSTACK    = 1 << 1,
         REFRESH     = 1 << 2,
-        UPDATERECT  = 1 << 3
+        FIXRECTS  = 1 << 3
     };
 };
 
