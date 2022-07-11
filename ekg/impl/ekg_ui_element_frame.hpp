@@ -55,6 +55,9 @@ public:
 
     void set_drag_offset(float offset);
     float get_drag_offset();
+
+    bool is_dragging();
+    bool is_resizing();
     
     void set(float x, float y, float width, float height);
     void place(ekg_element* element, float x, float y);

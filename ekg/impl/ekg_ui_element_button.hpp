@@ -21,6 +21,10 @@ public:
     void set_text(const std::string &string);
     std::string get_text();
 
+    void callback();
+    bool get_callback_flag();
+    bool get_click_flag();
+
     void set_size(float width, float height) override;
     void set_pos(float x, float y) override;
     void on_killed() override;
