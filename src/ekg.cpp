@@ -57,12 +57,15 @@ ekg_button* ekg::button(std::string text) {
 ekg_frame* ekg::frame() {
     auto frame_worker = new ekg_frame();
     frame_worker->set_size(300, 300);
-    frame_worker->bg_color.color(255, 255, 255, 150);
 
     // Add into context handler.
     ekg::core::instance.add_element((ekg_element*&) frame_worker);
 
     return frame_worker;
+}
+
+ekg_theme &ekg::theme() {
+    return ekg::core::instance.get_theme_service().get_loaded_theme();
 }
 
 void ekg::core::init() {

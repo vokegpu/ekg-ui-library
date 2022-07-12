@@ -90,6 +90,11 @@ namespace ekg {
         FULL      = 1 << 6
     };
 
+    /*
+     * Get current theme.
+     */
+    ekg_theme &theme();
+
     /**
      * The core instance of EKG.
      **/

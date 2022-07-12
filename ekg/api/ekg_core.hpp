@@ -4,6 +4,7 @@
 
 #include <ekg/impl/ekg_ui_element_abstract.hpp>
 #include "ekg_font.hpp"
+#include "ekg_theme.hpp"
 #include <array>
 
 /**
@@ -16,6 +17,9 @@ protected:
 
     // Font manager to handle and display (draw) chars at screen.
     ekg_font font_manager;
+
+    // Theme manager.
+    ekg_theme_service theme_service;
 
     // Instances of SDL2.
     SDL_Window* sdl_window_instance;
@@ -58,6 +62,11 @@ protected:
      */
     void fix_rect(ekg_element* &element, ekgutil::stack &cached_stack);
 public:
+    /*
+     * Get ekg theme service.
+     */
+    ekg_theme_service &get_theme_service();
+
     /*
      * Force to fix stack (reorder).
      */

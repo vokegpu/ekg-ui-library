@@ -265,6 +265,7 @@ void ekg_core::set_instances(SDL_Window *&sdl_window) {
 void ekg_core::init() {
     this->gpu_handler.init();
     this->font_manager.init();
+    this->theme_service.init();
 }
 
 ekg_gpu_data_handler &ekg_core::get_gpu_handler() {
@@ -307,4 +308,8 @@ bool ekg_core::find_element(ekg_element *&element, uint32_t id) {
 void ekg_core::force_reorder_stack(uint32_t &id) {
     this->forced_focused_element_id = id;
     this->dispatch_todo_event(ekgutil::action::FIXSTACK);
+}
+
+ekg_theme_service &ekg_core::get_theme_service() {
+    return this->theme_service;
 }

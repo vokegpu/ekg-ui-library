@@ -108,8 +108,7 @@ void ekg_frame::on_update() {
 void ekg_frame::on_draw_refresh() {
     ekg_element::on_draw_refresh();
 
-    ekgmath::vec4f color(255, 255, 255, 255);
-    ekggpu::rectangle(this->rect, this->bg_color);
+    ekggpu::rectangle(this->rect, ekg::theme().frame_background);
 }
 
 void ekg_frame::set_min_width(float min) {

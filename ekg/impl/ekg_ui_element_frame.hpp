@@ -30,8 +30,6 @@ private:
 
     std::string tag;
 public:
-    ekgmath::vec4f bg_color;
-
     void set_tag(std::string &string);
     std::string get_tag();
 

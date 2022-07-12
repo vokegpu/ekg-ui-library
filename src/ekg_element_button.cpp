@@ -1,6 +1,7 @@
-#include "ekg/impl/ekg_ui_element_button.hpp"
-#include "ekg/api/ekg_gpu.hpp"
-#include "ekg/api/ekg_font.hpp"
+#include <ekg/impl/ekg_ui_element_button.hpp>
+#include <ekg/api/ekg_gpu.hpp>
+#include <ekg/api/ekg_font.hpp>
+#include <ekg/ekg.hpp>
 
 ekg_button::ekg_button() {
 
@@ -22,6 +23,8 @@ void ekg_button::on_sync() {
 
     this->rect.w = this->rect.w < this->min_text_width ? this->min_text_width : this->rect.w;
     this->rect.h = this->rect.h < this->min_text_height ? this->min_text_height : this->rect.h;
+
+    ekg::core::instance.dispatch_todo_event(ekgutil::action::REFRESH);
 }
 
 void ekg_button::on_pre_event_update(SDL_Event &sdl_event) {
@@ -38,38 +41,43 @@ void ekg_button::on_pre_event_update(SDL_Event &sdl_event) {
 void ekg_button::on_event(SDL_Event &sdl_event) {
     ekg_element::on_event(sdl_event);
 
-    float x = 0;
-    float y = 0;
+    float mx = 0;
+    float my = 0;
 
-    if (ekgapi::motion(sdl_event, x, y)) {
+    if (ekgapi::motion(sdl_event, mx, my)) {
         ekgapi::set(this->flag.old_highlight, this->flag.highlight, this->flag.over);
+    } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
+        ekgapi::set(this->flag.old_activy, this->flag.activy, this->flag.over);
+    } else if (ekgapi::input_up_left(sdl_event, mx, my)) {
+        ekgapi::set(this->flag.old_activy, this->flag.activy, false);
+        this->set_callback_flag(true);
     }
 }
 
 void ekg_button::on_post_event_update(SDL_Event &sdl_event) {
     ekg_element::on_post_event_update(sdl_event);
 
-    float x = 0;
-    float y = 0;
+    float mx = 0;
+    float my = 0;
 
-    if (ekgapi::motion(sdl_event, x, y)) {
+    if (ekgapi::motion(sdl_event, mx, my)) {
         ekgapi::set_direct(this->flag.old_over, this->flag.over, false);
     }
 }
 
 void ekg_button::on_draw_refresh() {
     ekg_element::on_draw_refresh();
-
-    ekgmath::vec4f color(255, 255, 255, 50);
-    ekggpu::rectangle(this->rect, color);
+    ekggpu::rectangle(this->rect, ekg::theme().button_background);
 
     if (this->flag.highlight) {
-        color.color(255, 255, 255, 50);
-        ekggpu::rectangle(this->rect, color);
+        ekggpu::rectangle(this->rect, ekg::theme().button_highlight);
     }
 
-    color.color(0, 0, 0, 255);
-    ekgfont::render(this->text, this->rect.x, this->rect.y, color);
+    if (this->flag.activy) {
+        ekggpu::rectangle(this->rect, ekg::theme().button_activy);
+    }
+
+    ekgfont::render(this->text, this->rect.x, this->rect.y, ekg::theme().string_color);
 }
 
 void ekg_button::set_text(const std::string &string) {
@@ -96,4 +104,20 @@ void ekg_button::set_size(float width, float height) {
 
 void ekg_button::set_pos(float x, float y) {
     ekg_element::set_pos(x, y);
+}
+
+void ekg_button::set_callback_flag(bool val) {
+    this->callback_flag = val;
+}
+
+bool ekg_button::get_callback_flag() {
+    return this->callback_flag;
+}
+
+float ekg_button::get_min_text_width() {
+    return this->min_text_height;
+}
+
+float ekg_button::get_min_text_height() {
+    return this->min_text_height;
 }

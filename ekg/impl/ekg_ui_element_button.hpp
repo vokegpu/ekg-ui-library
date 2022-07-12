@@ -14,6 +14,8 @@ protected:
 
     float min_text_width;
     float min_text_height;
+
+    bool callback_flag;
 public:
     ekg_button();
     ~ekg_button();
@@ -21,9 +23,11 @@ public:
     void set_text(const std::string &string);
     std::string get_text();
 
-    void callback();
+    void set_callback_flag(bool val);
     bool get_callback_flag();
-    bool get_click_flag();
+
+    float get_min_text_width();
+    float get_min_text_height();
 
     void set_size(float width, float height) override;
     void set_pos(float x, float y) override;
