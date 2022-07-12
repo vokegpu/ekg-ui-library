@@ -51,16 +51,11 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
         }
     }
 
-    if (ekgutil::contains(this->todo_flags, ekgutil::action::SWAPBUFFERS)) {
-        ekgutil::remove(this->todo_flags, ekgutil::action::SWAPBUFFERS);
-        this->swap_buffers();
-    }
+    if (ekgapi::any_input_down(sdl_event) && this->focused_element_id != 0 && this->last_focused_element_id != this->focused_element_id) {
+        this->last_focused_element_id = this->focused_element_id;
 
-    if (ekgapi::any_input_down(sdl_event) && (this->focused_element_id != 0 || this->forced_focused_element_id != 0) || ekgutil::contains(this->todo_flags, ekgutil::action::FIXSTACK)) {
-        ekgutil::remove(this->todo_flags, ekgutil::action::FIXSTACK);
-        ekgutil::add(this->todo_flags, ekgutil::action::REFRESH);
-
-        this->fix_stack();
+        this->dispatch_todo_event(ekgutil::action::FIXSTACK);
+        this->dispatch_todo_event(ekgutil::action::REFRESH);
     }
 }
 
@@ -71,17 +66,20 @@ void ekg_core::process_update_section() {
     }
 
     if (ekgutil::contains(this->todo_flags, ekgutil::action::FIXRECTS)) {
-        ekgutil::remove(this->todo_flags, ekgutil::action::FIXSTACK);
+        ekgutil::remove(this->todo_flags, ekgutil::action::FIXRECTS);
+
         this->fix_rects();
     }
 
     if (ekgutil::contains(this->todo_flags, ekgutil::action::FIXSTACK)) {
-        ekgutil::remove(this->todo_flags, ekgutil::action::FIXSTACK);
         this->fix_stack();
     }
 }
 
 void ekg_core::process_render_section() {
+    this->gpu_handler.calc_view_ortho_2d();
+    this->gpu_handler.draw();
+
     if (ekgutil::contains(this->todo_flags, ekgutil::action::REFRESH)) {
         ekgutil::remove(this->todo_flags, ekgutil::action::REFRESH);
         ekggpu::invoke();
@@ -93,9 +91,6 @@ void ekg_core::process_render_section() {
 
         ekggpu::revoke();
     }
-
-    this->gpu_handler.calc_view_ortho_2d();
-    this->gpu_handler.draw();
 }
 
 void ekg_core::add_element(ekg_element* &element) {
@@ -103,7 +98,8 @@ void ekg_core::add_element(ekg_element* &element) {
     element->set_visibility(ekg::visibility::VISIBLE);
 
     this->concurrent_buffer.push_back(element);
-    ekgutil::add(this->todo_flags, ekgutil::action::SWAPBUFFERS);
+    this->dispatch_todo_event(ekgutil::action::SWAPBUFFERS);
+    this->dispatch_todo_event(ekgutil::action::REFRESH);
 }
 
 /* Start of swap buffers. */
@@ -137,6 +133,11 @@ void ekg_core::swap_buffers() {
             continue;
         }
 
+        if (elements->access_flag().dead) {
+            delete elements;
+            continue;
+        }
+
         this->data.push_back(elements);
 
         if (elements->get_visibility() == ekg::visibility::VISIBLE) {
@@ -154,6 +155,8 @@ void ekg_core::fix_stack() {
     if (this->focused_element_id == 0 && this->forced_focused_element_id == 0) {
         return;
     }
+
+    ekgutil::remove(this->todo_flags, ekgutil::action::FIXSTACK);
 
     if (this->focused_element_id == 0) {
         this->focused_element_id = this->forced_focused_element_id;

@@ -35,6 +35,7 @@ protected:
     uint32_t focused_element_id;
     uint32_t last_focused_element_id;
     uint32_t forced_focused_element_id;
+    uint32_t ticked_refresh_buffers_count;
 
     // Concurrent buffers to prevent memory leak/segment fault or invalid elements.
     std::vector<ekg_element*> concurrent_buffer;

@@ -129,6 +129,11 @@ namespace ekgapi {
              void set_vec4f(const std::string &uniform_name, const float* vec4);
 
              /*
+              * Pass uniform float arr with size of 2 floats.
+              */
+             void set_vec2f(const std::string &uniform_name, const float* vec2);
+
+             /*
               * Pass uniform int32.
               */
              void set_int(const std::string &uniform_name, int32_t val);

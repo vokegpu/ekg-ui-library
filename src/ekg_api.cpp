@@ -317,3 +317,7 @@ void ekgapi::OpenGL::program::set_int(const std::string &uniform_name, int32_t v
 void ekgapi::OpenGL::program::set_vec4f(const std::string &uniform_name, const float *vec4) {
     glUniform4fv(glGetUniformLocation(this->program, uniform_name.c_str()), 1, vec4);
 }
+
+void ekgapi::OpenGL::program::set_vec2f(const std::string &uniform_name, const float* vec2) {
+    glUniform2fv(glGetUniformLocation(this->program, uniform_name.c_str()), 1, vec2);
+}

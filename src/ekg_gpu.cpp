@@ -7,26 +7,27 @@ void ekg_gpu_data_handler::init() {
             const char* vertex_src = "#version 330 core\n"
                                      "\n"
                                      "layout (location = 0) in vec2 attrib_pos;\n"
-                                     "layout (location = 1) in vec4 attrib_material;\n"
+                                     "layout (location = 1) in vec2 attrib_material;\n"
                                      "\n"
-                                     "out vec4 varying_material;\n"
+                                     "out vec2 varying_material;\n"
                                      "uniform mat4 u_mat_matrix;\n"
+                                     "uniform vec2 u_vec2_pos;\n"
                                      "\n"
                                      "void main() {\n"
-                                     "    gl_Position = u_mat_matrix * vec4(attrib_pos.xy, 0, 1);\n"
+                                     "    gl_Position = u_mat_matrix * vec4(u_vec2_pos + attrib_pos, 0, 1);\n"
                                      "    varying_material = attrib_material;\n"
                                      "}";
 
             const char* fragment_src = "#version 330 core\n"
                                        "\n"
-                                       "in vec4 varying_material;\n"
+                                       "in vec2 varying_material;\n"
                                        "\n"
                                        "uniform sampler2D u_sampler2d_texture_active;\n"
                                        "uniform bool u_bool_set_texture;\n"
                                        "uniform vec4 u_vec4_color;\n"
                                        "\n"
                                        "void main() {\n"
-                                       "    vec4 fragcolor = varying_material;\n"
+                                       "    vec4 fragcolor = u_vec4_color;\n"
                                        "\n"
                                        "    if (u_bool_set_texture) {\n"
                                        "        fragcolor = texture2D(u_sampler2d_texture_active, varying_material.xy);\n"
@@ -49,15 +50,15 @@ void ekg_gpu_data_handler::init() {
     // Configure the buffers (peek ekg_gpu_data_handler::end to explain).
     glBindVertexArray(this->vertex_buffer_arr);
     glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_positions);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, 0, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, 0, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_materials);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, 0, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, 0, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -74,16 +75,20 @@ void ekg_gpu_data_handler::draw() {
     // Bind VAO and draw the two VBO(s).
     glBindVertexArray(this->vertex_buffer_arr);
 
+    ekg_gpu_data gpu_data;
+
     // Simulate glMultiDrawArrays.
     for (uint32_t i = 0; i < this->amount_of_draw_iterations; i++) {
-        ekg_gpu_data &gpu_data = this->gpu_data_list[i];
+        gpu_data = this->gpu_data_list[i];
+        
         this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
+        this->default_program.set_vec4f("u_vec4_color", gpu_data.color);
+        this->default_program.set_vec2f("u_vec2_pos", gpu_data.pos);
 
         if (gpu_data.texture != 0) {
             glActiveTexture(GL_TEXTURE0 + gpu_data.texture_slot);
             glBindTexture(GL_TEXTURE_2D, gpu_data.texture);
 
-            this->default_program.set_vec4f("u_vec4_color", gpu_data.color);
             this->default_program.set_int("u_sampler2d_texture_active", gpu_data.texture_slot);
         }
 
@@ -101,31 +106,41 @@ void ekg_gpu_data_handler::start() {
 }
 
 void ekg_gpu_data_handler::end() {
-    // Bind the vertex positions vbo and alloc new data to GPU.
-    glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_positions);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
-
-    // Bind vao and pass attrib data to VAO.
-    glBindVertexArray(this->vertex_buffer_arr);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-    glEnableVertexAttribArray(0);
-
-    // Bind vertex materials and alloc new data to GPU.
-    glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_materials);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices_materials.size(), &this->cached_vertices_materials[0], GL_STATIC_DRAW);
-
-    // Enable the second location attrib (pass to VAO) from shader.
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-    glEnableVertexAttribArray(1);
-
-    // Unbind vbo(s) and vao.
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glBindVertexArray(0);
+    bool should_realloc = this->previous_data_size != this->amount_of_data;
+    this->previous_data_size = this->amount_of_data;
 
     // Iterate all cached GPU data and pass to CPU arr.
     for (uint32_t i = 0; i < this->cached_data.size(); i++) {
+
+        if (this->gpu_data_list[i].factor != this->cached_data.at(i).factor) {
+            should_realloc = true;
+        }
+
         this->gpu_data_list[i] = this->cached_data.at(i);
+    }
+
+    if (should_realloc) {
+        // Bind the vertex positions vbo and alloc new data to GPU.
+        glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_positions);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
+
+        // Bind vao and pass attrib data to VAO.
+        glBindVertexArray(this->vertex_buffer_arr);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+        glEnableVertexAttribArray(0);
+
+        // Bind vertex materials and alloc new data to GPU.
+        glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_materials);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices_materials.size(), &this->cached_vertices_materials[0], GL_STATIC_DRAW);
+
+        // Enable the second location attrib (pass to VAO) from shader.
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+        glEnableVertexAttribArray(1);
+
+        // Unbind vbo(s) and vao.
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindVertexArray(0);
     }
 
     // Clean the previous data.
@@ -187,12 +202,23 @@ void ekg_gpu_data_handler::quit() {
 
 void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec) {
     // Alloc arrays in CPU.
-    ekggpu::push_arr_vertex(ekg::core::instance.get_gpu_handler().get_cached_vertices(), x, y, w, h);
-    ekggpu::push_arr_vertex_color_rgba(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), color_vec.x, color_vec.y, color_vec.z, color_vec.w);
+    ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, w, h);
+    ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
 
     // Generate a GPU data.
     ekg_gpu_data gpu_data;
+
+    // Configure the GPU data.
     gpu_data.data = 6;
+    gpu_data.factor = (uint32_t) (w * h);
+
+    gpu_data.pos[0] = x;
+    gpu_data.pos[1] = y;
+
+    gpu_data.color[0] = color_vec.x;
+    gpu_data.color[1] = color_vec.y;
+    gpu_data.color[2] = color_vec.z;
+    gpu_data.color[3] = color_vec.w;
 
     // Bind GPU data into GPU handler.
     ekg::core::instance.get_gpu_handler().bind(gpu_data);
@@ -206,7 +232,7 @@ void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec4) {
 
 }
 
-void ekggpu::push_arr_vertex(std::vector<float> &vec_arr, float x, float y, float w, float h) {
+void ekggpu::push_arr_rect(std::vector<float> &vec_arr, float x, float y, float w, float h) {
     vec_arr.push_back(x);
     vec_arr.push_back(y);
 
@@ -224,70 +250,6 @@ void ekggpu::push_arr_vertex(std::vector<float> &vec_arr, float x, float y, floa
 
     vec_arr.push_back(x);
     vec_arr.push_back(y);
-}
-
-void ekggpu::push_arr_vertex_color_rgba(std::vector<float> &vec_arr, float r, float g, float b, float a) {
-    vec_arr.push_back(r);
-    vec_arr.push_back(g);
-    vec_arr.push_back(b);
-    vec_arr.push_back(a);
-
-    vec_arr.push_back(r);
-    vec_arr.push_back(g);
-    vec_arr.push_back(b);
-    vec_arr.push_back(a);
-
-    vec_arr.push_back(r);
-    vec_arr.push_back(g);
-    vec_arr.push_back(b);
-    vec_arr.push_back(a);
-
-    vec_arr.push_back(r);
-    vec_arr.push_back(g);
-    vec_arr.push_back(b);
-    vec_arr.push_back(a);
-
-    vec_arr.push_back(r);
-    vec_arr.push_back(g);
-    vec_arr.push_back(b);
-    vec_arr.push_back(a);
-
-    vec_arr.push_back(r);
-    vec_arr.push_back(g);
-    vec_arr.push_back(b);
-    vec_arr.push_back(a);
-}
-
-void ekggpu::push_arr_vertex_tex_coords(std::vector<float> &vec_arr, float x, float y, float w, float h) {
-    vec_arr.push_back(x);
-    vec_arr.push_back(y);
-    vec_arr.push_back(0.0f);
-    vec_arr.push_back(0.0f);
-
-    vec_arr.push_back(x);
-    vec_arr.push_back(y + h);
-    vec_arr.push_back(0.0f);
-    vec_arr.push_back(0.0f);
-
-    vec_arr.push_back(x + w);
-    vec_arr.push_back(y + h);
-    vec_arr.push_back(0.0f);
-    vec_arr.push_back(0.0f);
-
-    vec_arr.push_back(x + w);
-    vec_arr.push_back(y + h);
-    vec_arr.push_back(0.0f);
-    vec_arr.push_back(0.0f);
-
-    vec_arr.push_back(x + w);
-    vec_arr.push_back(y);
-    vec_arr.push_back(0.0f);
-    vec_arr.push_back(0.0f);
-
-    vec_arr.push_back(x);
-    vec_arr.push_back(y);
-    vec_arr.push_back(0.0f);
-    vec_arr.push_back(0.0f);
 }
 
 void ekggpu::invoke() {

@@ -1,4 +1,5 @@
 #include <ekg/impl/ekg_ui_element_abstract.hpp>
+#include <ekg/ekg.hpp>
 
 ekg_element::ekg_element() {
 
@@ -99,8 +100,14 @@ void ekg_element::collect_stack(ekgutil::stack &stack) {
 
     stack.add(this->id);
 
+    ekg_element* element;
+
     for (uint32_t &ids : this->children_stack.ids) {
         stack.add(ids);
+
+        if (ekg::core::instance.find_element(element, ids) && element->is_mother()) {
+            element->collect_stack(stack);
+        }
     }
 }
 

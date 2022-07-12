@@ -120,6 +120,21 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
 
     float render_x = 0, render_y = 0, render_w = 0, render_h = 0;
     float texture_x = 0, texture_y = 0, texture_w = 0, texture_h = 0;
+    float diff = 0.0f;
+
+    // Generate a GPU data.
+    ekg_gpu_data gpu_data;
+
+    // Configure
+    // Each char quad has 6 vertices, so we multiply 6 by length of text.
+    gpu_data.data = (GLint) (6 * str_len);
+
+    gpu_data.pos[0] = x;
+    gpu_data.pos[1] = y;
+
+    // Reset because we do not modify the buffer vertex.
+    x = 0;
+    y = 0;
 
     for (const char* i = char_str; *i; i++) {
         if (this->use_kerning && this->previous && *i) {
@@ -139,25 +154,22 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
         texture_x = char_data.x;
         texture_w = render_w / (float) this->texture_width;
         texture_h = render_h / (float) this->texture_height;
+        diff += texture_x;
 
-        ekggpu::push_arr_vertex(ekg::core::instance.get_gpu_handler().get_cached_vertices(), render_x, render_y, render_w, render_h);
-        ekggpu::push_arr_vertex_tex_coords(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
+        ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices(), render_x, render_y, render_w, render_h);
+        ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
 
         x += char_data.texture_x;
         this->previous = (uint8_t) *i;
     }
-
-    // Generate a GPU data.
-    ekg_gpu_data gpu_data;
-
-    // Each char quad has 6 vertices, so we multiply 6 by length of text.
-    gpu_data.data = (GLint) (6 * str_len);
 
     // Pass color of texture.
     gpu_data.color[0] = color_vec.x;
     gpu_data.color[1] = color_vec.y;
     gpu_data.color[2] = color_vec.z;
     gpu_data.color[3] = color_vec.w;
+
+    gpu_data.factor = (uint32_t) (str_len + diff);
 
     // Send data to GPU.
     ekg::core::instance.get_gpu_handler().bind_texture(gpu_data, this->bitmap_texture_id);

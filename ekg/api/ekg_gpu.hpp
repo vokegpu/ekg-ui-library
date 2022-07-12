@@ -12,6 +12,8 @@
 struct ekg_gpu_data {
     GLuint texture = 0;
     uint8_t texture_slot = 0;
+    float pos[2];
+    uint32_t factor = 0;
 
     GLint data = 0;
     GLint raw = 0;
@@ -37,6 +39,7 @@ protected:
 
     uint32_t amount_of_draw_iterations;
     uint32_t amount_of_data;
+    uint32_t previous_data_size;
     uint8_t amount_of_texture_data_allocated;
 
     ekgapi::OpenGL::program default_program;
@@ -115,17 +118,7 @@ namespace ekggpu {
     /*
      * Push modal shape to CPU before GPU.
      */
-    void push_arr_vertex(std::vector<float> &vec_arr, float x, float y, float w, float h);
-
-    /*
-     * Push color rgba to CPU before GPU.
-     */
-    void push_arr_vertex_color_rgba(std::vector<float> &vec_arr, float r, float g, float b, float a);
-
-    /*
-     * Push texture coordinates to CPU before GPU.
-     */
-    void push_arr_vertex_tex_coords(std::vector<float> &vec_arr, float x, float y, float w, float h);
+    void push_arr_rect(std::vector<float> &vec_arr, float x, float y, float w, float h);
 
     /*
      * Draw rectangle.
