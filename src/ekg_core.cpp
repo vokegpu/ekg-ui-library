@@ -83,8 +83,6 @@ void ekg_core::process_render_section() {
 
         for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
             ekg_element *&element = this->render_buffer[i];
-            ekgutil::log(std::to_string(element->get_id()));
-
             element->on_draw_refresh();
         }
 
@@ -168,23 +166,24 @@ void ekg_core::fix_stack() {
 
     ekgutil::stack concurrent_all_data_stack;
     ekgutil::stack concurrent_focused_stack;
+    ekgutil::stack concurrent_data_stack;
 
     for (ekg_element* &elements : this->data) {
         if (elements == nullptr) {
             continue;
         }
 
-        if (concurrent_focused_stack.contains(elements->get_id())) {
+        if (concurrent_all_data_stack.contains(elements->get_id()) || concurrent_focused_stack.contains(elements->get_id())) {
             continue;
         }
 
-        ekgutil::stack concurrent_data_stack;
+        concurrent_data_stack.ids.clear();
         elements->collect_stack(concurrent_data_stack);
 
         if (concurrent_data_stack.contains(this->focused_element_id)) {
             concurrent_focused_stack = concurrent_data_stack;
         } else {
-            concurrent_all_data_stack.add(elements->get_id());
+            concurrent_all_data_stack.add(concurrent_all_data_stack);
         }
     }
 

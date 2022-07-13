@@ -139,6 +139,11 @@ namespace ekgutil {
          * Add an id at ids list.
          */
         void add(uint32_t id);
+
+        /*
+         * Add other stack.
+         */
+        void add(eekgutil::stack& stack);
     };
 
     /**

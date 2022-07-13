@@ -87,6 +87,10 @@ void ekgutil::stack::add(uint32_t id) {
     }
 }
 
+void ekgutil::stack::add(ekgutil::stack &stack) {
+    this->ids.insert(this->ids.end(), stack.ids.begin(), stack.ids.end());
+}
+
 bool ekgmath::rect::collide_aabb_with_point(float px, float py) {
     return px > this->x && px < this->x + this->w && py > this->y && py < this->y + this->h;
 }
