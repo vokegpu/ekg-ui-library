@@ -143,7 +143,7 @@ namespace ekgutil {
         /*
          * Add other stack.
          */
-        void add(eekgutil::stack& stack);
+        void add(ekgutil::stack& stack);
     };
 
     /**
