@@ -13,7 +13,7 @@ struct ekg_gpu_data {
     GLuint texture = 0;
     uint8_t texture_slot = 0;
     float pos[2];
-    uint32_t factor = 0;
+    float factor = 0;
 
     GLint data = 0;
     GLint raw = 0;
@@ -31,7 +31,7 @@ protected:
     std::vector<ekg_gpu_data> cached_data;
     std::vector<GLuint> cached_textures;
 
-    ekg_gpu_data gpu_data_list[4048];
+    ekg_gpu_data gpu_data_list[2048];
 
     GLuint vertex_buffer_arr;
     GLuint vertex_buf_object_vertex_positions;

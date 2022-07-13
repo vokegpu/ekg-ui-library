@@ -100,12 +100,10 @@ void ekg_element::collect_stack(ekgutil::stack &stack) {
 
     stack.add(this->id);
 
-    ekg_element* element;
-
     for (uint32_t &ids : this->children_stack.ids) {
-        stack.add(ids);
+        ekg_element* element;
 
-        if (ekg::core::instance.find_element(element, ids) && element->is_mother()) {
+        if (ekg::core::instance.find_element(element, ids)) {
             element->collect_stack(stack);
         }
     }

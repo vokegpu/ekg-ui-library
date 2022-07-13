@@ -54,7 +54,7 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
     if (ekgapi::any_input_down(sdl_event) && this->focused_element_id != 0 && this->last_focused_element_id != this->focused_element_id) {
         this->last_focused_element_id = this->focused_element_id;
 
-        this->dispatch_todo_event(ekgutil::action::FIXSTACK);
+        this->fix_stack();
         this->dispatch_todo_event(ekgutil::action::REFRESH);
     }
 }
@@ -77,20 +77,22 @@ void ekg_core::process_update_section() {
 }
 
 void ekg_core::process_render_section() {
-    this->gpu_handler.calc_view_ortho_2d();
-    this->gpu_handler.draw();
-
     if (ekgutil::contains(this->todo_flags, ekgutil::action::REFRESH)) {
         ekgutil::remove(this->todo_flags, ekgutil::action::REFRESH);
         ekggpu::invoke();
 
         for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
             ekg_element *&element = this->render_buffer[i];
+            ekgutil::log(std::to_string(element->get_id()));
+
             element->on_draw_refresh();
         }
 
         ekggpu::revoke();
     }
+
+    this->gpu_handler.calc_view_ortho_2d();
+    this->gpu_handler.draw();
 }
 
 void ekg_core::add_element(ekg_element* &element) {
@@ -98,7 +100,9 @@ void ekg_core::add_element(ekg_element* &element) {
     element->set_visibility(ekg::visibility::VISIBLE);
 
     this->concurrent_buffer.push_back(element);
+
     this->dispatch_todo_event(ekgutil::action::SWAPBUFFERS);
+    this->dispatch_todo_event(ekgutil::action::FIXRECTS);
     this->dispatch_todo_event(ekgutil::action::REFRESH);
 }
 
@@ -164,7 +168,6 @@ void ekg_core::fix_stack() {
 
     ekgutil::stack concurrent_all_data_stack;
     ekgutil::stack concurrent_focused_stack;
-    ekgutil::stack concurrent_data_stack;
 
     for (ekg_element* &elements : this->data) {
         if (elements == nullptr) {
@@ -175,7 +178,7 @@ void ekg_core::fix_stack() {
             continue;
         }
 
-        concurrent_data_stack.ids.clear();
+        ekgutil::stack concurrent_data_stack;
         elements->collect_stack(concurrent_data_stack);
 
         if (concurrent_data_stack.contains(this->focused_element_id)) {
@@ -191,9 +194,7 @@ void ekg_core::fix_stack() {
 
     ekg_element* element;
 
-    for (uint32_t ids : concurrent_all_data_stack.ids) {
-        ekg_element* element;
-
+    for (uint32_t &ids : concurrent_all_data_stack.ids) {
         if (!this->find_element(element, ids)) {
             continue;
         }
@@ -205,7 +206,7 @@ void ekg_core::fix_stack() {
         }
     }
 
-    for (uint32_t ids : concurrent_focused_stack.ids) {
+    for (uint32_t &ids : concurrent_focused_stack.ids) {
         if (!this->find_element(element, ids)) {
             continue;
         }

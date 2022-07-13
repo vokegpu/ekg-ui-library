@@ -192,7 +192,7 @@ void ekg_gpu_data_handler::bind_texture(ekg_gpu_data &gpu_data, GLuint &object_i
 
     if (!flag_has_cached) {
         gpu_data.texture_slot = this->amount_of_texture_data_allocated++;
-        cached_textures.push_back(object_id);
+        this->cached_textures.push_back(object_id);
     }
 }
 
@@ -210,7 +210,7 @@ void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color
 
     // Configure the GPU data.
     gpu_data.data = 6;
-    gpu_data.factor = (uint32_t) (w * h);
+    gpu_data.factor = w * h;
 
     gpu_data.pos[0] = x;
     gpu_data.pos[1] = y;

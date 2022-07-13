@@ -54,7 +54,7 @@ bool ekgutil::find_axis_dock(uint16_t &target, float px, float py, float offset,
 }
 
 bool ekgutil::stack::contains(uint32_t id) {
-    for (uint32_t _ids : this->ids) {
+    for (uint32_t &_ids : this->ids) {
         if (_ids == id) {
             return true;
         }

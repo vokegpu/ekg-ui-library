@@ -169,7 +169,7 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     gpu_data.color[2] = color_vec.z;
     gpu_data.color[3] = color_vec.w;
 
-    gpu_data.factor = (uint32_t) (str_len + diff);
+    gpu_data.factor = ((float) str_len + diff);
 
     // Send data to GPU.
     ekg::core::instance.get_gpu_handler().bind_texture(gpu_data, this->bitmap_texture_id);
