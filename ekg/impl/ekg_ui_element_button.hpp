@@ -16,6 +16,9 @@ protected:
     float min_text_height;
 
     bool callback_flag;
+
+    uint16_t enum_flags_text_dock;
+    float text_offset_x, text_offset_y;
 public:
     ekg_button();
     ~ekg_button();
@@ -28,6 +31,9 @@ public:
 
     float get_min_text_width();
     float get_min_text_height();
+
+    void set_text_dock(uint16_t flags);
+    uint16_t get_text_dock();
 
     void set_size(float width, float height) override;
     void set_pos(float x, float y) override;

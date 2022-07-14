@@ -4,7 +4,7 @@
 #include <ekg/ekg.hpp>
 
 ekg_button::ekg_button() {
-
+    this->set_text_dock(ekg::dock::CENTER);
 }
 
 ekg_button::~ekg_button() {
@@ -25,6 +25,33 @@ void ekg_button::on_sync() {
     this->rect.h = this->rect.h < this->min_text_height ? this->min_text_height : this->rect.h;
 
     ekg::core::instance.dispatch_todo_event(ekgutil::action::REFRESH);
+
+    bool center = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::CENTER);
+    bool top = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::TOP);
+    bool bottom = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::BOTTOM);
+    bool left = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::LEFT);
+    bool right = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::RIGHT);
+
+    if (center) {
+        this->text_offset_x = (this->rect.w / 2.0f) - (this->min_text_width / 2);
+        this->text_offset_y = (this->rect.h / 2.0f) - (this->min_text_height / 2);
+    }
+
+    if (top) {
+        this->text_offset_y = this->min_text_height / 2;
+    }
+
+    if (left) {
+        this->text_offset_x = this->min_text_width / 4.0f;
+    }
+
+    if (right) {
+        this->text_offset_x = this->rect.w - this->rect.h - (this->min_text_width / 4.0f);
+    }
+
+    if (bottom) {
+        this->text_offset_y = this->rect.h - (this->min_text_height / 4.0f);
+    }
 }
 
 void ekg_button::on_pre_event_update(SDL_Event &sdl_event) {
@@ -77,7 +104,7 @@ void ekg_button::on_draw_refresh() {
         ekggpu::rectangle(this->rect, ekg::theme().button_activy);
     }
 
-    ekgfont::render(this->text, this->rect.x, this->rect.y, ekg::theme().string_color);
+    ekgfont::render(this->text, this->rect.x + this->text_offset_x, this->rect.y + this->text_offset_y, ekg::theme().string_color);
 }
 
 void ekg_button::set_text(const std::string &string) {
@@ -120,4 +147,18 @@ float ekg_button::get_min_text_width() {
 
 float ekg_button::get_min_text_height() {
     return this->min_text_height;
+}
+
+void ekg_button::set_text_dock(uint16_t flags) {
+    uint16_t comp = ekg::dock::CENTER | ekg::dock::LEFT | ekg::dock::RIGHT | ekg::dock::TOP | ekg::dock::BOTTOM;
+    bool flag = ekgutil::contains(comp, flags);
+
+    if (flag && this->enum_flags_text_dock != flags) {
+        this->enum_flags_text_dock = flags;
+        this->on_sync();
+    }
+}
+
+uint16_t ekg_button::get_text_dock() {
+    return this->enum_flags_text_dock;
 }
