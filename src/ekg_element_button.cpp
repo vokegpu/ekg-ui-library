@@ -133,6 +133,14 @@ void ekg_button::set_pos(float x, float y) {
     ekg_element::set_pos(x, y);
 }
 
+void ekg_button::set_width(float width) {
+    this->set_size(width, this->rect.h);
+}
+
+void ekg_button::set_height(float height) {
+    this->set_size(this->rect.x, height);
+}
+
 void ekg_button::set_callback_flag(bool val) {
     this->callback_flag = val;
 }

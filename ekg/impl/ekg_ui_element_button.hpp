@@ -35,6 +35,9 @@ public:
     void set_text_dock(uint16_t flags);
     uint16_t get_text_dock();
 
+    void set_width(float width);
+    void set_height(float height);
+
     void set_size(float width, float height) override;
     void set_pos(float x, float y) override;
     void on_killed() override;

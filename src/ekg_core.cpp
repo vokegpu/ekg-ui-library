@@ -80,6 +80,7 @@ void ekg_core::process_render_section() {
     if (ekgutil::contains(this->todo_flags, ekgutil::action::REFRESH)) {
         ekgutil::remove(this->todo_flags, ekgutil::action::REFRESH);
         ekggpu::invoke();
+        ekgfont::render("Elements in: " + std::to_string(this->data.size()), 10, 10, ekg::theme().string_color);
 
         for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
             ekg_element *&element = this->render_buffer[i];

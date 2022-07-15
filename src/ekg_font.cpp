@@ -28,7 +28,7 @@ float ekg_font::get_text_width(const std::string &text) {
 }
 
 float ekg_font::get_text_height(const std::string &text) {
-    return (float) this->texture_height;
+    return (float) this->texture_height + (0.2 * this->texture_height);
 }
 
 void ekg_font::init() {
@@ -76,6 +76,7 @@ bool ekg_font::reload() {
 
     glBindTexture(GL_TEXTURE_2D, this->bitmap_texture_id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, (int32_t) this->texture_width, (int32_t) this->texture_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, nullptr);
+    glGenerateMipmap(GL_TEXTURE_2D);
 
     float offset = 0.0f;
 
@@ -98,10 +99,10 @@ bool ekg_font::reload() {
         offset += char_data.width;
     }
 
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glBindTexture(GL_TEXTURE_2D, 0);

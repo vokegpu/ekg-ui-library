@@ -71,6 +71,8 @@ ekg_theme &ekg::theme() {
 void ekg::core::init() {
     ekgutil::log("Core initialised.");
     ekg::core::instance.init();
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void ekg::core::quit() {

@@ -100,62 +100,68 @@ namespace ekgapi {
     /**
      * The OpenGL functions.
      **/
-     namespace OpenGL {
+    namespace OpenGL {
          /*
           * Init OpenGL basic stuff.
           */
-         void init();
+        void init();
 
-         /**
-          * Shader program are mini-programs (program) that GPU runs.
-          **/
-         struct program {
-             GLuint program;
-             bool compiled;
+        /**
+         * Shader program are mini-programs (program) that GPU runs.
+         **/
+        struct program {
+            GLuint program;
+            bool compiled;
 
-             /*
-              * Use the shader program.
-              */
-             void use();
+            /*
+             * Use the shader program.
+             */
+            void use();
 
-             /*
-              * Pass uniform float arr with size of 16 floats.
-              */
-             void set_mat4x4(const std::string &uniform_name, float* mat4x4);
+            /*
+             * Pass uniform float arr with size of 16 floats.
+             */
+            void set_mat4x4(const std::string &uniform_name, float* mat4x4);
 
-             /*
-              * Pass uniform float arr with size of 4 floats.
-              */
-             void set_vec4f(const std::string &uniform_name, const float* vec4);
+            /*
+             * Pass uniform float arr with size of 4 floats.
+             */
+            void set_vec4f(const std::string &uniform_name, const float* vec4);
 
-             /*
-              * Pass uniform float arr with size of 2 floats.
-              */
-             void set_vec2f(const std::string &uniform_name, const float* vec2);
 
-             /*
-              * Pass uniform int32.
-              */
-             void set_int(const std::string &uniform_name, int32_t val);
-         };
+            /*
+             * Pass uniform float.
+             */
+            void set_float(const std::string &uniform_name, float val);
 
-         /*
-          * Returns true if shader is compiled else false.
-          */
-         bool compile_shader(GLuint &shader_id, GLuint mode, const char* src);
+            /*
+             * Pass uniform float arr with size of 2 floats.
+             */
+            void set_vec2f(const std::string &uniform_name, const float* vec2);
 
-         /*
-          * Compile OpenGL program for use.
-          */
-         void compile_program(ekgapi::OpenGL::program &program, const char* vertex_src, const char* fragment_src);
-     };
+            /*
+             * Pass uniform int32.
+             */
+            void set_int(const std::string &uniform_name, int32_t val);
+        };
 
-     /**
-      * File manager.
-      **/
-      namespace file {
-          void init();
-      };
+        /*
+         * Returns true if shader is compiled else false.
+         */
+        bool compile_shader(GLuint &shader_id, GLuint mode, const char* src);
+
+        /*
+         * Compile OpenGL program for use.
+         */
+        void compile_program(ekgapi::OpenGL::program &program, const char* vertex_src, const char* fragment_src);
+    };
+
+    /**
+     * File manager.
+     **/
+    namespace file {
+        void init();
+    };
 };
 
 /**

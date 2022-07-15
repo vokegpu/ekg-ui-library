@@ -12,9 +12,10 @@ void ekg_gpu_data_handler::init() {
                                      "out vec2 varying_material;\n"
                                      "uniform mat4 u_mat_matrix;\n"
                                      "uniform vec2 u_vec2_pos;\n"
+                                     "uniform float u_float_zdepth;\n"
                                      "\n"
                                      "void main() {\n"
-                                     "    gl_Position = u_mat_matrix * vec4(u_vec2_pos + attrib_pos, 0, 1);\n"
+                                     "    gl_Position = u_mat_matrix * vec4(u_vec2_pos + attrib_pos, 0, 1.0f + (u_float_zdepth * 0.1f));\n"
                                      "    varying_material = attrib_material;\n"
                                      "}";
 
@@ -84,6 +85,7 @@ void ekg_gpu_data_handler::draw() {
         this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
         this->default_program.set_vec4f("u_vec4_color", gpu_data.color);
         this->default_program.set_vec2f("u_vec2_pos", gpu_data.pos);
+        this->default_program.set_float("u_float_zdepth", (float) i);
 
         if (gpu_data.texture != 0) {
             glActiveTexture(GL_TEXTURE0 + gpu_data.texture_slot);
