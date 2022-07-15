@@ -15,7 +15,7 @@ void ekg_gpu_data_handler::init() {
                                      "uniform float u_float_zdepth;\n"
                                      "\n"
                                      "void main() {\n"
-                                     "    gl_Position = u_mat_matrix * vec4(u_vec2_pos + attrib_pos, 0, 1.0f + (u_float_zdepth * 0.1f));\n"
+                                     "    gl_Position = u_mat_matrix * vec4(u_vec2_pos + attrib_pos, (u_float_zdepth * 0.1f), 1.0f);\n"
                                      "    varying_material = attrib_material;\n"
                                      "}";
 
