@@ -81,11 +81,11 @@ void ekg_gpu_data_handler::draw() {
     // Simulate glMultiDrawArrays.
     for (uint32_t i = 0; i < this->amount_of_draw_iterations; i++) {
         gpu_data = this->gpu_data_list[i];
-        
+
         this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
         this->default_program.set_vec4f("u_vec4_color", gpu_data.color);
         this->default_program.set_vec2f("u_vec2_pos", gpu_data.pos);
-        this->default_program.set_float("u_float_zdepth", (float) i);
+        this->default_program.set_float("u_float_zdepth", this->depth_level + (float) i);
 
         if (gpu_data.texture != 0) {
             glActiveTexture(GL_TEXTURE0 + gpu_data.texture_slot);
@@ -113,7 +113,6 @@ void ekg_gpu_data_handler::end() {
 
     // Iterate all cached GPU data and pass to CPU arr.
     for (uint32_t i = 0; i < this->cached_data.size(); i++) {
-
         if (this->gpu_data_list[i].factor != this->cached_data.at(i).factor) {
             should_realloc = true;
         }
@@ -200,6 +199,14 @@ void ekg_gpu_data_handler::bind_texture(ekg_gpu_data &gpu_data, GLuint &object_i
 
 void ekg_gpu_data_handler::quit() {
     // TODO delete the current VAO and VBO(s) buffers
+}
+
+void ekg_gpu_data_handler::set_depth_level(float z_level) {
+    this->depth_level = z_level;
+}
+
+float ekg_gpu_data_handler::get_depth_level() {
+    return this->depth_level;
 }
 
 void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec) {

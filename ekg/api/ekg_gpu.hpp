@@ -44,7 +44,18 @@ protected:
 
     ekgapi::OpenGL::program default_program;
     float mat4x4_ortho[16];
+    float depth_level = 0.1f;
 public:
+    /*
+     * Set the draw z level.
+     */
+    void set_depth_level(float z_level);
+
+    /*
+     * Get the depth level.
+     */
+    float get_depth_level();
+
     /*
      * Get current GPU cached vertices.
      */

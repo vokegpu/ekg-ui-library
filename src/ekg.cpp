@@ -68,6 +68,14 @@ ekg_theme &ekg::theme() {
     return ekg::core::instance.get_theme_service().get_loaded_theme();
 }
 
+float ekg::depth() {
+    return ekg::core::instance.get_gpu_handler().get_depth_level();
+}
+
+void ekg::depth(float depth_level) {
+    return ekg::core::instance.get_gpu_handler().set_depth_level(depth_level);
+}
+
 void ekg::core::init() {
     ekgutil::log("Core initialised.");
     ekg::core::instance.init();

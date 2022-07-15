@@ -31,6 +31,16 @@ namespace ekg {
     std::string get_version();
 
     /*
+     * Get the depth level of draw context.
+     */
+    float depth();
+
+    /*
+     * Set the depth level.
+     */
+    void depth(float depth_level);
+
+    /*
      * Init EKG.
      */
     void init(SDL_Window* &sdl_window);

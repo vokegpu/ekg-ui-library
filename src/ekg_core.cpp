@@ -53,9 +53,7 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
 
     if (ekgapi::any_input_down(sdl_event) && this->focused_element_id != 0 && this->last_focused_element_id != this->focused_element_id) {
         this->last_focused_element_id = this->focused_element_id;
-
         this->fix_stack();
-        this->dispatch_todo_event(ekgutil::action::REFRESH);
     }
 }
 
