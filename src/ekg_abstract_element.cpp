@@ -94,15 +94,21 @@ float ekg_element::get_height() {
 }
 
 void ekg_element::collect_stack(ekgutil::stack &stack) {
+    ekg_element* element;
+
+    if (this->has_mother() && ekg::core::instance.find_element(element, this->master_id)) {
+        element->collect_stack(stack);
+    }
+
     if (stack.contains(this->id)) {
         return;
     }
 
     stack.add(this->id);
 
-    for (uint32_t &ids : this->children_stack.ids) {
-        ekg_element* element;
+    element = nullptr;
 
+    for (uint32_t &ids : this->children_stack.ids) {
         if (ekg::core::instance.find_element(element, ids)) {
             element->collect_stack(stack);
         }
@@ -156,4 +162,8 @@ float ekg_element::get_sync_x() {
 
 float ekg_element::get_sync_y() {
     return  this->sync_y;
+}
+
+uint32_t ekg_element::get_master_id() {
+    return this->master_id;
 }

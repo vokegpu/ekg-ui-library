@@ -37,14 +37,16 @@ public:
     bool is_mother();
     bool has_mother();
 
-    void set_id(uint32_t element_id);
     uint32_t get_type();
+
+    void set_id(uint32_t element_id);
+    uint32_t get_id();
 
     void set_visibility(uint32_t visible);
     uint32_t get_visibility();
 
     void set_master_id(uint32_t element_id);
-    uint32_t get_id();
+    uint32_t get_master_id();
 
     ekgutil::flag &access_flag();
     ekgutil::stack &access_children_stack();

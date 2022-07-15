@@ -82,9 +82,7 @@ bool ekgutil::stack::remove(uint32_t id) {
 }
 
 void ekgutil::stack::add(uint32_t id) {
-    if (!this->contains(id)) {
-        this->ids.push_back(id);
-    }
+    this->ids.push_back(id);
 }
 
 void ekgutil::stack::add(ekgutil::stack &stack) {

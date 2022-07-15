@@ -183,7 +183,7 @@ void ekg_core::fix_stack() {
         if (concurrent_data_stack.contains(this->focused_element_id)) {
             concurrent_focused_stack = concurrent_data_stack;
         } else {
-            concurrent_all_data_stack.add(concurrent_all_data_stack);
+            concurrent_all_data_stack.add(concurrent_data_stack);
         }
     }
 
@@ -204,6 +204,8 @@ void ekg_core::fix_stack() {
             this->render_buffer[this->sizeof_render_buffer++] = element;
         }
     }
+
+    element = nullptr;
 
     for (uint32_t &ids : concurrent_focused_stack.ids) {
         if (!this->find_element(element, ids)) {
