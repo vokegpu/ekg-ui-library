@@ -1,34 +1,44 @@
 #include "ekg/api/ekg_font.hpp"
 #include <ekg/ekg.hpp>
 
-float ekg_font::get_text_width(const std::string &text) {
-    this->previous = 0;
-    FT_Vector vec;
-
-    float start_x = 0;
-    float render_x = 0;
-    float text_width = 0;
-
-    for (const char* i = text.c_str(); *i; i++) {
-        if (this->use_kerning && this->previous && *i) {
-            FT_Get_Kerning(this->face, this->previous, *i, 0, &vec);
-            start_x += (float) (vec.x >> 6);
-        }
-
-        ekg_char_data &char_data = this->char_list[*i];
-
-        render_x = start_x + (float) char_data.left;
-        start_x += char_data.texture_x;
-
-        this->previous = (uint8_t) *i;
-        text_width = render_x + char_data.width;
-    }
-
-    return text_width;
+void ekg_font::quit() {
+    FT_Done_FreeType(this->library);
+    FT_Done_Face(this->face);
 }
 
-float ekg_font::get_text_height(const std::string &text) {
-    return (float) this->texture_height + (0.2 * this->texture_height);
+void ekg_font::set_size(uint8_t size) {
+    if (!this->flag_font_loaded || this->font_size == size) {
+        return;
+    }
+
+    this->font_size = size;
+    this->refresh();
+}
+
+void ekg_font::refresh() {
+    if (this->font_size == 0) {
+        this->set_size(36);
+    }
+
+    ekgutil::log("Font refreshing; " + std::to_string(this->font_size) + " (uint32_t); " + this->font_path + " (std::string)");
+    FT_Set_Pixel_Sizes(this->face, 0, this->font_size);
+
+    this->texture_width = 0;
+    this->texture_height = 0;
+
+    this->use_kerning = FT_HAS_KERNING(this->face);
+    this->glyph_slot = this->face->glyph;
+
+    for (uint8_t i = 0; i < 128; i++) {
+        if (FT_Load_Char(this->face, i, FT_LOAD_RENDER)) {
+            continue;
+        }
+
+        this->texture_width += (uint32_t) this->glyph_slot->bitmap.width;
+        this->texture_height = std::max(this->texture_height, (uint32_t) this->glyph_slot->bitmap.rows);
+    }
+
+    this->reload();
 }
 
 void ekg_font::init() {
@@ -68,6 +78,7 @@ bool ekg_font::reload() {
         return this->flag_font_bitmap_generated;
     }
 
+    ekgutil::log("Font bitmap texture reloading");
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     if (this->bitmap_texture_id == 0) {
@@ -111,6 +122,36 @@ bool ekg_font::reload() {
     return this->flag_font_bitmap_generated;
 }
 
+float ekg_font::get_text_width(const std::string &text) {
+    this->previous = 0;
+    FT_Vector vec;
+
+    float start_x = 0;
+    float render_x = 0;
+    float text_width = 0;
+
+    for (const char* i = text.c_str(); *i; i++) {
+        if (this->use_kerning && this->previous && *i) {
+            FT_Get_Kerning(this->face, this->previous, *i, 0, &vec);
+            start_x += (float) (vec.x >> 6);
+        }
+
+        ekg_char_data &char_data = this->char_list[*i];
+
+        render_x = start_x + (float) char_data.left;
+        start_x += char_data.texture_x;
+
+        this->previous = (uint8_t) *i;
+        text_width = render_x + char_data.width;
+    }
+
+    return text_width;
+}
+
+float ekg_font::get_text_height(const std::string &text) {
+    return (float) this->texture_height + (0.2f * (float) this->texture_height);
+}
+
 void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f &color_vec) {
     if (!this->flag_ft_library_initialised || !this->flag_font_loaded || !this->flag_font_bitmap_generated) {
         return;
@@ -131,7 +172,7 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     gpu_data.data = (GLint) (6 * str_len);
 
     gpu_data.pos[0] = x;
-    gpu_data.pos[1] = y;
+    gpu_data.pos[1] = y - (0.2f * (float) this->texture_height) / 2.0f;
 
     // Reset because we do not modify the buffer vertex.
     x = 0;
@@ -175,44 +216,6 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     // Send data to GPU.
     ekg::core::instance.get_gpu_handler().bind_texture(gpu_data, this->bitmap_texture_id);
     ekg::core::instance.get_gpu_handler().bind(gpu_data);
-}
-
-void ekg_font::quit() {
-    FT_Done_FreeType(this->library);
-    FT_Done_Face(this->face);
-}
-
-void ekg_font::set_size(uint8_t size) {
-    if (!this->flag_font_loaded) {
-        return;
-    }
-
-    this->font_size = size;
-}
-
-void ekg_font::refresh() {
-    if (this->font_size == 0) {
-        this->set_size(36);
-    }
-
-    FT_Set_Pixel_Sizes(this->face, 0, this->font_size);
-
-    this->texture_width = 0;
-    this->texture_height = 0;
-
-    this->use_kerning = FT_HAS_KERNING(this->face);
-    this->glyph_slot = this->face->glyph;
-
-    for (uint8_t i = 0; i < 128; i++) {
-        if (FT_Load_Char(this->face, i, FT_LOAD_RENDER)) {
-            continue;
-        }
-
-        this->texture_width += (uint32_t) this->glyph_slot->bitmap.width;
-        this->texture_height = std::max(this->texture_height, (uint32_t) this->glyph_slot->bitmap.rows);
-    }
-
-    this->reload();
 }
 
 void ekgfont::render(const std::string &text, float x, float y, ekgmath::vec4f &color_vec) {

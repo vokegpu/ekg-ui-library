@@ -86,6 +86,10 @@ void ekg::depth(float depth_level) {
     return ekg::core::instance.get_gpu_handler().set_depth_level(depth_level);
 }
 
+void ekg::set_font_size(uint32_t size) {
+    ekg::core::instance.get_font_manager().set_size(size);
+}
+
 void ekg::core::init() {
     ekgutil::log("Core initialised.");
     ekg::core::instance.init();

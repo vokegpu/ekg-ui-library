@@ -72,6 +72,11 @@ namespace ekg {
     void set_font(const char* path);
 
     /*
+     * Set the font size.
+     */
+    void set_font_size(uint32_t size);
+
+    /*
      * Create check box UI.
      */
     ekg_check_box* check_box(std::string text);
