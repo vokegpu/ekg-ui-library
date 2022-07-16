@@ -25,17 +25,16 @@ protected:
     SDL_Window* sdl_window_instance;
 
     // Buffers to we handle in game.
-    std::array<ekg_element*, 512> render_buffer;
+    std::array<ekg_element*, 2048> render_buffer;
     std::vector<ekg_element*> data_invisible_to_memory;
     std::vector<ekg_element*> data;
 
-    uint16_t sizeof_render_buffer = 0;
+    uint32_t sizeof_render_buffer = 0;
     uint32_t last_id_used = 0;
 
     uint32_t focused_element_id;
     uint32_t last_focused_element_id;
     uint32_t forced_focused_element_id;
-    uint32_t ticked_refresh_buffers_count;
 
     // Concurrent buffers to prevent memory leak/segment fault or invalid elements.
     std::vector<ekg_element*> concurrent_buffer;
@@ -63,6 +62,8 @@ protected:
      */
     void fix_rect(ekg_element* &element, ekgutil::stack &cached_stack);
 public:
+    bool debug_mode = false;
+
     /*
      * Get ekg theme service.
      */
@@ -71,7 +72,7 @@ public:
     /*
      * Force to fix stack (reorder).
      */
-    void force_reorder_stack(uint32_t &id);
+    void force_reorder_stack(uint32_t id);
 
     /*
      * Dispatch an event in core.

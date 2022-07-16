@@ -8,6 +8,7 @@
 #include <ekg/api/ekg_core.hpp>
 #include <ekg/impl/ekg_ui_element_button.hpp>
 #include <ekg/impl/ekg_ui_element_frame.hpp>
+#include <ekg/impl/ekg_ui_element_check_box.hpp>
 
 /**
  * EKG - ez build gui \n

@@ -93,28 +93,6 @@ float ekg_element::get_height() {
     return this->rect.h;
 }
 
-void ekg_element::collect_stack(ekgutil::stack &stack) {
-    ekg_element* element;
-
-    if (this->has_mother() && ekg::core::instance.find_element(element, this->master_id)) {
-        element->collect_stack(stack);
-    }
-
-    if (stack.contains(this->id)) {
-        return;
-    }
-
-    stack.add(this->id);
-
-    element = nullptr;
-
-    for (uint32_t &ids : this->children_stack.ids) {
-        if (ekg::core::instance.find_element(element, ids)) {
-            element->collect_stack(stack);
-        }
-    }
-}
-
 bool ekg_element::is_mother() {
     return !this->children_stack.ids.empty();
 }
@@ -166,4 +144,19 @@ float ekg_element::get_sync_y() {
 
 uint32_t ekg_element::get_master_id() {
     return this->master_id;
+}
+
+void ekg_element::collect_stack(ekgutil::stack &stack) {
+    if (stack.contains(this->id)) {
+        return;
+    }
+
+    stack.add(this->id);
+    ekg_element* element;
+
+    for (uint32_t &ids : this->children_stack.ids) {
+        if (ekg::core::instance.find_element(element, ids)) {
+            element->collect_stack(stack);
+        }
+    }
 }

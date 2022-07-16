@@ -1,27 +1,27 @@
-#ifndef EKG_UI_ELEMENT_BUTTON_H
-#define EKG_UI_ELEMENT_BUTTON_H
+#pragma once
+#ifndef EKG_UI_ELEMENT_CHECK_BOX_H
 
 #include "ekg_ui_element_abstract.hpp"
 
 /**
- * Element GUI Button \n
+ * Element GUI Check Box \n
  * Type: Widget
- * Description: Works as a toggleable final.
+ * Description: The toggleable non final bool mode.
  **/
-class ekg_button : public ekg_element  {
+class ekg_check_box : public ekg_element  {
 protected:
     std::string text;
 
     float min_text_width;
     float min_text_height;
 
-    bool callback_flag;
+    bool value;
 
     uint16_t enum_flags_text_dock;
     float text_offset_x, text_offset_y;
 public:
-    ekg_button();
-    ~ekg_button();
+    ekg_check_box();
+    ~ekg_check_box();
 
     void set_text(const std::string &string);
     std::string get_text();

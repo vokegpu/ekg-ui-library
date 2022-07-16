@@ -78,13 +78,20 @@ void ekg_core::process_render_section() {
     if (ekgutil::contains(this->todo_flags, ekgutil::action::REFRESH)) {
         ekgutil::remove(this->todo_flags, ekgutil::action::REFRESH);
         ekggpu::invoke();
-        ekgfont::render("Elements in: " + std::to_string(this->data.size()), 10, 10, ekg::theme().string_color);
 
         for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
             ekg_element *&element = this->render_buffer[i];
             element->on_draw_refresh();
         }
 
+        //ekgutil::log(std::to_string(this->sizeof_render_buffer));
+
+        if (this->debug_mode) {
+            ekgfont::render("Elements in: " + std::to_string(this->data.size()), 10, 10, ekg::theme().string_color);
+            ekgfont::render("Ticked buffers count: " + std::to_string(this->gpu_handler.get_ticked_refresh_buffers_count()), 10, 10 + ekgfont::get_text_height("oi"), ekg::theme().string_color);
+        }
+
+        //ekgutil::log(std::to_string(this->gpu_handler.get_ticked_refresh_buffers_count()));
         ekggpu::revoke();
     }
 
@@ -100,7 +107,7 @@ void ekg_core::add_element(ekg_element* &element) {
 
     this->dispatch_todo_event(ekgutil::action::SWAPBUFFERS);
     this->dispatch_todo_event(ekgutil::action::FIXRECTS);
-    this->dispatch_todo_event(ekgutil::action::REFRESH);
+    this->force_reorder_stack(element->get_id());
 }
 
 /* Start of swap buffers. */
@@ -309,7 +316,7 @@ bool ekg_core::find_element(ekg_element *&element, uint32_t id) {
     return false;
 }
 
-void ekg_core::force_reorder_stack(uint32_t &id) {
+void ekg_core::force_reorder_stack(uint32_t id) {
     this->forced_focused_element_id = id;
     this->dispatch_todo_event(ekgutil::action::FIXSTACK);
 }

@@ -41,11 +41,17 @@ protected:
     uint32_t amount_of_data;
     uint32_t previous_data_size;
     uint8_t amount_of_texture_data_allocated;
+    uint32_t ticked_refresh_buffers_count;
 
     ekgapi::OpenGL::program default_program;
     float mat4x4_ortho[16];
     float depth_level = 0.1f;
 public:
+    /*
+     * Get current count.
+     */
+    uint32_t get_ticked_refresh_buffers_count();
+
     /*
      * Set the draw z level.
      */

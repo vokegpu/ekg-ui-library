@@ -15,7 +15,7 @@ void ekg_gpu_data_handler::init() {
                                      "uniform float u_float_zdepth;\n"
                                      "\n"
                                      "void main() {\n"
-                                     "    gl_Position = u_mat_matrix * vec4(u_vec2_pos + attrib_pos, (u_float_zdepth * 0.1f), 1.0f);\n"
+                                     "    gl_Position = u_mat_matrix * vec4(u_vec2_pos + attrib_pos, (u_float_zdepth * 0.001f), 1.0f);\n"
                                      "    varying_material = attrib_material;\n"
                                      "}";
 
@@ -75,7 +75,6 @@ void ekg_gpu_data_handler::draw() {
 
     // Bind VAO and draw the two VBO(s).
     glBindVertexArray(this->vertex_buffer_arr);
-
     ekg_gpu_data gpu_data;
 
     // Simulate glMultiDrawArrays.
@@ -85,7 +84,7 @@ void ekg_gpu_data_handler::draw() {
         this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
         this->default_program.set_vec4f("u_vec4_color", gpu_data.color);
         this->default_program.set_vec2f("u_vec2_pos", gpu_data.pos);
-        this->default_program.set_float("u_float_zdepth", this->depth_level + (float) i);
+        this->default_program.set_float("u_float_zdepth", (float) i);
 
         if (gpu_data.texture != 0) {
             glActiveTexture(GL_TEXTURE0 + gpu_data.texture_slot);
@@ -121,6 +120,8 @@ void ekg_gpu_data_handler::end() {
     }
 
     if (should_realloc) {
+        this->ticked_refresh_buffers_count++;
+
         // Bind the vertex positions vbo and alloc new data to GPU.
         glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_positions);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
@@ -140,7 +141,6 @@ void ekg_gpu_data_handler::end() {
 
         // Unbind vbo(s) and vao.
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindTexture(GL_TEXTURE_2D, 0);
         glBindVertexArray(0);
     }
 
@@ -207,6 +207,10 @@ void ekg_gpu_data_handler::set_depth_level(float z_level) {
 
 float ekg_gpu_data_handler::get_depth_level() {
     return this->depth_level;
+}
+
+uint32_t ekg_gpu_data_handler::get_ticked_refresh_buffers_count() {
+    return this->ticked_refresh_buffers_count;
 }
 
 void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec) {
