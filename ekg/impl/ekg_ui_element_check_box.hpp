@@ -15,10 +15,11 @@ protected:
     float min_text_width;
     float min_text_height;
 
-    bool value;
+    float square_size;
 
     uint16_t enum_flags_text_dock;
     float text_offset_x, text_offset_y;
+    float box_offset;
 public:
     ekg_check_box();
     ~ekg_check_box();
@@ -26,8 +27,10 @@ public:
     void set_text(const std::string &string);
     std::string get_text();
 
-    void set_callback_flag(bool val);
-    bool get_callback_flag();
+    void toggle();
+
+    void set_checked(float checked);
+    bool is_checked();
 
     float get_min_text_width();
     float get_min_text_height();

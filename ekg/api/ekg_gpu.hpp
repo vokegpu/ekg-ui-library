@@ -45,7 +45,7 @@ protected:
 
     ekgapi::OpenGL::program default_program;
     float mat4x4_ortho[16];
-    float depth_level = 0.1f;
+    float depth_level = 1.0f;
 public:
     /*
      * Get current count.

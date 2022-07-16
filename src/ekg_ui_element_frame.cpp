@@ -68,8 +68,8 @@ void ekg_frame::on_event(SDL_Event &sdl_event) {
             bool right  = ekgutil::contains(this->enum_target_resize_dock, ekg::dock::RIGHT);
 
             // p (position) s (size)
-            float px = this->rect.x - this->scaled.x;
-            float py = this->rect.y - this->scaled.y;
+            float px = this->rect.x;
+            float py = this->rect.y;
             float sw = this->rect.w;
             float sh = this->rect.h;
 
@@ -91,7 +91,7 @@ void ekg_frame::on_event(SDL_Event &sdl_event) {
                 sh = (my - this->cache.y) - py + (this->cache.h - py);
             }
 
-            set(px, py, sw, sh);
+            set(px - this->scaled.x, py - this->scaled.y, sw, sh);
         }
     }
 }

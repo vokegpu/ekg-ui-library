@@ -46,22 +46,22 @@ void ekg_button::on_sync() {
     }
 
     if (right) {
-        this->text_offset_x = this->rect.w - this->rect.h - (this->min_text_width / 4.0f);
+        this->text_offset_x = this->rect.w - this->min_text_width - (this->min_text_width / 4.0f);
     }
 
     if (bottom) {
-        this->text_offset_y = this->rect.h - (this->min_text_height / 4.0f);
+        this->text_offset_y = this->rect.h - this->min_text_height - (this->min_text_height / 4.0f);
     }
 }
 
 void ekg_button::on_pre_event_update(SDL_Event &sdl_event) {
     ekg_element::on_pre_event_update(sdl_event);
 
-    float x = 0;
-    float y = 0;
+    float mx = 0;
+    float my = 0;
 
-    if (ekgapi::motion(sdl_event, x, y)) {
-        ekgapi::set_direct(this->flag.old_over, this->flag.over, this->rect.collide_aabb_with_point(x, y));
+    if (ekgapi::motion(sdl_event, mx, my)) {
+        ekgapi::set_direct(this->flag.old_over, this->flag.over, this->rect.collide_aabb_with_point(mx, my));
     }
 }
 
@@ -75,7 +75,7 @@ void ekg_button::on_event(SDL_Event &sdl_event) {
         ekgapi::set(this->flag.old_highlight, this->flag.highlight, this->flag.over);
     } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
         ekgapi::set(this->flag.old_activy, this->flag.activy, this->flag.over);
-    } else if (ekgapi::input_up_left(sdl_event, mx, my)) {
+    } else if (ekgapi::input_up_left(sdl_event, mx, my) && this->flag.over) {
         ekgapi::set(this->flag.old_activy, this->flag.activy, false);
         this->set_callback_flag(true);
     }

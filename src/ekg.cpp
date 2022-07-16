@@ -64,6 +64,16 @@ ekg_frame* ekg::frame() {
     return frame_worker;
 }
 
+ekg_check_box* ekg::check_box(std::string text) {
+    auto check_box_worker = new ekg_check_box();
+    check_box_worker->set_text(text);
+
+    // Add into context handler.
+    ekg::core::instance.add_element((ekg_element*&) check_box_worker);
+
+    return check_box_worker;
+}
+
 ekg_theme &ekg::theme() {
     return ekg::core::instance.get_theme_service().get_loaded_theme();
 }
