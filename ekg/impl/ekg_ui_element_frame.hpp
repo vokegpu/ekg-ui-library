@@ -30,6 +30,9 @@ private:
 
     std::string tag;
 public:
+    ekg_frame();
+    ~ekg_frame();
+
     void set_tag(std::string &string);
     std::string get_tag();
 

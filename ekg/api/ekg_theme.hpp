@@ -8,6 +8,9 @@
  * EKG supports color themes not real UI themes.
  **/
 struct ekg_theme {
+    /*
+     * Make sure the instance is not default.
+     */
     bool validation = false;
 
     /* Start of string colors. */
@@ -26,6 +29,12 @@ struct ekg_theme {
     ekgmath::vec4f check_box_highlight;
     ekgmath::vec4f check_box_activy;
     /* End of check box colors. */
+
+    /* Start of slider colors. */
+    ekgmath::vec4f slider_background;
+    ekgmath::vec4f slider_highlight;
+    ekgmath::vec4f slider_activy;
+    /* End of slider colors. */
 
     /* Start of frame colors. */
     ekgmath::vec4f frame_background;

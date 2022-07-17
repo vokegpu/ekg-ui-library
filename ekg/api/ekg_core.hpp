@@ -36,6 +36,9 @@ protected:
     uint32_t last_focused_element_id;
     uint32_t forced_focused_element_id;
 
+    float screen_width;
+    float screen_height;
+
     // Concurrent buffers to prevent memory leak/segment fault or invalid elements.
     std::vector<ekg_element*> concurrent_buffer;
 
@@ -68,6 +71,16 @@ public:
      * Get ekg theme service.
      */
     ekg_theme_service &get_theme_service();
+
+    /*
+     * Get the screen width.
+     */
+    float get_screen_width();
+
+    /*
+     * Get the screen height.
+     */
+    float get_screen_height();
 
     /*
      * Force to fix stack (reorder).

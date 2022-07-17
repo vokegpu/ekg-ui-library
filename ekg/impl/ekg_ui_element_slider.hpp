@@ -20,13 +20,19 @@ protected:
     float max_value;
 
     uint16_t enum_flags_text_dock;
+    uint16_t enum_flag_bar_axis_dock;
 
     float text_offset_x;
     float text_offset_y;
 
-    float bar_offset_x;
-    float bar_offset_y;
+    float bar_size;
+    float bar_width;
+    float bar_height;
+    float bar[4];
 public:
+    ekg_slider();
+    ~ekg_slider();
+
     void set_value(float val);
     float get_value();
 

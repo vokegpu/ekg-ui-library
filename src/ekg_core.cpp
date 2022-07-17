@@ -3,6 +3,21 @@
 #include <list>
 
 void ekg_core::process_event_section(SDL_Event &sdl_event) {
+    // Process resized window event.
+    switch (sdl_event.type) {
+        case SDL_WINDOWEVENT: {
+            switch (sdl_event.window.event) {
+                case SDL_WINDOWEVENT_SIZE_CHANGED: {
+                    this->screen_width = sdl_event.window.data1;
+                    this->screen_height = sdl_event.window.data2;
+                    break;
+                }
+            }
+
+            break;
+        }
+    }
+
     // We do not need to track others events here.
     bool should_not_end_segment = (
             sdl_event.type == SDL_FINGERDOWN      || sdl_event.type == SDL_FINGERUP ||
@@ -268,6 +283,14 @@ void ekg_core::fix_rect(ekg_element *&element, ekgutil::stack &cached_stack) {
     }
 }
 /* End of fix rects. */
+
+float ekg_core::get_screen_width() {
+    return this->screen_width;
+}
+
+float ekg_core::get_screen_height() {
+    return this->screen_height;
+}
 
 void ekg_core::set_instances(SDL_Window *&sdl_window) {
     this->sdl_window_instance = sdl_window;

@@ -2,6 +2,15 @@
 #include <ekg/api/ekg_gpu.hpp>
 #include <ekg/ekg.hpp>
 
+ekg_frame::ekg_frame() {
+    this->min_width = 30;
+    this->min_height = 30;
+}
+
+ekg_frame::~ekg_frame() {
+    
+}
+
 void ekg_frame::on_sync() {
     ekg_element::on_sync();
 

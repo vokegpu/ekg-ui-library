@@ -84,7 +84,7 @@ void ekg_gpu_data_handler::draw() {
         this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
         this->default_program.set_vec4f("u_vec4_color", gpu_data.color);
         this->default_program.set_vec2f("u_vec2_pos", gpu_data.pos);
-        this->default_program.set_float("u_float_zdepth", (float) i);
+        this->default_program.set_float("u_float_zdepth", (float) i + 1);
 
         if (gpu_data.texture != 0) {
             glActiveTexture(GL_TEXTURE0 + gpu_data.texture_slot);

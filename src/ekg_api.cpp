@@ -62,11 +62,11 @@ bool ekgapi::input_down_right(SDL_Event &sdl_event, float &x, float &y) {
         }
 
         case SDL_FINGERDOWN: {
-            x = (float) sdl_event.tfinger.x;
-            y = (float) sdl_event.tfinger.y;
+            x = (float) sdl_event.tfinger.x * ekg::core::instance.get_screen_width();
+            y = (float) sdl_event.tfinger.y * ekg::core::instance.get_screen_height();
 
-            ekg_display_touch_input.last_down_x = sdl_event.tfinger.x;
-            ekg_display_touch_input.last_down_y = sdl_event.tfinger.y;
+            ekg_display_touch_input.last_down_x = x;
+            ekg_display_touch_input.last_down_y = y;
             ekg_cpu_timing::start();
 
             return true;
@@ -85,8 +85,8 @@ bool ekgapi::input_down_left(SDL_Event &sdl_event, float &x, float &y) {
         }
 
         case SDL_FINGERDOWN: {
-            x = (float) sdl_event.tfinger.x;
-            y = (float) sdl_event.tfinger.y;
+            x = (float) sdl_event.tfinger.x * ekg::core::instance.get_screen_width();
+            y = (float) sdl_event.tfinger.y * ekg::core::instance.get_screen_height();
 
             ekg_display_touch_input.last_down_x = sdl_event.tfinger.x;
             ekg_display_touch_input.last_down_y = sdl_event.tfinger.y;
@@ -113,8 +113,8 @@ bool ekgapi::input_down_middle(SDL_Event &sdl_event, float &x, float &y) {
 bool ekgapi::any_input_down(SDL_Event &sdl_event, float &x, float &y) {
     switch (sdl_event.type) {
         case SDL_FINGERDOWN: {
-            x = (float) sdl_event.tfinger.x;
-            y = (float) sdl_event.tfinger.y;
+            x = (float) sdl_event.tfinger.x * ekg::core::instance.get_screen_width();
+            y = (float) sdl_event.tfinger.y * ekg::core::instance.get_screen_height();
             return true;
         }
 
@@ -161,8 +161,8 @@ bool ekgapi::input_up_left(SDL_Event &sdl_event, float &x, float &y) {
         }
 
         case SDL_FINGERUP: {
-            x = (float) sdl_event.tfinger.x;
-            y = (float) sdl_event.tfinger.y;
+            x = (float) sdl_event.tfinger.x * ekg::core::instance.get_screen_width();
+            y = (float) sdl_event.tfinger.y * ekg::core::instance.get_screen_height();
 
             return true;
         }
@@ -186,8 +186,8 @@ bool ekgapi::input_up_middle(SDL_Event &sdl_event, float &x, float &y) {
 bool ekgapi::any_input_up(SDL_Event &sdl_event, float &x, float &y) {
     switch (sdl_event.type) {
         case SDL_FINGERUP: {
-            x = (float) sdl_event.tfinger.x;
-            y = (float) sdl_event.tfinger.y;
+            x = (float) sdl_event.tfinger.x * ekg::core::instance.get_screen_width();
+            y = (float) sdl_event.tfinger.y * ekg::core::instance.get_screen_height();
             return true;
         }
 
@@ -215,8 +215,8 @@ bool ekgapi::motion(SDL_Event &sdl_event, float &x, float &y) {
         }
 
         case SDL_FINGERMOTION: {
-            x = (float) sdl_event.tfinger.x;
-            y = (float) sdl_event.tfinger.y;
+            x = (float) sdl_event.tfinger.x * ekg::core::instance.get_screen_width();
+            y = (float) sdl_event.tfinger.y * ekg::core::instance.get_screen_height();
             return true;
         }
     }

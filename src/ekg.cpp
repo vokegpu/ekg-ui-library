@@ -54,6 +54,18 @@ ekg_button* ekg::button(std::string text) {
     return button_worker;
 }
 
+ekg_slider* ekg::slider(float val, float min, float max) {
+    auto slider_worker = new ekg_slider();
+    slider_worker->set_min(min);
+    slider_worker->set_max(max);
+    slider_worker->set_value(val);
+
+    // Add into context handler.
+    ekg::core::instance.add_element((ekg_element*&) slider_worker);
+
+    return slider_worker;
+}
+
 ekg_frame* ekg::frame() {
     auto frame_worker = new ekg_frame();
     frame_worker->set_size(300, 300);

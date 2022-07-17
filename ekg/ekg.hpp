@@ -78,6 +78,11 @@ namespace ekg {
     void set_font_size(uint32_t size);
 
     /*
+     * Create slider UI.
+     */
+    ekg_slider* slider(float val, float min, float max);
+
+    /*
      * Create check box UI.
      */
     ekg_check_box* check_box(std::string text);
