@@ -41,10 +41,7 @@ float ekg_check_box::get_min_text_height() {
 }
 
 void ekg_check_box::set_text_dock(uint16_t flags) {
-    uint16_t comp = ekg::dock::CENTER | ekg::dock::LEFT | ekg::dock::RIGHT | ekg::dock::TOP | ekg::dock::BOTTOM;
-    bool flag = ekgutil::contains(comp, flags);
-
-    if (flag && this->enum_flags_text_dock != flags) {
+    if (this->enum_flags_text_dock != flags) {
         this->enum_flags_text_dock = flags;
         this->on_sync();
     }

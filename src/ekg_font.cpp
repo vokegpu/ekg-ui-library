@@ -171,6 +171,7 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     // Each char quad has 6 vertices, so we multiply 6 by length of text.
     gpu_data.data = (GLint) (6 * str_len);
 
+    // The position post draw should be equals to max bitmap height divided by 2.
     gpu_data.pos[0] = x;
     gpu_data.pos[1] = y - (0.2f * (float) this->texture_height) / 2.0f;
 
