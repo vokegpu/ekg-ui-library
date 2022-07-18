@@ -120,7 +120,7 @@ public:
     /*
      * Add element into EKG context.
      */
-    void add_element(ekg_element* &element);
+    void add_element(ekg_element* element);
 
     /*
      * Find for element in GUI context.

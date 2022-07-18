@@ -124,6 +124,8 @@ void ekg_slider::on_sync() {
         this->bar_width = this->bar[2];
         this->bar_height = this->bar[3] * (this->value - this->min) / (this->max - this->min);
     }
+
+
 }
 
 void ekg_slider::on_pre_event_update(SDL_Event &sdl_event) {

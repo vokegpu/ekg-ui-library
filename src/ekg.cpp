@@ -49,7 +49,7 @@ ekg_button* ekg::button(std::string text) {
     button_worker->set_text(text);
 
     // Add into context handler.
-    ekg::core::instance.add_element((ekg_element*&) button_worker);
+    ekg::core::instance.add_element(button_worker);
 
     return button_worker;
 }
@@ -62,7 +62,7 @@ ekg_slider* ekg::slider(float val, float min, float max) {
     slider_worker->set_width(125);
 
     // Add into context handler.
-    ekg::core::instance.add_element((ekg_element*&) slider_worker);
+    ekg::core::instance.add_element(slider_worker);
 
     return slider_worker;
 }
@@ -72,7 +72,7 @@ ekg_frame* ekg::frame() {
     frame_worker->set_size(300, 300);
 
     // Add into context handler.
-    ekg::core::instance.add_element((ekg_element*&) frame_worker);
+    ekg::core::instance.add_element(frame_worker);
 
     return frame_worker;
 }
@@ -82,7 +82,7 @@ ekg_check_box* ekg::check_box(std::string text) {
     check_box_worker->set_text(text);
 
     // Add into context handler.
-    ekg::core::instance.add_element((ekg_element*&) check_box_worker);
+    ekg::core::instance.add_element(check_box_worker);
 
     return check_box_worker;
 }

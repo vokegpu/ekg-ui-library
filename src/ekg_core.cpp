@@ -99,14 +99,11 @@ void ekg_core::process_render_section() {
             element->on_draw_refresh();
         }
 
-        //ekgutil::log(std::to_string(this->sizeof_render_buffer));
-
         if (this->debug_mode) {
             ekgfont::render("Elements in: " + std::to_string(this->data.size()), 10, 10, ekg::theme().string_color);
             ekgfont::render("Ticked buffers count: " + std::to_string(this->gpu_handler.get_ticked_refresh_buffers_count()), 10, 10 + ekgfont::get_text_height("oi"), ekg::theme().string_color);
         }
 
-        //ekgutil::log(std::to_string(this->gpu_handler.get_ticked_refresh_buffers_count()));
         ekggpu::revoke();
     }
 
@@ -114,12 +111,11 @@ void ekg_core::process_render_section() {
     this->gpu_handler.draw();
 }
 
-void ekg_core::add_element(ekg_element* &element) {
+void ekg_core::add_element(ekg_element* element) {
     element->set_id(++this->last_id_used);
     element->set_visibility(ekg::visibility::VISIBLE);
 
     this->concurrent_buffer.push_back(element);
-
     this->dispatch_todo_event(ekgutil::action::SWAPBUFFERS);
     this->dispatch_todo_event(ekgutil::action::FIXRECTS);
     this->force_reorder_stack(element->get_id());
