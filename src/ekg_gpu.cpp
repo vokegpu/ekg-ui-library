@@ -79,13 +79,13 @@ void ekg_gpu_data_handler::draw() {
     ekg_gpu_data gpu_data;
 
     // Simulate glMultiDrawArrays.
-    for (uint32_t i = 0; i < this->amount_of_draw_iterations; i++) {
+    for (int i = 0; i < this->amount_of_draw_iterations; i++) {
         gpu_data = this->gpu_data_list[i];
 
         this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
         this->default_program.set_vec4f("u_vec4_color", gpu_data.color);
         this->default_program.set_vec2f("u_vec2_pos", gpu_data.pos);
-        this->default_program.set_float("u_float_zdepth", (float) i + 1);
+        this->default_program.set_float("u_float_zdepth", static_cast<float>(i + 1));
         this->default_program.set_int("u_int_shape_category", gpu_data.category);
         this->default_program.set_float("u_float_factor", gpu_data.factor);
 
@@ -107,45 +107,37 @@ void ekg_gpu_data_handler::start() {
     this->amount_of_draw_iterations = 0;
     this->amount_of_data = 0;
     this->amount_of_texture_data_allocated = 0;
+    this->allocated_factor = 0.0f;
+    this->should_alloc = false;
 }
 
 void ekg_gpu_data_handler::end() {
-    bool should_realloc = this->previous_data_size != this->amount_of_data;
+    bool alloc_flag = this->previous_data_size != this->amount_of_data || this->should_alloc;
     this->previous_data_size = this->amount_of_data;
 
-    // Iterate all cached GPU data and pass to CPU arr.
-    for (uint32_t i = 0; i < this->cached_data.size(); i++) {
-        if (this->gpu_data_list[i].factor != this->cached_data.at(i).factor) {
-            should_realloc = true;
-        }
-
-        this->gpu_data_list[i] = this->cached_data.at(i);
-    }
-
-    if (should_realloc) {
+    if (alloc_flag) {
         this->ticked_refresh_buffers_count++;
+
+        // Pass attrib data to VAO.
+        glEnableVertexAttribArray(0);
 
         // Bind the vertex positions vbo and alloc new data to GPU.
         glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_positions);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
-
-        // Pass attrib data to VAO.
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-        glEnableVertexAttribArray(0);
+
+        // Enable the second location attrib (pass to VAO) from shader.
+        glEnableVertexAttribArray(1);
 
         // Bind vertex materials and alloc new data to GPU.
         glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_materials);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices_materials.size(), &this->cached_vertices_materials[0], GL_STATIC_DRAW);
-
-        // Enable the second location attrib (pass to VAO) from shader.
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-        glEnableVertexAttribArray(1);
     }
 
     // Clean the previous data.
     this->cached_vertices.clear();
     this->cached_vertices_materials.clear();
-    this->cached_data.clear();
     this->cached_textures.clear();
 }
 
@@ -162,14 +154,21 @@ std::vector<float> &ekg_gpu_data_handler::get_cached_vertices_materials() {
     return this->cached_vertices_materials;
 }
 
-void ekg_gpu_data_handler::bind(ekg_gpu_data &gpu_data) {
-    // Set the raw with previous amount of data.
-    gpu_data.raw = (GLint) this->amount_of_data;
-    this->cached_data.push_back(gpu_data);
+ekg_gpu_data &ekg_gpu_data_handler::bind() {
+    // Push the data from array.
+    ekg_gpu_data &gpu_data = this->gpu_data_list[this->amount_of_draw_iterations];
 
-    // Update draw calls time and amount of data handled.
-    this->amount_of_draw_iterations += 1;
-    this->amount_of_data += gpu_data.data;
+    // Set the raw with previous amount of data.
+    gpu_data.raw = this->amount_of_data;
+
+    // Flag the old factor.
+    this->allocated_factor = gpu_data.factor;
+
+    gpu_data.category = ekgutil::shape_category::RECTANGLE;
+    gpu_data.texture_slot = 0;
+    gpu_data.texture = 0;
+
+    return gpu_data;
 }
 
 void ekg_gpu_data_handler::bind_texture(ekg_gpu_data &gpu_data, GLuint &object_id) {
@@ -209,17 +208,28 @@ uint32_t ekg_gpu_data_handler::get_ticked_refresh_buffers_count() {
     return this->ticked_refresh_buffers_count;
 }
 
+void ekg_gpu_data_handler::free(ekg_gpu_data &gpu_data) {
+    // Update draw calls time and amount of data handled.
+    this->amount_of_data += gpu_data.data;
+
+    if (this->allocated_factor != gpu_data.factor) {
+        this->should_alloc = true;
+    }
+
+    this->amount_of_draw_iterations += 1;
+}
+
 void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec) {
     // Alloc arrays in CPU.
     ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, w, h);
     ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
 
-    // Generate a GPU data.
-    ekg_gpu_data gpu_data;
+    // Bind GPU data into GPU handler.
+    ekg_gpu_data &gpu_data = ekg::core::instance.get_gpu_handler().bind();
 
     // Configure the GPU data.
     gpu_data.data = 6;
-    gpu_data.factor = w * h;
+    gpu_data.factor = w / h;
 
     gpu_data.pos[0] = x;
     gpu_data.pos[1] = y;
@@ -229,8 +239,8 @@ void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color
     gpu_data.color[2] = color_vec.z;
     gpu_data.color[3] = color_vec.w;
 
-    // Bind GPU data into GPU handler.
-    ekg::core::instance.get_gpu_handler().bind(gpu_data);
+    // Free the GPU data.
+    ekg::core::instance.get_gpu_handler().free(gpu_data);
 }
 
 void ekggpu::rectangle(ekgmath::rect &rect, ekgmath::vec4f &color_vec) {
@@ -241,15 +251,13 @@ void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec) {
     ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, r, r);
     ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
 
-    // Generate a GPU data.
-    ekg_gpu_data gpu_data;
+    // Bind GPU data into GPU handler.
+    ekg_gpu_data &gpu_data = ekg::core::instance.get_gpu_handler().bind();
 
     // Configure the GPU data.
     gpu_data.data = 6;
     gpu_data.category = ekgutil::shape_category::CIRCLE;
     gpu_data.factor = r;
-
-    float cdiff = r / 2.0f;
 
     gpu_data.pos[0] = x;
     gpu_data.pos[1] = y;
@@ -259,8 +267,8 @@ void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec) {
     gpu_data.color[2] = color_vec.z;
     gpu_data.color[3] = color_vec.w;
 
-    // Bind GPU data into GPU handler.
-    ekg::core::instance.get_gpu_handler().bind(gpu_data);
+    // Free the GPU data.
+    ekg::core::instance.get_gpu_handler().free(gpu_data);
 }
 
 void ekggpu::push_arr_rect(std::vector<float> &vec_arr, float x, float y, float w, float h) {

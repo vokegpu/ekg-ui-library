@@ -18,10 +18,6 @@ float ekg_slider::get_min_text_height() {
 }
 
 void ekg_slider::set_text_dock(uint16_t flags) {
-    if (flags == NULL) {
-        this->enum_flags_text_dock = ekg::dock::UNDEFINED;
-    }
-
     if (this->enum_flags_text_dock != flags) {
         this->enum_flags_text_dock = flags;
         this->on_sync();

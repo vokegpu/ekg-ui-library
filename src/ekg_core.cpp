@@ -108,7 +108,7 @@ void ekg_core::process_render_section() {
         }
 
         if (this->debug_mode) {
-            ekgfont::render("Elements in: " + std::to_string(this->data.size()), 10, 10, ekg::theme().string_color);
+            ekgfont::render("Elements in: " + std::to_string(this->sizeof_render_buffer), 10, 10, ekg::theme().string_color);
             ekgfont::render("Ticked buffers count: " + std::to_string(this->gpu_handler.get_ticked_refresh_buffers_count()), 10, 10 + ekgfont::get_text_height("oi"), ekg::theme().string_color);
         }
 
@@ -247,7 +247,6 @@ void ekg_core::fix_stack() {
     this->data.clear();
     this->data = this->data_invisible_to_memory;
     this->data_invisible_to_memory.clear();
-
     this->forced_focused_element_id = 0;
 }
 /* End of fix stack. */

@@ -36,29 +36,31 @@ struct ekg_gpu_dynamic_data {
  **/
 class ekg_gpu_data_handler {
 protected:
+    uint32_t ticked_refresh_buffers_count;
+    GLint previous_data_size;
+    GLint amount_of_texture_data_allocated;
+    GLint amount_of_data;
+    int amount_of_draw_iterations;
+
     std::vector<GLfloat> cached_vertices;
     std::vector<GLfloat> cached_vertices_materials;
-    std::vector<ekg_gpu_data> cached_data;
     std::vector<GLuint> cached_textures;
-
-    ekg_gpu_data gpu_data_list[2048];
-    ekg_gpu_dynamic_data gpu_dynamic_list[2048];
 
     GLuint vertex_buffer_arr;
     GLuint vertex_buf_object_vertex_positions;
     GLuint vertex_buf_object_vertex_materials;
 
-    uint32_t amount_of_draw_iterations;
-    uint32_t amount_of_data;
-    uint32_t previous_data_size;
-    uint8_t amount_of_texture_data_allocated;
-    uint32_t ticked_refresh_buffers_count;
-
-    ekgapi::OpenGL::program default_program;
-
     float viewport[4];
     float mat4x4_ortho[16];
     float depth_level = 1.0f;
+
+    ekg_gpu_data gpu_data_list[2048];
+    ekg_gpu_dynamic_data gpu_dynamic_list[2048];
+
+    bool should_alloc;
+    float allocated_factor;
+
+    ekgapi::OpenGL::program default_program;
 public:
     /*
      * Get current count.
@@ -98,7 +100,12 @@ public:
     /*
      * Bind GPU data.
      */
-    void bind(ekg_gpu_data &gpu_data);
+    ekg_gpu_data &bind();
+
+    /*
+     * Free the previous bind GPU data.
+     */
+    void free(ekg_gpu_data &gpu_data);
 
     /*
      * Alloc texture to the concurrent cached texture list.

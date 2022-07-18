@@ -34,8 +34,8 @@ protected:
 	FT_UInt previous;
 	FT_Vector_ previous_char_vec;
 
-	uint32_t texture_width;
-    uint32_t texture_height;
+	uint32_t texture_width = 0;
+    uint32_t texture_height = 0;
 
 	GLuint bitmap_texture_id;
 	std::string font_path;

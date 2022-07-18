@@ -33,6 +33,8 @@ void ekg_frame::on_sync() {
 void ekg_frame::on_pre_event_update(SDL_Event &sdl_event) {
     ekg_element::on_pre_event_update(sdl_event);
 
+    ekgutil::log(std::to_string(this->rect.h));
+
     float x = 0;
     float y = 0;
 
@@ -201,7 +203,7 @@ void ekg_frame::place(ekg_element* element, float x, float y) {
 void ekg_frame::set_resize_dock(uint16_t dock) {
     this->no_resizable = false;
 
-    if (dock == NULL) {
+    if (dock == ekg::dock::UNDEFINED) {
         this->no_resizable = true;
         return;
     }
@@ -230,7 +232,7 @@ float ekg_frame::get_resize_offset() {
 void ekg_frame::set_drag_dock(uint16_t dock) {
     this->no_draggable = false;
 
-    if (dock == NULL) {
+    if (dock == ekg::dock::UNDEFINED) {
         this->no_draggable = true;
         return;
     }

@@ -15,11 +15,11 @@
  **/
 class ekg_element {
 protected:
-    uint8_t type;
+    uint8_t type = 0;
 
-    uint32_t id;
-    uint32_t visibility;
-    uint32_t master_id;
+    uint32_t id = 0;
+    uint32_t visibility = 0;
+    uint32_t master_id = 0;
 
     ekgutil::flag flag;
     ekgutil::stack children_stack;
@@ -28,8 +28,8 @@ protected:
     ekgmath::rect cache;
     ekgmath::rect rect;
 
-    float sync_x;
-    float sync_y;
+    float sync_x = 0;
+    float sync_y = 0;
 public:
     ekg_element();
     ~ekg_element();
