@@ -10,6 +10,7 @@ void ekg_gpu_data_handler::init() {
                                      "layout (location = 1) in vec2 attrib_material;\n"
                                      "\n"
                                      "out vec2 varying_material;\n"
+                                     "out vec2 varying_pos;\n"
                                      "uniform mat4 u_mat_matrix;\n"
                                      "uniform vec2 u_vec2_pos;\n"
                                      "uniform float u_float_zdepth;\n"
@@ -17,15 +18,20 @@ void ekg_gpu_data_handler::init() {
                                      "void main() {\n"
                                      "    gl_Position = u_mat_matrix * vec4(u_vec2_pos + attrib_pos, (u_float_zdepth * 0.001f), 1.0f);\n"
                                      "    varying_material = attrib_material;\n"
+                                     "    varying_pos = u_vec2_pos;\n"
                                      "}";
 
             const char* fragment_src = "#version 330 core\n"
                                        "\n"
                                        "in vec2 varying_material;\n"
+                                       "in vec2 varying_pos;\n"
                                        "\n"
                                        "uniform sampler2D u_sampler2d_texture_active;\n"
                                        "uniform bool u_bool_set_texture;\n"
                                        "uniform vec4 u_vec4_color;\n"
+                                       "uniform int u_int_shape_category;\n"
+                                       "uniform float u_float_factor;\n"
+                                       "uniform float u_float_viewport_height;\n"
                                        "\n"
                                        "void main() {\n"
                                        "    vec4 fragcolor = u_vec4_color;\n"
@@ -34,7 +40,15 @@ void ekg_gpu_data_handler::init() {
                                        "        fragcolor = texture2D(u_sampler2d_texture_active, varying_material.xy);\n"
                                        "        fragcolor = vec4(fragcolor.xyz - ((1.0f - u_vec4_color.xyz) - 1.0f), fragcolor.w - (1.0f - u_vec4_color.w));\n"
                                        "    }\n"
-                                       "\n"
+                                       "    if (u_int_shape_category == 1) {\n"
+                                       "        vec2 center = vec2(varying_pos.x + (u_float_factor / 2.0f), varying_pos.y + (u_float_factor / 2.0f));\n"
+                                       "        vec2 diff_center = center - vec2(varying_pos.x + ((u_float_factor / 2.0f)), varying_pos.y);\n"
+                                       "        vec2 diff = center - vec2(gl_FragCoord.x, u_float_viewport_height - gl_FragCoord.y);\n"
+                                       "        float dist_to_frag = diff.x * diff.x + diff.y * diff.y;\n"
+                                       "        if (dist_to_frag > (diff_center.x * diff_center.x + diff_center.y * diff_center.y)) {\n"
+                                       "            fragcolor.a = 0;\n"
+                                       "        }\n"
+                                       "    }"
                                        "    gl_FragColor = fragcolor;\n"
                                        "}";
 
@@ -69,6 +83,7 @@ void ekg_gpu_data_handler::init() {
 void ekg_gpu_data_handler::draw() {
     this->default_program.use();
     this->default_program.set_mat4x4("u_mat_matrix", this->mat4x4_ortho);
+    this->default_program.set_float("u_float_viewport_height", this->viewport[3]);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -85,6 +100,8 @@ void ekg_gpu_data_handler::draw() {
         this->default_program.set_vec4f("u_vec4_color", gpu_data.color);
         this->default_program.set_vec2f("u_vec2_pos", gpu_data.pos);
         this->default_program.set_float("u_float_zdepth", (float) i + 1);
+        this->default_program.set_int("u_int_shape_category", gpu_data.category);
+        this->default_program.set_float("u_float_factor", gpu_data.factor);
 
         if (gpu_data.texture != 0) {
             glActiveTexture(GL_TEXTURE0 + gpu_data.texture_slot);
@@ -152,10 +169,8 @@ void ekg_gpu_data_handler::end() {
 }
 
 void ekg_gpu_data_handler::calc_view_ortho_2d() {
-    float viewport[4];
-    glGetFloatv(GL_VIEWPORT, viewport);
-
-    ekgmath::ortho2d(this->mat4x4_ortho, 0, viewport[2], viewport[3], 0);
+    glGetFloatv(GL_VIEWPORT, this->viewport);
+    ekgmath::ortho2d(this->mat4x4_ortho, 0, this->viewport[2], this->viewport[3], 0);
 }
 
 std::vector<float> &ekg_gpu_data_handler::get_cached_vertices() {
@@ -241,8 +256,30 @@ void ekggpu::rectangle(ekgmath::rect &rect, ekgmath::vec4f &color_vec) {
     ekggpu::rectangle(rect.x, rect.y, rect.w, rect.h, color_vec);
 }
 
-void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec4) {
+void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec) {
+    ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, r, r);
+    ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
 
+    // Generate a GPU data.
+    ekg_gpu_data gpu_data;
+
+    // Configure the GPU data.
+    gpu_data.data = 6;
+    gpu_data.category = ekgutil::shape_category::CIRCLE;
+    gpu_data.factor = r;
+
+    float cdiff = r / 2.0f;
+
+    gpu_data.pos[0] = x;
+    gpu_data.pos[1] = y;
+
+    gpu_data.color[0] = color_vec.x;
+    gpu_data.color[1] = color_vec.y;
+    gpu_data.color[2] = color_vec.z;
+    gpu_data.color[3] = color_vec.w;
+
+    // Bind GPU data into GPU handler.
+    ekg::core::instance.get_gpu_handler().bind(gpu_data);
 }
 
 void ekggpu::push_arr_rect(std::vector<float> &vec_arr, float x, float y, float w, float h) {

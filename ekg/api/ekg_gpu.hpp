@@ -10,15 +10,25 @@
  * Store GPU data for update at once.
  **/
 struct ekg_gpu_data {
-    GLuint texture = 0;
+    uint16_t category = ekgutil::shape_category::RECTANGLE;
+
     uint8_t texture_slot = 0;
-    float pos[2];
-    float factor = 0;
+    GLuint texture = 0;
 
     GLint data = 0;
     GLint raw = 0;
 
     float color[4];
+    float pos[2];
+    float factor = 0;
+};
+
+/**
+ * Store dynamic GPU data.
+ **/
+struct ekg_gpu_dynamic_data {
+    float normalised_value;
+    uint16_t category;
 };
 
 /**
@@ -32,6 +42,7 @@ protected:
     std::vector<GLuint> cached_textures;
 
     ekg_gpu_data gpu_data_list[2048];
+    ekg_gpu_dynamic_data gpu_dynamic_list[2048];
 
     GLuint vertex_buffer_arr;
     GLuint vertex_buf_object_vertex_positions;
@@ -44,6 +55,8 @@ protected:
     uint32_t ticked_refresh_buffers_count;
 
     ekgapi::OpenGL::program default_program;
+
+    float viewport[4];
     float mat4x4_ortho[16];
     float depth_level = 1.0f;
 public:

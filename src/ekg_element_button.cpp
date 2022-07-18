@@ -76,8 +76,8 @@ void ekg_button::on_event(SDL_Event &sdl_event) {
     } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
         ekgapi::set(this->flag.old_activy, this->flag.activy, this->flag.over);
     } else if (ekgapi::input_up_left(sdl_event, mx, my)) {
+        this->set_callback_flag(this->flag.activy);
         ekgapi::set(this->flag.old_activy, this->flag.activy, false);
-        this->set_callback_flag(true);
     }
 }
 

@@ -12,12 +12,14 @@
  **/
 class ekg_slider : public ekg_element {
 protected:
+    bool dragging = false;
+
     float min_text_width;
     float min_text_height;
 
     float value;
-    float min_value;
-    float max_value;
+    float min;
+    float max;
 
     uint16_t enum_flags_text_dock;
     uint16_t enum_flag_bar_axis_dock;
@@ -36,11 +38,11 @@ public:
     void set_value(float val);
     float get_value();
 
-    void set_min_value(float min);
-    float get_min_value();
+    void set_min(float val_min);
+    float get_min();
 
-    void set_max_value(float max);
-    float get_max_value();
+    void set_max(float val_max);
+    float get_max();
 
     float get_min_text_width();
     float get_min_text_height();
@@ -50,6 +52,9 @@ public:
 
     void set_width(float width);
     void set_height(float height);
+
+    void set_bar_axis(uint16_t dock);
+    float get_bar_axis();
 
     void set_size(float width, float height) override;
     void set_pos(float x, float y) override;

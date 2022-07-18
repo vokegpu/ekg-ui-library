@@ -155,6 +155,14 @@ namespace ekgutil {
         REFRESH     = 1 << 2,
         FIXRECTS    = 1 << 3
     };
+
+    /**
+     * Category of shapes to draw.
+     */
+    enum shape_category {
+        RECTANGLE = 0,
+        CIRCLE    = 1
+    };
 };
 
 #endif

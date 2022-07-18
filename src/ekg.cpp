@@ -59,6 +59,7 @@ ekg_slider* ekg::slider(float val, float min, float max) {
     slider_worker->set_min(min);
     slider_worker->set_max(max);
     slider_worker->set_value(val);
+    slider_worker->set_width(125);
 
     // Add into context handler.
     ekg::core::instance.add_element((ekg_element*&) slider_worker);

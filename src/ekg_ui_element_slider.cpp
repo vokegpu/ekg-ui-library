@@ -2,7 +2,7 @@
 #include "ekg/impl/ekg_ui_element_slider.hpp"
 
 ekg_slider::ekg_slider() {
-    this->enum_flag_bar_axis_dock = ekg::dock::LEFT;
+    this->set_bar_axis(ekg::dock::LEFT);
 }
 
 ekg_slider::~ekg_slider() {
@@ -96,13 +96,20 @@ void ekg_slider::on_sync() {
     ekg_element::on_sync();
     ekg::core::instance.dispatch_todo_event(ekgutil::action::REFRESH);
 
-    this->min_text_width = ekgfont::get_text_width("");
-    this->min_text_height = ekgfont::get_text_height(std::to_string(this->value));
+    std::string str = std::to_string(this->value);
 
-    this->bar_size[0] = this->rect.x + (this->min_text_height / 4.0f);
-    this->bar_size[1] = this->rect.y + (this->min_text_height / 4.0f);
-    this->bar_size[2] = this->rect.w - ((this->min_text_height / 4.0f) * 2);
-    this->bar_size[3] = this->rect.h - ((this->min_text_height / 4.0f) * 2);
+    this->min_text_width = ekgfont::get_text_width(str);
+    this->min_text_height = ekgfont::get_text_height(str);
+
+    this->rect.h = this->rect.h < this->min_text_height ? this->min_text_height : this->rect.h;
+
+    float factor = (this->min_text_height / 4.0f);
+    float factor_height = (this->min_text_height / 10.0f);
+
+    this->bar[0] = this->rect.x + factor;
+    this->bar[1] = this->rect.y + (factor_height * 4);
+    this->bar[2] = this->rect.w - (factor * 2);
+    this->bar[3] = factor_height;
 
     if (this->enum_flag_bar_axis_dock == ekg::dock::RIGHT) {
         this->bar_width = this->bar[2] * (this->value - this->min) / (this->max - this->min);
@@ -114,7 +121,7 @@ void ekg_slider::on_sync() {
         this->bar_width = this->bar[2];
         this->bar_height = this->bar[3] * (this->value - this->min) / (this->max - this->min);
     } else if (this->enum_flag_bar_axis_dock == ekg::dock::BOTTOM) {
-        this->bar_width = this->this->bar[2];
+        this->bar_width = this->bar[2];
         this->bar_height = this->bar[3] * (this->value - this->min) / (this->max - this->min);
     }
 }
@@ -176,6 +183,20 @@ void ekg_slider::on_draw_refresh() {
     ekg_element::on_draw_refresh();
 
     ekggpu::rectangle(this->rect, ekg::theme().slider_background);
+
     ekggpu::rectangle(this->bar[0], this->bar[1], this->bar[2], this->bar[3], ekg::theme().slider_highlight);
-    ekggpu::rectangle(this->rect[0], this->rect[1], this->bar_width, this->bar_height, ekg::theme().slider_activy);
+    ekggpu::rectangle(this->bar[0], this->bar[1], this->bar_width, this->bar_height, ekg::theme().slider_activy);
+}
+
+void ekg_slider::set_bar_axis(uint16_t dock) {
+    this->enum_flag_bar_axis_dock = dock;
+
+    if (this->enum_flag_bar_axis_dock != dock) {
+        this->enum_flag_bar_axis_dock = dock;
+        this->on_sync();
+    }
+}
+
+float ekg_slider::get_bar_axis() {
+    return this->enum_flag_bar_axis_dock;
 }
