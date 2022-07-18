@@ -116,6 +116,11 @@ public:
     void end();
 
     /*
+     * Prepare to draw.
+     */
+    void prepare();
+
+    /*
      * Update matrix.
      */
     void calc_view_ortho_2d();

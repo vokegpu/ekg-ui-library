@@ -40,15 +40,21 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
         // Verify point overlap.
         element->on_pre_event_update(sdl_event);
 
+
+        if (element->get_width() == 0 || element->get_height() == 0) {
+            ekgutil::log(std::to_string(element->get_height()));
+        }
+
         if (element->get_visibility() == ekg::visibility::VISIBLE && element->access_flag().over) {
             this->focused_element_id = element->get_id();
+
         }
 
         element->on_post_event_update(sdl_event);
     }
 
     this->sizeof_render_buffer = 0;
-    this->render_buffer.fill(nullptr);
+    this->render_buffer.fill(0);
 
     for (ekg_element* &element : this->data) {
         if (element == nullptr || element->access_flag().dead) {
@@ -90,6 +96,8 @@ void ekg_core::process_update_section() {
 }
 
 void ekg_core::process_render_section() {
+    this->gpu_handler.prepare();
+
     if (ekgutil::contains(this->todo_flags, ekgutil::action::REFRESH)) {
         ekgutil::remove(this->todo_flags, ekgutil::action::REFRESH);
         ekggpu::invoke();
@@ -125,7 +133,7 @@ void ekg_core::add_element(ekg_element* element) {
 void ekg_core::swap_buffers() {
     // Clean the buffer render (not delete).
     this->sizeof_render_buffer = 0;
-    this->render_buffer.fill(nullptr);
+    this->render_buffer.fill(0);
 
     this->data_invisible_to_memory = this->data;
     this->data.clear();
@@ -205,12 +213,12 @@ void ekg_core::fix_stack() {
     }
 
     this->sizeof_render_buffer = 0;
-    this->render_buffer.fill(nullptr);
+    this->render_buffer.fill(0);
     this->data_invisible_to_memory.clear();
 
-    ekg_element* element;
-
     for (uint32_t &ids : concurrent_all_data_stack.ids) {
+        ekg_element* element;
+
         if (!this->find_element(element, ids)) {
             continue;
         }
@@ -222,9 +230,9 @@ void ekg_core::fix_stack() {
         }
     }
 
-    element = nullptr;
-
     for (uint32_t &ids : concurrent_focused_stack.ids) {
+        ekg_element* element;
+
         if (!this->find_element(element, ids)) {
             continue;
         }
@@ -246,6 +254,8 @@ void ekg_core::fix_stack() {
 
 /* Start of fix rects. */
 void ekg_core::fix_rects() {
+    return;
+
     ekgutil::stack cached_stack;
 
     for (ekg_element* &element : this->data) {
@@ -264,9 +274,9 @@ void ekg_core::fix_rect(ekg_element *&element, ekgutil::stack &cached_stack) {
 
     cached_stack.add(element->get_id());
 
-    ekg_element* instance;
-
     for (uint32_t &ids : element->access_children_stack().ids) {
+        ekg_element* instance;
+
         if (cached_stack.contains(ids) || !this->find_element(instance, ids)) {
             continue;
         }

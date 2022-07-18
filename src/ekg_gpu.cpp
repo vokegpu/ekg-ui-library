@@ -61,23 +61,11 @@ void ekg_gpu_data_handler::init() {
     glGenVertexArrays(1, &this->vertex_buffer_arr);
     glGenBuffers(1, &this->vertex_buf_object_vertex_positions);
     glGenBuffers(1, &this->vertex_buf_object_vertex_materials);
+}
 
-    // Configure the buffers (peek ekg_gpu_data_handler::end to explain).
+void ekg_gpu_data_handler::prepare() {
+    // Bind VAO and draw the two VBO(s).
     glBindVertexArray(this->vertex_buffer_arr);
-    glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_positions);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, 0, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_materials);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, 0, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 }
 
 void ekg_gpu_data_handler::draw() {
@@ -88,8 +76,6 @@ void ekg_gpu_data_handler::draw() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // Bind VAO and draw the two VBO(s).
-    glBindVertexArray(this->vertex_buffer_arr);
     ekg_gpu_data gpu_data;
 
     // Simulate glMultiDrawArrays.
@@ -143,8 +129,7 @@ void ekg_gpu_data_handler::end() {
         glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buf_object_vertex_positions);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
 
-        // Bind vao and pass attrib data to VAO.
-        glBindVertexArray(this->vertex_buffer_arr);
+        // Pass attrib data to VAO.
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
         glEnableVertexAttribArray(0);
 
@@ -155,10 +140,6 @@ void ekg_gpu_data_handler::end() {
         // Enable the second location attrib (pass to VAO) from shader.
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
         glEnableVertexAttribArray(1);
-
-        // Unbind vbo(s) and vao.
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
     }
 
     // Clean the previous data.
