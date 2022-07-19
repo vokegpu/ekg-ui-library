@@ -80,7 +80,7 @@ void ekg_check_box::on_killed() {
 
 void ekg_check_box::on_sync() {
     ekg_element::on_sync();
-    ekg::core::instance.dispatch_todo_event(ekgutil::action::REFRESH);
+    the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
 
     float text_width = ekgfont::get_text_width(this->text);
 

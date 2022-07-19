@@ -221,11 +221,11 @@ void ekg_gpu_data_handler::free(ekg_gpu_data &gpu_data) {
 
 void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec) {
     // Alloc arrays in CPU.
-    ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, w, h);
-    ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
+    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, w, h);
+    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
 
     // Bind GPU data into GPU handler.
-    ekg_gpu_data &gpu_data = ekg::core::instance.get_gpu_handler().bind();
+    ekg_gpu_data &gpu_data = the_ekg_core->get_gpu_handler().bind();
 
     // Configure the GPU data.
     gpu_data.data = 6;
@@ -240,7 +240,7 @@ void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color
     gpu_data.color[3] = color_vec.w;
 
     // Free the GPU data.
-    ekg::core::instance.get_gpu_handler().free(gpu_data);
+    the_ekg_core->get_gpu_handler().free(gpu_data);
 }
 
 void ekggpu::rectangle(ekgmath::rect &rect, ekgmath::vec4f &color_vec) {
@@ -248,11 +248,11 @@ void ekggpu::rectangle(ekgmath::rect &rect, ekgmath::vec4f &color_vec) {
 }
 
 void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec) {
-    ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, r, r);
-    ekggpu::push_arr_rect(ekg::core::instance.get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
+    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, r, r);
+    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
 
     // Bind GPU data into GPU handler.
-    ekg_gpu_data &gpu_data = ekg::core::instance.get_gpu_handler().bind();
+    ekg_gpu_data &gpu_data = the_ekg_core->get_gpu_handler().bind();
 
     // Configure the GPU data.
     gpu_data.data = 6;
@@ -268,7 +268,7 @@ void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec) {
     gpu_data.color[3] = color_vec.w;
 
     // Free the GPU data.
-    ekg::core::instance.get_gpu_handler().free(gpu_data);
+    the_ekg_core->get_gpu_handler().free(gpu_data);
 }
 
 void ekggpu::push_arr_rect(std::vector<float> &vec_arr, float x, float y, float w, float h) {
@@ -292,9 +292,9 @@ void ekggpu::push_arr_rect(std::vector<float> &vec_arr, float x, float y, float 
 }
 
 void ekggpu::invoke() {
-    ekg::core::instance.get_gpu_handler().start();
+    the_ekg_core->get_gpu_handler().start();
 }
 
 void ekggpu::revoke() {
-    ekg::core::instance.get_gpu_handler().end();
+    the_ekg_core->get_gpu_handler().end();
 }

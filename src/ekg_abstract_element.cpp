@@ -155,7 +155,7 @@ void ekg_element::collect_stack(ekgutil::stack &stack) {
     ekg_element* element;
 
     for (uint32_t &ids : this->children_stack.ids) {
-        if (ekg::core::instance.find_element(element, ids)) {
+        if (the_ekg_core->find_element(element, ids)) {
             element->collect_stack(stack);
         }
     }

@@ -12,6 +12,11 @@
 #include <ekg/impl/ekg_ui_element_slider.hpp>
 
 /**
+ * The global variable ptr for all.
+ **/
+extern ekg_core* const the_ekg_core;
+
+/**
  * EKG - ez build gui \n
  * Last commentary update: 28/06/22 at 23:45pm (11:45pm) \n
  * \n
@@ -127,7 +132,6 @@ namespace ekg {
      **/
     struct core {
     public:
-        static ekg_core instance;
         static float delta_time;
 
         /*

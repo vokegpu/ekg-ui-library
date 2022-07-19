@@ -17,7 +17,21 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="" />
+    <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/ekg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/ekg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_abstract_element.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_abstract_element.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_api.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_api.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_element_button.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_element_button.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_font.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_font.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_gpu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_gpu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_check_box.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_check_box.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_frame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_frame.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_slider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_slider.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,6 +41,9 @@
     <option name="formatViaClangd" value="false" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -40,24 +57,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Diyng/Documents/GitHub/bicudo/ekg&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "last_opened_file_path": "C:/Users/Diyng/Documents/GitHub/bicudo/ekg",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "structure.view.defaults.are.configured": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Diyng\Documents\GitHub\bicudo\ekg\ekg\impl" />
@@ -66,11 +84,6 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="ekg" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ekg" TARGET_NAME="ekg" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -100,12 +113,24 @@
       <workItem from="1657814687275" duration="21222000" />
       <workItem from="1657980160110" duration="26115000" />
       <workItem from="1658100304053" duration="7478000" />
-      <workItem from="1658165112819" duration="15793000" />
+      <workItem from="1658165112819" duration="17257000" />
+      <workItem from="1658246461653" duration="506000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

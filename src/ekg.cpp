@@ -1,7 +1,7 @@
 #include <ekg/ekg.hpp>
 #include <ekg/api/ekg_api.hpp>
 
-ekg_core ekg::core::instance;
+ekg_core* const the_ekg_core = new ekg_core();
 float ekg::core::delta_time = 0.0f;
 
 std::string ekg::get_version() {
@@ -16,32 +16,32 @@ void ekg::init(SDL_Window* &sdl_window) {
         // TODO Init SDL2 log to ARM platform.
     }
 
-    ekg::core::instance.set_instances(sdl_window);
+    the_ekg_core->set_instances(sdl_window);
     ekg::core::init();
 }
 
 void ekg::quit() {
-    ekg::core::instance.quit();
+    the_ekg_core->quit();
 }
 
 void ekg::set_font(const char *path) {
     const std::string string = std::string(path);
-    ekg::core::instance.get_font_manager().load(string);
+    the_ekg_core->get_font_manager().load(string);
 
-    if (ekg::core::instance.get_font_manager().reload()) {}
+    if (the_ekg_core->get_font_manager().reload()) {}
 }
 
 void ekg::poll_event(SDL_Event &sdl_event) {
-    ekg::core::instance.process_event_section(sdl_event);
+    the_ekg_core->process_event_section(sdl_event);
 }
 
 void ekg::update(float dt) {
     ekg::core::delta_time = dt;
-    ekg::core::instance.process_update_section();
+    the_ekg_core->process_update_section();
 }
 
 void ekg::render() {
-    ekg::core::instance.process_render_section();
+    the_ekg_core->process_render_section();
 }
 
 ekg_button* ekg::button(std::string text) {
@@ -49,7 +49,7 @@ ekg_button* ekg::button(std::string text) {
     button_worker->set_text(text);
 
     // Add into context handler.
-    ekg::core::instance.add_element(button_worker);
+    the_ekg_core->add_element(button_worker);
 
     return button_worker;
 }
@@ -62,7 +62,7 @@ ekg_slider* ekg::slider(float val, float min, float max) {
     slider_worker->set_width(125);
 
     // Add into context handler.
-    ekg::core::instance.add_element(slider_worker);
+    the_ekg_core->add_element(slider_worker);
 
     return slider_worker;
 }
@@ -72,7 +72,7 @@ ekg_frame* ekg::frame() {
     frame_worker->set_size(300, 300);
 
     // Add into context handler.
-    ekg::core::instance.add_element(frame_worker);
+    the_ekg_core->add_element(frame_worker);
 
     return frame_worker;
 }
@@ -82,34 +82,34 @@ ekg_check_box* ekg::check_box(std::string text) {
     check_box_worker->set_text(text);
 
     // Add into context handler.
-    ekg::core::instance.add_element(check_box_worker);
+    the_ekg_core->add_element(check_box_worker);
 
     return check_box_worker;
 }
 
 ekg_theme &ekg::theme() {
-    return ekg::core::instance.get_theme_service().get_loaded_theme();
+    return the_ekg_core->get_theme_service().get_loaded_theme();
 }
 
 float ekg::depth() {
-    return ekg::core::instance.get_gpu_handler().get_depth_level();
+    return the_ekg_core->get_gpu_handler().get_depth_level();
 }
 
 void ekg::depth(float depth_level) {
-    return ekg::core::instance.get_gpu_handler().set_depth_level(depth_level);
+    return the_ekg_core->get_gpu_handler().set_depth_level(depth_level);
 }
 
 void ekg::set_font_size(uint32_t size) {
-    ekg::core::instance.get_font_manager().set_size(size);
+    the_ekg_core->get_font_manager().set_size(size);
 }
 
 void ekg::core::init() {
     ekgutil::log("Core initialised.");
-    ekg::core::instance.init();
+    the_ekg_core->init();
 
     glEnable(GL_DEPTH_TEST);
 }
 
 void ekg::core::quit() {
-    ekg::core::instance.quit();
+    the_ekg_core->quit();
 }

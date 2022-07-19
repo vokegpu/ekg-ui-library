@@ -17,11 +17,11 @@ void ekg_frame::on_sync() {
     this->rect.w = this->rect.w < this->min_width ? this->min_width : this->rect.w;
     this->rect.h = this->rect.h < this->min_height ? this->min_height : this->rect.h;
 
-    ekg::core::instance.dispatch_todo_event(ekgutil::action::REFRESH);
+    the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
     ekg_element* element;
 
     for (uint32_t &ids : this->children_stack.ids) {
-        if (!ekg::core::instance.find_element(element, ids) || element->access_flag().dead) {
+        if (!the_ekg_core->find_element(element, ids) || element->access_flag().dead) {
             continue;
         }
 

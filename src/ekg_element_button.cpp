@@ -24,7 +24,7 @@ void ekg_button::on_sync() {
     this->rect.w = this->rect.w < this->min_text_width ? this->min_text_width : this->rect.w;
     this->rect.h = this->rect.h < this->min_text_height ? this->min_text_height : this->rect.h;
 
-    ekg::core::instance.dispatch_todo_event(ekgutil::action::REFRESH);
+    the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
 
     bool center = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::CENTER);
     bool top = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::TOP);
