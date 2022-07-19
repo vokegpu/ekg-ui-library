@@ -194,8 +194,8 @@ void ekg_frame::place(ekg_element* element, float x, float y) {
     element->set_pos(x, y);
 
     // We need to fix the stack after put the element into frame.
-    ekg::core::instance.dispatch_todo_event(ekgutil::action::FIXSTACK);
-    ekg::core::instance.dispatch_todo_event(ekgutil::action::REFRESH);
+    the_ekg_core->dispatch_todo_event(ekgutil::action::FIXSTACK);
+    the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
 }
 
 void ekg_frame::set_resize_dock(uint16_t dock) {

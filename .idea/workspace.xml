@@ -18,19 +18,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/ekg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/ekg.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_abstract_element.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_abstract_element.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_api.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_api.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_element_button.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_element_button.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_font.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_font.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_gpu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_gpu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_check_box.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_check_box.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_frame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_frame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_slider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_slider.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,7 +103,7 @@
       <workItem from="1657980160110" duration="26115000" />
       <workItem from="1658100304053" duration="7478000" />
       <workItem from="1658165112819" duration="17257000" />
-      <workItem from="1658246461653" duration="506000" />
+      <workItem from="1658246461653" duration="613000" />
     </task>
     <servers />
   </component>
