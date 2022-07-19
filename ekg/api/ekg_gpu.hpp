@@ -10,9 +10,9 @@
  * Store GPU data for update at once.
  **/
 struct ekg_gpu_data {
-    uint16_t category = ekgutil::shape_category::RECTANGLE;
+    uint8_t category = ekgutil::shape_category::RECTANGLE;
 
-    uint8_t texture_slot = 0;
+    GLint texture_slot = 0;
     GLuint texture = 0;
 
     GLint data = 0;

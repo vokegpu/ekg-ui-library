@@ -33,8 +33,6 @@ void ekg_frame::on_sync() {
 void ekg_frame::on_pre_event_update(SDL_Event &sdl_event) {
     ekg_element::on_pre_event_update(sdl_event);
 
-    ekgutil::log(std::to_string(this->rect.h));
-
     float x = 0;
     float y = 0;
 

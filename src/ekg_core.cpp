@@ -244,7 +244,6 @@ void ekg_core::fix_stack() {
         }
     }
 
-    this->data.clear();
     this->data = this->data_invisible_to_memory;
     this->data_invisible_to_memory.clear();
     this->forced_focused_element_id = 0;
@@ -253,8 +252,6 @@ void ekg_core::fix_stack() {
 
 /* Start of fix rects. */
 void ekg_core::fix_rects() {
-    return;
-
     ekgutil::stack cached_stack;
 
     for (ekg_element* &element : this->data) {
