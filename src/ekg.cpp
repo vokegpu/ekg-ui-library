@@ -1,5 +1,4 @@
 #include <ekg/ekg.hpp>
-#include <ekg/api/ekg_api.hpp>
 
 ekg_core* const the_ekg_core = new ekg_core();
 float ekg::core::delta_time = 0.0f;

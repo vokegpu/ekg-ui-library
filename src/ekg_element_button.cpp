@@ -1,6 +1,3 @@
-#include <ekg/impl/ekg_ui_element_button.hpp>
-#include <ekg/api/ekg_gpu.hpp>
-#include <ekg/api/ekg_font.hpp>
 #include <ekg/ekg.hpp>
 
 ekg_button::ekg_button() {

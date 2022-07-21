@@ -1,5 +1,3 @@
-#include <ekg/api/ekg_utility.hpp>
-#include <ekg/api/ekg_api.hpp>
 #include <ekg/ekg.hpp>
 
 void ekgutil::log(const std::string &log) {

@@ -2,10 +2,7 @@
 #ifndef EKG_UI_ELEMENT_ABSTRACT_H
 #define EKG_UI_ELEMENT_ABSTRACT_H
 
-#include <iostream>
-#include <string>
 #include <SDL2/SDL.h>
-
 #include <ekg/api/ekg_utility.hpp>
 
 /**

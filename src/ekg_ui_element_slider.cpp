@@ -1,5 +1,4 @@
 #include <ekg/ekg.hpp>
-#include "ekg/impl/ekg_ui_element_slider.hpp"
 
 ekg_slider::ekg_slider() {
     this->set_bar_axis(ekg::dock::LEFT);

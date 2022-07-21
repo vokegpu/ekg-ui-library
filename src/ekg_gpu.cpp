@@ -1,5 +1,4 @@
 #include <ekg/ekg.hpp>
-#include "ekg/api/ekg_gpu.hpp"
 
 void ekg_gpu_data_handler::init() {
     switch (EKG_CPU_PLATFORM) {

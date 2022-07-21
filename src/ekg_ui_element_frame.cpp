@@ -1,5 +1,3 @@
-#include <ekg/impl/ekg_ui_element_frame.hpp>
-#include <ekg/api/ekg_gpu.hpp>
 #include <ekg/ekg.hpp>
 
 ekg_frame::ekg_frame() {

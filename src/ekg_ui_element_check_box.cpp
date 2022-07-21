@@ -1,4 +1,3 @@
-#include <ekg/impl/ekg_ui_element_check_box.hpp>
 #include <ekg/ekg.hpp>
 
 ekg_check_box::ekg_check_box() {

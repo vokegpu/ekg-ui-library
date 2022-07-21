@@ -1,4 +1,3 @@
-#include "ekg/api/ekg_font.hpp"
 #include <ekg/ekg.hpp>
 
 void ekg_font::quit() {

@@ -1,5 +1,3 @@
-#include <ekg/api/ekg_api.hpp>
-#include <ekg/api/ekg_utility.hpp>
 #include <ekg/ekg.hpp>
 
 uint64_t ekg_cpu_timing::last_ticks = 0;

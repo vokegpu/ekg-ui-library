@@ -1,4 +1,3 @@
-#include <ekg/api/ekg_core.hpp>
 #include <ekg/ekg.hpp>
 #include <list>
 

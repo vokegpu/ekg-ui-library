@@ -1,4 +1,3 @@
-#include <ekg/impl/ekg_ui_element_abstract.hpp>
 #include <ekg/ekg.hpp>
 
 ekg_element::ekg_element() {
