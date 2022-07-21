@@ -148,7 +148,7 @@ float ekg_font::get_text_width(const std::string &text) {
 }
 
 float ekg_font::get_text_height(const std::string &text) {
-    return 30.0f;
+    return static_cast<float>(this->texture_height) + (static_cast<float>(this->texture_height) / 8.0f);
 }
 
 void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f &color_vec) {
