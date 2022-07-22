@@ -192,7 +192,9 @@ void ekg_gpu_data_handler::bind_texture(ekg_gpu_data &gpu_data, GLuint &object_i
 }
 
 void ekg_gpu_data_handler::quit() {
-    // TODO delete the current VAO and VBO(s) buffers
+    glDeleteBuffers(1, &this->vertex_buf_object_vertex_positions);
+    glDeleteBuffers(1, &this->vertex_buf_object_vertex_materials);
+    glDeleteVertexArrays(1, &this->vertex_buffer_arr);
 }
 
 void ekg_gpu_data_handler::set_depth_level(float z_level) {
