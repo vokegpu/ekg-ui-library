@@ -122,8 +122,7 @@ void ekg_element::set_pos(float x, float y) {
     }
 }
 
-void ekg_element::set_size(float width, float height) {
-    ekgutil::log(std::to_string(this->rect.h));
+void ekg_element::set_size(float width, float height) {;
 }
 
 void ekg_element::on_sync_position() {

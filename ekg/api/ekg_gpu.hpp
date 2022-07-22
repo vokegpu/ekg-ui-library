@@ -40,7 +40,7 @@ protected:
     GLint previous_data_size;
     GLint amount_of_texture_data_allocated;
     GLint amount_of_data;
-    int amount_of_draw_iterations;
+    uint32_t amount_of_draw_iterations;
 
     std::vector<GLfloat> cached_vertices;
     std::vector<GLfloat> cached_vertices_materials;

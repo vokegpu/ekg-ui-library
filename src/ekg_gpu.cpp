@@ -36,7 +36,7 @@ void ekg_gpu_data_handler::init() {
                                        "    vec4 fragcolor = u_vec4_color;\n"
                                        "\n"
                                        "    if (u_bool_set_texture) {\n"
-                                       "        fragcolor = texture2D(u_sampler2d_texture_active, varying_material.xy);\n"
+                                       "        fragcolor = texture(u_sampler2d_texture_active, varying_material.xy);\n"
                                        "        fragcolor = vec4(fragcolor.xyz - ((1.0f - u_vec4_color.xyz) - 1.0f), fragcolor.w - (1.0f - u_vec4_color.w));\n"
                                        "    }\n"
                                        "    if (u_int_shape_category == 1) {\n"
@@ -78,7 +78,7 @@ void ekg_gpu_data_handler::draw() {
     ekg_gpu_data gpu_data;
 
     // Simulate glMultiDrawArrays.
-    for (int i = 0; i < this->amount_of_draw_iterations; i++) {
+    for (uint32_t i = 0; i < this->amount_of_draw_iterations; i++) {
         gpu_data = this->gpu_data_list[i];
 
         this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
