@@ -1,3 +1,14 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #include <ekg/ekg.hpp>
 
 void ekg_font::quit() {
@@ -131,7 +142,7 @@ float ekg_font::get_text_width(const std::string &text) {
     for (const char* i = text.c_str(); *i; i++) {
         if (this->use_kerning && this->previous && *i) {
             FT_Get_Kerning(this->face, this->previous, *i, 0, &vec);
-            start_x += float(vec.x >> 6);
+            start_x += static_cast<float>(vec.x >> 6);
         }
 
         ekg_char_data &char_data = this->char_list[*i];
@@ -160,8 +171,8 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
 
     float render_x = 0, render_y = 0, render_w = 0, render_h = 0;
     float texture_x = 0, texture_y = 0, texture_w = 0, texture_h = 0;
-    float diff = 0.0f;
     float impl = (float(this->texture_height) / 8.0f);
+    int32_t diff = 1;
 
     // Generate a GPU data.
     ekg_gpu_data &gpu_data = the_ekg_core->get_gpu_handler().bind();
@@ -172,7 +183,7 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
 
     // The position post draw should be equals to max bitmap height divided by 2.
     gpu_data.pos[0] = x;
-    gpu_data.pos[1] = y - (impl);
+    gpu_data.pos[1] = y - (impl / 2.0f);
 
     // Reset because we do not modify the buffer vertex.
     x = 0;
@@ -188,21 +199,21 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
         ekg_char_data &char_data = this->char_list[*i];
 
         render_x = x + char_data.left;
-        render_y = y + (float(this->texture_height) - char_data.top);
+        render_y = y + (static_cast<float>(this->texture_height) - char_data.top);
 
         render_w = char_data.width;
         render_h = char_data.height;
 
         texture_x = char_data.x;
-        texture_w = render_w / float(this->texture_width);
-        texture_h = render_h / float(this->texture_height);
-        diff += texture_x;
+        texture_w = render_w / static_cast<float>(this->texture_width);
+        texture_h = render_h / static_cast<float>(this->texture_height);
+        diff += static_cast<int32_t>(texture_x);
 
         ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices(), render_x, render_y, render_w, render_h);
         ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
 
         x += char_data.texture_x;
-        this->previous = (uint8_t) *i;
+        this->previous = *i;
     }
 
     // Pass color of texture.
@@ -211,7 +222,7 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     gpu_data.color[2] = color_vec.z;
     gpu_data.color[3] = color_vec.w;
 
-    gpu_data.factor = float(str_len) + diff;
+    gpu_data.factor = static_cast<float>(str_len) * static_cast<float>(diff);
 
     // Bind the texture to GPU.
     the_ekg_core->get_gpu_handler().bind_texture(gpu_data, this->bitmap_texture_id);

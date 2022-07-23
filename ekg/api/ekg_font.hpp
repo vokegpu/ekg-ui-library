@@ -1,5 +1,15 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #pragma once
-
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -45,7 +55,7 @@ protected:
     bool flag_ft_library_initialised = false;
 
     ekg_char_data char_list[256];
-    uint8_t font_size;
+    uint8_t font_size = 16;
 public:
     /*
      * Set size of font.

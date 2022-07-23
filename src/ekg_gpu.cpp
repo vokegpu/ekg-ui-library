@@ -1,3 +1,14 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #include <ekg/ekg.hpp>
 
 void ekg_gpu_data_handler::init() {
@@ -178,7 +189,7 @@ void ekg_gpu_data_handler::bind_texture(ekg_gpu_data &gpu_data, GLuint &object_i
 
         if (textures == object_id) {
             flag_has_cached = true;
-            gpu_data.texture_slot = (uint8_t) i;
+            gpu_data.texture_slot = (GLint) i;
             break;
         }
     }
@@ -217,7 +228,7 @@ void ekg_gpu_data_handler::free(ekg_gpu_data &gpu_data) {
         this->should_alloc = true;
     }
 
-    this->amount_of_draw_iterations += 1;
+    this->amount_of_draw_iterations++;
 }
 
 void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec) {

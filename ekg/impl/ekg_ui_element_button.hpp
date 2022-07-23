@@ -1,3 +1,15 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
+#pragma once
 #ifndef EKG_UI_ELEMENT_BUTTON_H
 #define EKG_UI_ELEMENT_BUTTON_H
 
@@ -18,7 +30,7 @@ protected:
     bool callback_flag;
 
     uint16_t enum_flags_text_dock;
-    float text_offset_x, text_offset_y;
+    float text_offset_x = 0.0f, text_offset_y = 0.0f;
 public:
     ekg_button();
     ~ekg_button();

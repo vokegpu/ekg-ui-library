@@ -1,3 +1,14 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #include <ekg/api/ekg_theme.hpp>
 
 void ekg_theme_service::init() {
@@ -26,6 +37,7 @@ void ekg_theme_service::reset_theme() {
     this->loaded_theme.slider_highlight = ekgmath::vec4f(190, 190, 190, 150);
     this->loaded_theme.slider_activy = ekgmath::vec4f(0, 0, 190, 100);
 
+    this->loaded_theme.immediate_popup_background = ekgmath::vec4f(255, 255, 255, 255);
     this->loaded_theme.frame_background = ekgmath::vec4f(255, 255, 255, 255);
 }
 

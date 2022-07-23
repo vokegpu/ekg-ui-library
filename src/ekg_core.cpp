@@ -1,4 +1,16 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #include <ekg/ekg.hpp>
+#include "ekg/api/ekg_core.hpp"
 #include <list>
 
 void ekg_core::process_event_section(SDL_Event &sdl_event) {
@@ -101,10 +113,36 @@ void ekg_core::process_render_section() {
         ekgutil::remove(this->todo_flags, ekgutil::action::REFRESH);
         ekggpu::invoke();
 
+        // A fix to visual buffer problem that happens in the batching system.
+        ekgfont::render("oi", -256, 0, ekg::theme().string_color);
+
         for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
             ekg_element *&element = this->render_buffer[i];
             element->on_draw_refresh();
         }
+
+        float w = 0;
+        float h = 0;
+        float offset_x = 0;
+        float offset_y = 0;
+
+        // Draw the immediate popups after draws the elements.
+        for (ekg_immediate_popup &immediate_popup : this->immediate_popups) {
+            w = ekgfont::get_text_width(immediate_popup.text);
+            h = ekgfont::get_text_height(immediate_popup.text);
+
+            offset_x = w / 10.0f;
+            offset_y = h / 10.0f;
+
+            // Background.
+            ekggpu::rectangle(immediate_popup.pos[0] - offset_x - (w / 2.0f), immediate_popup.pos[1] - offset_y - h, w + offset_x, h + offset_y, this->theme_service.get_loaded_theme().immediate_popup_background);
+
+            // Text.
+            ekgfont::render(immediate_popup.text, immediate_popup.pos[0] - (offset_x / 2.0f) - (w / 2.0f), immediate_popup.pos[1] - (offset_y / 2.0f) - h, this->theme_service.get_loaded_theme().string_color);
+        }
+
+        // We do not want to render every time the immediate popups so we clean after send to gpu.
+        this->immediate_popups.clear();
 
         if (this->debug_mode) {
             ekgfont::render("Elements in: " + std::to_string(this->sizeof_render_buffer), 10, 10, ekg::theme().string_color);
@@ -347,4 +385,14 @@ void ekg_core::force_reorder_stack(uint32_t id) {
 
 ekg_theme_service &ekg_core::get_theme_service() {
     return this->theme_service;
+}
+
+void ekg_core::immediate_popup(float x, float y, const std::string &text) {
+    ekg_immediate_popup immediate_popup;
+
+    immediate_popup.pos[0] = x;
+    immediate_popup.pos[1] = y;
+    immediate_popup.text = text;
+
+    this->immediate_popups.push_back(immediate_popup);
 }

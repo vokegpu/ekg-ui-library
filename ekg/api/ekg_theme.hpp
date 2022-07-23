@@ -1,3 +1,14 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #pragma once
 #ifndef EKG_THEME_H
 #define EKG_THEME_H
@@ -35,6 +46,10 @@ struct ekg_theme {
     ekgmath::vec4f slider_highlight;
     ekgmath::vec4f slider_activy;
     /* End of slider colors. */
+
+    /* Start of immediate popup colors. */
+    ekgmath::vec4f immediate_popup_background;
+    /* End of immediate popup colors. */
 
     /* Start of frame colors. */
     ekgmath::vec4f frame_background;

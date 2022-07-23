@@ -1,6 +1,18 @@
+##
+# EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+#
+# --
+# ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+# DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+# RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+# DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+#
+# END OF EKG-LICENSE.
+##
 cmake_minimum_required(VERSION 3.9)
 project(ekg VERSION 1.0.0 DESCRIPTION "ez build gui")
 message("-- Preparing EKG setup")
+add_compile_options(-O3)
 
 set(LIBRARY_OUTPUT_PATH ../lib)
 set(PROJECT_VERSION 1.0)

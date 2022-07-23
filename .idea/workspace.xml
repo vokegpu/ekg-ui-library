@@ -18,12 +18,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_popup.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ekg_ui_element_popup.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/EKG-LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_api.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_api.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_core.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_core.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_font.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_font.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ekg/api/ekg_gpu.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_gpu.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_opengl.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_opengl.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_theme.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_theme.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_utility.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_utility.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/ekg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/ekg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_abstract.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_abstract.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_button.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_button.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_check_box.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_check_box.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_frame.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_frame.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_slider.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_slider.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_abstract_element.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_abstract_element.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_api.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_api.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_core.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_core.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_element_button.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_element_button.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_font.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_font.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_gpu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_gpu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_theme.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_theme.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_check_box.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_check_box.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_frame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_frame.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_slider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_slider.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_utilty.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_utilty.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +144,7 @@
       <workItem from="1658418687281" duration="2968000" />
       <workItem from="1658435435101" duration="1057000" />
       <workItem from="1658508673795" duration="287000" />
-      <workItem from="1658509162577" duration="6136000" />
+      <workItem from="1658509162577" duration="21707000" />
     </task>
     <servers />
   </component>

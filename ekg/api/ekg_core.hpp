@@ -1,3 +1,14 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #pragma once
 #ifndef EKG_CORE_H
 #define EKG_CORE_H
@@ -6,6 +17,14 @@
 #include "ekg_font.hpp"
 #include "ekg_theme.hpp"
 #include <array>
+
+/**
+ * Immediate popup to be draw after all.
+ **/
+struct ekg_immediate_popup {
+    float pos[2];
+    std::string text;
+};
 
 /**
  * Core of EKG, where everything is processed.
@@ -28,6 +47,7 @@ protected:
     std::array<ekg_element*, 2048> render_buffer;
     std::vector<ekg_element*> data_invisible_to_memory;
     std::vector<ekg_element*> data;
+    std::vector<ekg_immediate_popup> immediate_popups;
 
     uint32_t sizeof_render_buffer = 0;
     uint32_t last_id_used = 0;
@@ -66,6 +86,11 @@ protected:
     void fix_rect(ekg_element* &element, ekgutil::stack &cached_stack);
 public:
     bool debug_mode = false;
+
+    /*
+     * Draw an immediate popup in screen.
+     */
+    void immediate_popup(float x, float y, const std::string &text);
 
     /*
      * Get ekg theme service.

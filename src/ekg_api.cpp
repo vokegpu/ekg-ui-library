@@ -1,7 +1,21 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #include <ekg/ekg.hpp>
 
 uint64_t ekg_cpu_timing::last_ticks = 0;
 bool ekg_cpu_timing::clock_going_on = false;
+
+float ekgapi::display_interact_x;
+float ekgapi::display_interact_y;
 
 bool ekg_cpu_timing::start() {
     last_ticks = SDL_GetTicks64();
@@ -54,18 +68,25 @@ void ekgapi::send_output(const char *output) {
 bool ekgapi::input_down_right(SDL_Event &sdl_event, float &x, float &y) {
     switch (sdl_event.type) {
         case SDL_MOUSEBUTTONDOWN: {
-            x = (float) sdl_event.motion.x;
-            y = (float) sdl_event.motion.y;
+            x = static_cast<float>(sdl_event.button.x);
+            y = static_cast<float>(sdl_event.button.y);
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
+
             return sdl_event.button.button == SDL_BUTTON_RIGHT;
         }
 
         case SDL_FINGERDOWN: {
-            x = (float) sdl_event.tfinger.x * the_ekg_core->get_screen_width();
-            y = (float) sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+            x = sdl_event.tfinger.x * the_ekg_core->get_screen_width();
+            y = sdl_event.tfinger.y * the_ekg_core->get_screen_height();
 
             ekg_display_touch_input.last_down_x = x;
             ekg_display_touch_input.last_down_y = y;
             ekg_cpu_timing::start();
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
 
             return true;
         }
@@ -77,14 +98,21 @@ bool ekgapi::input_down_right(SDL_Event &sdl_event, float &x, float &y) {
 bool ekgapi::input_down_left(SDL_Event &sdl_event, float &x, float &y) {
     switch (sdl_event.type) {
         case SDL_MOUSEBUTTONDOWN: {
-            x = (float) sdl_event.motion.x;
-            y = (float) sdl_event.motion.y;
+            x = static_cast<float>(sdl_event.button.x);
+            y = static_cast<float>(sdl_event.button.y);
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
+
             return sdl_event.button.button == SDL_BUTTON_LEFT;
         }
 
         case SDL_FINGERDOWN: {
-            x = (float) sdl_event.tfinger.x * the_ekg_core->get_screen_width();
-            y = (float) sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+            x = sdl_event.tfinger.x * the_ekg_core->get_screen_width();
+            y = sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
 
             ekg_display_touch_input.last_down_x = sdl_event.tfinger.x;
             ekg_display_touch_input.last_down_y = sdl_event.tfinger.y;
@@ -99,8 +127,12 @@ bool ekgapi::input_down_left(SDL_Event &sdl_event, float &x, float &y) {
 bool ekgapi::input_down_middle(SDL_Event &sdl_event, float &x, float &y) {
     switch (sdl_event.type) {
         case SDL_MOUSEBUTTONDOWN: {
-            x = (float) sdl_event.motion.x;
-            y = (float) sdl_event.motion.y;
+            x = static_cast<float>(sdl_event.button.x);
+            y = static_cast<float>(sdl_event.button.y);
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
+
             return sdl_event.button.button == SDL_BUTTON_MIDDLE;
         }
     }
@@ -111,14 +143,22 @@ bool ekgapi::input_down_middle(SDL_Event &sdl_event, float &x, float &y) {
 bool ekgapi::any_input_down(SDL_Event &sdl_event, float &x, float &y) {
     switch (sdl_event.type) {
         case SDL_FINGERDOWN: {
-            x = (float) sdl_event.tfinger.x * the_ekg_core->get_screen_width();
-            y = (float) sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+            x = sdl_event.tfinger.x * the_ekg_core->get_screen_width();
+            y = sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
+
             return true;
         }
 
         case SDL_MOUSEBUTTONDOWN: {
-            x = (float) sdl_event.button.x;
-            y = (float) sdl_event.button.y;
+            x = static_cast<float>(sdl_event.button.x);
+            y = static_cast<float>(sdl_event.button.y);
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
+
             return true;
         }
     }
@@ -134,14 +174,21 @@ bool ekgapi::any_input_down(SDL_Event &sdl_event) {
 bool ekgapi::input_up_right(SDL_Event &sdl_event, float &x, float &y) {
     switch (sdl_event.type) {
         case SDL_MOUSEBUTTONUP: {
-            x = (float) sdl_event.motion.x;
-            y = (float) sdl_event.motion.y;
+            x = static_cast<float>(sdl_event.button.x);
+            y = static_cast<float>(sdl_event.button.y);
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
+
             return sdl_event.button.button == SDL_BUTTON_RIGHT;
         }
 
         case SDL_FINGERUP: {
-            x = (float) sdl_event.tfinger.x;
-            y = (float) sdl_event.tfinger.y;
+            x = sdl_event.tfinger.x;
+            y = sdl_event.tfinger.y;
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
 
             return ekg_cpu_timing::endif(EKG_ACTIVE_CALLBACK_MS_DELAY);
         }
@@ -153,14 +200,21 @@ bool ekgapi::input_up_right(SDL_Event &sdl_event, float &x, float &y) {
 bool ekgapi::input_up_left(SDL_Event &sdl_event, float &x, float &y) {
     switch (sdl_event.type) {
         case SDL_MOUSEBUTTONUP: {
-            x = (float) sdl_event.motion.x;
-            y = (float) sdl_event.motion.y;
+            x = static_cast<float>(sdl_event.button.x);
+            y = static_cast<float>(sdl_event.button.y);
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
+
             return sdl_event.button.button == SDL_BUTTON_LEFT;
         }
 
         case SDL_FINGERUP: {
-            x = (float) sdl_event.tfinger.x * the_ekg_core->get_screen_width();
-            y = (float) sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+            x = sdl_event.tfinger.x * the_ekg_core->get_screen_width();
+            y = sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
 
             return true;
         }
@@ -172,8 +226,12 @@ bool ekgapi::input_up_left(SDL_Event &sdl_event, float &x, float &y) {
 bool ekgapi::input_up_middle(SDL_Event &sdl_event, float &x, float &y) {
     switch (sdl_event.type) {
         case SDL_MOUSEBUTTONUP: {
-            x = (float) sdl_event.motion.x;
-            y = (float) sdl_event.motion.y;
+            x = static_cast<float>(sdl_event.motion.x);
+            y = static_cast<float>(sdl_event.motion.y);
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
+
             return sdl_event.button.button == SDL_BUTTON_MIDDLE;
         }
     }
@@ -184,18 +242,25 @@ bool ekgapi::input_up_middle(SDL_Event &sdl_event, float &x, float &y) {
 bool ekgapi::any_input_up(SDL_Event &sdl_event, float &x, float &y) {
     switch (sdl_event.type) {
         case SDL_FINGERUP: {
-            x = (float) sdl_event.tfinger.x * the_ekg_core->get_screen_width();
-            y = (float) sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+            x = sdl_event.tfinger.x * the_ekg_core->get_screen_width();
+            y = sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
+
             return true;
         }
 
         case SDL_MOUSEBUTTONUP: {
-            x = (float) sdl_event.button.x;
-            y = (float) sdl_event.button.y;
+            x = static_cast<float>(sdl_event.button.x);
+            y = static_cast<float>(sdl_event.button.y);
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
+
             return true;
         }
     }
-
 
     return false;
 }
@@ -207,14 +272,22 @@ bool ekgapi::any_input_up(SDL_Event &sdl_event) {
 bool ekgapi::motion(SDL_Event &sdl_event, float &x, float &y) {
     switch (sdl_event.type) {
         case SDL_MOUSEMOTION: {
-            x = (float) sdl_event.motion.x;
-            y = (float) sdl_event.motion.y;
+            x = static_cast<float>(sdl_event.motion.x);
+            y = static_cast<float>(sdl_event.motion.y);
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
+
             return true;
         }
 
         case SDL_FINGERMOTION: {
-            x = (float) sdl_event.tfinger.x * the_ekg_core->get_screen_width();
-            y = (float) sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+            x = sdl_event.tfinger.x * the_ekg_core->get_screen_width();
+            y = sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+
+            ekgapi::display_interact_x = x;
+            ekgapi::display_interact_y = y;
+
             return true;
         }
     }

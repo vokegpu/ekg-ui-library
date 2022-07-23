@@ -1,3 +1,14 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #pragma once
 #ifndef EKG_H
 #define EKG_H
@@ -10,6 +21,7 @@
 #include <ekg/impl/ekg_ui_element_frame.hpp>
 #include <ekg/impl/ekg_ui_element_check_box.hpp>
 #include <ekg/impl/ekg_ui_element_slider.hpp>
+#include <ekg/impl/ekg_ui_element_popup.hpp>
 
 /**
  * The global variable ptr for all.

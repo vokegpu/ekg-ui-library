@@ -1,3 +1,14 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #pragma once
 #ifndef EKG_GPU_H
 #define EKG_GPU_H
@@ -24,14 +35,6 @@ struct ekg_gpu_data {
 };
 
 /**
- * Store dynamic GPU data.
- **/
-struct ekg_gpu_dynamic_data {
-    float normalised_value;
-    uint16_t category;
-};
-
-/**
  * Handler all data sent to GPU.
  **/
 class ekg_gpu_data_handler {
@@ -55,7 +58,6 @@ protected:
     float depth_level = 1.0f;
 
     ekg_gpu_data gpu_data_list[2048];
-    ekg_gpu_dynamic_data gpu_dynamic_list[2048];
 
     bool should_alloc;
     float allocated_factor;

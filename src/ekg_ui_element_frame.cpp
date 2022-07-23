@@ -1,4 +1,16 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #include <ekg/ekg.hpp>
+#include "ekg/impl/ekg_ui_element_frame.hpp"
 
 ekg_frame::ekg_frame() {
     this->min_width = 30;
@@ -252,4 +264,12 @@ void ekg_frame::set_drag_offset(float offset) {
 
 float ekg_frame::get_drag_offset() {
     return this->offset_drag_dock;
+}
+
+bool ekg_frame::is_dragging() {
+    return this->dragging;
+}
+
+bool ekg_frame::is_resizing() {
+    return this->resizing;
 }

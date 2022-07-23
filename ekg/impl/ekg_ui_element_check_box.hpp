@@ -1,3 +1,14 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #pragma once
 #ifndef EKG_UI_ELEMENT_CHECK_BOX_H
 
@@ -15,11 +26,11 @@ protected:
     float min_text_width;
     float min_text_height;
 
-    float square_size;
+    float square_size = 0.0f;
 
     uint16_t enum_flags_text_dock;
-    float text_offset_x, text_offset_y;
-    float box_offset;
+    float text_offset_x = 0.0f, text_offset_y = 0.0f;
+    float box_offset = 0.0f;
 public:
     ekg_check_box();
     ~ekg_check_box();

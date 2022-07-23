@@ -1,3 +1,14 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #pragma once
 #ifndef EKG_API_H
 #define EKG_API_H
@@ -44,6 +55,16 @@ struct ekg_cpu_timing {
  * Here we will choose which to use. \n
  **/
 namespace ekgapi {
+    /*
+     * The actual x relative position of a point interacting in screen (mouse or finger input).
+     */
+    extern float display_interact_x;
+
+    /*
+     * The actual y relative position of a point interacting in screen (mouse or finger input).
+     */
+    extern float display_interact_y;
+
     /*
      * Platform supported.
      */
