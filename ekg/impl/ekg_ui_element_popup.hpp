@@ -24,9 +24,8 @@
  **/
 class ekg_popup : public ekg_element {
 protected:
-    std::vector<std::string> component_list;
+    std::vector<ekgutil::component> component_list;
     std::string focused_component;
-    std::string disabled_component;
 
     uint16_t enum_flags_text_component_dock;
 
@@ -53,10 +52,9 @@ public:
     void set_text_dock(uint16_t dock);
     uint16_t get_text_dock();
 
-    void add(const char** list);
+    void add(const std::vector<std::string> &vec);
     void remove(const std::string &pattern);
-    void disable(const std::string &pattern);
-    void enable(const std::string &pattern);
+    void state(const std::string &pattern, bool enabled);
 
     void set_size(float width, float height) override;
     void set_pos(float x, float y) override;

@@ -84,6 +84,11 @@ namespace ekgmath {
  **/
 namespace ekgutil {
     /*
+     * "text".contains("t"); // output: true
+     */
+    bool contains(const std::string &str1, const std::string &str2);
+
+    /*
      * Send output log.
      */
     void log(const std::string &log);
@@ -107,6 +112,19 @@ namespace ekgutil {
      * Capture the dock based on a bound.
      */
     bool find_axis_dock(uint16_t &target, float px, float py, float offset, ekgmath::rect &rect);
+
+    /*
+     * Component to store something.
+     */
+    struct component {
+        float x = 0.0f;
+        float y = 0.0f;
+        float w = 0.0f;
+        float h = 0.0f;
+
+        std::string text;
+        bool enabled = false;
+    };
 
     /**
      * Store flags to sync GUI with UI.

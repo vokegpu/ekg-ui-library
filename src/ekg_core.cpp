@@ -127,7 +127,7 @@ void ekg_core::process_render_section() {
         float offset_y = 0;
 
         // Draw the immediate popups after draws the elements.
-        for (ekg_immediate_popup &immediate_popup : this->immediate_popups) {
+        for (ekgutil::component &immediate_popup : this->immediate_popups) {
             w = ekgfont::get_text_width(immediate_popup.text);
             h = ekgfont::get_text_height(immediate_popup.text);
 
@@ -135,10 +135,10 @@ void ekg_core::process_render_section() {
             offset_y = h / 10.0f;
 
             // Background.
-            ekggpu::rectangle(immediate_popup.pos[0] - offset_x - (w / 2.0f), immediate_popup.pos[1] - offset_y - h, w + offset_x, h + offset_y, this->theme_service.get_loaded_theme().immediate_popup_background);
+            ekggpu::rectangle(immediate_popup.x - offset_x - (w / 2.0f), immediate_popup.y - offset_y - h, w + offset_x, h + offset_y, this->theme_service.get_loaded_theme().immediate_popup_background);
 
             // Text.
-            ekgfont::render(immediate_popup.text, immediate_popup.pos[0] - (offset_x / 2.0f) - (w / 2.0f), immediate_popup.pos[1] - (offset_y / 2.0f) - h, this->theme_service.get_loaded_theme().string_color);
+            ekgfont::render(immediate_popup.text, immediate_popup.x - (offset_x / 2.0f) - (w / 2.0f), immediate_popup.x - (offset_y / 2.0f) - h, this->theme_service.get_loaded_theme().string_color);
         }
 
         // We do not want to render every time the immediate popups so we clean after send to gpu.
@@ -388,10 +388,10 @@ ekg_theme_service &ekg_core::get_theme_service() {
 }
 
 void ekg_core::immediate_popup(float x, float y, const std::string &text) {
-    ekg_immediate_popup immediate_popup;
+    ekgutil::component immediate_popup;
 
-    immediate_popup.pos[0] = x;
-    immediate_popup.pos[1] = y;
+    immediate_popup.x = x;
+    immediate_popup.y = y;
     immediate_popup.text = text;
 
     this->immediate_popups.push_back(immediate_popup);

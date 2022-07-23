@@ -19,14 +19,6 @@
 #include <array>
 
 /**
- * Immediate popup to be draw after all.
- **/
-struct ekg_immediate_popup {
-    float pos[2];
-    std::string text;
-};
-
-/**
  * Core of EKG, where everything is processed.
  */
 class ekg_core {
@@ -47,7 +39,7 @@ protected:
     std::array<ekg_element*, 2048> render_buffer;
     std::vector<ekg_element*> data_invisible_to_memory;
     std::vector<ekg_element*> data;
-    std::vector<ekg_immediate_popup> immediate_popups;
+    std::vector<ekgutil::component> immediate_popups;
 
     uint32_t sizeof_render_buffer = 0;
     uint32_t last_id_used = 0;

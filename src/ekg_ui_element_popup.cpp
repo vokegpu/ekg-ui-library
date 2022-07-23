@@ -47,25 +47,35 @@ uint16_t ekg_popup::get_text_dock() {
     return this->enum_flags_text_component_dock;
 }
 
-void ekg_popup::add(const char** list) {
-    size_t s = sizeof(list);
+void ekg_popup::add(const std::vector<std::string> &vec) {
+    ekgutil::component component;
 
-    for (uint32_t i = 0; i < s; i ++) {
-        const char* component = list[i];
-        this->component_list.emplace_back(component);
+    for (const std::string &components_text : vec) {
+        component.text = components_text;
+        this->component_list.push_back(component);
     }
+
 }
 
 void ekg_popup::remove(const std::string &pattern) {
+    const std::vector<ekgutil::component> copy = this->component_list;
+    this->component_list.clear();
 
+    for (const ekgutil::component &component : copy) {
+        if (ekgutil::contains(pattern, component.text)) {
+            continue;
+        }
+
+        this->component_list.push_back(component);
+    }
 }
 
-void ekg_popup::disable(const std::string &pattern) {
-
-}
-
-void ekg_popup::enable(const std::string &pattern) {
-
+void ekg_popup::state(const std::string &pattern, bool enabled) {
+    for (ekgutil::component &component : this->component_list) {
+        if (ekgutil::contains(pattern, component.text)) {
+            component.enabled = enabled;
+        }
+    }
 }
 
 void ekg_popup::set_size(float width, float height) {
