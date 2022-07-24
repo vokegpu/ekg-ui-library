@@ -51,14 +51,8 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
         // Verify point overlap.
         element->on_pre_event_update(sdl_event);
 
-
-        if (element->get_width() == 0 || element->get_height() == 0) {
-            ekgutil::log(std::to_string(element->get_height()));
-        }
-
         if (element->get_visibility() == ekg::visibility::VISIBLE && element->access_flag().over) {
             this->focused_element_id = element->get_id();
-
         }
 
         element->on_post_event_update(sdl_event);
@@ -97,7 +91,6 @@ void ekg_core::process_update_section() {
 
     if (ekgutil::contains(this->todo_flags, ekgutil::action::FIXRECTS)) {
         ekgutil::remove(this->todo_flags, ekgutil::action::FIXRECTS);
-
         this->fix_rects();
     }
 

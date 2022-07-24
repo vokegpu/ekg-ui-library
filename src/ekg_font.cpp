@@ -107,13 +107,13 @@ bool ekg_font::reload() {
 
         ekg_char_data &char_data = this->char_list[i];
 
-        char_data.x = float(offset) / (float) this->texture_width;
-        char_data.width = float(this->glyph_slot->bitmap.width);
-        char_data.height = float(this->glyph_slot->bitmap.rows);
+        char_data.x = offset / static_cast<float>(this->texture_width);
+        char_data.width = static_cast<float>(this->glyph_slot->bitmap.width);
+        char_data.height = static_cast<float>(this->glyph_slot->bitmap.rows);
 
-        char_data.left = float(this->glyph_slot->bitmap_left);
-        char_data.top = float(this->glyph_slot->bitmap_top);
-        char_data.texture_x = float(this->glyph_slot->advance.x >> 6);
+        char_data.left = static_cast<float>(this->glyph_slot->bitmap_left);
+        char_data.top = static_cast<float>(this->glyph_slot->bitmap_top);
+        char_data.texture_x = static_cast<float>(this->glyph_slot->advance.x >> 6);
 
         glTexSubImage2D(GL_TEXTURE_2D, 0, (GLint) offset, 0, (GLint) char_data.width, (GLint) char_data.height, GL_ALPHA, GL_UNSIGNED_BYTE, this->glyph_slot->bitmap.buffer);
         offset += char_data.width;
@@ -183,16 +183,18 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
 
     // The position post draw should be equals to max bitmap height divided by 2.
     gpu_data.pos[0] = x;
-    gpu_data.pos[1] = y - (impl / 2.0f);
+    gpu_data.pos[1] = y - (impl / 2);
 
     // Reset because we do not modify the buffer vertex.
     x = 0;
     y = 0;
 
+    this->previous = 0;
+
     for (const char* i = char_str; *i; i++) {
         if (this->use_kerning && this->previous && *i) {
             FT_Get_Kerning(this->face, this->previous, *i, 0, &this->previous_char_vec);
-            x += float(this->previous_char_vec.x >> 6);
+            x += static_cast<float>(this->previous_char_vec.x >> 6);
         }
 
         // Get char from list and update metrics/positions of each char.

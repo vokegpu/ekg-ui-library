@@ -22,14 +22,14 @@
  * Store char data (position, metrics and reference).
  **/
 struct ekg_char_data {
-    float x = 0.0f;
-    float texture_x = 0.0f;
+    float x = 0;
+    float texture_x = 0;
 
-    float width = 0.0f;
-    float height = 0.0f;
+    float width = 0;
+    float height = 0;
 
-    float top = 0.0f;
-    float left = 0.0f;
+    float top = 0;
+    float left = 0;
 };
 
 /**
