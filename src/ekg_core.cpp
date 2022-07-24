@@ -389,3 +389,12 @@ void ekg_core::immediate_popup(float x, float y, const std::string &text) {
 
     this->immediate_popups.push_back(immediate_popup);
 }
+
+void ekg_core::kill_element(ekg_element *element) {
+    if (element->access_flag().dead) {
+        return;
+    }
+
+    this->concurrent_buffer.push_back(element);
+    element->access_flag().dead = true;
+}

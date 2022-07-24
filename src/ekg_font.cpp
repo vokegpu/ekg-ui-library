@@ -10,6 +10,7 @@
  * END OF EKG-LICENSE.
  **/
 #include <ekg/ekg.hpp>
+#include <cmath>
 
 void ekg_font::quit() {
     FT_Done_FreeType(this->library);
@@ -135,7 +136,7 @@ float ekg_font::get_text_width(const std::string &text) {
     this->previous = 0;
     FT_Vector vec;
 
-    float start_x = 0;
+    float start_x = 0.5f;
     float render_x = 0;
     float text_width = 0;
 
@@ -154,7 +155,7 @@ float ekg_font::get_text_width(const std::string &text) {
         text_width = render_x + char_data.width;
     }
 
-    return text_width;
+    return static_cast<float>(static_cast<int32_t>(text_width));
 }
 
 float ekg_font::get_text_height(const std::string &text) {
@@ -182,12 +183,12 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     gpu_data.data = (GLint) (str_len * 6);
 
     // The position post draw should be equals to max bitmap height divided by 2.
-    gpu_data.pos[0] = x;
-    gpu_data.pos[1] = y - (impl / 2);
+    gpu_data.pos[0] = static_cast<float>(static_cast<int32_t>(x));
+    gpu_data.pos[1] = static_cast<float>(static_cast<int32_t>(y - (impl / 2)));
 
     // Reset because we do not modify the buffer vertex.
-    x = 0;
-    y = 0;
+    x = 0.0f;
+    y = 0.0f;
 
     this->previous = 0;
 

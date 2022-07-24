@@ -10,6 +10,7 @@
  * END OF EKG-LICENSE.
  **/
 #include <ekg/ekg.hpp>
+#include <cmath>
 
 void ekg_gpu_data_handler::init() {
     switch (EKG_CPU_PLATFORM) {
@@ -126,7 +127,6 @@ void ekg_gpu_data_handler::end() {
     this->previous_data_size = this->amount_of_data;
 
     if (alloc_flag) {
-        ekgutil::log("Ticked refresh buffer count: " + std::to_string(this->ticked_refresh_buffers_count));
         this->ticked_refresh_buffers_count++;
 
         // Pass attrib data to VAO.
@@ -234,7 +234,7 @@ void ekg_gpu_data_handler::free(ekg_gpu_data &gpu_data) {
 
 void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec) {
     // Alloc arrays in CPU.
-    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, w, h);
+    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices(), 0, 0, w + .5f, h + .5f);
     ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
 
     // Bind GPU data into GPU handler.
@@ -244,8 +244,8 @@ void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color
     gpu_data.data = 6;
     gpu_data.factor = w / h;
 
-    gpu_data.pos[0] = x;
-    gpu_data.pos[1] = y;
+    gpu_data.pos[0] = static_cast<float>(static_cast<int32_t>(x));
+    gpu_data.pos[1] = static_cast<float>(static_cast<int32_t>(y));
 
     gpu_data.color[0] = color_vec.x;
     gpu_data.color[1] = color_vec.y;
@@ -272,8 +272,8 @@ void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec) {
     gpu_data.category = ekgutil::shape_category::CIRCLE;
     gpu_data.factor = r;
 
-    gpu_data.pos[0] = x;
-    gpu_data.pos[1] = y;
+    gpu_data.pos[0] = static_cast<float>(static_cast<int32_t>(x));
+    gpu_data.pos[1] = static_cast<float>(static_cast<int32_t>(y));
 
     gpu_data.color[0] = color_vec.x;
     gpu_data.color[1] = color_vec.y;

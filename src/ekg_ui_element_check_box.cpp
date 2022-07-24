@@ -109,30 +109,30 @@ void ekg_check_box::on_sync() {
     bool left = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::LEFT);
     bool right = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::RIGHT);
 
-    this->box_offset = this->square_size / 10.0f;
+    this->box_offset = this->square_size / 10;
 
     if (center) {
-        this->text_offset_x = (this->square_size / 2.0f) + (this->rect.w / 2.0f) - (text_width / 2);
-        this->text_offset_y = (this->rect.h / 2.0f) - (this->min_text_height / 2);
+        this->text_offset_x = (this->square_size / 2) + (this->rect.w / 2) - (text_width / 2);
+        this->text_offset_y = (this->rect.h / 2) - (this->min_text_height / 2);
     }
 
     if (top) {
-        this->text_offset_y = this->min_text_height / 2.0f;
+        this->text_offset_y = this->min_text_height / 2;
     }
 
     if (left) {
-        this->box_offset = this->square_size / 10.0f;
+        this->box_offset = this->square_size / 10;
         this->text_offset_x = this->square_size + this->box_offset;
     }
 
     if (right) {
-        this->box_offset = this->square_size + (this->square_size / 10.0f);
+        this->box_offset = this->square_size + (this->square_size / 10);
         this->text_offset_x = this->rect.w - text_width - this->box_offset;
         this->box_offset = this->rect.w - this->box_offset;
     }
 
     if (bottom) {
-        this->text_offset_y = this->rect.h - this->min_text_height - (this->min_text_height / 4.0f);
+        this->text_offset_y = this->rect.h - this->min_text_height - (this->min_text_height / 4);
     }
 }
 
@@ -189,10 +189,10 @@ void ekg_check_box::on_draw_refresh() {
         ekggpu::rectangle(this->rect, ekg::theme().check_box_highlight);
     }
 
-    ekggpu::rectangle(this->rect.x + this->box_offset + (this->square_size / 10.0f), this->rect.y + this->text_offset_y + (this->square_size / 10.0f), this->square_size - ((this->square_size / 10.0f) * 2.0f), this->square_size - ((this->square_size / 10.0f) * 2.0f), ekg::theme().check_box_highlight);
+    ekggpu::rectangle(this->rect.x + this->box_offset + (this->square_size / 10), this->rect.y + this->text_offset_y + (this->square_size / 10), this->square_size - ((this->square_size / 10) * 2), this->square_size - ((this->square_size / 10) * 2), ekg::theme().check_box_highlight);
 
     if (this->flag.activy) {
-        ekggpu::rectangle(this->rect.x + this->box_offset + (this->square_size / 6.0f), this->rect.y + this->text_offset_y + (this->square_size / 6.0f), this->square_size - ((this->square_size / 6.0f) * 2.0f), this->square_size - ((this->square_size / 6.0f) * 2.0f), ekg::theme().check_box_activy);
+        ekggpu::rectangle(this->rect.x + this->box_offset + (this->square_size / 6), this->rect.y + this->text_offset_y + (this->square_size / 6), this->square_size - ((this->square_size / 6) * 2), this->square_size - ((this->square_size / 6) * 2), ekg::theme().check_box_activy);
     }
 
     ekgfont::render(this->text, this->rect.x + this->text_offset_x, this->rect.y + this->text_offset_y, ekg::theme().string_enabled_color);

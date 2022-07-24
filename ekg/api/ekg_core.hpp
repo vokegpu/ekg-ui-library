@@ -140,6 +140,11 @@ public:
     void add_element(ekg_element* element);
 
     /*
+     * Kill the element.
+     */
+    void kill_element(ekg_element* element);
+
+    /*
      * Find for element in GUI context.
      */
     bool find_element(ekg_element* &element, uint32_t id);

@@ -195,6 +195,10 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
     if (ekgapi::motion(sdl_event, mx, my)) {
         highlight = this->flag.over;
     } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
+        if (!this->flag.over) {
+            ekgapi::set(this->flag.focused, false);
+        }
+
         ekgapi::set_direct(this->flag.activy, this->flag.highlight);
 
         if (this->flag.highlight && this->flag.over) {
@@ -246,6 +250,8 @@ void ekg_popup::on_draw_refresh() {
     if (this->rect.h != this->full_height && this->flag.focused) {
         this->rect.h = this->full_height;
         this->on_sync();
+    } else if (!this->flag.focused) {
+        this->kill();
     }
 
     // Background.

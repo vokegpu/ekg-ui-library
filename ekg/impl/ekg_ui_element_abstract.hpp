@@ -75,6 +75,11 @@ public:
     /* Start of abstract methods. */
 
     /*
+     * Destroy/kill this element.
+     */
+    virtual void kill();
+
+    /*
      * Set position of element.
      */
     virtual void set_pos(float x, float y);

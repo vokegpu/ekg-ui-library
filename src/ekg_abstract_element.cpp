@@ -10,6 +10,8 @@
  * END OF EKG-LICENSE.
  **/
 #include <ekg/ekg.hpp>
+#include "ekg/impl/ekg_ui_element_abstract.hpp"
+
 
 ekg_element::ekg_element() {
 
@@ -168,4 +170,9 @@ void ekg_element::collect_stack(ekgutil::stack &stack) {
             element->collect_stack(stack);
         }
     }
+}
+
+void ekg_element::kill() {
+    the_ekg_core->kill_element(this);
+    this->set_visibility(ekg::visibility::NONE);
 }

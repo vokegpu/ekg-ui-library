@@ -19,11 +19,15 @@
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_font.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_font.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_core.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_core.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_abstract.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_abstract.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_abstract_element.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_abstract_element.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_core.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_core.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_font.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_font.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_gpu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_gpu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_check_box.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_check_box.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_popup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_popup.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,7 +124,7 @@
       <workItem from="1658435435101" duration="1057000" />
       <workItem from="1658508673795" duration="287000" />
       <workItem from="1658509162577" duration="21707000" />
-      <workItem from="1658587833361" duration="27186000" />
+      <workItem from="1658587833361" duration="30723000" />
     </task>
     <servers />
   </component>
