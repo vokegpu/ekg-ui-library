@@ -295,20 +295,17 @@ bool ekgapi::motion(SDL_Event &sdl_event, float &x, float &y) {
     return false;
 }
 
-bool ekgapi::set(bool &old, bool &current, bool value) {
-    current = value;
-
-    if (old != current) {
-        old = current;
+bool ekgapi::set(bool &current, bool value) {
+    if (current != value) {
+        current = value;
         the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
     }
 
     return current;
 }
 
-bool ekgapi::set_direct(bool &old, bool &current, bool value) {
+bool ekgapi::set_direct(bool &current, bool value) {
     current = value;
-    old = current;
     return current;
 }
 

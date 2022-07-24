@@ -13,7 +13,7 @@
 #include <ekg/ekg.hpp>
 
 ekg_popup::ekg_popup() {
-    ekgapi::set_direct(this->flag.old_focused, this->flag.focused, true);
+    this->set_opened(true);
 }
 
 ekg_popup::~ekg_popup() {
@@ -21,7 +21,7 @@ ekg_popup::~ekg_popup() {
 }
 
 void ekg_popup::set_opened(bool opened) {
-    ekgapi::set(this->flag.old_focused, this->flag.focused, opened);
+    ekgapi::set(this->flag.focused, opened);
 }
 
 bool ekg_popup::is_opened() {
@@ -37,7 +37,7 @@ float ekg_popup::get_min_text_height() {
 }
 
 void ekg_popup::set_width(float width) {
-    this->set_size(width, this->rect.h);
+    this->set_size(width, this->component_height);
 }
 
 void ekg_popup::set_height(float height) {
@@ -63,6 +63,7 @@ void ekg_popup::add(const std::vector<std::string> &vec) {
 
     for (const std::string &components_text : vec) {
         component.text = components_text;
+        component.enabled = true;
         this->component_list.push_back(component);
     }
 }
@@ -91,9 +92,9 @@ void ekg_popup::state(const std::string &pattern, bool enabled) {
 void ekg_popup::set_size(float width, float height) {
     ekg_element::set_size(width, height);
 
-    if (this->rect.w != width || this->rect.h != height) {
+    if (this->rect.w != width || this->component_height != height) {
         this->rect.w = width;
-        this->rect.h = height;
+        this->component_height = height;
         this->on_sync();
     }
 }
@@ -117,6 +118,7 @@ void ekg_popup::on_sync() {
 
     this->full_height = this->offset_separator;
 
+    // First iteration for get real the most large string width.
     for (ekgutil::component &component : this->component_list) {
         max_width = ekgfont::get_text_width(component.text);
         max_height = ekgfont::get_text_height(component.text);
@@ -129,9 +131,21 @@ void ekg_popup::on_sync() {
             this->component_text_min_height = max_height;
         }
 
+        component.w = max_width;
+        component.h = max_height;
+    }
+
+    this->rect.w = this->rect.w < this->component_text_min_width ? this->component_text_min_width : this->rect.w;
+    this->rect.h = this->rect.h < this->component_text_min_height ? this->component_text_min_height : this->rect.h;
+
+    // Second iteration to set the real offset positions.
+    for (ekgutil::component &component : this->component_list) {
+        max_width = component.w;
+        max_height = component.h;
+
         if (center) {
             this->component_text_offset_x = (this->rect.w / 2) - (max_width / 2);
-            this->component_text_offset_y = (this->rect.h / 2) - (max_height / 2);
+            this->component_text_offset_y = (this->component_height / 2) - (max_height / 2);
         }
 
         if (top) {
@@ -147,11 +161,11 @@ void ekg_popup::on_sync() {
         }
 
         if (bottom) {
-            this->component_text_offset_y = this->rect.h - max_height - (max_height / 4);
+            this->component_text_offset_y = this->component_height - max_height - (max_height / 4);
         }
 
-        component.x = this->component_text_offset_x;
-        component.y = this->component_text_offset_y;
+        component.x = this->rect.x + this->component_text_offset_x;
+        component.y = this->rect.y + this->full_height + this->component_text_offset_y;
         component.w = this->rect.w;
         component.h = this->component_height;
 
@@ -166,7 +180,7 @@ void ekg_popup::on_pre_event_update(SDL_Event &sdl_event) {
     float my = 0;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
-        ekgapi::set_direct(this->flag.old_over, flag.over, this->rect.collide_aabb_with_point(mx, my));
+        ekgapi::set_direct(this->flag.over, this->rect.collide_aabb_with_point(mx, my));
     }
 }
 
@@ -176,28 +190,36 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
     float mx = 0;
     float my = 0;
 
-    if (ekgapi::motion(sdl_event, mx, my)) {
-        this->focused_component = "ekgnull";
+    bool highlight = false;
 
-        if (this->flag.over) {
-            for (ekgutil::component &component : this->component_list) {
-                if (ekgmath::collide_aabb_with_point(this->rect.x, this->rect.y, component.w, component.h) && component.enabled) {
-                    this->focused_component = component.text;
-                    break;
-                }
-            }
+    if (ekgapi::motion(sdl_event, mx, my)) {
+        highlight = this->flag.over;
+    } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
+        ekgapi::set_direct(this->flag.activy, this->flag.highlight);
+
+        if (this->flag.highlight && this->flag.over) {
+            this->activy_component = this->focused_component;
         }
 
-        ekgapi::set(this->flag.old_highlight, this->flag.highlight, this->focused_component != "nullptr");
-    } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
-        ekgapi::set(this->flag.old_activy, this->flag.activy, this->flag.highlight);
+        highlight = this->flag.over;
     } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
         if (this->flag.activy && this->flag.over) {
             this->activy_component = this->focused_component;
-            ekgapi::set(this->flag.old_activy, this->flag.activy, false);
+            ekgapi::set(this->flag.activy, false);
         }
+    }
 
-        this->focused_component = "ekgnull";
+    if (highlight) {
+        this->full_height = this->offset_separator;
+
+        for (ekgutil::component &component : this->component_list) {
+            if (ekgmath::collide_aabb_with_point(this->rect.x, this->rect.y + this->full_height, component.w, component.h) && component.enabled) {
+                ekgapi::set(this->flag.highlight, true);
+                this->focused_component = component.text;
+            }
+
+            this->full_height += component.h + this->offset_separator;
+        }
     }
 }
 
@@ -208,7 +230,7 @@ void ekg_popup::on_post_event_update(SDL_Event &sdl_event) {
     float my = 0;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
-        ekgapi::set_direct(this->flag.old_over, flag.over, false);
+        ekgapi::set_direct(this->flag.over, false);
     }
 }
 
@@ -218,6 +240,7 @@ void ekg_popup::on_update() {
 
 void ekg_popup::on_draw_refresh() {
     ekg_element::on_draw_refresh();
+    float height_scaled = this->offset_separator;
 
     // TODO open animation.
     if (this->rect.h != this->full_height && this->flag.focused) {
@@ -228,17 +251,16 @@ void ekg_popup::on_draw_refresh() {
     // Background.
     ekggpu::rectangle(this->rect, ekg::theme().popup_background);
 
-    // Render strings.
     for (ekgutil::component &component : this->component_list) {
         if (this->flag.highlight && component.text == this->focused_component) {
-            ekggpu::rectangle(this->rect, ekg::theme().popup_highlight);
+            ekggpu::rectangle(this->rect.x, this->rect.y + height_scaled, component.w, component.h, ekg::theme().popup_highlight);
         }
 
-        if (this->flag.activy && component.text == this->activy_component) {
-            ekggpu::rectangle(this->rect, ekg::theme().popup_activy);
-        }
+        // Render text.
+        ekgfont::render(component.text, component.x,component.y, component.enabled ? ekg::theme().string_enabled_color : ekg::theme().string_disabled_color);
 
-        ekgfont::render(component.text, this->rect.x + component.x, this->rect.y + component.y, component.enabled ? ekg::theme().string_enabled_color : ekg::theme().string_disabled_color);
+        // Add height by iteration.
+        height_scaled += component.h + this->offset_separator;
     }
 }
 

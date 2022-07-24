@@ -126,6 +126,7 @@ void ekg_gpu_data_handler::end() {
     this->previous_data_size = this->amount_of_data;
 
     if (alloc_flag) {
+        ekgutil::log("Ticked refresh buffer count: " + std::to_string(this->ticked_refresh_buffers_count));
         this->ticked_refresh_buffers_count++;
 
         // Pass attrib data to VAO.

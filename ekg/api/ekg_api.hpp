@@ -85,12 +85,17 @@ namespace ekgapi {
     /*
      * Set synchronized flag value.
      */
-    bool set(bool &old, bool &current, bool value);
+    bool set(bool &current, bool value);
 
     /*
      * Set non synchronized flag value.
      */
-    bool set_direct(bool &old, bool &current, bool value);
+    bool set_direct(bool &current, bool value);
+
+    /*
+     * Set synchronized string value.
+     */
+    void set_direct(std::string &old, std::string &current, std::string val);
 
     /* Start of input down. */
     bool input_down_right(SDL_Event &sdl_event, float &x, float &y);

@@ -47,7 +47,7 @@ void ekg_frame::on_pre_event_update(SDL_Event &sdl_event) {
     float y = 0;
 
     if (ekgapi::motion(sdl_event, x, y) || ekgapi::any_input_down(sdl_event, x, y)) {
-        ekgapi::set_direct(this->flag.old_over, this->flag.over, this->rect.collide_aabb_with_point(x, y));
+        ekgapi::set_direct(this->flag.over, this->rect.collide_aabb_with_point(x, y));
     }
 }
 
@@ -117,7 +117,7 @@ void ekg_frame::on_event(SDL_Event &sdl_event) {
 
 void ekg_frame::on_post_event_update(SDL_Event &sdl_event) {
     ekg_element::on_post_event_update(sdl_event);
-    ekgapi::set_direct(this->flag.old_over, this->flag.over, false);
+    ekgapi::set_direct(this->flag.over, false);
 }
 
 void ekg_frame::on_update() {

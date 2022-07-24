@@ -69,7 +69,7 @@ void ekg_button::on_pre_event_update(SDL_Event &sdl_event) {
     float my = 0;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
-        ekgapi::set_direct(this->flag.old_over, this->flag.over, this->rect.collide_aabb_with_point(mx, my));
+        ekgapi::set_direct(this->flag.over, this->rect.collide_aabb_with_point(mx, my));
     }
 }
 
@@ -80,12 +80,12 @@ void ekg_button::on_event(SDL_Event &sdl_event) {
     float my = 0;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
-        ekgapi::set(this->flag.old_highlight, this->flag.highlight, this->flag.over);
+        ekgapi::set(this->flag.highlight, this->flag.over);
     } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
-        ekgapi::set(this->flag.old_activy, this->flag.activy, this->flag.over);
+        ekgapi::set(this->flag.activy, this->flag.over);
     } else if (ekgapi::input_up_left(sdl_event, mx, my)) {
         this->set_callback_flag(this->flag.activy);
-        ekgapi::set(this->flag.old_activy, this->flag.activy, false);
+        ekgapi::set(this->flag.activy, false);
     }
 }
 
@@ -96,7 +96,7 @@ void ekg_button::on_post_event_update(SDL_Event &sdl_event) {
     float my = 0;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
-        ekgapi::set_direct(this->flag.old_over, this->flag.over, false);
+        ekgapi::set_direct(this->flag.over, false);
     }
 }
 
