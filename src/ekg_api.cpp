@@ -10,6 +10,8 @@
  * END OF EKG-LICENSE.
  **/
 #include <ekg/ekg.hpp>
+#include "ekg/api/ekg_api.hpp"
+
 
 uint64_t ekg_cpu_timing::last_ticks = 0;
 bool ekg_cpu_timing::clock_going_on = false;
@@ -307,6 +309,17 @@ bool ekgapi::set(bool &current, bool value) {
 bool ekgapi::set_direct(bool &current, bool value) {
     current = value;
     return current;
+}
+
+void ekgapi::set(std::string &current, const std::string &value) {
+    if (current != value) {
+        current = value;
+        the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+    }
+}
+
+void ekgapi::set_direct(std::string &current, const std::string &value) {
+    current = value;
 }
 
 void ekgapi::OpenGL::init() {

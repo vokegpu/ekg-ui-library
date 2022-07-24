@@ -215,7 +215,7 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
         for (ekgutil::component &component : this->component_list) {
             if (ekgmath::collide_aabb_with_point(this->rect.x, this->rect.y + this->full_height, component.w, component.h) && component.enabled) {
                 ekgapi::set(this->flag.highlight, true);
-                this->focused_component = component.text;
+                ekgapi::set(this->focused_component, component.text);
             }
 
             this->full_height += component.h + this->offset_separator;

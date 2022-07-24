@@ -135,12 +135,6 @@ namespace ekgutil {
      * Store flags to sync GUI with UI.
      **/
     struct flag {
-        bool old_over = false;
-        bool old_highlight = false;
-        bool old_activy = false;
-        bool old_focused = false;
-        bool old_dead = false;
-
         bool over = false;
         bool highlight = false;
         bool activy = false;
