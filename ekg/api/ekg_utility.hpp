@@ -64,6 +64,11 @@ namespace ekgmath {
     };
 
     /*
+     * Detect collision between interact point and rect.
+     */
+    bool collide_aabb_with_point(float x, float y, float w, float h);
+
+    /*
      * Interpolation linear, used to animations or calcs.
      */
     float lerpf(float a, float b, float t);

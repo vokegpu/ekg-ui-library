@@ -25,7 +25,8 @@ struct ekg_theme {
     bool validation = false;
 
     /* Start of string colors. */
-    ekgmath::vec4f string_color;
+    ekgmath::vec4f string_enabled_color;
+    ekgmath::vec4f string_disabled_color;
     ekgmath::vec4f string_value_color;
     /* End of string colors. */
 
@@ -46,6 +47,12 @@ struct ekg_theme {
     ekgmath::vec4f slider_highlight;
     ekgmath::vec4f slider_activy;
     /* End of slider colors. */
+
+    /* Start of popup colors. */
+    ekgmath::vec4f popup_background;
+    ekgmath::vec4f popup_highlight;
+    ekgmath::vec4f popup_activy;
+    /* End of popup colors. */
 
     /* Start of immediate popup colors. */
     ekgmath::vec4f immediate_popup_background;

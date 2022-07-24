@@ -114,7 +114,7 @@ void ekg_core::process_render_section() {
         ekggpu::invoke();
 
         // A fix to visual buffer problem that happens in the batching system.
-        ekgfont::render("oi", -256, 0, ekg::theme().string_color);
+        ekgfont::render("oi", -256, 0, ekg::theme().string_value_color);
 
         for (uint32_t i = 0; i < this->sizeof_render_buffer; i++) {
             ekg_element *&element = this->render_buffer[i];
@@ -131,22 +131,22 @@ void ekg_core::process_render_section() {
             w = ekgfont::get_text_width(immediate_popup.text);
             h = ekgfont::get_text_height(immediate_popup.text);
 
-            offset_x = w / 10.0f;
-            offset_y = h / 10.0f;
+            offset_x = w / 10;
+            offset_y = h / 10;
 
             // Background.
-            ekggpu::rectangle(immediate_popup.x - offset_x - (w / 2.0f), immediate_popup.y - offset_y - h, w + offset_x, h + offset_y, this->theme_service.get_loaded_theme().immediate_popup_background);
+            ekggpu::rectangle(immediate_popup.x - offset_x - (w / 2), immediate_popup.y - offset_y - h, w + offset_x, h + offset_y, this->theme_service.get_loaded_theme().immediate_popup_background);
 
             // Text.
-            ekgfont::render(immediate_popup.text, immediate_popup.x - (offset_x / 2.0f) - (w / 2.0f), immediate_popup.x - (offset_y / 2.0f) - h, this->theme_service.get_loaded_theme().string_color);
+            ekgfont::render(immediate_popup.text, immediate_popup.x - (offset_x / 2) - (w / 2), immediate_popup.y - (offset_y / 2) - h, this->theme_service.get_loaded_theme().string_value_color);
         }
 
         // We do not want to render every time the immediate popups so we clean after send to gpu.
         this->immediate_popups.clear();
 
         if (this->debug_mode) {
-            ekgfont::render("Elements in: " + std::to_string(this->sizeof_render_buffer), 10, 10, ekg::theme().string_color);
-            ekgfont::render("Ticked buffers count: " + std::to_string(this->gpu_handler.get_ticked_refresh_buffers_count()), 10, 10 + ekgfont::get_text_height("oi"), ekg::theme().string_color);
+            ekgfont::render("Elements in: " + std::to_string(this->sizeof_render_buffer), 10, 10, ekg::theme().string_value_color);
+            ekgfont::render("Ticked buffers count: " + std::to_string(this->gpu_handler.get_ticked_refresh_buffers_count()), 10, 10 + ekgfont::get_text_height("oi"), ekg::theme().string_value_color);
         }
 
         ekggpu::revoke();

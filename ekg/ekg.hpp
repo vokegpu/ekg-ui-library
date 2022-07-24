@@ -95,6 +95,11 @@ namespace ekg {
     void set_font_size(uint32_t size);
 
     /*
+     * Create popup UI.
+     */
+    ekg_popup* popup(const std::string &text, const std::vector<std::string> &vec);
+
+    /*
      * Create slider UI.
      */
     ekg_slider* slider(float val, float min, float max);
@@ -102,12 +107,12 @@ namespace ekg {
     /*
      * Create check box UI.
      */
-    ekg_check_box* check_box(std::string text);
+    ekg_check_box* check_box(const std::string &text);
 
     /*
      * Create button UI.
      */
-    ekg_button* button(std::string text);
+    ekg_button* button(const std::string &text);
 
     /*
      * Create frame UI.

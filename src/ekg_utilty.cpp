@@ -10,6 +10,8 @@
  * END OF EKG-LICENSE.
  **/
 #include <ekg/ekg.hpp>
+#include "ekg/api/ekg_utility.hpp"
+
 
 void ekgutil::log(const std::string &log) {
     ekgapi::send_output(log.c_str());
@@ -60,6 +62,10 @@ bool ekgutil::find_axis_dock(uint16_t &target, float px, float py, float offset,
     target = phase5 ? target | ekg::dock::CENTER : target;
 
     return target != ekg::dock::UNDEFINED;
+}
+
+bool ekgutil::contains(const std::string &str1, const std::string &str2) {
+    return str1.find(str2) != std::string::npos;
 }
 
 bool ekgutil::stack::contains(uint32_t id) {
@@ -145,6 +151,11 @@ void ekgmath::ortho2d(float *mat, float left, float right, float bottom, float t
     mat[i++] = -(top + bottom) * inv_y;
     mat[i++] = -(z_far + z_near) * inv_z;
     mat[i++] = 1.0f;
+}
+
+bool ekgmath::collide_aabb_with_point(float x, float y, float w, float h) {
+    return ekgapi::display_interact_x > x && ekgapi::display_interact_x < x + w &&
+           ekgapi::display_interact_y > y && ekgapi::display_interact_y < y + h;
 }
 
 ekgmath::vec4f::vec4f() {

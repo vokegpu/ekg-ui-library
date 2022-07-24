@@ -112,7 +112,7 @@ void ekg_button::on_draw_refresh() {
         ekggpu::rectangle(this->rect, ekg::theme().button_activy);
     }
 
-    ekgfont::render(this->text, this->rect.x + this->text_offset_x, this->rect.y + this->text_offset_y, ekg::theme().string_color);
+    ekgfont::render(this->text, this->rect.x + this->text_offset_x, this->rect.y + this->text_offset_y, ekg::theme().string_enabled_color);
 }
 
 void ekg_button::set_text(const std::string &string) {

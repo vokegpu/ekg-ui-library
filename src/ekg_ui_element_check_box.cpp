@@ -195,5 +195,5 @@ void ekg_check_box::on_draw_refresh() {
         ekggpu::rectangle(this->rect.x + this->box_offset + (this->square_size / 6.0f), this->rect.y + this->text_offset_y + (this->square_size / 6.0f), this->square_size - ((this->square_size / 6.0f) * 2.0f), this->square_size - ((this->square_size / 6.0f) * 2.0f), ekg::theme().check_box_activy);
     }
 
-    ekgfont::render(this->text, this->rect.x + this->text_offset_x, this->rect.y + this->text_offset_y, ekg::theme().string_color);
+    ekgfont::render(this->text, this->rect.x + this->text_offset_x, this->rect.y + this->text_offset_y, ekg::theme().string_enabled_color);
 }

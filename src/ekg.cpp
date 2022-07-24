@@ -54,45 +54,58 @@ void ekg::render() {
     the_ekg_core->process_render_section();
 }
 
-ekg_button* ekg::button(std::string text) {
-    auto button_worker = new ekg_button();
-    button_worker->set_text(text);
+ekg_popup *ekg::popup(const std::string &text, const std::vector<std::string> &vec) {
+    auto popup_worker = new ekg_popup();
+    the_ekg_core->add_element(popup_worker);
 
-    // Add into context handler.
+    popup_worker->set_tag(text);
+    popup_worker->set_text_dock(ekg::dock::CENTER);
+    popup_worker->add(vec);
+    popup_worker->set_width(75);
+    popup_worker->set_height(30);
+
+    return popup_worker;
+}
+
+ekg_button* ekg::button(const std::string &text) {
+    auto button_worker = new ekg_button();
     the_ekg_core->add_element(button_worker);
+
+    button_worker->set_text(text);
+    button_worker->set_text_dock(ekg::dock::CENTER);
 
     return button_worker;
 }
 
 ekg_slider* ekg::slider(float val, float min, float max) {
     auto slider_worker = new ekg_slider();
+    the_ekg_core->add_element(slider_worker);
+
     slider_worker->set_min(min);
     slider_worker->set_max(max);
     slider_worker->set_value(val);
     slider_worker->set_width(125);
-
-    // Add into context handler.
-    the_ekg_core->add_element(slider_worker);
 
     return slider_worker;
 }
 
 ekg_frame* ekg::frame() {
     auto frame_worker = new ekg_frame();
-    frame_worker->set_size(300, 300);
-
-    // Add into context handler.
     the_ekg_core->add_element(frame_worker);
+
+    frame_worker->set_drag_dock(ekg::dock::TOP);
+    frame_worker->set_size(300, 300);
+    frame_worker->set_drag_offset(300);
 
     return frame_worker;
 }
 
-ekg_check_box* ekg::check_box(std::string text) {
+ekg_check_box* ekg::check_box(const std::string &text) {
     auto check_box_worker = new ekg_check_box();
-    check_box_worker->set_text(text);
-
-    // Add into context handler.
     the_ekg_core->add_element(check_box_worker);
+
+    check_box_worker->set_text(text);
+    check_box_worker->set_text_dock(ekg::dock::LEFT);
 
     return check_box_worker;
 }

@@ -24,8 +24,10 @@
  **/
 class ekg_popup : public ekg_element {
 protected:
+    std::string tag;
     std::vector<ekgutil::component> component_list;
     std::string focused_component;
+    std::string activy_component;
 
     uint16_t enum_flags_text_component_dock;
 
@@ -39,7 +41,17 @@ protected:
     float component_text_offset_y = 0.0f;
 
     float full_height = 0.0f;
+    float offset_separator = 0.0;
 public:
+    ekg_popup();
+    ~ekg_popup();
+
+    void set_tag(const std::string &str);
+    std::string get_tag();
+
+    void set_offset_separator(float offset);
+    float get_offset_separator();
+
     void set_opened(bool opened);
     bool is_opened();
 
