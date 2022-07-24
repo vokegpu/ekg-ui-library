@@ -17,9 +17,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_utility.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_utility.hpp" afterDir="false" />
-    </list>
+    <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -115,7 +113,7 @@
       <workItem from="1658435435101" duration="1057000" />
       <workItem from="1658508673795" duration="287000" />
       <workItem from="1658509162577" duration="21707000" />
-      <workItem from="1658587833361" duration="23170000" />
+      <workItem from="1658587833361" duration="23473000" />
     </task>
     <servers />
   </component>
