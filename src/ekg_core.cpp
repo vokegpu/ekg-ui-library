@@ -306,7 +306,10 @@ void ekg_core::fix_rect(ekg_element *&element, ekgutil::stack &cached_stack) {
             continue;
         }
 
-        instance->access_scaled_rect() = {element->get_x(), element->get_y(), element->get_width(), element->get_height()};
+        instance->access_scaled_rect().x = element->get_x();
+        instance->access_scaled_rect().y = element->get_y();
+        instance->access_scaled_rect().w = element->get_width();
+        instance->access_scaled_rect().h = element->get_height();
         instance->on_sync_position();
 
         cached_stack.add(ids);

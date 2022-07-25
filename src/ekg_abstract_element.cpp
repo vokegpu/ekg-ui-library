@@ -53,7 +53,10 @@ void ekg_element::set_id(uint32_t element_id) {
     this->id = element_id;
 
     if (element_id == 0) {
-        this->scaled = {0.0f, 0.0f, 0.0f, 0.0f};
+        this->scaled.x = 0;
+        this->scaled.y = 0;
+        this->scaled.w = 0;
+        this->scaled.h = 0;
     }
 }
 
