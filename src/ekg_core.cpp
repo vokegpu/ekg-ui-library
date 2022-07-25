@@ -99,8 +99,6 @@ void ekg_core::process_update_section() {
     if (ekgutil::contains(this->todo_flags, ekgutil::action::FIXSTACK)) {
         this->fix_stack();
     }
-
-    ekgutil::log(std::to_string(this->focused_element_type));
 }
 
 void ekg_core::process_render_section() {
@@ -192,12 +190,6 @@ void ekg_core::swap_buffers() {
 
     for (ekg_element* &elements : this->concurrent_buffer) {
         if (elements == nullptr) {
-            continue;
-        }
-
-        if (elements->access_flag().dead) {
-            delete elements;
-            elements = nullptr;
             continue;
         }
 
@@ -402,7 +394,6 @@ void ekg_core::kill_element(ekg_element *element) {
         return;
     }
 
-    this->concurrent_buffer.push_back(element);
     element->access_flag().dead = true;
 }
 

@@ -58,7 +58,7 @@ void ekg_element::set_id(uint32_t element_id) {
 }
 
 uint16_t ekg_element::get_type() {
-    return this->id;
+    return this->type;
 }
 
 void ekg_element::set_visibility(uint32_t visible) {

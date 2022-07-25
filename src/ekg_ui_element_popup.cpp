@@ -199,7 +199,7 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
         bool flag = !this->flag.over;
         this->contains(flag, the_ekg_core->get_hovered_element_id());
 
-        if (!this->flag.over) {
+        if (flag) {
             ekgapi::set(this->flag.focused, false);
         }
 
