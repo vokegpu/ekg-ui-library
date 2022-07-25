@@ -20,14 +20,19 @@
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ekg/api/ekg_core.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_core.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_utility.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_utility.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/ekg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/ekg.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_abstract.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_abstract.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_popup.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_popup.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_abstract_element.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_abstract_element.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_core.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_core.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_font.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_font.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_gpu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_gpu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_element_button.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_element_button.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_check_box.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_check_box.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_frame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_frame.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_popup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_popup.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_slider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_slider.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,11 +86,6 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="ekg" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ekg" TARGET_NAME="ekg" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -124,7 +124,8 @@
       <workItem from="1658435435101" duration="1057000" />
       <workItem from="1658508673795" duration="287000" />
       <workItem from="1658509162577" duration="21707000" />
-      <workItem from="1658587833361" duration="30723000" />
+      <workItem from="1658587833361" duration="33960000" />
+      <workItem from="1658676628407" duration="21579000" />
     </task>
     <servers />
   </component>

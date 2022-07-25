@@ -19,8 +19,8 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
         case SDL_WINDOWEVENT: {
             switch (sdl_event.window.event) {
                 case SDL_WINDOWEVENT_SIZE_CHANGED: {
-                    this->screen_width = sdl_event.window.data1;
-                    this->screen_height = sdl_event.window.data2;
+                    this->screen_width = static_cast<float>(sdl_event.window.data1);
+                    this->screen_height = static_cast<float>(sdl_event.window.data2);
                     break;
                 }
             }
@@ -42,6 +42,7 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
     }
 
     this->focused_element_id = 0;
+    this->focused_element_type = 0;
 
     for (ekg_element* &element : this->data) {
         if (element == nullptr || element->access_flag().dead) {
@@ -53,6 +54,7 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
 
         if (element->get_visibility() == ekg::visibility::VISIBLE && element->access_flag().over) {
             this->focused_element_id = element->get_id();
+            this->focused_element_type = element->get_type();
         }
 
         element->on_post_event_update(sdl_event);
@@ -97,6 +99,8 @@ void ekg_core::process_update_section() {
     if (ekgutil::contains(this->todo_flags, ekgutil::action::FIXSTACK)) {
         this->fix_stack();
     }
+
+    ekgutil::log(std::to_string(this->focused_element_type));
 }
 
 void ekg_core::process_render_section() {
@@ -175,6 +179,7 @@ void ekg_core::swap_buffers() {
 
         if (element->access_flag().dead) {
             delete element;
+            element = nullptr;
             continue;
         }
 
@@ -192,6 +197,7 @@ void ekg_core::swap_buffers() {
 
         if (elements->access_flag().dead) {
             delete elements;
+            elements = nullptr;
             continue;
         }
 
@@ -204,6 +210,7 @@ void ekg_core::swap_buffers() {
 
     // Clean after push the buffers into main update buffer.
     this->concurrent_buffer.clear();
+    this->data_invisible_to_memory.clear();
 }
 /* End of swap buffers. */
 
@@ -397,4 +404,12 @@ void ekg_core::kill_element(ekg_element *element) {
 
     this->concurrent_buffer.push_back(element);
     element->access_flag().dead = true;
+}
+
+uint32_t ekg_core::get_hovered_element_id() {
+    return this->focused_element_id;
+}
+
+uint16_t ekg_core::get_hovered_element_type() {
+    return this->focused_element_type;
 }

@@ -14,6 +14,7 @@
 
 ekg_slider::ekg_slider() {
     this->set_bar_axis(ekg::dock::LEFT);
+    this->type = ekg::ui::SLIDER;
 }
 
 ekg_slider::~ekg_slider() {

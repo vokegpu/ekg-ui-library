@@ -14,7 +14,7 @@
 
 
 ekg_element::ekg_element() {
-
+    this->type = ekg::ui::ABSTRACT;
 }
 
 ekg_element::~ekg_element() {
@@ -57,7 +57,7 @@ void ekg_element::set_id(uint32_t element_id) {
     }
 }
 
-uint32_t ekg_element::get_type() {
+uint16_t ekg_element::get_type() {
     return this->id;
 }
 

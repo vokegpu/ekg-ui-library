@@ -13,6 +13,7 @@
 
 ekg_check_box::ekg_check_box() {
     this->set_text_dock(ekg::dock::LEFT);
+    this->type = ekg::ui::CHECKBOX;
 }
 
 ekg_check_box::~ekg_check_box() {

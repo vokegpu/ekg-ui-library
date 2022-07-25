@@ -15,6 +15,7 @@
 ekg_frame::ekg_frame() {
     this->min_width = 30;
     this->min_height = 30;
+    this->type = ekg::ui::FRAME;
 }
 
 ekg_frame::~ekg_frame() {

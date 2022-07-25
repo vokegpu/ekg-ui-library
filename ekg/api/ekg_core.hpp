@@ -47,6 +47,7 @@ protected:
     uint32_t focused_element_id;
     uint32_t last_focused_element_id;
     uint32_t forced_focused_element_id;
+    uint32_t focused_element_type;
 
     float screen_width;
     float screen_height;
@@ -78,6 +79,16 @@ protected:
     void fix_rect(ekg_element* &element, ekgutil::stack &cached_stack);
 public:
     bool debug_mode = false;
+
+    /*
+     * Hovered element id.
+     */
+    uint32_t get_hovered_element_id();
+
+    /*
+     * Hovered element type.
+     */
+    uint16_t get_hovered_element_type();
 
     /*
      * Draw an immediate popup in screen.

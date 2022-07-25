@@ -42,6 +42,9 @@ protected:
 
     float full_height = 0.0f;
     float offset_separator = 0.0;
+
+    int32_t get_component_index(const std::string &text);
+    void contains(bool &flag, uint32_t id);
 public:
     ekg_popup();
     ~ekg_popup();
@@ -67,6 +70,7 @@ public:
     void add(const std::vector<std::string> &vec);
     void remove(const std::string &pattern);
     void state(const std::string &pattern, bool enabled);
+    void place(const std::string &component_name, ekg_popup* popup);
 
     void set_size(float width, float height) override;
     void set_pos(float x, float y) override;

@@ -129,6 +129,7 @@ namespace ekgutil {
 
         std::string text;
         bool enabled = false;
+        uint32_t data;
     };
 
     /**

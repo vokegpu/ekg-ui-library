@@ -13,6 +13,7 @@
 
 ekg_button::ekg_button() {
     this->set_text_dock(ekg::dock::CENTER);
+    this->type = ekg::ui::BUTTON;
 }
 
 ekg_button::~ekg_button() {

@@ -45,6 +45,16 @@ extern ekg_core* const the_ekg_core;
  **/
 namespace ekg {
     /*
+     * Get hovered element id.
+     */
+    uint32_t hovered_element_id();
+
+    /*
+     * Get hovered element type.
+     */
+    uint16_t hovered_element_type();
+
+    /*
      * Get current projection version.
      */
     std::string get_version();
@@ -137,6 +147,19 @@ namespace ekg {
         LEFT      = 1 << 4,
         RIGHT     = 1 << 5,
         FULL      = 1 << 6
+    };
+
+    /**
+     * UI types.
+     */
+    enum ui {
+        SLIDER = 1,
+        COMBOBOX = 2,
+        POPUP = 3,
+        BUTTON = 4,
+        CHECKBOX = 5,
+        FRAME = 6,
+        ABSTRACT = 7
     };
 
     /*

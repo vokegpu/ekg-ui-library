@@ -23,7 +23,7 @@
  **/
 class ekg_element {
 protected:
-    uint8_t type = 0;
+    uint16_t type = 0;
 
     uint32_t id = 0;
     uint32_t visibility = 0;
@@ -45,7 +45,7 @@ public:
     bool is_mother();
     bool has_mother();
 
-    uint32_t get_type();
+    uint16_t get_type();
 
     void set_id(uint32_t element_id);
     uint32_t get_id();

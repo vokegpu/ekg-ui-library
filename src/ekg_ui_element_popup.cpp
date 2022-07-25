@@ -14,6 +14,7 @@
 
 ekg_popup::ekg_popup() {
     this->set_opened(true);
+    this->type = ekg::ui::POPUP;
 }
 
 ekg_popup::~ekg_popup() {
@@ -195,6 +196,9 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
     if (ekgapi::motion(sdl_event, mx, my)) {
         highlight = this->flag.over;
     } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
+        bool flag = !this->flag.over;
+        this->contains(flag, the_ekg_core->get_hovered_element_id());
+
         if (!this->flag.over) {
             ekgapi::set(this->flag.focused, false);
         }
@@ -250,7 +254,7 @@ void ekg_popup::on_draw_refresh() {
     if (this->rect.h != this->full_height && this->flag.focused) {
         this->rect.h = this->full_height;
         this->on_sync();
-    } else if (!this->flag.focused) {
+    } else if (!this->flag.focused && this->visibility != ekg::visibility::LOW_PRIORITY) {
         this->kill();
     }
 
@@ -287,4 +291,62 @@ void ekg_popup::set_tag(const std::string &str) {
 
 std::string ekg_popup::get_tag() {
     return this->tag;
+}
+
+void ekg_popup::place(const std::string &component_name, ekg_popup *popup) {
+    if (popup == nullptr || popup->get_id() == this->id || this->children_stack.contains(popup->get_id())) {
+        return;
+    }
+
+    this->children_stack.add(popup->get_id());
+    popup->set_visibility(ekg::visibility::LOW_PRIORITY);
+
+    int32_t id = this->get_component_index(popup->get_tag());
+
+    if (id == -1) {
+        this->add({popup->tag});
+        id = this->get_component_index(popup->get_tag());
+    }
+
+    if (id != -1) {
+        ekgutil::component &component = this->component_list.at(id);
+        component.data = popup->id;
+    }
+}
+
+int32_t ekg_popup::get_component_index(const std::string &text) {
+    for (int32_t i = 0; i < this->component_list.size(); i++) {
+        if (this->component_list.at(i).text == text) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+void ekg_popup::contains(bool &flag, uint32_t id) {
+    if (flag) {
+        return;
+    }
+
+    ekg_element* element;
+    ekg_popup* popup;
+
+    for (uint32_t &ids : this->children_stack.ids) {
+        if (!the_ekg_core->find_element(element, ids)) {
+            continue;
+        }
+
+        if (ids == id) {
+            flag = true;
+            break;
+        }
+
+        popup = (ekg_popup*) element;
+        popup->contains(flag, id);
+
+        if (flag) {
+            break;
+        }
+    }
 }
