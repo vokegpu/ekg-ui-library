@@ -13,8 +13,8 @@
 #include <cmath>
 
 void ekg_font::quit() {
-    FT_Done_FreeType(this->library);
     FT_Done_Face(this->face);
+    FT_Done_FreeType(this->library);
 }
 
 void ekg_font::set_size(uint8_t size) {
@@ -159,7 +159,7 @@ float ekg_font::get_text_width(const std::string &text) {
 }
 
 float ekg_font::get_text_height(const std::string &text) {
-    return static_cast<float>(this->texture_height) + (static_cast<float>(this->texture_height) / 8.0f);
+    return static_cast<float>(this->texture_height) + (static_cast<float>(this->texture_height) / 8);
 }
 
 void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f &color_vec) {
@@ -172,7 +172,7 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
 
     float render_x = 0, render_y = 0, render_w = 0, render_h = 0;
     float texture_x = 0, texture_y = 0, texture_w = 0, texture_h = 0;
-    float impl = (float(this->texture_height) / 8.0f);
+    float impl = (static_cast<float>(this->texture_height) / 8);
     int32_t diff = 1;
 
     // Generate a GPU data.

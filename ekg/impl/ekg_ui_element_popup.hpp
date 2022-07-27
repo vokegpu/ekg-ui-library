@@ -45,6 +45,7 @@ protected:
 
     int32_t get_component_index(const std::string &text);
     void contains(bool &flag, uint32_t id);
+    bool get_component_pos(const std::string &text, float &x, float &y);
 public:
     ekg_popup();
     ~ekg_popup();
@@ -70,7 +71,8 @@ public:
     void add(const std::vector<std::string> &vec);
     void remove(const std::string &pattern);
     void state(const std::string &pattern, bool enabled);
-    void place(const std::string &component_name, ekg_popup* popup);
+    void place(ekg_popup* popup);
+    void destroy();
 
     void set_size(float width, float height) override;
     void set_pos(float x, float y) override;

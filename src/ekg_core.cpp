@@ -245,9 +245,9 @@ void ekg_core::fix_stack() {
     this->render_buffer.fill(0);
     this->data_invisible_to_memory.clear();
 
-    for (uint32_t &ids : concurrent_all_data_stack.ids) {
-        ekg_element* element;
+    ekg_element* element;
 
+    for (uint32_t &ids : concurrent_all_data_stack.ids) {
         if (!this->find_element(element, ids)) {
             continue;
         }
@@ -260,8 +260,6 @@ void ekg_core::fix_stack() {
     }
 
     for (uint32_t &ids : concurrent_focused_stack.ids) {
-        ekg_element* element;
-
         if (!this->find_element(element, ids)) {
             continue;
         }
@@ -398,6 +396,8 @@ void ekg_core::kill_element(ekg_element *element) {
     }
 
     element->access_flag().dead = true;
+    this->dispatch_todo_event(ekgutil::action::SWAPBUFFERS);
+    this->dispatch_todo_event(ekgutil::action::REFRESH);
 }
 
 uint32_t ekg_core::get_hovered_element_id() {
