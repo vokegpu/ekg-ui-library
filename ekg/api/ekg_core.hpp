@@ -37,9 +37,11 @@ protected:
 
     // Buffers to we handle in game.
     std::array<ekg_element*, 2048> render_buffer;
-    std::vector<ekg_element*> data_invisible_to_memory;
-    std::vector<ekg_element*> data;
     std::vector<ekgutil::component> immediate_popups;
+    
+    std::vector<ekg_element*> data_invisible_to_memory;
+    std::vector<ekg_element*> data_update;
+    std::vector<ekg_element*> data;
 
     uint32_t sizeof_render_buffer = 0;
     uint32_t last_id_used = 0;

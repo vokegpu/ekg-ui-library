@@ -62,6 +62,7 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
 
     this->sizeof_render_buffer = 0;
     this->render_buffer.fill(0);
+    this->data_update.clear();
 
     for (ekg_element* &element : this->data) {
         if (element == nullptr || element->access_flag().dead) {
@@ -77,6 +78,10 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
         if (element->get_visibility() == ekg::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = element;
         }
+
+        if (element->should_update()) {
+            this->data_update.push_back(element);
+        }
     }
 
     if (ekgapi::any_input_down(sdl_event) && this->focused_element_id != 0 && this->last_focused_element_id != this->focused_element_id) {
@@ -86,6 +91,12 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
 }
 
 void ekg_core::process_update_section() {
+    for (ekg_element* &elements : this->data_update) {
+        if (elements != nullptr) {
+            elements->on_update();
+        }
+    }
+
     if (ekgutil::contains(this->todo_flags, ekgutil::SWAPBUFFERS)) {
         ekgutil::remove(this->todo_flags, ekgutil::SWAPBUFFERS);
         this->swap_buffers();
@@ -140,7 +151,7 @@ void ekg_core::process_render_section() {
         this->immediate_popups.clear();
 
         if (this->debug_mode) {
-            ekgfont::render("Elements in: " + std::to_string(this->sizeof_render_buffer), 10, 10, ekg::theme().string_value_color);
+            ekgfont::render("Visual Background [" + std::to_string(this->sizeof_render_buffer) + ", " + std::to_string(this->data.size()) + "]", 10, 10, ekg::theme().string_value_color);
             ekgfont::render("Ticked buffers count: " + std::to_string(this->gpu_handler.get_ticked_refresh_buffers_count()), 10, 10 + ekgfont::get_text_height("oi"), ekg::theme().string_value_color);
         }
 
@@ -169,6 +180,7 @@ void ekg_core::swap_buffers() {
 
     this->data_invisible_to_memory = this->data;
     this->data.clear();
+    this->data_update.clear();
 
     for (ekg_element* &element : this->data_invisible_to_memory) {
         if (element == nullptr) {
@@ -186,6 +198,10 @@ void ekg_core::swap_buffers() {
         if (element->get_visibility() == ekg::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = element;
         }
+
+        if (element->should_update()) {
+            this->data_update.push_back(element);
+        }
     }
 
     for (ekg_element* &elements : this->concurrent_buffer) {
@@ -193,10 +209,18 @@ void ekg_core::swap_buffers() {
             continue;
         }
 
+        if (this->focused_element_type == ekg::ui::SLIDER && elements->get_type() == ekg::ui::SLIDER) {
+            this->kill_element(elements);
+        }
+
         this->data.push_back(elements);
 
         if (elements->get_visibility() == ekg::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = elements;
+        }
+
+        if (elements->should_update()) {
+            this->data_update.push_back(elements);
         }
     }
 
@@ -243,7 +267,9 @@ void ekg_core::fix_stack() {
 
     this->sizeof_render_buffer = 0;
     this->render_buffer.fill(0);
+
     this->data_invisible_to_memory.clear();
+    this->data_update.clear();
 
     ekg_element* element;
 
@@ -257,6 +283,10 @@ void ekg_core::fix_stack() {
         if (element->get_visibility() == ekg::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = element;
         }
+
+        if (element->should_update()) {
+            this->data_update.push_back(element);
+        }
     }
 
     for (uint32_t &ids : concurrent_focused_stack.ids) {
@@ -268,6 +298,10 @@ void ekg_core::fix_stack() {
 
         if (element->get_visibility() == ekg::visibility::VISIBLE) {
             this->render_buffer[this->sizeof_render_buffer++] = element;
+        }
+
+        if (element->should_update()) {
+            this->data_update.push_back(element);
         }
     }
 
@@ -332,6 +366,12 @@ void ekg_core::init() {
     this->gpu_handler.init();
     this->font_manager.init();
     this->theme_service.init();
+
+    int32_t w, h;
+    SDL_GetWindowSize(this->sdl_window_instance, &w, &h);
+
+    this->screen_width = static_cast<float>(w);
+    this->screen_height = static_cast<float>(h);
 }
 
 ekg_gpu_data_handler &ekg_core::get_gpu_handler() {

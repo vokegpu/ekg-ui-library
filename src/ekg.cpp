@@ -55,10 +55,6 @@ void ekg::render() {
 }
 
 ekg_popup *ekg::popup(const std::string &text, const std::vector<std::string> &vec) {
-    if (the_ekg_core->get_hovered_element_type() == ekg::ui::POPUP) {
-        return nullptr;
-    }
-
     auto popup_worker = new ekg_popup();
     the_ekg_core->add_element(popup_worker);
 
@@ -67,6 +63,7 @@ ekg_popup *ekg::popup(const std::string &text, const std::vector<std::string> &v
     popup_worker->add(vec);
     popup_worker->set_width(75);
     popup_worker->set_height(30);
+    popup_worker->set_opened(true);
     popup_worker->set_pos(ekgapi::display_interact_x, ekgapi::display_interact_y);
 
     return popup_worker;

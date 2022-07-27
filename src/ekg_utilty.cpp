@@ -123,6 +123,27 @@ float ekgmath::clampf(float val, float min, float max) {
     return val > min ? (val < max ? val : max) : min;
 }
 
+void ekgmath::clamp_aabb_with_screen_size(float &minx, float &miny, float &maxx, float &maxy) {
+    float width = the_ekg_core->get_screen_width();
+    float height = the_ekg_core->get_screen_height();
+
+    if (minx < 0) {
+        minx = 0;
+    }
+
+    if (miny < 0) {
+        miny = 0;
+    }
+
+    if (minx + maxx > width) {
+        minx = width - maxx;
+    }
+
+    if (miny + maxy > height) {
+        miny = height - maxy;
+    }
+}
+
 void ekgmath::ortho2d(float *mat, float left, float right, float bottom, float top) {
     const float z_near = -1.0f;
     const float z_far = 1.0f;

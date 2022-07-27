@@ -79,6 +79,11 @@ namespace ekgmath {
     float clampf(float val, float min, float max);
 
     /*
+     * Clamp AABB (x, y, w, h) with screen width and height.
+     */
+    void clamp_aabb_with_screen_size(float &minx, float &miny, float &maxx, float &maxy);
+
+    /*
      * Calc. ortho projection mat4x4.
      */
     void ortho2d(float* mat, float left, float right, float bottom, float top);

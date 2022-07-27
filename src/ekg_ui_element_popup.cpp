@@ -13,7 +13,6 @@
 #include <ekg/ekg.hpp>
 
 ekg_popup::ekg_popup() {
-    this->set_opened(true);
     this->type = ekg::ui::POPUP;
 }
 
@@ -22,8 +21,14 @@ ekg_popup::~ekg_popup() {
 }
 
 void ekg_popup::set_opened(bool opened) {
+    uint16_t flag = opened ? ekg::visibility::VISIBLE : ekg::visibility::LOW_PRIORITY;
+
+    if (this->visibility != flag) {
+        this->set_visibility(flag);
+    }
+
     ekgapi::set(this->flag.focused, opened);
-    this->set_visibility(opened ? ekg::visibility::VISIBLE : ekg::visibility::LOW_PRIORITY);
+    this->set_should_update(true);
 }
 
 bool ekg_popup::is_opened() {
@@ -68,6 +73,8 @@ void ekg_popup::add(const std::vector<std::string> &vec) {
         component.enabled = true;
         this->component_list.push_back(component);
     }
+
+    this->on_sync();
 }
 
 void ekg_popup::remove(const std::string &pattern) {
@@ -81,6 +88,8 @@ void ekg_popup::remove(const std::string &pattern) {
 
         this->component_list.push_back(component);
     }
+
+    this->on_sync();
 }
 
 void ekg_popup::state(const std::string &pattern, bool enabled) {
@@ -89,6 +98,8 @@ void ekg_popup::state(const std::string &pattern, bool enabled) {
             component.enabled = enabled;
         }
     }
+
+    this->on_sync();
 }
 
 void ekg_popup::set_size(float width, float height) {
@@ -102,8 +113,13 @@ void ekg_popup::set_size(float width, float height) {
 }
 
 void ekg_popup::destroy() {
-    the_ekg_core->kill_element(this);
     ekg_popup* popup;
+
+    if (this->has_mother() && the_ekg_core->find_element((ekg_element*&) popup, this->master_id) && !popup->access_flag().dead) {
+        popup->destroy();
+    }
+
+    the_ekg_core->kill_element(this);
 
     for (uint32_t &ids : this->children_stack.ids) {
         if (the_ekg_core->find_element((ekg_element*&) popup, ids)) {
@@ -113,8 +129,8 @@ void ekg_popup::destroy() {
 }
 
 bool ekg_popup::get_component_pos(const std::string &text, float &x, float &y) {
-    x = this->rect.x;
-    y = this->rect.y;
+    x = 0;
+    y = 0;
 
     for (ekgutil::component &components : this->component_list) {
         if (components.text == text) {
@@ -128,6 +144,10 @@ bool ekg_popup::get_component_pos(const std::string &text, float &x, float &y) {
 }
 
 void ekg_popup::set_pos(float x, float y) {
+    if (!this->has_mother()) {
+        ekgmath::clamp_aabb_with_screen_size(x, y, this->rect.w, this->full_height);
+    }
+
     ekg_element::set_pos(x, y);
 }
 
@@ -228,19 +248,33 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
 
         if (flag) {
             ekgapi::set(this->flag.focused, false);
+            this->set_visibility(ekg::visibility::NONE);
+            this->set_should_update(true);
         }
 
         if (this->flag.highlight && this->flag.over) {
-            int32_t i = this->get_component_index(this->focused_component);
+            bool contains = false;
             ekg_popup* popup;
-            ekgutil::component component;
 
-            if (i != -1 && the_ekg_core->find_element((ekg_element*&) popup, (component = this->component_list[i]).data)) {
-                this->get_component_pos(popup->get_tag(), mx, my);
+            for (uint32_t &ids : this->children_stack.ids) {
+                if (!the_ekg_core->find_element((ekg_element*&) popup, ids)) {
+                    continue;
+                }
 
-                popup->set_opened(popup->is_opened());
-                popup->set_pos(mx + this->rect.w, my);
-            } else if (i != -1) {
+                bool flag = popup->get_tag() == this->focused_component;
+
+                if (flag) {
+                    flag = !popup->is_opened();
+                    contains = true;
+
+                    this->get_component_pos(popup->get_tag(), mx, my);
+                    popup->set_pos(mx + this->rect.w, my);
+                }
+
+                popup->set_opened(flag);
+            }
+
+            if (!contains) {
                 ekgapi::set_direct(this->flag.activy, this->flag.highlight);
                 this->activy_component = this->focused_component;
             }
@@ -249,8 +283,10 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
         highlight = this->flag.over;
     } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
         if (this->flag.activy && this->flag.over) {
-            this->activy_component = this->focused_component;
             ekgapi::set(this->flag.focused, false);
+            
+            this->set_visibility(ekg::visibility::NONE);
+            this->set_should_update(true);
         }
     }
 
@@ -281,28 +317,38 @@ void ekg_popup::on_post_event_update(SDL_Event &sdl_event) {
 
 void ekg_popup::on_update() {
     ekg_element::on_update();
+
+    float size = this->visibility == ekg::visibility::VISIBLE ? this->full_height : 0;
+
+    // TODO open animation.
+    if (this->rect.h != size && this->visibility != ekg::visibility::NONE) {
+        this->rect.h = size;
+        this->on_sync();
+        this->set_should_update(false);
+    }
+
+    if (this->visibility == ekg::visibility::NONE && !this->flag.focused && true) {
+        this->destroy();
+        this->set_should_update(false);
+        the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+    }
 }
 
 void ekg_popup::on_draw_refresh() {
     ekg_element::on_draw_refresh();
-    float height_scaled = this->offset_separator;
 
-    // TODO open animation.
-    if (this->rect.h != this->full_height && this->flag.focused) {
-        this->rect.h = this->full_height;
-        this->on_sync();
-    }
+    float height_scaled = this->offset_separator;
 
     // Background.
     ekggpu::rectangle(this->rect, ekg::theme().popup_background);
 
     for (ekgutil::component &component : this->component_list) {
-        if (this->flag.highlight && component.text == this->focused_component) {
+        if (component.enabled && this->flag.highlight && component.text == this->focused_component) {
             ekggpu::rectangle(this->rect.x, this->rect.y + height_scaled, component.w, component.h, ekg::theme().popup_highlight);
         }
 
         // Render text.
-        ekgfont::render(component.text, component.x,component.y, component.enabled ? ekg::theme().string_enabled_color : ekg::theme().string_disabled_color);
+        ekgfont::render(component.text, component.x, component.y, component.enabled ? ekg::theme().string_enabled_color : ekg::theme().string_disabled_color);
 
         // Add height by iteration.
         height_scaled += component.h + this->offset_separator;
@@ -347,6 +393,8 @@ void ekg_popup::place(ekg_popup *popup) {
         ekgutil::component &component = this->component_list.at(id);
         component.data = popup->id;
     }
+
+    popup->set_master_id(this->id);
 }
 
 int32_t ekg_popup::get_component_index(const std::string &text) {

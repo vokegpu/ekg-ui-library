@@ -23,6 +23,7 @@
  **/
 class ekg_element {
 protected:
+    bool update = false;
     uint16_t type = 0;
 
     uint32_t id = 0;
@@ -41,6 +42,9 @@ protected:
 public:
     ekg_element();
     ~ekg_element();
+
+    void set_should_update(bool should_update);
+    bool should_update();
 
     bool is_mother();
     bool has_mother();

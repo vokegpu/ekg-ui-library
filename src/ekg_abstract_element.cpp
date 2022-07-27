@@ -10,8 +10,6 @@
  * END OF EKG-LICENSE.
  **/
 #include <ekg/ekg.hpp>
-#include "ekg/impl/ekg_ui_element_abstract.hpp"
-
 
 ekg_element::ekg_element() {
     this->type = ekg::ui::ABSTRACT;
@@ -19,6 +17,14 @@ ekg_element::ekg_element() {
 
 ekg_element::~ekg_element() {
 
+}
+
+void ekg_element::set_should_update(bool should_update) {
+    this->update = should_update;
+}
+
+bool ekg_element::should_update() {
+    return this->update;
 }
 
 void ekg_element::on_pre_event_update(SDL_Event &sdl_event) {
@@ -51,13 +57,6 @@ void ekg_element::on_sync() {
 
 void ekg_element::set_id(uint32_t element_id) {
     this->id = element_id;
-
-    if (element_id == 0) {
-        this->scaled.x = 0;
-        this->scaled.y = 0;
-        this->scaled.w = 0;
-        this->scaled.h = 0;
-    }
 }
 
 uint16_t ekg_element::get_type() {
@@ -73,7 +72,19 @@ uint32_t ekg_element::get_visibility() {
 }
 
 void ekg_element::set_master_id(uint32_t element_id) {
-    this->master_id = element_id;
+    if (this->master_id != element_id) {
+        this->master_id = element_id;
+
+        if (element_id == 0) {
+            this->scaled.x = 0;
+            this->scaled.y = 0;
+            this->scaled.w = 0;
+            this->scaled.h = 0;
+            return;
+        }
+
+        the_ekg_core->dispatch_todo_event(ekgutil::action::FIXRECTS);
+    }
 }
 
 uint32_t ekg_element::get_id() {
