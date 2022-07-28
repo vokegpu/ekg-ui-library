@@ -115,7 +115,7 @@ void ekg_popup::set_size(float width, float height) {
 void ekg_popup::destroy() {
     ekg_popup* popup;
 
-    if (this->has_mother() && the_ekg_core->find_element((ekg_element*&) popup, this->master_id) && !popup->access_flag().dead) {
+    if (this->has_mother() && the_ekg_core->find_element((ekg_element*&) popup, this->mother_id) && !popup->access_flag().dead) {
         popup->destroy();
     }
 
@@ -397,7 +397,7 @@ void ekg_popup::place(ekg_popup *popup) {
         component.data = popup->id;
     }
 
-    popup->set_master_id(this->id);
+    popup->set_mother_id(this->id);
 }
 
 int32_t ekg_popup::get_component_index(const std::string &text) {

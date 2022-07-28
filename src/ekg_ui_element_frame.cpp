@@ -200,7 +200,7 @@ void ekg_frame::place(ekg_element* element, float x, float y) {
 
     this->children_stack.add(element->get_id());
 
-    element->set_master_id(this->id);
+    element->set_mother_id(this->id);
     element->access_scaled_rect().copy(this->rect);
     element->set_pos(x, y);
 

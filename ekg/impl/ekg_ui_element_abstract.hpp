@@ -28,7 +28,7 @@ protected:
 
     uint32_t id = 0;
     uint32_t visibility = 0;
-    uint32_t master_id = 0;
+    uint32_t mother_id = 0;
 
     ekgutil::flag flag;
     ekgutil::stack children_stack;
@@ -57,8 +57,8 @@ public:
     void set_visibility(uint32_t visible);
     uint32_t get_visibility();
 
-    void set_master_id(uint32_t element_id);
-    uint32_t get_master_id();
+    void set_mother_id(uint32_t element_id);
+    uint32_t get_mother_id();
 
     ekgutil::flag &access_flag();
     ekgutil::stack &access_children_stack();

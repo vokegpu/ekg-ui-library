@@ -71,9 +71,9 @@ uint32_t ekg_element::get_visibility() {
     return this->visibility;
 }
 
-void ekg_element::set_master_id(uint32_t element_id) {
-    if (this->master_id != element_id) {
-        this->master_id = element_id;
+void ekg_element::set_mother_id(uint32_t element_id) {
+    if (this->mother_id != element_id) {
+        this->mother_id = element_id;
 
         if (element_id == 0) {
             this->scaled.x = 0;
@@ -124,7 +124,7 @@ bool ekg_element::is_mother() {
 }
 
 bool ekg_element::has_mother() {
-    return this->master_id != 0;
+    return this->mother_id != 0;
 }
 
 void ekg_element::set_pos(float x, float y) {
@@ -167,8 +167,8 @@ float ekg_element::get_sync_y() {
     return  this->sync_y;
 }
 
-uint32_t ekg_element::get_master_id() {
-    return this->master_id;
+uint32_t ekg_element::get_mother_id() {
+    return this->mother_id;
 }
 
 void ekg_element::collect_stack(ekgutil::stack &stack) {
