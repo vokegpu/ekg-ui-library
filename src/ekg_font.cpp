@@ -183,8 +183,8 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     gpu_data.data = (GLint) (str_len * 6);
 
     // The position post draw should be equals to max bitmap height divided by 2.
-    gpu_data.pos[0] = static_cast<float>(static_cast<int32_t>(x));
-    gpu_data.pos[1] = static_cast<float>(static_cast<int32_t>(y - (impl / 2)));
+    gpu_data.rect[0] = static_cast<float>(static_cast<int32_t>(x));
+    gpu_data.rect[1] = static_cast<float>(static_cast<int32_t>(y - (impl / 2)));
 
     // Reset because we do not modify the buffer vertex.
     x = 0.0f;
@@ -225,7 +225,8 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     gpu_data.color[2] = color_vec.z;
     gpu_data.color[3] = color_vec.w;
 
-    gpu_data.factor = static_cast<float>(str_len) * static_cast<float>(diff);
+    // Set the factor difference.
+    gpu_data.factor = (static_cast<float>(str_len)) * static_cast<float>(diff) * texture_w;
 
     // Bind the texture to GPU.
     the_ekg_core->get_gpu_handler().bind_texture(gpu_data, this->bitmap_texture_id);

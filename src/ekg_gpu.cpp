@@ -23,13 +23,15 @@ void ekg_gpu_data_handler::init() {
                                      "out vec2 varying_material;\n"
                                      "out vec2 varying_pos;\n"
                                      "uniform mat4 u_mat_matrix;\n"
-                                     "uniform vec2 u_vec2_pos;\n"
+                                     "uniform vec4 u_vec4_rect;\n"
                                      "uniform float u_float_zdepth;\n"
                                      "\n"
                                      "void main() {\n"
-                                     "    gl_Position = u_mat_matrix * vec4(u_vec2_pos + attrib_pos, (u_float_zdepth / 1000), 1.0f);\n"
+                                     "    vec2 pos = (attrib_pos * u_vec4_rect.zw) + u_vec4_rect.xy;"
+                                     "    if (u_vec4_rect.z == 0.0f && u_vec4_rect.w == 0.0f) pos = attrib_pos + u_vec4_rect.xy;"
+                                     "    gl_Position = u_mat_matrix * vec4(pos, (u_float_zdepth / 1000), 1.0f);\n"
                                      "    varying_material = attrib_material;\n"
-                                     "    varying_pos = u_vec2_pos;\n"
+                                     "    varying_pos = u_vec4_rect.xy;\n"
                                      "}";
 
             const char* fragment_src = "#version 330 core\n"
@@ -95,7 +97,7 @@ void ekg_gpu_data_handler::draw() {
 
         this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
         this->default_program.set_vec4f("u_vec4_color", gpu_data.color);
-        this->default_program.set_vec2f("u_vec2_pos", gpu_data.pos);
+        this->default_program.set_vec4f("u_vec4_rect", gpu_data.rect);
         this->default_program.set_float("u_float_zdepth", static_cast<float>(i + 1));
         this->default_program.set_int("u_int_shape_category", gpu_data.category);
         this->default_program.set_float("u_float_factor", gpu_data.factor);
@@ -179,6 +181,9 @@ ekg_gpu_data &ekg_gpu_data_handler::bind() {
     gpu_data.texture_slot = 0;
     gpu_data.texture = 0;
 
+    gpu_data.rect[2] = 0.0f;
+    gpu_data.rect[3] = 0.0f;
+
     return gpu_data;
 }
 
@@ -234,7 +239,7 @@ void ekg_gpu_data_handler::free(ekg_gpu_data &gpu_data) {
 
 void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec) {
     // Alloc arrays in CPU.
-    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices(), 0, 0, w + .5f, h + .5f);
+    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, 1.0f, 1.0f);
     ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
 
     // Bind GPU data into GPU handler.
@@ -242,10 +247,11 @@ void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color
 
     // Configure the GPU data.
     gpu_data.data = 6;
-    gpu_data.factor = w / h;
 
-    gpu_data.pos[0] = static_cast<float>(static_cast<int32_t>(x));
-    gpu_data.pos[1] = static_cast<float>(static_cast<int32_t>(y));
+    gpu_data.rect[0] = static_cast<float>(static_cast<int32_t>(x));
+    gpu_data.rect[1] = static_cast<float>(static_cast<int32_t>(y));
+    gpu_data.rect[2] = static_cast<float>(static_cast<int32_t>(w));
+    gpu_data.rect[3] = static_cast<float>(static_cast<int32_t>(h));
 
     gpu_data.color[0] = color_vec.x;
     gpu_data.color[1] = color_vec.y;
@@ -261,7 +267,7 @@ void ekggpu::rectangle(ekgmath::rect &rect, ekgmath::vec4f &color_vec) {
 }
 
 void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec) {
-    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, r, r);
+    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, 1.0f, 1.0f);
     ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
 
     // Bind GPU data into GPU handler.
@@ -272,8 +278,10 @@ void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec) {
     gpu_data.category = ekgutil::shape_category::CIRCLE;
     gpu_data.factor = r;
 
-    gpu_data.pos[0] = static_cast<float>(static_cast<int32_t>(x));
-    gpu_data.pos[1] = static_cast<float>(static_cast<int32_t>(y));
+    gpu_data.rect[0] = static_cast<float>(static_cast<int32_t>(x));
+    gpu_data.rect[1] = static_cast<float>(static_cast<int32_t>(y));
+    gpu_data.rect[2] = static_cast<float>(static_cast<int32_t>(r));
+    gpu_data.rect[3] = static_cast<float>(static_cast<int32_t>(r));
 
     gpu_data.color[0] = color_vec.x;
     gpu_data.color[1] = color_vec.y;

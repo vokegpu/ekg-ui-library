@@ -209,10 +209,6 @@ void ekg_core::swap_buffers() {
             continue;
         }
 
-        if (this->focused_element_type == ekg::ui::SLIDER && elements->get_type() == ekg::ui::SLIDER) {
-            this->kill_element(elements);
-        }
-
         this->data.push_back(elements);
 
         if (elements->get_visibility() == ekg::visibility::VISIBLE) {
