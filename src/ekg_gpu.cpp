@@ -181,6 +181,7 @@ ekg_gpu_data &ekg_gpu_data_handler::bind() {
     gpu_data.texture_slot = 0;
     gpu_data.texture = 0;
 
+    gpu_data.factor = 0.0f;
     gpu_data.rect[2] = 0.0f;
     gpu_data.rect[3] = 0.0f;
 

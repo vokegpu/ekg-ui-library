@@ -226,7 +226,7 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     gpu_data.color[3] = color_vec.w;
 
     // Set the factor difference.
-    gpu_data.factor = (static_cast<float>(str_len)) * static_cast<float>(diff) * texture_w;
+    gpu_data.factor = (static_cast<float>(str_len)) * static_cast<float>(diff) * texture_w * x;
 
     // Bind the texture to GPU.
     the_ekg_core->get_gpu_handler().bind_texture(gpu_data, this->bitmap_texture_id);
