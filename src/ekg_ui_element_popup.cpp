@@ -243,8 +243,7 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
     if (ekgapi::motion(sdl_event, mx, my)) {
         highlight = this->flag.over;
     } else if (ekgapi::any_input_down(sdl_event, mx, my)) {
-        bool flag = !this->flag.over;
-        this->contains(flag, the_ekg_core->get_hovered_element_id());
+        bool flag = the_ekg_core->get_hovered_element_id() != ekg::ui::POPUP;
 
         if (flag) {
             ekgapi::set(this->flag.focused, false);
@@ -261,7 +260,7 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
                     continue;
                 }
 
-                bool flag = popup->get_tag() == this->focused_component;
+                flag = popup->get_tag() == this->focused_component;
 
                 if (flag) {
                     flag = !popup->is_opened();
@@ -278,6 +277,8 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
                 ekgapi::set_direct(this->flag.activy, this->flag.highlight);
                 this->activy_component = this->focused_component;
             }
+
+            flag = false;
         }
 
         highlight = this->flag.over;
@@ -325,6 +326,8 @@ void ekg_popup::on_update() {
         this->rect.h = size;
         this->on_sync();
         this->set_should_update(false);
+        the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+        ekgutil::log("sou linda");
     }
 
     if (this->visibility == ekg::visibility::NONE && !this->flag.focused && true) {
@@ -407,7 +410,7 @@ int32_t ekg_popup::get_component_index(const std::string &text) {
     return -1;
 }
 
-void ekg_popup::contains(bool &flag, uint32_t id) {
+void ekg_popup::children_popup_hovered_flag(bool &flag, uint32_t id) {
     if (flag) {
         return;
     }
@@ -426,7 +429,7 @@ void ekg_popup::contains(bool &flag, uint32_t id) {
         }
 
         popup = (ekg_popup*) element;
-        popup->contains(flag, id);
+        popup->children_popup_hovered_flag(flag, id);
 
         if (flag) {
             break;

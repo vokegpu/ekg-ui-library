@@ -55,6 +55,10 @@ void ekg::render() {
 }
 
 ekg_popup *ekg::popup(const std::string &text, const std::vector<std::string> &vec) {
+    if (the_ekg_core->get_hovered_element_type() == ekg::ui::POPUP) {
+        return nullptr;
+    }
+
     auto popup_worker = new ekg_popup();
     the_ekg_core->add_element(popup_worker);
 

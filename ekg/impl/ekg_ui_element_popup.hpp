@@ -44,7 +44,7 @@ protected:
     float offset_separator = 0.0;
 
     int32_t get_component_index(const std::string &text);
-    void contains(bool &flag, uint32_t id);
+    void children_popup_hovered_flag(bool &flag, uint32_t id);
     bool get_component_pos(const std::string &text, float &x, float &y);
 public:
     ekg_popup();

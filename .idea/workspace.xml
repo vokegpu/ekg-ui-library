@@ -19,9 +19,10 @@
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_popup.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_popup.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_font.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_font.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_gpu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_gpu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_popup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_popup.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,7 +121,7 @@
       <workItem from="1658509162577" duration="21707000" />
       <workItem from="1658587833361" duration="33960000" />
       <workItem from="1658676628407" duration="27767000" />
-      <workItem from="1658959190625" duration="8028000" />
+      <workItem from="1658959190625" duration="17625000" />
     </task>
     <servers />
   </component>
