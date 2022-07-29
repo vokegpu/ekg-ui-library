@@ -38,6 +38,7 @@ void ekg_gpu_data_handler::init() {
                                        "\n"
                                        "in vec2 varying_material;\n"
                                        "in vec2 varying_pos;\n"
+                                       "out vec4 out_frag_color;\n"
                                        "\n"
                                        "uniform sampler2D u_sampler2d_texture_active;\n"
                                        "uniform bool u_bool_set_texture;\n"
@@ -62,7 +63,7 @@ void ekg_gpu_data_handler::init() {
                                        "            fragcolor.a = 0;\n"
                                        "        }\n"
                                        "    }"
-                                       "    gl_FragColor = fragcolor;\n"
+                                       "    out_frag_color = fragcolor;\n"
                                        "}";
 
             ekgapi::OpenGL::compile_program(this->default_program, vertex_src, fragment_src);

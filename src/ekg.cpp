@@ -145,6 +145,7 @@ void ekg::core::init() {
     the_ekg_core->init();
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 }
 
 void ekg::core::quit() {

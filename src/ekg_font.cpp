@@ -97,7 +97,7 @@ bool ekg_font::reload() {
     }
 
     glBindTexture(GL_TEXTURE_2D, this->bitmap_texture_id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, (int32_t) this->texture_width, (int32_t) this->texture_height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int32_t) this->texture_width, (int32_t) this->texture_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
     float offset = 0.0f;
 
