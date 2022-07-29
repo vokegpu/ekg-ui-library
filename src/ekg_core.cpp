@@ -172,6 +172,16 @@ void ekg_core::add_element(ekg_element* element) {
     this->force_reorder_stack(element->get_id());
 }
 
+void ekg_core::kill_element(ekg_element *element) {
+    if (element->access_flag().dead) {
+        return;
+    }
+
+    element->access_flag().dead = true;
+    this->dispatch_todo_event(ekgutil::action::SWAPBUFFERS);
+    this->dispatch_todo_event(ekgutil::action::REFRESH);
+}
+
 /* Start of swap buffers. */
 void ekg_core::swap_buffers() {
     // Clean the buffer render (not delete).
@@ -234,7 +244,7 @@ void ekg_core::fix_stack() {
 
     ekgutil::remove(this->todo_flags, ekgutil::action::FIXSTACK);
 
-    if (this->focused_element_id == 0) {
+    if (this->focused_element_id == 0 || (this->forced_focused_element_id != 0 && this->focused_element_id != 0)) {
         this->focused_element_id = this->forced_focused_element_id;
     }
 
@@ -426,20 +436,14 @@ void ekg_core::immediate_popup(float x, float y, const std::string &text) {
     this->immediate_popups.push_back(immediate_popup);
 }
 
-void ekg_core::kill_element(ekg_element *element) {
-    if (element->access_flag().dead) {
-        return;
-    }
-
-    element->access_flag().dead = true;
-    this->dispatch_todo_event(ekgutil::action::SWAPBUFFERS);
-    this->dispatch_todo_event(ekgutil::action::REFRESH);
-}
-
 uint32_t ekg_core::get_hovered_element_id() {
     return this->focused_element_id;
 }
 
 uint16_t ekg_core::get_hovered_element_type() {
     return this->focused_element_type;
+}
+
+uint32_t &ekg_core::get_popup_top_level() {
+    return this->popup_top_level;
 }

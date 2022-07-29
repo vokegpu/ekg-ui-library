@@ -25,6 +25,7 @@ void ekg_popup::set_opened(bool opened) {
 
     if (this->visibility != flag) {
         this->set_visibility(flag);
+        the_ekg_core->dispatch_todo_event(ekgutil::action::FIXRECTS);
     }
 
     ekgapi::set(this->flag.focused, opened);
@@ -128,24 +129,26 @@ void ekg_popup::destroy() {
     }
 }
 
-bool ekg_popup::get_component_pos(const std::string &text, float &x, float &y) {
-    x = 0;
-    y = 0;
-
-    for (ekgutil::component &components : this->component_list) {
-        if (components.text == text) {
-            return true;
-        }
-
-        y += this->component_height + this->offset_separator;
-    }
-
-    return false;
-}
-
 void ekg_popup::set_pos(float x, float y) {
     if (!this->has_mother()) {
         ekgmath::clamp_aabb_with_screen_size(x, y, this->rect.w, this->full_height);
+    } else {
+        x += this->scaled.x;
+        y += this->scaled.y;
+
+        float width = the_ekg_core->get_screen_width();
+        float height = the_ekg_core->get_screen_height();
+
+        if (x + this->rect.w > width) {
+            x = this->scaled.x - this->rect.w;
+        }
+
+        if (y + this->full_height > height) {
+            y -= this->full_height - this->component_height;
+        }
+
+        x -= this->scaled.x;
+        y -= this->scaled.y;
     }
 
     ekg_element::set_pos(x, y);
@@ -241,9 +244,9 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
     bool highlight = false;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
-        highlight = this->flag.over;
+        highlight = this->flag.over || !this->flag.focused || (this->has_mother() && this->mother_id == the_ekg_core->get_popup_top_level());
     } else if (ekgapi::any_input_down(sdl_event, mx, my)) {
-        bool flag = the_ekg_core->get_hovered_element_id() != ekg::ui::POPUP;
+        bool flag = the_ekg_core->get_hovered_element_type() != ekg::ui::POPUP;
 
         if (flag) {
             ekgapi::set(this->flag.focused, false);
@@ -251,34 +254,8 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
             this->set_should_update(true);
         }
 
-        if (this->flag.highlight && this->flag.over) {
-            bool contains = false;
-            ekg_popup* popup;
-
-            for (uint32_t &ids : this->children_stack.ids) {
-                if (!the_ekg_core->find_element((ekg_element*&) popup, ids)) {
-                    continue;
-                }
-
-                flag = popup->get_tag() == this->focused_component;
-
-                if (flag) {
-                    flag = !popup->is_opened();
-                    contains = true;
-
-                    this->get_component_pos(popup->get_tag(), mx, my);
-                    popup->set_pos(mx + this->rect.w, my);
-                }
-
-                popup->set_opened(flag);
-            }
-
-            if (!contains) {
-                ekgapi::set_direct(this->flag.activy, this->flag.highlight);
-                this->activy_component = this->focused_component;
-            }
-
-            flag = false;
+        if (this->flag.highlight && this->flag.over && !this->activy_component.empty()) {
+            ekgapi::set_direct(this->flag.activy, this->flag.highlight);
         }
 
         highlight = this->flag.over;
@@ -292,15 +269,52 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
     }
 
     if (highlight) {
-        this->full_height = this->offset_separator;
+        std::string previous_focused_element = this->focused_component;
 
-        for (ekgutil::component &component : this->component_list) {
-            if (ekgmath::collide_aabb_with_point(this->rect.x, this->rect.y + this->full_height, component.w, component.h) && component.enabled) {
-                ekgapi::set(this->flag.highlight, true);
-                ekgapi::set(this->focused_component, component.text);
+        if (this->flag.focused) {
+            this->full_height = this->offset_separator;
+
+            for (ekgutil::component &component : this->component_list) {
+                if (ekgmath::collide_aabb_with_point(this->rect.x, this->rect.y + this->full_height, component.w, component.h) && component.enabled) {
+                    ekgapi::set(this->flag.highlight, true);
+                    ekgapi::set(this->focused_component, component.text);
+
+                    the_ekg_core->get_popup_top_level() = component.data != 0 ? this->id : this->mother_id;
+                }
+
+                this->full_height += component.h + this->offset_separator;
+            }
+        }
+
+        if (this->has_mother() && ((!this->flag.focused) || (the_ekg_core->get_popup_top_level() == this->mother_id && !this->flag.over))) {
+            ekgapi::set(this->flag.highlight, false);
+            ekgapi::set(this->focused_component, "");
+        }
+
+        if (this->focused_component == previous_focused_element) {
+            return;
+        }
+
+        bool flag = false;
+        ekg_popup* popup;
+        this->activy_component = this->focused_component;
+
+        for (uint32_t &ids : this->children_stack.ids) {
+            if (!the_ekg_core->find_element((ekg_element*&) popup, ids)) {
+                continue;
             }
 
-            this->full_height += component.h + this->offset_separator;
+            flag = popup->get_tag() == this->focused_component;
+
+            if (flag) {
+                this->activy_component = "";
+                this->get_component_pos(popup->get_tag(), mx, my);
+
+                popup->access_scaled_rect().copy(this->rect);
+                popup->set_pos(mx + this->rect.w, my);
+            }
+
+            popup->set_opened(flag);
         }
     }
 }
@@ -327,7 +341,6 @@ void ekg_popup::on_update() {
         this->on_sync();
         this->set_should_update(false);
         the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
-        ekgutil::log("sou linda");
     }
 
     if (this->visibility == ekg::visibility::NONE && !this->flag.focused && true) {
@@ -383,7 +396,7 @@ void ekg_popup::place(ekg_popup *popup) {
     }
 
     this->children_stack.add(popup->get_id());
-    popup->set_visibility(ekg::visibility::LOW_PRIORITY);
+    popup->set_opened(false);
 
     int32_t id = this->get_component_index(popup->get_tag());
 
@@ -408,6 +421,21 @@ int32_t ekg_popup::get_component_index(const std::string &text) {
     }
 
     return -1;
+}
+
+bool ekg_popup::get_component_pos(const std::string &text, float &x, float &y) {
+    x = 0;
+    y = 0;
+
+    for (ekgutil::component &components : this->component_list) {
+        if (components.text == text) {
+            return true;
+        }
+
+        y += this->component_height + this->offset_separator;
+    }
+
+    return false;
 }
 
 void ekg_popup::children_popup_hovered_flag(bool &flag, uint32_t id) {

@@ -50,6 +50,7 @@ protected:
     uint32_t last_focused_element_id;
     uint32_t forced_focused_element_id;
     uint32_t focused_element_type;
+    uint32_t popup_top_level;
 
     float screen_width;
     float screen_height;
@@ -81,6 +82,11 @@ protected:
     void fix_rect(ekg_element* &element, ekgutil::stack &cached_stack);
 public:
     bool debug_mode = false;
+
+    /*
+     * Get the current popup top level.
+     */
+    uint32_t &get_popup_top_level();
 
     /*
      * Hovered element id.
