@@ -25,10 +25,6 @@ include(GNUInstallDirs)
 message("-- Creating static lib")
 add_library(ekg STATIC ${SOURCE_FILES})
 
-if (MSVC)
-    set_property(TARGET ekg APPEND_STRING PROPERTY COMPILE_FLAGS /Force:multiple)
-endif()
-
 message("-- Configuring static lib")
 set_target_properties(ekg PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION 1)
 set_target_properties(ekg PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
