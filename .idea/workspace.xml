@@ -19,9 +19,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_core.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_core.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_core.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_core.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_popup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_popup.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -76,6 +74,11 @@
     </key>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ekg" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ekg" TARGET_NAME="ekg" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -119,7 +122,7 @@
       <workItem from="1658959190625" duration="17625000" />
       <workItem from="1659017260211" duration="4091000" />
       <workItem from="1659064493989" duration="12417000" />
-      <workItem from="1659112992527" duration="498000" />
+      <workItem from="1659112992527" duration="2793000" />
     </task>
     <servers />
   </component>

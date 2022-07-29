@@ -167,11 +167,13 @@ void ekg_popup::on_sync() {
     bool left = ekgutil::contains(this->enum_flags_text_component_dock, ekg::dock::LEFT);
     bool right = ekgutil::contains(this->enum_flags_text_component_dock, ekg::dock::RIGHT);
 
+    float offset_dimension = this->component_height / 10;
+    this->offset_separator = offset_dimension;
     this->full_height = this->offset_separator;
 
     // First iteration for get real the most large string width.
     for (ekgutil::component &component : this->component_list) {
-        max_width = ekgfont::get_text_width(component.text);
+        max_width = ekgfont::get_text_width(component.text) + offset_dimension * 3;
         max_height = ekgfont::get_text_height(component.text);
 
         if (max_width > this->component_text_min_width) {
@@ -187,7 +189,7 @@ void ekg_popup::on_sync() {
     }
 
     this->rect.w = this->rect.w < this->component_text_min_width ? this->component_text_min_width : this->rect.w;
-    this->rect.h = this->rect.h < this->component_text_min_height ? this->component_text_min_height : this->rect.h;
+    this->rect.h = this->rect.h < this->component_text_min_height ? this->component_text_min_height: this->rect.h;
 
     // Second iteration to set the real offset positions.
     for (ekgutil::component &component : this->component_list) {
@@ -215,9 +217,9 @@ void ekg_popup::on_sync() {
             this->component_text_offset_y = this->component_height - max_height - (max_height / 4);
         }
 
-        component.x = this->rect.x + this->component_text_offset_x;
+        component.x = this->rect.x + offset_dimension + this->component_text_offset_x;
         component.y = this->rect.y + this->full_height + this->component_text_offset_y;
-        component.w = this->rect.w;
+        component.w = this->rect.w - (offset_dimension * 2);
         component.h = this->component_height;
 
         this->full_height += this->component_height + this->offset_separator;
@@ -354,13 +356,14 @@ void ekg_popup::on_draw_refresh() {
     ekg_element::on_draw_refresh();
 
     float height_scaled = this->offset_separator;
+    float offset_dimension = this->component_height / 9;
 
     // Background.
     ekggpu::rectangle(this->rect, ekg::theme().popup_background);
 
     for (ekgutil::component &component : this->component_list) {
         if (component.enabled && this->flag.highlight && component.text == this->focused_component) {
-            ekggpu::rectangle(this->rect.x, this->rect.y + height_scaled, component.w, component.h, ekg::theme().popup_highlight);
+            ekggpu::rectangle(this->rect.x + (offset_dimension), this->rect.y + height_scaled, component.w, component.h, ekg::theme().popup_highlight);
         }
 
         // Render text.
