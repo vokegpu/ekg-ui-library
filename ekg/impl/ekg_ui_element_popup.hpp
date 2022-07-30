@@ -30,6 +30,7 @@ protected:
     std::string activy_component;
 
     uint16_t enum_flags_text_component_dock;
+    uint32_t animation_elapsed_ticks = 0;
 
     float component_text_min_width = 0.0f;
     float component_text_min_height = 0.0f;

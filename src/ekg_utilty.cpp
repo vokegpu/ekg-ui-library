@@ -11,7 +11,7 @@
  **/
 #include <ekg/ekg.hpp>
 #include "ekg/api/ekg_utility.hpp"
-
+#include <math.h>
 
 void ekgutil::log(const std::string &log) {
     ekgapi::send_output(log.c_str());
@@ -177,6 +177,11 @@ void ekgmath::ortho2d(float *mat, float left, float right, float bottom, float t
 bool ekgmath::collide_aabb_with_point(float x, float y, float w, float h) {
     return ekgapi::display_interact_x > x && ekgapi::display_interact_x < x + w &&
            ekgapi::display_interact_y > y && ekgapi::display_interact_y < y + h;
+}
+
+void ekgmath::smoothf(float &val, float duration, uint32_t ticks) {
+    duration = static_cast<float>(ticks) / duration;
+    val = ekgmath::clampf(6 * pow(duration, 5) - (15 * pow(duration, 4)) + (10 * pow(duration, 3)), 0.0f, 1.0f);
 }
 
 ekgmath::vec4f::vec4f() {

@@ -25,6 +25,7 @@ class ekg_element {
 protected:
     bool update = false;
     uint16_t type = 0;
+    int32_t scissor_id = -1;
 
     uint32_t id = 0;
     uint32_t visibility = 0;

@@ -21,6 +21,7 @@
  * Store GPU data for update at once.
  **/
 struct ekg_gpu_data {
+    int32_t id_scissor = -1;
     uint8_t category = ekgutil::shape_category::RECTANGLE;
 
     GLint texture_slot = 0;
@@ -32,6 +33,16 @@ struct ekg_gpu_data {
     float color[4];
     float rect[4];
     float factor = 0;
+};
+
+/**
+ * Store GPU start_scissor.
+ **/
+struct ekg_gpu_scissor {
+    int32_t x = 0;
+    int32_t y = 0;
+    int32_t w = 0;
+    int32_t h = 0;
 };
 
 /**
@@ -57,10 +68,12 @@ protected:
     float mat4x4_ortho[16];
     float depth_level = 1.0f;
 
-    ekg_gpu_data gpu_data_list[2048];
+    ekg_gpu_data allocated_gpu_data[2048];
+    ekg_gpu_scissor allocated_gpu_scissor[2048];
 
     bool should_alloc;
     float allocated_factor;
+    int32_t current_scissor_bind;
 
     ekgapi::OpenGL::program default_program;
 public:
@@ -105,6 +118,31 @@ public:
     ekg_gpu_data &bind();
 
     /*
+     * Get the current scissor id.
+     */
+    int32_t get_scissor_id();
+
+    /*
+     * Bind scissor.
+     */
+    void bind_scissor(int32_t index);
+
+    /*
+     * Set scissor.
+     */
+    void scissor(int32_t x, int32_t y, int32_t w, int32_t h);
+
+    /*
+     * Go next scissor segment.
+     */
+    void next_scissor();
+
+    /*
+     * End scissor.
+     */
+    void end_scissor();
+
+    /*
      * Free the previous bind GPU data.
      */
     void free(ekg_gpu_data &gpu_data);
@@ -145,9 +183,34 @@ public:
  **/
 namespace ekggpu {
     /*
-     * Bind texture to be used after.
+     * Get current id from instanced scissor.
      */
-    void alloc_texture(GLuint gl_object);
+    int32_t start_scissor();
+
+    /*
+     * Bind a scissor id.
+     */
+    void bind_scissor(int32_t index);
+
+    /*
+     * Set scissored rect area.
+     */
+    void scissor(int32_t x, int32_t y, int32_t w, int32_t h);
+
+    /*
+     * Set scissor rect area.
+     */
+    void scissor(ekgmath::rect &rect);
+
+    /*
+     * Go next scissor.
+     */
+    void next_scissor();
+
+    /*
+     * End scissor segment.
+     */
+    void end_scissor();
 
     /*
      * Invoke GPU to transfer data and cache data.

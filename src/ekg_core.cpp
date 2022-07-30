@@ -91,14 +91,19 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
 }
 
 void ekg_core::process_update_section() {
+    if (ekgutil::contains(this->todo_flags, ekgutil::action::REFRESHUPDATE)) {
+        ekgutil::remove(this->todo_flags, ekgutil::action::REFRESHUPDATE);
+        this->swap_buffers();
+    }
+
     for (ekg_element* &elements : this->data_update) {
         if (elements != nullptr) {
             elements->on_update();
         }
     }
 
-    if (ekgutil::contains(this->todo_flags, ekgutil::SWAPBUFFERS)) {
-        ekgutil::remove(this->todo_flags, ekgutil::SWAPBUFFERS);
+    if (ekgutil::contains(this->todo_flags, ekgutil::action::SWAPBUFFERS)) {
+        ekgutil::remove(this->todo_flags, ekgutil::action::SWAPBUFFERS);
         this->swap_buffers();
     }
 
@@ -164,9 +169,9 @@ void ekg_core::process_render_section() {
 
 void ekg_core::add_element(ekg_element* element) {
     element->set_id(++this->last_id_used);
-    element->set_visibility(ekg::visibility::VISIBLE);
-
     this->concurrent_buffer.push_back(element);
+
+    // Send tasks to the core.
     this->dispatch_todo_event(ekgutil::action::SWAPBUFFERS);
     this->dispatch_todo_event(ekgutil::action::FIXRECTS);
     this->force_reorder_stack(element->get_id());
@@ -182,11 +187,23 @@ void ekg_core::kill_element(ekg_element *element) {
     this->dispatch_todo_event(ekgutil::action::REFRESH);
 }
 
+/* Start of refresh update. */
+void ekg_core::refresh_update() {
+    this->data_update.clear();
+
+    for (ekg_element* &elements : this->data_update) {
+        if (elements != nullptr && elements->should_update()) {
+            this->data_update.push_back(elements);
+        }
+    }
+}
+/* End of refresh update. */
+
 /* Start of swap buffers. */
 void ekg_core::swap_buffers() {
     // Clean the buffer render (not delete).
     this->sizeof_render_buffer = 0;
-    this->render_buffer.fill(0);
+    this->render_buffer.fill(nullptr);
 
     this->data_invisible_to_memory = this->data;
     this->data.clear();

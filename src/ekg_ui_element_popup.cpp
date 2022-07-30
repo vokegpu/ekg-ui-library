@@ -24,8 +24,8 @@ void ekg_popup::set_opened(bool opened) {
     uint16_t flag = opened ? ekg::visibility::VISIBLE : ekg::visibility::LOW_PRIORITY;
 
     if (this->visibility != flag) {
+        this->animation_elapsed_ticks = SDL_GetTicks();
         this->set_visibility(flag);
-        the_ekg_core->dispatch_todo_event(ekgutil::action::FIXRECTS);
     }
 
     ekgapi::set(this->flag.focused, opened);
@@ -247,7 +247,7 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
 
     if (ekgapi::motion(sdl_event, mx, my)) {
         highlight = this->flag.over || !this->flag.focused || (this->has_mother() && this->mother_id == the_ekg_core->get_popup_top_level());
-    } else if (ekgapi::any_input_down(sdl_event, mx, my)) {
+    } else if (ekgapi::any_input_down(sdl_event, mx, my) && this->flag.focused) {
         bool flag = the_ekg_core->get_hovered_element_type() != ekg::ui::POPUP;
 
         if (flag) {
@@ -261,7 +261,7 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
         }
 
         highlight = this->flag.over;
-    } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
+    } else if (ekgapi::any_input_up(sdl_event, mx, my) && this->flag.focused) {
         if (this->flag.activy && this->flag.over) {
             ekgapi::set(this->flag.focused, false);
             
@@ -335,20 +335,48 @@ void ekg_popup::on_post_event_update(SDL_Event &sdl_event) {
 void ekg_popup::on_update() {
     ekg_element::on_update();
 
-    float size = this->visibility == ekg::visibility::VISIBLE ? this->full_height : 0;
+    switch (this->visibility) {
+        case ekg::visibility::NONE: {
+            if (this->flag.focused) {
+                this->set_should_update(false);
+                break;
+            }
 
-    // TODO open animation.
-    if (this->rect.h != size && this->visibility != ekg::visibility::NONE) {
-        this->rect.h = size;
-        this->on_sync();
-        this->set_should_update(false);
-        the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
-    }
+            this->destroy();
+            this->set_should_update(false);
+            the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+            break;
+        }
 
-    if (this->visibility == ekg::visibility::NONE && !this->flag.focused && true) {
-        this->destroy();
-        this->set_should_update(false);
-        the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+        case ekg::visibility::VISIBLE: {
+            this->cache.x = this->rect.x;
+            this->cache.y = this->rect.y;
+            this->cache.w = this->rect.w;
+            this->rect.h = this->full_height;
+
+            float val = 0.0f;
+            ekgmath::smoothf(val, 100, SDL_GetTicks() - this->animation_elapsed_ticks);
+
+            this->cache.h = val * this->full_height;
+
+            // Set scissor size and pos.
+            ekggpu::bind_scissor(this->scissor_id);
+            ekggpu::scissor(this->cache);
+
+            if (this->cache.h >= this->full_height) {
+                this->cache.h = this->full_height;
+                this->set_should_update(false);
+            }
+
+            break;
+        }
+
+        case ekg::visibility::LOW_PRIORITY: {
+            this->cache.h = 0;
+            this->set_should_update(false);
+            the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+            break;
+        }
     }
 }
 
@@ -357,6 +385,14 @@ void ekg_popup::on_draw_refresh() {
 
     float height_scaled = this->offset_separator;
     float offset_dimension = this->component_height / 9;
+
+    // We want to enable scissor in this element.
+    // So here, we get the current scissor id from gpu handler.
+    this->scissor_id = ekggpu::start_scissor();
+
+    // Enable scissor and set the scissor area.
+    ekggpu::bind_scissor(this->scissor_id);
+    ekggpu::scissor(this->cache);
 
     // Background.
     ekggpu::rectangle(this->rect, ekg::theme().popup_background);
@@ -372,6 +408,8 @@ void ekg_popup::on_draw_refresh() {
         // Add height by iteration.
         height_scaled += component.h + this->offset_separator;
     }
+
+    ekggpu::end_scissor();
 }
 
 void ekg_popup::set_offset_separator(float offset) {

@@ -20,6 +20,11 @@ ekg_element::~ekg_element() {
 }
 
 void ekg_element::set_should_update(bool should_update) {
+    // Prevent loop.
+    if (this->update != should_update && should_update) {
+        the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESHUPDATE);
+    }
+
     this->update = should_update;
 }
 

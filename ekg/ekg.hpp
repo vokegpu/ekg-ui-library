@@ -133,7 +133,7 @@ namespace ekg {
      * Visibility of elements in screen.
      **/
     enum visibility {
-        VISIBLE, LOW_PRIORITY, NONE
+        LOW_PRIORITY, VISIBLE, NONE
     };
 
     /**

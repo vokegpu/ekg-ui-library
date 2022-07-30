@@ -23,7 +23,7 @@ void ekg_theme_service::reset_theme() {
     this->loaded_theme.validation = true;
 
     this->loaded_theme.string_enabled_color = ekgmath::vec4f(0, 0, 0, 255);
-    this->loaded_theme.string_enabled_color = ekgmath::vec4f(0, 0, 0, 150);
+    this->loaded_theme.string_disabled_color = ekgmath::vec4f(0, 0, 0, 150);
     this->loaded_theme.string_value_color = ekgmath::vec4f(190, 190, 190, 255);
 
     this->loaded_theme.button_background = ekgmath::vec4f(255, 255, 255, 255);

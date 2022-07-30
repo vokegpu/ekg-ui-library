@@ -11,6 +11,8 @@
  **/
 #include <ekg/ekg.hpp>
 #include <cmath>
+#include "ekg/api/ekg_gpu.hpp"
+
 
 void ekg_gpu_data_handler::init() {
     switch (EKG_CPU_PLATFORM) {
@@ -91,10 +93,11 @@ void ekg_gpu_data_handler::draw() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     ekg_gpu_data gpu_data;
+    ekg_gpu_scissor gpu_scissor;
 
     // Simulate glMultiDrawArrays.
     for (uint32_t i = 0; i < this->amount_of_draw_iterations; i++) {
-        gpu_data = this->gpu_data_list[i];
+        gpu_data = this->allocated_gpu_data[i];
 
         this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
         this->default_program.set_vec4f("u_vec4_color", gpu_data.color);
@@ -110,10 +113,20 @@ void ekg_gpu_data_handler::draw() {
             this->default_program.set_int("u_sampler2d_texture_active", gpu_data.texture_slot);
         }
 
+        if (gpu_data.id_scissor != -1) {
+            gpu_scissor = this->allocated_gpu_scissor[gpu_data.id_scissor];
+            glEnable(GL_SCISSOR_TEST);
+            glScissor(gpu_scissor.x, gpu_scissor.y, gpu_scissor.w, gpu_scissor.h);
+        } else {
+            glDisable(GL_SCISSOR_TEST);
+        }
+
         glDrawArrays(GL_TRIANGLES, gpu_data.raw, gpu_data.data);
         glBindTexture(GL_TEXTURE_2D, 0);
+
     }
 
+    glDisable(GL_SCISSOR_TEST);
     glBindVertexArray(0);
 }
 
@@ -122,6 +135,7 @@ void ekg_gpu_data_handler::start() {
     this->amount_of_data = 0;
     this->amount_of_texture_data_allocated = 0;
     this->allocated_factor = 0.0f;
+    this->current_scissor_bind = -1;
     this->should_alloc = false;
 }
 
@@ -170,7 +184,7 @@ std::vector<float> &ekg_gpu_data_handler::get_cached_vertices_materials() {
 
 ekg_gpu_data &ekg_gpu_data_handler::bind() {
     // Push the data from array.
-    ekg_gpu_data &gpu_data = this->gpu_data_list[this->amount_of_draw_iterations];
+    ekg_gpu_data &gpu_data = this->allocated_gpu_data[this->amount_of_draw_iterations];
 
     // Set the raw with previous amount of data.
     gpu_data.raw = this->amount_of_data;
@@ -185,6 +199,7 @@ ekg_gpu_data &ekg_gpu_data_handler::bind() {
     gpu_data.factor = 0.0f;
     gpu_data.rect[2] = 0.0f;
     gpu_data.rect[3] = 0.0f;
+    gpu_data.id_scissor = this->current_scissor_bind;
 
     return gpu_data;
 }
@@ -237,6 +252,31 @@ void ekg_gpu_data_handler::free(ekg_gpu_data &gpu_data) {
     }
 
     this->amount_of_draw_iterations++;
+}
+
+void ekg_gpu_data_handler::scissor(int32_t x, int32_t y, int32_t w, int32_t h) {
+    if (this->current_scissor_bind > this->amount_of_draw_iterations || this->current_scissor_bind < 0) {
+        return;
+    }
+
+    ekg_gpu_scissor &scissor = this->allocated_gpu_scissor[this->current_scissor_bind];
+    scissor = {x, (static_cast<int32_t>(the_ekg_core->get_screen_height())) - (y + h), w, h};
+}
+
+void ekg_gpu_data_handler::bind_scissor(int32_t index) {
+    this->current_scissor_bind = index;
+}
+
+int32_t ekg_gpu_data_handler::get_scissor_id() {
+    return static_cast<int32_t>(this->amount_of_draw_iterations); // what? it is the instance and not the actual instance id.
+}
+
+void ekg_gpu_data_handler::next_scissor() {
+    this->current_scissor_bind++;
+}
+
+void ekg_gpu_data_handler::end_scissor() {
+    this->current_scissor_bind = -1;
 }
 
 void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec) {
@@ -320,4 +360,28 @@ void ekggpu::invoke() {
 
 void ekggpu::revoke() {
     the_ekg_core->get_gpu_handler().end();
+}
+
+void ekggpu::bind_scissor(int32_t index) {
+    the_ekg_core->get_gpu_handler().bind_scissor(index);
+}
+
+void ekggpu::scissor(int32_t x, int32_t y, int32_t w, int32_t h) {
+    the_ekg_core->get_gpu_handler().scissor(x, y, w, h);
+}
+
+void ekggpu::scissor(ekgmath::rect &rect) {
+    ekggpu::scissor(static_cast<int32_t>(rect.x), static_cast<int32_t>(rect.y), static_cast<int32_t>(rect.w), static_cast<int32_t>(rect.h));
+}
+
+int32_t ekggpu::start_scissor() {
+    return the_ekg_core->get_gpu_handler().get_scissor_id();
+}
+
+void ekggpu::end_scissor() {
+    the_ekg_core->get_gpu_handler().end_scissor();
+}
+
+void ekggpu::next_scissor() {
+    the_ekg_core->get_gpu_handler().next_scissor();
 }

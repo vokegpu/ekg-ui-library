@@ -62,6 +62,11 @@ protected:
     uint16_t todo_flags;
 
     /*
+     * Predict update elements.
+     */
+    void refresh_update();
+
+    /*
      * Pass new modified buffers to update buffers.
      */
     void swap_buffers();

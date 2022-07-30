@@ -64,12 +64,17 @@ namespace ekgmath {
     };
 
     /*
+     * Animation without delay with customizable end time.
+     */
+    void smoothf(float &val, float duration, uint32_t ticks);
+
+    /*
      * Detect collision between interact point and rect.
      */
     bool collide_aabb_with_point(float x, float y, float w, float h);
 
     /*
-     * Interpolation linear, used to animations or calcs.
+     * Interpolation linear, used to make animations and change the movement of any val.
      */
     float lerpf(float a, float b, float t);
 
@@ -190,10 +195,11 @@ namespace ekgutil {
      * Actions in EKG core.
      **/
     enum action {
-        SWAPBUFFERS = 1 << 0,
-        FIXSTACK    = 1 << 1,
-        REFRESH     = 1 << 2,
-        FIXRECTS    = 1 << 3
+        SWAPBUFFERS   = 1 << 0,
+        FIXSTACK      = 1 << 1,
+        REFRESH       = 1 << 2,
+        FIXRECTS      = 1 << 3,
+        REFRESHUPDATE = 1 << 4
     };
 
     /**

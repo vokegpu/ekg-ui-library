@@ -78,6 +78,7 @@ ekg_button* ekg::button(const std::string &text) {
     the_ekg_core->add_element(button_worker);
 
     button_worker->set_text(text);
+    button_worker->set_visibility(ekg::visibility::VISIBLE);
     button_worker->set_text_dock(ekg::dock::CENTER);
 
     return button_worker;
@@ -87,6 +88,7 @@ ekg_slider* ekg::slider(float val, float min, float max) {
     auto slider_worker = new ekg_slider();
     the_ekg_core->add_element(slider_worker);
 
+    slider_worker->set_visibility(ekg::visibility::VISIBLE);
     slider_worker->set_min(min);
     slider_worker->set_max(max);
     slider_worker->set_value(val);
@@ -99,6 +101,7 @@ ekg_frame* ekg::frame() {
     auto frame_worker = new ekg_frame();
     the_ekg_core->add_element(frame_worker);
 
+    frame_worker->set_visibility(ekg::visibility::VISIBLE);
     frame_worker->set_drag_dock(ekg::dock::TOP);
     frame_worker->set_size(300, 300);
     frame_worker->set_drag_offset(300);
@@ -110,6 +113,7 @@ ekg_check_box* ekg::check_box(const std::string &text) {
     auto check_box_worker = new ekg_check_box();
     the_ekg_core->add_element(check_box_worker);
 
+    check_box_worker->set_visibility(ekg::visibility::VISIBLE);
     check_box_worker->set_text(text);
     check_box_worker->set_text_dock(ekg::dock::LEFT);
 
