@@ -207,7 +207,8 @@ namespace ekgutil {
      */
     enum shape_category {
         RECTANGLE = 0,
-        CIRCLE    = 1
+        CIRCLE    = 1,
+        OUTLINE   = 2
     };
 };
 

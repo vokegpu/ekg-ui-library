@@ -289,7 +289,7 @@ void ekg_core::fix_stack() {
     }
 
     this->sizeof_render_buffer = 0;
-    this->render_buffer.fill(0);
+    this->render_buffer.fill(nullptr);
 
     this->data_invisible_to_memory.clear();
     this->data_update.clear();

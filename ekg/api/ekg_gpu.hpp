@@ -230,12 +230,12 @@ namespace ekggpu {
     /*
      * Draw rectangle.
      */
-    void rectangle(ekgmath::rect &rect, ekgmath::vec4f &color_vec);
+    void rectangle(ekgmath::rect &rect, ekgmath::vec4f &color_vec, int32_t line_thickness = 0);
 
     /*
      * Draw custom pos and size rectangle
      */
-    void rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec);
+    void rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec, int32_t line_thickness = 0);
 
     /*
      * Draw circle.

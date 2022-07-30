@@ -23,7 +23,7 @@ void ekg_gpu_data_handler::init() {
                                      "layout (location = 1) in vec2 attrib_material;\n"
                                      "\n"
                                      "out vec2 varying_material;\n"
-                                     "out vec2 varying_pos;\n"
+                                     "out vec4 varying_rect;\n"
                                      "uniform mat4 u_mat_matrix;\n"
                                      "uniform vec4 u_vec4_rect;\n"
                                      "uniform float u_float_zdepth;\n"
@@ -33,13 +33,13 @@ void ekg_gpu_data_handler::init() {
                                      "    if (u_vec4_rect.z == 0.0f && u_vec4_rect.w == 0.0f) pos = attrib_pos + u_vec4_rect.xy;"
                                      "    gl_Position = u_mat_matrix * vec4(pos, (u_float_zdepth / 1000), 1.0f);\n"
                                      "    varying_material = attrib_material;\n"
-                                     "    varying_pos = u_vec4_rect.xy;\n"
+                                     "    varying_rect = u_vec4_rect;\n"
                                      "}";
 
             const char* fragment_src = "#version 330 core\n"
                                        "\n"
                                        "in vec2 varying_material;\n"
-                                       "in vec2 varying_pos;\n"
+                                       "in vec4 varying_rect;\n"
                                        "out vec4 out_frag_color;\n"
                                        "\n"
                                        "uniform sampler2D u_sampler2d_texture_active;\n"
@@ -57,14 +57,21 @@ void ekg_gpu_data_handler::init() {
                                        "        fragcolor = vec4(fragcolor.xyz - ((1.0f - u_vec4_color.xyz) - 1.0f), fragcolor.w - (1.0f - u_vec4_color.w));\n"
                                        "    }\n"
                                        "    if (u_int_shape_category == 1) {\n"
-                                       "        vec2 center = vec2(varying_pos.x + (u_float_factor / 2), varying_pos.y + (u_float_factor / 2));\n"
-                                       "        vec2 diff_center = center - vec2(varying_pos.x + ((u_float_factor / 2)), varying_pos.y);\n"
+                                       "        vec2 center = vec2(varying_rect.x + (u_float_factor / 2), varying_rect.y + (u_float_factor / 2));\n"
+                                       "        vec2 diff_center = center - vec2(varying_rect.x + ((u_float_factor / 2)), varying_rect.y);\n"
                                        "        vec2 diff = center - vec2(gl_FragCoord.x, u_float_viewport_height - gl_FragCoord.y);\n"
                                        "        float dist_to_frag = diff.x * diff.x + diff.y * diff.y;\n"
                                        "        if (dist_to_frag > (diff_center.x * diff_center.x + diff_center.y * diff_center.y)) {\n"
                                        "            fragcolor.a = 0;\n"
                                        "        }\n"
-                                       "    }"
+                                       "    } else if (u_int_shape_category == 2) {\n"
+                                       "        float square_out = u_float_factor;"
+                                       "        vec2 frag_pos = vec2(gl_FragCoord.x, u_float_viewport_height - gl_FragCoord.y);\n"
+                                       "        vec4 rect = vec4(varying_rect.x + square_out, varying_rect.y + square_out, varying_rect.x + varying_rect.z - (square_out), varying_rect.y + varying_rect.w - (square_out));\n"
+                                       "        if ((frag_pos.x > rect.x && frag_pos.x < rect.z && frag_pos.y > rect.y && frag_pos.y < rect.w)) {\n"
+                                       "           fragcolor.a = 0;\n"
+                                       "        }\n"
+                                       "    }\n"
                                        "    out_frag_color = fragcolor;\n"
                                        "}";
 
@@ -279,7 +286,7 @@ void ekg_gpu_data_handler::end_scissor() {
     this->current_scissor_bind = -1;
 }
 
-void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec) {
+void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec, int32_t line_thickness) {
     // Alloc arrays in CPU.
     ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, 1.0f, 1.0f);
     ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
@@ -289,6 +296,8 @@ void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color
 
     // Configure the GPU data.
     gpu_data.data = 6;
+    gpu_data.category = line_thickness != 0 ? ekgutil::shape_category::OUTLINE : gpu_data.category;
+    gpu_data.factor = static_cast<float>(line_thickness);
 
     gpu_data.rect[0] = static_cast<float>(static_cast<int32_t>(x));
     gpu_data.rect[1] = static_cast<float>(static_cast<int32_t>(y));
@@ -304,8 +313,8 @@ void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color
     the_ekg_core->get_gpu_handler().free(gpu_data);
 }
 
-void ekggpu::rectangle(ekgmath::rect &rect, ekgmath::vec4f &color_vec) {
-    ekggpu::rectangle(rect.x, rect.y, rect.w, rect.h, color_vec);
+void ekggpu::rectangle(ekgmath::rect &rect, ekgmath::vec4f &color_vec, int32_t line_thickness) {
+    ekggpu::rectangle(rect.x, rect.y, rect.w, rect.h, color_vec, line_thickness);
 }
 
 void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec) {

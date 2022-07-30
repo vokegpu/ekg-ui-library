@@ -140,7 +140,7 @@ void ekg_popup::set_pos(float x, float y) {
         float height = the_ekg_core->get_screen_height();
 
         if (x + this->rect.w > width) {
-            x = this->scaled.x - this->rect.w;
+            x = this->scaled.x - (this->rect.w - (this->component_height / 10));
         }
 
         if (y + this->full_height > height) {
@@ -167,13 +167,13 @@ void ekg_popup::on_sync() {
     bool left = ekgutil::contains(this->enum_flags_text_component_dock, ekg::dock::LEFT);
     bool right = ekgutil::contains(this->enum_flags_text_component_dock, ekg::dock::RIGHT);
 
-    float offset_dimension = this->component_height / 10;
+    auto offset_dimension = static_cast<float>(static_cast<int32_t>(this->component_height / 9));
     this->offset_separator = offset_dimension;
     this->full_height = this->offset_separator;
 
     // First iteration for get real the most large string width.
     for (ekgutil::component &component : this->component_list) {
-        max_width = ekgfont::get_text_width(component.text) + offset_dimension * 3;
+        max_width = ekgfont::get_text_width(component.text) + offset_dimension * 4;
         max_height = ekgfont::get_text_height(component.text);
 
         if (max_width > this->component_text_min_width) {
@@ -219,7 +219,7 @@ void ekg_popup::on_sync() {
 
         component.x = this->rect.x + offset_dimension + this->component_text_offset_x;
         component.y = this->rect.y + this->full_height + this->component_text_offset_y;
-        component.w = this->rect.w - (offset_dimension * 2);
+        component.w = this->rect.w - (offset_dimension * 3);
         component.h = this->component_height;
 
         this->full_height += this->component_height + this->offset_separator;
@@ -313,7 +313,7 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
                 this->get_component_pos(popup->get_tag(), mx, my);
 
                 popup->access_scaled_rect().copy(this->rect);
-                popup->set_pos(mx + this->rect.w, my);
+                popup->set_pos(mx + this->rect.w - (this->component_height / 10), my);
             }
 
             popup->set_opened(flag);
@@ -384,7 +384,7 @@ void ekg_popup::on_draw_refresh() {
     ekg_element::on_draw_refresh();
 
     float height_scaled = this->offset_separator;
-    float offset_dimension = this->component_height / 9;
+    auto offset_dimension = static_cast<float>(static_cast<int32_t>(this->component_height / 8));
 
     // We want to enable scissor in this element.
     // So here, we get the current scissor id from gpu handler.
@@ -409,6 +409,7 @@ void ekg_popup::on_draw_refresh() {
         height_scaled += component.h + this->offset_separator;
     }
 
+    ekggpu::rectangle(this->rect, ekg::theme().popup_border, 1);
     ekggpu::end_scissor();
 }
 

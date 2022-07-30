@@ -65,8 +65,8 @@ ekg_popup *ekg::popup(const std::string &text, const std::vector<std::string> &v
     popup_worker->set_tag(text);
     popup_worker->set_text_dock(ekg::dock::CENTER);
     popup_worker->add(vec);
-    popup_worker->set_width(75);
-    popup_worker->set_height(30);
+    popup_worker->set_width(125);
+    popup_worker->set_height(25);
     popup_worker->set_opened(true);
     popup_worker->set_pos(ekgapi::display_interact_x, ekgapi::display_interact_y);
 
