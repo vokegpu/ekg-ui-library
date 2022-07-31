@@ -123,7 +123,7 @@ float ekgmath::clampf(float val, float min, float max) {
     return val > min ? (val < max ? val : max) : min;
 }
 
-void ekgmath::clamp_aabb_with_screen_size(float &minx, float &miny, float &maxx, float &maxy) {
+void ekgmath::clamp_aabb_with_screen_size(float &minx, float &miny, float maxx, float maxy) {
     float width = the_ekg_core->get_screen_width();
     float height = the_ekg_core->get_screen_height();
 

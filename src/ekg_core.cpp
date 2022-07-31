@@ -132,12 +132,15 @@ void ekg_core::process_render_section() {
             element->on_draw_refresh();
         }
 
+        float x = 0;
+        float y = 0;
         float w = 0;
         float h = 0;
         float offset_x = 0;
         float offset_y = 0;
 
         // Draw the immediate popups after draws the elements.
+        // Clamp the sizes, draw first the background, string and at end the border.
         for (ekgutil::component &immediate_popup : this->immediate_popups) {
             w = ekgfont::get_text_width(immediate_popup.text);
             h = ekgfont::get_text_height(immediate_popup.text);
@@ -145,17 +148,17 @@ void ekg_core::process_render_section() {
             offset_x = w / 10;
             offset_y = h / 10;
 
-            // Background.
-            ekggpu::rectangle(immediate_popup.x - offset_x - (w / 2), immediate_popup.y - offset_y - h, w + offset_x, h + offset_y, this->theme_service.get_loaded_theme().immediate_popup_background);
+            x = immediate_popup.x - offset_x - (w / 2);
+            y = immediate_popup.y - offset_y - h;
 
-            // Border.
-            ekggpu::rectangle(immediate_popup.x - offset_x - (w / 2), immediate_popup.y - offset_y - h, w + offset_x, h + offset_y, this->theme_service.get_loaded_theme().immediate_popup_border, 1);
+            ekgmath::clamp_aabb_with_screen_size(x, y, w + offset_x, h + offset_y);
+            ekggpu::rectangle(x, y, w + offset_x, h + offset_y, this->theme_service.get_loaded_theme().immediate_popup_background);
 
-            // Text.
-            ekgfont::render(immediate_popup.text, immediate_popup.x - (offset_x / 2) - (w / 2), immediate_popup.y - (offset_y / 2) - h, this->theme_service.get_loaded_theme().string_value_color);
+            ekgfont::render(immediate_popup.text, x + (offset_x / 2), y + (offset_y / 2), this->theme_service.get_loaded_theme().string_value_color);
+            ekggpu::rectangle(x, y, w + offset_x, h + offset_y, this->theme_service.get_loaded_theme().immediate_popup_border, 1);
         }
 
-        // We do not want to render every time the immediate popups so we clean after send to gpu.
+        // We do not want to render every time the immediate popups, so we clean after send to gpu.
         this->immediate_popups.clear();
 
         if (this->debug_mode) {
