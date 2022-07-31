@@ -128,6 +128,21 @@ namespace ekgapi {
      */
     bool motion(SDL_Event &sdl_event, float &x, float &y);
 
+    /*
+     * Popup callback UI event.
+     */
+    void callback_popup(uint32_t id, const std::string &path);
+
+    /*
+     * Check box callback UI event.
+     */
+    void callback_check_box(uint32_t id, const std::string &text, bool value);
+
+    /*
+     * Button callback UI event.
+     */
+    void callback_button(uint32_t id, const std::string &text);
+
     /**
      * The OpenGL functions.
      **/

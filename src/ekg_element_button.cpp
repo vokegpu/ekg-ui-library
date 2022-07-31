@@ -10,6 +10,8 @@
  * END OF EKG-LICENSE.
  **/
 #include <ekg/ekg.hpp>
+#include "ekg/impl/ekg_ui_element_button.hpp"
+
 
 ekg_button::ekg_button() {
     this->set_text_dock(ekg::dock::CENTER);
@@ -83,10 +85,11 @@ void ekg_button::on_event(SDL_Event &sdl_event) {
     if (ekgapi::motion(sdl_event, mx, my)) {
         ekgapi::set(this->flag.highlight, this->flag.over);
     } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
-        ekgapi::set(this->flag.activy, this->flag.over);
+        ekgapi::set(this->flag.focused, this->flag.over);
+        ekgapi::set_direct(this->flag.activy, false);
     } else if (ekgapi::input_up_left(sdl_event, mx, my)) {
-        this->set_callback_flag(this->flag.activy);
-        ekgapi::set(this->flag.activy, false);
+        this->set_pressed(this->flag.over && this->flag.focused);
+        ekgapi::set(this->flag.focused, false);
     }
 }
 
@@ -109,7 +112,7 @@ void ekg_button::on_draw_refresh() {
         ekggpu::rectangle(this->rect, ekg::theme().button_highlight);
     }
 
-    if (this->flag.activy) {
+    if (this->flag.focused) {
         ekggpu::rectangle(this->rect, ekg::theme().button_activy);
     }
 
@@ -150,14 +153,6 @@ void ekg_button::set_height(float height) {
     this->set_size(this->rect.x, height);
 }
 
-void ekg_button::set_callback_flag(bool val) {
-    this->callback_flag = val;
-}
-
-bool ekg_button::get_callback_flag() {
-    return this->callback_flag;
-}
-
 float ekg_button::get_min_text_width() {
     return this->min_text_height;
 }
@@ -175,4 +170,20 @@ void ekg_button::set_text_dock(uint16_t flags) {
 
 uint16_t ekg_button::get_text_dock() {
     return this->enum_flags_text_dock;
+}
+
+void ekg_button::set_pressed(bool state) {
+    if (this->flag.activy != state) {
+        ekgapi::set_direct(this->flag.activy, state);
+
+        if (state) {
+            ekgapi::callback_button(this->id, this->text);
+        }
+    }
+}
+
+bool ekg_button::is_pressed() {
+    bool flag = this->flag.activy;
+    ekgapi::set_direct(this->flag.activy, false);
+    return flag;
 }

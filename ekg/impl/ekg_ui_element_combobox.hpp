@@ -10,27 +10,20 @@
  * END OF EKG-LICENSE.
  **/
 #pragma once
-#ifndef EKG_EVENT_H
-#define EKG_EVENT_H
+#ifndef EKG_COMBOBOX_H
+#define EKG_COMBOBOX_H
 
-#include <iostream>
-#include <SDL2/SDL.h>
-
-/*
- * The popup event type.
- */
-static uint32_t const EKG_EVENT = SDL_RegisterEvents(SDL_USEREVENT + 1);
+#include "ekg_ui_element_abstract.hpp"
 
 /**
- * The main event struct with all events of UI.
+ * # UI \n
+ * # Author: Rina \n
+ * # Since: 31/07/2022 | 05:08 am \n
+ * # Type: Widget \n
+ * # Description: Select many options in a box. \n
  **/
-struct ekg_event {
-    uint32_t id = 0;
-    uint16_t type = 0;
+class ekg_combobox : public ekg_element {
 
-    std::string text;
-    bool boolean = false;
-    float value = 0;
 };
 
 #endif

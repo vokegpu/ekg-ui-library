@@ -15,9 +15,11 @@
 #include "ekg_ui_element_abstract.hpp"
 
 /**
- * Element GUI Check Box \n
- * Type: Widget
- * Description: The toggleable non final bool mode.
+ * # UI \n
+ * # Author: Rina \n
+ * # Since: 22/07/2022 | 03:30 am \n
+ * # Type: Widget \n
+ * # Description: Toggleable button. \n
  **/
 class ekg_check_box : public ekg_element  {
 protected:
@@ -40,7 +42,7 @@ public:
 
     void toggle();
 
-    void set_checked(float checked);
+    void set_checked(bool checked);
     bool is_checked();
 
     float get_min_text_width();

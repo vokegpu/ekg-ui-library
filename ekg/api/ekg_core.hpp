@@ -34,7 +34,7 @@ protected:
     ekg_theme_service theme_service;
 
     // As you see, it flags a current event.
-    ekg_event current_poll_event;
+    ekg_event* current_poll_event;
 
     // Instances of SDL2.
     SDL_Window* sdl_window_instance;
@@ -100,7 +100,7 @@ public:
     /*
      * Get the current UI event from core.
      */
-    ekg_event &poll_event();
+    ekg_event* poll_event();
 
     /*
      * Get the current popup top level.
@@ -121,6 +121,11 @@ public:
      * Draw an immediate popup in screen.
      */
     void immediate_popup(float x, float y, const std::string &text);
+
+    /*
+     * Dispatch UI event.
+     */
+    void dispatch_event(SDL_Event &sdl_event);
 
     /*
      * Get ekg theme service.

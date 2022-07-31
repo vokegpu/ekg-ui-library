@@ -12,7 +12,6 @@
 #include <ekg/ekg.hpp>
 
 ekg_check_box::ekg_check_box() {
-    this->set_text_dock(ekg::dock::LEFT);
     this->type = ekg::ui::CHECKBOX;
 }
 
@@ -35,8 +34,11 @@ void ekg_check_box::toggle() {
     this->set_checked(!this->is_checked());
 }
 
-void ekg_check_box::set_checked(float checked) {
-    ekgapi::set(this->flag.activy, checked);
+void ekg_check_box::set_checked(bool checked) {
+    if (this->flag.activy != checked) {
+        ekgapi::set(this->flag.activy, checked);
+        ekgapi::callback_check_box(this->id, this->text, checked);
+    }
 }
 
 bool ekg_check_box::is_checked() {
@@ -135,6 +137,11 @@ void ekg_check_box::on_sync() {
     if (bottom) {
         this->text_offset_y = this->rect.h - this->min_text_height - (this->min_text_height / 4);
     }
+
+    this->cache.x = this->rect.x + this->box_offset + (this->square_size / 10);
+    this->cache.y = this->rect.y + this->text_offset_y + (this->square_size / 10);
+    this->cache.w = (this->square_size - ((this->square_size / 10) * 2));
+    this->cache.h = this->cache.w;
 }
 
 void ekg_check_box::on_pre_event_update(SDL_Event &sdl_event) {
@@ -156,6 +163,7 @@ void ekg_check_box::on_event(SDL_Event &sdl_event) {
 
     if (ekgapi::motion(sdl_event, mx, my)) {
         ekgapi::set(this->flag.highlight, this->flag.over);
+        ekgapi::set(this->flag.extra, this->flag.over && this->cache.collide_aabb_with_point(mx, my));
     } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
         ekgapi::set(this->flag.focused, this->flag.over);
     } else if (ekgapi::input_up_left(sdl_event, mx, my)) {
@@ -190,10 +198,17 @@ void ekg_check_box::on_draw_refresh() {
         ekggpu::rectangle(this->rect, ekg::theme().check_box_highlight);
     }
 
-    ekggpu::rectangle(this->rect.x + this->box_offset + (this->square_size / 10), this->rect.y + this->text_offset_y + (this->square_size / 10), this->square_size - ((this->square_size / 10) * 2), this->square_size - ((this->square_size / 10) * 2), ekg::theme().check_box_highlight);
+    ekggpu::rectangle(this->cache, ekg::theme().check_box_highlight);
 
-    if (this->flag.activy) {
-        ekggpu::rectangle(this->rect.x + this->box_offset + (this->square_size / 6), this->rect.y + this->text_offset_y + (this->square_size / 6), this->square_size - ((this->square_size / 6) * 2), this->square_size - ((this->square_size / 6) * 2), ekg::theme().check_box_activy);
+    if (this->flag.activy || this->flag.extra) {
+        float offset_pos = 2 * static_cast<float>(this->flag.activy);
+        float offset_size = 4 * static_cast<float>(this->flag.activy);
+
+        ekggpu::rectangle(this->cache.x + offset_pos, this->cache.y + offset_pos, this->cache.w - offset_size, this->cache.h - offset_size, ekg::theme().check_box_activy, this->flag.activy ? 0 : 2);
+
+        if (this->flag.extra && this->flag.activy) {
+            ekggpu::rectangle(this->cache.x, this->cache.y, this->cache.w, this->cache.h, ekg::theme().check_box_activy, 2);
+        }
     }
 
     ekgfont::render(this->text, this->rect.x + this->text_offset_x, this->rect.y + this->text_offset_y, ekg::theme().string_enabled_color);

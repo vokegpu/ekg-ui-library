@@ -131,9 +131,9 @@ namespace ekg {
     ekg_frame* frame();
 
     /*
-     * Get the current UI event.
+     * Get current poll UI event from ekg, note: do not need to delete this ptr.
      */
-    ekg_event &event();
+    ekg_event* event();
 
     /**
      * Visibility of elements in screen.

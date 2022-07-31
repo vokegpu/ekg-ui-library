@@ -115,8 +115,8 @@ ekg_check_box* ekg::check_box(const std::string &text) {
     the_ekg_core->add_element(check_box_worker);
 
     check_box_worker->set_visibility(ekg::visibility::VISIBLE);
-    check_box_worker->set_text(text);
     check_box_worker->set_text_dock(ekg::dock::LEFT);
+    check_box_worker->set_text(text);
 
     return check_box_worker;
 }
@@ -145,7 +145,7 @@ uint16_t ekg::hovered_element_type() {
     return the_ekg_core->get_hovered_element_type();
 }
 
-ekg_event &ekg::event() {
+ekg_event* ekg::event() {
     return the_ekg_core->poll_event();
 }
 

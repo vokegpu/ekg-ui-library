@@ -16,9 +16,11 @@
 #include "ekg_ui_element_abstract.hpp"
 
 /**
- * Element GUI Slider \n
- * Type: Widget
- * Description: Bar progress or normal slider.
+ * # UI \n
+ * # Author: Rina \n
+ * # Since: 18/07/2022 | 06:66 pm \n
+ * # Type: Widget \n
+ * # Description: Drag bar and get value from. \n
  **/
 class ekg_slider : public ekg_element {
 protected:

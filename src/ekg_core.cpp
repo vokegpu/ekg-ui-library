@@ -22,15 +22,14 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
             sdl_event.type == SDL_KEYDOWN         || sdl_event.type == SDL_KEYUP
     );
 
-    // Process resized window event.
+    // Process user event and resized window event.
     switch (sdl_event.type) {
         case SDL_USEREVENT: {
-            if (sdl_event.type == EKG_POPUPEVENT) {
+            if (sdl_event.user.code == EKG_EVENT) {
                 should_not_end_segment = true;
 
                 this->reset_current_event();
-                this->current_poll_event.type = ekg::ui::POPUP;
-                this->current_poll_event.text = static_cast<char*>(sdl_event.user.data1);
+                this->current_poll_event = static_cast<ekg_event*>(sdl_event.user.data1);
             }
 
             break;
@@ -484,14 +483,22 @@ uint32_t &ekg_core::get_popup_top_level() {
 }
 
 void ekg_core::reset_current_event() {
-    if (this->current_poll_event.text != nullptr) {
-        delete this->current_poll_event.text;
-        this->current_poll_event.text = nullptr;
-    }
+    if (this->current_poll_event != nullptr) {
+        delete this->current_poll_event;
+        this->current_poll_event = nullptr;
 
-    this->current_poll_event = {0, ekg::ui::NONE, nullptr, false};
+        if (this->debug_mode) {
+            ekgutil::log("Deleted old event cache from memory.");
+        }
+    }
 }
 
-ekg_event &ekg_core::poll_event() {
+ekg_event* ekg_core::poll_event() {
     return this->current_poll_event;
+}
+
+void ekg_core::dispatch_event(SDL_Event &sdl_event) {
+    sdl_event.type = SDL_USEREVENT;
+    sdl_event.user.type = SDL_USEREVENT;
+    SDL_PushEvent(&sdl_event);
 }

@@ -16,9 +16,11 @@
 #include "ekg_ui_element_abstract.hpp"
 
 /**
- * Element GUI Button \n
- * Type: Widget
- * Description: Works as a toggleable final.
+ * # UI \n
+ * # Author: Rina \n
+ * # Since: 22/07/2022 | 03:30 am \n
+ * # Type: Widget \n
+ * # Description: Callback button. \n
  **/
 class ekg_button : public ekg_element  {
 protected:
@@ -26,8 +28,6 @@ protected:
 
     float min_text_width;
     float min_text_height;
-
-    bool callback_flag;
 
     uint16_t enum_flags_text_dock;
     float text_offset_x = 0.0f, text_offset_y = 0.0f;
@@ -38,8 +38,8 @@ public:
     void set_text(const std::string &string);
     std::string get_text();
 
-    void set_callback_flag(bool val);
-    bool get_callback_flag();
+    void set_pressed(bool state);
+    bool is_pressed();
 
     float get_min_text_width();
     float get_min_text_height();

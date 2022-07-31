@@ -263,8 +263,12 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
         highlight = this->flag.over;
     } else if (ekgapi::any_input_up(sdl_event, mx, my) && this->flag.focused) {
         if (this->flag.activy && this->flag.over) {
+            std::string path;
+            this->get_popup_path(path);
+
+            ekgapi::callback_popup(this->id, path);
             ekgapi::set(this->flag.focused, false);
-            
+
             this->set_visibility(ekg::visibility::DISABLED);
             this->set_should_update(true);
         }
@@ -433,7 +437,7 @@ std::string ekg_popup::get_tag() {
 }
 
 void ekg_popup::place(ekg_popup *popup) {
-    if (popup == nullptr || popup->get_id() == this->id || this->children_stack.contains(popup->get_id())) {
+    if (popup == nullptr || popup->get_id() == this->id || popup->get_type() != ekg::ui::POPUP || this->children_stack.contains(popup->get_id())) {
         return;
     }
 
@@ -480,29 +484,17 @@ bool ekg_popup::get_component_pos(const std::string &text, float &x, float &y) {
     return false;
 }
 
-void ekg_popup::children_popup_hovered_flag(bool &flag, uint32_t id) {
-    if (flag) {
-        return;
-    }
+void ekg_popup::get_popup_path(std::string &path) {
+    if (this->has_mother()) {
+        path = " | " + this->focused_component + path;
 
-    ekg_element* element;
-    ekg_popup* popup;
+        ekg_popup* element;
+        the_ekg_core->find_element((ekg_element*&) element, this->mother_id);
 
-    for (uint32_t &ids : this->children_stack.ids) {
-        if (!the_ekg_core->find_element(element, ids)) {
-            continue;
+        if (element != nullptr) {
+            element->get_popup_path(path);
         }
-
-        if (ids == id) {
-            flag = true;
-            break;
-        }
-
-        popup = (ekg_popup*) element;
-        popup->children_popup_hovered_flag(flag, id);
-
-        if (flag) {
-            break;
-        }
+    } else {
+        path = this->get_tag() + " | " + this->focused_component + path;
     }
 }
