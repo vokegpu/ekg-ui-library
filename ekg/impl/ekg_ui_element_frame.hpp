@@ -24,8 +24,8 @@
  **/
 class ekg_frame : public ekg_element {
 private:
-    float min_width;
-    float min_height;
+    float min_width = 30.0f;
+    float min_height = 30.0f;
 
     bool no_resizable = false, dragging = false;
     bool no_draggable = false, resizing = false;

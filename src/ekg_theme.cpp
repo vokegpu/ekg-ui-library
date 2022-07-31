@@ -43,7 +43,10 @@ void ekg_theme_service::reset_theme() {
     this->loaded_theme.popup_border = ekgmath::vec4f(190, 190, 190, 255);
 
     this->loaded_theme.immediate_popup_background = ekgmath::vec4f(255, 255, 255, 255);
+    this->loaded_theme.immediate_popup_border = ekgmath::vec4f(190, 190, 190, 255);
+
     this->loaded_theme.frame_background = ekgmath::vec4f(255, 255, 255, 255);
+    this->loaded_theme.frame_border = ekgmath::vec4f(190, 190, 190, 255);
 }
 
 ekg_theme &ekg_theme_service::get_loaded_theme() {

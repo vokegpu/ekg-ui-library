@@ -105,6 +105,7 @@ ekg_frame* ekg::frame() {
     frame_worker->set_drag_dock(ekg::dock::TOP);
     frame_worker->set_size(300, 300);
     frame_worker->set_drag_offset(300);
+    frame_worker->set_resize_offset(30.0f);
 
     return frame_worker;
 }

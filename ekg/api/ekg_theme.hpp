@@ -56,10 +56,12 @@ struct ekg_theme {
 
     /* Start of immediate popup colors. */
     ekgmath::vec4f immediate_popup_background;
+    ekgmath::vec4f immediate_popup_border;
     /* End of immediate popup colors. */
 
     /* Start of frame colors. */
     ekgmath::vec4f frame_background;
+    ekgmath::vec4f frame_border;
     /* End of frame colors. */
 };
 

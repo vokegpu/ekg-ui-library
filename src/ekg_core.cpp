@@ -148,6 +148,9 @@ void ekg_core::process_render_section() {
             // Background.
             ekggpu::rectangle(immediate_popup.x - offset_x - (w / 2), immediate_popup.y - offset_y - h, w + offset_x, h + offset_y, this->theme_service.get_loaded_theme().immediate_popup_background);
 
+            // Border.
+            ekggpu::rectangle(immediate_popup.x - offset_x - (w / 2), immediate_popup.y - offset_y - h, w + offset_x, h + offset_y, this->theme_service.get_loaded_theme().immediate_popup_border, 1);
+
             // Text.
             ekgfont::render(immediate_popup.text, immediate_popup.x - (offset_x / 2) - (w / 2), immediate_popup.y - (offset_y / 2) - h, this->theme_service.get_loaded_theme().string_value_color);
         }

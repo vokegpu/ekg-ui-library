@@ -133,7 +133,7 @@ namespace ekg {
      * Visibility of elements in screen.
      **/
     enum visibility {
-        LOW_PRIORITY, VISIBLE, NONE
+        LOW_PRIORITY, VISIBLE, DISABLED
     };
 
     /**
@@ -153,6 +153,7 @@ namespace ekg {
      * UI types.
      */
     enum ui {
+        NONE = 0,
         SLIDER = 1,
         COMBOBOX = 2,
         POPUP = 3,

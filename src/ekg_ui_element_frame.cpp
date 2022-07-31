@@ -82,10 +82,10 @@ void ekg_frame::on_event(SDL_Event &sdl_event) {
         }
 
         if (!this->no_resizable && !this->dragging && this->resizing && this->enum_target_resize_dock != ekg::dock::UNDEFINED) {
-            bool top    = ekgutil::contains(this->enum_target_resize_dock, ekg::dock::TOP);
-            bool bottom = ekgutil::contains(this->enum_target_resize_dock, ekg::dock::BOTTOM);
-            bool left   = ekgutil::contains(this->enum_target_resize_dock, ekg::dock::LEFT);
-            bool right  = ekgutil::contains(this->enum_target_resize_dock, ekg::dock::RIGHT);
+            bool top    = ekgutil::contains(this->enum_flags_resize_dock, ekg::dock::TOP) && ekgutil::contains(this->enum_target_resize_dock, ekg::dock::TOP);
+            bool bottom = ekgutil::contains(this->enum_flags_resize_dock, ekg::dock::BOTTOM) && ekgutil::contains(this->enum_target_resize_dock, ekg::dock::BOTTOM);
+            bool left   = ekgutil::contains(this->enum_flags_resize_dock, ekg::dock::LEFT) && ekgutil::contains(this->enum_target_resize_dock, ekg::dock::LEFT);
+            bool right  = ekgutil::contains(this->enum_flags_resize_dock, ekg::dock::RIGHT) && ekgutil::contains(this->enum_target_resize_dock, ekg::dock::RIGHT);
 
             // p (position) s (size)
             float px = this->rect.x;
@@ -129,6 +129,7 @@ void ekg_frame::on_draw_refresh() {
     ekg_element::on_draw_refresh();
 
     ekggpu::rectangle(this->rect, ekg::theme().frame_background);
+    ekggpu::rectangle(this->rect, ekg::theme().frame_border, 1);
 }
 
 void ekg_frame::set_min_width(float min) {

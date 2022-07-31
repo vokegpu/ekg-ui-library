@@ -193,5 +193,5 @@ void ekg_element::collect_stack(ekgutil::stack &stack) {
 
 void ekg_element::kill() {
     the_ekg_core->kill_element(this);
-    this->set_visibility(ekg::visibility::NONE);
+    this->set_visibility(ekg::visibility::DISABLED);
 }

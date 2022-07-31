@@ -252,7 +252,7 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
 
         if (flag) {
             ekgapi::set(this->flag.focused, false);
-            this->set_visibility(ekg::visibility::NONE);
+            this->set_visibility(ekg::visibility::DISABLED);
             this->set_should_update(true);
         }
 
@@ -265,7 +265,7 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
         if (this->flag.activy && this->flag.over) {
             ekgapi::set(this->flag.focused, false);
             
-            this->set_visibility(ekg::visibility::NONE);
+            this->set_visibility(ekg::visibility::DISABLED);
             this->set_should_update(true);
         }
     }
@@ -336,7 +336,7 @@ void ekg_popup::on_update() {
     ekg_element::on_update();
 
     switch (this->visibility) {
-        case ekg::visibility::NONE: {
+        case ekg::visibility::DISABLED: {
             if (this->flag.focused) {
                 this->set_should_update(false);
                 break;
