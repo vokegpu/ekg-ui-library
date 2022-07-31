@@ -17,6 +17,7 @@
 #include <string>
 
 #include <ekg/api/ekg_core.hpp>
+#include <ekg/api/ekg_event.hpp>
 #include <ekg/impl/ekg_ui_element_button.hpp>
 #include <ekg/impl/ekg_ui_element_frame.hpp>
 #include <ekg/impl/ekg_ui_element_check_box.hpp>
@@ -128,6 +129,11 @@ namespace ekg {
      * Create frame UI.
      */
     ekg_frame* frame();
+
+    /*
+     * Get the current UI event.
+     */
+    ekg_event &event();
 
     /**
      * Visibility of elements in screen.

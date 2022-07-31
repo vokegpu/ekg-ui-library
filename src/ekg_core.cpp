@@ -14,8 +14,28 @@
 #include <list>
 
 void ekg_core::process_event_section(SDL_Event &sdl_event) {
+    // We do not need to track others events here.
+    bool should_not_end_segment = (
+            sdl_event.type == SDL_FINGERDOWN      || sdl_event.type == SDL_FINGERUP ||
+            sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
+            sdl_event.type == SDL_MOUSEMOTION     || sdl_event.type == SDL_FINGERMOTION ||
+            sdl_event.type == SDL_KEYDOWN         || sdl_event.type == SDL_KEYUP
+    );
+
     // Process resized window event.
     switch (sdl_event.type) {
+        case SDL_USEREVENT: {
+            if (sdl_event.type == EKG_POPUPEVENT) {
+                should_not_end_segment = true;
+
+                this->reset_current_event();
+                this->current_poll_event.type = ekg::ui::POPUP;
+                this->current_poll_event.text = static_cast<char*>(sdl_event.user.data1);
+            }
+
+            break;
+        }
+
         case SDL_WINDOWEVENT: {
             switch (sdl_event.window.event) {
                 case SDL_WINDOWEVENT_SIZE_CHANGED: {
@@ -28,14 +48,6 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
             break;
         }
     }
-
-    // We do not need to track others events here.
-    bool should_not_end_segment = (
-            sdl_event.type == SDL_FINGERDOWN      || sdl_event.type == SDL_FINGERUP ||
-            sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
-            sdl_event.type == SDL_MOUSEMOTION     || sdl_event.type == SDL_FINGERMOTION ||
-            sdl_event.type == SDL_KEYDOWN         || sdl_event.type == SDL_KEYUP
-    );
 
     if (!should_not_end_segment) {
         return;
@@ -469,4 +481,17 @@ uint16_t ekg_core::get_hovered_element_type() {
 
 uint32_t &ekg_core::get_popup_top_level() {
     return this->popup_top_level;
+}
+
+void ekg_core::reset_current_event() {
+    if (this->current_poll_event.text != nullptr) {
+        delete this->current_poll_event.text;
+        this->current_poll_event.text = nullptr;
+    }
+
+    this->current_poll_event = {0, ekg::ui::NONE, nullptr, false};
+}
+
+ekg_event &ekg_core::poll_event() {
+    return this->current_poll_event;
 }

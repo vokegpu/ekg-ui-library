@@ -145,6 +145,10 @@ uint16_t ekg::hovered_element_type() {
     return the_ekg_core->get_hovered_element_type();
 }
 
+ekg_event &ekg::event() {
+    return the_ekg_core->poll_event();
+}
+
 void ekg::core::init() {
     ekgutil::log("Core initialised.");
     the_ekg_core->init();

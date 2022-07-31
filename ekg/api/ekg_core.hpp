@@ -13,7 +13,8 @@
 #ifndef EKG_CORE_H
 #define EKG_CORE_H
 
-#include <ekg/impl/ekg_ui_element_abstract.hpp>
+#include "ekg/impl/ekg_ui_element_abstract.hpp"
+#include "ekg_event.hpp"
 #include "ekg_font.hpp"
 #include "ekg_theme.hpp"
 #include <array>
@@ -31,6 +32,9 @@ protected:
 
     // Theme manager.
     ekg_theme_service theme_service;
+
+    // As you see, it flags a current event.
+    ekg_event current_poll_event;
 
     // Instances of SDL2.
     SDL_Window* sdl_window_instance;
@@ -62,6 +66,11 @@ protected:
     uint16_t todo_flags;
 
     /*
+     * Free memory from cached event.
+     */
+    void reset_current_event();
+
+    /*
      * Predict update elements.
      */
     void refresh_update();
@@ -87,6 +96,11 @@ protected:
     void fix_rect(ekg_element* &element, ekgutil::stack &cached_stack);
 public:
     bool debug_mode = false;
+
+    /*
+     * Get the current UI event from core.
+     */
+    ekg_event &poll_event();
 
     /*
      * Get the current popup top level.
