@@ -50,10 +50,11 @@ struct ekg_gpu_scissor {
  **/
 class ekg_gpu_data_handler {
 protected:
-    uint32_t ticked_refresh_buffers_count;
     GLint previous_data_size;
     GLint amount_of_texture_data_allocated;
     GLint amount_of_data;
+
+    uint32_t ticked_refresh_buffers_count;
     uint32_t amount_of_draw_iterations;
 
     std::vector<GLfloat> cached_vertices;

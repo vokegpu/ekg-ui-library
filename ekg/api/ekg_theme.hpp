@@ -54,6 +54,13 @@ struct ekg_theme {
     ekgmath::vec4f popup_border;
     /* End of popup colors. */
 
+    /* Start of combobox colors. */
+    ekgmath::vec4f combobox_background;
+    ekgmath::vec4f combobox_highlight;
+    ekgmath::vec4f combobox_border;
+    ekgmath::vec4f combobox_activy;
+    /* End of combobox colors. */
+
     /* Start of immediate popup colors. */
     ekgmath::vec4f immediate_popup_background;
     ekgmath::vec4f immediate_popup_border;

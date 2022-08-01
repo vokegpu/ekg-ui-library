@@ -38,6 +38,11 @@ void ekg_theme_service::reset_theme() {
     this->loaded_theme.slider_highlight = ekgmath::vec4f(190, 190, 190, 150);
     this->loaded_theme.slider_activy = ekgmath::vec4f(0, 0, 190, 100);
 
+    this->loaded_theme.combobox_background = ekgmath::vec4f(255, 255, 255, 255);
+    this->loaded_theme.combobox_highlight = ekgmath::vec4f(190, 190, 190, 150);
+    this->loaded_theme.combobox_activy = ekgmath::vec4f(0, 0, 190, 100);
+    this->loaded_theme.combobox_border = ekgmath::vec4f(190, 190, 190, 255);
+
     this->loaded_theme.popup_background = ekgmath::vec4f(255, 255, 255, 255);
     this->loaded_theme.popup_highlight = ekgmath::vec4f(0, 0, 190, 100);
     this->loaded_theme.popup_border = ekgmath::vec4f(190, 190, 190, 255);

@@ -23,6 +23,7 @@
 #include <ekg/impl/ekg_ui_element_check_box.hpp>
 #include <ekg/impl/ekg_ui_element_slider.hpp>
 #include <ekg/impl/ekg_ui_element_popup.hpp>
+#include <ekg/impl/ekg_ui_element_combobox.hpp>
 
 /**
  * The global variable ptr for all.

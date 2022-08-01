@@ -103,7 +103,7 @@ void ekg_gpu_data_handler::draw() {
     ekg_gpu_scissor gpu_scissor;
 
     // Simulate glMultiDrawArrays.
-    for (uint32_t i = 0; i < this->amount_of_draw_iterations; i++) {
+    for (int i = 0; i < this->amount_of_draw_iterations; i++) {
         gpu_data = this->allocated_gpu_data[i];
 
         this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
@@ -296,6 +296,8 @@ void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color
 
     // Configure the GPU data.
     gpu_data.data = 6;
+
+    // Set
     gpu_data.category = line_thickness != 0 ? ekgutil::shape_category::OUTLINE : gpu_data.category;
     gpu_data.factor = static_cast<float>(line_thickness);
 
