@@ -107,6 +107,11 @@ namespace ekg {
     void set_font_size(uint32_t size);
 
     /*
+     * Create combobox UI.
+     */
+    ekg_combobox* combobox(const std::string &text, const std::vector<std::string> &vec);
+
+    /*
      * Create popup UI.
      */
     ekg_popup* popup(const std::string &text, const std::vector<std::string> &vec);

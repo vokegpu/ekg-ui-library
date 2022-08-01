@@ -104,14 +104,42 @@ void ekg_combobox::on_sync() {
 
 void ekg_combobox::on_pre_event_update(SDL_Event &sdl_event) {
     ekg_element::on_pre_event_update(sdl_event);
+
+    float mx = 0;
+    float my = 0;
+
+    if (ekgapi::motion(sdl_event, mx, my)) {
+        ekgapi::set_direct(this->flag.over, this->rect.collide_aabb_with_point(mx, my));
+    }
 }
 
 void ekg_combobox::on_event(SDL_Event &sdl_event) {
     ekg_element::on_event(sdl_event);
+
+    float mx = 0;
+    float my = 0;
+
+    if (ekgapi::motion(sdl_event, mx, my)) {
+        ekgapi::set(this->flag.highlight, this->flag.over);
+    } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
+        ekgapi::set(this->flag.focused, this->flag.over);
+        ekgapi::set_direct(this->flag.activy, false);
+    } else if (ekgapi::input_up_left(sdl_event, mx, my)) {
+        ekgapi::set(this->flag.focused, false);
+    }
 }
 
 void ekg_combobox::on_post_event_update(SDL_Event &sdl_event) {
     ekg_element::on_post_event_update(sdl_event);
+
+    ekg_element::on_post_event_update(sdl_event);
+
+    float mx = 0;
+    float my = 0;
+
+    if (ekgapi::motion(sdl_event, mx, my)) {
+        ekgapi::set_direct(this->flag.over, false);
+    }
 }
 
 void ekg_combobox::on_update() {
@@ -122,7 +150,14 @@ void ekg_combobox::on_draw_refresh() {
     ekg_element::on_draw_refresh();
 
     ekggpu::rectangle(this->rect, ekg::theme().combobox_background);
+
+    if (this->flag.highlight) {
+        ekggpu::rectangle(this->rect, ekg::theme().combobox_highlight);
+    }
+
+    if (this->flag.focused) {
+        ekggpu::rectangle(this->rect, ekg::theme().combobox_highlight);
+    }
+
     ekgfont::render(this->text, this->rect.x + this->text_offset_x, this->rect.y + this->text_offset_y, ekg::theme().string_enabled_color);
-
-
 }

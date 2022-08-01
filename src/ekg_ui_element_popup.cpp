@@ -191,6 +191,8 @@ void ekg_popup::on_sync() {
     this->rect.w = this->rect.w < this->component_text_min_width ? this->component_text_min_width : this->rect.w;
     this->rect.h = this->rect.h < this->component_text_min_height ? this->component_text_min_height: this->rect.h;
 
+    float offset_axis_separator = 0.0f;
+
     // Second iteration to set the real offset positions.
     for (ekgutil::component &component : this->component_list) {
         max_width = component.w;
@@ -198,23 +200,24 @@ void ekg_popup::on_sync() {
 
         if (center) {
             this->component_text_offset_x = (this->rect.w / 2) - (max_width / 2);
-            this->component_text_offset_y = (this->component_height / 2) - (max_height / 2);
         }
+
+        this->component_text_offset_y = (this->component_height / 2) - (max_height / 2);
 
         if (top) {
             this->component_text_offset_y = max_height / 2;
         }
 
         if (left) {
-            this->component_text_offset_x = max_width / 2;
+            this->component_text_offset_x = offset_axis_separator;
         }
 
         if (right) {
-            this->component_text_offset_x = this->rect.w - max_width - (max_width / 4);
+            this->component_text_offset_x = this->rect.w - max_width - offset_axis_separator;
         }
 
         if (bottom) {
-            this->component_text_offset_y = this->component_height - max_height - (max_height / 4);
+            this->component_text_offset_y = this->component_height - max_height - (max_height / 2);
         }
 
         component.x = this->rect.x + offset_dimension + this->component_text_offset_x;
@@ -359,7 +362,7 @@ void ekg_popup::on_update() {
             this->rect.h = this->full_height;
 
             float val = 0.0f;
-            ekgmath::smoothf(val, 100, SDL_GetTicks() - this->animation_elapsed_ticks);
+            ekgmath::smoothf(val, 50, SDL_GetTicks() - this->animation_elapsed_ticks);
 
             this->cache.h = val * this->full_height;
 

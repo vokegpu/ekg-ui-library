@@ -267,10 +267,11 @@ void ekg_gpu_data_handler::scissor(int32_t x, int32_t y, int32_t w, int32_t h) {
     }
 
     ekg_gpu_scissor &scissor = this->allocated_gpu_scissor[this->current_scissor_bind];
+
     scissor.x = x;
     scissor.y = (static_cast<int32_t>(the_ekg_core->get_screen_height())) - (y + h);
     scissor.w = w;
-    scissor.x = h;
+    scissor.h = h;
 }
 
 void ekg_gpu_data_handler::bind_scissor(int32_t index) {

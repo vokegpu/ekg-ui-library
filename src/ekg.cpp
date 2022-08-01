@@ -54,6 +54,18 @@ void ekg::render() {
     the_ekg_core->process_render_section();
 }
 
+ekg_combobox *ekg::combobox(const std::string &text, const std::vector<std::string> &vec) {
+    auto combobox_worker = new ekg_combobox();
+    the_ekg_core->add_element(combobox_worker);
+
+    combobox_worker->set_text_dock(ekg::dock::LEFT);
+    combobox_worker->add(vec);
+    combobox_worker->set_width(125);
+    combobox_worker->set_height(25);
+
+    return nullptr;
+}
+
 ekg_popup *ekg::popup(const std::string &text, const std::vector<std::string> &vec) {
     if (the_ekg_core->get_hovered_element_type() == ekg::ui::POPUP) {
         return nullptr;
@@ -63,7 +75,7 @@ ekg_popup *ekg::popup(const std::string &text, const std::vector<std::string> &v
     the_ekg_core->add_element(popup_worker);
 
     popup_worker->set_tag(text);
-    popup_worker->set_text_dock(ekg::dock::CENTER);
+    popup_worker->set_text_dock(ekg::dock::LEFT);
     popup_worker->add(vec);
     popup_worker->set_width(125);
     popup_worker->set_height(25);
