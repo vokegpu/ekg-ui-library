@@ -29,10 +29,12 @@ void ekg_button::on_killed() {
 void ekg_button::on_sync() {
     ekg_element::on_sync();
 
-    this->min_text_width = ekgfont::get_text_width(this->text);
+    this->min_text_width = ekgfont::get_text_width(this->text) + (ekg::text_dock_offset * 2.0f);
     this->min_text_height = ekgfont::get_text_height(this->text);
 
-    this->rect.w = this->rect.w < this->min_text_width ? this->min_text_width : this->rect.w;
+    float scaled_min_text_width = this->min_text_width / 4.0f;
+
+    this->rect.w = this->rect.w < scaled_min_text_width ? scaled_min_text_width : this->rect.w;
     this->rect.h = this->rect.h < this->min_text_height ? this->min_text_height : this->rect.h;
 
     the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
@@ -45,19 +47,20 @@ void ekg_button::on_sync() {
 
     if (center) {
         this->text_offset_x = (this->rect.w / 2.0f) - (this->min_text_width / 2);
-        this->text_offset_y = (this->rect.h / 2.0f) - (this->min_text_height / 2);
     }
+
+    this->text_offset_y = (this->rect.h / 2.0f) - (this->min_text_height / 2);
 
     if (top) {
         this->text_offset_y = this->min_text_height / 2;
     }
 
     if (left) {
-        this->text_offset_x = this->min_text_width / 4.0f;
+        this->text_offset_x = ekg::text_dock_offset;
     }
 
     if (right) {
-        this->text_offset_x = this->rect.w - this->min_text_width - (this->min_text_width / 4.0f);
+        this->text_offset_x = this->rect.w - this->min_text_width - (ekg::text_dock_offset);
     }
 
     if (bottom) {

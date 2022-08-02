@@ -47,6 +47,11 @@ extern ekg_core* const the_ekg_core;
  **/
 namespace ekg {
     /*
+     * Set offset for axis x docks.
+     */
+    extern float text_dock_offset;
+
+    /*
      * Get hovered element id.
      */
     uint32_t hovered_element_id();

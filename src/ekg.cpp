@@ -13,6 +13,7 @@
 
 ekg_core* const the_ekg_core = new ekg_core();
 float ekg::core::delta_time = 0.0f;
+float ekg::text_dock_offset = 2.0f;
 
 std::string ekg::get_version() {
     return "1.0.0";

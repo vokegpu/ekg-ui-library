@@ -72,20 +72,33 @@ void ekg_combobox::on_sync() {
     }
 
     float width = 0.0f;
-    this->min_text_width = 10000.0f;
+    float longest_width = 0.0f;
+    float val_width = 0.0;
 
     for (std::string &values : this->value_list) {
         width = ekgfont::get_text_width(values);
 
-        if (width < this->min_text_width) {
-            this->min_text_width = width;
+        if (width > longest_width) {
+            longest_width = width;
+        }
+
+        if (values == this->value) {
+            val_width = width;
         }
     }
 
+    this->min_text_width = val_width;
     this->min_text_height = ekgfont::get_text_height(this->value);
 
-    this->rect.w = this->rect.w < this->min_text_width ? this->min_text_width : this->rect.w;
+    longest_width /= 4;
+
+    this->rect.w = this->rect.w < longest_width ? this->min_text_width : this->rect.w;
     this->rect.h = this->rect.h < this->min_text_height ? this->min_text_height : this->rect.h;
+
+    this->cache.w = this->rect.h;
+    this->cache.h = this->rect.h;
+    this->cache.x = this->rect.x + this->rect.w - this->cache.w;
+    this->cache.y = this->rect.y;
 
     the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
 
@@ -97,19 +110,20 @@ void ekg_combobox::on_sync() {
 
     if (center) {
         this->text_offset_x = (this->rect.w / 2.0f) - (this->min_text_width / 2);
-        this->text_offset_y = (this->rect.h / 2.0f) - (this->min_text_height / 2);
     }
+    
+    this->text_offset_y = (this->rect.h / 2.0f) - (this->min_text_height / 2);
 
     if (top) {
         this->text_offset_y = this->min_text_height / 2;
     }
 
     if (left) {
-        this->text_offset_x = 0.0f;
+        this->text_offset_x = ekg::text_dock_offset;
     }
 
     if (right) {
-        this->text_offset_x = this->rect.w - this->min_text_width;
+        this->text_offset_x = this->rect.w - this->min_text_width - ekg::text_dock_offset - this->cache.w;
     }
 
     if (bottom) {
@@ -150,15 +164,13 @@ void ekg_combobox::on_event(SDL_Event &sdl_event) {
 
     if (ekgapi::motion(sdl_event, mx, my)) {
         ekgapi::set(this->flag.highlight, this->flag.over);
-    } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
+    } else if (ekgapi::any_input_down(sdl_event, mx, my)) {
         ekgapi::set(this->flag.activy, this->flag.over);
-    } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
-        ekg_element* instance;
 
-        if (this->flag.focused && (this->children_stack.ids.empty() || !the_ekg_core->find_element(instance, this->children_stack.ids.at(0)))) {
-            ekgapi::set(this->flag.focused, false);
+        if (this->flag.focused && !this->children_stack.ids.empty()) {
+            this->set_should_update(true);
         }
-
+    } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
         if (this->flag.over && this->flag.activy && !this->flag.focused) {
             ekgapi::set(this->flag.focused, true);
 
@@ -187,6 +199,15 @@ void ekg_combobox::on_post_event_update(SDL_Event &sdl_event) {
 
 void ekg_combobox::on_update() {
     ekg_element::on_update();
+
+    ekg_element* instance;
+
+    if (this->flag.focused && (this->children_stack.ids.empty() || !the_ekg_core->find_element(instance, this->children_stack.ids.at(0)))) {
+        ekgapi::set(this->flag.focused, false);
+        this->children_stack.ids.clear();
+    }
+
+    this->set_should_update(false);
 }
 
 void ekg_combobox::on_draw_refresh() {
@@ -200,6 +221,10 @@ void ekg_combobox::on_draw_refresh() {
 
     if (this->flag.focused) {
         ekggpu::rectangle(this->rect, ekg::theme().combobox_activy, 1);
+        ekggpu::rectangle(this->cache, ekg::theme().combobox_activy);
+    } else {
+        ekggpu::rectangle(this->rect, ekg::theme().combobox_border, 1);
+        ekggpu::rectangle(this->cache, ekg::theme().combobox_border, 1);
     }
 
     if (this->flag.activy) {

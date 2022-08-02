@@ -112,26 +112,25 @@ void ekg_check_box::on_sync() {
     bool left = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::LEFT);
     bool right = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::RIGHT);
 
-    this->box_offset = this->square_size / 10;
+    this->box_offset = ekg::text_dock_offset;
 
     if (center) {
         this->text_offset_x = (this->square_size / 2) + (this->rect.w / 2) - (text_width / 2);
-        this->text_offset_y = (this->rect.h / 2) - (this->min_text_height / 2);
     }
+    
+    this->text_offset_y = (this->rect.h / 2) - (this->min_text_height / 2);
 
     if (top) {
         this->text_offset_y = this->min_text_height / 2;
     }
 
     if (left) {
-        this->box_offset = this->square_size / 10;
         this->text_offset_x = this->square_size + this->box_offset;
     }
 
     if (right) {
-        this->box_offset = this->square_size + (this->square_size / 10);
-        this->text_offset_x = this->rect.w - text_width - this->box_offset;
-        this->box_offset = this->rect.w - this->box_offset;
+        this->text_offset_x = this->rect.w - text_width - this->box_offset - this->square_size;
+        this->box_offset = this->rect.w - this->square_size - ekg::text_dock_offset;
     }
 
     if (bottom) {

@@ -76,12 +76,12 @@ void ekg_frame::on_event(SDL_Event &sdl_event) {
             this->resizing = true;
             ekgapi::callback_frame(this->id, "resizing");
         }
-    } else if (ekgapi::any_input_up(sdl_event)) {
+    } else if (ekgapi::any_input_up(sdl_event) && (this->resizing || this->dragging)) {
         if (this->resizing) {
             ekgapi::callback_frame(this->id, "resized");
         }
 
-        if (this->dragged) {
+        if (this->dragging) {
             ekgapi::callback_frame(this->id, "dragged");
         }
 

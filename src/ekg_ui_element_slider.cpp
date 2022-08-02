@@ -101,8 +101,8 @@ void ekg_slider::on_sync() {
 
     this->rect.h = this->rect.h < this->min_text_height ? this->min_text_height : this->rect.h;
 
-    float factor = (this->min_text_height / 4.0f);
-    float factor_height = (this->min_text_height / 8.0f);
+    float factor = ekg::text_dock_offset;
+    float factor_height = this->rect.h / 8;
 
     this->cache.x = this->rect.x + factor;
     this->cache.y = this->rect.y + (this->rect.h / 2.0f) - (factor_height / 2.0f);
