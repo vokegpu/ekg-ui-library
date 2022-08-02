@@ -10,6 +10,8 @@
  * END OF EKG-LICENSE.
  **/
 #include <ekg/ekg.hpp>
+#include "ekg/impl/ekg_ui_element_abstract.hpp"
+
 
 ekg_element::ekg_element() {
     this->type = ekg::ui::ABSTRACT;
@@ -194,4 +196,12 @@ void ekg_element::collect_stack(ekgutil::stack &stack) {
 void ekg_element::kill() {
     the_ekg_core->kill_element(this);
     this->set_visibility(ekg::visibility::DISABLED);
+}
+
+void ekg_element::set_tag(const std::string &str) {
+
+}
+
+std::string ekg_element::get_tag() {
+    return std::string();
 }

@@ -54,19 +54,22 @@ void ekg::render() {
     the_ekg_core->process_render_section();
 }
 
-ekg_combobox *ekg::combobox(const std::string &text, const std::vector<std::string> &vec) {
+ekg_combobox *ekg::combobox(const std::string &tag, const std::string &value, const std::vector<std::string> &vec) {
     auto combobox_worker = new ekg_combobox();
     the_ekg_core->add_element(combobox_worker);
 
     combobox_worker->set_text_dock(ekg::dock::LEFT);
     combobox_worker->add(vec);
+    combobox_worker->set_value(value);
+    combobox_worker->set_tag(tag);
     combobox_worker->set_width(125);
+    combobox_worker->set_visibility(ekg::visibility::VISIBLE);
     combobox_worker->set_height(25);
 
-    return nullptr;
+    return combobox_worker;
 }
 
-ekg_popup *ekg::popup(const std::string &text, const std::vector<std::string> &vec) {
+ekg_popup *ekg::popup(const std::string &tag, const std::vector<std::string> &vec) {
     if (the_ekg_core->get_hovered_element_type() == ekg::ui::POPUP) {
         return nullptr;
     }
@@ -74,7 +77,7 @@ ekg_popup *ekg::popup(const std::string &text, const std::vector<std::string> &v
     auto popup_worker = new ekg_popup();
     the_ekg_core->add_element(popup_worker);
 
-    popup_worker->set_tag(text);
+    popup_worker->set_tag(tag);
     popup_worker->set_text_dock(ekg::dock::LEFT);
     popup_worker->add(vec);
     popup_worker->set_width(125);

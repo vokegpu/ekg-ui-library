@@ -40,9 +40,14 @@ protected:
 
     float sync_x = 0;
     float sync_y = 0;
+
+    std::string tag;
 public:
     ekg_element();
     ~ekg_element();
+
+    void set_tag(const std::string &str);
+    std::string get_tag();
 
     void set_should_update(bool should_update);
     bool should_update();

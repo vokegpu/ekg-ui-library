@@ -1,4 +1,6 @@
 #include "ekg/ekg.hpp"
+#include "ekg/impl/ekg_ui_element_combobox.hpp"
+
 
 float ekg_combobox::get_min_text_width() {
     return this->min_text_width;
@@ -66,8 +68,22 @@ void ekg_combobox::set_pos(float x, float y) {
 void ekg_combobox::on_sync() {
     ekg_element::on_sync();
 
-    this->min_text_width = ekgfont::get_text_width(this->text);
-    this->min_text_height = ekgfont::get_text_height(this->text);
+    if (!this->contains(this->value)) {
+        this->value = this->value_list.empty() ? "" : this->value_list[0];
+    }
+
+    float width = 0.0f;
+    this->min_text_width = 10000.0f;
+
+    for (std::string &values : this->value_list) {
+        width = ekgfont::get_text_width(values);
+
+        if (width < this->min_text_width) {
+            this->min_text_width = width;
+        }
+    }
+
+    this->min_text_height = ekgfont::get_text_height(this->value);
 
     this->rect.w = this->rect.w < this->min_text_width ? this->min_text_width : this->rect.w;
     this->rect.h = this->rect.h < this->min_text_height ? this->min_text_height : this->rect.h;
@@ -116,22 +132,46 @@ void ekg_combobox::on_pre_event_update(SDL_Event &sdl_event) {
 void ekg_combobox::on_event(SDL_Event &sdl_event) {
     ekg_element::on_event(sdl_event);
 
+    if (sdl_event.type == SDL_USEREVENT && !this->children_stack.ids.empty() && ekg::event()->type == ekg::ui::POPUP && ekg::event()->id == this->children_stack.ids[0]) {
+        for (std::string &values : this->value_list) {
+            if (ekgutil::contains(ekg::event()->text, values) && this->value != values) {
+                this->value = values;
+                this->on_sync();
+                break;
+            }
+        }
+
+        ekgapi::set(this->flag.focused, false);
+        return;
+    }
+
     float mx = 0;
     float my = 0;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
         ekgapi::set(this->flag.highlight, this->flag.over);
     } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
-        ekgapi::set(this->flag.focused, this->flag.over);
-        ekgapi::set_direct(this->flag.activy, false);
+        ekgapi::set(this->flag.activy, this->flag.over);
     } else if (ekgapi::input_up_left(sdl_event, mx, my)) {
-        ekgapi::set(this->flag.focused, false);
+        ekg_element* instance;
+
+        if (this->flag.focused && !the_ekg_core->find_element(instance, this->popup_id)) {
+            ekgapi::set(this->flag.focused, false);
+        }
+
+        if (this->flag.over && this->flag.activy && !this->flag.focused) {
+            ekgapi::set(this->flag.focused, true);
+
+            auto popup = ekg::popup(this->tag, this->value_list);
+            popup->set_pos(this->rect.x, this->rect.y + this->rect.h);
+            this->popup_id = popup->get_id();
+        }
+
+        ekgapi::set(this->flag.activy, false);
     }
 }
 
 void ekg_combobox::on_post_event_update(SDL_Event &sdl_event) {
-    ekg_element::on_post_event_update(sdl_event);
-
     ekg_element::on_post_event_update(sdl_event);
 
     float mx = 0;
@@ -156,8 +196,33 @@ void ekg_combobox::on_draw_refresh() {
     }
 
     if (this->flag.focused) {
-        ekggpu::rectangle(this->rect, ekg::theme().combobox_highlight);
+        ekggpu::rectangle(this->rect, ekg::theme().combobox_activy, 1);
     }
 
-    ekgfont::render(this->text, this->rect.x + this->text_offset_x, this->rect.y + this->text_offset_y, ekg::theme().string_enabled_color);
+    if (this->flag.activy) {
+        ekggpu::rectangle(this->rect, ekg::theme().combobox_activy);
+    }
+
+    ekgfont::render(this->value, this->rect.x + this->text_offset_x, this->rect.y + this->text_offset_y, ekg::theme().string_enabled_color);
+}
+
+void ekg_combobox::set_value(const std::string &val) {
+    if (this->value != val) {
+        this->value = val;
+        this->on_sync();
+    }
+}
+
+std::string ekg_combobox::get_value() {
+    return this->value;
+}
+
+bool ekg_combobox::contains(const std::string &str) {
+    for (std::string &components : this->value_list) {
+        if (components == str) {
+            return true;
+        }
+    }
+
+    return false;
 }

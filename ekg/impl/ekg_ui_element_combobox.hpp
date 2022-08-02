@@ -24,7 +24,7 @@
  **/
 class ekg_combobox : public ekg_element {
 protected:
-    std::string text;
+    std::string value;
     std::vector<std::string> value_list;
 
     float text_offset_x;
@@ -33,9 +33,15 @@ protected:
 
     float min_text_width;
     float min_text_height;
+
+    uint32_t popup_id;
+    bool contains(const std::string &str);
 public:
     float get_min_text_width();
     float get_min_text_height();
+
+    void set_value(const std::string &val);
+    std::string get_value();
 
     void set_text_dock(uint16_t flags);
     uint16_t get_text_dock();

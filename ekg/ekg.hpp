@@ -109,12 +109,12 @@ namespace ekg {
     /*
      * Create combobox UI.
      */
-    ekg_combobox* combobox(const std::string &text, const std::vector<std::string> &vec);
+    ekg_combobox* combobox(const std::string &tag, const std::string &value, const std::vector<std::string> &vec);
 
     /*
      * Create popup UI.
      */
-    ekg_popup* popup(const std::string &text, const std::vector<std::string> &vec);
+    ekg_popup* popup(const std::string &tag, const std::vector<std::string> &vec);
 
     /*
      * Create slider UI.
