@@ -371,6 +371,54 @@ void ekgapi::callback_button(uint32_t id, const std::string &text) {
     the_ekg_core->dispatch_event(sdl_custom_event);
 }
 
+void ekgapi::callback_combobox(uint32_t id, const std::string &text) {
+    SDL_Event sdl_custom_event;
+    auto ekg_custom_event = new ekg_event();
+
+    ekg_custom_event->id = id;
+    ekg_custom_event->type = ekg::ui::COMBOBOX;
+    ekg_custom_event->text = text;
+
+    sdl_custom_event.type = SDL_USEREVENT;
+    sdl_custom_event.user.type = SDL_USEREVENT;
+    sdl_custom_event.user.code = static_cast<int32_t>(EKG_EVENT);
+    sdl_custom_event.user.data1 = static_cast<void*>(ekg_custom_event);
+
+    the_ekg_core->dispatch_event(sdl_custom_event);
+}
+
+void ekgapi::callback_frame(uint32_t id, const std::string &text) {
+    SDL_Event sdl_custom_event;
+    auto ekg_custom_event = new ekg_event();
+
+    ekg_custom_event->id = id;
+    ekg_custom_event->type = ekg::ui::FRAME;
+    ekg_custom_event->text = text;
+
+    sdl_custom_event.type = SDL_USEREVENT;
+    sdl_custom_event.user.type = SDL_USEREVENT;
+    sdl_custom_event.user.code = static_cast<int32_t>(EKG_EVENT);
+    sdl_custom_event.user.data1 = static_cast<void*>(ekg_custom_event);
+
+    the_ekg_core->dispatch_event(sdl_custom_event);
+}
+
+void ekgapi::callback_slider(uint32_t id, const float val) {
+    SDL_Event sdl_custom_event;
+    auto ekg_custom_event = new ekg_event();
+
+    ekg_custom_event->id = id;
+    ekg_custom_event->type = ekg::ui::FRAME;
+    ekg_custom_event->value = val;
+
+    sdl_custom_event.type = SDL_USEREVENT;
+    sdl_custom_event.user.type = SDL_USEREVENT;
+    sdl_custom_event.user.code = static_cast<int32_t>(EKG_EVENT);
+    sdl_custom_event.user.data1 = static_cast<void*>(ekg_custom_event);
+
+    the_ekg_core->dispatch_event(sdl_custom_event);
+}
+
 void ekgapi::OpenGL::init() {
     ekgutil::log("API OpenGL initialised.");
 }

@@ -104,23 +104,23 @@ void ekg_slider::on_sync() {
     float factor = (this->min_text_height / 4.0f);
     float factor_height = (this->min_text_height / 8.0f);
 
-    this->bar[0] = this->rect.x + factor;
-    this->bar[1] = this->rect.y + (this->rect.h / 2.0f) - (factor_height / 2.0f);
-    this->bar[2] = this->rect.w - (factor * 2);
-    this->bar[3] = factor_height;
+    this->cache.x = this->rect.x + factor;
+    this->cache.y = this->rect.y + (this->rect.h / 2.0f) - (factor_height / 2.0f);
+    this->cache.w = this->rect.w - (factor * 2);
+    this->cache.h = factor_height;
 
     if (this->enum_flag_bar_axis_dock == ekg::dock::RIGHT) {
-        this->bar_width = this->bar[2] * (this->value - this->min) / (this->max - this->min);
-        this->bar_height = this->bar[3];
+        this->bar_width = this->cache.w * (this->value - this->min) / (this->max - this->min);
+        this->bar_height = this->cache.h;
     } else if (this->enum_flag_bar_axis_dock == ekg::dock::LEFT) {
-        this->bar_width = this->bar[2] * (this->value - this->min) / (this->max - this->min);
-        this->bar_height = this->bar[3];
+        this->bar_width = this->cache.w * (this->value - this->min) / (this->max - this->min);
+        this->bar_height = this->cache.h;
     } else if (this->enum_flag_bar_axis_dock == ekg::dock::TOP) {
-        this->bar_width = this->bar[2];
-        this->bar_height = this->bar[3] * (this->value - this->min) / (this->max - this->min);
+        this->bar_width = this->cache.w;
+        this->bar_height = this->cache.h * (this->value - this->min) / (this->max - this->min);
     } else if (this->enum_flag_bar_axis_dock == ekg::dock::BOTTOM) {
-        this->bar_width = this->bar[2];
-        this->bar_height = this->bar[3] * (this->value - this->min) / (this->max - this->min);
+        this->bar_width = this->cache.w;
+        this->bar_height = this->cache.h * (this->value - this->min) / (this->max - this->min);
     }
 }
 
@@ -140,21 +140,25 @@ void ekg_slider::on_event(SDL_Event &sdl_event) {
 
     float mx = 0;
     float my = 0;
+    bool drag = false;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
         ekgapi::set(this->flag.highlight, this->flag.over);
+        drag = this->flag.focused;
     } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
         ekgapi::set(this->flag.focused, this->flag.over);
+        drag = this->flag.focused;
     } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
         ekgapi::set(this->flag.focused, false);
+        ekgapi::callback_slider(this->id, this->get_value());
     }
 
-    if (this->flag.focused) {
+    if (drag) {
         bool flag = (this->enum_flag_bar_axis_dock == ekg::dock::LEFT || this->enum_flag_bar_axis_dock == ekg::dock::RIGHT);
 
         float axis_mouse = flag ? mx : my;
-        float axis_size = flag ? this->bar[2] : this->bar[3];
-        float axis_pos = flag ? this->bar[0] : this->bar[1];
+        float axis_size = flag ? this->cache.w : this->cache.h;
+        float axis_pos = flag ? this->cache.x : this->cache.y;
 
         float factor = std::min(axis_size, std::max(0.0f, axis_mouse - axis_pos));
 
@@ -181,7 +185,7 @@ void ekg_slider::on_draw_refresh() {
     ekg_element::on_draw_refresh();
 
     ekggpu::rectangle(this->rect, ekg::theme().slider_background);
-    ekggpu::rectangle(this->bar[0], this->bar[1], this->bar[2], this->bar[3], ekg::theme().slider_highlight);
+    ekggpu::rectangle(this->cache, ekg::theme().slider_highlight);
 
     bool flag = this->flag.focused;
 
@@ -207,7 +211,7 @@ void ekg_slider::on_draw_refresh() {
         the_ekg_core->immediate_popup(this->rect.x + width, this->rect.y + height, this->text);
     }
 
-    ekggpu::rectangle(this->bar[0], this->bar[1], this->bar_width, this->bar_height, ekg::theme().slider_activy);
+    ekggpu::rectangle(this->cache.x, this->cache.y, this->bar_width, this->bar_height, ekg::theme().slider_activy);
 }
 
 void ekg_slider::set_bar_axis(uint16_t dock) {

@@ -1,7 +1,6 @@
 #include "ekg/ekg.hpp"
 #include "ekg/impl/ekg_ui_element_combobox.hpp"
 
-
 float ekg_combobox::get_min_text_width() {
     return this->min_text_width;
 }
@@ -106,15 +105,15 @@ void ekg_combobox::on_sync() {
     }
 
     if (left) {
-        this->text_offset_x = this->min_text_width / 4.0f;
+        this->text_offset_x = 0.0f;
     }
 
     if (right) {
-        this->text_offset_x = this->rect.w - this->min_text_width - (this->min_text_width / 4.0f);
+        this->text_offset_x = this->rect.w - this->min_text_width;
     }
 
     if (bottom) {
-        this->text_offset_y = this->rect.h - this->min_text_height - (this->min_text_height / 4.0f);
+        this->text_offset_y = this->rect.h - this->min_text_height - (this->min_text_height / 2.0f);
     }
 }
 
@@ -137,6 +136,7 @@ void ekg_combobox::on_event(SDL_Event &sdl_event) {
             if (ekgutil::contains(ekg::event()->text, values) && this->value != values) {
                 this->value = values;
                 this->on_sync();
+                ekgapi::callback_combobox(this->id, this->value);
                 break;
             }
         }
@@ -152,10 +152,10 @@ void ekg_combobox::on_event(SDL_Event &sdl_event) {
         ekgapi::set(this->flag.highlight, this->flag.over);
     } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
         ekgapi::set(this->flag.activy, this->flag.over);
-    } else if (ekgapi::input_up_left(sdl_event, mx, my)) {
+    } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
         ekg_element* instance;
 
-        if (this->flag.focused && !the_ekg_core->find_element(instance, this->popup_id)) {
+        if (this->flag.focused && (this->children_stack.ids.empty() || !the_ekg_core->find_element(instance, this->children_stack.ids.at(0)))) {
             ekgapi::set(this->flag.focused, false);
         }
 
@@ -164,7 +164,10 @@ void ekg_combobox::on_event(SDL_Event &sdl_event) {
 
             auto popup = ekg::popup(this->tag, this->value_list);
             popup->set_pos(this->rect.x, this->rect.y + this->rect.h);
-            this->popup_id = popup->get_id();
+            popup->set_width(this->rect.w);
+
+            this->children_stack.ids.clear();
+            this->children_stack.add(popup->get_id());
         }
 
         ekgapi::set(this->flag.activy, false);

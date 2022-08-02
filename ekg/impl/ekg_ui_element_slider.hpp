@@ -37,7 +37,6 @@ protected:
 
     float bar_width;
     float bar_height;
-    float bar[4];
 public:
     ekg_slider();
     ~ekg_slider();

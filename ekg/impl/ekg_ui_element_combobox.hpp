@@ -34,7 +34,6 @@ protected:
     float min_text_width;
     float min_text_height;
 
-    uint32_t popup_id;
     bool contains(const std::string &str);
 public:
     float get_min_text_width();

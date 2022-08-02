@@ -143,6 +143,21 @@ namespace ekgapi {
      */
     void callback_button(uint32_t id, const std::string &text);
 
+    /*
+     * Combobox callback UI event.
+     */
+    void callback_combobox(uint32_t id, const std::string &text);
+
+    /*
+     * Frame callback UI event.
+     */
+    void callback_frame(uint32_t id, const std::string &text);
+
+    /*
+     * Slider callback UI event.
+     */
+    void callback_slider(uint32_t id, const float val);
+
     /**
      * The OpenGL functions.
      **/

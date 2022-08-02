@@ -62,7 +62,9 @@ void ekg_frame::on_event(SDL_Event &sdl_event) {
         if (this->flag.over && !this->no_draggable && (ekgutil::find_axis_dock(this->enum_target_drag_dock, mx, my, this->offset_drag_dock, this->rect) && ekgutil::contains(this->enum_flags_drag_dock, this->enum_target_drag_dock)) || ekgutil::contains(this->enum_flags_drag_dock, ekg::dock::FULL)) {
             this->cache.x = mx - this->rect.x;
             this->cache.y = my - this->rect.y;
+
             this->dragging = true;
+            ekgapi::callback_frame(this->id, "dragging");
         }
 
         if (this->flag.over && !this->no_resizable && (ekgutil::find_axis_dock(this->enum_target_resize_dock, mx, my, this->offset_resize_dock, this->rect) && ekgutil::contains(this->enum_flags_resize_dock, this->enum_target_resize_dock) || ekgutil::contains(this->enum_flags_drag_dock, ekg::dock::FULL))) {
@@ -72,8 +74,17 @@ void ekg_frame::on_event(SDL_Event &sdl_event) {
             this->cache.h = this->rect.y + this->rect.h;
 
             this->resizing = true;
+            ekgapi::callback_frame(this->id, "resizing");
         }
     } else if (ekgapi::any_input_up(sdl_event)) {
+        if (this->resizing) {
+            ekgapi::callback_frame(this->id, "resized");
+        }
+
+        if (this->dragged) {
+            ekgapi::callback_frame(this->id, "dragged");
+        }
+
         this->resizing = false;
         this->dragging = false;
     } else if (ekgapi::motion(sdl_event, mx, my)) {
