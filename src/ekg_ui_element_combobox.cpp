@@ -167,7 +167,7 @@ void ekg_combobox::on_event(SDL_Event &sdl_event) {
     } else if (ekgapi::any_input_down(sdl_event, mx, my)) {
         ekgapi::set(this->flag.activy, this->flag.over);
 
-        if (this->flag.focused && !this->children_stack.ids.empty()) {
+        if (!this->children_stack.ids.empty()) {
             this->set_should_update(true);
         }
     } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
