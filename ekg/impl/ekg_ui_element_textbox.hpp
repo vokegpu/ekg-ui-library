@@ -10,45 +10,49 @@
  * END OF EKG-LICENSE.
  **/
 #pragma once
-#ifndef EKG_UI_ELEMENT_CHECK_BOX_H
-#define EKG_UI_ELEMENT_CHECK_BOX_H
+#ifndef EKG_UI_ELEMENT_TEXTBOX
+#define EKG_UI_ELEMENT_TEXTBOX
 
 #include "ekg_ui_element_abstract.hpp"
 
 /**
  * # UI \n
  * # Author: Rina \n
- * # Since: 22/07/2022 | 03:30 am \n
+ * # Since: 03/08/2022 | 01:36 am \n
  * # Type: Widget \n
- * # Description: Toggleable button. \n
+ * # Description: Type box with unlimited chars. \n
  **/
-class ekg_check_box : public ekg_element  {
+class ekg_textbox : public ekg_element {
 protected:
-    std::string text;
+	std::string text;
 
-    float min_text_width;
-    float min_text_height;
+	uint32_t max_cols;
+	uint32_t max_rows;
 
-    uint16_t enum_flags_text_dock;
-    float text_offset_x = 0.0f, text_offset_y = 0.0f;
-    float box_offset = 0.0f;
+	float min_text_width;
+	float min_text_height;
+
+	float text_offset_x;
+	float text_offset_y;
+	uint32_t cursor_index;
+
+	float last_pos_x;
+	float last_pos_y;
 public:
-    ekg_check_box();
-    ~ekg_check_box();
+	ekg_textbox();
+	~ekg_textbox();
 
-    void set_text(const std::string &string);
+	void set_text(const std::string &string);
     std::string get_text();
-
-    void toggle();
-
-    void set_checked(bool checked);
-    bool is_checked();
 
     float get_min_text_width();
     float get_min_text_height();
 
-    void set_text_dock(uint16_t flags);
-    uint16_t get_text_dock();
+    void set_max_cols(uint32_t cols);
+    uint32_t get_max_cols();
+
+    void set_max_rows(uint32_t rows);
+    uint32_t get_max_rows();
 
     void set_width(float width);
     void set_height(float height);

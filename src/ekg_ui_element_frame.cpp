@@ -10,7 +10,6 @@
  * END OF EKG-LICENSE.
  **/
 #include <ekg/ekg.hpp>
-#include "ekg/impl/ekg_ui_element_frame.hpp"
 
 ekg_frame::ekg_frame() {
     this->min_width = 30;
@@ -48,7 +47,7 @@ void ekg_frame::on_pre_event_update(SDL_Event &sdl_event) {
     float y = 0;
 
     if (ekgapi::motion(sdl_event, x, y) || ekgapi::any_input_down(sdl_event, x, y)) {
-        ekgapi::set_direct(this->flag.over, this->rect.collide_aabb_with_point(x, y));
+        ekgapi::set_direct(this->flag.over, this->is_hovering(x, y));
     }
 }
 

@@ -10,7 +10,6 @@
  * END OF EKG-LICENSE.
  **/
 #include <ekg/ekg.hpp>
-#include "ekg/impl/ekg_ui_element_slider.hpp"
 
 ekg_slider::ekg_slider() {
     this->set_bar_axis(ekg::dock::LEFT);
@@ -131,7 +130,7 @@ void ekg_slider::on_pre_event_update(SDL_Event &sdl_event) {
     float my = 0;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
-        ekgapi::set_direct(flag.over, this->rect.collide_aabb_with_point(mx, my));
+        ekgapi::set_direct(flag.over, this->is_hovering(mx, my));
     }
 }
 

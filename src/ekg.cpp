@@ -12,7 +12,7 @@
 #include <ekg/ekg.hpp>
 
 ekg_core* const the_ekg_core = new ekg_core();
-float ekg::core::delta_time = 0.0f;
+float ekg::delta_time = 0.0f;
 float ekg::text_dock_offset = 2.0f;
 
 std::string ekg::get_version() {
@@ -28,7 +28,12 @@ void ekg::init(SDL_Window* &sdl_window) {
     }
 
     the_ekg_core->set_instances(sdl_window);
-    ekg::core::init();
+    the_ekg_core->init();
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+
+    ekgutil::log("Core initialised.");
 }
 
 void ekg::quit() {
@@ -47,12 +52,25 @@ void ekg::poll_event(SDL_Event &sdl_event) {
 }
 
 void ekg::update(float dt) {
-    ekg::core::delta_time = dt;
+    ekg::delta_time = dt;
     the_ekg_core->process_update_section();
 }
 
 void ekg::render() {
     the_ekg_core->process_render_section();
+}
+
+ekg_textbox* ekg::textbox() {
+    auto textbox_worker = new ekg_textbox();
+    the_ekg_core->add_element(textbox_worker);
+
+    textbox_worker->set_width(100);
+    textbox_worker->set_height(100);
+    textbox_worker->set_max_cols(666);
+    textbox_worker->set_max_rows(666);
+    textbox_worker->set_visibility(ekg::visibility::VISIBLE);
+
+    return textbox_worker;
 }
 
 ekg_combobox *ekg::combobox(const std::string &tag, const std::string &value, const std::vector<std::string> &vec) {
@@ -163,16 +181,4 @@ uint16_t ekg::hovered_element_type() {
 
 ekg_event* ekg::event() {
     return the_ekg_core->poll_event();
-}
-
-void ekg::core::init() {
-    ekgutil::log("Core initialised.");
-    the_ekg_core->init();
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-}
-
-void ekg::core::quit() {
-    the_ekg_core->quit();
 }

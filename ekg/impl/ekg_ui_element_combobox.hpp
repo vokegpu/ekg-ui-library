@@ -10,8 +10,8 @@
  * END OF EKG-LICENSE.
  **/
 #pragma once
-#ifndef EKG_COMBOBOX_H
-#define EKG_COMBOBOX_H
+#ifndef EKG_UI_ELEMENT_COMBOBOX_H
+#define EKG_UI_ELEMENT_COMBOBOX_H
 
 #include "ekg_ui_element_abstract.hpp"
 
@@ -36,6 +36,9 @@ protected:
 
     bool contains(const std::string &str);
 public:
+    ekg_combobox();
+    ~ekg_combobox();
+
     float get_min_text_width();
     float get_min_text_height();
 

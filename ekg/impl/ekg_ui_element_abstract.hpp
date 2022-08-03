@@ -42,6 +42,7 @@ protected:
     float sync_y = 0;
 
     std::string tag;
+    bool is_hovering(float &mx, float &my);
 public:
     ekg_element();
     ~ekg_element();
@@ -51,6 +52,9 @@ public:
 
     void set_should_update(bool should_update);
     bool should_update();
+
+    void set_state(bool enabled);
+    bool get_state();
 
     bool is_mother();
     bool has_mother();

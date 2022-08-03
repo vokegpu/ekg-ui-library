@@ -10,8 +10,6 @@
  * END OF EKG-LICENSE.
  **/
 #include <ekg/ekg.hpp>
-#include "ekg/impl/ekg_ui_element_abstract.hpp"
-
 
 ekg_element::ekg_element() {
     this->type = ekg::ui::ABSTRACT;
@@ -19,6 +17,10 @@ ekg_element::ekg_element() {
 
 ekg_element::~ekg_element() {
 
+}
+
+bool ekg_element::is_hovering(float &mx, float &my) {
+    return this->rect.collide_aabb_with_point(mx, my) && (!this->has_mother() || this->scaled.collide_aabb_with_point(mx, my) || this->type == ekg::ui::POPUP);
 }
 
 void ekg_element::set_should_update(bool should_update) {
@@ -32,6 +34,17 @@ void ekg_element::set_should_update(bool should_update) {
 
 bool ekg_element::should_update() {
     return this->update;
+}
+
+void ekg_element::set_state(bool enabled) {
+    if (this->flag.state != enabled) {
+        this->flag.state = enabled;
+        this->on_sync();
+    }
+}
+
+bool ekg_element::get_state() {
+    return this->flag.state;
 }
 
 void ekg_element::on_pre_event_update(SDL_Event &sdl_event) {

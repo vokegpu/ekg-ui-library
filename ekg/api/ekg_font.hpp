@@ -33,6 +33,13 @@ struct ekg_char_data {
 };
 
 /**
+ * Store results of render box.
+ **/
+struct ekg_render_box_result {
+	uint32_t colws_reach;
+};
+
+/**
  * Font manager to configure, load, display/draw/render chars.
  **/
 class ekg_font {

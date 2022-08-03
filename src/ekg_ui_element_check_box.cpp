@@ -100,8 +100,9 @@ void ekg_check_box::on_sync() {
     this->min_text_width = text_width;
     this->min_text_height = ekgfont::get_text_height(this->text);
 
-    this->square_size = this->min_text_height;
-    this->min_text_width += this->square_size + (this->square_size / 3.5f);
+    this->cache.w = this->min_text_height;
+    this->cache.h = this->min_text_height;
+    this->min_text_width += this->cache.w + (this->cache.w / 3.5f);
 
     this->rect.w = this->rect.w < this->min_text_width ? this->min_text_width : this->rect.w;
     this->rect.h = this->rect.h < this->min_text_height ? this->min_text_height : this->rect.h;
@@ -115,7 +116,7 @@ void ekg_check_box::on_sync() {
     this->box_offset = ekg::text_dock_offset;
 
     if (center) {
-        this->text_offset_x = (this->square_size / 2) + (this->rect.w / 2) - (text_width / 2);
+        this->text_offset_x = (this->cache.w / 2) + (this->rect.w / 2) - (text_width / 2);
     }
     
     this->text_offset_y = (this->rect.h / 2) - (this->min_text_height / 2);
@@ -125,21 +126,21 @@ void ekg_check_box::on_sync() {
     }
 
     if (left) {
-        this->text_offset_x = this->square_size + this->box_offset;
+        this->text_offset_x = this->cache.w + this->box_offset;
     }
 
     if (right) {
-        this->text_offset_x = this->rect.w - text_width - this->box_offset - this->square_size;
-        this->box_offset = this->rect.w - this->square_size - ekg::text_dock_offset;
+        this->text_offset_x = this->rect.w - text_width - this->box_offset - this->cache.w;
+        this->box_offset = this->rect.w - this->cache.w - ekg::text_dock_offset;
     }
 
     if (bottom) {
         this->text_offset_y = this->rect.h - this->min_text_height - (this->min_text_height / 4);
     }
 
-    this->cache.x = this->rect.x + this->box_offset + (this->square_size / 10);
-    this->cache.y = this->rect.y + this->text_offset_y + (this->square_size / 10);
-    this->cache.w = (this->square_size - ((this->square_size / 10) * 2));
+    this->cache.x = this->rect.x + this->box_offset;
+    this->cache.y = this->rect.y + this->text_offset_y;
+    this->cache.w = (this->cache.w - ((this->cache.w / 10) * 2));
     this->cache.h = this->cache.w;
 }
 
@@ -150,7 +151,7 @@ void ekg_check_box::on_pre_event_update(SDL_Event &sdl_event) {
     float my = 0;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
-        ekgapi::set_direct(this->flag.over, this->rect.collide_aabb_with_point(mx, my));
+        ekgapi::set_direct(this->flag.over, this->is_hovering(mx, my));
     }
 }
 

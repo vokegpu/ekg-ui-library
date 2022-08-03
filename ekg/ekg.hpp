@@ -24,6 +24,7 @@
 #include <ekg/impl/ekg_ui_element_slider.hpp>
 #include <ekg/impl/ekg_ui_element_popup.hpp>
 #include <ekg/impl/ekg_ui_element_combobox.hpp>
+#include <ekg/impl/ekg_ui_element_textbox.hpp>
 
 /**
  * The global variable ptr for all.
@@ -50,6 +51,12 @@ namespace ekg {
      * Set offset for axis x docks.
      */
     extern float text_dock_offset;
+
+    /*
+     * The dt variable of ekg.
+     */
+    extern float delta_time;
+    
 
     /*
      * Get hovered element id.
@@ -112,6 +119,11 @@ namespace ekg {
     void set_font_size(uint32_t size);
 
     /*
+     * Create text-box UI.
+     */
+    ekg_textbox* textbox();
+
+    /*
      * Create combobox UI.
      */
     ekg_combobox* combobox(const std::string &tag, const std::string &value, const std::vector<std::string> &vec);
@@ -146,6 +158,11 @@ namespace ekg {
      */
     ekg_event* event();
 
+     /*
+     * Get current theme.
+     */
+    ekg_theme &theme();
+
     /**
      * Visibility of elements in screen.
      **/
@@ -170,37 +187,15 @@ namespace ekg {
      * UI types.
      */
     enum ui {
-        NONE = 0,
-        SLIDER = 1,
-        COMBOBOX = 2,
-        POPUP = 3,
-        BUTTON = 4,
-        CHECKBOX = 5,
-        FRAME = 6,
-        ABSTRACT = 7
-    };
-
-    /*
-     * Get current theme.
-     */
-    ekg_theme &theme();
-
-    /**
-     * The core instance of EKG.
-     **/
-    struct core {
-    public:
-        static float delta_time;
-
-        /*
-         * Init the core of EKG.
-         */
-        static void init();
-
-        /*
-         * Shutdown free all.
-         */
-        static void quit();
+        NONE     = 0,
+        ABSTRACT = 1,
+        SLIDER   = 2,
+        COMBOBOX = 3,
+        POPUP    = 4,
+        BUTTON   = 5,
+        CHECKBOX = 6,
+        FRAME    = 7,
+        TEXTBOX  = 8
     };
 };
 

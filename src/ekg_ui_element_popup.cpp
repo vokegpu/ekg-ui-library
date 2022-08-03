@@ -236,7 +236,7 @@ void ekg_popup::on_pre_event_update(SDL_Event &sdl_event) {
     float my = 0;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
-        ekgapi::set_direct(this->flag.over, this->rect.collide_aabb_with_point(mx, my));
+        ekgapi::set_direct(this->flag.over, this->is_hovering(mx, my));
     }
 }
 

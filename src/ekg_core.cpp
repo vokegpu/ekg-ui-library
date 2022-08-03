@@ -63,7 +63,7 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
         // Verify point overlap.
         element->on_pre_event_update(sdl_event);
 
-        if (element->get_visibility() == ekg::visibility::VISIBLE && element->access_flag().over) {
+        if (element->get_visibility() == ekg::visibility::VISIBLE && element->get_state() && element->access_flag().over) {
             this->focused_element_id = element->get_id();
             this->focused_element_type = element->get_type();
         }
@@ -186,6 +186,8 @@ void ekg_core::process_render_section() {
 
 void ekg_core::add_element(ekg_element* element) {
     element->set_id(++this->last_id_used);
+    element->set_state(true);
+
     this->concurrent_buffer.push_back(element);
 
     // Send tasks to the core.

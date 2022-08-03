@@ -1,5 +1,22 @@
+/**
+ * EKG-LICENSE - this software/library LICENSE can not be modified in any instance.
+ *
+ * --
+ * ANY NON-OFFICIAL MODIFICATION IS A CRIME.
+ * DO NOT SELL THIS CODE SOFTWARE, FOR USE EKG IN A COMMERCIAL PRODUCT ADD EKG-LICENSE TO PROJECT,
+ * RESPECT THE COPYRIGHT TERMS OF EKG, NO SELL WITHOUT EKG-LICENSE (IT IS A CRIME).
+ * DO NOT FORK THE PROJECT SOURCE WITHOUT EKG-LICENSE.
+ *
+ * END OF EKG-LICENSE.
+ **/
 #include "ekg/ekg.hpp"
-#include "ekg/impl/ekg_ui_element_combobox.hpp"
+
+ekg_combobox::ekg_combobox() {
+    this->type = ekg::ui::COMBOBOX;
+}
+
+ekg_combobox::~ekg_combobox() {
+}
 
 float ekg_combobox::get_min_text_width() {
     return this->min_text_width;
@@ -138,14 +155,14 @@ void ekg_combobox::on_pre_event_update(SDL_Event &sdl_event) {
     float my = 0;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
-        ekgapi::set_direct(this->flag.over, this->rect.collide_aabb_with_point(mx, my));
+        ekgapi::set_direct(this->flag.over, this->is_hovering(mx, my));
     }
 }
 
 void ekg_combobox::on_event(SDL_Event &sdl_event) {
     ekg_element::on_event(sdl_event);
 
-    if (sdl_event.type == SDL_USEREVENT && !this->children_stack.ids.empty() && ekg::event()->type == ekg::ui::POPUP && ekg::event()->id == this->children_stack.ids[0]) {
+    if (sdl_event.type == SDL_USEREVENT && this->flag.focused && !this->children_stack.ids.empty() && ekg::event()->type == ekg::ui::POPUP && ekg::event()->id == this->children_stack.ids[0]) {
         for (std::string &values : this->value_list) {
             if (ekgutil::contains(ekg::event()->text, values) && this->value != values) {
                 this->value = values;
@@ -166,11 +183,14 @@ void ekg_combobox::on_event(SDL_Event &sdl_event) {
         ekgapi::set(this->flag.highlight, this->flag.over);
     } else if (ekgapi::any_input_down(sdl_event, mx, my)) {
         ekgapi::set(this->flag.activy, this->flag.over);
-
-        if (!this->children_stack.ids.empty()) {
-            this->set_should_update(true);
-        }
     } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
+        ekg_element* instance;
+
+        if (this->flag.focused && (this->children_stack.ids.empty() || !the_ekg_core->find_element(instance, this->children_stack.ids.at(0)))) {
+            ekgapi::set(this->flag.focused, false);
+            this->children_stack.ids.clear();
+        }
+
         if (this->flag.over && this->flag.activy && !this->flag.focused) {
             ekgapi::set(this->flag.focused, true);
 
@@ -199,15 +219,6 @@ void ekg_combobox::on_post_event_update(SDL_Event &sdl_event) {
 
 void ekg_combobox::on_update() {
     ekg_element::on_update();
-
-    ekg_element* instance;
-
-    if (this->flag.focused && (this->children_stack.ids.empty() || !the_ekg_core->find_element(instance, this->children_stack.ids.at(0)))) {
-        ekgapi::set(this->flag.focused, false);
-        this->children_stack.ids.clear();
-    }
-
-    this->set_should_update(false);
 }
 
 void ekg_combobox::on_draw_refresh() {
@@ -224,7 +235,7 @@ void ekg_combobox::on_draw_refresh() {
         ekggpu::rectangle(this->cache, ekg::theme().combobox_activy);
     } else {
         ekggpu::rectangle(this->rect, ekg::theme().combobox_border, 1);
-        ekggpu::rectangle(this->cache, ekg::theme().combobox_border, 1);
+        ekggpu::rectangle(this->cache, ekg::theme().combobox_border);
     }
 
     if (this->flag.activy) {

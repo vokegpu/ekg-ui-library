@@ -152,6 +152,7 @@ namespace ekgutil {
         bool focused = false;
         bool dead = false;
         bool extra = false;
+        bool state = false;
     };
 
     /**
