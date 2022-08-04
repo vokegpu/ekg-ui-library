@@ -224,9 +224,53 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, const std::string &tex
         return;
     }
 
-    uint32_t text_size = (uint32_t) text.size();
-    uint32_t index_pos = 
+    collumn = collumn > box.columns ? box.collumns : collumn;
+    uint32_t rows_per_column = box.rows_per_columns[collumn];
+
+    if (row > rows_per_column) {
+        collumn += 1;
+        row = 0;
+    }
+
+    if (column > box.max_columns) {
+        row = rows_per_column;
+        collumn = box.max_columns;
+    }
+
+    box.cursor_row = row;
+    box.cursor_column = column;
 }
 
-void ekgtext::process_new_text(ekgtext::box &box, const std::string &text) {
+void ekgtext::process_new_text(ekgtext::box &box, std::string &old_text, std::string &new_text) {
+    if (old_text == new_text) {
+        return;
+    }
+
+    const std::string previous_new_text = new_text;
+    new_text.clear();
+
+    uint32_t rows_in = box.cursor_row;
+    uint32_t collumns_in = box.cursor_column;
+
+    for (uint32_t i = 1; i < previous_new_text.size() + 1; i++) {
+        rows_in++;
+
+        if (rows_in > box.max_rows) {
+            rows_in = 0;
+            columns_in++;
+        }
+
+        if (columns_in > box.max_columns) {
+            columns_in = box.max_columns;
+            break;
+        }
+
+        new_text += previous_new_text.at(i - 1);
+    }
+
+    old_text = new_text;
+}
+
+void ekgmath::process_render_box(ekgtext::box &box, const std::string &text, float &x, float &y, uint32_t &scissor_id, bool &hovered) {
+    
 }

@@ -115,12 +115,13 @@ namespace ekgtext {
      **/
     struct box {
         ekgmath::vec4f bounds;
+        std::vector<uint32_t> rows_per_columns;
 
         uint32_t cursor_row;
         uint32_t cursor_column;
 
-        uint32_t current_row;
-        uint32_t current_column;
+        uint32_t rows;
+        uint32_t columns;
 
         uint32_t max_rows;
         uint32_t max_columns;
@@ -149,12 +150,12 @@ namespace ekgtext {
     /*
      * Process if text is different.
      */
-    void process_new_text(ekgtext::box &box, const std::string &text, int32_t &index);
+    void process_new_text(ekgtext::box &box, std::string &old_text, std::string &new_text);
 
     /*
      * Process the GPU data to be draw.
      */
-    void process_render_box(ekgtext::box &box, ekgmath::rect &rect, const std::string &text, uint32_t &scissor_id, bool &hovered);
+    void process_render_box(ekgtext::box &box, const std::string &text, float &x, float &y, uint32_t &scissor_id, bool &hovered);
 };
 
 /**
