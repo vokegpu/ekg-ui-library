@@ -70,6 +70,14 @@ struct ekg_theme {
     ekgmath::vec4f frame_background;
     ekgmath::vec4f frame_border;
     /* End of frame colors. */
+
+    /* Start of text input colors. */
+    ekgmath::vec4f text_input_background;
+    ekgmath::vec4f text_input_highlight;
+    ekgmath::vec4f text_input_activy;
+    ekgmath::vec4f text_input_cursor;
+    ekgmath::vec4f text_input_border;
+    /* End of text input colors. */
 };
 
 /**

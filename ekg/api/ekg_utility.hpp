@@ -21,7 +21,18 @@
  **/
 namespace ekgmath {
     /*
-     * Vec4 class.
+     * Vec of 2 values.
+     */
+    struct vec2f {
+        float x = 0.0f;
+        float y = 0.0f;
+
+        vec2f() {};
+        vec2f(float x, float y);
+    };
+
+    /*
+     * Vec of 4 values.
      */
     struct vec4f {
         float x = 0;
@@ -29,7 +40,8 @@ namespace ekgmath {
         float z = 0;
         float w = 0;
 
-        vec4f();
+        vec4f() {};
+        vec4f(float x, float y, float z, float w);
         vec4f(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
 
         /*
@@ -92,6 +104,57 @@ namespace ekgmath {
      * Calc. ortho projection mat4x4.
      */
     void ortho2d(float* mat, float left, float right, float bottom, float top);
+};
+
+/**
+ * The EKG text api for process inputs from virtual keyboard or real keyboard.
+ **/
+namespace ekgtext {
+    /**
+     * Store text position, cursor position and visual details.
+     **/
+    struct box {
+        ekgmath::vec4f bounds;
+
+        uint32_t cursor_row;
+        uint32_t cursor_column;
+
+        uint32_t current_row;
+        uint32_t current_column;
+
+        uint32_t max_rows;
+        uint32_t max_columns;
+    };
+
+    /*
+     * Verify if should sync cursor index with render offset.
+     */
+    void should_sync_ui(ekgtext::box &box, const std::string &text, bool &should);
+
+    /*
+     * Sync cursor index with render offset using lerp animation.
+     */
+    void sync_ui(ekgtext::box &box, const std::string &text);
+
+    /*
+     * Process cursor position by relative interact position.
+     */
+    void process_cursor_pos_relative(ekgtext::box &box, const std::string &text, float &x, float &y);
+
+    /*
+     * Process cursor position by matrix index position.
+     */
+    void process_cursor_pos_index(ekgtext::box &box, const std::string &text, uint32_t row, uint32_t collumn);
+
+    /*
+     * Process if text is different.
+     */
+    void process_new_text(ekgtext::box &box, const std::string &text, int32_t &index);
+
+    /*
+     * Process the GPU data to be draw.
+     */
+    void process_render_box(ekgtext::box &box, ekgmath::rect &rect, const std::string &text, uint32_t &scissor_id, bool &hovered);
 };
 
 /**

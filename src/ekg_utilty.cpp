@@ -184,8 +184,16 @@ void ekgmath::smoothf(float &val, float duration, uint32_t ticks) {
     val = ekgmath::clampf(6 * pow(duration, 5) - (15 * pow(duration, 4)) + (10 * pow(duration, 3)), 0.0f, 1.0f);
 }
 
-ekgmath::vec4f::vec4f() {
+ekgmath::vec2f::vec2f(float x, float y) {
+    this->x = x;
+    this->y = y;
+}
 
+ekgmath::vec4f::vec4f(float x, float y, float z, float w) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+    this->w = w;
 }
 
 ekgmath::vec4f::vec4f(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
@@ -197,4 +205,28 @@ void ekgmath::vec4f::color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alp
     this->y = (float) green / 255.0f;
     this->z = (float) blue / 255.0f;
     this->w = (float) alpha / 255.0f;
+}
+
+void ekgtext::should_sync_ui(ekgtext::box &box, const std::string &text, bool &should) {
+
+}
+
+void ekgtext::sync_ui(ekgtext::box &box, const std::string &text) {
+
+}
+
+void ekgtext::process_cursor_pos_relative(ekgtext::box &box, const std::string &text, float &x, float &y) {
+
+}
+
+void ekgtext::process_cursor_pos_index(ekgtext::box &box, const std::string &text, uint32_t row, uint32_t collumn) {
+    if (box.cursor_row == row && box.cursor_column == collumn) {
+        return;
+    }
+
+    uint32_t text_size = (uint32_t) text.size();
+    uint32_t index_pos = 
+}
+
+void ekgtext::process_new_text(ekgtext::box &box, const std::string &text) {
 }
