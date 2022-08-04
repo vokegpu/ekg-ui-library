@@ -10,8 +10,8 @@
  * END OF EKG-LICENSE.
  **/
 #pragma once
-#ifndef EKG_UI_ELEMENT_CHECK_BOX_H
-#define EKG_UI_ELEMENT_CHECK_BOX_H
+#ifndef EKG_UI_ELEMENT_CHECKBOX_H
+#define EKG_UI_ELEMENT_CHECKBOX_H
 
 #include "ekg_ui_element_abstract.hpp"
 
@@ -22,7 +22,7 @@
  * # Type: Widget \n
  * # Description: Toggleable button. \n
  **/
-class ekg_check_box : public ekg_element  {
+class ekg_checkbox : public ekg_element  {
 protected:
     std::string text;
 
@@ -33,8 +33,8 @@ protected:
     float text_offset_x = 0.0f, text_offset_y = 0.0f;
     float box_offset = 0.0f;
 public:
-    ekg_check_box();
-    ~ekg_check_box();
+    ekg_checkbox();
+    ~ekg_checkbox();
 
     void set_text(const std::string &string);
     std::string get_text();

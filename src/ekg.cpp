@@ -144,15 +144,15 @@ ekg_frame* ekg::frame() {
     return frame_worker;
 }
 
-ekg_check_box* ekg::check_box(const std::string &text) {
-    auto check_box_worker = new ekg_check_box();
-    the_ekg_core->add_element(check_box_worker);
+ekg_checkbox* ekg::checkbox(const std::string &text) {
+    auto checkbox_worker = new ekg_checkbox();
+    the_ekg_core->add_element(checkbox_worker);
 
-    check_box_worker->set_visibility(ekg::visibility::VISIBLE);
-    check_box_worker->set_text_dock(ekg::dock::LEFT);
-    check_box_worker->set_text(text);
+    checkbox_worker->set_visibility(ekg::visibility::VISIBLE);
+    checkbox_worker->set_text_dock(ekg::dock::LEFT);
+    checkbox_worker->set_text(text);
 
-    return check_box_worker;
+    return checkbox_worker;
 }
 
 ekg_theme &ekg::theme() {

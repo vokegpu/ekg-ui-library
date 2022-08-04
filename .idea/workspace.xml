@@ -19,8 +19,10 @@
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_combobox.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_combobox.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/ekg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/ekg.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_check_box.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_checkbox.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_check_box.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_checkbox.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,9 +76,9 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="ekg" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ekg" TARGET_NAME="ekg" CONFIG_NAME="Debug">
@@ -127,6 +129,7 @@
       <workItem from="1659288491083" duration="18774000" />
       <workItem from="1659393144745" duration="12302000" />
       <workItem from="1659474396376" duration="4831000" />
+      <workItem from="1659636317018" duration="1367000" />
     </task>
     <servers />
   </component>

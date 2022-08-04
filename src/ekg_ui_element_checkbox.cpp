@@ -11,68 +11,68 @@
  **/
 #include <ekg/ekg.hpp>
 
-ekg_check_box::ekg_check_box() {
+ekg_checkbox::ekg_checkbox() {
     this->type = ekg::ui::CHECKBOX;
 }
 
-ekg_check_box::~ekg_check_box() {
+ekg_checkbox::~ekg_checkbox() {
 
 }
 
-void ekg_check_box::set_text(const std::string &string) {
+void ekg_checkbox::set_text(const std::string &string) {
     if (this->text != string) {
         this->text = string;
         this->on_sync();
     }
 }
 
-std::string ekg_check_box::get_text() {
+std::string ekg_checkbox::get_text() {
     return this->text;
 }
 
-void ekg_check_box::toggle() {
+void ekg_checkbox::toggle() {
     this->set_checked(!this->is_checked());
 }
 
-void ekg_check_box::set_checked(bool checked) {
+void ekg_checkbox::set_checked(bool checked) {
     if (this->flag.activy != checked) {
         ekgapi::set(this->flag.activy, checked);
         ekgapi::callback_check_box(this->id, this->text, checked);
     }
 }
 
-bool ekg_check_box::is_checked() {
+bool ekg_checkbox::is_checked() {
     return this->flag.activy;
 }
 
-float ekg_check_box::get_min_text_width() {
+float ekg_checkbox::get_min_text_width() {
     return this->min_text_width;
 }
 
-float ekg_check_box::get_min_text_height() {
+float ekg_checkbox::get_min_text_height() {
     return this->min_text_height;
 }
 
-void ekg_check_box::set_text_dock(uint16_t flags) {
+void ekg_checkbox::set_text_dock(uint16_t flags) {
     if (this->enum_flags_text_dock != flags) {
         this->enum_flags_text_dock = flags;
         this->on_sync();
     }
 }
 
-uint16_t ekg_check_box::get_text_dock() {
+uint16_t ekg_checkbox::get_text_dock() {
     return this->enum_flags_text_dock;
 }
 
-void ekg_check_box::set_width(float width) {
+void ekg_checkbox::set_width(float width) {
     this->set_size(width, this->rect.h);
 }
 
-void ekg_check_box::set_height(float height) {
+void ekg_checkbox::set_height(float height) {
     this->set_size(this->rect.h, height);
 }
 
-void ekg_check_box::set_size(float width, float height) {
+void ekg_checkbox::set_size(float width, float height) {
     ekg_element::set_size(width, height);
 
     if (this->rect.w != width || this->rect.h != height) {
@@ -83,15 +83,15 @@ void ekg_check_box::set_size(float width, float height) {
     }
 }
 
-void ekg_check_box::set_pos(float x, float y) {
+void ekg_checkbox::set_pos(float x, float y) {
     ekg_element::set_pos(x, y);
 }
 
-void ekg_check_box::on_killed() {
+void ekg_checkbox::on_killed() {
     ekg_element::on_killed();
 }
 
-void ekg_check_box::on_sync() {
+void ekg_checkbox::on_sync() {
     ekg_element::on_sync();
     the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
 
@@ -144,7 +144,7 @@ void ekg_check_box::on_sync() {
     this->cache.h = this->cache.w;
 }
 
-void ekg_check_box::on_pre_event_update(SDL_Event &sdl_event) {
+void ekg_checkbox::on_pre_event_update(SDL_Event &sdl_event) {
     ekg_element::on_pre_event_update(sdl_event);
 
     float mx = 0;
@@ -155,7 +155,7 @@ void ekg_check_box::on_pre_event_update(SDL_Event &sdl_event) {
     }
 }
 
-void ekg_check_box::on_event(SDL_Event &sdl_event) {
+void ekg_checkbox::on_event(SDL_Event &sdl_event) {
     ekg_element::on_event(sdl_event);
 
     float mx = 0;
@@ -175,7 +175,7 @@ void ekg_check_box::on_event(SDL_Event &sdl_event) {
     }
 }
 
-void ekg_check_box::on_post_event_update(SDL_Event &sdl_event) {
+void ekg_checkbox::on_post_event_update(SDL_Event &sdl_event) {
     ekg_element::on_post_event_update(sdl_event);
 
     float mx = 0;
@@ -186,7 +186,7 @@ void ekg_check_box::on_post_event_update(SDL_Event &sdl_event) {
     }
 }
 
-void ekg_check_box::on_draw_refresh() {
+void ekg_checkbox::on_draw_refresh() {
     ekg_element::on_draw_refresh();
     ekggpu::rectangle(this->rect, ekg::theme().check_box_background);
 

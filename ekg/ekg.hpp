@@ -20,7 +20,7 @@
 #include <ekg/api/ekg_event.hpp>
 #include <ekg/impl/ekg_ui_element_button.hpp>
 #include <ekg/impl/ekg_ui_element_frame.hpp>
-#include <ekg/impl/ekg_ui_element_check_box.hpp>
+#include <ekg/impl/ekg_ui_element_checkbox.hpp>
 #include <ekg/impl/ekg_ui_element_slider.hpp>
 #include <ekg/impl/ekg_ui_element_popup.hpp>
 #include <ekg/impl/ekg_ui_element_combobox.hpp>
@@ -141,7 +141,7 @@ namespace ekg {
     /*
      * Create check box UI.
      */
-    ekg_check_box* check_box(const std::string &text);
+    ekg_checkbox* checkbox(const std::string &text);
 
     /*
      * Create button UI.
