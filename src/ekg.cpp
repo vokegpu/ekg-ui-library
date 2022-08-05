@@ -11,7 +11,7 @@
  **/
 #include "ekg/ekg.hpp"
 
-ekg_core* const the_ekg_core = new ekg_core();
+ekg_core* const ekg::the_ekg_core = new ekg_core();
 float ekg::delta_time = 0.0f;
 float ekg::text_dock_offset = 2.0f;
 
@@ -114,6 +114,8 @@ ekg_button* ekg::button(const std::string &text) {
     button_worker->set_text(text);
     button_worker->set_visibility(ekg::visibility::VISIBLE);
     button_worker->set_text_dock(ekg::dock::CENTER);
+    button_worker->set_width(125);
+    button_worker->set_height(25);
 
     return button_worker;
 }

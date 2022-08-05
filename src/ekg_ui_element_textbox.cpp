@@ -133,3 +133,19 @@ float ekg_textbox::get_min_text_width() {
 float ekg_textbox::get_min_text_height() {
     return this->min_text_height;
 }
+
+void ekg_textbox::set_max_rows(uint32_t rows) {
+
+}
+
+uint32_t ekg_textbox::get_max_rows() {
+    return 1;
+}
+
+void ekg_textbox::set_max_cols(uint32_t cols) {
+
+}
+
+uint32_t ekg_textbox::get_max_cols() {
+    return 2;
+}
