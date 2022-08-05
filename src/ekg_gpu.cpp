@@ -9,10 +9,8 @@
  *
  * END OF EKG-LICENSE.
  **/
-#include <ekg/ekg.hpp>
+#include "ekg/ekg.hpp"
 #include <cmath>
-#include "ekg/api/ekg_gpu.hpp"
-
 
 void ekg_gpu_data_handler::init() {
     switch (EKG_CPU_PLATFORM) {
@@ -211,7 +209,7 @@ ekg_gpu_data &ekg_gpu_data_handler::bind() {
     return gpu_data;
 }
 
-void ekg_gpu_data_handler::bind_texture(ekg_gpu_data &gpu_data, GLuint &object_id) {
+void ekg_gpu_data_handler::bind_texture(ekg_gpu_data &gpu_data, GLuint object_id) {
     bool flag_has_cached = false;
 
     for (uint8_t i = 0; i < (uint8_t) this->cached_textures.size(); i++) {
@@ -269,7 +267,7 @@ void ekg_gpu_data_handler::scissor(int32_t x, int32_t y, int32_t w, int32_t h) {
     ekg_gpu_scissor &scissor = this->allocated_gpu_scissor[this->current_scissor_bind];
 
     scissor.x = x;
-    scissor.y = (static_cast<int32_t>(the_ekg_core->get_screen_height())) - (y + h);
+    scissor.y = (static_cast<int32_t>(ekg::the_ekg_core->get_screen_height())) - (y + h);
     scissor.w = w;
     scissor.h = h;
 }
@@ -292,11 +290,11 @@ void ekg_gpu_data_handler::end_scissor() {
 
 void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color_vec, int32_t line_thickness) {
     // Alloc arrays in CPU.
-    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, 1.0f, 1.0f);
-    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
+    ekggpu::push_arr_rect(ekg::the_ekg_core->get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, 1.0f, 1.0f);
+    ekggpu::push_arr_rect(ekg::the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
 
     // Bind GPU data into GPU handler.
-    ekg_gpu_data &gpu_data = the_ekg_core->get_gpu_handler().bind();
+    ekg_gpu_data &gpu_data = ekg::the_ekg_core->get_gpu_handler().bind();
 
     // Configure the GPU data.
     gpu_data.data = 6;
@@ -316,7 +314,7 @@ void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color
     gpu_data.color[3] = color_vec.w;
 
     // Free the GPU data.
-    the_ekg_core->get_gpu_handler().free(gpu_data);
+    ekg::the_ekg_core->get_gpu_handler().free(gpu_data);
 }
 
 void ekggpu::rectangle(ekgmath::rect &rect, ekgmath::vec4f &color_vec, int32_t line_thickness) {
@@ -324,11 +322,11 @@ void ekggpu::rectangle(ekgmath::rect &rect, ekgmath::vec4f &color_vec, int32_t l
 }
 
 void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec) {
-    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, 1.0f, 1.0f);
-    ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
+    ekggpu::push_arr_rect(ekg::the_ekg_core->get_gpu_handler().get_cached_vertices(), 0.0f, 0.0f, 1.0f, 1.0f);
+    ekggpu::push_arr_rect(ekg::the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
 
     // Bind GPU data into GPU handler.
-    ekg_gpu_data &gpu_data = the_ekg_core->get_gpu_handler().bind();
+    ekg_gpu_data &gpu_data = ekg::the_ekg_core->get_gpu_handler().bind();
 
     // Configure the GPU data.
     gpu_data.data = 6;
@@ -346,7 +344,7 @@ void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec) {
     gpu_data.color[3] = color_vec.w;
 
     // Free the GPU data.
-    the_ekg_core->get_gpu_handler().free(gpu_data);
+    ekg::the_ekg_core->get_gpu_handler().free(gpu_data);
 }
 
 void ekggpu::push_arr_rect(std::vector<float> &vec_arr, float x, float y, float w, float h) {
@@ -370,19 +368,19 @@ void ekggpu::push_arr_rect(std::vector<float> &vec_arr, float x, float y, float 
 }
 
 void ekggpu::invoke() {
-    the_ekg_core->get_gpu_handler().start();
+    ekg::the_ekg_core->get_gpu_handler().start();
 }
 
 void ekggpu::revoke() {
-    the_ekg_core->get_gpu_handler().end();
+    ekg::the_ekg_core->get_gpu_handler().end();
 }
 
 void ekggpu::bind_scissor(int32_t index) {
-    the_ekg_core->get_gpu_handler().bind_scissor(index);
+    ekg::the_ekg_core->get_gpu_handler().bind_scissor(index);
 }
 
 void ekggpu::scissor(int32_t x, int32_t y, int32_t w, int32_t h) {
-    the_ekg_core->get_gpu_handler().scissor(x, y, w, h);
+    ekg::the_ekg_core->get_gpu_handler().scissor(x, y, w, h);
 }
 
 void ekggpu::scissor(ekgmath::rect &rect) {
@@ -390,13 +388,13 @@ void ekggpu::scissor(ekgmath::rect &rect) {
 }
 
 int32_t ekggpu::start_scissor() {
-    return the_ekg_core->get_gpu_handler().get_scissor_id();
+    return ekg::the_ekg_core->get_gpu_handler().get_scissor_id();
 }
 
 void ekggpu::end_scissor() {
-    the_ekg_core->get_gpu_handler().end_scissor();
+    ekg::the_ekg_core->get_gpu_handler().end_scissor();
 }
 
 void ekggpu::next_scissor() {
-    the_ekg_core->get_gpu_handler().next_scissor();
+    ekg::the_ekg_core->get_gpu_handler().next_scissor();
 }

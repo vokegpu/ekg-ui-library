@@ -9,9 +9,7 @@
  *
  * END OF EKG-LICENSE.
  **/
-#include <ekg/ekg.hpp>
-#include "ekg/api/ekg_api.hpp"
-
+#include "ekg/ekg.hpp"
 
 uint64_t ekg_cpu_timing::last_ticks = 0;
 bool ekg_cpu_timing::clock_going_on = false;
@@ -80,8 +78,8 @@ bool ekgapi::input_down_right(SDL_Event &sdl_event, float &x, float &y) {
         }
 
         case SDL_FINGERDOWN: {
-            x = sdl_event.tfinger.x * the_ekg_core->get_screen_width();
-            y = sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+            x = sdl_event.tfinger.x * ekg::the_ekg_core->get_screen_width();
+            y = sdl_event.tfinger.y * ekg::the_ekg_core->get_screen_height();
 
             ekg_display_touch_input.last_down_x = x;
             ekg_display_touch_input.last_down_y = y;
@@ -110,8 +108,8 @@ bool ekgapi::input_down_left(SDL_Event &sdl_event, float &x, float &y) {
         }
 
         case SDL_FINGERDOWN: {
-            x = sdl_event.tfinger.x * the_ekg_core->get_screen_width();
-            y = sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+            x = sdl_event.tfinger.x * ekg::the_ekg_core->get_screen_width();
+            y = sdl_event.tfinger.y * ekg::the_ekg_core->get_screen_height();
 
             ekgapi::display_interact_x = x;
             ekgapi::display_interact_y = y;
@@ -145,8 +143,8 @@ bool ekgapi::input_down_middle(SDL_Event &sdl_event, float &x, float &y) {
 bool ekgapi::any_input_down(SDL_Event &sdl_event, float &x, float &y) {
     switch (sdl_event.type) {
         case SDL_FINGERDOWN: {
-            x = sdl_event.tfinger.x * the_ekg_core->get_screen_width();
-            y = sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+            x = sdl_event.tfinger.x * ekg::the_ekg_core->get_screen_width();
+            y = sdl_event.tfinger.y * ekg::the_ekg_core->get_screen_height();
 
             ekgapi::display_interact_x = x;
             ekgapi::display_interact_y = y;
@@ -212,8 +210,8 @@ bool ekgapi::input_up_left(SDL_Event &sdl_event, float &x, float &y) {
         }
 
         case SDL_FINGERUP: {
-            x = sdl_event.tfinger.x * the_ekg_core->get_screen_width();
-            y = sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+            x = sdl_event.tfinger.x * ekg::the_ekg_core->get_screen_width();
+            y = sdl_event.tfinger.y * ekg::the_ekg_core->get_screen_height();
 
             ekgapi::display_interact_x = x;
             ekgapi::display_interact_y = y;
@@ -244,8 +242,8 @@ bool ekgapi::input_up_middle(SDL_Event &sdl_event, float &x, float &y) {
 bool ekgapi::any_input_up(SDL_Event &sdl_event, float &x, float &y) {
     switch (sdl_event.type) {
         case SDL_FINGERUP: {
-            x = sdl_event.tfinger.x * the_ekg_core->get_screen_width();
-            y = sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+            x = sdl_event.tfinger.x * ekg::the_ekg_core->get_screen_width();
+            y = sdl_event.tfinger.y * ekg::the_ekg_core->get_screen_height();
 
             ekgapi::display_interact_x = x;
             ekgapi::display_interact_y = y;
@@ -284,8 +282,8 @@ bool ekgapi::motion(SDL_Event &sdl_event, float &x, float &y) {
         }
 
         case SDL_FINGERMOTION: {
-            x = sdl_event.tfinger.x * the_ekg_core->get_screen_width();
-            y = sdl_event.tfinger.y * the_ekg_core->get_screen_height();
+            x = sdl_event.tfinger.x * ekg::the_ekg_core->get_screen_width();
+            y = sdl_event.tfinger.y * ekg::the_ekg_core->get_screen_height();
 
             ekgapi::display_interact_x = x;
             ekgapi::display_interact_y = y;
@@ -300,7 +298,7 @@ bool ekgapi::motion(SDL_Event &sdl_event, float &x, float &y) {
 bool ekgapi::set(bool &current, bool value) {
     if (current != value) {
         current = value;
-        the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+        ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
     }
 
     return current;
@@ -314,7 +312,7 @@ bool ekgapi::set_direct(bool &current, bool value) {
 void ekgapi::set(std::string &current, const std::string &value) {
     if (current != value) {
         current = value;
-        the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+        ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
     }
 }
 
@@ -335,7 +333,7 @@ void ekgapi::callback_popup(uint32_t id, const std::string &path) {
     sdl_custom_event.user.code = static_cast<int32_t>(EKG_EVENT);
     sdl_custom_event.user.data1 = static_cast<void*>(ekg_custom_event);
 
-    the_ekg_core->dispatch_event(sdl_custom_event);
+    ekg::the_ekg_core->dispatch_event(sdl_custom_event);
 }
 
 void ekgapi::callback_check_box(uint32_t id, const std::string &text, bool value) {
@@ -352,7 +350,7 @@ void ekgapi::callback_check_box(uint32_t id, const std::string &text, bool value
     sdl_custom_event.user.code = static_cast<int32_t>(EKG_EVENT);
     sdl_custom_event.user.data1 = static_cast<void*>(ekg_custom_event);
 
-    the_ekg_core->dispatch_event(sdl_custom_event);
+    ekg::the_ekg_core->dispatch_event(sdl_custom_event);
 }
 
 void ekgapi::callback_button(uint32_t id, const std::string &text) {
@@ -368,7 +366,7 @@ void ekgapi::callback_button(uint32_t id, const std::string &text) {
     sdl_custom_event.user.code = static_cast<int32_t>(EKG_EVENT);
     sdl_custom_event.user.data1 = static_cast<void*>(ekg_custom_event);
 
-    the_ekg_core->dispatch_event(sdl_custom_event);
+    ekg::the_ekg_core->dispatch_event(sdl_custom_event);
 }
 
 void ekgapi::callback_combobox(uint32_t id, const std::string &text) {
@@ -384,7 +382,7 @@ void ekgapi::callback_combobox(uint32_t id, const std::string &text) {
     sdl_custom_event.user.code = static_cast<int32_t>(EKG_EVENT);
     sdl_custom_event.user.data1 = static_cast<void*>(ekg_custom_event);
 
-    the_ekg_core->dispatch_event(sdl_custom_event);
+    ekg::the_ekg_core->dispatch_event(sdl_custom_event);
 }
 
 void ekgapi::callback_frame(uint32_t id, const std::string &text) {
@@ -400,7 +398,7 @@ void ekgapi::callback_frame(uint32_t id, const std::string &text) {
     sdl_custom_event.user.code = static_cast<int32_t>(EKG_EVENT);
     sdl_custom_event.user.data1 = static_cast<void*>(ekg_custom_event);
 
-    the_ekg_core->dispatch_event(sdl_custom_event);
+    ekg::the_ekg_core->dispatch_event(sdl_custom_event);
 }
 
 void ekgapi::callback_slider(uint32_t id, const float val) {
@@ -416,7 +414,7 @@ void ekgapi::callback_slider(uint32_t id, const float val) {
     sdl_custom_event.user.code = static_cast<int32_t>(EKG_EVENT);
     sdl_custom_event.user.data1 = static_cast<void*>(ekg_custom_event);
 
-    the_ekg_core->dispatch_event(sdl_custom_event);
+    ekg::the_ekg_core->dispatch_event(sdl_custom_event);
 }
 
 void ekgapi::OpenGL::init() {

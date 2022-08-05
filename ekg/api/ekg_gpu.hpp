@@ -151,7 +151,7 @@ public:
     /*
      * Alloc texture to the concurrent cached texture list.
      */
-    void bind_texture(ekg_gpu_data &gpu_data, GLuint &object_id);
+    void bind_texture(ekg_gpu_data &gpu_data, GLuint object_id);
 
     /*
      * Start GPU access section and setup GPU flags before access.

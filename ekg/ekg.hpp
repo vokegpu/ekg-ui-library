@@ -27,11 +27,6 @@
 #include <ekg/impl/ekg_ui_element_textbox.hpp>
 
 /**
- * The global variable ptr for all.
- **/
-extern ekg_core* const the_ekg_core;
-
-/**
  * EKG - ez build gui \n
  * Last commentary update: 28/06/22 at 23:45pm (11:45pm) \n
  * \n
@@ -47,6 +42,11 @@ extern ekg_core* const the_ekg_core;
  * Last license update: 28/06/22 at 23:53pm (11:53pm) \n
  **/
 namespace ekg {
+    /**
+     * The global variable ptr for all.
+     **/
+    extern ekg_core* const the_ekg_core;
+
     /*
      * Set offset for axis x docks.
      */
@@ -56,7 +56,6 @@ namespace ekg {
      * The dt variable of ekg.
      */
     extern float delta_time;
-    
 
     /*
      * Get hovered element id.

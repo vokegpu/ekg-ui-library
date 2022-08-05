@@ -9,8 +9,7 @@
  *
  * END OF EKG-LICENSE.
  **/
-#include <ekg/impl/ekg_ui_element_popup.hpp>
-#include <ekg/ekg.hpp>
+#include "ekg/ekg.hpp"
 
 ekg_popup::ekg_popup() {
     this->type = ekg::ui::POPUP;
@@ -116,14 +115,14 @@ void ekg_popup::set_size(float width, float height) {
 void ekg_popup::destroy() {
     ekg_popup* popup;
 
-    if (this->has_mother() && the_ekg_core->find_element((ekg_element*&) popup, this->mother_id) && !popup->access_flag().dead) {
+    if (this->has_mother() && ekg::the_ekg_core->find_element((ekg_element*&) popup, this->mother_id) && !popup->access_flag().dead) {
         popup->destroy();
     }
 
-    the_ekg_core->kill_element(this);
+    ekg::the_ekg_core->kill_element(this);
 
     for (uint32_t &ids : this->children_stack.ids) {
-        if (the_ekg_core->find_element((ekg_element*&) popup, ids)) {
+        if (ekg::the_ekg_core->find_element((ekg_element*&) popup, ids)) {
             popup->destroy();
         }
     }
@@ -136,8 +135,8 @@ void ekg_popup::set_pos(float x, float y) {
         x += this->scaled.x;
         y += this->scaled.y;
 
-        float width = the_ekg_core->get_screen_width();
-        float height = the_ekg_core->get_screen_height();
+        float width = ekg::the_ekg_core->get_screen_width();
+        float height = ekg::the_ekg_core->get_screen_height();
 
         if (x + this->rect.w > width) {
             x = this->scaled.x - (this->rect.w - (this->component_height / 10));
@@ -156,7 +155,7 @@ void ekg_popup::set_pos(float x, float y) {
 
 void ekg_popup::on_sync() {
     ekg_element::on_sync();
-    the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+    ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
 
     float max_width = 0.0f;
     float max_height = 0.0f;
@@ -249,9 +248,9 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
     bool highlight = false;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
-        highlight = this->flag.over || !this->flag.focused || (this->has_mother() && this->mother_id == the_ekg_core->get_popup_top_level());
+        highlight = this->flag.over || !this->flag.focused || (this->has_mother() && this->mother_id == ekg::the_ekg_core->get_popup_top_level());
     } else if (ekgapi::any_input_down(sdl_event, mx, my) && this->flag.focused) {
-        bool flag = the_ekg_core->get_hovered_element_type() != ekg::ui::POPUP;
+        bool flag = ekg::the_ekg_core->get_hovered_element_type() != ekg::ui::POPUP;
 
         if (flag) {
             ekgapi::set(this->flag.focused, false);
@@ -288,14 +287,15 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
                     ekgapi::set(this->flag.highlight, true);
                     ekgapi::set(this->focused_component, component.text);
 
-                    the_ekg_core->get_popup_top_level() = component.data != 0 ? this->id : this->mother_id;
+                    ekg::the_ekg_core->get_popup_top_level() = component.data != 0 ? this->id : this->mother_id;
                 }
 
                 this->full_height += component.h + this->offset_separator;
             }
         }
 
-        if (this->has_mother() && ((!this->flag.focused) || (the_ekg_core->get_popup_top_level() == this->mother_id && !this->flag.over))) {
+        if (this->has_mother() && ((!this->flag.focused) || (
+                ekg::the_ekg_core->get_popup_top_level() == this->mother_id && !this->flag.over))) {
             ekgapi::set(this->flag.highlight, false);
             ekgapi::set(this->focused_component, "");
         }
@@ -309,7 +309,7 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
         this->activy_component = this->focused_component;
 
         for (uint32_t &ids : this->children_stack.ids) {
-            if (!the_ekg_core->find_element((ekg_element*&) popup, ids)) {
+            if (!ekg::the_ekg_core->find_element((ekg_element*&) popup, ids)) {
                 continue;
             }
 
@@ -351,7 +351,7 @@ void ekg_popup::on_update() {
 
             this->destroy();
             this->set_should_update(false);
-            the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+            ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
             break;
         }
 
@@ -381,7 +381,7 @@ void ekg_popup::on_update() {
         case ekg::visibility::LOW_PRIORITY: {
             this->cache.h = 0;
             this->set_should_update(false);
-            the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+            ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
             break;
         }
     }
@@ -492,7 +492,7 @@ void ekg_popup::get_popup_path(std::string &path) {
         path = " | " + this->focused_component + path;
 
         ekg_popup* element;
-        the_ekg_core->find_element((ekg_element*&) element, this->mother_id);
+        ekg::the_ekg_core->find_element((ekg_element*&) element, this->mother_id);
 
         if (element != nullptr) {
             element->get_popup_path(path);

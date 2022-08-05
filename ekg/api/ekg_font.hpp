@@ -43,7 +43,7 @@ struct ekg_render_box_result {
  * Font manager to configure, load, display/draw/render chars.
  **/
 class ekg_font {
-protected:
+private:
 	FT_Library library;
 	FT_Face face;
 	FT_GlyphSlot glyph_slot;
@@ -64,6 +64,17 @@ protected:
     ekg_char_data char_list[256];
     uint8_t font_size = 16;
 public:
+    float get_texture_width();
+    float get_texture_height();
+
+    FT_UInt &get_previous_char();
+    FT_Bool &get_kerning();
+    FT_Vector_ &get_previous_char_vec();
+
+    void accept_char(const char* c, float &x);
+    void at(ekg_char_data &chara_data, int32_t i);
+    GLuint get_bitmap_texture_id();
+
     /*
      * Set size of font.
      */

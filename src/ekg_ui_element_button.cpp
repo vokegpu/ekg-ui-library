@@ -9,7 +9,7 @@
  *
  * END OF EKG-LICENSE.
  **/
-#include <ekg/ekg.hpp>
+#include "ekg/ekg.hpp"
 
 ekg_button::ekg_button() {
     this->set_text_dock(ekg::dock::CENTER);
@@ -35,7 +35,7 @@ void ekg_button::on_sync() {
     this->rect.w = this->rect.w < scaled_min_text_width ? scaled_min_text_width : this->rect.w;
     this->rect.h = this->rect.h < this->min_text_height ? this->min_text_height : this->rect.h;
 
-    the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+    ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
 
     bool center = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::CENTER);
     bool top = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::TOP);

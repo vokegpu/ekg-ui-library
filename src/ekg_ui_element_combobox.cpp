@@ -117,7 +117,7 @@ void ekg_combobox::on_sync() {
     this->cache.x = this->rect.x + this->rect.w - this->cache.w;
     this->cache.y = this->rect.y;
 
-    the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+    ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
 
     bool center = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::CENTER);
     bool top = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::TOP);
@@ -186,7 +186,7 @@ void ekg_combobox::on_event(SDL_Event &sdl_event) {
     } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
         ekg_element* instance;
 
-        if (this->flag.focused && (this->children_stack.ids.empty() || !the_ekg_core->find_element(instance, this->children_stack.ids.at(0)))) {
+        if (this->flag.focused && (this->children_stack.ids.empty() || !ekg::the_ekg_core->find_element(instance, this->children_stack.ids.at(0)))) {
             ekgapi::set(this->flag.focused, false);
             this->children_stack.ids.clear();
         }

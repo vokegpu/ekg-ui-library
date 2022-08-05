@@ -23,7 +23,7 @@
  * Core of EKG, where everything is processed.
  */
 class ekg_core {
-protected:
+private:
     // For work with modern GPU we need to modify all buffers safe (thinks in performance).
     ekg_gpu_data_handler gpu_handler;
 

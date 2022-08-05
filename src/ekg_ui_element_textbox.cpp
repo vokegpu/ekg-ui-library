@@ -9,7 +9,7 @@
  *
  * END OF EKG-LICENSE.
  **/
-#include <ekg/ekg.hpp>
+#include "ekg/ekg.hpp"
 
 ekg_textbox::ekg_textbox() {
     this->type = ekg::ui::TEXTBOX;
@@ -32,7 +32,7 @@ void ekg_textbox::on_sync() {
     this->rect.w = this->rect.w < this->min_text_width ? this->min_text_width : this->rect.w;
     this->rect.h = this->rect.h < this->min_text_height ? this->min_text_height : this->rect.h;
 
-    the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+    ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
 }
 
 void ekg_textbox::on_pre_event_update(SDL_Event &sdl_event) {

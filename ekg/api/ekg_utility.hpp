@@ -27,7 +27,7 @@ namespace ekgmath {
         float x = 0.0f;
         float y = 0.0f;
 
-        vec2f() {};
+        vec2f() = default;
         vec2f(float x, float y);
     };
 
@@ -40,14 +40,14 @@ namespace ekgmath {
         float z = 0;
         float w = 0;
 
-        vec4f() {};
+        vec4f() = default;
         vec4f(float x, float y, float z, float w);
-        vec4f(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+        vec4f(int32_t red, int32_t green, int32_t blue, int32_t alpha = 255);
 
         /*
          * Convert 0 - 255 RGBA to normalised value 0.0 - 1.0.
          */
-        void color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+        void color(int32_t red, int32_t green, int32_t blue, int32_t alpha = 255);
     };
 
     /**
@@ -63,6 +63,11 @@ namespace ekgmath {
          * Collide point aabb with this rect.
          */
         bool collide_aabb_with_point(float px, float py);
+
+        /*
+         * Collide rect aabb with this rect.
+         */
+        bool collide_aabb_with_rect(const ekgmath::rect &r);
 
         /*
          * Copy position and size.
@@ -114,11 +119,11 @@ namespace ekgtext {
      * Store text position, cursor position and visual details.
      **/
     struct box {
-        ekgmath::vec4f bounds;
+        ekgmath::vec2f bounds;
         std::vector<uint32_t> rows_per_columns;
 
-        uint32_t cursor_row;
-        uint32_t cursor_column;
+        uint32_t cursor[2];
+        uint32_t max_cursor[2];
 
         uint32_t rows;
         uint32_t columns;
@@ -145,17 +150,17 @@ namespace ekgtext {
     /*
      * Process cursor position by matrix index position.
      */
-    void process_cursor_pos_index(ekgtext::box &box, const std::string &text, uint32_t row, uint32_t collumn);
+    void process_cursor_pos_index(ekgtext::box &box, const std::string &text, uint32_t row, uint32_t column);
 
     /*
      * Process if text is different.
      */
-    void process_new_text(ekgtext::box &box, std::string &old_text, std::string &new_text);
+    void process_new_text(ekgtext::box &box, std::string &old_text, std::string &new_text, std::string &text);
 
     /*
-     * Process the GPU data to be draw.
+     * Process the GPU data be is draw.
      */
-    void process_render_box(ekgtext::box &box, const std::string &text, float &x, float &y, uint32_t &scissor_id, bool &hovered);
+    void process_render_box(ekgtext::box &box, const std::string &text, ekgmath::rect &rect, uint32_t &scissor_id, bool &hovered);
 };
 
 /**

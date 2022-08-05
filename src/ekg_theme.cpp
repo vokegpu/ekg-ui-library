@@ -9,7 +9,7 @@
  *
  * END OF EKG-LICENSE.
  **/
-#include <ekg/api/ekg_theme.hpp>
+#include "ekg/api/ekg_theme.hpp"
 
 void ekg_theme_service::init() {
     this->reset_theme();

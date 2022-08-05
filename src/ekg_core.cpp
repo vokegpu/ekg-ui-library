@@ -9,9 +9,7 @@
  *
  * END OF EKG-LICENSE.
  **/
-#include <ekg/ekg.hpp>
-#include "ekg/api/ekg_core.hpp"
-#include <list>
+#include "ekg/ekg.hpp"
 
 void ekg_core::process_event_section(SDL_Event &sdl_event) {
     // We do not need to track others events here.

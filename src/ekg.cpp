@@ -9,7 +9,7 @@
  *
  * END OF EKG-LICENSE.
  **/
-#include <ekg/ekg.hpp>
+#include "ekg/ekg.hpp"
 
 ekg_core* const the_ekg_core = new ekg_core();
 float ekg::delta_time = 0.0f;

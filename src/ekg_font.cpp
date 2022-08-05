@@ -9,7 +9,7 @@
  *
  * END OF EKG-LICENSE.
  **/
-#include <ekg/ekg.hpp>
+#include "ekg/ekg.hpp"
 #include <cmath>
 
 void ekg_font::quit() {
@@ -176,7 +176,7 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     int32_t diff = 1;
 
     // Generate a GPU data.
-    ekg_gpu_data &gpu_data = the_ekg_core->get_gpu_handler().bind();
+    ekg_gpu_data &gpu_data = ekg::the_ekg_core->get_gpu_handler().bind();
 
     // Configure
     // Each char quad has 6 vertices, so we multiply 6 by length of text.
@@ -212,8 +212,8 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
         texture_h = render_h / static_cast<float>(this->texture_height);
         diff += static_cast<int32_t>(texture_x);
 
-        ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices(), render_x, render_y, render_w, render_h);
-        ekggpu::push_arr_rect(the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
+        ekggpu::push_arr_rect(ekg::the_ekg_core->get_gpu_handler().get_cached_vertices(), render_x, render_y, render_w, render_h);
+        ekggpu::push_arr_rect(ekg::the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
 
         x += char_data.texture_x;
         this->previous = *i;
@@ -229,18 +229,53 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     gpu_data.factor = (static_cast<float>(str_len)) * static_cast<float>(diff) * texture_w * x;
 
     // Bind the texture to GPU.
-    the_ekg_core->get_gpu_handler().bind_texture(gpu_data, this->bitmap_texture_id);
-    the_ekg_core->get_gpu_handler().free(gpu_data);
+    ekg::the_ekg_core->get_gpu_handler().bind_texture(gpu_data, this->bitmap_texture_id);
+    ekg::the_ekg_core->get_gpu_handler().free(gpu_data);
+}
+
+float ekg_font::get_texture_width() {
+    return this->texture_height;
+}
+
+float ekg_font::get_texture_height() {
+    return this->texture_height;
+}
+
+FT_UInt &ekg_font::get_previous_char() {
+    return this->previous;
+}
+
+FT_Bool &ekg_font::get_kerning() {
+    return this->use_kerning;
+}
+
+FT_Vector_ &ekg_font::get_previous_char_vec() {
+    return this->previous_char_vec;
+}
+
+void ekg_font::at(ekg_char_data &char_data, int32_t i) {
+    char_data = this->char_list[i];
+}
+
+GLuint ekg_font::get_bitmap_texture_id() {
+    return this->bitmap_texture_id;
+}
+
+void ekg_font::accept_char(const char* c, float &x) {
+    if (this->use_kerning && this->previous && *c) {
+        FT_Get_Kerning(this->face, this->previous, *c, 0, &this->previous_char_vec);
+        x += static_cast<float>(this->previous_char_vec.x >> 6);
+    }
 }
 
 void ekgfont::render(const std::string &text, float x, float y, ekgmath::vec4f &color_vec) {
-    the_ekg_core->get_font_manager().render(text, x, y, color_vec);
+    ekg::the_ekg_core->get_font_manager().render(text, x, y, color_vec);
 }
 
 float ekgfont::get_text_width(const std::string &text) {
-    return the_ekg_core->get_font_manager().get_text_width(text);
+    return ekg::the_ekg_core->get_font_manager().get_text_width(text);
 }
 
 float ekgfont::get_text_height(const std::string &text) {
-    return the_ekg_core->get_font_manager().get_text_height(text);
+    return ekg::the_ekg_core->get_font_manager().get_text_height(text);
 }
