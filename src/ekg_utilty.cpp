@@ -225,7 +225,7 @@ void ekgtext::process_cursor_pos_relative(ekgtext::box &box, const std::string &
 }
 
 void ekgtext::process_cursor_pos_index(ekgtext::box &box, const std::string &text, uint32_t row, uint32_t column) {
-    if (box.cursor_row == row && box.cursor_column == column) {
+    if (box.cursor[0] == row && box.cursor[1] == column) {
         return;
     }
 
@@ -242,14 +242,18 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, const std::string &tex
         column = box.max_columns;
     }
 
-    box.cursor_row = row;
-    box.cursor_column = column;
+    box.cursor[0] = row;
+    box.cursor[1] = column;
 }
 
 void ekgtext::process_new_text(ekgtext::box &box, std::string &old_text, std::string &new_text, std::string &text) {
     if (old_text == new_text) {
         return;
     }
+
+    uint32_t column = box.cursor[1];
+    uint32_t rows_per_column = box.rows_per_columns[column];
+    uint32_t sub = column - 1 < 0 ? 0 : box.rows_per_columns[column];
 
     std::string previous_new_text = new_text;
     new_text.clear();
@@ -286,8 +290,11 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &old_text, std::st
         new_text += c;
     }
 
-    previous_new_text = old_text.substr(0, box.cursor_row);
-    old_text = new_text;
+    std::string left  = old_text.substr(0, rows_per_column - sub);
+    std::string right = old_text.substr(rows_per_column - sub, old_text.size());
+
+    text = left + new_text + right;
+    text = previous_new_text + new_text;
 }
 
 void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekgmath::rect &rect, uint32_t &scissor_id, bool &hovered) {
