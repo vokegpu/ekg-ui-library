@@ -14,6 +14,8 @@
 
 #include <math.h>
 
+std::vector<ekgmath::rect> ekgtext::box::selected_column_list;
+
 void ekgutil::log(const std::string &log) {
     ekgapi::send_output(log.c_str());
 }
@@ -212,6 +214,42 @@ void ekgmath::vec4f::color(int32_t red, int32_t green, int32_t blue, int32_t alp
     this->w = static_cast<float>(alpha) / 255;
 }
 
+void ekgtext::get_rows(ekgtext::box &box, uint32_t &rows, uint32_t &column_target) {
+    if (box.rows_per_columns.empty()) {
+        column_target = 0;
+        return;
+    }
+
+    column_target = column_target > box.rows_per_columns.size() ? box.rows_per_columns.size() : column_target;
+    uint32_t sub_previous = column_target - 1 < 0 ? 0 : box.rows_per_columns[column_target - 1];
+    uint32_t concurrent_rows = box.rows_per_columns[column_target] - sub_previous;
+
+    rows = concurrent_rows;
+}
+
+void ekgtext::process_text_rows(ekgtext::box &box, std::string &text, const std::string &raw_text) {
+    text.clear();
+
+    uint32_t rows_in = 1;
+    uint32_t columns_in = 1;
+
+    for (uint32_t i = 0; i < raw_text.size(); i++) {
+        rows_in++;
+
+        if (rows_in > box.max_rows || (raw_text.at(i) == '\\' && i + 1 < raw_text.size() && raw_text.at(i + 1) == 'n')) {
+            if (box.rows_per_columns.size() < columns_in) {
+                box.rows_per_columns.push_back(rows_in);
+            } else {
+                box.rows_per_columns[columns_in] = rows_in;
+            }
+
+            continue;
+        }
+
+        text += raw_text.at(i);
+    }
+}
+
 void ekgtext::should_sync_ui(ekgtext::box &box, const std::string &text, bool &should) {
 
 }
@@ -224,39 +262,34 @@ void ekgtext::process_cursor_pos_relative(ekgtext::box &box, const std::string &
 
 }
 
-void ekgtext::process_cursor_pos_index(ekgtext::box &box, const std::string &text, uint32_t row, uint32_t column) {
-    if (box.cursor[0] == row && box.cursor[1] == column) {
+void ekgtext::process_cursor_pos_index(ekgtext::box &box, uint32_t row, uint32_t column) {
+    if (box.cursor[0] == row && box.cursor[1] == column && box.cursor[2] == row && box.cursor[3] == row) {
         return;
     }
 
-    column = column > box.columns ? box.columns : column;
-    uint32_t rows_per_column = box.rows_per_columns[column];
+    const uint32_t previous_row = row;
+    get_rows(box, row, column);
 
-    if (row > rows_per_column) {
-        column += 1;
-        row = 0;
-    }
-
-    if (column > box.max_columns) {
-        row = rows_per_column;
-        column = box.max_columns;
+    if (row < previous_row) {
+        row = previous_row;
     }
 
     box.cursor[0] = row;
     box.cursor[1] = column;
+    box.cursor[2] = row;
+    box.cursor[2] = column;
 }
 
-void ekgtext::process_new_text(ekgtext::box &box, std::string &old_text, std::string &new_text, std::string &text) {
-    if (old_text == new_text) {
-        return;
-    }
-
+void ekgtext::process_new_text(ekgtext::box &box, std::string &previous_text, std::string &new_text, std::string &raw_text) {
+    uint32_t row = box.cursor[0];
     uint32_t column = box.cursor[1];
-    uint32_t rows_per_column = box.rows_per_columns[column];
-    uint32_t sub = column - 1 < 0 ? 0 : box.rows_per_columns[column];
 
-    std::string previous_new_text = new_text;
-    new_text.clear();
+    const uint32_t previous_row = row;
+    get_rows(box, row, column);
+
+    std::string old_text = previous_text;
+    std::string previous_new_text = previous_text;
+    previous_text.clear();
 
     uint32_t rows_in = box.cursor[0];
     uint32_t columns_in = box.cursor[1];
@@ -269,7 +302,7 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &old_text, std::st
         rows_in++;
 
         c = previous_new_text.at(i);
-        new_line = std::to_string(c) == nl;
+        new_line = (rows_in > box.max_rows || (previous_text.at(i) == '\\' && i + 1 < previous_text.size() && previous_text.at(i + 1) == 'n'));
 
         if (rows_in > box.max_rows || new_line) {
             rows_in = 0;
@@ -281,60 +314,79 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &old_text, std::st
             break;
         }
 
-        text += c;
-
-        if (new_line) {
-            continue;
-        }
-
-        new_text += c;
+        previous_text += c;
     }
 
-    std::string left  = old_text.substr(0, rows_per_column - sub);
-    std::string right = old_text.substr(rows_per_column - sub, old_text.size());
+    std::string left  = previous_text.substr(0, row);
+    std::string right = previous_text.substr(row, old_text.size());
 
-    text = left + new_text + right;
-    text = previous_new_text + new_text;
+    raw_text = left + previous_text + right;
+    raw_text = previous_new_text + previous_text;
 }
 
-void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekgmath::rect &rect, uint32_t &scissor_id, bool &hovered) {
+void ekgtext::process_event(ekgtext::box &box, std::string &text, std::string &raw_text, SDL_Event &sdl_event) {
+    switch (sdl_event.type) {
+        case SDL_MOUSEBUTTONUP: {
+            break;
+        }
+
+        case SDL_MOUSEBUTTONDOWN: {
+            break;
+        }
+
+        case SDL_KEYDOWN: {
+            break;
+        }
+
+        case SDL_KEYUP: {
+            break;
+        }
+
+        case SDL_TEXTINPUT: {
+            std::string old_text = text;
+            text = sdl_event.text.text;
+
+            ekgtext::process_new_text(box, old_text, text, raw_text);
+            break;
+        }
+    }
+}
+
+void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekgmath::rect &rect, int32_t &scissor_id, bool &draw_cursor) {
+    // Draw the background.
+    ekggpu::rectangle(rect, ekg::theme().text_input_background);
+
     const char* char_str = text.c_str();
-    const uint32_t str_len = strlen(char_str);
+    uint32_t str_len = 0;
 
     float render_x = 0, render_y = 0, render_w = 0, render_h = 0;
     float texture_x = 0, texture_y = 0, texture_w = 0, texture_h = 0;
-    float impl = (static_cast<float>(ekg::the_ekg_core->get_font_manager().get_texture_height()) / 8);
+    float impl = (static_cast<float>(ekg::the_ekg_core->get_font_manager().get_texture_height()) / 8) / 2;
     int32_t diff = 1;
+    const bool skip_cursor = box.cursor[2] == box.cursor[0] && box.cursor[3] == box.cursor[1];
 
     // Generate a GPU data.
     ekg_gpu_data &gpu_data = ekg::the_ekg_core->get_gpu_handler().bind();
 
-    // Configure
-    // Each char quad has 6 vertices, so we multiply 6 by length of text.
-    gpu_data.data = (GLint) (str_len * 6);
-
     // The position post draw should be equals to max bitmap height divided by 2.
     gpu_data.rect[0] = static_cast<float>(static_cast<int32_t>(rect.x));
-    gpu_data.rect[1] = static_cast<float>(static_cast<int32_t>(rect.y - (impl / 2)));
+    gpu_data.rect[1] = static_cast<float>(static_cast<int32_t>(rect.y - impl));
 
     ekg::the_ekg_core->get_font_manager().get_previous_char() = 0;
 
     ekg_char_data char_data;
     ekgmath::rect curr_rect;
+    ekgmath::rect cursor_rect;
 
-    float x = 0;
-    float y = 0;
+    float x = box.bounds.x;
+    float y = box.bounds.y;
 
     uint32_t rows_in = 1;
     uint32_t columns_in = 1;
 
     for (const char* i = char_str; *i; i++) {
-        ekg::the_ekg_core->get_font_manager().accept_char(i, rect.x);
+        ekg::the_ekg_core->get_font_manager().accept_char(i, x);
         ekg::the_ekg_core->get_font_manager().at(char_data, *i);
-
-        // Get char from list and update metrics/positions of each char.
-        render_x = x + char_data.left;
-        render_y = y + (static_cast<float>(ekg::the_ekg_core->get_font_manager().get_texture_height()) - char_data.top);
 
         render_w = char_data.width;
         render_h = char_data.height;
@@ -344,19 +396,46 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
         texture_h = render_h / static_cast<float>(ekg::the_ekg_core->get_font_manager().get_texture_height());
         diff += static_cast<int32_t>(texture_x);
 
-        curr_rect.x = rect.x + box.bounds.x + x;
-        curr_rect.y = rect.y + box.bounds.y + y;
+        rows_in++;
+
+        if (rows_in > box.max_rows || (box.rows_per_columns.size() >= columns_in && rows_in > box.rows_per_columns[columns_in - 1])) {
+            rows_in = 0;
+            columns_in++;
+
+            x = box.bounds.x;
+            y += render_h + impl;
+        }
+
+        // Get char from list and update metrics/positions of each char.
+        render_x = x + char_data.left;
+        render_y = y + (static_cast<float>(ekg::the_ekg_core->get_font_manager().get_texture_height()) - char_data.top);
+
+        curr_rect.x = rect.x + x;
+        curr_rect.y = rect.y + y;
         curr_rect.w = render_w;
         curr_rect.h = render_h;
 
         if (rect.collide_aabb_with_rect(curr_rect)) {
+            str_len++;
+
             ekggpu::push_arr_rect(ekg::the_ekg_core->get_gpu_handler().get_cached_vertices(), render_x, render_y, render_w, render_h);
             ekggpu::push_arr_rect(ekg::the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
+        }
+
+        if (skip_cursor && rows_in == box.cursor[0] && columns_in == box.cursor[1]) {
+            curr_rect.x += curr_rect.w - 2;
+            curr_rect.h = ekg::the_ekg_core->get_font_manager().get_texture_height() + impl;
+            curr_rect.w = 100;
+            cursor_rect.copy(curr_rect);
         }
 
         x += char_data.texture_x;
         ekg::the_ekg_core->get_font_manager().get_previous_char() = *i;
     }
+
+    // Configure
+    // Each char quad has 6 vertices, so we multiply 6 by length of text.
+    gpu_data.data = (GLint) (str_len * 6);
 
     // Pass color of texture.
     gpu_data.color[0] = ekg::theme().text_input_string.x;
@@ -370,4 +449,20 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
     // Bind the texture to GPU.
     ekg::the_ekg_core->get_gpu_handler().bind_texture(gpu_data, ekg::the_ekg_core->get_font_manager().get_bitmap_texture_id());
     ekg::the_ekg_core->get_gpu_handler().free(gpu_data);
+
+    // Draw the selected chars.
+    if (!ekgtext::box::selected_column_list.empty() && !skip_cursor) {
+        for (ekgmath::rect &rects : ekgtext::box::selected_column_list) {
+            ekggpu::rectangle(rects, ekg::theme().text_input_activy);
+        }
+
+        draw_cursor = false;
+    }
+
+    if (draw_cursor) {
+        ekggpu::rectangle(cursor_rect, ekg::theme().text_input_string);
+    }
+
+    // Draw the border:
+    ekggpu::rectangle(rect, ekg::theme().text_input_border, 1);
 }

@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <vector>
+#include <SDL2/SDL.h>
 
 /**
  * EKG math utils.
@@ -109,58 +110,6 @@ namespace ekgmath {
      * Calc. ortho projection mat4x4.
      */
     void ortho2d(float* mat, float left, float right, float bottom, float top);
-};
-
-/**
- * The EKG text api for process inputs from virtual keyboard or real keyboard.
- **/
-namespace ekgtext {
-    /**
-     * Store text position, cursor position and visual details.
-     **/
-    struct box {
-        ekgmath::vec2f bounds;
-        std::vector<uint32_t> rows_per_columns;
-
-        uint32_t cursor[2];
-        uint32_t max_cursor[2];
-
-        uint32_t rows;
-        uint32_t columns;
-
-        uint32_t max_rows;
-        uint32_t max_columns;
-    };
-
-    /*
-     * Verify if should sync cursor index with render offset.
-     */
-    void should_sync_ui(ekgtext::box &box, const std::string &text, bool &should);
-
-    /*
-     * Sync cursor index with render offset using lerp animation.
-     */
-    void sync_ui(ekgtext::box &box, const std::string &text);
-
-    /*
-     * Process cursor position by relative interact position.
-     */
-    void process_cursor_pos_relative(ekgtext::box &box, const std::string &text, float &x, float &y);
-
-    /*
-     * Process cursor position by matrix index position.
-     */
-    void process_cursor_pos_index(ekgtext::box &box, const std::string &text, uint32_t row, uint32_t column);
-
-    /*
-     * Process if text is different.
-     */
-    void process_new_text(ekgtext::box &box, std::string &old_text, std::string &new_text, std::string &text);
-
-    /*
-     * Process the GPU data be is draw.
-     */
-    void process_render_box(ekgtext::box &box, const std::string &text, ekgmath::rect &rect, uint32_t &scissor_id, bool &hovered);
 };
 
 /**
@@ -281,6 +230,73 @@ namespace ekgutil {
         CIRCLE    = 1,
         OUTLINE   = 2
     };
+};
+
+/**
+ * The EKG text api for process inputs from virtual keyboard or real keyboard.
+ **/
+namespace ekgtext {
+    /**
+     * Store text position, cursor position and visual details.
+     **/
+    struct box {
+        static std::vector<ekgmath::rect> selected_column_list;
+
+        ekgmath::vec2f bounds;
+        std::vector<uint32_t> rows_per_columns;
+
+        uint32_t cursor[4];
+        uint32_t rows;
+        uint32_t columns;
+
+        uint32_t max_rows;
+        uint32_t max_columns;
+    };
+
+    /*
+     * Get the test.
+     */
+    void get_rows(ekgtext::box &box, uint32_t &rows, uint32_t &column);
+
+    /*
+     * Process the amount of rows per columns.
+     */
+    void process_text_rows(ekgtext::box &box, std::string &text, const std::string &raw_text);
+
+    /*
+     * Verify if box should sync cursor index with render offset.
+     */
+    void should_sync_ui(ekgtext::box &box, const std::string &text, bool &should);
+
+    /*
+     * Sync cursor index with render offset using lerp animation.
+     */
+    void sync_ui(ekgtext::box &box, const std::string &text);
+
+    /*
+     * Process cursor position by relative interact position.
+     */
+    void process_cursor_pos_relative(ekgtext::box &box, const std::string &text, float &x, float &y);
+
+    /*
+     * Process cursor position by matrix index position.
+     */
+    void process_cursor_pos_index(ekgtext::box &box, uint32_t row, uint32_t column);
+
+    /*
+     * Process if text is different.
+     */
+    void process_new_text(ekgtext::box &box, std::string &previous_text, std::string &new_text, std::string &raw_text);
+
+    /*
+     * Process the events of box.
+     */
+    void process_event(ekgtext::box &box, std::string &text, std::string &raw_text, SDL_Event &sdl_event);
+
+    /*
+     * Process the GPU data be is draw.
+     */
+    void process_render_box(ekgtext::box &box, const std::string &text, ekgmath::rect &rect, int32_t &scissor_id, bool &draw_cursor);
 };
 
 #endif

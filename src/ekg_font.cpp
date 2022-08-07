@@ -234,11 +234,11 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
 }
 
 float ekg_font::get_texture_width() {
-    return this->texture_height;
+    return static_cast<float>(this->texture_width);
 }
 
 float ekg_font::get_texture_height() {
-    return this->texture_height;
+    return static_cast<float>(this->texture_height);
 }
 
 FT_UInt &ekg_font::get_previous_char() {

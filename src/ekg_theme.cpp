@@ -52,6 +52,13 @@ void ekg_theme_service::reset_theme() {
 
     this->loaded_theme.frame_background = ekgmath::vec4f(255, 255, 255, 255);
     this->loaded_theme.frame_border = ekgmath::vec4f(190, 190, 190, 255);
+
+    this->loaded_theme.text_input_background = ekgmath::vec4f(255, 255, 255, 255);
+    this->loaded_theme.text_input_highlight = ekgmath::vec4f(190, 190, 190, 150);
+    this->loaded_theme.text_input_activy = ekgmath::vec4f(0, 0, 190, 100);
+    this->loaded_theme.text_input_cursor = ekgmath::vec4f(0, 0, 0, 255);
+    this->loaded_theme.text_input_string = ekgmath::vec4f(0, 0, 0, 255);
+    this->loaded_theme.text_input_border = ekgmath::vec4f(190, 190, 190, 255);
 }
 
 ekg_theme &ekg_theme_service::get_loaded_theme() {

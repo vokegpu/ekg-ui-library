@@ -66,7 +66,7 @@ ekg_textbox* ekg::textbox() {
 
     textbox_worker->set_width(100);
     textbox_worker->set_height(100);
-    textbox_worker->set_max_cols(666);
+    textbox_worker->set_max_columns(666);
     textbox_worker->set_max_rows(666);
     textbox_worker->set_visibility(ekg::visibility::VISIBLE);
 
@@ -113,7 +113,7 @@ ekg_button* ekg::button(const std::string &text) {
 
     button_worker->set_text(text);
     button_worker->set_visibility(ekg::visibility::VISIBLE);
-    button_worker->set_text_dock(ekg::dock::CENTER);
+    button_worker->set_text_dock(ekg::dock::LEFT);
     button_worker->set_width(125);
     button_worker->set_height(25);
 

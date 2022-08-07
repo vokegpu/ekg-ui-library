@@ -42,9 +42,9 @@
  * Last license update: 28/06/22 at 23:53pm (11:53pm) \n
  **/
 namespace ekg {
-    /**
+    /*
      * The global variable ptr for all.
-     **/
+     */
     extern ekg_core* const the_ekg_core;
 
     /*
@@ -56,6 +56,10 @@ namespace ekg {
      * The dt variable of ekg.
      */
     extern float delta_time;
+
+    /*
+     * The clock of entry box.
+     */
 
     /*
      * Get hovered element id.

@@ -91,8 +91,8 @@ void ekg_gpu_data_handler::prepare() {
 
 void ekg_gpu_data_handler::draw() {
     this->default_program.use();
-    this->default_program.set_mat4x4("u_mat_matrix", this->mat4x4_ortho);
-    this->default_program.set_float("u_float_viewport_height", this->viewport[3]);
+    this->default_program.setm4f("u_mat_matrix", this->mat4x4_ortho);
+    this->default_program.set1f("u_float_viewport_height", this->viewport[3]);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -104,18 +104,18 @@ void ekg_gpu_data_handler::draw() {
     for (int i = 0; i < this->amount_of_draw_iterations; i++) {
         gpu_data = this->allocated_gpu_data[i];
 
-        this->default_program.set_int("u_bool_set_texture", gpu_data.texture != 0);
-        this->default_program.set_vec4f("u_vec4_color", gpu_data.color);
-        this->default_program.set_vec4f("u_vec4_rect", gpu_data.rect);
-        this->default_program.set_float("u_float_zdepth", static_cast<float>(i + 1));
-        this->default_program.set_int("u_int_shape_category", gpu_data.category);
-        this->default_program.set_float("u_float_factor", gpu_data.factor);
+        this->default_program.set1i("u_bool_set_texture", gpu_data.texture != 0);
+        this->default_program.set4f("u_vec4_color", gpu_data.color);
+        this->default_program.set4f("u_vec4_rect", gpu_data.rect);
+        this->default_program.set1f("u_float_zdepth", static_cast<float>(i + 1));
+        this->default_program.set1i("u_int_shape_category", gpu_data.category);
+        this->default_program.set1f("u_float_factor", gpu_data.factor);
 
         if (gpu_data.texture != 0) {
             glActiveTexture(GL_TEXTURE0 + gpu_data.texture_slot);
             glBindTexture(GL_TEXTURE_2D, gpu_data.texture);
 
-            this->default_program.set_int("u_sampler2d_texture_active", gpu_data.texture_slot);
+            this->default_program.set1i("u_sampler2d_texture_active", gpu_data.texture_slot);
         }
 
         if (gpu_data.id_scissor != -1) {

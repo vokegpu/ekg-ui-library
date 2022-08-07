@@ -48,10 +48,7 @@ void ekg_popup::set_width(float width) {
 }
 
 void ekg_popup::set_height(float height) {
-    if (this->component_height != height) {
-        this->component_height = height;
-        this->on_sync();
-    }
+    this->set_size(this->rect.w, this->component_height);
 }
 
 void ekg_popup::set_text_dock(uint16_t dock) {

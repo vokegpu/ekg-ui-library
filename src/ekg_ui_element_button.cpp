@@ -62,7 +62,7 @@ void ekg_button::on_sync() {
     }
 
     if (bottom) {
-        this->text_offset_y = this->rect.h - this->min_text_height - (this->min_text_height / 4.0f);
+        this->text_offset_y = this->rect.h - this->min_text_height - (this->min_text_height / 4);
     }
 }
 
@@ -151,7 +151,7 @@ void ekg_button::set_width(float width) {
 }
 
 void ekg_button::set_height(float height) {
-    this->set_size(this->rect.x, height);
+    this->set_size(this->rect.w, height);
 }
 
 float ekg_button::get_min_text_width() {

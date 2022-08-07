@@ -69,7 +69,7 @@ void ekg_checkbox::set_width(float width) {
 }
 
 void ekg_checkbox::set_height(float height) {
-    this->set_size(this->rect.h, height);
+    this->set_size(this->rect.w, height);
 }
 
 void ekg_checkbox::set_size(float width, float height) {
@@ -138,10 +138,11 @@ void ekg_checkbox::on_sync() {
         this->text_offset_y = this->rect.h - this->min_text_height - (this->min_text_height / 4);
     }
 
-    this->cache.x = this->rect.x + this->box_offset;
-    this->cache.y = this->rect.y + this->text_offset_y;
     this->cache.w = (this->cache.w - ((this->cache.w / 10) * 2));
     this->cache.h = this->cache.w;
+
+    this->cache.x = this->rect.x + this->box_offset;
+    this->cache.y = this->rect.y + (this->rect.h / 2) - (this->cache.h / 2);
 }
 
 void ekg_checkbox::on_pre_event_update(SDL_Event &sdl_event) {

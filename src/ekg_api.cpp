@@ -10,24 +10,13 @@
  * END OF EKG-LICENSE.
  **/
 #include "ekg/ekg.hpp"
+#include "ekg/api/ekg_api.hpp"
 
-uint64_t ekg_cpu_timing::last_ticks = 0;
-bool ekg_cpu_timing::clock_going_on = false;
+ekg_clock ekgapi::ui_clock_text;
+ekg_clock ekgapi::ui_clock_input;
 
 float ekgapi::display_interact_x;
 float ekgapi::display_interact_y;
-
-bool ekg_cpu_timing::start() {
-    last_ticks = SDL_GetTicks64();
-    clock_going_on = true;
-
-    return clock_going_on;
-}
-
-bool ekg_cpu_timing::endif(uint64_t ms) {
-    clock_going_on = false;
-    return SDL_GetTicks64() - last_ticks > ms;
-}
 
 void ekgapi::init() {
     EKG_ACTIVE_CALLBACK_MS_DELAY = 500;
@@ -35,10 +24,6 @@ void ekgapi::init() {
 }
 
 void ekgapi::scroll(SDL_Event &sdl_event, float &y) {
-    if (!ekg_cpu_timing::clock_going_on) {
-        return;
-    }
-
     switch (sdl_event.type) {
         case SDL_FINGERMOTION: {
             y = sdl_event.tfinger.y - ekg_display_touch_input.last_down_y;
@@ -83,7 +68,6 @@ bool ekgapi::input_down_right(SDL_Event &sdl_event, float &x, float &y) {
 
             ekg_display_touch_input.last_down_x = x;
             ekg_display_touch_input.last_down_y = y;
-            ekg_cpu_timing::start();
 
             ekgapi::display_interact_x = x;
             ekgapi::display_interact_y = y;
@@ -190,7 +174,7 @@ bool ekgapi::input_up_right(SDL_Event &sdl_event, float &x, float &y) {
             ekgapi::display_interact_x = x;
             ekgapi::display_interact_y = y;
 
-            return ekg_cpu_timing::endif(EKG_ACTIVE_CALLBACK_MS_DELAY);
+            return ekgapi::ui_clock_input.end_if(EKG_ACTIVE_CALLBACK_MS_DELAY);
         }
     }
 
@@ -482,22 +466,36 @@ void ekgapi::OpenGL::program::use() {
     glUseProgram(this->program);
 }
 
-void ekgapi::OpenGL::program::set_mat4x4(const std::string &uniform_name, float *mat4x4) {
+void ekgapi::OpenGL::program::setm4f(const std::string &uniform_name, float *mat4x4) {
     glUniformMatrix4fv(glGetUniformLocation(this->program, uniform_name.c_str()), 1, GL_FALSE, mat4x4);
 }
 
-void ekgapi::OpenGL::program::set_int(const std::string &uniform_name, int32_t val) {
+void ekgapi::OpenGL::program::set1i(const std::string &uniform_name, int32_t val) {
     glUniform1i(glGetUniformLocation(this->program, uniform_name.c_str()), val);
 }
 
-void ekgapi::OpenGL::program::set_float(const std::string &uniform_name, float val) {
+void ekgapi::OpenGL::program::set1f(const std::string &uniform_name, float val) {
     glUniform1f(glGetUniformLocation(this->program, uniform_name.c_str()), val);
 }
 
-void ekgapi::OpenGL::program::set_vec4f(const std::string &uniform_name, const float *vec4) {
+void ekgapi::OpenGL::program::set4f(const std::string &uniform_name, const float *vec4) {
     glUniform4fv(glGetUniformLocation(this->program, uniform_name.c_str()), 1, vec4);
 }
 
-void ekgapi::OpenGL::program::set_vec2f(const std::string &uniform_name, const float* vec2) {
+void ekgapi::OpenGL::program::set2f(const std::string &uniform_name, const float* vec2) {
     glUniform2fv(glGetUniformLocation(this->program, uniform_name.c_str()), 1, vec2);
+}
+
+void ekg_clock::reset() {
+    this->elapsed_ticks = SDL_GetTicks64();
+}
+
+bool ekg_clock::end_if(uint64_t ms) {
+    bool flag = SDL_GetTicks64() - this->elapsed_ticks > ms;
+    this->reset();
+    return flag;
+}
+
+bool ekg_clock::reach(uint64_t ms) {
+    return SDL_GetTicks64() - this->elapsed_ticks > ms;
 }

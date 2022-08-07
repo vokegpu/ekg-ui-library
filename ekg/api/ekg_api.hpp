@@ -31,21 +31,15 @@ struct {
 } ekg_display_touch_input;
 
 /**
- * Make the CPU count ticks to be use in ekgapi.
+ * Timing clock.
  **/
-struct ekg_cpu_timing {
-    static uint64_t last_ticks;
-    static bool clock_going_on;
-
-    /*
-     * Start count ticks.
-     */
-    static bool start();
-
-    /*
-     * Stop count ticks if > ms val argument.
-     */
-    static bool endif(uint64_t ms);
+struct ekg_clock {
+protected:
+    uint64_t elapsed_ticks;
+public:
+    void reset();
+    bool reach(uint64_t ms);
+    bool end_if(uint64_t ms);
 };
 
 /**
@@ -55,6 +49,9 @@ struct ekg_cpu_timing {
  * Here we will choose which to use. \n
  **/
 namespace ekgapi {
+    extern ekg_clock ui_clock_input;
+    extern ekg_clock ui_clock_text;
+
     /*
      * The actual x relative position of a point interacting in screen (mouse or finger input).
      */
@@ -182,28 +179,28 @@ namespace ekgapi {
             /*
              * Pass uniform float arr with size of 16 floats.
              */
-            void set_mat4x4(const std::string &uniform_name, float* mat4x4);
+            void setm4f(const std::string &uniform_name, float* mat4x4);
 
             /*
              * Pass uniform float arr with size of 4 floats.
              */
-            void set_vec4f(const std::string &uniform_name, const float* vec4);
+            void set4f(const std::string &uniform_name, const float* vec4);
 
 
             /*
              * Pass uniform float.
              */
-            void set_float(const std::string &uniform_name, float val);
+            void set1f(const std::string &uniform_name, float val);
 
             /*
              * Pass uniform float arr with size of 2 floats.
              */
-            void set_vec2f(const std::string &uniform_name, const float* vec2);
+            void set2f(const std::string &uniform_name, const float* vec2);
 
             /*
              * Pass uniform int32.
              */
-            void set_int(const std::string &uniform_name, int32_t val);
+            void set1i(const std::string &uniform_name, int32_t val);
         };
 
         /*

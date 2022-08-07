@@ -17,7 +17,8 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
             sdl_event.type == SDL_FINGERDOWN      || sdl_event.type == SDL_FINGERUP ||
             sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
             sdl_event.type == SDL_MOUSEMOTION     || sdl_event.type == SDL_FINGERMOTION ||
-            sdl_event.type == SDL_KEYDOWN         || sdl_event.type == SDL_KEYUP
+            sdl_event.type == SDL_KEYDOWN         || sdl_event.type == SDL_KEYUP ||
+            (sdl_event.type == SDL_TEXTINPUT      && !this->data_update.empty())
     );
 
     // Process user event and resized window event.

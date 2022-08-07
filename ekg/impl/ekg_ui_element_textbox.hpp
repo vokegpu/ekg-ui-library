@@ -25,19 +25,15 @@
 class ekg_textbox : public ekg_element {
 protected:
 	std::string text;
-
-	uint32_t max_cols;
-	uint32_t max_rows;
+    std::string raw_text;
 
 	float min_text_width;
 	float min_text_height;
-
-	float text_offset_x;
-	float text_offset_y;
-	uint32_t cursor_index;
-
+    
 	float last_pos_x;
 	float last_pos_y;
+    
+    ekgtext::box box;
 public:
 	ekg_textbox();
 	~ekg_textbox();
@@ -48,10 +44,10 @@ public:
     float get_min_text_width();
     float get_min_text_height();
 
-    void set_max_cols(uint32_t cols);
-    uint32_t get_max_cols();
+    void set_max_columns(uint32_t amount);
+    uint32_t get_max_columns();
 
-    void set_max_rows(uint32_t rows);
+    void set_max_rows(uint32_t amount);
     uint32_t get_max_rows();
 
     void set_width(float width);
@@ -64,6 +60,7 @@ public:
     void on_pre_event_update(SDL_Event &sdl_event) override;
     void on_event(SDL_Event &sdl_event) override;
     void on_post_event_update(SDL_Event &sdl_event) override;
+    void on_update() override;
     void on_draw_refresh() override;
 };
 

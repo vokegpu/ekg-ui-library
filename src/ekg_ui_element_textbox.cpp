@@ -10,9 +10,16 @@
  * END OF EKG-LICENSE.
  **/
 #include "ekg/ekg.hpp"
+#include "ekg/impl/ekg_ui_element_textbox.hpp"
+
 
 ekg_textbox::ekg_textbox() {
     this->type = ekg::ui::TEXTBOX;
+
+    this->box.cursor[0] = 0;
+    this->box.cursor[1] = 0;
+    this->box.cursor[2] = 0;
+    this->box.cursor[3] = 0;
 }
 
 ekg_textbox::~ekg_textbox() {
@@ -56,13 +63,21 @@ void ekg_textbox::on_event(SDL_Event &sdl_event) {
         ekgapi::set(this->flag.highlight, this->flag.over);
     } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
         ekgapi::set(this->flag.activy, this->flag.over);
-        ekgapi::set(this->flag.focused, this->flag.over);
+
+        if (this->flag.over) {
+            ekgapi::set(this->flag.focused, true);
+            this->set_should_update(true);
+        }
     } else if (ekgapi::input_up_left(sdl_event, mx, my)) {
         ekgapi::set(this->flag.activy, false);
 
         if (this->flag.focused && !this->flag.over) {
         	ekgapi::set(this->flag.focused, false);
         }
+    }
+
+    if (this->flag.focused) {
+        ekgtext::process_event(this->box, this->text, this->raw_text, sdl_event);
     }
 }
 
@@ -77,24 +92,34 @@ void ekg_textbox::on_post_event_update(SDL_Event &sdl_event) {
     }
 }
 
+void ekg_textbox::on_update() {
+    ekg_element::on_update();
+
+    if (!this->flag.focused) {
+        ekgapi::set(this->flag.extra, false);
+        this->set_should_update(false);
+        return;
+    }
+
+    bool reach_500ms_cursor_delay = ekgapi::ui_clock_text.reach(500);
+
+    if (ekgapi::ui_clock_text.reach(1000)) {
+        ekgapi::ui_clock_text.reset();
+    }
+
+    ekgapi::set(this->flag.extra, reach_500ms_cursor_delay);
+}
+
 void ekg_textbox::on_draw_refresh() {
     ekg_element::on_draw_refresh();
-    ekggpu::rectangle(this->rect, ekg::theme().button_background);
 
-    if (this->flag.highlight) {
-        ekggpu::rectangle(this->rect, ekg::theme().button_highlight);
-    }
-
-    if (this->flag.focused) {
-        ekggpu::rectangle(this->rect, ekg::theme().button_activy);
-    }
-
-    ekgfont::render(this->text, this->rect.x + this->text_offset_x, this->rect.y + this->text_offset_y, ekg::theme().string_enabled_color);
+    ekgtext::process_render_box(this->box, this->raw_text, this->rect, this->scissor_id, this->flag.extra);
 }
 
 void ekg_textbox::set_text(const std::string &string) {
     if (this->text != string) {
-        this->text = string;
+        ekgtext::process_text_rows(this->box, this->text, this->raw_text);
+        this->raw_text = string;
         this->on_sync();
     }
 }
@@ -123,7 +148,7 @@ void ekg_textbox::set_width(float width) {
 }
 
 void ekg_textbox::set_height(float height) {
-    this->set_size(this->rect.x, height);
+    this->set_size(this->rect.w, height);
 }
 
 float ekg_textbox::get_min_text_width() {
@@ -134,18 +159,18 @@ float ekg_textbox::get_min_text_height() {
     return this->min_text_height;
 }
 
-void ekg_textbox::set_max_rows(uint32_t rows) {
-
+void ekg_textbox::set_max_rows(uint32_t amount) {
+    this->box.max_rows = amount;
 }
 
 uint32_t ekg_textbox::get_max_rows() {
-    return 1;
+    return this->box.max_rows;
 }
 
-void ekg_textbox::set_max_cols(uint32_t cols) {
-
+void ekg_textbox::set_max_columns(uint32_t amount) {
+    this->box.max_columns = amount;
 }
 
-uint32_t ekg_textbox::get_max_cols() {
-    return 2;
+uint32_t ekg_textbox::get_max_columns() {
+    return this->box.max_rows;
 }
