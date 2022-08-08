@@ -118,8 +118,8 @@ void ekg_textbox::on_draw_refresh() {
 
 void ekg_textbox::set_text(const std::string &string) {
     if (this->text != string) {
-        ekgtext::process_text_rows(this->box, this->text, this->raw_text);
         this->raw_text = string;
+        ekgtext::process_text_rows(this->box, this->text, this->raw_text);
         this->on_sync();
     }
 }
@@ -159,18 +159,18 @@ float ekg_textbox::get_min_text_height() {
     return this->min_text_height;
 }
 
-void ekg_textbox::set_max_rows(uint32_t amount) {
+void ekg_textbox::set_max_rows(int32_t amount) {
     this->box.max_rows = amount;
 }
 
-uint32_t ekg_textbox::get_max_rows() {
+int32_t ekg_textbox::get_max_rows() {
     return this->box.max_rows;
 }
 
-void ekg_textbox::set_max_columns(uint32_t amount) {
+void ekg_textbox::set_max_columns(int32_t amount) {
     this->box.max_columns = amount;
 }
 
-uint32_t ekg_textbox::get_max_columns() {
+int32_t ekg_textbox::get_max_columns() {
     return this->box.max_rows;
 }

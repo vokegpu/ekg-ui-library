@@ -242,20 +242,23 @@ void ekgtext::process_text_rows(ekgtext::box &box, std::string &text, const std:
     int32_t rows_in = 0;
     int32_t columns_in = 0;
 
+    bool skip_line_flag = false;
+
     for (uint32_t i = 0; i < raw_text.size(); i++) {
         rows_in++;
+        skip_line_flag = (raw_text.at(i) == '\\' && i + 1 < raw_text.size() && raw_text.at(i + 1) == 'n');
 
-        if (rows_in > box.max_rows || (raw_text.at(i) == '\\' && i + 1 < raw_text.size() && raw_text.at(i + 1) == 'n')) {
+        if (rows_in > box.max_rows || skip_line_flag) {
             if (box.rows_per_columns.size() < columns_in) {
                 box.rows_per_columns.push_back(rows_in);
             } else {
                 box.rows_per_columns[columns_in] = rows_in;
             }
-
-            continue;
         }
 
-        text += raw_text.at(i);
+        if (!skip_line_flag) {
+            text += raw_text.at(i);
+        }
     }
 }
 

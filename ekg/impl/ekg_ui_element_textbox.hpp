@@ -44,11 +44,11 @@ public:
     float get_min_text_width();
     float get_min_text_height();
 
-    void set_max_columns(uint32_t amount);
-    uint32_t get_max_columns();
+    void set_max_columns(int32_t amount);
+    int32_t get_max_columns();
 
-    void set_max_rows(uint32_t amount);
-    uint32_t get_max_rows();
+    void set_max_rows(int32_t amount);
+    int32_t get_max_rows();
 
     void set_width(float width);
     void set_height(float height);
