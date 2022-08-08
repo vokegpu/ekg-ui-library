@@ -212,9 +212,9 @@ void ekg_element::kill() {
 }
 
 void ekg_element::set_tag(const std::string &str) {
-
+    this->tag = str;
 }
 
 std::string ekg_element::get_tag() {
-    return std::string();
+    return this->tag;
 }

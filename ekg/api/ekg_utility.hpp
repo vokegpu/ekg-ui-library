@@ -288,7 +288,7 @@ namespace ekgtext {
     /*
      * Process cursor position by matrix index position.
      */
-    void process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t column);
+    void process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t column, int32_t max_row, int32_t max_column);
 
     /*
      * Process if text is different.
@@ -299,6 +299,16 @@ namespace ekgtext {
      * Process the events of box.
      */
     void process_event(ekgtext::box &box, const ekgmath::rect &rect, std::string &text, std::string &raw_text, SDL_Event &sdl_event);
+
+    /*
+     * As you can see it resets the cursor draw.
+     */
+    void reset_cursor_loop();
+
+    /*
+     * Process draw cursor loop.
+     */
+    void process_cursor_loop(bool &flag);
 
     /*
      * Process the GPU data be is draw.

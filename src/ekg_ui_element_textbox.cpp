@@ -16,10 +16,10 @@
 ekg_textbox::ekg_textbox() {
     this->type = ekg::ui::TEXTBOX;
 
-    this->box.cursor[0] = 1;
-    this->box.cursor[1] = 1;
-    this->box.cursor[2] = 1;
-    this->box.cursor[3] = 1;
+    this->box.cursor[0] = 0;
+    this->box.cursor[1] = 0;
+    this->box.cursor[2] = 0;
+    this->box.cursor[3] = 0;
 }
 
 ekg_textbox::~ekg_textbox() {
@@ -101,24 +101,19 @@ void ekg_textbox::on_update() {
         return;
     }
 
-    bool reach_500ms_cursor_delay = ekgapi::ui_clock_text.reach(500);
-
-    if (ekgapi::ui_clock_text.reach(1000)) {
-        ekgapi::ui_clock_text.reset();
-    }
-
-    ekgapi::set(this->flag.extra, reach_500ms_cursor_delay);
+    bool draw_cursor = false;
+    ekgtext::process_cursor_loop(draw_cursor);
+    ekgapi::set(this->flag.extra, draw_cursor);
 }
 
 void ekg_textbox::on_draw_refresh() {
     ekg_element::on_draw_refresh();
-
     ekgtext::process_render_box(this->box, this->raw_text, this->rect, this->scissor_id, this->flag.extra);
 }
 
-void ekg_textbox::set_text(const std::string &string) {
-    if (this->text != string) {
-        this->raw_text = string;
+void ekg_textbox::set_text(const std::string &str) {
+    if (this->raw_text != str) {
+        this->raw_text = str;
         ekgtext::process_text_rows(this->box, this->text, this->raw_text);
         this->on_sync();
     }
@@ -160,7 +155,10 @@ float ekg_textbox::get_min_text_height() {
 }
 
 void ekg_textbox::set_max_rows(int32_t amount) {
-    this->box.max_rows = amount;
+    if (this->box.max_rows != amount) {
+        this->box.max_rows = amount;
+        ekgtext::process_text_rows(this->box, this->text, this->raw_text);
+    }
 }
 
 int32_t ekg_textbox::get_max_rows() {
@@ -168,7 +166,10 @@ int32_t ekg_textbox::get_max_rows() {
 }
 
 void ekg_textbox::set_max_columns(int32_t amount) {
-    this->box.max_columns = amount;
+    if (this->box.max_columns != amount) {
+        this->box.max_columns = amount;
+        ekgtext::process_text_rows(this->box, this->text, this->raw_text);
+    }
 }
 
 int32_t ekg_textbox::get_max_columns() {
