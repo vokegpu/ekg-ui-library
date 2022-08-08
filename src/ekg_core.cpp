@@ -71,7 +71,7 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
     }
 
     this->sizeof_render_buffer = 0;
-    this->render_buffer.fill(0);
+    this->render_buffer.fill(nullptr);
     this->data_update.clear();
 
     for (ekg_element* &element : this->data) {

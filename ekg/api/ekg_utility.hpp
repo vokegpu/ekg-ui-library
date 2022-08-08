@@ -243,20 +243,27 @@ namespace ekgtext {
         static std::vector<ekgmath::rect> selected_column_list;
 
         ekgmath::vec2f bounds;
-        std::vector<uint32_t> rows_per_columns;
+        std::vector<int32_t> rows_per_columns;
 
-        uint32_t cursor[4];
-        uint32_t rows;
-        uint32_t columns;
+        int32_t cursor[4];
+        int32_t visible[4];
 
-        uint32_t max_rows;
-        uint32_t max_columns;
+        int32_t rows = 0;
+        int32_t columns = 0;
+
+        int32_t max_rows = 0;
+        int32_t max_columns = 0;
     };
 
     /*
-     * Get the test.
+     * Get the rows in a column.
      */
-    void get_rows(ekgtext::box &box, uint32_t &rows, uint32_t &column);
+    void get_rows(ekgtext::box &box, int32_t &rows, int32_t &column);
+
+    /*
+     * Get the rows in a column.
+     */
+    void get_char_index(ekgtext::box &box, int32_t &index, int32_t rows, int32_t column);
 
     /*
      * Process the amount of rows per columns.
@@ -281,17 +288,17 @@ namespace ekgtext {
     /*
      * Process cursor position by matrix index position.
      */
-    void process_cursor_pos_index(ekgtext::box &box, uint32_t row, uint32_t column);
+    void process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t column);
 
     /*
      * Process if text is different.
      */
-    void process_new_text(ekgtext::box &box, std::string &previous_text, std::string &new_text, std::string &raw_text);
+    void process_new_text(ekgtext::box &box, std::string &previous_text, std::string &text, std::string &raw_text);
 
     /*
      * Process the events of box.
      */
-    void process_event(ekgtext::box &box, std::string &text, std::string &raw_text, SDL_Event &sdl_event);
+    void process_event(ekgtext::box &box, const ekgmath::rect &rect, std::string &text, std::string &raw_text, SDL_Event &sdl_event);
 
     /*
      * Process the GPU data be is draw.

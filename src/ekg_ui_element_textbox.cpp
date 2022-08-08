@@ -16,10 +16,10 @@
 ekg_textbox::ekg_textbox() {
     this->type = ekg::ui::TEXTBOX;
 
-    this->box.cursor[0] = 0;
-    this->box.cursor[1] = 0;
-    this->box.cursor[2] = 0;
-    this->box.cursor[3] = 0;
+    this->box.cursor[0] = 1;
+    this->box.cursor[1] = 1;
+    this->box.cursor[2] = 1;
+    this->box.cursor[3] = 1;
 }
 
 ekg_textbox::~ekg_textbox() {
@@ -77,7 +77,7 @@ void ekg_textbox::on_event(SDL_Event &sdl_event) {
     }
 
     if (this->flag.focused) {
-        ekgtext::process_event(this->box, this->text, this->raw_text, sdl_event);
+        ekgtext::process_event(this->box, this->rect, this->text, this->raw_text, sdl_event);
     }
 }
 

@@ -48,7 +48,7 @@ void ekg_popup::set_width(float width) {
 }
 
 void ekg_popup::set_height(float height) {
-    this->set_size(this->rect.w, this->component_height);
+    this->set_size(this->rect.w, height);
 }
 
 void ekg_popup::set_text_dock(uint16_t dock) {
@@ -426,14 +426,6 @@ void ekg_popup::set_offset_separator(float offset) {
 
 float ekg_popup::get_offset_separator() {
     return this->offset_separator;
-}
-
-void ekg_popup::set_tag(const std::string &str) {
-    this->tag = str;
-}
-
-std::string ekg_popup::get_tag() {
-    return this->tag;
 }
 
 void ekg_popup::place(ekg_popup *popup) {

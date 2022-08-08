@@ -19,7 +19,7 @@
 /*
  * The popup event type.
  */
-static uint32_t const EKG_EVENT = SDL_RegisterEvents(SDL_USEREVENT + 1);
+static uint32_t const EKG_EVENT = 666;
 
 /**
  * The main event struct with all events of UI.

@@ -51,9 +51,6 @@ public:
     ekg_popup();
     ~ekg_popup();
 
-    void set_tag(const std::string &str);
-    std::string get_tag();
-
     void set_offset_separator(float offset);
     float get_offset_separator();
 
