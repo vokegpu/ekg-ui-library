@@ -298,7 +298,7 @@ namespace ekgtext {
     /*
      * Process the events of box.
      */
-    void process_event(ekgtext::box &box, const ekgmath::rect &rect, std::string &text, std::string &raw_text, SDL_Event &sdl_event);
+    void process_event(ekgtext::box &box, const ekgmath::rect &rect, std::string &text, std::string &raw_text, bool &flag, SDL_Event &sdl_event);
 
     /*
      * As you can see it resets the cursor draw.

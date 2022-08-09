@@ -230,15 +230,13 @@ void ekg_combobox::on_draw_refresh() {
         ekggpu::rectangle(this->rect, ekg::theme().combobox_highlight);
     }
 
-    if (this->flag.focused) {
-        ekggpu::rectangle(this->rect, ekg::theme().combobox_activy, 1);
-        ekggpu::rectangle(this->cache, ekg::theme().combobox_activy);
-    } else {
+    if (!this->flag.focused && !this->flag.activy) {
         ekggpu::rectangle(this->rect, ekg::theme().combobox_border, 1);
         ekggpu::rectangle(this->cache, ekg::theme().combobox_border);
     }
 
-    if (this->flag.activy) {
+    if (this->flag.activy || this->flag.focused) {
+        ekggpu::rectangle(this->cache, ekg::theme().combobox_activy, 1);
         ekggpu::rectangle(this->rect, ekg::theme().combobox_activy);
     }
 

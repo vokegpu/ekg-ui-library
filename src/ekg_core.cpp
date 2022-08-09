@@ -12,7 +12,6 @@
 #include "ekg/ekg.hpp"
 #include "ekg/api/ekg_core.hpp"
 
-
 void ekg_core::process_event_section(SDL_Event &sdl_event) {
     // We do not need to track others events here.
     bool should_not_end_segment = (
@@ -56,8 +55,8 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
     this->focused_element_id = 0;
     this->focused_element_type = 0;
 
-    bool input_up = false;
-    bool input_down = false;
+    bool input_up = ekgapi::any_input_up(sdl_event);
+    bool input_down = ekgapi::any_input_down(sdl_event);
 
     for (ekg_element* &element : this->data) {
         if (element == nullptr || element->access_flag().dead) {
@@ -70,17 +69,15 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
         if (element->get_visibility() == ekg::visibility::VISIBLE && element->get_state() && element->access_flag().over) {
             this->focused_element_id = element->get_id();
             this->focused_element_type = element->get_type();
-
-            input_up = ekgapi::any_input_up(sdl_event);
-            input_down = ekgapi::any_input_down(sdl_event);
-
-            if (input_up || input_down) {
-                this->focused_element_type_input_up = input_up ? this->focused_element_type : 0;
-                this->focused_element_type_input_down = input_down ? this->focused_element_type : 0;
-            }
+            this->focused_element_type_input_up = input_up ? this->focused_element_type : this->focused_element_type_input_up;
+            this->focused_element_type_input_down = input_down ? this->focused_element_type : this->focused_element_type_input_down;
         }
 
         element->on_post_event_update(sdl_event);
+    }
+
+    if (input_up) {
+        this->reset_flag_input = true;
     }
 
     this->sizeof_render_buffer = 0;
@@ -114,6 +111,12 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
 }
 
 void ekg_core::process_update_section() {
+    if (this->reset_flag_input) {
+        this->focused_element_type_input_up = 0;
+        this->focused_element_type_input_down = 0;
+        this->reset_flag_input = 0;
+    }
+
     if (ekgutil::contains(this->todo_flags, ekgutil::action::REFRESHUPDATE)) {
         ekgutil::remove(this->todo_flags, ekgutil::action::REFRESHUPDATE);
         this->swap_buffers();

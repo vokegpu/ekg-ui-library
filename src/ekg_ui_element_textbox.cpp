@@ -75,7 +75,12 @@ void ekg_textbox::on_event(SDL_Event &sdl_event) {
     }
 
     if (this->flag.focused) {
-        ekgtext::process_event(this->box, this->rect, this->text, this->raw_text, sdl_event);
+        bool refresh = false;
+        ekgtext::process_event(this->box, this->rect, this->text, this->raw_text, refresh, sdl_event);
+
+        if (refresh) {
+            ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+        }
     }
 }
 
@@ -100,6 +105,7 @@ void ekg_textbox::on_update() {
     }
 
     bool draw_cursor = false;
+
     ekgtext::process_cursor_loop(draw_cursor);
     ekgapi::set(this->flag.extra, draw_cursor);
 }

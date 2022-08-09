@@ -53,10 +53,11 @@ private:
     uint32_t focused_element_id;
     uint32_t last_focused_element_id;
     uint32_t forced_focused_element_id;
-    uint32_t focused_element_type;
-    uint32_t focused_element_type_input_down;
-    uint32_t focused_element_type_input_up;
+    uint16_t focused_element_type;
+    uint16_t focused_element_type_input_down;
+    uint16_t focused_element_type_input_up;
     uint32_t popup_top_level;
+    bool reset_flag_input;
 
     float screen_width;
     float screen_height;
