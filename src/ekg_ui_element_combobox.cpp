@@ -117,7 +117,7 @@ void ekg_combobox::on_sync() {
     this->cache.x = this->rect.x + this->rect.w - this->cache.w;
     this->cache.y = this->rect.y;
 
-    ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+    ekg::core->dispatch_todo_event(ekgutil::action::REFRESH);
 
     bool center = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::CENTER);
     bool top = ekgutil::contains(this->enum_flags_text_dock, ekg::dock::TOP);
@@ -186,7 +186,7 @@ void ekg_combobox::on_event(SDL_Event &sdl_event) {
     } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
         ekg_element* instance;
 
-        if (this->flag.focused && (this->children_stack.ids.empty() || !ekg::the_ekg_core->find_element(instance, this->children_stack.ids.at(0)))) {
+        if (this->flag.focused && (this->children_stack.ids.empty() || !ekg::core->find_element(instance, this->children_stack.ids.at(0)))) {
             ekgapi::set(this->flag.focused, false);
             this->children_stack.ids.clear();
         }
@@ -236,8 +236,8 @@ void ekg_combobox::on_draw_refresh() {
     }
 
     if (this->flag.activy || this->flag.focused) {
-        ekggpu::rectangle(this->cache, ekg::theme().combobox_activy, 1);
-        ekggpu::rectangle(this->rect, ekg::theme().combobox_activy);
+        ekggpu::rectangle(this->rect, ekg::theme().combobox_activy, 1);
+        ekggpu::rectangle(this->cache, ekg::theme().combobox_activy);
     }
 
     ekgfont::render(this->value, this->rect.x + this->text_offset_x, this->rect.y + this->text_offset_y, ekg::theme().string_enabled_color);

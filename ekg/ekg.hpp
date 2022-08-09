@@ -45,7 +45,7 @@ namespace ekg {
     /*
      * The global variable ptr for all.
      */
-    extern ekg_core* const the_ekg_core;
+    extern ekg_core* const core;
 
     /*
      * Set offset for axis x docks.

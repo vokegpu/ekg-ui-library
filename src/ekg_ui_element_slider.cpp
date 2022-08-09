@@ -90,7 +90,7 @@ void ekg_slider::on_killed() {
 
 void ekg_slider::on_sync() {
     ekg_element::on_sync();
-    ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+    ekg::core->dispatch_todo_event(ekgutil::action::REFRESH);
 
     this->text = std::to_string(this->value);
     this->text = this->text.substr(0, this->text.find('.') + 3);
@@ -207,7 +207,7 @@ void ekg_slider::on_draw_refresh() {
         }
 
         // Draw an immediate popup at pos based on bar width.
-        ekg::the_ekg_core->immediate_popup(this->rect.x + width, this->rect.y + height, this->text);
+        ekg::core->immediate_popup(this->rect.x + width, this->rect.y + height, this->text);
     }
 
     ekggpu::rectangle(this->cache.x, this->cache.y, this->bar_width, this->bar_height, ekg::theme().slider_activy);

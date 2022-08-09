@@ -39,7 +39,7 @@ void ekg_textbox::on_sync() {
     this->rect.w = this->rect.w < this->min_text_width ? this->min_text_width : this->rect.w;
     this->rect.h = this->rect.h < this->min_text_height ? this->min_text_height : this->rect.h;
 
-    ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+    ekg::core->dispatch_todo_event(ekgutil::action::REFRESH);
 }
 
 void ekg_textbox::on_pre_event_update(SDL_Event &sdl_event) {
@@ -79,7 +79,7 @@ void ekg_textbox::on_event(SDL_Event &sdl_event) {
         ekgtext::process_event(this->box, this->rect, this->text, this->raw_text, refresh, sdl_event);
 
         if (refresh) {
-            ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+            ekg::core->dispatch_todo_event(ekgutil::action::REFRESH);
         }
     }
 }

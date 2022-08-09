@@ -11,7 +11,7 @@
  **/
 #include "ekg/ekg.hpp"
 
-ekg_core* const ekg::the_ekg_core = new ekg_core();
+ekg_core* const ekg::core = new ekg_core();
 float ekg::delta_time = 0.0f;
 float ekg::text_dock_offset = 2.0f;
 
@@ -27,8 +27,8 @@ void ekg::init(SDL_Window* &sdl_window) {
         // TODO Init SDL2 log to ARM platform.
     }
 
-    the_ekg_core->set_instances(sdl_window);
-    the_ekg_core->init();
+    core->set_instances(sdl_window);
+    core->init();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -37,32 +37,32 @@ void ekg::init(SDL_Window* &sdl_window) {
 }
 
 void ekg::quit() {
-    the_ekg_core->quit();
+    core->quit();
 }
 
 void ekg::set_font(const char *path) {
     const std::string string = std::string(path);
-    the_ekg_core->get_font_manager().load(string);
+    core->get_font_manager().load(string);
 
-    if (the_ekg_core->get_font_manager().reload()) {}
+    if (core->get_font_manager().reload()) {}
 }
 
 void ekg::poll_event(SDL_Event &sdl_event) {
-    the_ekg_core->process_event_section(sdl_event);
+    core->process_event_section(sdl_event);
 }
 
 void ekg::update(float dt) {
     ekg::delta_time = dt;
-    the_ekg_core->process_update_section();
+    core->process_update_section();
 }
 
 void ekg::render() {
-    the_ekg_core->process_render_section();
+    core->process_render_section();
 }
 
 ekg_textbox* ekg::textbox() {
     auto textbox_worker = new ekg_textbox();
-    the_ekg_core->add_element(textbox_worker);
+    core->add_element(textbox_worker);
 
     textbox_worker->set_width(100);
     textbox_worker->set_height(100);
@@ -75,7 +75,7 @@ ekg_textbox* ekg::textbox() {
 
 ekg_combobox *ekg::combobox(const std::string &tag, const std::string &value, const std::vector<std::string> &vec) {
     auto combobox_worker = new ekg_combobox();
-    the_ekg_core->add_element(combobox_worker);
+    core->add_element(combobox_worker);
 
     combobox_worker->set_text_dock(ekg::dock::LEFT);
     combobox_worker->add(vec);
@@ -89,16 +89,12 @@ ekg_combobox *ekg::combobox(const std::string &tag, const std::string &value, co
 }
 
 ekg_popup *ekg::popup(const std::string &tag, const std::vector<std::string> &vec) {
-    if (the_ekg_core->get_hovered_element_type() == ekg::ui::POPUP || the_ekg_core->get_hovered_element_type_input_down() == ekg::ui::POPUP) {
-        if (the_ekg_core->get_hovered_element_type_input_down()) {
-
-        }
-
+    if (core->get_hovered_element_type() == ekg::ui::POPUP || core->get_hovered_element_type_input_down() == ekg::ui::POPUP) {
         return nullptr;
     }
 
     auto popup_worker = new ekg_popup();
-    the_ekg_core->add_element(popup_worker);
+    core->add_element(popup_worker);
 
     popup_worker->set_tag(tag);
     popup_worker->set_text_dock(ekg::dock::LEFT);
@@ -113,7 +109,7 @@ ekg_popup *ekg::popup(const std::string &tag, const std::vector<std::string> &ve
 
 ekg_button* ekg::button(const std::string &text) {
     auto button_worker = new ekg_button();
-    the_ekg_core->add_element(button_worker);
+    core->add_element(button_worker);
 
     button_worker->set_text(text);
     button_worker->set_visibility(ekg::visibility::VISIBLE);
@@ -126,7 +122,7 @@ ekg_button* ekg::button(const std::string &text) {
 
 ekg_slider* ekg::slider(float val, float min, float max) {
     auto slider_worker = new ekg_slider();
-    the_ekg_core->add_element(slider_worker);
+    core->add_element(slider_worker);
 
     slider_worker->set_visibility(ekg::visibility::VISIBLE);
     slider_worker->set_min(min);
@@ -139,7 +135,7 @@ ekg_slider* ekg::slider(float val, float min, float max) {
 
 ekg_frame* ekg::frame() {
     auto frame_worker = new ekg_frame();
-    the_ekg_core->add_element(frame_worker);
+    core->add_element(frame_worker);
 
     frame_worker->set_visibility(ekg::visibility::VISIBLE);
     frame_worker->set_drag_dock(ekg::dock::TOP);
@@ -152,7 +148,7 @@ ekg_frame* ekg::frame() {
 
 ekg_checkbox* ekg::checkbox(const std::string &text) {
     auto checkbox_worker = new ekg_checkbox();
-    the_ekg_core->add_element(checkbox_worker);
+    core->add_element(checkbox_worker);
 
     checkbox_worker->set_visibility(ekg::visibility::VISIBLE);
     checkbox_worker->set_text_dock(ekg::dock::LEFT);
@@ -162,29 +158,29 @@ ekg_checkbox* ekg::checkbox(const std::string &text) {
 }
 
 ekg_theme &ekg::theme() {
-    return the_ekg_core->get_theme_service().get_loaded_theme();
+    return core->get_theme_service().get_loaded_theme();
 }
 
 float ekg::depth() {
-    return the_ekg_core->get_gpu_handler().get_depth_level();
+    return core->get_gpu_handler().get_depth_level();
 }
 
 void ekg::depth(float depth_level) {
-    return the_ekg_core->get_gpu_handler().set_depth_level(depth_level);
+    return core->get_gpu_handler().set_depth_level(depth_level);
 }
 
 void ekg::set_font_size(uint32_t size) {
-    the_ekg_core->get_font_manager().set_size(size);
+    core->get_font_manager().set_size(size);
 }
 
 uint32_t ekg::hovered_element_id() {
-    return the_ekg_core->get_hovered_element_id();
+    return core->get_hovered_element_id();
 }
 
 uint16_t ekg::hovered_element_type() {
-    return the_ekg_core->get_hovered_element_type();
+    return core->get_hovered_element_type();
 }
 
 ekg_event* ekg::event() {
-    return the_ekg_core->poll_event();
+    return core->poll_event();
 }
