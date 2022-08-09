@@ -283,19 +283,16 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t c
     }
 
     int32_t previous_row = row;
-    get_rows(box, row, column);
+    int32_t cursor[4] = {row, column, max_row, max_column};
 
-    if (row < 0 || (previous_row == row + 2 && previous_row == row + 1)) {
-        if (column - 1 > 0) {
-            column--;
-            get_rows(box, row, column);
-        } else {
-            row = 0;
+    for (uint8_t i = 0; i < 4; i += 2) {
+        previous_row = cursor[i];
+        get_rows(box, row, column);
+
+        if (previous_row > row && previous_row + 1 != row && column && column < box.rows_per_columns.size()) {
+            column++;
         }
     }
-
-    max_row = row;
-    max_column = column;
 
     box.cursor[0] = row;
     box.cursor[1] = column;
@@ -337,7 +334,23 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
                 }
 
                 case SDLK_RIGHT: {
-                    box.cursor[0]++;
+                    box.cursor[0]--;
+                    box.cursor[2] = box.cursor[0];
+                    box.cursor[3] = box.cursor[1];
+                    changed_cursor_pos = true;
+                    break;
+                }
+
+                case SDLK_UP: {
+                    box.cursor[1]++;
+                    box.cursor[2] = box.cursor[0];
+                    box.cursor[3] = box.cursor[1];
+                    changed_cursor_pos = true;
+                    break;
+                }
+
+                case SDLK_DOWN: {
+                    box.cursor[1]++;
                     box.cursor[2] = box.cursor[0];
                     box.cursor[3] = box.cursor[1];
                     changed_cursor_pos = true;
@@ -361,7 +374,6 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
 
         case SDL_TEXTINPUT: {
             std::string char_str = sdl_event.text.text;
-            ekgutil::log(char_str);
 
             ekgtext::process_new_text(box, text, char_str, raw_text);
             ekgtext::reset_cursor_loop();
