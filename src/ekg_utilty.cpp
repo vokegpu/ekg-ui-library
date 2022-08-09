@@ -398,9 +398,9 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
                 y += static_cast<float>(ekg::the_ekg_core->get_font_manager().get_texture_height());
             }
 
-            curr_rect.x = rect.x + x - impl;
+            curr_rect.x = rect.x + x;
             curr_rect.y = rect.y + y;
-            curr_rect.w = char_data.width + impl;
+            curr_rect.w = char_data.width + char_data.left + char_data.texture_x;
             curr_rect.h = static_cast<float>(ekg::the_ekg_core->get_font_manager().get_texture_height());
 
             flag = curr_rect.collide_aabb_with_point(mx, my);
@@ -408,7 +408,6 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
             if (flag) {
                 curr_rect.w /= 2;
                 flag = curr_rect.collide_aabb_with_point(mx, my);
-
                 if (!flag && ((i + 1 < text.size() && !flag_rolws_per_columns) || (rows_in + 1 > box.rows_per_columns[columns_in]))) {
                     rows_in++;
                 }

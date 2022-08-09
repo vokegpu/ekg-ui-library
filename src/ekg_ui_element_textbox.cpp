@@ -62,8 +62,6 @@ void ekg_textbox::on_event(SDL_Event &sdl_event) {
     if (ekgapi::motion(sdl_event, mx, my)) {
         ekgapi::set(this->flag.highlight, this->flag.over);
     } else if (ekgapi::input_down_left(sdl_event, mx, my)) {
-        ekgapi::set(this->flag.activy, this->flag.over);
-
         if (this->flag.over) {
             ekgapi::set(this->flag.focused, true);
             this->set_should_update(true);

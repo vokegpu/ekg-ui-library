@@ -10,6 +10,8 @@
  * END OF EKG-LICENSE.
  **/
 #include "ekg/ekg.hpp"
+#include "ekg/api/ekg_core.hpp"
+
 
 void ekg_core::process_event_section(SDL_Event &sdl_event) {
     // We do not need to track others events here.
@@ -54,6 +56,9 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
     this->focused_element_id = 0;
     this->focused_element_type = 0;
 
+    bool input_up = false;
+    bool input_down = false;
+
     for (ekg_element* &element : this->data) {
         if (element == nullptr || element->access_flag().dead) {
             continue;
@@ -65,6 +70,14 @@ void ekg_core::process_event_section(SDL_Event &sdl_event) {
         if (element->get_visibility() == ekg::visibility::VISIBLE && element->get_state() && element->access_flag().over) {
             this->focused_element_id = element->get_id();
             this->focused_element_type = element->get_type();
+
+            input_up = ekgapi::any_input_up(sdl_event);
+            input_down = ekgapi::any_input_down(sdl_event);
+
+            if (input_up || input_down) {
+                this->focused_element_type_input_up = input_up ? this->focused_element_type : 0;
+                this->focused_element_type_input_down = input_down ? this->focused_element_type : 0;
+            }
         }
 
         element->on_post_event_update(sdl_event);
@@ -502,4 +515,12 @@ void ekg_core::dispatch_event(SDL_Event &sdl_event) {
     sdl_event.type = SDL_USEREVENT;
     sdl_event.user.type = SDL_USEREVENT;
     SDL_PushEvent(&sdl_event);
+}
+
+uint16_t ekg_core::get_hovered_element_type_input_up() {
+    return this->focused_element_type_input_up;
+}
+
+uint16_t ekg_core::get_hovered_element_type_input_down() {
+    return this->focused_element_type_input_down;
 }

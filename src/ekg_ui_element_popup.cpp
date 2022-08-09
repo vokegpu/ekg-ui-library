@@ -232,7 +232,7 @@ void ekg_popup::on_pre_event_update(SDL_Event &sdl_event) {
     float my = 0;
 
     if (ekgapi::motion(sdl_event, mx, my)) {
-        ekgapi::set_direct(this->flag.over, this->is_hovering(mx, my));
+        ekgapi::set_direct(this->flag.over, this->is_hovering(mx, my) || this->flag.extra);
     }
 }
 
@@ -248,6 +248,7 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
         highlight = this->flag.over || !this->flag.focused || (this->has_mother() && this->mother_id == ekg::the_ekg_core->get_popup_top_level());
     } else if (ekgapi::any_input_down(sdl_event, mx, my) && this->flag.focused) {
         bool flag = ekg::the_ekg_core->get_hovered_element_type() != ekg::ui::POPUP;
+        ekgapi::set_direct(this->flag.extra, flag);
 
         if (flag) {
             ekgapi::set(this->flag.focused, false);
@@ -260,8 +261,10 @@ void ekg_popup::on_event(SDL_Event &sdl_event) {
         }
 
         highlight = this->flag.over;
-    } else if (ekgapi::any_input_up(sdl_event, mx, my) && this->flag.focused) {
-        if (this->flag.activy && this->flag.over) {
+    } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
+        ekgapi::set_direct(this->flag.extra, false);
+
+        if (this->flag.focused && this->flag.activy && this->flag.over) {
             std::string path;
             this->get_popup_path(path);
 

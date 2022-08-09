@@ -89,7 +89,11 @@ ekg_combobox *ekg::combobox(const std::string &tag, const std::string &value, co
 }
 
 ekg_popup *ekg::popup(const std::string &tag, const std::vector<std::string> &vec) {
-    if (the_ekg_core->get_hovered_element_type() == ekg::ui::POPUP) {
+    if (the_ekg_core->get_hovered_element_type() == ekg::ui::POPUP || the_ekg_core->get_hovered_element_type_input_down() == ekg::ui::POPUP) {
+        if (the_ekg_core->get_hovered_element_type_input_down()) {
+
+        }
+
         return nullptr;
     }
 

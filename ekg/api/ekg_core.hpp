@@ -54,6 +54,8 @@ private:
     uint32_t last_focused_element_id;
     uint32_t forced_focused_element_id;
     uint32_t focused_element_type;
+    uint32_t focused_element_type_input_down;
+    uint32_t focused_element_type_input_up;
     uint32_t popup_top_level;
 
     float screen_width;
@@ -116,6 +118,16 @@ public:
      * Hovered element type.
      */
     uint16_t get_hovered_element_type();
+
+    /*
+     * Hovered element type since input up was pressed.
+     */
+    uint16_t get_hovered_element_type_input_up();
+
+    /*
+     * Hovered element type since input down was pressed.
+     */
+    uint16_t get_hovered_element_type_input_down();
 
     /*
      * Draw an immediate popup in screen.
