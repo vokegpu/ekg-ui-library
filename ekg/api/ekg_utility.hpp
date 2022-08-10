@@ -293,7 +293,7 @@ namespace ekgtext {
     /*
      * Process if text is different.
      */
-    void process_new_text(ekgtext::box &box, std::string &previous_text, std::string &text, std::string &raw_text);
+    void process_new_text(ekgtext::box &box, std::string &previous_text, const std::string &text, std::string &raw_text, int32_t factor = 0);
 
     /*
      * Process the events of box.
