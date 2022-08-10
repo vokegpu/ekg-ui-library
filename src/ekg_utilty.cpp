@@ -290,8 +290,8 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t c
         cursor[column] = cursor[column] < 0 ? 0 : (cursor[column] > max_columns ? max_columns : cursor[column]);
         ekgtext::get_rows(box, max_row, cursor[column]);
 
-        if (cursor[row] == max_row + 1) {
-            if (cursor[column] == max_columns) {
+        if (cursor[row] > max_row) {
+            if (cursor[column] >= max_columns) {
                 cursor[row] = max_row;
             } else {
                 cursor[row] = 0;
@@ -321,7 +321,7 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &previous_text, co
 
         ekgtext::get_char_index(box, index, box.cursor[0], box.cursor[1]);
 
-        if (index == -1) {
+        if (index == -1 || index < 0 || index >= raw_text.size()) {
             return;
         }
 
