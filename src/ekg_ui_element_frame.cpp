@@ -27,11 +27,11 @@ void ekg_frame::on_sync() {
     this->rect.w = this->rect.w < this->min_width ? this->min_width : this->rect.w;
     this->rect.h = this->rect.h < this->min_height ? this->min_height : this->rect.h;
 
-    ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+    ekg::core->dispatch_todo_event(ekgutil::action::REFRESH);
     ekg_element* element;
 
     for (uint32_t &ids : this->children_stack.ids) {
-        if (!ekg::the_ekg_core->find_element(element, ids) || element->access_flag().dead) {
+        if (!ekg::core->find_element(element, ids) || element->access_flag().dead) {
             continue;
         }
 
@@ -216,8 +216,8 @@ void ekg_frame::place(ekg_element* element, float x, float y) {
     element->set_pos(x, y);
 
     // We need to fix the stack after put the element into frame.
-    ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::FIXSTACK);
-    ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESH);
+    ekg::core->dispatch_todo_event(ekgutil::action::FIXSTACK);
+    ekg::core->dispatch_todo_event(ekgutil::action::REFRESH);
 }
 
 void ekg_frame::set_resize_dock(uint16_t dock) {

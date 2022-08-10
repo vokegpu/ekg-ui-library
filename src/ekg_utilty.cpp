@@ -214,7 +214,7 @@ void ekgmath::vec4f::color(int32_t red, int32_t green, int32_t blue, int32_t alp
     this->w = static_cast<float>(alpha) / 255;
 }
 
-void ekgtext::get_rows(ekgtext::box &box, int32_t &rows, int32_t &column_target) {
+void ekgtext::get_rows(ekgtext::box &box, int32_t &rows, int32_t column_target) {
     if (box.rows_per_columns.empty()) {
         column_target = 0;
         return;
@@ -279,29 +279,35 @@ void ekgtext::process_cursor_pos_relative(ekgtext::box &box, const std::string &
 
 void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t column, int32_t max_row, int32_t max_column) {
     int32_t cursor[4] = {row, column, max_row, max_column};
-    int32_t max_columns = (int32_t) box.rows_per_columns.size();
+    int32_t max_columns = box.rows_per_columns.size();
 
     for (uint8_t i = 0; i < 4; i += 2) {
         row = i;
         column = i + 1;
 
-        get_rows(box, max_row, max_column);
+        cursor[column] = cursor[column] < 0 ? 0 : (cursor[column] > max_columns ? max_columns : cursor[column]);
+        get_rows(box, max_row, cursor[column]);
 
-        if (cursor[row] == max_row + 1) {
-            cursor[row] = 0;
-            cursor[column]++;
-        }
+        ekgutil::log(std::to_string(max_row));
 
-        if (cursor[column] > max_columns || cursor[row] < 0) {
-            cursor[column]--;
+        if (cursor[row] > max_row) {
+            if (cursor[column] == max_columns) {
+                cursor[row] = max_row;
+            } else {
+                ekgutil::log(std::to_string(cursor[column]) + " " + std::to_string(max_columns));
+                cursor[row] = 0;
+                cursor[column]++;
+            }
         }
 
         if (cursor[row] < 0) {
-            ekgutil::log("hi hi sou linwd");
-
-            max_column = cursor[column] - 1;
-            get_rows(box, max_row, max_column);
-            cursor[row] = max_row;
+            if (cursor[column] > 0) {
+                cursor[column]--;
+                get_rows(box, max_row, cursor[column]);
+                cursor[row] = max_row;
+            } else {
+                cursor[row] = 0;
+            }
         }
 
         box.cursor[row] = cursor[row];

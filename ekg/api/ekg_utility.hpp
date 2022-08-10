@@ -258,7 +258,7 @@ namespace ekgtext {
     /*
      * Get the rows in a column.
      */
-    void get_rows(ekgtext::box &box, int32_t &rows, int32_t &column);
+    void get_rows(ekgtext::box &box, int32_t &rows, int32_t column);
 
     /*
      * Get the rows in a column.

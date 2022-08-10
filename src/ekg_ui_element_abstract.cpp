@@ -26,7 +26,7 @@ bool ekg_element::is_hovering(float &mx, float &my) {
 void ekg_element::set_should_update(bool should_update) {
     // Prevent loop.
     if (this->update != should_update && should_update) {
-        ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::REFRESHUPDATE);
+        ekg::core->dispatch_todo_event(ekgutil::action::REFRESHUPDATE);
     }
 
     this->update = should_update;
@@ -103,7 +103,7 @@ void ekg_element::set_mother_id(uint32_t element_id) {
             return;
         }
 
-        ekg::the_ekg_core->dispatch_todo_event(ekgutil::action::FIXRECTS);
+        ekg::core->dispatch_todo_event(ekgutil::action::FIXRECTS);
     }
 }
 
@@ -200,14 +200,14 @@ void ekg_element::collect_stack(ekgutil::stack &stack) {
     ekg_element* element;
 
     for (uint32_t &ids : this->children_stack.ids) {
-        if (ekg::the_ekg_core->find_element(element, ids)) {
+        if (ekg::core->find_element(element, ids)) {
             element->collect_stack(stack);
         }
     }
 }
 
 void ekg_element::kill() {
-    ekg::the_ekg_core->kill_element(this);
+    ekg::core->kill_element(this);
     this->set_visibility(ekg::visibility::DISABLED);
 }
 

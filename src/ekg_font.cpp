@@ -176,7 +176,7 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     int32_t diff = 1;
 
     // Generate a GPU data.
-    ekg_gpu_data &gpu_data = ekg::the_ekg_core->get_gpu_handler().bind();
+    ekg_gpu_data &gpu_data = ekg::core->get_gpu_handler().bind();
 
     // Configure
     // Each char quad has 6 vertices, so we multiply 6 by length of text.
@@ -212,8 +212,8 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
         texture_h = render_h / static_cast<float>(this->texture_height);
         diff += static_cast<int32_t>(texture_x);
 
-        ekggpu::push_arr_rect(ekg::the_ekg_core->get_gpu_handler().get_cached_vertices(), render_x, render_y, render_w, render_h);
-        ekggpu::push_arr_rect(ekg::the_ekg_core->get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
+        ekggpu::push_arr_rect(ekg::core->get_gpu_handler().get_cached_vertices(), render_x, render_y, render_w, render_h);
+        ekggpu::push_arr_rect(ekg::core->get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
 
         x += char_data.texture_x;
         this->previous = *i;
@@ -229,8 +229,8 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     gpu_data.factor = (static_cast<float>(str_len)) * static_cast<float>(diff) * texture_w * x;
 
     // Bind the texture to GPU.
-    ekg::the_ekg_core->get_gpu_handler().bind_texture(gpu_data, this->bitmap_texture_id);
-    ekg::the_ekg_core->get_gpu_handler().free(gpu_data);
+    ekg::core->get_gpu_handler().bind_texture(gpu_data, this->bitmap_texture_id);
+    ekg::core->get_gpu_handler().free(gpu_data);
 }
 
 float ekg_font::get_texture_width() {
@@ -269,13 +269,13 @@ void ekg_font::accept_char(const char* c, float &x) {
 }
 
 void ekgfont::render(const std::string &text, float x, float y, ekgmath::vec4f &color_vec) {
-    ekg::the_ekg_core->get_font_manager().render(text, x, y, color_vec);
+    ekg::core->get_font_manager().render(text, x, y, color_vec);
 }
 
 float ekgfont::get_text_width(const std::string &text) {
-    return ekg::the_ekg_core->get_font_manager().get_text_width(text);
+    return ekg::core->get_font_manager().get_text_width(text);
 }
 
 float ekgfont::get_text_height(const std::string &text) {
-    return ekg::the_ekg_core->get_font_manager().get_text_height(text);
+    return ekg::core->get_font_manager().get_text_height(text);
 }
