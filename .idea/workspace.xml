@@ -19,14 +19,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_utility.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_utility.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_api.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_api.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_font.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_font.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_gpu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_gpu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_abstract.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_abstract.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_checkbox.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_checkbox.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_frame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_frame.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_theme.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_theme.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_combobox.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_combobox.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_utilty.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_utilty.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -81,11 +76,6 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="ekg" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ekg" TARGET_NAME="ekg" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -140,7 +130,8 @@
       <workItem from="1659888557754" duration="16870000" />
       <workItem from="1659914251493" duration="11850000" />
       <workItem from="1659990010815" duration="11508000" />
-      <workItem from="1660073584740" duration="17677000" />
+      <workItem from="1660073584740" duration="17998000" />
+      <workItem from="1660167496786" duration="11665000" />
     </task>
     <servers />
   </component>

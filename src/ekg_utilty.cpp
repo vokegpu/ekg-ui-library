@@ -318,17 +318,24 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &previous_text, co
     if (box.cursor[2] == box.cursor[0] && box.cursor[3] == box.cursor[1]) {
         int32_t index = 0;
         int32_t max_rows = 0;
+        int32_t max_columns = box.rows_per_columns.size() - 1 < 0 ? 0 : (int32_t) box.rows_per_columns.size() - 1;
+
+        if (box.cursor[0] - 1 > 0 && box.cursor[1] != 0 && factor > 0) {
+
+
+        }
 
         ekgtext::get_char_index(box, index, box.cursor[0], box.cursor[1]);
+        ekgtext::get_rows(box, max_rows, box.cursor[1]);
 
-        if (index == -1 || index < 0 || index >= raw_text.size()) {
+        if (index < 0 || index > raw_text.size() || index == 0) {
             return;
         }
 
         factor = index + factor > raw_text.size() ? 0 : factor;
 
         std::string left = raw_text.substr(0, index);
-        std::string right = raw_text.substr(index + factor, raw_text.size());
+        std::string right = raw_text.substr(index + factor - (box.cursor[0] == max_rows && max_rows != 0 && box.cursor[1] != max_columns), raw_text.size());
 
         raw_text = left + text + right;
         ekgtext::process_text_rows(box, previous_text, raw_text);
@@ -373,6 +380,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
                     box.cursor[0]--;
                     box.cursor[2] = box.cursor[0];
 
+                    ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
                     ekgtext::process_new_text(box, text, "", raw_text, 1);
 
                     flag = true;

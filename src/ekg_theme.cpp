@@ -22,43 +22,43 @@ void ekg_theme_service::load(const char *path_to_theme_file_configuration) {
 void ekg_theme_service::reset_theme() {
     this->loaded_theme.validation = true;
 
-    this->loaded_theme.string_enabled_color = ekgmath::vec4f(0, 0, 0, 255);
-    this->loaded_theme.string_disabled_color = ekgmath::vec4f(0, 0, 0, 150);
+    this->loaded_theme.string_enabled_color = ekgmath::vec4f(255, 255, 255, 255);
+    this->loaded_theme.string_disabled_color = ekgmath::vec4f(255, 255, 255, 150);
     this->loaded_theme.string_value_color = ekgmath::vec4f(190, 190, 190, 255);
 
-    this->loaded_theme.button_background = ekgmath::vec4f(255, 255, 255, 255);
-    this->loaded_theme.button_highlight = ekgmath::vec4f(190, 190, 190, 150);
-    this->loaded_theme.button_activy = ekgmath::vec4f(0, 0, 190, 100);
+    this->loaded_theme.button_background = ekgmath::vec4f(41, 41, 40, 255);
+    this->loaded_theme.button_highlight = ekgmath::vec4f(0, 0, 0, 150);
+    this->loaded_theme.button_activy = ekgmath::vec4f(91, 11, 122, 235);
 
-    this->loaded_theme.check_box_background = ekgmath::vec4f(255, 255, 255, 255);
-    this->loaded_theme.check_box_highlight = ekgmath::vec4f(190, 190, 190, 150);
-    this->loaded_theme.check_box_activy = ekgmath::vec4f(0, 0, 190, 100);
+    this->loaded_theme.check_box_background = ekgmath::vec4f(41, 41, 40, 255);
+    this->loaded_theme.check_box_highlight = ekgmath::vec4f(0, 0, 0, 150);
+    this->loaded_theme.check_box_activy = ekgmath::vec4f(91, 11, 122, 100);
 
-    this->loaded_theme.slider_background = ekgmath::vec4f(255, 255, 255, 255);
-    this->loaded_theme.slider_highlight = ekgmath::vec4f(190, 190, 190, 150);
-    this->loaded_theme.slider_activy = ekgmath::vec4f(0, 0, 190, 100);
+    this->loaded_theme.slider_background = ekgmath::vec4f(41, 41, 40, 255);
+    this->loaded_theme.slider_highlight = ekgmath::vec4f(0, 0, 0, 150);
+    this->loaded_theme.slider_activy = ekgmath::vec4f(91, 11, 122, 235);
 
-    this->loaded_theme.combobox_background = ekgmath::vec4f(255, 255, 255, 255);
-    this->loaded_theme.combobox_highlight = ekgmath::vec4f(190, 190, 190, 150);
-    this->loaded_theme.combobox_activy = ekgmath::vec4f(0, 0, 190, 100);
-    this->loaded_theme.combobox_border = ekgmath::vec4f(190, 190, 190, 255);
+    this->loaded_theme.combobox_background = ekgmath::vec4f(41, 41, 40, 255);
+    this->loaded_theme.combobox_highlight = ekgmath::vec4f(0, 0, 0, 150);
+    this->loaded_theme.combobox_activy = ekgmath::vec4f(91, 11, 122, 235);
+    this->loaded_theme.combobox_border = ekgmath::vec4f(0, 0, 0, 255);
 
-    this->loaded_theme.popup_background = ekgmath::vec4f(255, 255, 255, 255);
-    this->loaded_theme.popup_highlight = ekgmath::vec4f(0, 0, 190, 100);
-    this->loaded_theme.popup_border = ekgmath::vec4f(190, 190, 190, 255);
+    this->loaded_theme.popup_background = ekgmath::vec4f(41, 41, 40, 255);
+    this->loaded_theme.popup_highlight = ekgmath::vec4f(0, 0, 0, 150);
+    this->loaded_theme.popup_border = ekgmath::vec4f(0, 0, 0, 255);
 
-    this->loaded_theme.immediate_popup_background = ekgmath::vec4f(255, 255, 255, 255);
-    this->loaded_theme.immediate_popup_border = ekgmath::vec4f(190, 190, 190, 255);
+    this->loaded_theme.immediate_popup_background = ekgmath::vec4f(41, 41, 40, 255);
+    this->loaded_theme.immediate_popup_border = ekgmath::vec4f(0, 0, 0, 255);
 
-    this->loaded_theme.frame_background = ekgmath::vec4f(255, 255, 255, 255);
-    this->loaded_theme.frame_border = ekgmath::vec4f(190, 190, 190, 255);
+    this->loaded_theme.frame_background = ekgmath::vec4f(41, 41, 40, 255);
+    this->loaded_theme.frame_border = ekgmath::vec4f(0, 0, 0, 255);
 
-    this->loaded_theme.text_input_background = ekgmath::vec4f(255, 255, 255, 255);
-    this->loaded_theme.text_input_highlight = ekgmath::vec4f(190, 190, 190, 150);
-    this->loaded_theme.text_input_activy = ekgmath::vec4f(0, 0, 190, 100);
-    this->loaded_theme.text_input_cursor = ekgmath::vec4f(0, 0, 0, 255);
-    this->loaded_theme.text_input_string = ekgmath::vec4f(0, 0, 0, 255);
-    this->loaded_theme.text_input_border = ekgmath::vec4f(190, 190, 190, 255);
+    this->loaded_theme.text_input_background = ekgmath::vec4f(41, 41, 40, 255);
+    this->loaded_theme.text_input_highlight = ekgmath::vec4f(0, 0, 0, 150);
+    this->loaded_theme.text_input_activy = ekgmath::vec4f(91, 11, 122, 235);
+    this->loaded_theme.text_input_cursor = ekgmath::vec4f(255, 255, 255, 255);
+    this->loaded_theme.text_input_string = ekgmath::vec4f(255, 255, 255, 255);
+    this->loaded_theme.text_input_border = ekgmath::vec4f(0, 0, 0, 255);
 }
 
 ekg_theme &ekg_theme_service::get_loaded_theme() {

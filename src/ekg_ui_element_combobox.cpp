@@ -232,7 +232,7 @@ void ekg_combobox::on_draw_refresh() {
 
     if (!this->flag.focused && !this->flag.activy) {
         ekggpu::rectangle(this->rect, ekg::theme().combobox_border, 1);
-        ekggpu::rectangle(this->cache, ekg::theme().combobox_border);
+        ekggpu::rectangle(this->cache, ekg::theme().combobox_highlight);
     }
 
     if (this->flag.activy || this->flag.focused) {
