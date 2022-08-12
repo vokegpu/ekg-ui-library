@@ -330,7 +330,7 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &previous_text, co
         factor = index + factor > raw_text.size() ? 0 : factor;
 
         std::string left = raw_text.substr(0, index);
-        std::string right = raw_text.substr(index + factor - (max_rows != 0 && box.cursor[0] == max_rows), raw_text.size());
+        std::string right = raw_text.substr(index + factor + (!box.cursor[0] && factor == 0) - (max_rows != 0 && box.cursor[0] == max_rows), raw_text.size());
 
         raw_text = left + text + right;
         ekgtext::process_text_rows(box, previous_text, raw_text);
@@ -397,12 +397,12 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
 
         case SDL_TEXTINPUT: {
             std::string char_str = sdl_event.text.text;
+            ekgtext::process_new_text(box, text, char_str, raw_text);
 
             box.cursor[0]++;
             box.cursor[2] = box.cursor[0];
 
             ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
-            ekgtext::process_new_text(box, text, char_str, raw_text);
             ekgtext::reset_cursor_loop();
 
             flag = true;
