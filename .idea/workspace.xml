@@ -22,7 +22,6 @@
       <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_theme.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_theme.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_combobox.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_combobox.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_utilty.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_utilty.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,7 +130,8 @@
       <workItem from="1659914251493" duration="11850000" />
       <workItem from="1659990010815" duration="11508000" />
       <workItem from="1660073584740" duration="17998000" />
-      <workItem from="1660167496786" duration="11665000" />
+      <workItem from="1660167496786" duration="12258000" />
+      <workItem from="1660235710230" duration="4484000" />
     </task>
     <servers />
   </component>
