@@ -32,7 +32,7 @@ struct ekg_gpu_data {
 
     float color[4];
     float rect[4];
-    float factor = 0;
+    int32_t factor = 0;
 };
 
 /**
@@ -73,7 +73,7 @@ protected:
     ekg_gpu_scissor allocated_gpu_scissor[2048];
 
     bool should_alloc;
-    float allocated_factor;
+    int32_t allocated_factor;
     int32_t current_scissor_bind;
 
     ekgapi::OpenGL::program default_program;

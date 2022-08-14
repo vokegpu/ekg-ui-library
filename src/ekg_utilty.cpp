@@ -252,6 +252,7 @@ void ekgtext::process_text_rows(ekgtext::box &box, std::string &text, const std:
         skip_line_flag = (raw_text.at(i) == '\\' && i + 1 < raw_text.size() && raw_text.at(i + 1) == 'n');
 
         if (rows_in > box.max_rows || skip_line_flag || end) {
+            ekgutil::log(std::to_string(rows_in));
             total_rows_in += rows_in + end;
             box.rows_per_columns.push_back(total_rows_in);
 
@@ -463,7 +464,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
             char_str = text.at(i);
             previous_x = 0;
 
-            ekg::core->get_font_manager().accept_char(&char_str, previous_x);
+            ekg::core->get_font_manager().set_previous_char_glyph(&char_str, previous_x);
             ekg::core->get_font_manager().at(char_data, char_str);
 
             x += previous_x;
@@ -533,7 +534,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
     float texture_x = 0, texture_y = 0, texture_w = 0, texture_h = 0;
     float impl = (static_cast<float>(ekg::core->get_font_manager().get_texture_height()) / 8) / 2;
 
-    int32_t diff = 1;
+    int32_t diff = 666;
     const bool unique_cursor = box.cursor[2] == box.cursor[0] && box.cursor[3] == box.cursor[1];
 
     // Generate a GPU data.
@@ -570,7 +571,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
     for (const char* i = char_str; *i; i++) {
         prev_x = 0;
 
-        ekg::core->get_font_manager().accept_char(i, prev_x);
+        ekg::core->get_font_manager().set_previous_char_glyph(i, prev_x);
         ekg::core->get_font_manager().at(char_data, *i);
 
         x += prev_x;
@@ -581,9 +582,11 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
         texture_x = char_data.x;
         texture_w = render_w / static_cast<float>(ekg::core->get_font_manager().get_texture_width());
         texture_h = render_h / static_cast<float>(ekg::core->get_font_manager().get_texture_height());
-        diff += static_cast<int32_t>(texture_x);
+        diff -= *i;
 
-        if (rows_in > box.max_rows || (box.rows_per_columns.size() > columns_in && rows_in > box.rows_per_columns[columns_in])) {
+        ekgtext::get_rows(box, rows_per_column, columns_in);
+
+        if (rows_in > box.max_rows || rows_in > rows_per_column) {
             rows_in = 0;
             columns_in++;
 
@@ -616,8 +619,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
             ekggpu::push_arr_rect(ekg::core->get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
         }
 
-        ekgtext::get_rows(box, rows_per_column, columns_in);
-        bool cursor_out_of_str_range = (columns_in < box.rows_per_columns.size() && rows_in + 1 == rows_per_column && rows_in + 1 == box.cursor[0] && columns_in == box.cursor[1]);
+        bool cursor_out_of_str_range = rows_in + 1 == rows_per_column && rows_in + 1 == box.cursor[0] && columns_in == box.cursor[1];
 
         if (unique_cursor && (cursor_out_of_str_range || (rows_in == box.cursor[0] && columns_in == box.cursor[1]))) {
             curr_rect.x += cursor_out_of_str_range ? (char_data.width == 0 ? char_data.texture_x : char_data.width) : 0;
@@ -643,7 +645,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
     gpu_data.color[3] = ekg::theme().text_input_string.w;
 
     // Set the factor difference.
-    gpu_data.factor = (static_cast<float>(str_len)) * static_cast<float>(diff) * texture_w * x;
+    gpu_data.factor = diff - ((int32_t) str_len * 6);
 
     // Bind the texture to GPU.
     ekg::core->get_gpu_handler().bind_texture(gpu_data, ekg::core->get_font_manager().get_bitmap_texture_id());

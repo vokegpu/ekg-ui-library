@@ -177,7 +177,7 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     float render_x = 0, render_y = 0, render_w = 0, render_h = 0;
     float texture_x = 0, texture_y = 0, texture_w = 0, texture_h = 0;
     float impl = (static_cast<float>(this->texture_height) / 8);
-    int32_t diff = 1;
+    int32_t diff = 666;
 
     // Generate a GPU data.
     ekg_gpu_data &gpu_data = ekg::core->get_gpu_handler().bind();
@@ -214,7 +214,8 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
         texture_x = char_data.x;
         texture_w = render_w / static_cast<float>(this->texture_width);
         texture_h = render_h / static_cast<float>(this->texture_height);
-        diff += static_cast<int32_t>(texture_x);
+
+        diff -= *i;
 
         ekggpu::push_arr_rect(ekg::core->get_gpu_handler().get_cached_vertices(), render_x, render_y, render_w, render_h);
         ekggpu::push_arr_rect(ekg::core->get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
@@ -230,7 +231,7 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
     gpu_data.color[3] = color_vec.w;
 
     // Set the factor difference.
-    gpu_data.factor = (static_cast<float>(str_len)) * static_cast<float>(diff) * texture_w * x;
+    gpu_data.factor = diff - ((int32_t) str_len * 6);
 
     // Bind the texture to GPU.
     ekg::core->get_gpu_handler().bind_texture(gpu_data, this->bitmap_texture_id);
@@ -265,7 +266,7 @@ GLuint ekg_font::get_bitmap_texture_id() {
     return this->bitmap_texture_id;
 }
 
-void ekg_font::accept_char(const char* c, float &x) {
+void ekg_font::set_previous_char_glyph(const char* c, float &x) {
     if (this->use_kerning && this->previous && *c) {
         FT_Get_Kerning(this->face, this->previous, *c, 0, &this->previous_char_vec);
         x += static_cast<float>(this->previous_char_vec.x >> 6);

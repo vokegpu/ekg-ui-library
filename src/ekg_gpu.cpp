@@ -301,7 +301,7 @@ void ekggpu::rectangle(float x, float y, float w, float h, ekgmath::vec4f &color
 
     // Set
     gpu_data.category = line_thickness != 0 ? ekgutil::shape_category::OUTLINE : gpu_data.category;
-    gpu_data.factor = static_cast<float>(line_thickness);
+    gpu_data.factor = line_thickness;
 
     gpu_data.rect[0] = static_cast<float>(static_cast<int32_t>(x));
     gpu_data.rect[1] = static_cast<float>(static_cast<int32_t>(y));
@@ -331,7 +331,7 @@ void ekggpu::circle(float x, float y, float r, ekgmath::vec4f &color_vec) {
     // Configure the GPU data.
     gpu_data.data = 6;
     gpu_data.category = ekgutil::shape_category::CIRCLE;
-    gpu_data.factor = r;
+    gpu_data.factor = static_cast<int32_t>(r);
 
     gpu_data.rect[0] = static_cast<float>(static_cast<int32_t>(x));
     gpu_data.rect[1] = static_cast<float>(static_cast<int32_t>(y));

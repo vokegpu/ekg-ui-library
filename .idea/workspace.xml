@@ -19,7 +19,10 @@
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_gpu.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_gpu.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_font.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_font.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_gpu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_gpu.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_utilty.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_utilty.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -74,9 +77,9 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="ekg" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ekg" TARGET_NAME="ekg" CONFIG_NAME="Debug">
@@ -139,7 +142,8 @@
       <workItem from="1660269993731" duration="23000" />
       <workItem from="1660344315724" duration="57000" />
       <workItem from="1660410011911" duration="647000" />
-      <workItem from="1660425734623" duration="18671000" />
+      <workItem from="1660425734623" duration="18847000" />
+      <workItem from="1660486083391" duration="13072000" />
     </task>
     <servers />
   </component>
