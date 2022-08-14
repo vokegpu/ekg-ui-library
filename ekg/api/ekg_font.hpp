@@ -53,6 +53,7 @@ private:
 
 	uint32_t texture_width = 0;
     uint32_t texture_height = 0;
+    uint32_t min_char_width = 0;
 
 	GLuint bitmap_texture_id;
 	std::string font_path;
@@ -66,6 +67,7 @@ private:
 public:
     float get_texture_width();
     float get_texture_height();
+    float get_min_char_width();
 
     FT_UInt &get_previous_char();
     FT_Bool &get_kerning();

@@ -10,6 +10,8 @@
  * END OF EKG-LICENSE.
  **/
 #include "ekg/ekg.hpp"
+#include "ekg/api/ekg_font.hpp"
+
 #include <cmath>
 
 void ekg_font::quit() {
@@ -36,6 +38,7 @@ void ekg_font::refresh() {
 
     this->texture_width = 0;
     this->texture_height = 0;
+    this->min_char_width = 0;
 
     this->use_kerning = FT_HAS_KERNING(this->face);
     this->glyph_slot = this->face->glyph;
@@ -46,6 +49,7 @@ void ekg_font::refresh() {
         }
 
         this->texture_width += this->glyph_slot->bitmap.width;
+        this->min_char_width = std::max(this->min_char_width, this->glyph_slot->bitmap.width);
         this->texture_height = std::max(this->texture_height, this->glyph_slot->bitmap.rows);
     }
 
@@ -266,6 +270,10 @@ void ekg_font::accept_char(const char* c, float &x) {
         FT_Get_Kerning(this->face, this->previous, *c, 0, &this->previous_char_vec);
         x += static_cast<float>(this->previous_char_vec.x >> 6);
     }
+}
+
+float ekg_font::get_min_char_width() {
+    return static_cast<float>(this->min_char_width) / 2;
 }
 
 void ekgfont::render(const std::string &text, float x, float y, ekgmath::vec4f &color_vec) {

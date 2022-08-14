@@ -323,6 +323,13 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &previous_text, co
         ekgtext::get_char_index(box, index, box.cursor[0], box.cursor[1]);
         ekgtext::get_rows(box, max_rows, box.cursor[1]);
 
+        if (factor == 0 && box.cursor[0] == max_rows) {
+            box.cursor[0]++;
+            box.cursor[2] = box.cursor[0];
+
+            ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
+        }
+
         if (index <= 0 || index > raw_text.size()) {
             return;
         }
@@ -330,7 +337,7 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &previous_text, co
         factor = index + factor > raw_text.size() ? 0 : factor;
 
         std::string left = raw_text.substr(0, index);
-        std::string right = raw_text.substr(index + factor + (!box.cursor[0] && factor == 0) - (max_rows != 0 && box.cursor[0] == max_rows), raw_text.size());
+        std::string right = raw_text.substr(index + factor - (max_rows != 0 && box.cursor[0] == max_rows), raw_text.size());
 
         raw_text = left + text + right;
         ekgtext::process_text_rows(box, previous_text, raw_text);
@@ -436,7 +443,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
         float y = box.bounds.y;
         float previous_x = 0;
 
-        bool flag = false;
+        flag = false;
         bool flag_rows_per_columns = false;
 
         float impl = (static_cast<float>(ekg::core->get_font_manager().get_texture_height()) / 8) / 2;
@@ -540,6 +547,9 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
     ekgmath::rect curr_rect;
     ekgmath::rect cursor_rect;
 
+    float min_char_width = ekg::core->get_font_manager().get_min_char_width();
+    float sub_min_char_width = min_char_width / 2;
+
     float x = box.bounds.x;
     float y = box.bounds.y;
 
@@ -556,9 +566,15 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
     bool once_visible = true;
     bool visible = false;
 
+    float prev_x = 0;
+
     for (const char* i = char_str; *i; i++) {
-        ekg::core->get_font_manager().accept_char(i, x);
+        prev_x = 0;
+
+        ekg::core->get_font_manager().accept_char(i, prev_x);
         ekg::core->get_font_manager().at(char_data, *i);
+
+        x += prev_x;
 
         render_w = char_data.width;
         render_h = char_data.height;
@@ -612,6 +628,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
         }
 
         x += char_data.texture_x;
+
         rows_in++;
         ekg::core->get_font_manager().get_previous_char() = *i;
     }
