@@ -330,6 +330,8 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &previous_text, co
             ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
         }
 
+        ekgutil::log(std::to_string(index));
+
         if (index <= 0 || index > raw_text.size()) {
             return;
         }
@@ -337,7 +339,7 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &previous_text, co
         factor = index + factor > raw_text.size() ? 0 : factor;
 
         std::string left = raw_text.substr(0, index);
-        std::string right = raw_text.substr(index + factor - (max_rows != 0 && box.cursor[0] == max_rows), raw_text.size());
+        std::string right = raw_text.substr(index + factor - (box.cursor[0] != 0 && box.cursor[0] == max_rows), raw_text.size());
 
         raw_text = left + text + right;
         ekgtext::process_text_rows(box, previous_text, raw_text);
@@ -547,9 +549,6 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
     ekgmath::rect curr_rect;
     ekgmath::rect cursor_rect;
 
-    float min_char_width = ekg::core->get_font_manager().get_min_char_width();
-    float sub_min_char_width = min_char_width / 2;
-
     float x = box.bounds.x;
     float y = box.bounds.y;
 
@@ -621,7 +620,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
         bool cursor_out_of_str_range = (columns_in < box.rows_per_columns.size() && rows_in + 1 == rows_per_column && rows_in + 1 == box.cursor[0] && columns_in == box.cursor[1]);
 
         if (unique_cursor && (cursor_out_of_str_range || (rows_in == box.cursor[0] && columns_in == box.cursor[1]))) {
-            curr_rect.x += cursor_out_of_str_range ? char_data.width : 0;
+            curr_rect.x += cursor_out_of_str_range ? (char_data.width == 0 ? char_data.texture_x : char_data.width) : 0;
             curr_rect.w = 2;
             curr_rect.h = ekg::core->get_font_manager().get_texture_height() + impl;
             cursor_rect.copy(curr_rect);
