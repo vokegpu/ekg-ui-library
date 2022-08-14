@@ -19,10 +19,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_gpu.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_gpu.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_font.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/ekg/api/ekg_font.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_font.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_font.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_gpu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_gpu.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_utilty.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_utilty.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -143,7 +141,7 @@
       <workItem from="1660344315724" duration="57000" />
       <workItem from="1660410011911" duration="647000" />
       <workItem from="1660425734623" duration="18847000" />
-      <workItem from="1660486083391" duration="13072000" />
+      <workItem from="1660486083391" duration="19055000" />
     </task>
     <servers />
   </component>
@@ -160,6 +158,17 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/ekg/api/ekg_utility.hpp</url>
+          <line>298</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

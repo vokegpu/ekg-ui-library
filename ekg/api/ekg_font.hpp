@@ -73,7 +73,7 @@ public:
     FT_Bool &get_kerning();
     FT_Vector_ &get_previous_char_vec();
 
-    void accept_char(const char* c, float &x);
+    void set_previous_char_glyph(const char* c, float &x);
     void at(ekg_char_data &chara_data, int32_t i);
     GLuint get_bitmap_texture_id();
 
