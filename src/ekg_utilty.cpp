@@ -248,20 +248,24 @@ void ekgtext::process_text_rows(ekgtext::box &box, std::string &text, const std:
     bool jump_line = false;
 
     for (uint32_t i = 0; i < raw_text.size(); i++) {
-        end = i + 1 == raw_text.size();
-
         if (i < box.break_line_list.size()) {
             jump_line = rows_in == box.break_line_list[columns_in];
         } else {
-            jump_line = false;
             box.break_line_list.push_back(-1);
         }
 
-        if (rows_in > box.max_rows || jump_line || end) {
-            total_rows_in += rows_in + end;
+        jump_line = jump_line || rows_in > box.max_rows;
+        end = i + 1 == raw_text.size();
+
+        if (jump_line || end) {
+            // Increase + 1 value at end (force to finish this column).
+            total_rows_in += rows_in + (end && !jump_line);
             box.rows_per_columns.push_back(total_rows_in);
 
-            ekgutil::log(std::to_string(rows_in));
+            // It fix a issue with lines columns and rows mapping.
+            if (end && jump_line) {
+                box.rows_per_columns.push_back(total_rows_in);
+            }
 
             rows_in = 0;
             columns_in++;
@@ -288,12 +292,15 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t c
     int32_t cursor[4] = {row, column, max_row, max_column};
     int32_t max_columns = box.rows_per_columns.size() - 1 < 0 ? 0 : (int32_t) box.rows_per_columns.size() - 1;
 
+    // Sync rows and columns correctly.
     for (uint8_t i = 0; i < 4; i += 2) {
         row = i;
         column = i + 1;
 
         cursor[column] = cursor[column] < 0 ? 0 : (cursor[column] > max_columns ? max_columns : cursor[column]);
         ekgtext::get_rows(box, max_row, cursor[column]);
+
+        ekgutil::log(std::to_string(cursor[row]) + " " + std::to_string(cursor[column]) + " " + std::to_string(max_row));
 
         if (cursor[row] > max_row) {
             if (cursor[column] >= max_columns) {
@@ -403,15 +410,16 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
 
                     break;
                 }
+            }
 
-                case SDLK_RETURN: {
-                    std::string char_str = "\n";
-                    ekgtext::process_new_text(box, text, char_str, raw_text);
+            if (k == SDLK_RETURN2 || k == SDLK_RETURN || k == SDLK_KP_ENTER) {
+                std::string char_str = "\n";
+                ekgtext::process_new_text(box, text, char_str, raw_text);
 
-                    flag = true;
+                box.cursor[0]++;
+                box.cursor[2] = box.cursor[0];
 
-                    break;
-                }
+                flag = true;
             }
 
             if (flag) {
@@ -640,15 +648,13 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
             ekggpu::push_arr_rect(ekg::core->get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
         }
 
-        bool cursor_out_of_str_range = rows_in + 1 == rows_per_column && rows_in + 1 == box.cursor[0] && columns_in == box.cursor[1];
+        bool cursor_out_of_str_range = rows_in + 1 == rows_per_column && rows_in + 1 == box.cursor[0];
 
-        if (unique_cursor && (cursor_out_of_str_range || (rows_in == box.cursor[0] && columns_in == box.cursor[1]))) {
+        if (unique_cursor && (cursor_out_of_str_range || rows_in == box.cursor[0]) && columns_in == box.cursor[1]) {
             curr_rect.x += cursor_out_of_str_range ? (char_data.width == 0 ? char_data.texture_x : char_data.width) : 0;
             curr_rect.w = 2;
             curr_rect.h = ekg::core->get_font_manager().get_texture_height() + impl;
             cursor_rect.copy(curr_rect);
-
-            ekgutil::log(std::to_string(rows_in) + " " + std::to_string(rows_per_column));
         }
 
         x += char_data.texture_x;
