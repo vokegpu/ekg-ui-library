@@ -261,6 +261,8 @@ void ekgtext::process_text_rows(ekgtext::box &box, std::string &text, const std:
             total_rows_in += rows_in + end;
             box.rows_per_columns.push_back(total_rows_in);
 
+            ekgutil::log(std::to_string(rows_in));
+
             rows_in = 0;
             columns_in++;
         }
@@ -328,23 +330,20 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &previous_text, st
         if (text == "\n") {
             text.clear();
             box.break_line_list[box.cursor[1]] = box.cursor[0];
-
-            ekgutil::log(std::to_string(box.cursor[0]));
         }
 
         int32_t row_break_line = 0;
         ekgtext::get_row_break_line(box, row_break_line, box.cursor[1]);
-
-        if (factor > 1 && box.cursor[0] == row_break_line) {
-            ekgutil::log(std::to_string(row_break_line));
-            box.break_line_list[box.cursor[1]] = -1;
-        }
 
         if (factor == 0 && box.cursor[0] == max_rows) {
             box.cursor[0]++;
             box.cursor[2] = box.cursor[0];
 
             ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
+        }
+
+        if (factor == 1 && box.cursor[0] == max_rows) {
+            box.break_line_list[box.cursor[1]] = -1;
         }
 
         if (box.cursor[0] < -1 || index > raw_text.size()) {
@@ -648,6 +647,8 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
             curr_rect.w = 2;
             curr_rect.h = ekg::core->get_font_manager().get_texture_height() + impl;
             cursor_rect.copy(curr_rect);
+
+            ekgutil::log(std::to_string(rows_in) + " " + std::to_string(rows_per_column));
         }
 
         x += char_data.texture_x;
