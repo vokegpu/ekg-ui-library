@@ -244,6 +244,7 @@ namespace ekgtext {
 
         ekgmath::vec2f bounds;
         std::vector<int32_t> rows_per_columns;
+        std::vector<int32_t> break_line_list;
 
         int32_t cursor[4];
         int32_t visible[4];
@@ -254,6 +255,11 @@ namespace ekgtext {
         int32_t max_rows = 0;
         int32_t max_columns = 0;
     };
+
+    /*
+     * Get the break line index.
+     */
+    void get_row_break_line(ekgtext::box &box, int32_t &row_target, int32_t column);
 
     /*
      * Get the rows in a column.
@@ -293,7 +299,7 @@ namespace ekgtext {
     /*
      * Process if text is different.
      */
-    void process_new_text(ekgtext::box &box, std::string &previous_text, const std::string &text, std::string &raw_text, int32_t factor = 0);
+    void process_new_text(ekgtext::box &box, std::string &previous_text, std::string text, std::string &raw_text, int32_t factor = 0);
 
     /*
      * Process the events of box.
