@@ -264,7 +264,7 @@ void ekgtext::process_text_rows(ekgtext::box &box, std::string &text, const std:
 
             // It fix a issue with lines columns and rows mapping.
             if (end && jump_line) {
-                box.rows_per_columns.push_back(total_rows_in);
+                box.rows_per_columns.push_back(total_rows_in + 1);
             }
 
             rows_in = 0;
@@ -615,7 +615,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
 
         ekgtext::get_rows(box, rows_per_column, columns_in);
 
-        if (rows_in > box.max_rows || rows_in > rows_per_column) {
+        if (rows_in > rows_per_column) {
             rows_in = 0;
             columns_in++;
 
@@ -651,6 +651,8 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
         bool cursor_out_of_str_range = rows_in + 1 == rows_per_column && rows_in + 1 == box.cursor[0];
 
         if (unique_cursor && (cursor_out_of_str_range || rows_in == box.cursor[0]) && columns_in == box.cursor[1]) {
+            ekgutil::log(std::to_string(cursor_out_of_str_range));
+
             curr_rect.x += cursor_out_of_str_range ? (char_data.width == 0 ? char_data.texture_x : char_data.width) : 0;
             curr_rect.w = 2;
             curr_rect.h = ekg::core->get_font_manager().get_texture_height() + impl;

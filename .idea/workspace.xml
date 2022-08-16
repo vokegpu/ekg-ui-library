@@ -62,7 +62,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;
   }
 }</component>
@@ -74,11 +74,6 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="ekg" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ekg" TARGET_NAME="ekg" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -140,7 +135,10 @@
       <workItem from="1660344315724" duration="57000" />
       <workItem from="1660410011911" duration="647000" />
       <workItem from="1660425734623" duration="18847000" />
-      <workItem from="1660486083391" duration="34703000" />
+      <workItem from="1660486083391" duration="34996000" />
+      <workItem from="1660582970367" duration="12000" />
+      <workItem from="1660604182624" duration="340000" />
+      <workItem from="1660604633009" duration="3099000" />
     </task>
     <servers />
   </component>
