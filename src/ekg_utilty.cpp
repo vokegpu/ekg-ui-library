@@ -300,8 +300,6 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t c
         cursor[column] = cursor[column] < 0 ? 0 : (cursor[column] > max_columns ? max_columns : cursor[column]);
         ekgtext::get_rows(box, max_row, cursor[column]);
 
-        ekgutil::log(std::to_string(cursor[row]) + " " + std::to_string(cursor[column]) + " " + std::to_string(max_row));
-
         if (cursor[row] > max_row) {
             if (cursor[column] >= max_columns) {
                 cursor[row] = max_row;
@@ -353,7 +351,7 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &previous_text, st
             box.break_line_list[box.cursor[1]] = -1;
         }
 
-        if (box.cursor[0] < -1 || index > raw_text.size()) {
+        if (box.cursor[0] < -1 || box.cursor[0] == 0 && factor != 0 || index > raw_text.size()) {
             return;
         }
 
@@ -405,9 +403,10 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
                     box.cursor[0]--;
                     box.cursor[2] = box.cursor[0];
 
+                    ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
                     ekgtext::process_new_text(box, text, "", raw_text, 1);
-                    flag = true;
 
+                    flag = true;
                     break;
                 }
             }
