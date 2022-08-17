@@ -237,10 +237,10 @@ void ekgtext::get_char_index(ekgtext::box &box, int32_t &index, int32_t rows, in
         return;
     }
 
+    // Every new line less one slot from index of raw text char list,
+    // it means that should increase one index slot for each less.
     int32_t concurrent_rows = column - 1 < 0 ? 0 : box.char_index_list[column - 1];
-
-    concurrent_rows = concurrent_rows < 0 ? 0 : concurrent_rows + column;
-    index = concurrent_rows + rows;
+    index = concurrent_rows + column + rows;
 }
 
 void ekgtext::process_text_rows(ekgtext::box &box, std::string &raw_text) {
@@ -255,17 +255,13 @@ void ekgtext::process_text_rows(ekgtext::box &box, std::string &raw_text) {
 
     bool end = false;
     bool jump_line = false;
-    bool forced_jump_line = false;
 
     for (uint32_t i = 0; i < text_cached.size(); i++) {
-        if (i < box.break_line_list.size()) {
-            forced_jump_line = rows_in == box.break_line_list[columns_in];
-            jump_line = forced_jump_line;
-        } else {
-            box.break_line_list.push_back(-1);
+        if (columns_in > box.break_line_list.size() || box.break_line_list.empty()) {
+            box.break_line_list.push_back(box.max_rows);
         }
 
-        jump_line = jump_line || rows_in > box.max_rows;
+        jump_line = rows_in == box.break_line_list[columns_in];
         end = i + 1 == text_cached.size();
 
         if (jump_line || end) {
@@ -350,8 +346,6 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
         if (box.cursor[0] == box.cursor[2]) {
             box.cursor[0]--;
         }
-    } else if (action == ekgtext::action::INSERT_LINE) {
-        box.break_line_list[box.cursor[1]] = box.cursor[0] + 1;
     }
 
     ekgtext::get_char_index(box, min_cursor_index, box.cursor[0], box.cursor[1]);
@@ -367,14 +361,65 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
         raw_text = left + text + right;
     }
 
-    if (action == ekgtext::action::INSERT) {
-        int32_t max_row = 0;
-        ekgtext::get_rows(box, max_row, box.cursor[1]);
+    int32_t max_rows = 0;
+    ekgtext::get_rows(box, max_rows, box.cursor[1]);
 
+    bool flag_new_line = action == ekgtext::action::INSERT_LINE;
+    bool flag_remove_line = false;
+
+    if (action == ekgtext::action::INSERT) {
         box.cursor[0]++;
-        box.break_line_list[box.cursor[1]] = max_row + 1;
-    } else if (action == ekgtext::action::INSERT_LINE) {
-        box.cursor[0] += 2;
+        box.break_line_list[box.cursor[1]] = max_rows + 1;
+    } else if (action == ekgtext::action::REMOVE) {
+        box.break_line_list[box.cursor[1]] = max_rows - 1;
+        flag_remove_line = box.break_line_list[box.cursor[1]] < 0;
+    } else if (action == ekgtext::action::REMOVE_OPPOSITE) {
+        box.break_line_list[box.cursor[1]] = max_rows - 1;
+        flag_remove_line = box.break_line_list[box.cursor[1]] < 0;
+    }
+
+    if (flag_new_line || flag_remove_line) {
+        if (flag_new_line) {
+            box.break_line_list.push_back(box.max_rows);
+        }
+
+        const std::vector<int32_t> previous_list = box.break_line_list;
+        box.break_line_list.clear();
+
+        int32_t target_amount = 0;
+        int32_t concurrent_amount = 0;
+        int32_t previous_amount = 0;
+
+        for (int32_t i = 0; i < previous_list.size(); i++) {
+            concurrent_amount = previous_list[i];
+
+            if (flag_remove_line && i == box.cursor[1] + 1) {
+                target_amount = concurrent_amount;
+                continue;
+            }
+
+            if (flag_new_line && i == box.cursor[1]) {
+                previous_amount = concurrent_amount;
+                concurrent_amount = box.cursor[0] - 1 < 0 ? 0 : box.cursor[0] - 1;
+                ekgutil::log("stage one");
+            } else if (flag_new_line && i == box.cursor[1] + 1) {
+                concurrent_amount = previous_amount - (box.cursor[0] - 1 < 0 ? 0 : box.cursor[0] - 1);
+                ekgutil::log("stage two");
+            } else if (flag_new_line && i > box.cursor[1] + 1) {
+                target_amount = concurrent_amount;
+                concurrent_amount = previous_amount;
+                previous_amount = target_amount;
+                ekgutil::log("stage three");
+            }
+
+            box.break_line_list.push_back(concurrent_amount);
+        }
+
+        if (flag_remove_line) {
+            box.break_line_list[box.cursor[1]] += target_amount;
+        } else if (flag_new_line) {
+            box.cursor[0] += 2;
+        }
     }
 
     // Reset cursor after change.
@@ -447,9 +492,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
             }
 
             if (k == SDLK_RETURN2 || k == SDLK_RETURN || k == SDLK_KP_ENTER) {
-                box.cursor[2]++;
                 ekgtext::process_new_text(box, raw_text, "", ekgtext::action::INSERT_LINE);
-
                 flag = true;
             }
 
@@ -723,5 +766,5 @@ void ekgtext::get_row_break_line(ekgtext::box &box, int32_t &row_target, int32_t
         return;
     }
 
-    row_target = box.break_line_list[column] - 1 < 0 ? -1 : box.break_line_list[column] - 1;
+    row_target = box.break_line_list[column];
 }
