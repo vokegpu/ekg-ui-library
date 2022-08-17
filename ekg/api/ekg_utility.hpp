@@ -247,8 +247,6 @@ namespace ekgtext {
      * Store text position, cursor position and visual details.
      **/
     struct box {
-        static std::vector<ekgmath::rect> selected_column_list;
-
         ekgmath::vec2f bounds;
         std::vector<int32_t> char_index_list;
         std::vector<int32_t> break_line_list;
@@ -256,11 +254,10 @@ namespace ekgtext {
         int32_t cursor[4];
         int32_t visible[4];
 
-        int32_t rows = 0;
-        int32_t columns = 0;
-
         int32_t max_rows = 0;
         int32_t max_columns = 0;
+
+        bool final_flag;
     };
 
     /*

@@ -11,10 +11,7 @@
  **/
 #include "ekg/ekg.hpp"
 #include "ekg/api/ekg_utility.hpp"
-
 #include <math.h>
-
-std::vector<ekgmath::rect> ekgtext::box::selected_column_list;
 
 void ekgutil::log(const std::string &log) {
     ekgapi::send_output(log.c_str());
@@ -240,7 +237,10 @@ void ekgtext::get_char_index(ekgtext::box &box, int32_t &index, int32_t rows, in
         return;
     }
 
-    index = column - 1 < 0 ? rows : box.char_index_list[column - 1] + rows;
+    int32_t concurrent_rows = column - 1 < 0 ? 0 : box.char_index_list[column - 1];
+
+    concurrent_rows = concurrent_rows < 0 ? 0 : concurrent_rows + column;
+    index = concurrent_rows + rows;
 }
 
 void ekgtext::process_text_rows(ekgtext::box &box, std::string &raw_text) {
@@ -349,10 +349,9 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
     } else if (action == ekgtext::action::REMOVE) {
         if (box.cursor[0] == box.cursor[2]) {
             box.cursor[0]--;
-            ekgutil::log("ghi hi sou linda");
         }
     } else if (action == ekgtext::action::INSERT_LINE) {
-        box.break_line_list[box.cursor[1]] = box.cursor[0];
+        box.break_line_list[box.cursor[1]] = box.cursor[0] + 1;
     }
 
     ekgtext::get_char_index(box, min_cursor_index, box.cursor[0], box.cursor[1]);
@@ -361,18 +360,21 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
     min_cursor_index = min_cursor_index > previous_text.size() ? (int32_t) previous_text.size() : min_cursor_index;
     max_cursor_index = max_cursor_index > previous_text.size() ? (int32_t) previous_text.size() : max_cursor_index;
 
-    if (box.cursor[0] < 0 || (min_cursor_index * max_cursor_index) < 0) {
-        return;
+    if (!(box.cursor[0] < 0 || (min_cursor_index * max_cursor_index) < 0)) {
+        std::string left = previous_text.substr(0, min_cursor_index);
+        std::string right = previous_text.substr(max_cursor_index, previous_text.size());
+
+        raw_text = left + text + right;
     }
 
-    std::string left = previous_text.substr(0, min_cursor_index);
-    std::string right = previous_text.substr(max_cursor_index, previous_text.size());
-
-    raw_text = left + text + right;
-
     if (action == ekgtext::action::INSERT) {
+        int32_t max_row = 0;
+        ekgtext::get_rows(box, max_row, box.cursor[1]);
+
         box.cursor[0]++;
-        box.break_line_list[box.cursor[1]] = box.cursor[0];
+        box.break_line_list[box.cursor[1]] = max_row + 1;
+    } else if (action == ekgtext::action::INSERT_LINE) {
+        box.cursor[0] += 2;
     }
 
     // Reset cursor after change.
@@ -381,6 +383,7 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
 
     // Set final text.
     ekgtext::process_text_rows(box, raw_text);
+    ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
 }
 
 void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::string &raw_text, bool &flag, SDL_Event &sdl_event) {
@@ -389,6 +392,12 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
             auto k = sdl_event.key.keysym.sym;
 
             switch (k) {
+                case SDLK_ESCAPE: {
+                    flag = true;
+                    box.final_flag = true;
+                    break;
+                }
+
                 case SDLK_LEFT: {
                     box.cursor[0]--;
                     box.cursor[2] = box.cursor[0];
@@ -399,6 +408,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
                 case SDLK_RIGHT: {
                     box.cursor[0]++;
                     box.cursor[2] = box.cursor[0];
+
                     flag = true;
                     break;
                 }
@@ -406,6 +416,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
                 case SDLK_UP: {
                     box.cursor[1]--;
                     box.cursor[3] = box.cursor[1];
+
                     flag = true;
                     break;
                 }
@@ -419,6 +430,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
                 }
 
                 case SDLK_BACKSPACE: {
+                    box.cursor[0]--;
                     ekgtext::process_new_text(box, raw_text, "", ekgtext::action::REMOVE);
 
                     flag = true;
@@ -435,6 +447,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
             }
 
             if (k == SDLK_RETURN2 || k == SDLK_RETURN || k == SDLK_KP_ENTER) {
+                box.cursor[2]++;
                 ekgtext::process_new_text(box, raw_text, "", ekgtext::action::INSERT_LINE);
 
                 flag = true;
@@ -473,7 +486,6 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
 
         ekgtext::get_char_index(box, begin, box.visible[0], box.visible[1]);
         ekgtext::get_char_index(box, end, box.visible[2], box.visible[3]);
-
         ekgtext::reset_cursor_loop();
 
         if (begin == -1 || end == -1) {
@@ -523,7 +535,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
 
             curr_rect.x = rect.x + x;
             curr_rect.y = rect.y + y;
-            curr_rect.w = char_data.width + char_data.left + (char_str == ' ' ? char_data.texture_x : 0);
+            curr_rect.w = char_data.width + char_data.left + ((int32_t) char_str == 32 ? char_data.texture_x : 0);
             curr_rect.h = static_cast<float>(ekg::core->get_font_manager().get_texture_height());
 
             flag = curr_rect.collide_aabb_with_point(mx, my);
@@ -636,6 +648,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
             columns_in++;
 
             x = box.bounds.x;
+            diff += columns_in;
             y += static_cast<float>(ekg::core->get_font_manager().get_texture_height());
         }
 
@@ -648,7 +661,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
         curr_rect.w = render_w;
         curr_rect.h = render_h;
 
-        if ((visible = rect.collide_aabb_with_rect(curr_rect))) {
+        if ((visible = curr_rect.collide_aabb_with_rect(rect))) {
             str_len++;
 
             if (once_visible) {
@@ -666,7 +679,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
 
         bool cursor_out_of_str_range = rows_in + 1 == rows_per_column && rows_in + 1 == box.cursor[0];
 
-        if (unique_cursor && (cursor_out_of_str_range || rows_in == box.cursor[0]) && columns_in == box.cursor[1]) {
+        if (unique_cursor && (visible || *i == 32) && (cursor_out_of_str_range || rows_in == box.cursor[0]) && columns_in == box.cursor[1]) {
             curr_rect.x += cursor_out_of_str_range ? (char_data.width == 0 ? char_data.texture_x : char_data.width) : 0;
             curr_rect.w = 2;
             curr_rect.h = ekg::core->get_font_manager().get_texture_height() + impl;
@@ -695,15 +708,6 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
     // Bind the texture to GPU.
     ekg::core->get_gpu_handler().bind_texture(gpu_data, ekg::core->get_font_manager().get_bitmap_texture_id());
     ekg::core->get_gpu_handler().free(gpu_data);
-
-    // Draw the selected chars.
-    if (!ekgtext::box::selected_column_list.empty() && !unique_cursor) {
-        for (ekgmath::rect &rects : ekgtext::box::selected_column_list) {
-            ekggpu::rectangle(rects, ekg::theme().text_input_activy);
-        }
-
-        draw_cursor = false;
-    }
 
     if (draw_cursor && unique_cursor) {
         ekggpu::rectangle(cursor_rect, ekg::theme().text_input_string);

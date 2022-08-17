@@ -81,6 +81,13 @@ void ekg_textbox::on_event(SDL_Event &sdl_event) {
         if (refresh) {
             ekg::core->dispatch_todo_event(ekgutil::action::REFRESH);
         }
+
+        // Escape
+        if (this->box.final_flag) {
+            this->box.final_flag = false;
+
+            ekgapi::set(this->flag.focused, false);
+        }
     }
 }
 
