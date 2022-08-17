@@ -25,7 +25,6 @@
 class ekg_textbox : public ekg_element {
 protected:
 	std::string text;
-    std::string raw_text;
 
 	float min_text_width;
 	float min_text_height;

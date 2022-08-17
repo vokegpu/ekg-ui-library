@@ -76,7 +76,7 @@ void ekg_textbox::on_event(SDL_Event &sdl_event) {
 
     if (this->flag.focused) {
         bool refresh = false;
-        ekgtext::process_event(this->box, this->rect, this->text, this->raw_text, refresh, sdl_event);
+        ekgtext::process_event(this->box, this->rect, this->text, refresh, sdl_event);
 
         if (refresh) {
             ekg::core->dispatch_todo_event(ekgutil::action::REFRESH);
@@ -112,13 +112,13 @@ void ekg_textbox::on_update() {
 
 void ekg_textbox::on_draw_refresh() {
     ekg_element::on_draw_refresh();
-    ekgtext::process_render_box(this->box, this->raw_text, this->rect, this->scissor_id, this->flag.extra);
+    ekgtext::process_render_box(this->box, this->text, this->rect, this->scissor_id, this->flag.extra);
 }
 
 void ekg_textbox::set_text(const std::string &str) {
-    if (this->raw_text != str) {
-        this->raw_text = str;
-        ekgtext::process_text_rows(this->box, this->text, this->raw_text);
+    if (this->text != str) {
+        this->text = str;
+        ekgtext::process_text_rows(this->box, this->text);
         this->on_sync();
     }
 }
@@ -161,7 +161,7 @@ float ekg_textbox::get_min_text_height() {
 void ekg_textbox::set_max_rows(int32_t amount) {
     if (this->box.max_rows != amount) {
         this->box.max_rows = amount;
-        ekgtext::process_text_rows(this->box, this->text, this->raw_text);
+        ekgtext::process_text_rows(this->box, this->text);
     }
 }
 
@@ -172,7 +172,7 @@ int32_t ekg_textbox::get_max_rows() {
 void ekg_textbox::set_max_columns(int32_t amount) {
     if (this->box.max_columns != amount) {
         this->box.max_columns = amount;
-        ekgtext::process_text_rows(this->box, this->text, this->raw_text);
+        ekgtext::process_text_rows(this->box, this->text);
     }
 }
 

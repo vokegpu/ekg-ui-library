@@ -236,6 +236,13 @@ namespace ekgutil {
  * The EKG text api for process inputs from virtual keyboard or real keyboard.
  **/
 namespace ekgtext {
+    enum action {
+        INSERT          = 0,
+        INSERT_LINE     = 1,
+        REMOVE          = 2,
+        REMOVE_OPPOSITE = 3
+    };
+
     /**
      * Store text position, cursor position and visual details.
      **/
@@ -243,7 +250,7 @@ namespace ekgtext {
         static std::vector<ekgmath::rect> selected_column_list;
 
         ekgmath::vec2f bounds;
-        std::vector<int32_t> rows_per_columns;
+        std::vector<int32_t> char_index_list;
         std::vector<int32_t> break_line_list;
 
         int32_t cursor[4];
@@ -274,7 +281,7 @@ namespace ekgtext {
     /*
      * Process the amount of rows per columns.
      */
-    void process_text_rows(ekgtext::box &box, std::string &text, const std::string &raw_text);
+    void process_text_rows(ekgtext::box &box, std::string &raw_text);
 
     /*
      * Verify if box should sync cursor index with render offset.
@@ -299,12 +306,12 @@ namespace ekgtext {
     /*
      * Process if text is different.
      */
-    void process_new_text(ekgtext::box &box, std::string &previous_text, std::string text, std::string &raw_text, int32_t factor = 0);
+    void process_new_text(ekgtext::box &box, std::string &raw_text, std::string text, int32_t action);
 
     /*
      * Process the events of box.
      */
-    void process_event(ekgtext::box &box, const ekgmath::rect &rect, std::string &text, std::string &raw_text, bool &flag, SDL_Event &sdl_event);
+    void process_event(ekgtext::box &box, const ekgmath::rect &rect, std::string &raw_text, bool &flag, SDL_Event &sdl_event);
 
     /*
      * As you can see it resets the cursor draw.
