@@ -354,12 +354,13 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
     min_cursor_index = min_cursor_index > previous_text.size() ? (int32_t) previous_text.size() : min_cursor_index;
     max_cursor_index = max_cursor_index > previous_text.size() ? (int32_t) previous_text.size() : max_cursor_index;
 
-    if ((min_cursor_index * max_cursor_index) > 0) {
+    if ((min_cursor_index * max_cursor_index) >= 0) {
         if (box.cursor[0] >= 0) {
             std::string left = previous_text.substr(0, min_cursor_index);
             std::string right = previous_text.substr(max_cursor_index, previous_text.size());
 
             raw_text = left + text + right;
+            ekgtext::process_text_rows(box, raw_text);
         }
 
         int32_t max_rows = 0;
@@ -390,7 +391,7 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
 
             int32_t target_amount = 0;
             int32_t concurrent_amount = 0;
-            int32_t rows_in = box.cursor[0] - 1 < 0 ? 0 : box.cursor[0] - 1;
+            int32_t rows_in = box.cursor[0];
             int32_t previous_amount = 0;
 
             for (int32_t i = 0; i < previous_list.size(); i++) {
@@ -401,7 +402,7 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
                 concurrent_amount = previous_list[i];
 
                 if (flag_remove_line && i == box.cursor[1] - 1 && action == ekgtext::action::REMOVE) {
-                    box.cursor[0] = concurrent_amount + 1;
+                    box.cursor[0] = concurrent_amount;
                     box.cursor[1] = i;
 
                     concurrent_amount += max_rows;
@@ -417,8 +418,7 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
 
                     int32_t sub = (max_rows - rows_in);
                     previous_amount = sub < 0 ? 0 : sub;
-
-                    ekgutil::log(std::to_string(previous_amount));
+                    ekgutil::log(std::to_string(max_rows) + " " + std::to_string(rows_in) + " " + std::to_string(sub));
 
                     box.break_line_list.push_back(concurrent_amount);
                 } else if (flag_new_line && i > box.cursor[1] && action == ekgtext::action::INSERT_LINE) {
