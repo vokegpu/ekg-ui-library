@@ -359,66 +359,65 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
         std::string right = previous_text.substr(max_cursor_index, previous_text.size());
 
         raw_text = left + text + right;
-    }
+        ekgtext::process_text_rows(box, raw_text);
 
-    int32_t max_rows = 0;
-    ekgtext::get_rows(box, max_rows, box.cursor[1]);
+        int32_t max_rows = 0;
+        ekgtext::get_rows(box, max_rows, box.cursor[1]);
 
-    bool flag_new_line = action == ekgtext::action::INSERT_LINE;
-    bool flag_remove_line = false;
+        bool flag_new_line = action == ekgtext::action::INSERT_LINE;
+        bool flag_remove_line = false;
 
-    if (action == ekgtext::action::INSERT) {
-        box.cursor[0]++;
-        box.break_line_list[box.cursor[1]] = max_rows + 1;
-    } else if (action == ekgtext::action::REMOVE) {
-        box.break_line_list[box.cursor[1]] = max_rows - 1;
-        flag_remove_line = box.break_line_list[box.cursor[1]] < 0;
-    } else if (action == ekgtext::action::REMOVE_OPPOSITE) {
-        box.break_line_list[box.cursor[1]] = max_rows - 1;
-        flag_remove_line = box.break_line_list[box.cursor[1]] < 0;
-    }
-
-    if (flag_new_line || flag_remove_line) {
-        if (flag_new_line) {
-            box.break_line_list.push_back(box.max_rows);
-        }
-
-        const std::vector<int32_t> previous_list = box.break_line_list;
-        box.break_line_list.clear();
-
-        int32_t target_amount = 0;
-        int32_t concurrent_amount = 0;
-        int32_t previous_amount = 0;
-
-        for (int32_t i = 0; i < previous_list.size(); i++) {
-            concurrent_amount = previous_list[i];
-
-            if (flag_remove_line && i == box.cursor[1] + 1) {
-                target_amount = concurrent_amount;
-                continue;
-            }
-
-            if (flag_new_line && i == box.cursor[1]) {
-                previous_amount = concurrent_amount;
-                concurrent_amount = box.cursor[0] - 1 < 0 ? 0 : box.cursor[0] - 1;
-                ekgutil::log("stage one");
-            } else if (flag_new_line && i == box.cursor[1] + 1) {
-                concurrent_amount = previous_amount - (box.cursor[0] - 1 < 0 ? 0 : box.cursor[0] - 1);
-                ekgutil::log("stage two");
-            } else if (flag_new_line && i > box.cursor[1] + 1) {
-                target_amount = concurrent_amount;
-                concurrent_amount = previous_amount;
-                previous_amount = target_amount;
-                ekgutil::log("stage three");
-            }
-
-            box.break_line_list.push_back(concurrent_amount);
+        if (action == ekgtext::action::INSERT) {
+            box.cursor[0]++;
+            box.break_line_list[box.cursor[1]] = max_rows + 1;
+        } else if (action == ekgtext::action::REMOVE) {
+            box.break_line_list[box.cursor[1]] = max_rows - 1;
+            flag_remove_line = box.break_line_list[box.cursor[1]] < 0;
+        } else if (action == ekgtext::action::REMOVE_OPPOSITE) {
+            box.break_line_list[box.cursor[1]] = max_rows - 1;
+            flag_remove_line = box.break_line_list[box.cursor[1]] < 0;
         }
 
         if (flag_remove_line) {
-            box.break_line_list[box.cursor[1]] += target_amount;
-        } else if (flag_new_line) {
-            box.cursor[0] += 2;
+            box.break_line_list[box.cursor[1]] = 0;
+        }
+
+        if (flag_new_line || flag_remove_line) {
+            if (flag_new_line) {
+                box.break_line_list.push_back(box.max_rows);
+            }
+
+            const std::vector<int32_t> previous_list = box.break_line_list;
+            box.break_line_list.clear();
+
+            int32_t target_amount = 0;
+            int32_t concurrent_amount = 0;
+            int32_t rows_in = box.cursor[0] - 1 < 0 ? 0 : box.cursor[0] - 1;
+
+            for (int32_t i = 0; i < previous_list.size(); i++) {
+                concurrent_amount = previous_list[i];
+
+                if (flag_remove_line && i == box.cursor[1] - 1 && action == ekgtext::action::REMOVE) {
+                    box.cursor[0] = concurrent_amount;
+                    concurrent_amount += max_rows;
+                    box.break_line_list.push_back(concurrent_amount);
+                } else if (flag_remove_line && i > box.cursor[1] && action == ekgtext::action::REMOVE) {
+                    ekgtext::get_rows(box, max_rows, i + 1);
+
+                    previous_amount = concurrent_amount;
+                    concurrent_amount = max_rows;
+                    box.break_line_list.push_back(concurrent_amount);
+                }
+
+                if (flag_new_line && i == box.cursor[1] && action == ekgtext::action::INSERT_LINE) {
+                    box.break_line_list[i] = rows_in;
+                } else if (flag_new_line && i == box.cursor[1] + 1 && action == ekgtext::action::INSERT_LINE) {
+                    int32_t sub = (max_rows - rows_in);
+                    box.break_line_list[i] = sub < 0 ? 0 : sub;
+                } else if (flag_new_line && i > box.cursor[1] + 1 && action == ekgtext::action::INSERT_LINE) {
+                    
+                }
+            }
         }
     }
 
