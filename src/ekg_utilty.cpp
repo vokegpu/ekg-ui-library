@@ -375,7 +375,6 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
         } else if (action == ekgtext::action::REMOVE) {
             box.break_line_list[box.cursor[1]] = max_rows - 1;
             flag_remove_line = box.break_line_list[box.cursor[1]] < 0 || box.cursor[0] < 0;
-            ekgutil::log("removed" + std::to_string(box.cursor[0]));
         } else if (action == ekgtext::action::REMOVE_OPPOSITE) {
             box.break_line_list[box.cursor[1]] = max_rows - 1;
             flag_remove_line = box.break_line_list[box.cursor[1]] < 0;
@@ -383,7 +382,8 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
 
         if (flag_new_line || flag_remove_line) {
             if (flag_new_line) {
-                box.break_line_list.push_back(box.max_rows);
+                box.break_line_list.push_back(0);
+                box.cursor[0] = box.cursor[0] - 1 < 0 ? 0 : box.cursor[0] - 1;
             }
 
             const std::vector<int32_t> previous_list = box.break_line_list;
@@ -402,7 +402,7 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
                 concurrent_amount = previous_list[i];
 
                 if (flag_remove_line && i == box.cursor[1] - 1 && action == ekgtext::action::REMOVE) {
-                    box.cursor[0] = concurrent_amount;
+                    box.cursor[0] = concurrent_amount + 1;
                     box.cursor[1] = i;
 
                     concurrent_amount += max_rows;
@@ -417,8 +417,7 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, std::st
                     concurrent_amount = rows_in;
 
                     int32_t sub = (max_rows - rows_in);
-                    previous_amount = sub < 0 ? 0 : sub;
-                    ekgutil::log(std::to_string(max_rows) + " " + std::to_string(rows_in) + " " + std::to_string(sub));
+                    previous_amount = sub - 1 < 0 ? 0 : sub - 1;
 
                     box.break_line_list.push_back(concurrent_amount);
                 } else if (flag_new_line && i > box.cursor[1] && action == ekgtext::action::INSERT_LINE) {
