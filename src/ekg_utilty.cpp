@@ -240,13 +240,10 @@ void ekgtext::get_char_index(ekgtext::box &box, int32_t &index, int32_t rows, in
     // Every new line less one slot from index of raw text char list,
     // it means that should increase one index slot for each less.
     int32_t concurrent_rows = column - 1 < 0 ? 0 : box.char_index_list[column - 1];
-    index = concurrent_rows + column + rows;
+    index = concurrent_rows + rows;
 }
 
 void ekgtext::process_text_rows(ekgtext::box &box, std::string &raw_text) {
-    const std::string text_cached = raw_text;
-
-    raw_text.clear();
     box.char_index_list.clear();
 
     int32_t rows_in = 0;
@@ -258,32 +255,31 @@ void ekgtext::process_text_rows(ekgtext::box &box, std::string &raw_text) {
 
     ekgutil::log("-- process text rows");
 
-    for (uint32_t i = 0; i < text_cached.size(); i++) {
+    for (int32_t i = 0; i < raw_text.size(); i++) {
         if (columns_in > box.break_line_list.size() || box.break_line_list.empty()) {
             box.break_line_list.push_back(box.max_rows);
         }
 
         jump_line = rows_in >= box.break_line_list[columns_in];
-        end = i + 1 == text_cached.size();
+        end = i + 1 == raw_text.size();
 
         ekgutil::log(std::to_string(rows_in) + " > " + std::to_string(box.break_line_list[columns_in]));
 
         if (jump_line || end) {
-            // Increase + 1 value at end (force to finish this column).
-            total_rows_in += rows_in + ((end && !jump_line));
-            box.char_index_list.push_back(total_rows_in);
+            box.char_index_list.push_back(i + (columns_in == 0));
 
             // It fix a issue with lines columns and rows mapping.
             if (end && jump_line) {
-                box.char_index_list.push_back(total_rows_in + 1);
+                box.char_index_list.push_back(i + 1);
             }
 
             rows_in = 0;
             columns_in++;
         }
 
-        rows_in++;
-        raw_text += text_cached.at(i);
+        if (!jump_line) {
+            rows_in++;
+        }
     }
 }
 
@@ -701,6 +697,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
     int32_t rows_in = 0;
     int32_t columns_in = 0;
     int32_t rows_per_column = 0;
+    int32_t char_count = 0;
 
     box.visible[0] = 0;
     box.visible[1] = 0;
@@ -728,9 +725,9 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
         texture_h = render_h / static_cast<float>(ekg::core->get_font_manager().get_texture_height());
         diff -= *i;
 
-        ekgtext::get_rows(box, rows_per_column, columns_in);
+        rows_per_column = box.char_index_list[columns_in];
 
-        if (rows_in > rows_per_column) {
+        if (char_count > rows_per_column) {
             rows_in = 0;
             columns_in++;
 
@@ -738,6 +735,8 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
             diff += columns_in;
             y += static_cast<float>(ekg::core->get_font_manager().get_texture_height());
         }
+
+        ekgtext::get_rows(box, rows_per_column, columns_in);
 
         // Get char from list and update metrics/positions of each char.
         render_x = x + char_data.left;
@@ -776,6 +775,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
         x += char_data.texture_x;
 
         rows_in++;
+        char_count++;
         ekg::core->get_font_manager().get_previous_char() = *i;
     }
 

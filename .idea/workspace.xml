@@ -19,25 +19,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_api.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/api/ekg_api.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_core.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/api/ekg_core.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_event.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/api/ekg_event.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_font.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/api/ekg_font.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_gpu.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/api/ekg_gpu.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_opengl.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/api/ekg_opengl.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_theme.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/api/ekg_theme.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/api/ekg_utility.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/api/ekg_utility.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/ekg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/ekg.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_abstract.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_abstract.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_button.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_button.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_checkbox.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_checkbox.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_combobox.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_combobox.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_frame.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_frame.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_popup.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_popup.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_slider.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_slider.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ekg/impl/ekg_ui_element_textbox.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_textbox.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_utilty.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_utilty.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -168,7 +151,7 @@
       <workItem from="1660844913253" duration="11743000" />
       <workItem from="1660932421938" duration="24000" />
       <workItem from="1660954001914" duration="2209000" />
-      <workItem from="1661015506951" duration="4541000" />
+      <workItem from="1661015506951" duration="11868000" />
     </task>
     <servers />
   </component>
