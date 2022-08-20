@@ -17,7 +17,7 @@ add_compile_options(-O3)
 set(LIBRARY_OUTPUT_PATH ../lib)
 set(PROJECT_VERSION 1.0)
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
-file(GLOB_RECURSE HEADER_FILES "ekg/*.hpp")
+file(GLOB_RECURSE HEADER_FILES "include/ekg/*.hpp")
 
 include(GNUInstallDirs)
 
@@ -28,7 +28,7 @@ add_library(ekg STATIC ${SOURCE_FILES})
 message("-- Configuring static lib")
 set_target_properties(ekg PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION 1)
 set_target_properties(ekg PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-target_include_directories(ekg PUBLIC .)
+target_include_directories(ekg PUBLIC include/)
 
 message("-- Setting configure file")
 configure_file(ekg.pc.in ekg.pc @ONLY)
