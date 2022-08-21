@@ -253,24 +253,20 @@ void ekgtext::process_text_rows(ekgtext::box &box, std::string &raw_text) {
     bool end = false;
     bool jump_line = false;
 
-    ekgutil::log("-- process text rows");
-
     for (int32_t i = 0; i < raw_text.size(); i++) {
         if (columns_in > box.break_line_list.size() || box.break_line_list.empty()) {
             box.break_line_list.push_back(box.max_rows);
         }
 
-        jump_line = rows_in >= box.break_line_list[columns_in];
+        jump_line = rows_in == box.break_line_list[columns_in];
         end = i + 1 == raw_text.size();
 
-        ekgutil::log(std::to_string(rows_in) + " > " + std::to_string(box.break_line_list[columns_in]));
-
         if (jump_line || end) {
-            box.char_index_list.push_back(i + (columns_in == 0));
+            box.char_index_list.push_back(i);
 
             // It fix a issue with lines columns and rows mapping.
             if (end && jump_line) {
-                box.char_index_list.push_back(i + 1);
+                box.char_index_list.push_back(i);
             }
 
             rows_in = 0;
@@ -299,8 +295,6 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t c
     int32_t cursor[4] = {row, column, max_row, max_column};
     int32_t max_columns = box.char_index_list.size() - 1 < 0 ? 0 : (int32_t) box.char_index_list.size() - 1;
 
-    ekgutil::log("-- process cursor pos index");
-
     // Sync rows and columns correctly.
     for (uint8_t i = 0; i < 4; i += 2) {
         row = i;
@@ -308,8 +302,6 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t c
 
         cursor[column] = cursor[column] < 0 ? 0 : (cursor[column] > max_columns ? max_columns : cursor[column]);
         ekgtext::get_rows(box, max_row, cursor[column]);
-
-        ekgutil::log(std::to_string(cursor[row]) + " " + std::to_string(max_row));
 
         if (cursor[row] > max_row) {
             if (cursor[column] >= max_columns) {
@@ -400,6 +392,8 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, const s
             int32_t previous_amount = 0;
             bool bypass = false;
 
+            ekgutil::log("-- prepare factor");
+
             for (int32_t i = 0; i < previous_list.size(); i++) {
                 if (i + 1 == previous_list.size() && flag_remove_line) {
                     continue;
@@ -433,7 +427,7 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, const s
                     previous_amount = sub - 1 < 0 ? 0 : sub - 1;
 
                     box.break_line_list.push_back(concurrent_amount);
-                    ekgutil::log(std::to_string(concurrent_amount));
+                    ekgutil::log(std::to_string(concurrent_amount) + " " + std::to_string(i));
                     bypass = false;
                 }
 
@@ -442,8 +436,8 @@ void ekgtext::process_new_text(ekgtext::box &box, std::string &raw_text, const s
                     concurrent_amount = previous_amount;
                     previous_amount = target_amount;
                     box.break_line_list.push_back(concurrent_amount);
-                    ekgutil::log(std::to_string(concurrent_amount));
                     bypass = false;
+                    ekgutil::log(std::to_string(concurrent_amount) + " " + std::to_string(i));
                 }
 
                 if (bypass) {
@@ -731,7 +725,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
             rows_in = 0;
             columns_in++;
 
-            x = box.bounds.x;
+            x = box.bounds.x + (char_data.width == 0 ? prev_x : 0);
             diff += columns_in;
             y += static_cast<float>(ekg::core->get_font_manager().get_texture_height());
         }
