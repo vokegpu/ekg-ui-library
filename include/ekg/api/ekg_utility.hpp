@@ -248,15 +248,14 @@ namespace ekgtext {
      **/
     struct box {
         ekgmath::vec2f bounds;
-        std::vector<int32_t> char_index_list;
-        std::vector<int32_t> break_line_list;
+        std::vector<std::string> loaded_text_chunk_list;
+
+        int32_t min_chunk_visible;
+        int32_t max_chunk_visible;
 
         int32_t cursor[4];
-        int32_t visible[4];
-
-        int32_t max_rows = 0;
-        int32_t max_columns = 0;
-
+        int32_t max_chunk_size;
+        int32_t max_text_amount;
         bool final_flag;
     };
 
