@@ -102,6 +102,11 @@ namespace ekgmath {
     float clampf(float val, float min, float max);
 
     /*
+     * Clamp int min and max.
+     */
+    int32_t clampi(int32_t val, int32_t min, int32_t max);
+
+    /*
      * Clamp AABB (x, y, w, h) with screen width and height.
      */
     void clamp_aabb_with_screen_size(float &minx, float &miny, float maxx, float maxy);
@@ -260,21 +265,6 @@ namespace ekgtext {
     };
 
     /*
-     * Get the break line index.
-     */
-    void get_row_break_line(ekgtext::box &box, int32_t &row_target, int32_t column);
-
-    /*
-     * Get the rows in a column.
-     */
-    void get_rows(ekgtext::box &box, int32_t &rows, int32_t column);
-
-    /*
-     * Get the rows in a column.
-     */
-    void get_char_index(ekgtext::box &box, int32_t &index, int32_t rows, int32_t column);
-
-    /*
      * Process the amount of rows per columns.
      */
     void process_text_rows(ekgtext::box &box, std::string &raw_text);
@@ -300,9 +290,14 @@ namespace ekgtext {
     void process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t column, int32_t max_row, int32_t max_column);
 
     /*
+     * Get text chunks by box index.
+     */
+    void get_chunks_index_from_box(ekgtext::box &box, std::vector<int32_t> &chunks_index, int32_t index_box[4]);
+
+    /*
      * Process if text is different.
      */
-    void process_new_text(ekgtext::box &box, std::string &raw_text, const std::string& text, int32_t action);
+    void process_new_text(ekgtext::box &box, const std::string& new_text, int32_t action);
 
     /*
      * Process the events of box.
@@ -322,7 +317,7 @@ namespace ekgtext {
     /*
      * Process the GPU data be is draw.
      */
-    void process_render_box(ekgtext::box &box, const std::string &text, ekgmath::rect &rect, int32_t &scissor_id, bool &draw_cursor);
+    void process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t &scissor_id, bool &draw_cursor);
 };
 
 #endif

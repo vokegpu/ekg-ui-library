@@ -188,6 +188,10 @@ void ekgmath::smoothf(float &val, float duration, uint32_t ticks) {
     val = ekgmath::clampf(6 * pow(duration, 5) - (15 * pow(duration, 4)) + (10 * pow(duration, 3)), 0.0f, 1.0f);
 }
 
+int32_t ekgmath::clampi(int32_t val, int32_t min, int32_t max) {
+    return val < min ? min : (val > max ? max : val);
+}
+
 ekgmath::vec2f::vec2f(float x, float y) {
     this->x = x;
     this->y = y;
@@ -306,19 +310,29 @@ void ekgtext::process_new_text(ekgtext::box &box, const std::string& new_text, i
         }
     }
 
-    std::vector<std::string> concurrent_text_chunk_list;
-    ekgtext::get_text_chunks_from_box(box, concurrent_text_chunk_list, box.cursor[1]);
+    std::vector<int32_t> concurrent_text_chunk_list;
+    ekgtext::get_chunks_index_from_box(box, concurrent_text_chunk_list, box.cursor);
 
-    min_cursor_index = min_cursor_index > previous_text.size() ? (int32_t) previous_text.size() : min_cursor_index;
-    max_cursor_index = max_cursor_index > previous_text.size() ? (int32_t) previous_text.size() : max_cursor_index;
+    if (!concurrent_text_chunk_list.empty() && box.cursor[0] >=  0) {
+        int32_t min = 0;
+        int32_t max = 0;
 
-    if ((min_cursor_index * max_cursor_index) >= 0) {
-        if (box.cursor[0] >= 0) {
-            std::string left = previous_text.substr(0, min_cursor_index);
-            std::string right = previous_text.substr(max_cursor_index, previous_text.size());
+        int32_t first_row_index = box.cursor[0];
+        int32_t first_column_index = 0;
 
-            raw_text = left + text + right;
+        for (int32_t i = 0; i < concurrent_text_chunk_list.size(); i++) {
+            int32_t index = concurrent_text_chunk_list[i];
+            std::string &text = box.loaded_text_chunk_list[concurrent_text_chunk_list[]];
+
+            if (index == )
+
+            min = ekgmath::clampi(box.cursor[0])
         }
+
+        std::string left = previous_text.substr(0, min_cursor_index);
+        std::string right = previous_text.substr(max_cursor_index, previous_text.size());
+
+        raw_text = left + text + right;
     }
 }
 
@@ -367,7 +381,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
 
                 case SDLK_BACKSPACE: {
                     box.cursor[0]--;
-                    ekgtext::process_new_text(box, raw_text, "", ekgtext::action::REMOVE);
+                    ekgtext::process_new_text(box, "", ekgtext::action::REMOVE);
 
                     flag = true;
                     break;
@@ -375,7 +389,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
 
                 case SDLK_DELETE: {
                     box.cursor[2]++;
-                    ekgtext::process_new_text(box, raw_text, "", ekgtext::action::REMOVE_OPPOSITE);
+                    ekgtext::process_new_text(box, "", ekgtext::action::REMOVE_OPPOSITE);
 
                     flag = true;
                     break;
@@ -383,7 +397,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
             }
 
             if (k == SDLK_RETURN2 || k == SDLK_RETURN || k == SDLK_KP_ENTER) {
-                ekgtext::process_new_text(box, raw_text, "", ekgtext::action::INSERT_LINE);
+                ekgtext::process_new_text(box, "", ekgtext::action::INSERT_LINE);
                 flag = true;
             }
 
@@ -402,7 +416,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
         case SDL_TEXTINPUT: {
             std::string char_str = sdl_event.text.text;
 
-            ekgtext::process_new_text(box, raw_text, char_str, ekgtext::action::INSERT);
+            ekgtext::process_new_text(box, char_str, ekgtext::action::INSERT);
             ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
             ekgtext::reset_cursor_loop();
 
@@ -514,7 +528,7 @@ void ekgtext::process_cursor_loop(bool &flag) {
     flag = wait_for_500ms;
 }
 
-void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekgmath::rect &rect, int32_t &scissor_id, bool &draw_cursor) {
+void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t &scissor_id, bool &draw_cursor) {
     // Draw the background.
     ekggpu::rectangle(rect, ekg::theme().text_input_background);
 
@@ -596,6 +610,7 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
 
         if (text.empty()) {
             y += ekg::core->get_font_manager().get_text_height() + (impl / 2);
+            x = box.bounds.x;
         }
     }
 
@@ -624,11 +639,12 @@ void ekgtext::process_render_box(ekgtext::box &box, const std::string &text, ekg
     ekggpu::rectangle(rect, ekg::theme().text_input_border, 1);
 }
 
-void ekgtext::get_row_break_line(ekgtext::box &box, int32_t &row_target, int32_t column) {
-    if (box.break_line_list.size() < column) {
-        row_target = -1;
-        return;
-    }
+void ekgtext::get_chunks_index_from_box(ekgtext::box &box, std::vector<int32_t> &chunks_index, int32_t *index_box) {
+    for (int32_t i = box.cursor[1]; i < box.cursor[3]; i++) {
+        if (i < 0 || i >= box.loaded_text_chunk_list.size()) {
+            continue;
+        }
 
-    row_target = box.break_line_list[column];
+        chunks_index.push_back(i);
+    }
 }
