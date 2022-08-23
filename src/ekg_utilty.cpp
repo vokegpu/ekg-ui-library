@@ -310,7 +310,16 @@ void ekgtext::process_new_text(ekgtext::box &box, const std::string& new_text, e
     std::vector<int32_t> chunk_index_list;
     ekgtext::get_chunks_index_from_box(box, chunk_index_list, box.cursor);
 
-    if (!chunk_index_list.empty() && box.cursor[0] >= 0) {
+    if (!chunk_index_list.empty() && (box.cursor[0] >= 0 || action == ekgtext::action::REMOVE || action == ekgtext::action::REMOVE_OPPOSITE)) {
+        bool negative = false;
+
+        if (action == ekgtext::action::REMOVE || action == ekgtext::action::REMOVE_OPPOSITE) {
+            negative = box.cursor[0] < 0 || box.cursor[2] < 0;
+
+            box.cursor[0] = ekgmath::clampi(box.cursor[0], 0, box.cursor[0]);
+            box.cursor[2] = ekgmath::clampi(box.cursor[2], 0, box.cursor[2]);
+        }
+
         int32_t min = box.cursor[0];
         int32_t max = box.cursor[2];
 
@@ -344,6 +353,15 @@ void ekgtext::process_new_text(ekgtext::box &box, const std::string& new_text, e
 
                 left = text.substr(0, min);
                 right = text.substr(max, text.size());
+
+                if (negative && index != 0 && (index = ekgmath::clampi(index - 1, 0, index)) > -1) {
+                    std::string &above_text = box.loaded_text_chunk_list[index];
+                    box.cursor[0] = above_text.size();
+
+                    above_text += right;
+                    right.clear();
+                    chunk_index_list.push_back(index + 1); // add 1 because we sub 1 above.
+                }
             } else if (begin) {
                 min = ekgmath::clampi(box.cursor[0], 0, text.size());
                 max = text.size();
@@ -397,6 +415,7 @@ void ekgtext::process_new_text(ekgtext::box &box, const std::string& new_text, e
                     }
                 }
 
+                box.cursor[0] += 2;
                 break;
             }
         }
@@ -580,7 +599,6 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
             texture_x = char_data.x;
             texture_w = render_w / static_cast<float>(ekg::core->get_font_manager().get_texture_width());
             texture_h = render_h / static_cast<float>(ekg::core->get_font_manager().get_texture_height());
-            diff -= *i;
 
             // Get char from list and update metrics/positions of each char.
             render_x = x + char_data.left;
@@ -590,6 +608,9 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
             curr_rect.y = rect.y + y;
             curr_rect.w = render_w; 
             curr_rect.h = render_h;
+
+            diff -= *i;
+            diff -= static_cast<int32_t>(render_y);
 
             if ((visible = curr_rect.collide_aabb_with_rect(rect))) {
                 str_len++;
@@ -612,8 +633,6 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
             char_count++;
         }
         
-        x = box.bounds.x;
-        y += text_height + (impl / 2);
 
         if (text.empty() && box.cursor[1] == amount) {
             cursor_rect.x = rect.x + x;
@@ -621,6 +640,9 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
             cursor_rect.w = 2;
             cursor_rect.h = text_height + impl;
         }
+
+        x = box.bounds.x;
+        y += text_height + (impl / 2);
 
         char_count = 0;
     }
