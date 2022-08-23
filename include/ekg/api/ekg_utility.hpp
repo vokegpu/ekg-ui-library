@@ -259,15 +259,25 @@ namespace ekgtext {
         int32_t max_chunk_visible;
 
         int32_t cursor[4];
+        int32_t max_chunk_amount;
         int32_t max_chunk_size;
-        int32_t max_text_amount;
         bool final_flag;
     };
 
     /*
+     * Create empty chunks.
+     */
+    void process_new_empty_chunks(ekgtext::box &box, int32_t amount);
+
+    /*
+     * Get the size of a chunk by the location. 
+     */
+    void get_chunk_size(ekgtext::box &box, int32_t &size, int32_t index);
+
+    /*
      * Process the amount of rows per columns.
      */
-    void process_text_rows(ekgtext::box &box, std::string &raw_text);
+    void process_text_chunks(ekgtext::box &box, std::string &raw_text);
 
     /*
      * Verify if box should sync cursor index with render offset.
@@ -297,7 +307,7 @@ namespace ekgtext {
     /*
      * Process if text is different.
      */
-    void process_new_text(ekgtext::box &box, const std::string& new_text, int32_t action);
+    void process_new_text(ekgtext::box &box, const std::string& new_text, ekgtext::action action);
 
     /*
      * Process the events of box.

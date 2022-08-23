@@ -119,13 +119,13 @@ void ekg_textbox::on_update() {
 
 void ekg_textbox::on_draw_refresh() {
     ekg_element::on_draw_refresh();
-    ekgtext::process_render_box(this->box, this->text, this->rect, this->scissor_id, this->flag.extra);
+    ekgtext::process_render_box(this->box, this->rect, this->scissor_id, this->flag.extra);
 }
 
 void ekg_textbox::set_text(const std::string &str) {
     if (this->text != str) {
         this->text = str;
-        ekgtext::process_text_rows(this->box, this->text);
+        ekgtext::process_text_chunks(this->box, this->text);
         this->on_sync();
     }
 }
@@ -166,23 +166,21 @@ float ekg_textbox::get_min_text_height() {
 }
 
 void ekg_textbox::set_max_rows(int32_t amount) {
-    if (this->box.max_rows != amount) {
-        this->box.max_rows = amount;
-        ekgtext::process_text_rows(this->box, this->text);
+    if (this->box.max_chunk_size != amount) {
+        this->box.max_chunk_size = amount;
     }
 }
 
 int32_t ekg_textbox::get_max_rows() {
-    return this->box.max_rows;
+    return this->box.max_chunk_size;
 }
 
 void ekg_textbox::set_max_columns(int32_t amount) {
-    if (this->box.max_columns != amount) {
-        this->box.max_columns = amount;
-        ekgtext::process_text_rows(this->box, this->text);
+    if (this->box.max_chunk_amount != amount) {
+        this->box.max_chunk_amount = amount;
     }
 }
 
 int32_t ekg_textbox::get_max_columns() {
-    return this->box.max_rows;
+    return this->box.max_chunk_amount;
 }

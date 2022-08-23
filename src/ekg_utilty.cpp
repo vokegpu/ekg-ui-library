@@ -215,40 +215,18 @@ void ekgmath::vec4f::color(int32_t red, int32_t green, int32_t blue, int32_t alp
     this->w = static_cast<float>(alpha) / 255;
 }
 
-void ekgtext::get_rows(ekgtext::box &box, int32_t &rows, int32_t column_target) {
-    if (box.char_index_list.empty()) {
-        column_target = 0;
+void ekgtext::get_chunk_size(ekgtext::box &box, int32_t &rows, int32_t column_target) {
+    if (box.loaded_text_chunk_list.empty()) {
+        rows = 0;
         return;
     }
 
-    column_target = column_target > box.char_index_list.size() ? (int32_t) box.char_index_list.size() : column_target;
-
-    int32_t sub_previous = column_target - 1 < 0 ? 0 : box.char_index_list[column_target - 1];
-    int32_t concurrent_rows = box.char_index_list[column_target];
-
-    if (sub_previous < concurrent_rows) {
-        concurrent_rows -= sub_previous;
-    } else {
-        concurrent_rows = sub_previous - concurrent_rows;
-    }
-
-    rows = concurrent_rows;
+    int32_t index = column_target < 0 ? 0 : (column_target < box.loaded_text_chunk_list.size() ? column_target : (ekgmath::clampi(box.loaded_text_chunk_list.size() - 1, 0, box.loaded_text_chunk_list.size())));
+    rows = box.loaded_text_chunk_list[index].size();
 }
 
-void ekgtext::get_char_index(ekgtext::box &box, int32_t &index, int32_t rows, int32_t column) {
-    if (box.char_index_list.empty()) {
-        index = -1;
-        return;
-    }
-
-    // Every new line less one slot from index of raw text char list,
-    // it means that should increase one index slot for each less.
-    int32_t concurrent_rows = column - 1 < 0 ? 0 : box.char_index_list[column - 1];
-    index = concurrent_rows + rows;
-}
-
-void ekgtext::process_text_rows(ekgtext::box &box, std::string &raw_text) {
-    box.push_back(raw_text);
+void ekgtext::process_text_chunks(ekgtext::box &box, std::string &raw_text) {
+    box.loaded_text_chunk_list.push_back(raw_text);
 }
 
 void ekgtext::should_sync_ui(ekgtext::box &box, const std::string &text, bool &should) {
@@ -265,7 +243,7 @@ void ekgtext::process_cursor_pos_relative(ekgtext::box &box, const std::string &
 
 void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t column, int32_t max_row, int32_t max_column) {
     int32_t cursor[4] = {row, column, max_row, max_column};
-    int32_t max_columns = box.char_index_list.size() - 1 < 0 ? 0 : (int32_t) box.char_index_list.size() - 1;
+    int32_t max_columns = box.loaded_text_chunk_list.size() - 1 < 0 ? 0 : (int32_t) box.loaded_text_chunk_list.size() - 1;
 
     // Sync rows and columns correctly.
     for (uint8_t i = 0; i < 4; i += 2) {
@@ -273,7 +251,7 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t c
         column = i + 1;
 
         cursor[column] = cursor[column] < 0 ? 0 : (cursor[column] > max_columns ? max_columns : cursor[column]);
-        ekgtext::get_rows(box, max_row, cursor[column]);
+        ekgtext::get_chunk_size(box, max_row, cursor[column]);
 
         if (cursor[row] > max_row) {
             if (cursor[column] >= max_columns) {
@@ -287,7 +265,7 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t c
         if (cursor[row] < 0) {
             if (cursor[column] > 0) {
                 cursor[column]--;
-                ekgtext::get_rows(box, max_row, cursor[column]);
+                ekgtext::get_chunk_size(box, max_row, cursor[column]);
                 cursor[row] = max_row;
             } else {
                 cursor[row] = 0;
@@ -299,41 +277,144 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t c
     }
 }
 
-void ekgtext::process_new_text(ekgtext::box &box, const std::string& new_text, int32_t action) {
-    if (action == ekgtext::action::REMOVE_OPPOSITE) {
-        if (box.cursor[0] == box.cursor[2]) {
-            box.cursor[2]++;
+void ekgtext::process_new_empty_chunks(ekgtext::box &box, int32_t amount) {
+    for (int32_t i = 0; i < amount; i++) {
+        box.loaded_text_chunk_list.push_back("");
+    }
+}
+
+void ekgtext::process_new_text(ekgtext::box &box, const std::string& new_text, ekgtext::action action) {
+    switch (action) {
+        case ekgtext::action::REMOVE_OPPOSITE: {
+            if (box.cursor[0] == box.cursor[2]) {
+                box.cursor[2]++;
+            }
+
+            break;
         }
-    } else if (action == ekgtext::action::REMOVE) {
-        if (box.cursor[0] == box.cursor[2]) {
-            box.cursor[0]--;
+
+        case ekgtext::action::REMOVE: {
+            if (box.cursor[0] == box.cursor[2]) {
+                box.cursor[0]--;
+            }
+
+            break;
+        }
+
+        case ekgtext::action::INSERT_LINE: {
+            if (box.cursor[1] == box.cursor[3]) {
+                box.cursor[3]++;
+            }
+
+            ekgtext::process_new_empty_chunks(box, 1);
+            break;
         }
     }
 
-    std::vector<int32_t> concurrent_text_chunk_list;
-    ekgtext::get_chunks_index_from_box(box, concurrent_text_chunk_list, box.cursor);
+    std::vector<int32_t> chunk_index_list;
+    ekgtext::get_chunks_index_from_box(box, chunk_index_list, box.cursor);
 
-    if (!concurrent_text_chunk_list.empty() && box.cursor[0] >=  0) {
-        int32_t min = 0;
-        int32_t max = 0;
+    if (!chunk_index_list.empty() && box.cursor[0] >= 0) {
+        int32_t min = box.cursor[0];
+        int32_t max = box.cursor[2];
 
-        int32_t first_row_index = box.cursor[0];
-        int32_t first_column_index = 0;
+        bool begin = false;
+        bool end = false;
 
-        for (int32_t i = 0; i < concurrent_text_chunk_list.size(); i++) {
-            int32_t index = concurrent_text_chunk_list[i];
-            std::string &text = box.loaded_text_chunk_list[concurrent_text_chunk_list[]];
+        ekgutil::log(std::to_string(box.cursor[0]) + " == " + std::to_string(box.cursor[2]));
 
-            if (index == )
+        const std::vector<int32_t> fast_chunk_index_list = chunk_index_list;
+        std::string begin_text;
+        chunk_index_list.clear();
 
-            min = ekgmath::clampi(box.cursor[0])
+        for (int32_t i = 0; i < fast_chunk_index_list.size(); i++) {
+            int32_t index = fast_chunk_index_list[i];
+            std::string &text = box.loaded_text_chunk_list[index];
+
+            begin = i == 0;
+            end = i + 1 == fast_chunk_index_list.size();
+
+            std::string left;
+            std::string right;
+
+            if (begin && end) {
+                min = ekgmath::clampi(min, 0, text.size());
+                max = ekgmath::clampi(max, 0, text.size());
+
+                left = text.substr(0, min);
+                right = text.substr(max, text.size());
+            } else if (begin) {
+                min = ekgmath::clampi(box.cursor[0], 0, text.size());
+                max = text.size();
+
+                left = text.substr(0, min);
+                right = text.substr(max, text.size());
+                begin_text = left + new_text + right;
+                chunk_index_list.push_back(index);
+            } else if (end) {
+                min = 0;
+                max = ekgmath::clampi(box.cursor[2], 0, text.size());
+
+                left = begin_text + text.substr(0, min);
+                right = text.substr(max, text.size());
+
+                begin_text = left + new_text + right;
+            } else {
+                text.clear();
+                chunk_index_list.push_back(index);
+            }
+
+            text = left + new_text + right;
         }
 
-        std::string left = previous_text.substr(0, min_cursor_index);
-        std::string right = previous_text.substr(max_cursor_index, previous_text.size());
+        for (int32_t &index : chunk_index_list) {
+            if (index < 0 || index >= box.loaded_text_chunk_list.size()) {
+                continue;
+            }
 
-        raw_text = left + text + right;
+            box.loaded_text_chunk_list.erase(box.loaded_text_chunk_list.begin() + index);
+        }
+
+        switch (action) {
+            case ekgtext::action::INSERT_LINE: {
+                std::string left;
+                std::string right;
+
+                bool first_iteration = true;
+                std::string temp_text;
+
+                for (int32_t i = box.cursor[1]; i < box.loaded_text_chunk_list.size(); i++) {
+                    std::string &text = box.loaded_text_chunk_list[i];
+
+                    if (first_iteration) {
+                        left = text.substr(0, box.cursor[0]);
+                        right = text.substr(box.cursor[0], text.size());
+                        text = left;
+                        begin_text = right;
+                        first_iteration = false;
+                    } else {
+                        temp_text = text;
+                        text = begin_text;
+                        begin_text = temp_text;
+                    }
+                }
+
+                break;
+            }
+        }
     }
+
+    switch (action) {
+        case ekgtext::action::INSERT: {
+            box.cursor[0]++;
+            break;
+        }
+    }
+    
+    box.cursor[2] = box.cursor[0];
+    box.cursor[3] = box.cursor[1];
+
+    ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
 }
 
 void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::string &raw_text, bool &flag, SDL_Event &sdl_event) {
@@ -429,88 +510,7 @@ void ekgtext::process_event(ekgtext::box &box, const ekgmath::rect &rect, std::s
     float my = 0;
 
     if (ekgapi::any_input_down(sdl_event, mx, my)) {
-        int32_t begin = 0;
-        int32_t end = 0;
 
-        ekgtext::get_char_index(box, begin, box.visible[0], box.visible[1]);
-        ekgtext::get_char_index(box, end, box.visible[2], box.visible[3]);
-        ekgtext::reset_cursor_loop();
-
-        if (begin == -1 || end == -1) {
-            return;
-        }
-
-        ekgmath::rect curr_rect;
-
-        char char_str = 0;
-        ekg_char_data char_data;
-
-        float x = box.bounds.x;
-        float y = box.bounds.y;
-        float previous_x = 0;
-
-        flag = false;
-        bool flag_rows_per_columns = false;
-
-        float impl = (static_cast<float>(ekg::core->get_font_manager().get_texture_height()) / 8) / 2;
-
-        int32_t rows_in = 0;
-        int32_t columns_in = 0;
-
-        ekg::core->get_font_manager().get_previous_char() = 0;
-
-        for (uint32_t i = begin; i < end + 1; i++) {
-            if (i < 0 || i >= raw_text.size()) {
-                continue;
-            }
-
-            char_str = raw_text.at(i);
-            previous_x = 0;
-
-            ekg::core->get_font_manager().set_previous_char_glyph(&char_str, previous_x);
-            ekg::core->get_font_manager().at(char_data, char_str);
-
-            x += previous_x;
-            flag_rows_per_columns = rows_in > box.max_rows || (columns_in < box.char_index_list.size() && rows_in > box.char_index_list[columns_in]);
-
-            if (flag_rows_per_columns) {
-                rows_in = 0;
-                columns_in++;
-
-                x = box.bounds.x;
-                y += static_cast<float>(ekg::core->get_font_manager().get_texture_height());
-            }
-
-            curr_rect.x = rect.x + x;
-            curr_rect.y = rect.y + y;
-            curr_rect.w = char_data.width + char_data.left + ((int32_t) char_str == 32 ? char_data.texture_x : 0);
-            curr_rect.h = static_cast<float>(ekg::core->get_font_manager().get_texture_height());
-
-            flag = curr_rect.collide_aabb_with_point(mx, my);
-
-            if (flag) {
-                curr_rect.w /= 2;
-                flag = curr_rect.collide_aabb_with_point(mx, my);                
-
-                if (!flag && ((i + 1 < raw_text.size() && !flag_rows_per_columns) || (rows_in + 1 == box.char_index_list[columns_in] + 1))) {
-                    rows_in++;
-                }
-
-                box.cursor[0] = rows_in;
-                box.cursor[1] = columns_in;
-                box.cursor[2] = rows_in;
-                box.cursor[3] = columns_in;
-
-                break;
-            }
-
-            x += char_data.texture_x;
-            rows_in++;
-
-            ekg::core->get_font_manager().get_previous_char() = char_str;
-        }
-
-        flag = true;
     }
 }
 
@@ -532,14 +532,12 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
     // Draw the background.
     ekggpu::rectangle(rect, ekg::theme().text_input_background);
 
-    const char* char_str = text.c_str();
-    uint32_t str_len = 0;
-
     float render_x = 0, render_y = 0, render_w = 0, render_h = 0;
     float texture_x = 0, texture_y = 0, texture_w = 0, texture_h = 0;
     float impl = (static_cast<float>(ekg::core->get_font_manager().get_texture_height()) / 8) / 2;
 
     int32_t diff = 666;
+    uint32_t str_len = 0;
     const bool unique_cursor = box.cursor[2] == box.cursor[0] && box.cursor[3] == box.cursor[1];
 
     // Generate a GPU data.
@@ -559,9 +557,16 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
     float y = box.bounds.y;
 
     float prev_x = 0;
+    float text_height = ekg::core->get_font_manager().get_text_height("hi sou linda");
 
-    for (int32_t i = 0; i < box.loaded_text_chunk_list.size(); i++) {
-        std::string &text = box.loaded_text_chunk_list[i];
+    int32_t char_count = 0;
+    int32_t text_chunk_size = 0;
+
+    bool visible = false;
+
+    for (int32_t amount = 0; amount < box.loaded_text_chunk_list.size(); amount++) {
+        std::string &text = box.loaded_text_chunk_list[amount];
+        text_chunk_size = text.size();
 
         // TODO: Optimize iterations inside iterations (Iterate only visible area).
         for (const char* i = text.c_str(); *i; i++) {
@@ -595,23 +600,24 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
                 ekggpu::push_arr_rect(ekg::core->get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
             }
 
-            bool cursor_out_of_str_range = rows_in + 1 == rows_per_column && rows_in + 1 == box.cursor[0];
+            bool cursor_out_of_str_range = char_count + 1 == text_chunk_size && char_count + 1 == box.cursor[0];
 
-            if (unique_cursor && (visible || *i == 32) && (cursor_out_of_str_range || rows_in == box.cursor[0]) && columns_in == box.cursor[1]) {
+            if (unique_cursor && (visible || *i == 32) && (cursor_out_of_str_range || char_count == box.cursor[0]) && amount == box.cursor[1]) {
                 curr_rect.x += cursor_out_of_str_range ? (char_data.width == 0 ? char_data.texture_x : char_data.width) : 0;
                 curr_rect.w = 2;
-                curr_rect.h = ekg::core->get_font_manager().get_texture_height() + impl;
+                curr_rect.h = text_height + impl;
                 cursor_rect.copy(curr_rect);
             }
 
             x += char_data.texture_x;
             ekg::core->get_font_manager().get_previous_char() = *i;
+            char_count++;
         }
+        
+        x = box.bounds.x;
+        y += text_height + (impl / 2);
 
-        if (text.empty()) {
-            y += ekg::core->get_font_manager().get_text_height() + (impl / 2);
-            x = box.bounds.x;
-        }
+        char_count = 0;
     }
 
     // Configure
@@ -640,7 +646,7 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
 }
 
 void ekgtext::get_chunks_index_from_box(ekgtext::box &box, std::vector<int32_t> &chunks_index, int32_t *index_box) {
-    for (int32_t i = box.cursor[1]; i < box.cursor[3]; i++) {
+    for (int32_t i = box.cursor[1]; i <= box.cursor[3]; i++) {
         if (i < 0 || i >= box.loaded_text_chunk_list.size()) {
             continue;
         }
