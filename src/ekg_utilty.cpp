@@ -302,10 +302,6 @@ void ekgtext::process_new_text(ekgtext::box &box, const std::string& new_text, e
         }
 
         case ekgtext::action::INSERT_LINE: {
-            if (box.cursor[1] == box.cursor[3]) {
-                box.cursor[3]++;
-            }
-
             ekgtext::process_new_empty_chunks(box, 1);
             break;
         }
@@ -327,15 +323,20 @@ void ekgtext::process_new_text(ekgtext::box &box, const std::string& new_text, e
         std::string begin_text;
         chunk_index_list.clear();
 
+        std::string left;
+        std::string right;
+
+        int32_t index;
+
         for (int32_t i = 0; i < fast_chunk_index_list.size(); i++) {
-            int32_t index = fast_chunk_index_list[i];
+            index = fast_chunk_index_list[i];
             std::string &text = box.loaded_text_chunk_list[index];
 
             begin = i == 0;
             end = i + 1 == fast_chunk_index_list.size();
 
-            std::string left;
-            std::string right;
+            left.clear();
+            right.clear();
 
             if (begin && end) {
                 min = ekgmath::clampi(min, 0, text.size());
@@ -377,11 +378,8 @@ void ekgtext::process_new_text(ekgtext::box &box, const std::string& new_text, e
 
         switch (action) {
             case ekgtext::action::INSERT_LINE: {
-                std::string left;
-                std::string right;
-
-                bool first_iteration = true;
                 std::string temp_text;
+                bool first_iteration = true;
 
                 for (int32_t i = box.cursor[1]; i < box.loaded_text_chunk_list.size(); i++) {
                     std::string &text = box.loaded_text_chunk_list[i];
@@ -617,6 +615,13 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
         x = box.bounds.x;
         y += text_height + (impl / 2);
 
+        if (text.empty() && box.cursor[1] == amount) {
+            cursor_rect.x = rect.x + x;
+            cursor_rect.y = rect.y + y;
+            cursor_rect.w = 2;
+            cursor_rect.h = text_height + impl;
+        }
+
         char_count = 0;
     }
 
@@ -631,7 +636,7 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
     gpu_data.color[3] = ekg::theme().text_input_string.w;
 
     // Set the factor difference.
-    gpu_data.factor = diff - ((int32_t) str_len * 6);
+    gpu_data.factor = diff - ((int32_t) str_len);
 
     // Bind the texture to GPU.
     ekg::core->get_gpu_handler().bind_texture(gpu_data, ekg::core->get_font_manager().get_bitmap_texture_id());
