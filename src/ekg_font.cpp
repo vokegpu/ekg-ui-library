@@ -118,7 +118,7 @@ bool ekg_font::reload() {
 
         char_data.left = static_cast<float>(this->glyph_slot->bitmap_left);
         char_data.top = static_cast<float>(this->glyph_slot->bitmap_top);
-        char_data.texture_x = static_cast<float>(this->glyph_slot->advance.x >> 6);
+        char_data.offset = static_cast<float>(this->glyph_slot->advance.x >> 6);
 
         glTexSubImage2D(GL_TEXTURE_2D, 0, (GLint) offset, 0, (GLint) char_data.width, (GLint) char_data.height, GL_ALPHA, GL_UNSIGNED_BYTE, this->glyph_slot->bitmap.buffer);
         offset += char_data.width;
@@ -153,7 +153,7 @@ float ekg_font::get_text_width(const std::string &text) {
         ekg_char_data &char_data = this->char_list[*i];
 
         render_x = start_x + char_data.left;
-        start_x += char_data.texture_x;
+        start_x += char_data.offset;
 
         this->previous = *i;
         text_width = render_x + char_data.width;
@@ -220,7 +220,7 @@ void ekg_font::render(const std::string &text, float x, float y, ekgmath::vec4f 
         ekggpu::push_arr_rect(ekg::core->get_gpu_handler().get_cached_vertices(), render_x, render_y, render_w, render_h);
         ekggpu::push_arr_rect(ekg::core->get_gpu_handler().get_cached_vertices_materials(), texture_x, texture_y, texture_w, texture_h);
 
-        x += char_data.texture_x;
+        x += char_data.offset;
         this->previous = *i;
     }
 

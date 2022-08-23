@@ -23,7 +23,7 @@
  **/
 struct ekg_char_data {
     float x = 0;
-    float texture_x = 0;
+    float offset = 0;
 
     float width = 0;
     float height = 0;
