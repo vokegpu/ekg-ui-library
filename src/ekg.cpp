@@ -16,7 +16,7 @@ float ekg::delta_time = 0.0f;
 float ekg::text_dock_offset = 2.0f;
 
 std::string ekg::get_version() {
-    return "1.0.0";
+    return "0.9.0";
 }
 
 void ekg::init(SDL_Window* &sdl_window) {
