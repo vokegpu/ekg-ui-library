@@ -591,6 +591,7 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
             return;
         }
 
+        box.select_flag = true;
         ekg::core->get_font_manager().get_previous_char() = 0;
 
         ekg_char_data char_data;
@@ -645,6 +646,9 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
                     box.cursor[2] = box.cursor[0];
                     box.cursor[3] = box.cursor[1];
 
+                    box.index_a = char_count;
+                    box.index_b = amount;
+
                     ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
                     box.most_large_size = box.cursor[0];
 
@@ -661,6 +665,10 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
             y += height;
             char_count = 0;
         }
+    } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
+        box.select_flag = false;
+    } else if (ekgapi::motion(sdl_event, mx, my) && box.select_flag) {
+        
     }
 }
 

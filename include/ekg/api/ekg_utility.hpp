@@ -259,11 +259,16 @@ namespace ekgtext {
         int32_t max_chunk_visible;
 
         int32_t cursor[4];
+        int32_t most_large_size;
+
         int32_t max_chunk_amount;
         int32_t max_chunk_size;
 
-        int32_t most_large_size;
+        int32_t index_a;
+        int32_t index_b;
+
         bool final_flag;
+        bool select_flag;
     };
 
     /*

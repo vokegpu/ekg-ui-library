@@ -12,9 +12,9 @@
 #include "ekg/ekg.hpp"
 #include "ekg/impl/ekg_ui_element_textbox.hpp"
 
-
 ekg_textbox::ekg_textbox() {
     this->type = ekg::ui::TEXTBOX;
+    ekgtext::process_new_empty_chunks(this->box, 1);
 
     this->box.cursor[0] = 0;
     this->box.cursor[1] = 0;
