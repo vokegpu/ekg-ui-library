@@ -222,7 +222,7 @@ void ekgtext::get_chunk_size(ekgtext::box &box, int32_t &rows, int32_t column_ta
     }
 
     int32_t index = column_target < 0 ? 0 : (column_target < box.loaded_text_chunk_list.size() ? column_target : (ekgmath::clampi(box.loaded_text_chunk_list.size() - 1, 0, box.loaded_text_chunk_list.size())));
-    rows = box.loaded_text_chunk_list[index].size();
+    rows = (int32_t) box.loaded_text_chunk_list[index].size();
 }
 
 void ekgtext::process_text_chunks(ekgtext::box &box, std::string &raw_text) {
@@ -245,8 +245,6 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t c
     int32_t cursor[4] = {row, column, max_row, max_column};
     int32_t max_columns = box.loaded_text_chunk_list.size() - 1 < 0 ? 0 : (int32_t) box.loaded_text_chunk_list.size() - 1;
 
-    ekgutil::log("h hi  sou l");
-
     // Sync rows and columns correctly.
     for (uint8_t i = 0; i < 4; i += 2) {
         row = i;
@@ -259,8 +257,12 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t c
             if (cursor[column] >= max_columns) {
                 cursor[row] = max_row;
             } else {
-                cursor[row] = 0;
-                cursor[column]++;
+                if (cursor[row] == max_row + 1) {
+                    cursor[row] = 0;
+                    cursor[column]++;
+                } else {
+                    cursor[row] = max_row;
+                }
             }
         }
 
@@ -273,8 +275,6 @@ void ekgtext::process_cursor_pos_index(ekgtext::box &box, int32_t row, int32_t c
                 cursor[row] = 0;
             }
         }
-
-        ekgutil::log(std::to_string(cursor[column]));
 
         box.cursor[row] = cursor[row];
         box.cursor[column] = cursor[column];
@@ -447,6 +447,7 @@ void ekgtext::process_new_text(ekgtext::box &box, const std::string& new_text, e
                         left = text.substr(0, box.cursor[0]);
                         right = text.substr(box.cursor[0], text.size());
                         text = left;
+                        min = (int32_t) text.size();
                         begin_text = right;
                         first_iteration = false;
                     } else {
@@ -456,7 +457,8 @@ void ekgtext::process_new_text(ekgtext::box &box, const std::string& new_text, e
                     }
                 }
 
-                box.cursor[0] += 2;
+                // Jumping line.
+                box.cursor[0] = min + 1;
                 break;
             }
         }
@@ -479,6 +481,7 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
     switch (sdl_event.type) {
         case SDL_KEYDOWN: {
             auto k = sdl_event.key.keysym.sym;
+            bool flag_key_axis_y = false;
 
             switch (k) {
                 case SDLK_ESCAPE: {
@@ -506,7 +509,12 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
                     box.cursor[1]--;
                     box.cursor[3] = box.cursor[1];
 
+                    box.cursor[0] = box.most_large_size;
+                    box.cursor[2] = box.cursor[0];
+
                     flag = true;
+                    flag_key_axis_y = true;
+
                     break;
                 }
 
@@ -514,7 +522,12 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
                     box.cursor[1]++;
                     box.cursor[3] = box.cursor[1];
 
+                    box.cursor[0] = box.most_large_size;
+                    box.cursor[2] = box.cursor[0];
+
                     flag = true;
+                    flag_key_axis_y = true;
+
                     break;
                 }
 
@@ -543,6 +556,10 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
             if (flag) {
                 ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
                 ekgtext::reset_cursor_loop();
+
+                if (!flag_key_axis_y) {
+                    box.most_large_size = box.cursor[0];
+                }
             }
 
             break;
@@ -556,10 +573,11 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
             std::string char_str = sdl_event.text.text;
 
             ekgtext::process_new_text(box, char_str, ekgtext::action::INSERT);
-            ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
             ekgtext::reset_cursor_loop();
 
+            box.most_large_size = box.cursor[0];
             flag = true;
+
             break;
         }
     }
@@ -573,21 +591,20 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
             return;
         }
 
-        float render_x = 0, render_y = 0, render_w = 0, render_h = 0;
-        float texture_x = 0, texture_y = 0, texture_w = 0, texture_h = 0;
-        float impl = (static_cast<float>(ekg::core->get_font_manager().get_texture_height()) / 8) / 2;
-
         ekg::core->get_font_manager().get_previous_char() = 0;
 
         ekg_char_data char_data;
         ekgmath::rect curr_rect;
-        ekgmath::rect cursor_rect;
 
         float x = box.bounds.x;
         float y = box.bounds.y;
 
         float prev_x = 0;
-        float text_height = ekg::core->get_font_manager().get_text_height("hi sou gatinha meow");
+        float text_height = ekg::core->get_font_manager().get_texture_height();
+
+        float texture_h = 0;
+        float impl = (static_cast<float>(ekg::core->get_font_manager().get_texture_height()) / 8) / 2;
+        float height = text_height + impl;
 
         int32_t char_count = 0;
         int32_t text_chunk_size = 0;
@@ -609,25 +626,15 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
                 ekg::core->get_font_manager().at(char_data, *i);
 
                 x += prev_x;
-                render_w = char_data.width;
-                render_h = char_data.height;
-
-                texture_x = char_data.x;
-                texture_w = render_w / ekg::core->get_font_manager().get_texture_width();
-                texture_h = render_h / text_height;
-
-                // Get char from list and update metrics/positions of each char.
-                render_x = x + char_data.left;
-                render_y = y + (text_height - char_data.top);
+                texture_h = char_data.height / text_height;
 
                 curr_rect.x = rect.x + x;
                 curr_rect.y = rect.y + y;
                 curr_rect.w = char_data.offset;
-                curr_rect.h = render_h;
+                curr_rect.h = height;
 
                 if ((visible = curr_rect.collide_aabb_with_point(mx, my))) {
                     curr_rect.w /= 2;
-                    ekgutil::log(std::to_string(char_data.offset));
 
                     if (!(visible = curr_rect.collide_aabb_with_point(mx, my))) {
                         char_count++;
@@ -639,6 +646,8 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
                     box.cursor[3] = box.cursor[1];
 
                     ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
+                    box.most_large_size = box.cursor[0];
+
                     break;
                 }
 
@@ -649,7 +658,7 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
             }
 
             x = box.bounds.x;
-            y += text_height + (impl / 2);
+            y += height;
             char_count = 0;
         }
     }
@@ -673,15 +682,13 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
     // Draw the background.
     ekggpu::rectangle(rect, ekg::theme().text_input_background);
 
-    float prev_x = 0;
-    float text_height = ekg::core->get_font_manager().get_texture_height();
-
-    float render_x = 0, render_y = 0, render_w = 0, render_h = 0;
-    float texture_x = 0, texture_y = 0, texture_w = 0, texture_h = 0;
-    float impl = (text_height / 8) / 2;
-
     int32_t diff = 666;
     uint32_t str_len = 0;
+
+    float text_height = ekg::core->get_font_manager().get_texture_height();
+    float impl = (text_height / 8) / 2;
+    float height = text_height + impl;
+
     const bool unique_cursor = box.cursor[2] == box.cursor[0] && box.cursor[3] == box.cursor[1];
 
     // Generate a GPU data.
@@ -699,6 +706,10 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
 
     float x = box.bounds.x;
     float y = box.bounds.y;
+
+    float prev_x = 0;
+    float render_x = 0, render_y = 0, render_w = 0, render_h = 0;
+    float texture_x = 0, texture_y = 0, texture_w = 0, texture_h = 0;
 
     int32_t char_count = 0;
     int32_t text_chunk_size = 0;
@@ -735,7 +746,7 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
             curr_rect.x = rect.x + x;
             curr_rect.y = rect.y + y;
             curr_rect.w = render_w; 
-            curr_rect.h = render_h;
+            curr_rect.h = height;
 
             diff -= *i;
             diff -= static_cast<int32_t>(render_y);
@@ -760,7 +771,7 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
             if (unique_cursor && (visible || *i == 32) && (cursor_out_of_str_range || char_count == box.cursor[0]) && amount == box.cursor[1]) {
                 curr_rect.x += cursor_out_of_str_range ? (char_data.width == 0 ? char_data.offset : char_data.width) : 0;
                 curr_rect.w = 2;
-                curr_rect.h = text_height + impl;
+                curr_rect.h = height;
                 cursor_rect.copy(curr_rect);
             }
 
@@ -773,11 +784,11 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
             cursor_rect.x = rect.x + x;
             cursor_rect.y = rect.y + y;
             cursor_rect.w = 2;
-            cursor_rect.h = text_height + impl;
+            cursor_rect.h = height;
         }
 
         x = box.bounds.x;
-        y += text_height + (impl / 2);
+        y += height;
 
         char_count = 0;
     }
