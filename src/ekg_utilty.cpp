@@ -769,7 +769,7 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
             bool cursor_out_of_str_range = char_count + 1 == text_chunk_size && char_count + 1 == box.cursor[0];
 
             if (unique_cursor && (visible || *i == 32) && (cursor_out_of_str_range || char_count == box.cursor[0]) && amount == box.cursor[1]) {
-                curr_rect.x += cursor_out_of_str_range ? (char_data.width == 0 ? char_data.offset : char_data.width) : 0;
+                curr_rect.x += cursor_out_of_str_range ? char_data.offset : 0;
                 curr_rect.w = 2;
                 curr_rect.h = height;
                 cursor_rect.copy(curr_rect);
