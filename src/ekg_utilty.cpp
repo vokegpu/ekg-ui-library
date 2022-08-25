@@ -532,7 +532,6 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
                 }
 
                 case SDLK_BACKSPACE: {
-                    box.cursor[0]--;
                     ekgtext::process_new_text(box, "", ekgtext::action::REMOVE);
 
                     flag = true;
@@ -540,7 +539,6 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
                 }
 
                 case SDLK_DELETE: {
-                    box.cursor[2]++;
                     ekgtext::process_new_text(box, "", ekgtext::action::REMOVE_OPPOSITE);
 
                     flag = true;
@@ -592,8 +590,9 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
     if (motion || down || up) {
         bool hovered = rect.collide_aabb_with_point(mx, my);
 
-        if (up && hovered) {
+        if (up) {
             box.select_flag = false;
+            return;
         }
 
         if (!hovered) {
@@ -629,12 +628,14 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
         flag = true;
         ekgtext::reset_cursor_loop();
 
+        box.loaded_text_select_list.clear();
+
         for (int32_t amount = box.min_chunk_visible; amount < box.max_chunk_visible; amount++) {
             std::string &text = box.loaded_text_chunk_list[amount];
             text_chunk_size = (int32_t) text.size();
 
             // TODO: Optimize iterations inside iterations (Iterate only visible area).
-            for (const char* i = text.c_str(); *i; i++) {
+            for (const char *i = text.c_str(); *i; i++) {
                 prev_x = 0;
 
                 ekg::core->get_font_manager().set_previous_char_glyph(i, prev_x);
@@ -666,21 +667,43 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
 
                         ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
                         box.most_large_size = box.cursor[0];
+
+                        break;
                     } else if (motion) {
-                        if (char_count > box.index_a && amount > box.index_b) {
-                            box.cursor[0] = box.index_a;
+                        bool f = false;
+
+                        if (amount >= box.index_b) {
                             box.cursor[1] = box.index_b;
-                            box.cursor[2] = char_count;
                             box.cursor[3] = amount;
-                        } else if (char_count < box.index_a && amount < box.index_b) {
-                            box.cursor[0] = char_count;
+
+                            f = true;
+                        } else if (amount < box.index_b) {
                             box.cursor[1] = amount;
-                            box.cursor[2] = box.index_a;
                             box.cursor[3] = box.index_b;
                         }
-                    }
 
-                    break;
+                        if (f) {
+                            box.cursor[0] = char_count;
+                            box.cursor[2] = box.index_a;
+                        } else {
+                            box.cursor[0] = char_count;
+                            box.cursor[2] = box.index_a;
+                        }
+
+                        ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
+                        box.most_large_size = box.cursor[0];
+                    }
+                }
+
+                if (char_count >= box.cursor[0] && amount >= box.cursor[1] && char_count <= box.cursor[2] && amount <= box.cursor[3]) {
+                    ekgmath::rect selected_rect;
+                    selected_rect.x = x;
+                    selected_rect.w = char_data.offset;
+
+                    selected_rect.y = y;
+                    selected_rect.h = height;
+
+                    box.loaded_text_select_list.push_back(selected_rect);
                 }
 
                 x += char_data.offset;
@@ -692,26 +715,6 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
             x = box.bounds.x;
             y += height;
             char_count = 0;
-        }
-
-        std::vector<int32_t> chunk_index_list;
-        ekgtext::get_chunks_index_from_box(box, chunk_index_list, box.cursor);
-
-        int32_t amount = 0;
-        char_count = 0;
-
-        box.loaded_text_select_list.clear();
-
-        for (int32_t i = 0; i < chunk_index_list.size(); i++) {
-            amount = chunk_index_list[i];
-            std::string &text = box.loaded_text_chunk_list[amount];
-
-            for (char_count = 0; char_count < text.size(); char_count++) {
-                if (char_count > box.cursor[0] && amount > box.cursor[0] && char_count < box.cursor[2] && amount < box.cursor[3]) {
-                    ekgmath::rect selected_rect;
-                    box.loaded_text_select_list.push_back(selected_rect);
-                }
-            }
         }
     }
 }
@@ -743,26 +746,46 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
 
     const bool unique_cursor = box.cursor[2] == box.cursor[0] && box.cursor[3] == box.cursor[1];
 
+    float x = box.bounds.x;
+    float y = box.bounds.y;
+
     if (!unique_cursor && !box.loaded_text_select_list.empty()) {
         ekg_gpu_data &gpu_data = ekg::core->get_gpu_handler().bind();
 
         gpu_data.rect[0] = static_cast<float>(static_cast<int32_t>(rect.x));
-        gpu_data.rect[1] = static_cast<float>(static_cast<int32_t>(rect.y - impl));
+        gpu_data.rect[1] = static_cast<float>(static_cast<int32_t>(rect.y));
+
+        bool draw = false;
 
         for (ekgmath::rect rects : box.loaded_text_select_list) {
-            if (rects.collide_aabb_with_rect(rect)) {
+            rects.x += rect.x + x;
+            rects.y += rect.y + y;
+
+            draw = rects.collide_aabb_with_rect(rect);
+
+            rects.x -= rect.x + x;
+            rects.y -= rect.y + y;
+
+            if (draw) {
+                str_len++;
+
                 ekggpu::push_arr_rect(ekg::core->get_gpu_handler().get_cached_vertices(), rects.x, rects.y, rects.w, rects.h);
                 ekggpu::push_arr_rect(ekg::core->get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
             }
         }
 
-        gpu_data.data = (int32_t) box.loaded_text_select_list.size();
+        gpu_data.data = (int32_t) str_len * 6;
+        gpu_data.factor = (int32_t) box.loaded_text_select_list.size();
 
         gpu_data.color[0] = ekg::theme().text_input_activy.x;
         gpu_data.color[1] = ekg::theme().text_input_activy.y;
         gpu_data.color[2] = ekg::theme().text_input_activy.z;
         gpu_data.color[3] = ekg::theme().text_input_activy.w;
+
+        ekg::core->get_gpu_handler().free(gpu_data);
     }
+
+    str_len = 0;
 
     // Generate a GPU data.
     ekg_gpu_data &gpu_data = ekg::core->get_gpu_handler().bind();
@@ -776,9 +799,6 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
     ekg_char_data char_data;
     ekgmath::rect curr_rect;
     ekgmath::rect cursor_rect;
-
-    float x = box.bounds.x;
-    float y = box.bounds.y;
 
     float prev_x = 0;
     float render_x = 0, render_y = 0, render_w = 0, render_h = 0;
