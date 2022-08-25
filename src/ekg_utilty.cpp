@@ -405,7 +405,7 @@ void ekgtext::process_new_text(ekgtext::box &box, const std::string& new_text, e
                 chunk_index_list.push_back(index);
             } else if (end) {
                 min = 0;
-                max = ekgmath::clampi(box.cursor[2], 0, text.size());
+                max = ekgmath::clampi(box.cursor[2], 0, (int32_t) text.size());
 
                 left = begin_text + text.substr(0, min);
                 right = text.substr(max, text.size());
@@ -585,8 +585,18 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
     float mx = 0;
     float my = 0;
 
-    if (ekgapi::any_input_down(sdl_event, mx, my)) {
-        if (!rect.collide_aabb_with_point(mx, my)) {
+    bool motion = ekgapi::motion(sdl_event, mx, my);
+    bool down = ekgapi::any_input_down(sdl_event, mx, my);
+    bool up = ekgapi::any_input_up(sdl_event, mx, my);
+
+    if (motion || down || up) {
+        bool hovered = rect.collide_aabb_with_point(mx, my);
+
+        if (up && hovered) {
+             box.select_flag = false;
+        }
+
+        if (!hovered) {
             box.final_flag = true;
             return;
         }
@@ -641,16 +651,20 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
                         char_count++;
                     }
 
-                    box.cursor[0] = char_count;
-                    box.cursor[1] = amount;
-                    box.cursor[2] = box.cursor[0];
-                    box.cursor[3] = box.cursor[1];
+                    if (down) {
+                        box.cursor[0] = char_count;
+                        box.cursor[1] = amount;
+                        box.cursor[2] = box.cursor[0];
+                        box.cursor[3] = box.cursor[1];
 
-                    box.index_a = char_count;
-                    box.index_b = amount;
+                        box.index_a = char_count;
+                        box.index_b = amount;
 
-                    ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
-                    box.most_large_size = box.cursor[0];
+                        ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
+                        box.most_large_size = box.cursor[0];
+                    } else if (motion) {
+                        if (char_count > box.index_a)
+                    }
 
                     break;
                 }
@@ -665,10 +679,6 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
             y += height;
             char_count = 0;
         }
-    } else if (ekgapi::any_input_up(sdl_event, mx, my)) {
-        box.select_flag = false;
-    } else if (ekgapi::motion(sdl_event, mx, my) && box.select_flag) {
-        
     }
 }
 
