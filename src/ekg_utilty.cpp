@@ -585,7 +585,7 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
     float mx = 0;
     float my = 0;
 
-    bool motion = ekgapi::motion(sdl_event, mx, my);
+    bool motion = ekgapi::motion(sdl_event, mx, my) && box.select_flag;
     bool down = ekgapi::any_input_down(sdl_event, mx, my);
     bool up = ekgapi::any_input_up(sdl_event, mx, my);
 
@@ -593,15 +593,19 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
         bool hovered = rect.collide_aabb_with_point(mx, my);
 
         if (up && hovered) {
-             box.select_flag = false;
+            box.select_flag = false;
         }
 
         if (!hovered) {
             box.final_flag = true;
+            box.select_flag = true;
             return;
         }
 
-        box.select_flag = true;
+        if (down) {
+            box.select_flag = true;
+        }
+
         ekg::core->get_font_manager().get_previous_char() = 0;
 
         ekg_char_data char_data;
@@ -663,7 +667,17 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
                         ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
                         box.most_large_size = box.cursor[0];
                     } else if (motion) {
-                        if (char_count > box.index_a)
+                        if (char_count > box.index_a && amount > box.index_b) {
+                            box.cursor[0] = box.index_a;
+                            box.cursor[1] = box.index_b;
+                            box.cursor[2] = char_count;
+                            box.cursor[3] = amount;
+                        } else if (char_count < box.index_a && amount < box.index_b) {
+                            box.cursor[0] = char_count;
+                            box.cursor[1] = amount;
+                            box.cursor[2] = box.index_a;
+                            box.cursor[3] = box.index_b;
+                        }
                     }
 
                     break;
@@ -678,6 +692,26 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
             x = box.bounds.x;
             y += height;
             char_count = 0;
+        }
+
+        std::vector<int32_t> chunk_index_list;
+        ekgtext::get_chunks_index_from_box(box, chunk_index_list, box.cursor);
+
+        int32_t amount = 0;
+        char_count = 0;
+
+        box.loaded_text_select_list.clear();
+
+        for (int32_t i = 0; i < chunk_index_list.size(); i++) {
+            amount = chunk_index_list[i];
+            std::string &text = box.loaded_text_chunk_list[amount];
+
+            for (char_count = 0; char_count < text.size(); char_count++) {
+                if (char_count > box.cursor[0] && amount > box.cursor[0] && char_count < box.cursor[2] && amount < box.cursor[3]) {
+                    ekgmath::rect selected_rect;
+                    box.loaded_text_select_list.push_back(selected_rect);
+                }
+            }
         }
     }
 }
@@ -708,6 +742,27 @@ void ekgtext::process_render_box(ekgtext::box &box, ekgmath::rect &rect, int32_t
     float height = text_height + impl;
 
     const bool unique_cursor = box.cursor[2] == box.cursor[0] && box.cursor[3] == box.cursor[1];
+
+    if (!unique_cursor && !box.loaded_text_select_list.empty()) {
+        ekg_gpu_data &gpu_data = ekg::core->get_gpu_handler().bind();
+
+        gpu_data.rect[0] = static_cast<float>(static_cast<int32_t>(rect.x));
+        gpu_data.rect[1] = static_cast<float>(static_cast<int32_t>(rect.y - impl));
+
+        for (ekgmath::rect rects : box.loaded_text_select_list) {
+            if (rects.collide_aabb_with_rect(rect)) {
+                ekggpu::push_arr_rect(ekg::core->get_gpu_handler().get_cached_vertices(), rects.x, rects.y, rects.w, rects.h);
+                ekggpu::push_arr_rect(ekg::core->get_gpu_handler().get_cached_vertices_materials(), 0.0f, 0.0f, 0.0f, 0.0f);
+            }
+        }
+
+        gpu_data.data = (int32_t) box.loaded_text_select_list.size();
+
+        gpu_data.color[0] = ekg::theme().text_input_activy.x;
+        gpu_data.color[1] = ekg::theme().text_input_activy.y;
+        gpu_data.color[2] = ekg::theme().text_input_activy.z;
+        gpu_data.color[3] = ekg::theme().text_input_activy.w;
+    }
 
     // Generate a GPU data.
     ekg_gpu_data &gpu_data = ekg::core->get_gpu_handler().bind();

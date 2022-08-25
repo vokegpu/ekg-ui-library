@@ -252,8 +252,11 @@ namespace ekgtext {
      * Store text position, cursor position and visual details.
      **/
     struct box {
-        ekgmath::vec2f bounds;
+        // Loaded because it is not a concurrent or fast list.
+        std::vector<ekgmath::rect> loaded_text_select_list;
         std::vector<std::string> loaded_text_chunk_list;
+
+        ekgmath::vec2f bounds;
 
         int32_t min_chunk_visible;
         int32_t max_chunk_visible;
