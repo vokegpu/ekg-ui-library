@@ -691,12 +691,24 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
                         } else if (amount == box.index_b) {
                             box.cursor[1] = box.index_b;
                             box.cursor[3] = box.index_b;
+
+                            if (char_count > box.index_a) {
+                                box.cursor[0] = box.index_a;
+                                box.cursor[2] = char_count;
+                            } else if (char_count < box.index_a){
+                                box.cursor[0] = char_count;
+                                box.cursor[2] = box.index_a;
+                            } else {
+                                box.cursor[0] = box.index_a;
+                                box.cursor[2] = box.index_a;
+                            }
                         }
 
-                        ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
                         box.most_large_size = box.cursor[0];
                     }
                 }
+
+                select = (amount == box.cursor[1] && amount == box.cursor[3] && (char_count >= box.cursor[0] && char_count <= box.cursor[2]));
 
                 if (select) {
                     ekgmath::rect selected_rect;

@@ -66,12 +66,12 @@ void ekg_textbox::on_event(SDL_Event &sdl_event) {
             ekgapi::set(this->flag.focused, true);
             this->set_should_update(true);
         }
-    } else if (ekgapi::input_up_left(sdl_event, mx, my)) {
-        ekgapi::set(this->flag.activy, false);
 
         if (this->flag.focused && !this->flag.over) {
-        	ekgapi::set(this->flag.focused, false);
+            ekgapi::set(this->flag.focused, false);
         }
+    } else if (ekgapi::input_up_left(sdl_event, mx, my)) {
+        ekgapi::set(this->flag.activy, false);
     }
 
     if (this->flag.focused) {
