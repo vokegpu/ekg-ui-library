@@ -595,14 +595,14 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
             return;
         }
 
-        if (!hovered) {
+        if (!hovered && (down || up)) {
             box.final_flag = true;
             box.select_flag = true;
-            return;
-        }
 
-        if (down) {
-            box.select_flag = true;
+            box.cursor[2] = box.cursor[0];
+            box.cursor[3] = box.cursor[1];
+
+            return;
         }
 
         ekg::core->get_font_manager().get_previous_char() = 0;
@@ -623,12 +623,14 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
         int32_t char_count = 0;
         int32_t text_chunk_size = 0;
 
-        bool visible = false;
-
         flag = true;
         ekgtext::reset_cursor_loop();
-
         box.loaded_text_select_list.clear();
+
+        bool visible = false;
+        bool select = false;
+        bool opposite = false;
+        bool pass = false;
 
         for (int32_t amount = box.min_chunk_visible; amount < box.max_chunk_visible; amount++) {
             std::string &text = box.loaded_text_chunk_list[amount];
@@ -667,27 +669,28 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
 
                         ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
                         box.most_large_size = box.cursor[0];
+                        box.select_flag = true;
+                        pass = true;
 
                         break;
                     } else if (motion) {
-                        bool f = false;
+                        opposite = false;
 
-                        if (amount >= box.index_b) {
+                        if (amount > box.index_b) {
+                            box.cursor[1] = amount;
+                            box.cursor[3] = box.index_b;
+
+                            box.cursor[0] = box.index_a;
+                            box.cursor[2] = char_count;
+                        } else if (amount < box.index_b) {
                             box.cursor[1] = box.index_b;
                             box.cursor[3] = amount;
 
-                            f = true;
-                        } else if (amount < box.index_b) {
-                            box.cursor[1] = amount;
+                            box.cursor[0] = char_count;
+                            box.cursor[2] = box.index_a;
+                        } else if (amount == box.index_b) {
+                            box.cursor[1] = box.index_b;
                             box.cursor[3] = box.index_b;
-                        }
-
-                        if (f) {
-                            box.cursor[0] = char_count;
-                            box.cursor[2] = box.index_a;
-                        } else {
-                            box.cursor[0] = char_count;
-                            box.cursor[2] = box.index_a;
                         }
 
                         ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
@@ -695,7 +698,7 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
                     }
                 }
 
-                if (char_count >= box.cursor[0] && amount >= box.cursor[1] && char_count <= box.cursor[2] && amount <= box.cursor[3]) {
+                if (select) {
                     ekgmath::rect selected_rect;
                     selected_rect.x = x;
                     selected_rect.w = char_data.offset;
@@ -715,6 +718,13 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
             x = box.bounds.x;
             y += height;
             char_count = 0;
+        }
+
+        if (!pass && (down || up)) {
+            ekgtext::process_cursor_pos_index(box, box.cursor[0], box.cursor[1], box.cursor[2], box.cursor[3]);
+
+            box.cursor[2] = box.cursor[0];
+            box.cursor[3] = box.cursor[1];
         }
     }
 }
