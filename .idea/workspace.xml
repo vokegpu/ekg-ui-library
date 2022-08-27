@@ -18,9 +18,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_tab.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_textbox.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_ui_element_textbox.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg_utilty.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_utilty.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -76,11 +76,6 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="ekg" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ekg" TARGET_NAME="ekg" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -158,7 +153,10 @@
       <workItem from="1661292348058" duration="9496000" />
       <workItem from="1661380338711" duration="12575000" />
       <workItem from="1661447071832" duration="22951000" />
-      <workItem from="1661533484645" duration="9350000" />
+      <workItem from="1661533484645" duration="11443000" />
+      <workItem from="1661609256383" duration="4486000" />
+      <workItem from="1661620435014" duration="47000" />
+      <workItem from="1661624763362" duration="4239000" />
     </task>
     <servers />
   </component>

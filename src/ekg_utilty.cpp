@@ -597,7 +597,7 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
 
         if (!hovered && (down || up)) {
             box.final_flag = true;
-            box.select_flag = true;
+            box.select_flag = false;
 
             box.cursor[2] = box.cursor[0];
             box.cursor[3] = box.cursor[1];
@@ -692,14 +692,13 @@ void ekgtext::process_event(ekgtext::box &box, ekgmath::rect &rect, std::string 
                             box.cursor[1] = box.index_b;
                             box.cursor[3] = box.index_b;
 
-                            if (char_count > box.index_a) {
+                            if (char_count >= box.index_a) {
                                 box.cursor[0] = box.index_a;
                                 box.cursor[2] = char_count;
-                            } else if (char_count < box.index_a){
+                            }
+
+                            if (char_count <= box.index_a) {
                                 box.cursor[0] = char_count;
-                                box.cursor[2] = box.index_a;
-                            } else {
-                                box.cursor[0] = box.index_a;
                                 box.cursor[2] = box.index_a;
                             }
                         }
