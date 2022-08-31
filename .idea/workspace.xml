@@ -18,10 +18,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_tab.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" afterPath="$PROJECT_DIR$/lib/libekg.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ekg_utilty.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg_utilty.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_tab.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_tab.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,6 +155,7 @@
       <workItem from="1661609256383" duration="4486000" />
       <workItem from="1661620435014" duration="47000" />
       <workItem from="1661624763362" duration="4239000" />
+      <workItem from="1661664947606" duration="37000" />
     </task>
     <servers />
   </component>
