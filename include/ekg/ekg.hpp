@@ -25,6 +25,7 @@
 #include <ekg/impl/ekg_ui_element_popup.hpp>
 #include <ekg/impl/ekg_ui_element_combobox.hpp>
 #include <ekg/impl/ekg_ui_element_textbox.hpp>
+#include <ekg/impl/ekg_ui_element_tab.hpp>
 
 /**
  * EKG - ez build gui \n

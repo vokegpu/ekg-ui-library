@@ -18,7 +18,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/ekg_ui_element_tab.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/ekg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/ekg.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_tab.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_tab.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -74,6 +76,11 @@
     </key>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ekg" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ekg" TARGET_NAME="ekg" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -156,6 +163,8 @@
       <workItem from="1661620435014" duration="47000" />
       <workItem from="1661624763362" duration="4239000" />
       <workItem from="1661664947606" duration="37000" />
+      <workItem from="1661998003144" duration="738000" />
+      <workItem from="1662061117979" duration="456000" />
     </task>
     <servers />
   </component>
