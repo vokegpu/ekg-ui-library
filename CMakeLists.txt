@@ -10,11 +10,16 @@
 # END OF EKG-LICENSE.
 ##
 cmake_minimum_required(VERSION 3.9)
-project(ekg VERSION 1.0.0 DESCRIPTION "ez build gui")
+project(ekg VERSION 1.0.0 DESCRIPTION "ui library")
 message("-- Preparing EKG setup")
 add_compile_options(-O3)
 
-set(LIBRARY_OUTPUT_PATH ../lib)
+if (WIN)
+    set(LIBRARY_OUTPUT_PATH ../lib/win)
+elseif()
+    set(LIBRARY_OUTPUT_PATH ../lib/linux)
+endif()
+
 set(PROJECT_VERSION 1.0)
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
 file(GLOB_RECURSE HEADER_FILES "include/ekg/*.hpp")

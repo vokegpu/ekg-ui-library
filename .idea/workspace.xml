@@ -3,6 +3,9 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
+  <component name="CMakePresetLoader">{
+  &quot;useNewFormat&quot;: true
+}</component>
   <component name="CMakeReloadState">
     <option name="reloaded" value="true" />
   </component>
@@ -18,10 +21,69 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/ekg_ui_element_tab.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/ekg/core/core.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/ekg/cpu/cpu_input.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/ekg/feature/feature.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/ekg/gpu/gpu_allocator.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/ekg/gpu/gpu_data.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/ekg/service/service_ui_manager.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/ekg/service/service_widget_manager.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/ekg/ui/value/ui_value_number.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/ekg/ui/widget/ui_widget.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/ekg/ui/widget/ui_widget_button.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/ekg/ui/widget/ui_widget_slider.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/ekg/util/math.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/ekg/util/render.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/core.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/api/ekg_api.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/api/ekg_core.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/api/ekg_event.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/api/ekg_font.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/api/ekg_gpu.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/api/ekg_opengl.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/api/ekg_theme.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/api/ekg_utility.hpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/include/ekg/ekg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/ekg.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_tab.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_tab.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_abstract.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_button.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_checkbox.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_combobox.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_frame.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_popup.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_slider.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_tab.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ekg/impl/ekg_ui_element_textbox.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ekg.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/libekg.a" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/splashes-dev/scale-manager-2.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/splashes-dev/splash-actual-2-ver-0.9.0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/splashes-dev/splash-actual-state.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/splashes-dev/splash-grid-style-text-box-1.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/splashes-dev/splash-immediate-popup-2.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/splashes-dev/splash-immediate-popup.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/splashes-dev/splash-popup.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/splashes-dev/splash-scale-manager.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/splashes-dev/splash-slider.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_api.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_core.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_event.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_font.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_gpu.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_theme.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_abstract.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_button.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_checkbox.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_combobox.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_frame.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_popup.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_slider.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_tab.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_ui_element_textbox.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ekg_utilty.cpp" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,6 +106,9 @@
     <option name="minorVersion" value="1.2" />
   </component>
   <component name="ProjectId" id="2BRVJ5Haee361Bab8YEYZkYHGSZ" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -57,7 +122,7 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Diyng/Downloads/new_ui_preview.jar&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/rina/Documents/GitHub/ekg-ui-library/ekg&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -69,18 +134,14 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/include/ekg/ui/widget" />
+      <recent name="$PROJECT_DIR$/include/ekg/ui" />
       <recent name="C:\Users\Diyng\Documents\GitHub\bicudo\ekg\include" />
       <recent name="C:\Users\Diyng\Documents\GitHub\bicudo\ekg\ekg\impl" />
       <recent name="C:\Users\Diyng\Documents\GitHub\bicudo\ekg\ekg\impl\ui" />
-      <recent name="C:\Users\Diyng\Documents\GitHub\bicudo\ekg\ekg\api" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="ekg" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ekg" TARGET_NAME="ekg" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -165,6 +226,9 @@
       <workItem from="1661664947606" duration="37000" />
       <workItem from="1661998003144" duration="738000" />
       <workItem from="1662061117979" duration="456000" />
+      <workItem from="1663633207468" duration="5728000" />
+      <workItem from="1663692359663" duration="5405000" />
+      <workItem from="1663703513490" duration="361000" />
     </task>
     <servers />
   </component>
