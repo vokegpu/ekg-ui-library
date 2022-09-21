@@ -7,7 +7,7 @@ float ekg::dt {};
 void ekg::log(const std::string &log_message) {
     const std::string full_log_message = "[ekg] " + log_message;
 
-    switch (EKG_CPU_PLATFORM) {
+    switch (ekg::os) {
         case ekg::platform::os_android: {
             SDL_Log("%s", full_log_message.c_str());
             break;

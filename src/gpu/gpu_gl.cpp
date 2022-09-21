@@ -3,7 +3,7 @@
 #include "ekg/util/util.hpp"
 
 void ekg::gpu::init_opengl_context() {
-    switch (EKG_CPU_PLATFORM) {
+    switch (ekg::os) {
         case ekg::platform::os_android: {
             // Ignore.
             break;

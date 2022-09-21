@@ -4,11 +4,20 @@
 
 ekg_core* ekg::core {nullptr};
 
-void ekg::init() {
+void ekg::init(SDL_Window* root) {
     ekg::log("Initialising ekg...");
+
+#if defined(_WIN)
+    ekg::os = {ekg::platform::os_win};
+#elif defined(__linux__)
+    ekg::os = {ekg::platform::os_linux};
+#elif defined(__ANDROID__)
+    ekg::os = {ekg::platform::os_android};
+#endif
 
     ekg::core = new ekg_core();
     ekg::core->init();
+    ekg::core->set_root(root);
 }
 
 void ekg::quit() {
@@ -32,13 +41,17 @@ void ekg::render() {
 }
 
 void ekg::demo() {
+    float root_width {1280.0f};
+    float root_height {800.0f};
+
     ekg::log("Initialising demo showcase");
-    SDL_Window* sdl_win {SDL_CreateWindow("ekg showcase", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 800, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
+    SDL_Window* sdl_win {SDL_CreateWindow("ekg showcase", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
+    ekg::init(sdl_win);
     ekg::gpu::init_opengl_context();
 
     SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
@@ -95,6 +108,7 @@ void ekg::demo() {
                 }
             }
 
+            glViewport(0, 0, root_width, root_height);
             glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
             glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 

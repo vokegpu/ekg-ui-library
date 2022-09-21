@@ -8,7 +8,7 @@ namespace ekg {
     extern ekg_core* core;
 
     void demo();
-    void init();
+    void init(SDL_Window* root);
     void quit();
 
     void event(SDL_Event &sdl_event);
