@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.9)
+project(ekg_tests)
+
+if (WIN)
+    set(EXECUTABLE_OUTPUT_PATH ./build/win/)
+elseif()
+    set(EXECUTABLE_OUTPUT_PATH ./build/linux/)
+endif()
+
+add_compile_options(-O3)
+include_directories(../include/)
+add_executable(ekg_tests src/main.cpp)
+
+if (WIN)
+    message("-- WIN platform!")
+    file(GLOB PATH "../lib/linux/libekg.a")
+    target_link_libraries(ekg_tests "../lib/linux/libekg.a" mingw32 SDL2main SDL2 opengl32 glew32 freetype)
+else()
+    message("-- LINUX platform!")
+    file(GLOB PATH "../lib/linux/libekg.a")
+    target_link_libraries(ekg_tests ${PATH} SDL2main SDL2 GL GLEW freetype)
+endif()

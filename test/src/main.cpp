@@ -9,7 +9,9 @@
  *
  * All tests were ran in Linux.
  */
-int main(void) {
+int main(int argv, char** argc) {
+    SDL_Init(SDL_INIT_VIDEO);
+
     ekg::init();
     ekg::demo();
     ekg::quit();

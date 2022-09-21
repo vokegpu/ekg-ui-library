@@ -11,7 +11,7 @@
   </component>
   <component name="CMakeRunConfigurationManager">
     <generated>
-      <config projectName="ekg" targetName="ekg" />
+      <config projectName="ekg_tests" targetName="ekg_tests" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -21,21 +21,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ef30ce3f-6a13-4c1e-b17f-23621cd416fb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/include/ekg/util/util.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/ekg/util/util_gui.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/cpu/cpu_info.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/cpu/cpu_input.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gpu/gpu_gl.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/util/util.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/main.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/ekg/core/core.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/core/core.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/ekg/cpu/cpu_input.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/cpu/cpu_input.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/ekg/ekg.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/ekg.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/ekg/util/math.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/cpu/cpu_info.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/ekg/util/render.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ekg/gpu/gpu_gl.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/core.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/core.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ekg.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ekg.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gpu/gpu_gl.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/gpu/gpu_gl.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +38,13 @@
     <option name="formatViaClangd" value="false" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CMakeLists.txt" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -86,23 +85,34 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/test/src" />
       <recent name="C:\Users\Diyng\Documents\GitHub\bicudo\ekg\include" />
       <recent name="C:\Users\Diyng\Documents\GitHub\bicudo\ekg\ekg\impl" />
       <recent name="C:\Users\Diyng\Documents\GitHub\bicudo\ekg\ekg\impl\ui" />
       <recent name="C:\Users\Diyng\Documents\GitHub\bicudo\ekg\ekg\api" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="CMake Application.ekg-test">
     <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ekg" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ekg" TARGET_NAME="ekg" CONFIG_NAME="Debug">
+    <configuration name="ekg-build-library" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ekg_tests" TARGET_NAME="ekg" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="RunConfigurationTask" enabled="true" run_configuration_name="ekg-test" run_configuration_type="CMakeRunConfiguration" />
+      </method>
+    </configuration>
+    <configuration name="ekg-test" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="true" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ekg_tests" TARGET_NAME="ekg_tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ekg_tests" RUN_TARGET_NAME="ekg_tests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="CMake Application.ekg-test" />
+      <item itemvalue="CMake Application.ekg-build-library" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -185,7 +195,7 @@
       <workItem from="1663633207468" duration="5728000" />
       <workItem from="1663692359663" duration="5405000" />
       <workItem from="1663703513490" duration="2789000" />
-      <workItem from="1663712177786" duration="18005000" />
+      <workItem from="1663712177786" duration="20532000" />
     </task>
     <servers />
   </component>

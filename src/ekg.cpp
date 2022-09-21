@@ -12,7 +12,7 @@ void ekg::init() {
 }
 
 void ekg::quit() {
-    ekg::log("Quitting from ekg...");
+    ekg::log("Quiting from ekg...");
 
     ekg::core->quit();
     delete ekg::core;
