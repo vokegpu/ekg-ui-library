@@ -14,9 +14,9 @@ public:
     void init();
     void quit();
 
-    void event(SDL_Event &sdl_event);
-    void update();
-    void render();
+    void process_event(SDL_Event &sdl_event);
+    void process_update();
+    void process_render();
 };
 
 #endif
