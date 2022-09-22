@@ -5,7 +5,7 @@
 #include "ui_element.hpp"
 
 namespace ekg {
-	class button : ekg::element {
+	class boolean : ekg::element {
 	protected:
 		bool value {};
 	public:

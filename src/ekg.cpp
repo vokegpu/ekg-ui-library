@@ -1,8 +1,9 @@
 #include "ekg/ekg.hpp"
 #include "ekg/cpu/cpu_input.hpp"
 #include "ekg/gpu/gpu_gl.hpp"
+#include "ekg/cpu/cpu_info.hpp"
 
-ekg_core* ekg::core {nullptr};
+ekg::runtime* ekg::core {nullptr};
 
 void ekg::init(SDL_Window* root) {
     ekg::log("Initialising ekg...");
@@ -15,7 +16,7 @@ void ekg::init(SDL_Window* root) {
     ekg::os = {ekg::platform::os_android};
 #endif
 
-    ekg::core = new ekg_core();
+    ekg::core = new ekg::runtime();
     ekg::core->init();
     ekg::core->set_root(root);
 }

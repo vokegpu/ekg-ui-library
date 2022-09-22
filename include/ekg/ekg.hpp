@@ -2,10 +2,10 @@
 #ifndef EKG_H
 #define EKG_H
 
-#include "ekg/core/core.hpp"
+#include "ekg/core/runtime.hpp"
 
 namespace ekg {
-    extern ekg_core* core;
+    extern ekg::runtime* core;
 
     void demo();
     void init(SDL_Window* root);

@@ -1,1 +1,1 @@
-The official core ekg ui library.
+The official runtime ekg ui library.

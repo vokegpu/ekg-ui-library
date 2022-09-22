@@ -2,6 +2,9 @@
 #ifndef EKG_UI_ELEMENT_H
 #define EKG_UI_ELEMENT_H
 
+#include <iostream>
+#include <string>
+
 namespace ekg {
 	class element {
 	protected:
@@ -11,10 +14,10 @@ namespace ekg {
 		std::string tag {};
 		std::string extra_tag {};
 	public:
-		void set_id(uint32_t id);
+		void set_id(uint32_t token);
 		uint32_t get_id();
 
-		void set_parent_id();
+		void set_parent_id(uint32_t token);
 		uint32_t get_parent_id();
 
 		void set_tag(const std::string &str);
