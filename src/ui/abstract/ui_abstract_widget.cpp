@@ -1,5 +1,13 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
+ekg::ui::abstract_widget::abstract_widget() {
+
+}
+
+ekg::ui::abstract_widget::~abstract_widget() {
+
+}
+
 void ekg::ui::abstract_widget::on_reload() {
 
 }

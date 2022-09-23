@@ -14,6 +14,9 @@ namespace ekg::ui {
 		std::string tag {};
 		std::string extra_tag {};
 	public:
+		abstract();
+		~abstract();
+
 		void set_id(uint32_t token);
 		uint32_t get_id();
 

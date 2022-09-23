@@ -6,6 +6,11 @@
 
 namespace ekg {
     extern float dt;
+    extern char* const empty;
+
+    enum class dock {
+        free, top, bottom, right, left, center, full, none
+    };
 
     struct flag {
         bool highlight {};

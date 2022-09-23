@@ -9,6 +9,9 @@
 namespace ekg::ui {
     class abstract_widget {
     public:
+        abstract_widget();
+        ~abstract_widget();
+
         ekg::ui::abstract* data {};
         ekg::flag flag {};
         ekg::rect offset {};

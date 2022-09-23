@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 
 float ekg::dt {};
+char* const ekg::empty {""};
 
 void ekg::log(const std::string &log_message) {
     const std::string full_log_message = "[ekg] " + log_message;

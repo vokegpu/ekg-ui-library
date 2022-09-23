@@ -1,5 +1,12 @@
 #include "ekg/ui/abstract/ui_abstract.hpp"
 
+ekg::ui::abstract::abstract() {
+
+}
+
+ekg::ui::abstract::~abstract() {
+}
+
 void ekg::ui::abstract::set_id(uint32_t token) {
     this->id = token;
 }

@@ -52,9 +52,9 @@ if (ENABLE_TEST)
     project(ekg_tests)
 
     if (WIN32)
-        set(EXECUTABLE_OUTPUT_PATH ../test/build/win32/)
+        set(EXECUTABLE_OUTPUT_PATH ./test/build/win32/)
     else()
-        set(EXECUTABLE_OUTPUT_PATH ../test/build/linux/)
+        set(EXECUTABLE_OUTPUT_PATH ./test/build/linux/)
     endif()
 
     add_compile_options(-O3)
