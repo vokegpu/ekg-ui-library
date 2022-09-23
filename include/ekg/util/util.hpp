@@ -7,6 +7,15 @@
 namespace ekg {
     extern float dt;
 
+    struct flag {
+        bool highlight {};
+        bool hovered {};
+        bool activy {};
+        bool focused {};
+        bool state {};
+        bool extra_state {};
+    };
+
     struct vec2 {
         float x {};
         float y {};
