@@ -1,4 +1,4 @@
-#inclide "ekg/ui/frame/ui_frame.hpp"
+#include "ekg/ui/frame/ui_frame.hpp"
 
 void ekg::ui::frame::set_drag(const ekg::dock &dock) {
 	this->dock_drag = dock;
@@ -37,7 +37,7 @@ ekg::vec2 ekg::ui::frame::get_size_initial() {
 void ekg::ui::frame::parent(uint32_t token) {
 	bool not_contains {true};
 
-	for (uin32_t &tokens : this->parent_id_list) {
+	for (uint32_t &tokens : this->parent_id_list) {
 		if (!(not_contains = tokens != token)) {
 			break;
 		}
@@ -52,7 +52,7 @@ std::vector<uint32_t> &ekg::ui::frame::get_parent_id_list() {
 	return this->parent_id_list;
 }
 
-void ekg::ui::frame::set_embed(cont ekg::dock &dock) {
+void ekg::ui::frame::set_embed(const ekg::dock &dock) {
 	this->dock_embed = dock;
 }
 

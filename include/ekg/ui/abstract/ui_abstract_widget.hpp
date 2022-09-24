@@ -19,9 +19,10 @@ namespace ekg::ui {
         ekg::rect parent {};
         ekg::rect extra {};
 
+        virtual void destroy();
         virtual void on_reload();
         virtual void on_pre_event(SDL_Event &sdl_event);
-        virtual void on_event();
+        virtual void on_event(SDL_Event &sdl_event);
         virtual void on_post_event(SDL_Event &sdl_event);
         virtual void on_update();
         virtual void on_draw_refresh();

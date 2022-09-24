@@ -9,7 +9,7 @@ namespace ekg::ui {
 	protected:
 		bool value {};
 	public:
-		void set_value(bool value);
+		void set_value(bool state);
 		bool get_value();
 	};
 }

@@ -15,7 +15,7 @@ void ekg::cpu::process_input(SDL_Event &sdl_event) {
     }
 
     if (ekg::cpu::down(sdl_event, ekg::input::right) || ekg::cpu::motion(sdl_event)) {
-        ekg::util::reset(ekg::interact_cooldown);
+        ekg::reset(ekg::interact_cooldown);
     }
 }
 
@@ -83,7 +83,7 @@ bool ekg::cpu::up(SDL_Event &sdl_event, ekg::input input) {
                 }
             }
             
-            flag = ekg::util::reach(ekg::interact_cooldown, cooldown_time);
+            flag = ekg::reach(ekg::interact_cooldown, cooldown_time);
         }
     }
 

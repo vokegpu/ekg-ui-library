@@ -84,12 +84,12 @@ void ekg::demo() {
         /*
          * Handle ticked loop each frame (1s).
          */
-        if (ekg::util::reach(mainloop_timing, fps_ms_interval)) {
-            ekg::util::reset(mainloop_timing);
+        if (ekg::reach(mainloop_timing, fps_ms_interval)) {
+            ekg::reset(mainloop_timing);
             ekg::dt = static_cast<float>(mainloop_timing.current_ticks) / 100;
 
-            if (ekg::util::reach(fps_timing, 1000)) {
-                ekg::util::reset(fps_timing);
+            if (ekg::reach(fps_timing, 1000)) {
+                ekg::reset(fps_timing);
 
                 last_ticked_frames = ticked_frames;
                 ticked_frames = 0;

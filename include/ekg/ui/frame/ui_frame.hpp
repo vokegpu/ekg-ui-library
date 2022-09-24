@@ -4,9 +4,10 @@
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/util/util.hpp"
+#include <vector>
 
 namespace ekg::ui {
-	class frame : public ekg::abstract {
+class frame : public ekg::ui::abstract {
 	protected:
 		std::vector<uint32_t> parent_id_list {};
 
@@ -34,7 +35,7 @@ namespace ekg::ui {
 		void parent(uint32_t token);
 		std::vector<uint32_t> &get_parent_id_list();
 
-		void set_embed(cont ekg::dock &dock);
+		void set_embed(const ekg::dock &dock);
 		ekg::dock get_embed_dock();
 
 		void set_size(float w, float h);

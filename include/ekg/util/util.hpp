@@ -52,13 +52,10 @@ namespace ekg {
         uint64_t ticks_going_on {};
     };
 
-    namespace util {
-        bool rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b);
-        bool reach(ekg::timing &timing, uint64_t ms);
-        bool reset(ekg::timing &timing);
-    }
-
     void log(const std::string &log_message);
+    bool rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b);
+    bool reach(ekg::timing &timing, uint64_t ms);
+    void reset(ekg::timing &timing);
 }
 
 #endif
