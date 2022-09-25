@@ -26,7 +26,7 @@ void ekg::gpu::init_opengl_context() {
 bool ekg::gpu::load_basic_program(ekg::gpu::program &program, const std::string &vsh_path, const std::string &fsh_path) {
     std::string vsh_src {};
     std::string fsh_src {};
-    
+
     return ekg::file_to_string(vsh_src, vsh_path) && ekg::file_to_string(fsh_src, fsh_path) && gpu::create_basic_program(program, vsh_src.c_str(), fsh_src.c_str());
 }
 
