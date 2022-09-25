@@ -17,6 +17,10 @@ namespace ekg {
         free, top, bottom, right, left, center, full, none
     };
 
+    enum class env {
+        redraw, swap, refresh, reset
+    };
+
     struct flag {
         bool highlight {};
         bool hovered {};

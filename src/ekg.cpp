@@ -138,3 +138,7 @@ void ekg::demo() {
         }
     }
 }
+
+void ekg::depth(float depth_preset) {
+
+}

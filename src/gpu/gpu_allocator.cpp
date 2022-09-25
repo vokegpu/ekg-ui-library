@@ -57,6 +57,7 @@ void ekg::gpu::allocator::draw() {
 
     glBindVertexArray(this->buffer_list);
     bool scissor_enabled {};
+    float depth_testing {this->depth_testing_preset};
 
     for (uint32_t data_iterations = 0; data_iterations < this->iterate_ticked_count; data_iterations++) {
         auto &data = this->cpu_allocated_data[data_iterations];
@@ -71,6 +72,7 @@ void ekg::gpu::allocator::draw() {
         ekg::gpu::allocator::program.set4("Color", data.colored_area);
         ekg::gpu::allocator::program.set4("Rect", data.rect_area);
         ekg::gpu::allocator::program.set("EnableOutline", data.outline[0]);
+        ekg::gpu::allocator::program.set("Depth", depth_testing);
 
         if (data.outline[0]) {
             ekg::gpu::allocator::program.set("LineThickness", data.outline[1]);
@@ -100,6 +102,8 @@ void ekg::gpu::allocator::draw() {
                 break;
             }
         }
+
+        depth_testing += 0.001f;
     }
 
     if (scissor_enabled) {
@@ -123,4 +127,11 @@ void ekg::gpu::allocator::init() {
 
 ekg::gpu::data &ekg::gpu::allocator::bind_current_data() {
     return this->cpu_allocated_data[this->iterate_ticked_count];
+}
+
+void ekg::gpu::allocator::quit() {
+    glDeleteTextures((GLint) this->loaded_texture_list.size(), &this->loaded_texture_list[0]);
+    glDeleteBuffers(1, &this->buffer_list);
+    glDeleteBuffers(1, &this->buffer_uv);
+    glDeleteVertexArrays(1, &this->buffer_list);
 }

@@ -19,11 +19,13 @@ namespace ekg::gpu {
         GLuint buffer_vertex {};
         GLuint buffer_uv {};
         GLuint buffer_list {};
+        GLfloat depth_testing_preset {0.001f};
 
         static gpu::program program;
         static float orthographicm4[16];
     public:
         void init();
+        void quit();
         void invoke();
         ekg::gpu::data &bind_current_data();
         void bind_texture(GLuint &texture);

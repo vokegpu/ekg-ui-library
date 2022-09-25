@@ -10,15 +10,14 @@ SDL_Window* ekg::runtime::get_root() {
 }
 
 void ekg::runtime::init() {
-
+    this->allocator.init();
 }
 
 void ekg::runtime::quit() {
-
+    this->allocator.quit();
 }
 
 void ekg::runtime::process_event(SDL_Event &sdl_event) {
-
 }
 
 void ekg::runtime::process_update() {
@@ -26,5 +25,5 @@ void ekg::runtime::process_update() {
 }
 
 void ekg::runtime::process_render() {
-
+    this->allocator.draw();
 }

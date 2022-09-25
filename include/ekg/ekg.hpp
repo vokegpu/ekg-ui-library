@@ -7,6 +7,7 @@
 namespace ekg {
     extern ekg::runtime* core;
 
+    void depth(float depth_preset);
     void demo();
     void init(SDL_Window* root);
     void quit();
