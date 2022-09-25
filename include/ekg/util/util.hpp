@@ -56,6 +56,7 @@ namespace ekg {
     bool rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b);
     bool reach(ekg::timing &timing, uint64_t ms);
     void reset(ekg::timing &timing);
+    bool file_to_string(std::string &string_builder, const std::string &path);
 }
 
 #endif
