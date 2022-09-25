@@ -9,20 +9,25 @@ namespace ekg::gpu {
     class allocator {
     protected:
         std::array<ekg::gpu::data, 1024> cpu_allocated_data {};
-        std::vector<GLuint> loaded_texture {};
+        std::vector<GLfloat> loaded_vertex_list {};
+        std::vector<GLfloat> loaded_uv_list {};
+        std::vector<GLuint> loaded_texture_list {};
 
-        uint32_t empty_shape_data {};
         uint32_t iterate_ticked_count {};
         uint32_t previous_allocated_size {};
 
         GLuint buffer_vertex {};
         GLuint buffer_uv {};
-        GLuint buffer_index {};
+        GLuint buffer_list {};
+
+        static gpu::program program;
+        static float orthographicm4[16];
     public:
         void init();
         void invoke();
+        ekg::gpu::data &bind_current_data();
         void bind_texture(GLuint &texture);
-        void dispatch(ekg::gpu::data &data);
+        void dispatch();
         void revoke();
         void draw();
     };

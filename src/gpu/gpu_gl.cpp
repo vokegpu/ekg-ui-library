@@ -87,12 +87,24 @@ bool ekg::gpu::compile_shader(GLuint &shader, GLuint shader_type, const char *sr
     return true;
 }
 
+void ekg::gpu::invoke(ekg::gpu::program &program) {
+    glUseProgram(program.id);
+}
+
+void ekg::gpu::revoke() {
+    glUseProgram(0);
+}
+
 void ekg::gpu::program::set(const std::string &str, bool value) {
     glProgramUniform1i(this->id, glGetUniformLocation(this->id, str.c_str()), value);
 }
 
 void ekg::gpu::program::set(const std::string &str, GLint value) {
     glProgramUniform1i(this->id, glGetUniformLocation(this->id, str.c_str()), value);
+}
+
+void ekg::gpu::program::set(const std::string &str, GLuint value) {
+    glProgramUniform1ui(this->id, glGetUniformLocation(this->id, str.c_str()), value);
 }
 
 void ekg::gpu::program::set(const std::string &str, GLfloat value) {

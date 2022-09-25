@@ -3,7 +3,9 @@
 #include <SDL2/SDL.h>
 #include <fstream>
 
-float ekg::dt {};
+float ekg::display::dt {};
+int32_t ekg::display::width {};
+int32_t ekg::display::height {};
 char* const ekg::empty {};
 
 void ekg::log(const std::string &log_message) {
@@ -54,4 +56,32 @@ bool ekg::file_to_string(std::string &string_builder, const std::string &path) {
     }
 
     return false;
+}
+
+void ekg::orthographic2d(float *matrix, float left, float right, float bottom, float top) {
+    const float depth_near = 1.0f;
+    const float depth_far = 1.0f;
+    const float depth_inv = 1.0f / (depth_far - depth_near);
+    const float y_inv = 1.0f / (top - bottom);
+    const float x_inv = 1.0f / (right - left);
+
+    matrix[0] = 2.0f * x_inv;
+    matrix[1] = 0.0f;
+    matrix[2] = 0.0f;
+    matrix[3] = 0.0f;
+
+    matrix[4] = 0.0f;
+    matrix[5] = 2.0f * y_inv;
+    matrix[6] = 0.0f;
+    matrix[7] = 0.0f;
+
+    matrix[8] = 0.0f;
+    matrix[9] = 0.0f;
+    matrix[10] = -2.0f * depth_inv;
+    matrix[11] = 0.0f;
+
+    matrix[12] = (-(right + left) * x_inv);
+    matrix[13] = (-(top + bottom) * y_inv);
+    matrix[13] = (-(depth_far + depth_near) * depth_inv);
+    matrix[15] = 1.0f;
 }

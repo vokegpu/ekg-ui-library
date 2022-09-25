@@ -18,6 +18,7 @@ namespace ekg::gpu {
         GLuint id {};
 
         void set(const std::string &str, bool value);
+        void set(const std::string &str, GLuint value);
         void set(const std::string &str, GLint value);
         void set(const std::string &str, GLfloat value);
         void set2(const std::string &str, GLfloat* value);
@@ -29,6 +30,8 @@ namespace ekg::gpu {
     };
 
     void init_opengl_context();
+    void invoke(ekg::gpu::program &program);
+    void revoke();
 
     bool compile_shader(GLuint &shader, GLuint shader_type, const char* src);
     bool load_basic_program(gpu::program &program, const std::string &vsh_path, const std::string &fsh_path);

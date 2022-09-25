@@ -5,8 +5,13 @@
 #include <iostream>
 
 namespace ekg {
-    extern float dt;
     extern char* const empty;
+
+    struct display {
+        static float dt;
+        static int32_t width;
+        static int32_t height;
+    };
 
     enum class dock {
         free, top, bottom, right, left, center, full, none
@@ -53,10 +58,13 @@ namespace ekg {
     };
 
     void log(const std::string &log_message);
-    bool rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b);
+    void orthographic2d(float* matrix, float left, float right, float bottom, float top);
+
     bool reach(ekg::timing &timing, uint64_t ms);
     void reset(ekg::timing &timing);
+
     bool file_to_string(std::string &string_builder, const std::string &path);
+    bool rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b);
 }
 
 #endif

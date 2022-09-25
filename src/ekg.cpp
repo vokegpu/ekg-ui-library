@@ -19,6 +19,9 @@ void ekg::init(SDL_Window* root) {
     ekg::core = new ekg::runtime();
     ekg::core->init();
     ekg::core->set_root(root);
+
+    SDL_GetWindowSize(root, &ekg::display::width, &ekg::display::height);
+    ekg::log("Root display size (" + std::to_string(ekg::display::width) + "," + std::to_string(ekg::display::height) + " )");
 }
 
 void ekg::quit() {
@@ -31,6 +34,20 @@ void ekg::quit() {
 void ekg::event(SDL_Event &sdl_event) {
     ekg::cpu::process_input(sdl_event);
     ekg::core->process_event(sdl_event);
+
+    switch (sdl_event.type) {
+        case SDL_WINDOWEVENT: {
+            switch (sdl_event.window.type) {
+                case SDL_WINDOWEVENT_SIZE_CHANGED: {
+                    ekg::display::width = sdl_event.window.data1;
+                    ekg::display::height = sdl_event.window.data2;
+                    break;
+                }
+            }
+
+            break;
+        }
+    }
 }
 
 void ekg::update() {
@@ -86,7 +103,7 @@ void ekg::demo() {
          */
         if (ekg::reach(mainloop_timing, fps_ms_interval)) {
             ekg::reset(mainloop_timing);
-            ekg::dt = static_cast<float>(mainloop_timing.current_ticks) / 100;
+            ekg::display::dt = static_cast<float>(mainloop_timing.current_ticks) / 100;
 
             if (ekg::reach(fps_timing, 1000)) {
                 ekg::reset(fps_timing);
