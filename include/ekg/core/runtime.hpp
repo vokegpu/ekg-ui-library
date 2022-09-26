@@ -18,6 +18,8 @@ namespace ekg {
 
         std::map<int32_t, ekg::ui::abstract_widget*> map_abstract_widget {};
         std::map<int32_t, ekg::ui::abstract> map_abstract {};
+
+        bool should_redraw {};
     public:
         void set_root(SDL_Window* sdl_win_root);
         SDL_Window* get_root();

@@ -38,3 +38,19 @@ void ekg::ui::abstract::set_extra_tag(const std::string &str) {
 std::string ekg::ui::abstract::get_extra_tag() {
     return this->extra_tag;
 }
+
+void ekg::ui::abstract::set_alive(bool state) {
+    this->alive = state;
+}
+
+bool ekg::ui::abstract::is_alive() {
+    return this->alive;
+}
+
+void ekg::ui::abstract::set_state(const ekg::state &enum_state) {
+    this->state = enum_state;
+}
+
+ekg::state ekg::ui::abstract::get_state() {
+    return this->state;
+}

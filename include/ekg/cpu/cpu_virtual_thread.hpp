@@ -9,26 +9,28 @@
 
 namespace ekg {
     namespace cpu {
-        enum class env {
-            hybrid, dynamic, allocated
-        };
-
         struct thread {
-            std::function<void(void)> fun{};
-            uint8_t id{};
+            std::function<void(void*)> fun{};
+            void* data {nullptr};
 
-            thread(std::function<void(void)> _fun);
+            std::string tag;
+            bool state {};
+
+            thread(const std::function<void(void*)> &_fun);
         };
 
         class worker_thread {
         protected:
-            std::array<ekg::cpu::thread, 32> allocated_thread;
-            std::vector<ekg::cpu::thread> loaded_thread_list{};
+            std::array<ekg::cpu::thread*, 32> allocated_thread;
+            std::vector<ekg::cpu::thread*> loaded_thread_list{};
 
-            ekg::cpu::env env_worker {};
+            uint8_t thread_ticked_iterations {};
+            uint8_t token {};
+
+            bool enable_thread_poll {};
         public:
-            void pre_alloc_thread(ekg::cpu::thread &thread);
-            void dynamic_alloc_thread(ekg::cpu::thread &thread);
+            void pre_alloc_thread(ekg::cpu::thread* thread);
+            void dynamic_alloc_thread(ekg::cpu::thread* thread);
             void process_threads();
         };
     }

@@ -25,5 +25,18 @@ void ekg::runtime::process_update() {
 }
 
 void ekg::runtime::process_render() {
+    if (this->should_redraw) {
+        this->should_redraw = false;
+        this->allocator.invoke();
+
+        for (ekg::ui::abstract_widget* &widgets : this->loaded_abstract_widget_list) {
+            if (widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {
+                widgets->on_draw_refresh();
+            }
+        }
+
+        this->allocator.revoke();
+    }
+
     this->allocator.draw();
 }
