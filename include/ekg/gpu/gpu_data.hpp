@@ -16,7 +16,7 @@ namespace ekg::gpu {
 
         GLint begin_stride {};
         GLint end_stride {};
-        GLint outline[2] {0, 1};
+        GLint outline {};
 
         int32_t factor {};
     };

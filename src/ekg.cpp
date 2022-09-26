@@ -4,6 +4,7 @@
 #include "ekg/cpu/cpu_info.hpp"
 
 ekg::runtime* ekg::core {nullptr};
+std::string ekg::gl_version {"#version 450 core"};
 
 void ekg::init(SDL_Window* root) {
     ekg::log("Initialising ekg...");

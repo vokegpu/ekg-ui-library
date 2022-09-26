@@ -54,29 +54,30 @@ void ekg::gpu::allocator::revoke() {
 void ekg::gpu::allocator::draw() {
     ekg::gpu::invoke(ekg::gpu::allocator::program);
     ekg::gpu::allocator::program.setm4("MatrixProjection", ekg::gpu::allocator::orthographicm4);
+    ekg::gpu::allocator::program.set("ViewportHeight", ekg::display::height);
 
     glBindVertexArray(this->buffer_list);
+
     bool scissor_enabled {};
+    bool active_texture {};
     float depth_testing {this->depth_testing_preset};
 
     for (uint32_t data_iterations = 0; data_iterations < this->iterate_ticked_count; data_iterations++) {
         auto &data = this->cpu_allocated_data[data_iterations];
+        active_texture = data.texture != 0;
 
-        if (data.texture != 0) {
+        if (active_texture) {
             glActiveTexture(GL_TEXTURE0 + data.texture_slot);
             glBindTexture(GL_TEXTURE_2D, data.texture);
 
             ekg::gpu::allocator::program.set("ActiveTextureSlot", data.texture_slot);
         }
 
+        ekg::gpu::allocator::program.set("ActiveTexture", active_texture);
         ekg::gpu::allocator::program.set4("Color", data.colored_area);
         ekg::gpu::allocator::program.set4("Rect", data.rect_area);
-        ekg::gpu::allocator::program.set("EnableOutline", data.outline[0]);
         ekg::gpu::allocator::program.set("Depth", depth_testing);
-
-        if (data.outline[0]) {
-            ekg::gpu::allocator::program.set("LineThickness", data.outline[1]);
-        }
+        ekg::gpu::allocator::program.set("LineThickness", data.outline);
 
         switch (data.scissored_area[0]) {
             case -1: {
@@ -119,10 +120,68 @@ void ekg::gpu::allocator::init() {
     glGenBuffers(1, &this->buffer_vertex);
     glGenBuffers(1, &this->buffer_uv);
 
-    const char* vsh_shader {};
-    const char* fsh_shader {};
+    const std::string vsh_src {
+ekg::gl_version + "\n"
+"layout (location = 0) in vec2 VertexData;\n"
+"layout (location = 1) in vec2 UVData;\n"
 
-    gpu::create_basic_program(ekg::gpu::allocator::program, vsh_shader, fsh_shader);
+"uniform mat4 MatrixProjection;\n"
+"uniform vec4 Rect;\n"
+"uniform float Depth;\n"
+""
+"out vec2 TextureUV;\n"
+"out vec4 ShapeRect;\n"
+""
+"void main() {"
+"    vec2 ProcessedVertex = VertexData;\n"
+"    bool FixedShape = Rect.z != 0.0f && Rect.w != 0.0f;\n"
+""
+"    if (FixedShape) {"
+"        ProcessedVertex *= Rect.zw;"
+"    }\n"
+""
+"    ProcessedVertex += Rect.xy;\n"
+"    gl_Position = MatrixProjection * vec4(ProcessedVertex, Depth, 1.0f);\n"
+""
+"    TextureUV = UVData;\n"
+"    ShapeRect = Rect;\n"
+"}"};
+
+    const std::string fsh_src {
+ekg::gl_version + "\n"
+""
+"layout (location = 0) out vec4 OutColor;\n"
+""
+"in vec2 TextureUV;\n"
+"in vec4 ShapeRect;\n"
+
+"uniform int LineThickness;\n"
+"uniform int ViewportHeight;\n"
+"uniform bool ActiveTexture;\n"
+"uniform Sampler2D ActiveTextureSlot;\n"
+"uniform vec4 Color;\n"
+""
+"void main() {"
+"    OutColor = Color;\n"
+""
+"    if (LineThickness > 0) {"
+"        vec2 FragPos = vec2(gl_FragCoord.x, ViewportHeight - gl_FragCoord.y);\n"
+"        vec4 OutlineRect = vec4(ShapeRect.x + LineThickness, ShapeRect.y + LineThickness, ShapeRect.z - LineThickness * 2, ShapeRect.w - LineThickness * 2);\n"
+"        "
+"        bool Collide = FragPos.x > OutlineRect.x && FragPos.x < OutlineRect.x + OutlineRect.z && FragPos.y > OutlineRect.y && FragPos.y < OutlineRect.y + OutlineRect.w;\n"
+""
+"        if (Collide) {"
+"            discard;"
+"        }"
+"    }\n"
+""
+"    if (ActiveTexture) {"
+"        OutColor = texture(ActiveTextureSlot, TextureUV);\n"
+"        OutColor = vec4(OutColor.xyz - ((1.0f - Color.xyz) - 1.0f), OutColor.w - (1.0f - Color.w));"
+"    }\n"
+"}"};
+
+    gpu::create_basic_program(ekg::gpu::allocator::program, vsh_src.c_str(), fsh_src.c_str());
 }
 
 ekg::gpu::data &ekg::gpu::allocator::bind_current_data() {

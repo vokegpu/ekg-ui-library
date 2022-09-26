@@ -6,6 +6,7 @@
 
 namespace ekg {
     extern ekg::runtime* core;
+    extern std::string gl_version;
 
     void depth(float depth_preset);
     void demo();
