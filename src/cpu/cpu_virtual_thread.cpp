@@ -32,6 +32,7 @@ void ekg::cpu::worker_thread::process_threads() {
             }
 
             this->loaded_thread_list.clear();
+            this->enable_thread_poll = false;
             break;
         }
     }
