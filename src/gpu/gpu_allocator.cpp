@@ -1,11 +1,17 @@
 #include "ekg/gpu/gpu_allocator.hpp"
-#include "ekg/util/util.hpp"
+#include "ekg/ekg.hpp"
 
 ekg::gpu::program ekg::gpu::allocator::program {};
 float ekg::gpu::allocator::orthographicm4[16] {};
 
 void ekg::gpu::allocator::invoke() {
     this->iterate_ticked_count = 0;
+    this->begin_stride_count = 0;
+    this->end_stride_count = 0;
+
+    // Set stride to 0 vertex position.
+    this->bind_current_data().begin_stride = this->begin_stride_count;
+    this->bind_scissor(-1, -1, -1, -1);
 }
 
 void ekg::gpu::allocator::bind_texture(GLuint &texture) {
@@ -34,27 +40,48 @@ void ekg::gpu::allocator::bind_texture(GLuint &texture) {
 }
 
 void ekg::gpu::allocator::dispatch() {
+    auto &data = this->bind_current_data();
+
+    data.scissored_area[0] = this->current_scissor_bind[0];
+    data.scissored_area[1] = this->current_scissor_bind[1];
+    data.scissored_area[2] = this->current_scissor_bind[2];
+    data.scissored_area[3] = this->current_scissor_bind[3];
+    data.end_stride = this->end_stride_count;
+
+    this->begin_stride_count += this->end_stride_count;
+    this->end_stride_count = 0;
     this->iterate_ticked_count++;
 }
 
 void ekg::gpu::allocator::revoke() {
     glBindVertexArray(this->buffer_list);
+    glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, this->buffer_vertex);
 
-    glEnableVertexAttribArray(0);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->loaded_vertex_list.size(), &this->loaded_vertex_list[0], GL_STATIC_DRAW);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
     glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, this->buffer_uv);
+
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->loaded_uv_list.size(), &this->loaded_uv_list[0], GL_STATIC_DRAW);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
     glBindVertexArray(0);
+
+    this->loaded_texture_list.clear();
+    this->loaded_vertex_list.clear();
+    this->loaded_uv_list.clear();
 }
 
 void ekg::gpu::allocator::draw() {
+    GLfloat viewport[4];
+    glGetFloatv(GL_VIEWPORT, viewport);
+
+    ekg::orthographic2d(ekg::gpu::allocator::orthographicm4, 0, viewport[2], viewport[3], 0);
     ekg::gpu::invoke(ekg::gpu::allocator::program);
+
     ekg::gpu::allocator::program.setm4("MatrixProjection", ekg::gpu::allocator::orthographicm4);
-    ekg::gpu::allocator::program.set("ViewportHeight", ekg::display::height);
+    ekg::gpu::allocator::program.set("ViewportHeight", viewport[3]);
 
     glBindVertexArray(this->buffer_list);
 
@@ -81,25 +108,23 @@ void ekg::gpu::allocator::draw() {
 
         switch (data.scissored_area[0]) {
             case -1: {
-                glDrawArrays(GL_TRIANGLES, data.begin_stride, data.end_stride);
-
                 if (scissor_enabled) {
                     glDisable(GL_SCISSOR_TEST);
                     scissor_enabled = false;
                 }
 
+                glDrawArrays(GL_TRIANGLES, data.begin_stride, data.end_stride);
                 break;
             }
 
             default: {
                 if (!scissor_enabled) {
                     glEnable(GL_SCISSOR_TEST);
+                    glScissor(data.scissored_area[0], static_cast<GLint>(viewport[3]) - (data.scissored_area[1] + data.scissored_area[3]), data.scissored_area[2], data.scissored_area[3]);
                     scissor_enabled = true;
                 }
 
-                glScissor(data.scissored_area[0], ekg::display::height - (data.scissored_area[1] + data.scissored_area[3]), data.scissored_area[2], data.scissored_area[3]);
                 glDrawArrays(GL_TRIANGLES, data.begin_stride, data.end_stride);
-
                 break;
             }
         }
@@ -154,11 +179,11 @@ ekg::gl_version + "\n"
 ""
 "in vec2 TextureUV;\n"
 "in vec4 ShapeRect;\n"
-
+""
 "uniform int LineThickness;\n"
 "uniform int ViewportHeight;\n"
 "uniform bool ActiveTexture;\n"
-"uniform Sampler2D ActiveTextureSlot;\n"
+"uniform sampler ActiveTextureSlot;\n"
 "uniform vec4 Color;\n"
 ""
 "void main() {"
@@ -193,4 +218,22 @@ void ekg::gpu::allocator::quit() {
     glDeleteBuffers(1, &this->buffer_list);
     glDeleteBuffers(1, &this->buffer_uv);
     glDeleteVertexArrays(1, &this->buffer_list);
+}
+
+void ekg::gpu::allocator::bind_scissor(int32_t x, int32_t y, int32_t w, int32_t h) {
+    this->current_scissor_bind[0] = x;
+    this->current_scissor_bind[1] = y;
+    this->current_scissor_bind[2] = w;
+    this->current_scissor_bind[3] = h;
+}
+
+void ekg::gpu::allocator::vertex2f(float x, float y) {
+    this->loaded_vertex_list.push_back(x);
+    this->loaded_vertex_list.push_back(y);
+    this->end_stride_count++;
+}
+
+void ekg::gpu::allocator::coord2f(float x, float y) {
+    this->loaded_uv_list.push_back(x);
+    this->loaded_uv_list.push_back(y);
 }

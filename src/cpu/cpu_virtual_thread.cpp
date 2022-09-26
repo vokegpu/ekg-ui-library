@@ -4,17 +4,17 @@ ekg::cpu::thread::thread(const std::function<void(void*)> &_fun) {
     this->fun = _fun;
 }
 
-void ekg::cpu::worker_thread::pre_alloc_thread(ekg::cpu::thread* thread) {
+void ekg::cpu::thread_worker::pre_alloc_thread(ekg::cpu::thread* thread) {
     this->allocated_thread[this->thread_ticked_iterations] = thread;
     this->thread_ticked_iterations++;
     this->token++;
 }
 
-void ekg::cpu::worker_thread::dynamic_alloc_thread(ekg::cpu::thread* thread) {
+void ekg::cpu::thread_worker::dynamic_alloc_thread(ekg::cpu::thread* thread) {
     this->loaded_thread_list.push_back(thread);
 }
 
-void ekg::cpu::worker_thread::process_threads() {
+void ekg::cpu::thread_worker::process_threads() {
     switch (this->enable_thread_poll) {
         case true: {
             for (uint8_t it = 0; it < this->thread_ticked_iterations; it++) {

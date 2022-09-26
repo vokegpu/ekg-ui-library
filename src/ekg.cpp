@@ -22,7 +22,7 @@ void ekg::init(SDL_Window* root) {
     ekg::core->set_root(root);
 
     SDL_GetWindowSize(root, &ekg::display::width, &ekg::display::height);
-    ekg::log("Root display size (" + std::to_string(ekg::display::width) + "," + std::to_string(ekg::display::height) + " )");
+    ekg::log("Root display size (" + std::to_string(ekg::display::width) + ", " + std::to_string(ekg::display::height) + ")");
 }
 
 void ekg::quit() {
@@ -70,12 +70,11 @@ void ekg::demo() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
-    ekg::init(sdl_win);
-    ekg::gpu::init_opengl_context();
-
     SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
     bool running {true};
 
+    ekg::gpu::init_opengl_context();
+    ekg::init(sdl_win);
     ekg::log("OpenGL 4 context created");
 
     ekg::timing mainloop_timing {};
@@ -127,9 +126,11 @@ void ekg::demo() {
                 }
             }
 
-            glViewport(0, 0, root_width, root_height);
+            glViewport(0, 0, static_cast<int32_t>(root_width), static_cast<int32_t>(root_height));
             glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
             glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+
+            ekg::render();
 
             // Count the FPS.
             ticked_frames++;

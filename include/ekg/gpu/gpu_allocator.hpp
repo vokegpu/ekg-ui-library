@@ -16,6 +16,10 @@ namespace ekg::gpu {
         uint32_t iterate_ticked_count {};
         uint32_t previous_allocated_size {};
 
+        GLint begin_stride_count {};
+        GLint end_stride_count {};
+
+        GLint current_scissor_bind[4] {};
         GLuint buffer_vertex {};
         GLuint buffer_uv {};
         GLuint buffer_list {};
@@ -26,9 +30,14 @@ namespace ekg::gpu {
     public:
         void init();
         void quit();
-        void invoke();
+
         ekg::gpu::data &bind_current_data();
         void bind_texture(GLuint &texture);
+        void bind_scissor(int32_t x, int32_t y, int32_t w, int32_t h);
+        void vertex2f(float x, float y);
+        void coord2f(float x, float y);
+
+        void invoke();
         void dispatch();
         void revoke();
         void draw();

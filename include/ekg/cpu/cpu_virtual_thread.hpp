@@ -19,7 +19,7 @@ namespace ekg {
             thread(const std::function<void(void*)> &_fun);
         };
 
-        class worker_thread {
+        class thread_worker {
         protected:
             std::array<ekg::cpu::thread*, 32> allocated_thread;
             std::vector<ekg::cpu::thread*> loaded_thread_list{};

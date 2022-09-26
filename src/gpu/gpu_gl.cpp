@@ -34,7 +34,7 @@ bool ekg::gpu::create_basic_program(ekg::gpu::program &program, const char *vsh_
     GLuint vsh {};
     GLuint fsh {};
 
-    bool flag {ekg::gpu::compile_shader(vsh, GL_VERTEX_SHADER, vsh_src) && ekg::gpu::compile_shader(vsh, GL_VERTEX_SHADER, fsh_src)};
+    bool flag {ekg::gpu::compile_shader(vsh, GL_VERTEX_SHADER, vsh_src) && ekg::gpu::compile_shader(vsh, GL_FRAGMENT_SHADER, fsh_src)};
 
     if (flag) {
         program.id = glCreateProgram();
