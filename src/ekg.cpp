@@ -1,10 +1,9 @@
 #include "ekg/ekg.hpp"
 #include "ekg/cpu/cpu_input.hpp"
-#include "ekg/gpu/gpu_gl.hpp"
 #include "ekg/cpu/cpu_info.hpp"
 
 ekg::runtime* ekg::core {nullptr};
-std::string ekg::gl_version {"#version 450"};
+std::string ekg::gl_version {"#version 450 core"};
 
 void ekg::init(SDL_Window* root) {
     ekg::log("Initialising ekg...");

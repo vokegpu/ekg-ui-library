@@ -21,8 +21,6 @@ void ekg::gpu::init_opengl_context() {
             break;
         }
     }
-
-    glDepthMask(false);
 }
 
 bool ekg::gpu::load_basic_program(ekg::gpu::program &program, const std::string &vsh_path, const std::string &fsh_path) {

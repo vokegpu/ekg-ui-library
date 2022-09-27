@@ -30,10 +30,7 @@ void ekg::runtime::process_render() {
     if (this->should_redraw) {
         this->should_redraw = false;
         this->allocator.invoke();
-
-        ekg::draw::rect(20, 10, 200, 200, {255, 255, 255, 100}, 3);
-        ekg::log("Redraw called.");
-
+        
         for (ekg::ui::abstract_widget* &widgets : this->loaded_abstract_widget_list) {
             if (widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {
                 widgets->on_draw_refresh();
