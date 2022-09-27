@@ -21,6 +21,8 @@ void ekg::gpu::init_opengl_context() {
             break;
         }
     }
+
+    glDepthMask(false);
 }
 
 bool ekg::gpu::load_basic_program(ekg::gpu::program &program, const std::string &vsh_path, const std::string &fsh_path) {
@@ -34,7 +36,7 @@ bool ekg::gpu::create_basic_program(ekg::gpu::program &program, const char *vsh_
     GLuint vsh {};
     GLuint fsh {};
 
-    bool flag {ekg::gpu::compile_shader(vsh, GL_VERTEX_SHADER, vsh_src) && ekg::gpu::compile_shader(vsh, GL_FRAGMENT_SHADER, fsh_src)};
+    bool flag {ekg::gpu::compile_shader(vsh, GL_VERTEX_SHADER, vsh_src) && ekg::gpu::compile_shader(fsh, GL_FRAGMENT_SHADER, fsh_src)};
 
     if (flag) {
         program.id = glCreateProgram();
@@ -96,41 +98,41 @@ void ekg::gpu::revoke() {
 }
 
 void ekg::gpu::program::set(const std::string &str, bool value) {
-    glProgramUniform1i(this->id, glGetUniformLocation(this->id, str.c_str()), value);
+    glUniform1i(glGetUniformLocation(this->id, str.c_str()), value);
 }
 
 void ekg::gpu::program::set(const std::string &str, GLint value) {
-    glProgramUniform1i(this->id, glGetUniformLocation(this->id, str.c_str()), value);
+    glUniform1i(glGetUniformLocation(this->id, str.c_str()), value);
 }
 
 void ekg::gpu::program::set(const std::string &str, GLuint value) {
-    glProgramUniform1ui(this->id, glGetUniformLocation(this->id, str.c_str()), value);
+    glUniform1ui(glGetUniformLocation(this->id, str.c_str()), value);
 }
 
 void ekg::gpu::program::set(const std::string &str, GLfloat value) {
-    glProgramUniform1f(this->id, glGetUniformLocation(this->id, str.c_str()), value);
+    glUniform1f(glGetUniformLocation(this->id, str.c_str()), value);
 }
 
 void ekg::gpu::program::set2(const std::string &str, GLfloat *value) {
-    glProgramUniform2fv(this->id, glGetUniformLocation(this->id, str.c_str()), 0, value);
+    glUniform2fv(glGetUniformLocation(this->id, str.c_str()), GL_TRUE, value);
 }
 
 void ekg::gpu::program::set3(const std::string &str, GLfloat *value) {
-    glProgramUniform3fv(this->id, glGetUniformLocation(this->id, str.c_str()), 0, value);
+    glUniform3fv(glGetUniformLocation(this->id, str.c_str()), GL_TRUE, value);
 }
 
 void ekg::gpu::program::set4(const std::string &str, GLfloat *value) {
-    glProgramUniform4fv(this->id, glGetUniformLocation(this->id, str.c_str()), 0, value);
+    glUniform4fv(glGetUniformLocation(this->id, str.c_str()), GL_TRUE, value);
 }
 
 void ekg::gpu::program::setm2(const std::string &str, GLfloat *matrix) {
-    glProgramUniformMatrix2fv(this->id, glGetUniformLocation(this->id, str.c_str()), 0, GL_FALSE, matrix);
+    glUniformMatrix2fv(glGetUniformLocation(this->id, str.c_str()), GL_TRUE, GL_FALSE, matrix);
 }
 
 void ekg::gpu::program::setm3(const std::string &str, GLfloat *matrix) {
-    glProgramUniformMatrix3fv(this->id, glGetUniformLocation(this->id, str.c_str()), 0, GL_FALSE, matrix);
+    glUniformMatrix3fv(glGetUniformLocation(this->id, str.c_str()), GL_TRUE, GL_FALSE, matrix);
 }
 
 void ekg::gpu::program::setm4(const std::string &str, GLfloat *matrix) {
-    glProgramUniformMatrix4fv(this->id, glGetUniformLocation(this->id, str.c_str()), 0, GL_FALSE, matrix);
+    glUniformMatrix4fv(glGetUniformLocation(this->id, str.c_str()), GL_TRUE, GL_FALSE, matrix);
 }

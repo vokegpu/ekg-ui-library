@@ -4,7 +4,7 @@
 #include "ekg/cpu/cpu_info.hpp"
 
 ekg::runtime* ekg::core {nullptr};
-std::string ekg::gl_version {"#version 450 core"};
+std::string ekg::gl_version {"#version 450"};
 
 void ekg::init(SDL_Window* root) {
     ekg::log("Initialising ekg...");
@@ -56,12 +56,21 @@ void ekg::update() {
 }
 
 void ekg::render() {
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     ekg::core->process_render();
+
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void ekg::demo() {
     float root_width {1280.0f};
     float root_height {800.0f};
+
+    SDL_Init(SDL_INIT_VIDEO);
 
     ekg::log("Initialising demo showcase");
     SDL_Window* sdl_win {SDL_CreateWindow("ekg showcase", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
@@ -69,6 +78,7 @@ void ekg::demo() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
     SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
     bool running {true};
@@ -84,10 +94,6 @@ void ekg::demo() {
 
     // z-depth testing.
     glEnable(GL_DEPTH_TEST);
-
-    // Alpha channel (blended).
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     uint64_t fps = 60;
     uint64_t fps_ms_interval {1000 / fps};

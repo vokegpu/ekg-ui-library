@@ -59,7 +59,7 @@ bool ekg::file_to_string(std::string &string_builder, const std::string &path) {
 }
 
 void ekg::orthographic2d(float *matrix, float left, float right, float bottom, float top) {
-    const float depth_near = 1.0f;
+    const float depth_near = -1.0f;
     const float depth_far = 1.0f;
     const float depth_inv = 1.0f / (depth_far - depth_near);
     const float y_inv = 1.0f / (top - bottom);
@@ -80,8 +80,8 @@ void ekg::orthographic2d(float *matrix, float left, float right, float bottom, f
     matrix[10] = -2.0f * depth_inv;
     matrix[11] = 0.0f;
 
-    matrix[12] = (-(right + left) * x_inv);
-    matrix[13] = (-(top + bottom) * y_inv);
-    matrix[13] = (-(depth_far + depth_near) * depth_inv);
+    matrix[12] = -(right + left) * x_inv;
+    matrix[13] = -(top + bottom) * y_inv;
+    matrix[14] = -(depth_far + depth_near) * depth_inv;
     matrix[15] = 1.0f;
 }

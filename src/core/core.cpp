@@ -31,7 +31,7 @@ void ekg::runtime::process_render() {
         this->should_redraw = false;
         this->allocator.invoke();
 
-        ekg::draw::rect(20, 20, 200, 200, {255, 255, 255, 255});
+        ekg::draw::rect(20, 10, 200, 200, {255, 255, 255, 100}, 3);
         ekg::log("Redraw called.");
 
         for (ekg::ui::abstract_widget* &widgets : this->loaded_abstract_widget_list) {

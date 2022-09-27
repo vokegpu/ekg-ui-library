@@ -32,6 +32,8 @@ namespace ekg::gpu {
         void quit();
 
         ekg::gpu::data &bind_current_data();
+        void clear_current_data();
+
         void bind_texture(GLuint &texture);
         void bind_scissor(int32_t x, int32_t y, int32_t w, int32_t h);
         void vertex2f(float x, float y);

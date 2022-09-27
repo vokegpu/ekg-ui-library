@@ -10,6 +10,7 @@ void ekg::gpu::allocator::invoke() {
     this->end_stride_count = 0;
 
     // Set stride to 0 vertex position.
+    this->clear_current_data();
     this->bind_current_data().begin_stride = this->begin_stride_count;
     this->bind_scissor(-1, -1, -1, -1);
 }
@@ -50,20 +51,20 @@ void ekg::gpu::allocator::dispatch() {
 
     this->begin_stride_count += this->end_stride_count;
     this->end_stride_count = 0;
+
     this->iterate_ticked_count++;
+    this->clear_current_data();;
 }
 
 void ekg::gpu::allocator::revoke() {
     glBindVertexArray(this->buffer_list);
-    glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, this->buffer_vertex);
-
+    glEnableVertexAttribArray(0);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->loaded_vertex_list.size(), &this->loaded_vertex_list[0], GL_STATIC_DRAW);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-
-    glEnableVertexAttribArray(1);
+    
     glBindBuffer(GL_ARRAY_BUFFER, this->buffer_uv);
-
+    glEnableVertexAttribArray(1);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->loaded_uv_list.size(), &this->loaded_uv_list[0], GL_STATIC_DRAW);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
     glBindVertexArray(0);
@@ -159,7 +160,7 @@ ekg::gl_version + "\n"
 ""
 "void main() {"
 "    vec2 ProcessedVertex = VertexData;\n"
-"    bool FixedShape = Rect.z != 0.0f && Rect.w != 0.0f;\n"
+"    bool FixedShape = Rect.z != 0 || Rect.w != 0;\n"
 ""
 "    if (FixedShape) {"
 "        ProcessedVertex *= Rect.zw;"
@@ -183,16 +184,16 @@ ekg::gl_version + "\n"
 "uniform int LineThickness;\n"
 "uniform int ViewportHeight;\n"
 "uniform bool ActiveTexture;\n"
-"uniform sampler ActiveTextureSlot;\n"
+"uniform sampler2D ActiveTextureSlot;\n"
 "uniform vec4 Color;\n"
 ""
 "void main() {"
 "    OutColor = Color;\n"
 ""
-"    if (LineThickness > 0) {"
+"    if (LineThickness != 0) {"
 "        vec2 FragPos = vec2(gl_FragCoord.x, ViewportHeight - gl_FragCoord.y);\n"
 "        vec4 OutlineRect = vec4(ShapeRect.x + LineThickness, ShapeRect.y + LineThickness, ShapeRect.z - LineThickness * 2, ShapeRect.w - LineThickness * 2);\n"
-"        "
+""
 "        bool Collide = FragPos.x > OutlineRect.x && FragPos.x < OutlineRect.x + OutlineRect.z && FragPos.y > OutlineRect.y && FragPos.y < OutlineRect.y + OutlineRect.w;\n"
 ""
 "        if (Collide) {"
@@ -207,6 +208,13 @@ ekg::gl_version + "\n"
 "}"};
 
     gpu::create_basic_program(ekg::gpu::allocator::program, vsh_src.c_str(), fsh_src.c_str());
+}
+
+void ekg::gpu::allocator::clear_current_data() {
+    ekg::gpu::data &data = this->bind_current_data();
+
+    data.outline = 0;
+    data.factor = 0;
 }
 
 ekg::gpu::data &ekg::gpu::allocator::bind_current_data() {
