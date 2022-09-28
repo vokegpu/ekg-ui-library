@@ -5,7 +5,7 @@
 ekg::runtime* ekg::core {nullptr};
 std::string ekg::gl_version {"#version 450 core"};
 
-void ekg::init(SDL_Window* root) {
+void ekg::init(SDL_Window* root, const std::string &font_path) {
     ekg::log("Initialising ekg...");
 
 #if defined(_WIN)
@@ -17,6 +17,10 @@ void ekg::init(SDL_Window* root) {
 #endif
 
     ekg::core = new ekg::runtime();
+    ekg::core->get_f_renderer_small().font_path = font_path;
+    ekg::core->get_f_renderer_normal().font_path = font_path;
+    ekg::core->get_f_renderer_big().font_path = font_path;
+
     ekg::core->init();
     ekg::core->set_root(root);
 
@@ -92,8 +96,16 @@ void ekg::demo() {
     SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
     bool running {true};
 
+                glewExperimental = GL_TRUE;
+
+    if (glewInit() != GLEW_OK) {
+        ekg::log("Failed to initialise GLEW OpenGL context!");
+    } else {
+        ekg::log("GLEW initialised");
+    }
+
     ekg::gpu::init_opengl_context();
-    ekg::init(sdl_win);
+    ekg::init(sdl_win, "JetBrainsMono-Thin.ttf");
     ekg::log("OpenGL 4 context created");
 
     ekg::timing mainloop_timing {};

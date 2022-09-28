@@ -17,10 +17,34 @@ void ekg::runtime::init() {
     if (FT_Init_FreeType(&ekg::draw::font_renderer::ft_library)) {
         ekg::log("Could not init FreeType");
     }
+
+    this->f_renderer_small.font_size = 16;
+    this->f_renderer_small.reload();
+    this->f_renderer_small.bind_allocator(&this->allocator);
+
+    this->f_renderer_normal.font_size = 18;
+    this->f_renderer_normal.reload();
+    this->f_renderer_normal.bind_allocator(&this->allocator);
+
+    this->f_renderer_big.font_size = 24;
+    this->f_renderer_big.reload();
+    this->f_renderer_big.bind_allocator(&this->allocator);
 }
 
 void ekg::runtime::quit() {
     this->allocator.quit();
+}
+
+ekg::draw::font_renderer &ekg::runtime::get_f_renderer_small() {
+    return this->f_renderer_small;
+}
+
+ekg::draw::font_renderer &ekg::runtime::get_f_renderer_normal() {
+    return this->f_renderer_normal;
+}
+
+ekg::draw::font_renderer &ekg::runtime::get_f_renderer_big() {
+    return this->f_renderer_big;
 }
 
 void ekg::runtime::process_event(SDL_Event &sdl_event) {
@@ -34,6 +58,8 @@ void ekg::runtime::process_render() {
     if (this->should_redraw) {
         this->should_redraw = false;
         this->allocator.invoke();
+
+        this->f_renderer_big.blit("Hi this text was render using font and allocator features.", 10, 80, {255, 255, 255, 100});
 
         for (ekg::ui::abstract_widget* &widgets : this->loaded_abstract_widget_list) {
             if (widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {

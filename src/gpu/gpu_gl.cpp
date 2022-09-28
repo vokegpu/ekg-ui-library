@@ -10,14 +10,6 @@ void ekg::gpu::init_opengl_context() {
         }
 
         default: {
-            glewExperimental = GL_TRUE;
-
-            if (!glewInit()) {
-                ekg::log("Failed to initialise GLEW OpenGL context!");
-            } else {
-                ekg::log("GLEW initialised");
-            }
-
             break;
         }
     }

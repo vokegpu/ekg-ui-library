@@ -30,8 +30,8 @@ void ekg::gpu::allocator::bind_texture(GLuint &texture) {
     }
 
     if (should_alloc_new_texture) {
-        this->bind_texture(texture);
-        texture_slot = (GLuint) this->loaded_texture_list.size();
+        this->loaded_texture_list.push_back(texture);
+        texture_slot = (GLuint) this->loaded_texture_list.size() - 1;
     }
 
     ekg::gpu::data &data = this->bind_current_data();
@@ -88,6 +88,8 @@ void ekg::gpu::allocator::draw() {
 
     bool scissor_enabled {};
     bool active_texture {};
+    bool texture_enabled {};
+
     float depth_testing {this->depth_testing_preset};
 
     for (uint32_t data_iterations = 0; data_iterations < this->iterate_ticked_count; data_iterations++) {
@@ -99,6 +101,11 @@ void ekg::gpu::allocator::draw() {
             glBindTexture(GL_TEXTURE_2D, data.texture);
 
             ekg::gpu::allocator::program.set("ActiveTextureSlot", data.texture_slot);
+            texture_enabled = true;
+        }
+
+        if (texture_enabled && !active_texture) {
+            glBindTexture(GL_TEXTURE_2D, 0);
         }
 
         ekg::gpu::allocator::program.set("ActiveTexture", active_texture);
@@ -133,7 +140,8 @@ void ekg::gpu::allocator::draw() {
         depth_testing += 0.001f;
     }
 
-    if (scissor_enabled) {
+    if (scissor_enabled || texture_enabled) {
+        glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_SCISSOR_TEST);
     }
 
@@ -203,7 +211,7 @@ ekg::gl_version + "\n"
 ""
 "    if (ActiveTexture) {"
 "        OutColor = texture(ActiveTextureSlot, TextureUV);\n"
-"        OutColor = vec4(OutColor.xyz - ((1.0f - Color.xyz) - 1.0f), OutColor.w - (1.0f - Color.w));"
+"        OutColor = vec4(OutColor.xyz - ((1.0f - Color.xyz) - 1.0f), OutColor.w * Color.w);"
 "    }\n"
 "}"};
 
@@ -215,6 +223,8 @@ void ekg::gpu::allocator::clear_current_data() {
 
     data.outline = 0;
     data.factor = 0;
+    data.texture = 0;
+    data.texture_slot = 0;
 }
 
 ekg::gpu::data &ekg::gpu::allocator::bind_current_data() {

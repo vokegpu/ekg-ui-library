@@ -10,7 +10,7 @@ namespace ekg {
 
     void depth(float depth_preset);
     void demo();
-    void init(SDL_Window* root);
+    void init(SDL_Window* root, const std::string &font_path);
     void quit();
 
     void event(SDL_Event &sdl_event);
