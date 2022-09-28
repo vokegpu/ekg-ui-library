@@ -14,7 +14,7 @@ For use the library on your project, donwload the repo or release, then you add 
 
 # About
 
-For NDK you will use OpenGL ES 2 or 3, for high performance applications you will use OpenGL 4 or 3, for now there is only OpenGL 3/4.
+ekg library automaticallly sets the OpenGL API, if your project is running in NDK the ekg sets to OpenGL ES, for high performance applications sets OpenGL 4 or 3.
 
 The ekg has two modes: hybrid and immediate; The hybrid mode joint immediate mode with buidable mode - If widget is created at once tick, the current mode of widget is WBO (widget built once), else WBI (widget built immedate).
 
