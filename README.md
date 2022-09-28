@@ -20,6 +20,6 @@ The ekg has two modes: hybrid and immediate; The hybrid mode joint immediate mod
 
 # Hardware
 
-All buffers allocated into GPU are totally handled and optimized by the ekg, `ekg::gpu::allocator` protected from multiples buffers dispatch, it only use one VBO and implement high shading communcation making a parcial instanced rendering.
+All buffers allocated into GPU are totally handled and optimized by `ekg::gpu::allocator`, it protects your gpu from multiples buffers dispatch, it only use one VBO and implement high shading communcation making a parcial instanced rendering.
 
 The scale manager of ekg manage everything of screen. for customize just changes the runtime config `ekg::`, fpr smartphones roots display the scale manager change the factors to minimize the widgets position bounds.
