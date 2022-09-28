@@ -32,6 +32,16 @@ void ekg::quit() {
 }
 
 void ekg::event(SDL_Event &sdl_event) {
+    bool phase_keep_process {
+            sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
+            sdl_event.type == SDL_FINGERUP        || sdl_event.type == SDL_FINGERDOWN ||
+            sdl_event.type == SDL_FINGERMOTION    || sdl_event.type == SDL_MOUSEMOTION
+    };
+
+    if (!phase_keep_process) {
+        return;
+    }
+
     ekg::cpu::process_input(sdl_event);
     ekg::core->process_event(sdl_event);
 

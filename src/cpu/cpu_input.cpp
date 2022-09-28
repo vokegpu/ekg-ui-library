@@ -4,16 +4,6 @@ ekg::vec4 ekg::interact {};
 ekg::timing ekg::interact_cooldown {};
 
 void ekg::cpu::process_input(SDL_Event &sdl_event) {
-    bool phase_keep_process {
-        sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
-        sdl_event.type == SDL_FINGERUP        || sdl_event.type == SDL_FINGERDOWN ||
-        sdl_event.type == SDL_FINGERMOTION    || sdl_event.type == SDL_MOUSEMOTION
-    };
-
-    if (!phase_keep_process) {
-        return;
-    }
-
     if (ekg::cpu::down(sdl_event, ekg::input::right) || ekg::cpu::motion(sdl_event)) {
         ekg::reset(ekg::interact_cooldown);
     }
