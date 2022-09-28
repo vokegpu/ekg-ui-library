@@ -8,8 +8,9 @@ This is the new core verion of ekg, rewrite of legacy core.
 
 The current version of ekg only support the MinGW64 compiller.  
 
-For use in Windows 32/64bits: `lib/win32/libekg.a`  
-For use in Linux x86_x64: `lib/linux/libekg.a`  
+For use the library on your project, donwload the repo or release, then you add include and lib files:
+`lib/win32/libekg.a` - Windows 32/64bits  
+`lib/linux/libekg.a` - Linux x86_x64  
 
 # About
 
