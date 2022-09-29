@@ -96,7 +96,7 @@ void ekg::demo() {
     SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
     bool running {true};
 
-                glewExperimental = GL_TRUE;
+    glewExperimental = GL_TRUE;
 
     if (glewInit() != GLEW_OK) {
         ekg::log("Failed to initialise GLEW OpenGL context!");
@@ -105,7 +105,7 @@ void ekg::demo() {
     }
 
     ekg::gpu::init_opengl_context();
-    ekg::init(sdl_win, "JetBrainsMono-Thin.ttf");
+    ekg::init(sdl_win, "JetBrainsMono-Bold.ttf");
     ekg::log("OpenGL 4 context created");
 
     ekg::timing mainloop_timing {};

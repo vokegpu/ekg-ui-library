@@ -211,7 +211,7 @@ ekg::gl_version + "\n"
 ""
 "    if (ActiveTexture) {"
 "        OutColor = texture(ActiveTextureSlot, TextureUV);\n"
-"        OutColor = vec4(OutColor.xyz - ((1.0f - Color.xyz) - 1.0f), OutColor.w * Color.w);"
+"        OutColor = vec4(OutColor.xyz - ((1.0f - Color.xyz) - 1.0f), OutColor.w - (1.0f - Color.w));"
 "    }\n"
 "}"};
 

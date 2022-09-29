@@ -119,6 +119,9 @@ void ekg::draw::font_renderer::reload() {
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
 	glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -129,12 +132,13 @@ void ekg::draw::font_renderer::bind_allocator(ekg::gpu::allocator *gpu_allocator
 	this->allocator = gpu_allocator;
 }
 
-void ekg::draw::font_renderer::blit(const std::string &text, int32_t x, int32_t y, const ekg::vec4 &color) {
+void ekg::draw::font_renderer::blit(const std::string &text, float x, float y, const ekg::vec4 &color) {
     if (this->allocator == nullptr || this->flag_unloaded) {
         return;
     }
 
-    y = y - static_cast<int32_t>(this->offset_text_height);
+    x = static_cast<float>(static_cast<int32_t>(x));
+    y = static_cast<float>(static_cast<int32_t>(y - this->offset_text_height));
 
     const char* c_str = text.c_str();
     const int32_t str_len = strlen(c_str);
@@ -177,16 +181,16 @@ void ekg::draw::font_renderer::blit(const std::string &text, int32_t x, int32_t 
 
     	this->allocator->vertex2f(render.x, render.y);
     	this->allocator->vertex2f(render.x, render.y + render.h);
-    	this->allocator->vertex2f(render.x + render.h, render.y + render.h);
-    	this->allocator->vertex2f(render.x + render.h, render.y + render.h);
-    	this->allocator->vertex2f(render.x + render.h, render.y);
+    	this->allocator->vertex2f(render.x + render.w, render.y + render.h);
+    	this->allocator->vertex2f(render.x + render.w, render.y + render.h);
+    	this->allocator->vertex2f(render.x + render.w, render.y);
     	this->allocator->vertex2f(render.x, render.y);
 
     	this->allocator->coord2f(texture.x, texture.y);
     	this->allocator->coord2f(texture.x, texture.y + texture.h);
-    	this->allocator->coord2f(texture.x + texture.h, texture.y + texture.h);
-    	this->allocator->coord2f(texture.x + texture.h, texture.y + texture.h);
-    	this->allocator->coord2f(texture.x + texture.h, texture.y);
+    	this->allocator->coord2f(texture.x + texture.w, texture.y + texture.h);
+    	this->allocator->coord2f(texture.x + texture.w, texture.y + texture.h);
+    	this->allocator->coord2f(texture.x + texture.w, texture.y);
     	this->allocator->coord2f(texture.x, texture.y);
 
     	x += char_data.texture_x;
