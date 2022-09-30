@@ -21,11 +21,6 @@ void ekg::cpu::thread_worker::alloc_thread(ekg::cpu::thread* thread) {
     }
 }
 
-void ekg::cpu::thread_worker::dispatch_thread(ekg::cpu::thread* thread) {
-    this->loaded_thread_list.push_back(thread);
-    this->should_thread_poll = true;
-}
-
 void ekg::cpu::thread_worker::process_threads() {
     for (uint8_t it = 0; it < this->thread_ticked_iterations; it++) {
         auto &thread = this->allocated_thread[it];
@@ -36,12 +31,6 @@ void ekg::cpu::thread_worker::process_threads() {
         }
     }
 
-    for (thread* &threads : this->loaded_thread_list) {
-        threads->callback(threads->data);
-        delete threads;
-    }
-
-    this->loaded_thread_list.clear();
     this->should_thread_poll = false;
 }
 
@@ -58,6 +47,22 @@ void ekg::cpu::thread_worker::start_process(const std::string &tag) {
 }
 
 void ekg::cpu::thread_worker::start_process(uint32_t process_id) {
-    // unsafe
     this->allocated_thread[process_id]->state = true;
+    this->should_thread_poll = true;
+}
+
+ekg::cpu::thread *ekg::cpu::thread_worker::get_process_by_tag(const std::string& process_tag) {
+    for (uint8_t it = 0; it < this->thread_ticked_iterations; it++) {
+        auto &thread = this->allocated_thread[it];
+
+        if (thread->tag == process_tag) {
+            return thread;
+        }
+    }
+
+    return nullptr;
+}
+
+ekg::cpu::thread *ekg::cpu::thread_worker::get_process_by_id(uint32_t process_id) {
+    return this->allocated_thread[process_id];
 }

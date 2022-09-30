@@ -12,21 +12,26 @@
 namespace ekg {
     struct runtime {
     protected:
+        /* Widget env lists and maps for tasks. */
+
+        std::vector<ekg::ui::abstract_widget*> list_widget {};
+        std::vector<ekg::ui::abstract*> list_interface {};
+
+        std::vector<ekg::ui::abstract_widget*> list_update_widget {};
+
+        std::map<int32_t, ekg::ui::abstract_widget*> map_widget {};
+        std::map<int32_t, ekg::ui::abstract> map_interface {};
+
+        /* Core services and instances. */
+
         SDL_Window* root {};
         ekg::gpu::allocator allocator {};
         ekg::cpu::thread_worker thread_worker {};
-
-        std::vector<ekg::ui::abstract_widget*> loaded_abstract_widget_list {};
-        std::vector<ekg::ui::abstract*> loaded_abstract_interface_list {};
-
-        std::map<int32_t, ekg::ui::abstract_widget*> map_abstract_widget {};
-        std::map<int32_t, ekg::ui::abstract> map_abstract {};
 
         ekg::draw::font_renderer f_renderer_small {};
         ekg::draw::font_renderer f_renderer_normal {};
         ekg::draw::font_renderer f_renderer_big {};
 
-        bool should_redraw {};
         void prepare_virtual_threads();
     public:
         void set_root(SDL_Window* sdl_win_root);
@@ -38,6 +43,8 @@ namespace ekg {
         ekg::draw::font_renderer &get_f_renderer_small();
         ekg::draw::font_renderer &get_f_renderer_normal();
         ekg::draw::font_renderer &get_f_renderer_big();
+
+        void update_widget(ekg::ui::abstract_widget* widget);
 
         void init();
         void quit();

@@ -85,3 +85,8 @@ void ekg::orthographic2d(float *matrix, float left, float right, float bottom, f
     matrix[14] = -(depth_far + depth_near) * depth_inv;
     matrix[15] = 1.0f;
 }
+
+bool ekg::rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec) {
+    return vec.x > rect.x && vec.x < rect.x + rect.w && vec.y > rect.y && vec.y < rect.y + rect.h;
+}
+

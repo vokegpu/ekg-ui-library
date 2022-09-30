@@ -9,7 +9,6 @@ namespace ekg {
     extern std::string gl_version;
 
     void depth(float depth_preset);
-    void demo();
     void init(SDL_Window* root, const std::string &font_path);
     void quit();
 

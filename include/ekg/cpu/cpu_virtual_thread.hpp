@@ -21,15 +21,15 @@ namespace ekg::cpu {
 
     class thread_worker {
     protected:
-        std::array<ekg::cpu::thread*, 32> allocated_thread;
-        std::vector<ekg::cpu::thread*> loaded_thread_list{};
-
+        std::array<ekg::cpu::thread*, 32> allocated_thread {};
         uint8_t thread_ticked_iterations {};
     public:
         bool should_thread_poll {};
 
+        ekg::cpu::thread* get_process_by_tag(const std::string& process_tag);
+        ekg::cpu::thread* get_process_by_id(uint32_t process_id);
+
         void alloc_thread(ekg::cpu::thread* thread);
-        void dispatch_thread(ekg::cpu::hread* thread);
         void start_process(const std::string &tag);
         void start_process(uint32_t process_id);
         void process_threads();

@@ -37,7 +37,7 @@ namespace ekg {
             void set_extra_tag(const std::string &str);
             std::string get_extra_tag();
 
-            void set_alive(bool state);
+            void set_alive(bool flag_alive);
             bool is_alive();
 
             void set_state(const ekg::state &enum_state);

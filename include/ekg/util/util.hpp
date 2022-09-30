@@ -17,10 +17,6 @@ namespace ekg {
         free, top, bottom, right, left, center, full, none
     };
 
-    enum class env {
-        redraw, swap, refresh, reset
-    };
-
     struct flag {
         bool highlight {};
         bool hovered {};
@@ -69,6 +65,7 @@ namespace ekg {
 
     bool file_to_string(std::string &string_builder, const std::string &path);
     bool rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b);
+    bool rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec);
 }
 
 #endif

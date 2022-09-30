@@ -39,8 +39,8 @@ std::string ekg::ui::abstract::get_extra_tag() {
     return this->extra_tag;
 }
 
-void ekg::ui::abstract::set_alive(bool state) {
-    this->alive = state;
+void ekg::ui::abstract::set_alive(bool flag_alive) {
+    this->alive = flag_alive;
 }
 
 bool ekg::ui::abstract::is_alive() {

@@ -3,6 +3,7 @@
 #include "ekg/draw/draw_font.hpp"
 #include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
+#include "ekg/util/util_virtual_thread.hpp"
 
 void ekg::runtime::set_root(SDL_Window *sdl_win_root) {
     this->root = sdl_win_root;
@@ -14,7 +15,6 @@ SDL_Window* ekg::runtime::get_root() {
 
 void ekg::runtime::init() {
     this->allocator.init();
-    this->should_redraw = true;
 
     if (FT_Init_FreeType(&ekg::draw::font_renderer::ft_library)) {
         ekg::log("Could not init FreeType");
@@ -73,11 +73,9 @@ ekg::cpu::thread_worker &ekg::runtime::get_cpu_thread_worker() {
 }
 
 void ekg::runtime::prepare_virtual_threads() {
-    this->thread_worker.alloc_thread(new ekg::cpu::thread("redraw", &this->loaded_abstract_widget_list, [](void* data) {
+    this->thread_worker.alloc_thread(new ekg::cpu::thread("redraw", &this->list_widget, [](void* data) {
         auto list = *(std::vector<ekg::ui::abstract_widget*>*) data;
-
         ekg::core->allocator.invoke();
-        ekg::draw::rect({20, 20, 200, 200}, {255, 255, 255, 100});
 
         for (ekg::ui::abstract_widget* &widgets : list) {
             if (widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {
@@ -86,5 +84,29 @@ void ekg::runtime::prepare_virtual_threads() {
         }
 
         ekg::core->allocator.revoke();
-    }, true));
+    }));
+
+    this->thread_worker.alloc_thread(new ekg::cpu::thread("swap", nullptr, [](void* data) {
+    }));
+
+    this->thread_worker.alloc_thread(new ekg::cpu::thread("refresh", nullptr, [](void* data) {
+    }));
+
+    this->thread_worker.alloc_thread(new ekg::cpu::thread("reset", nullptr, [](void* data) {
+    }));
+
+    this->thread_worker.alloc_thread(new ekg::cpu::thread("update", &this->list_update_widget, [](void* data) {
+        auto list = (std::vector<ekg::ui::abstract_widget*>*) data;
+
+        for (ekg::ui::abstract_widget* &widgets : *list) {
+            widgets->on_update();
+        }
+
+        list->clear();
+    }));
+}
+
+void ekg::runtime::update_widget(ekg::ui::abstract_widget *widget) {
+    this->list_update_widget.push_back(widget);
+    ekg::process(ekg::env::update, ekg::thread::start);
 }
