@@ -7,33 +7,33 @@
 #include <array>
 #include <functional>
 
-namespace ekg {
-    namespace cpu {
-        struct thread {
-            std::function<void(void*)> fun{};
-            void* data {nullptr};
+namespace ekg::cpu {
+    struct thread {
+        std::function<void(void*)> callback {};
+        std::string tag {};
 
-            std::string tag;
-            bool state {};
+        void* data {nullptr};
+        bool state {};
 
-            thread(const std::function<void(void*)> &_fun);
-        };
+        thread(const std::string &thread_tag, void* thread_data, const std::function<void(void*)> &thread_callback, bool thread_initial_state = false);
+        ~thread();
+    };
 
-        class thread_worker {
-        protected:
-            std::array<ekg::cpu::thread*, 32> allocated_thread;
-            std::vector<ekg::cpu::thread*> loaded_thread_list{};
+    class thread_worker {
+    protected:
+        std::array<ekg::cpu::thread*, 32> allocated_thread;
+        std::vector<ekg::cpu::thread*> loaded_thread_list{};
 
-            uint8_t thread_ticked_iterations {};
-            uint8_t token {};
+        uint8_t thread_ticked_iterations {};
+    public:
+        bool should_thread_poll {};
 
-            bool enable_thread_poll {};
-        public:
-            void pre_alloc_thread(ekg::cpu::thread* thread);
-            void dynamic_alloc_thread(ekg::cpu::thread* thread);
-            void process_threads();
-        };
-    }
+        void alloc_thread(ekg::cpu::thread* thread);
+        void dispatch_thread(ekg::cpu::hread* thread);
+        void start_process(const std::string &tag);
+        void start_process(uint32_t process_id);
+        void process_threads();
+    };
 }
 
 #endif

@@ -27,6 +27,7 @@ namespace ekg {
         ekg::draw::font_renderer f_renderer_big {};
 
         bool should_redraw {};
+        void prepare_virtual_threads();
     public:
         void set_root(SDL_Window* sdl_win_root);
         SDL_Window* get_root();
