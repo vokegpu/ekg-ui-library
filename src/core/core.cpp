@@ -74,7 +74,7 @@ ekg::cpu::thread_worker &ekg::runtime::get_cpu_thread_worker() {
 
 void ekg::runtime::prepare_virtual_threads() {
     this->thread_worker.alloc_thread(new ekg::cpu::thread("redraw", &this->list_widget, [](void* data) {
-        auto list = *(std::vector<ekg::ui::abstract_widget*>*) data;
+        auto list = *static_cast<std::vector<ekg::ui::abstract_widget*>*>(data);
         ekg::core->allocator.invoke();
 
         for (ekg::ui::abstract_widget* &widgets : list) {
@@ -96,7 +96,7 @@ void ekg::runtime::prepare_virtual_threads() {
     }));
 
     this->thread_worker.alloc_thread(new ekg::cpu::thread("update", &this->list_update_widget, [](void* data) {
-        auto list = (std::vector<ekg::ui::abstract_widget*>*) data;
+        auto list = static_cast<std::vector<ekg::ui::abstract_widget*>*>(data);
 
         for (ekg::ui::abstract_widget* &widgets : *list) {
             widgets->on_update();
