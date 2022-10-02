@@ -15,12 +15,12 @@ std::string test::name {};
  * All tests were ran in Linux.
  */
 int main(int argv, char** argc) {
+    ekg::log("Initialising demo showcase");
+
     float root_width {1280.0f};
     float root_height {800.0f};
 
     SDL_Init(SDL_INIT_VIDEO);
-
-    ekg::log("Initialising demo showcase");
     SDL_Window* sdl_win {SDL_CreateWindow("ekg showcase", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);

@@ -5,10 +5,8 @@
 #include <iostream>
 
 namespace ekg {
-    struct
-
     bool set(bool &var_mutable, bool predicate);
-    bool set(std::string &var_mutable, const std::string &predicate);
+    std::string &set(std::string &var_mutable, const std::string &predicate);
 };
 
 #endif

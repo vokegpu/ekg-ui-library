@@ -73,19 +73,6 @@ ekg::cpu::thread_worker &ekg::runtime::get_cpu_thread_worker() {
 }
 
 void ekg::runtime::prepare_virtual_threads() {
-    this->thread_worker.alloc_thread(new ekg::cpu::thread("redraw", &this->list_widget, [](void* data) {
-        auto list = *static_cast<std::vector<ekg::ui::abstract_widget*>*>(data);
-        ekg::core->allocator.invoke();
-
-        for (ekg::ui::abstract_widget* &widgets : list) {
-            if (widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {
-                widgets->on_draw_refresh();
-            }
-        }
-
-        ekg::core->allocator.revoke();
-    }));
-
     this->thread_worker.alloc_thread(new ekg::cpu::thread("swap", nullptr, [](void* data) {
     }));
 
@@ -103,6 +90,19 @@ void ekg::runtime::prepare_virtual_threads() {
         }
 
         list->clear();
+    }));
+
+    this->thread_worker.alloc_thread(new ekg::cpu::thread("redraw", &this->list_widget, [](void* data) {
+        auto list = *static_cast<std::vector<ekg::ui::abstract_widget*>*>(data);
+        ekg::core->allocator.invoke();
+
+        for (ekg::ui::abstract_widget* &widgets : list) {
+            if (widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {
+                widgets->on_draw_refresh();
+            }
+        }
+
+        ekg::core->allocator.revoke();
     }));
 }
 

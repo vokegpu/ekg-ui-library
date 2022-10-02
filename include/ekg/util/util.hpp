@@ -57,6 +57,16 @@ namespace ekg {
         uint64_t ticks_going_on {};
     };
 
+    struct dock_container {
+        ekg::rect left {};
+        ekg::rect right {};
+        ekg::rect top {};
+        ekg::rect bottom {};
+        ekg::rect area {};
+
+        ekg::dock
+    };
+
     void log(const std::string &log_message);
     void orthographic2d(float* matrix, float left, float right, float bottom, float top);
 

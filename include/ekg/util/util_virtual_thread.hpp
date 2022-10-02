@@ -10,7 +10,7 @@ namespace ekg {
     };
 
     enum class env {
-        redraw, swap, refresh, reset, update
+        swap, refresh, reset, update, redraw
     };
 
     void process(const std::string &process_tag, const ekg::thread &thread_env);
