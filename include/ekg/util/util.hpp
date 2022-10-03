@@ -57,14 +57,14 @@ namespace ekg {
         uint64_t ticks_going_on {};
     };
 
-    struct dock_container {
+    struct docker {
         ekg::rect left {};
         ekg::rect right {};
         ekg::rect top {};
         ekg::rect bottom {};
         ekg::rect area {};
 
-        ekg::dock
+        uint16_t dock {};
     };
 
     void log(const std::string &log_message);
@@ -76,6 +76,9 @@ namespace ekg {
     bool file_to_string(std::string &string_builder, const std::string &path);
     bool rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b);
     bool rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec);
+
+    uint16_t docker_collide_vec(const ekg::docker &docker, const ekg::vec4 &vec);
+    uint16_t docker_collide_rect(const ekg::docker &docker, const ekg::rect &rect);
 }
 
 #endif
