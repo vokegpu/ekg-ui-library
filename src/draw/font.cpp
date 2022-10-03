@@ -116,7 +116,7 @@ void ekg::draw::font_renderer::reload() {
 	}
 
 	GLint swizzle_format[] {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
-	
+
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
@@ -156,8 +156,8 @@ void ekg::draw::font_renderer::blit(const std::string &text, float x, float y, c
     data.colored_area[2] = color.z / 255;
     data.colored_area[3] = color.w / 255;
 
-	ekg::rect render {};
-    ekg::rect texture {};
+    ekg::rect vertices {};
+    ekg::rect coordinates {};
 
     x = 0;
     y = 0;
@@ -170,29 +170,29 @@ void ekg::draw::font_renderer::blit(const std::string &text, float x, float y, c
 
     	ekg::char_data &char_data = this->allocated_char_data[*chars];
 
-    	render.x = static_cast<float>(x + char_data.left);
-    	render.y = y + static_cast<float>(this->full_height) - char_data.top;
+        vertices.x = static_cast<float>(x + char_data.left);
+        vertices.y = y + static_cast<float>(this->full_height) - char_data.top;
 
-    	render.w = char_data.w;
-    	render.h = char_data.h;
+        vertices.w = char_data.w;
+        vertices.h = char_data.h;
 
-    	texture.x = char_data.x;
-    	texture.w = render.w / static_cast<float>(this->full_width);
-    	texture.h = render.h / static_cast<float>(this->full_height);
+        coordinates.x = char_data.x;
+        coordinates.w = vertices.w / static_cast<float>(this->full_width);
+        coordinates.h = vertices.h / static_cast<float>(this->full_height);
 
-    	this->allocator->vertex2f(render.x, render.y);
-    	this->allocator->vertex2f(render.x, render.y + render.h);
-    	this->allocator->vertex2f(render.x + render.w, render.y + render.h);
-    	this->allocator->vertex2f(render.x + render.w, render.y + render.h);
-    	this->allocator->vertex2f(render.x + render.w, render.y);
-    	this->allocator->vertex2f(render.x, render.y);
+    	this->allocator->vertex2f(vertices.x, vertices.y);
+    	this->allocator->vertex2f(vertices.x, vertices.y + vertices.h);
+    	this->allocator->vertex2f(vertices.x + vertices.w, vertices.y + vertices.h);
+    	this->allocator->vertex2f(vertices.x + vertices.w, vertices.y + vertices.h);
+    	this->allocator->vertex2f(vertices.x + vertices.w, vertices.y);
+    	this->allocator->vertex2f(vertices.x, vertices.y);
 
-    	this->allocator->coord2f(texture.x, texture.y);
-    	this->allocator->coord2f(texture.x, texture.y + texture.h);
-    	this->allocator->coord2f(texture.x + texture.w, texture.y + texture.h);
-    	this->allocator->coord2f(texture.x + texture.w, texture.y + texture.h);
-    	this->allocator->coord2f(texture.x + texture.w, texture.y);
-    	this->allocator->coord2f(texture.x, texture.y);
+    	this->allocator->coord2f(coordinates.x, coordinates.y);
+    	this->allocator->coord2f(coordinates.x, coordinates.y + coordinates.h);
+    	this->allocator->coord2f(coordinates.x + coordinates.w, coordinates.y + coordinates.h);
+    	this->allocator->coord2f(coordinates.x + coordinates.w, coordinates.y + coordinates.h);
+    	this->allocator->coord2f(coordinates.x + coordinates.w, coordinates.y);
+    	this->allocator->coord2f(coordinates.x, coordinates.y);
 
     	x += char_data.texture_x;
     	this->ft_uint_previous = *chars;
