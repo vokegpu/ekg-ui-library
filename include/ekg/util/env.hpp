@@ -21,6 +21,13 @@ namespace ekg {
     bool file_to_string(std::string &string_builder, const std::string &path);
     bool set(bool &var_mutable, bool predicate);
     std::string &set(std::string &var_mutable, const std::string &predicate);
+
+    bool get_task_state(const std::string &action_tag);
+
+    bool was_motion();
+    bool was_released();
+    bool was_pressed();
+    bool was_wheel();
 };
 
 #endif

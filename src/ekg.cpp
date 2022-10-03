@@ -1,5 +1,4 @@
 #include "ekg/ekg.hpp"
-#include "ekg/cpu/cpu_input.hpp"
 
 ekg::runtime* ekg::core {nullptr};
 std::string ekg::gl_version {"#version 450 core"};
@@ -45,7 +44,6 @@ void ekg::event(SDL_Event &sdl_event) {
         return;
     }
 
-    ekg::cpu::process_input(sdl_event);
     ekg::core->process_event(sdl_event);
 
     switch (sdl_event.type) {

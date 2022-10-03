@@ -1,4 +1,5 @@
 #include "ekg/util/geometry.hpp"
+#include "ekg/ekg.hpp"
 
 float ekg::display::dt {};
 int32_t ekg::display::width {};
@@ -71,5 +72,9 @@ uint16_t ekg::docker_collide_vec(const ekg::docker &docker, const ekg::vec4 &vec
 
 uint16_t ekg::docker_collide_rect(const ekg::docker &docker, const ekg::rect &rect) {
     return (uint16_t) ekg::dock::none;
+}
+
+ekg::vec4 &ekg::interact() {
+    return ekg::core->get_service_input().interact;
 }
 

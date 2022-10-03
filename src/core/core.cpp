@@ -1,5 +1,4 @@
 #include "ekg/core/runtime.hpp"
-#include "ekg/cpu/cpu_input.hpp"
 #include "ekg/ekg.hpp"
 
 void ekg::runtime::set_root(SDL_Window *sdl_win_root) {
@@ -49,9 +48,12 @@ ekg::draw::font_renderer &ekg::runtime::get_f_renderer_big() {
 }
 
 void ekg::runtime::process_event(SDL_Event &sdl_event) {
+    this->input.on_event(sdl_event);
 }
 
 void ekg::runtime::process_update() {
+    this->input.on_update();
+
     if (this->thread_worker.should_thread_poll) {
         this->thread_worker.process_threads();
     }
@@ -106,4 +108,8 @@ void ekg::runtime::prepare_virtual_threads() {
 void ekg::runtime::update_widget(ekg::ui::abstract_widget *widget) {
     this->list_update_widget.push_back(widget);
     ekg::process(ekg::env::update, ekg::thread::start);
+}
+
+ekg::service::input &ekg::runtime::get_service_input() {
+    return this->input;
 }

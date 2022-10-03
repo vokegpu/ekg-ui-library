@@ -1,5 +1,8 @@
 #include "ekg/util/thread.hpp"
 #include "ekg/cpu/info.hpp"
+#include "ekg/util/env.hpp"
+#include "ekg/ekg.hpp"
+
 #include <SDL2/SDL.h>
 #include <fstream>
 
@@ -62,4 +65,24 @@ std::string &ekg::set(std::string &var_mutable, const std::string &predicate) {
     }
 
     return (var_mutable = predicate);
+}
+
+bool ekg::get_task_state(const std::string &action_tag) {
+    return ekg::core->get_service_input().get_state(action_tag);
+}
+
+bool ekg::was_released() {
+    return ekg::core->get_service_input().was_released();
+}
+
+bool ekg::was_pressed() {
+    return ekg::core->get_service_input().was_pressed();
+}
+
+bool ekg::was_motion() {
+    return ekg::core->get_service_input().was_motion();
+}
+
+bool ekg::was_wheel() {
+    return ekg::core->get_service_input().was_wheel();
 }

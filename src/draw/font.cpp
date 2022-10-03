@@ -123,8 +123,8 @@ void ekg::draw::font_renderer::reload() {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
-	glBindTexture(GL_TEXTURE_2D, 0);
+    glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
 	ekg::log("Font " + this->font_path + " loaded.");
 }

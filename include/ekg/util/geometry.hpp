@@ -66,6 +66,8 @@ namespace ekg {
 
     uint16_t docker_collide_vec(const ekg::docker &docker, const ekg::vec4 &vec);
     uint16_t docker_collide_rect(const ekg::docker &docker, const ekg::rect &rect);
+
+    ekg::vec4 &interact();
 }
 
 #endif

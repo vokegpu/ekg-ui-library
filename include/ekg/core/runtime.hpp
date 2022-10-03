@@ -4,11 +4,14 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include "ekg/cpu/virtual_thread.hpp"
 #include "ekg/draw/font.hpp"
+#include "ekg/service/input.hpp"
 #include <map>
 
 namespace ekg {
     struct runtime {
     protected:
+        SDL_Window* root {};
+
         /* Widget env lists and maps for tasks. */
 
         std::vector<ekg::ui::abstract_widget*> list_widget {};
@@ -21,13 +24,16 @@ namespace ekg {
 
         /* Core services and instances. */
 
-        SDL_Window* root {};
         ekg::gpu::allocator allocator {};
         ekg::cpu::thread_worker thread_worker {};
 
         ekg::draw::font_renderer f_renderer_small {};
         ekg::draw::font_renderer f_renderer_normal {};
         ekg::draw::font_renderer f_renderer_big {};
+
+        ekg::service::input input {};
+
+        /* Security methods of ekg. */
 
         void prepare_virtual_threads();
     public:
@@ -40,6 +46,8 @@ namespace ekg {
         ekg::draw::font_renderer &get_f_renderer_small();
         ekg::draw::font_renderer &get_f_renderer_normal();
         ekg::draw::font_renderer &get_f_renderer_big();
+
+        ekg::service::input &get_service_input();
 
         void update_widget(ekg::ui::abstract_widget* widget);
 
