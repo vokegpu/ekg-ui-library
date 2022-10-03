@@ -3,7 +3,7 @@
 #define EKG_UI_FRAME_H
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
-#include "ekg/util/util.hpp"
+#include "ekg/util/geometry.hpp"
 #include <vector>
 
 namespace ekg::ui {

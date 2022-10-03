@@ -1,5 +1,5 @@
 #include "ekg/ui/button/ui_button.hpp"
-#include "ekg/util/util_virtual_thread.hpp"
+#include "ekg/util/thread.hpp"
 #include "ekg/ekg.hpp"
 
 void ekg::ui::button::set_value(bool state) {

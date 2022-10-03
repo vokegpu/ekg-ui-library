@@ -1,5 +1,5 @@
-#include "ekg/util/util.hpp"
-#include "ekg/cpu/cpu_info.hpp"
+#include "ekg/util/geometry.hpp"
+#include "ekg/cpu/info.hpp"
 #include <SDL2/SDL.h>
 #include <fstream>
 
@@ -27,18 +27,6 @@ void ekg::log(const std::string &log_message) {
 bool ekg::rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b) {
     return rect_a.x < rect_b.x + rect_b.w && rect_a.x + rect_a.w > rect_b.x &&
            rect_a.y < rect_b.y + rect_b.h && rect_a.x + rect_a.w > rect_b.y;
-}
-
-bool ekg::reach(ekg::timing &timing, uint64_t ms) {
-    timing.ticks_going_on = SDL_GetTicks64();
-    timing.current_ticks = timing.ticks_going_on - timing.elapsed_ticks;
-
-    return timing.current_ticks >= ms;
-}
-
-void ekg::reset(ekg::timing &timing) {
-    timing.elapsed_ticks = timing.current_ticks;
-    timing.current_ticks = SDL_GetTicks64();
 }
 
 bool ekg::file_to_string(std::string &string_builder, const std::string &path) {
@@ -118,6 +106,6 @@ uint16_t ekg::docker_collide_vec(const ekg::docker &docker, const ekg::vec4 &vec
 }
 
 uint16_t ekg::docker_collide_rect(const ekg::docker &docker, const ekg::rect &rect) {
-    return ekg::dock::none;
+    return (uint16_t) ekg::dock::none;
 }
 

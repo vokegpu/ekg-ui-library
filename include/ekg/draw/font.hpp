@@ -5,8 +5,8 @@
 #include <iostream>
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include "ekg/gpu/gpu_allocator.hpp"
-#include "ekg/util/util.hpp"
+#include "ekg/gpu/allocator.hpp"
+#include "ekg/util/geometry.hpp"
 
 namespace ekg {
     struct char_data {

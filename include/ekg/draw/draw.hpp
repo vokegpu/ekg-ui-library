@@ -2,7 +2,7 @@
 #ifndef EKG_DRAW_H
 #define EKG_DRAW_H
 
-#include "ekg/util/util.hpp"
+#include "ekg/util/geometry.hpp"
 
 namespace ekg::draw {
     void rect(const ekg::rect &rect, const ekg::vec4 &color, int32_t line_thickness = 0);

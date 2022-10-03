@@ -1,6 +1,6 @@
 #pragma once
-#ifndef EKG_UTIL_VIRTUAL_THREAD_H
-#define EKG_UTIL_VIRTUAL_THREAD_H
+#ifndef EKG_UTIL_THREAD_H
+#define EKG_UTIL_THREAD_H
 
 #include <iostream>
 

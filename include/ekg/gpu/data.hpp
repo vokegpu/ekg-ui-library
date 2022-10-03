@@ -2,7 +2,7 @@
 #ifndef EKG_GPU_DATA_H
 #define EKG_GPU_DATA_H
 
-#include "gpu_gl.hpp"
+#include "gl.hpp"
 #include <vector>
 
 namespace ekg::gpu {

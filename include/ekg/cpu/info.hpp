@@ -1,6 +1,6 @@
 #pragma once
-#ifndef EKG_CPU_ARCHITECTURE_H
-#define EKG_CPU_ARCHITECTURE_H
+#ifndef EKG_CPU_INFO_H
+#define EKG_CPU_INFO_H
 
 namespace ekg {
     enum class platform {

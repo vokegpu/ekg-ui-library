@@ -1,6 +1,6 @@
 #pragma once
-#ifndef EKG_UTIL_H
-#define EKG_UTIL_H
+#ifndef EKG_UTIL_GEOMETRY_H
+#define EKG_UTIL_GEOMETRY_H
 
 #include <iostream>
 
@@ -51,12 +51,6 @@ namespace ekg {
         float h {};
     };
 
-    struct timing {
-        uint64_t elapsed_ticks {};
-        uint64_t current_ticks {};
-        uint64_t ticks_going_on {};
-    };
-
     struct docker {
         ekg::rect left {};
         ekg::rect right {};
@@ -69,9 +63,6 @@ namespace ekg {
 
     void log(const std::string &log_message);
     void orthographic2d(float* matrix, float left, float right, float bottom, float top);
-
-    bool reach(ekg::timing &timing, uint64_t ms);
-    void reset(ekg::timing &timing);
 
     bool file_to_string(std::string &string_builder, const std::string &path);
     bool rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b);

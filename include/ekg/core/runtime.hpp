@@ -3,11 +3,11 @@
 #define EKG_CORE_H
 
 #include <SDL2/SDL.h>
-#include "ekg/gpu/gpu_allocator.hpp"
+#include "ekg/gpu/allocator.hpp"
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include <map>
-#include "ekg/cpu/cpu_virtual_thread.hpp"
-#include "ekg/draw/draw_font.hpp"
+#include "ekg/cpu/virtual_thread.hpp"
+#include "ekg/draw/font.hpp"
 
 namespace ekg {
     struct runtime {

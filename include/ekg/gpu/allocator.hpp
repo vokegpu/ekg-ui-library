@@ -2,7 +2,7 @@
 #ifndef EKG_GPU_ALLOCATOR_H
 #define EKG_GPU_ALLOCATOR_H
 
-#include "gpu_data.hpp"
+#include "data.hpp"
 #include <array>
 
 namespace ekg::gpu {

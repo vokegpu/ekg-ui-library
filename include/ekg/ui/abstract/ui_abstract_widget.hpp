@@ -2,7 +2,7 @@
 #ifndef EKG_UI_ABSTRACT_WIDGET_H
 #define EKG_UI_ABSTRACT_WIDGET_H
 
-#include "ekg/util/util.hpp"
+#include "ekg/util/geometry.hpp"
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include <SDL2/SDL.h>
 

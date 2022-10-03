@@ -2,7 +2,8 @@
 #ifndef EKG_CPU_INPUT_H
 #define EKG_CPU_INPUT_H
 
-#include "ekg/util/util.hpp"
+#include "ekg/util/geometry.hpp"
+#include "ekg/util/env.hpp"
 #include <string>
 #include <map>
 #include <SDL2/SDL.h>

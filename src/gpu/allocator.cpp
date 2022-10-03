@@ -1,4 +1,4 @@
-#include "ekg/gpu/gpu_allocator.hpp"
+#include "ekg/gpu/allocator.hpp"
 #include "ekg/ekg.hpp"
 
 ekg::gpu::program ekg::gpu::allocator::program {};

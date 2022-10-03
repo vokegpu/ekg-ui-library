@@ -1,4 +1,4 @@
-#include "ekg/util/util_virtual_thread.hpp"
+#include "ekg/util/thread.hpp"
 #include "ekg/ekg.hpp"
 
 void ekg::process(const std::string &process_tag, const ekg::thread &thread_env) {
