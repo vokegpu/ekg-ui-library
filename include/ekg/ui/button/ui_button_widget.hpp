@@ -1,4 +1,3 @@
-#pragma once
 #ifndef UI_BUTTON_WIDGET_H
 #define UI_BUTTON_WIDGET_H
 

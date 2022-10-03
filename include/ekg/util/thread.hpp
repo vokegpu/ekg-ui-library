@@ -1,16 +1,12 @@
-#pragma once
 #ifndef EKG_UTIL_THREAD_H
 #define EKG_UTIL_THREAD_H
 
+#include "ekg/util/env.hpp"
 #include <iostream>
 
 namespace ekg {
     enum class thread {
         start, stop
-    };
-
-    enum class env {
-        swap, refresh, reset, update, redraw
     };
 
     void process(const std::string &process_tag, const ekg::thread &thread_env);

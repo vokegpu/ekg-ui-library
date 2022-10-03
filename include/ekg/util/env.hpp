@@ -1,10 +1,13 @@
-#pragma once
 #ifndef EKG_UTIL_ENV_H
 #define EKG_UTIL_ENV_H
 
 #include <iostream>
 
 namespace ekg {
+    enum class env {
+        swap, refresh, reset, update, redraw
+    };
+
     struct timing {
         uint64_t elapsed_ticks {};
         uint64_t current_ticks {};

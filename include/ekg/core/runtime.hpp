@@ -1,13 +1,10 @@
-#pragma once
 #ifndef EKG_CORE_H
 #define EKG_CORE_H
 
-#include <SDL2/SDL.h>
-#include "ekg/gpu/allocator.hpp"
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
-#include <map>
 #include "ekg/cpu/virtual_thread.hpp"
 #include "ekg/draw/font.hpp"
+#include <map>
 
 namespace ekg {
     struct runtime {

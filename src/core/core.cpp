@@ -1,9 +1,6 @@
 #include "ekg/core/runtime.hpp"
 #include "ekg/cpu/cpu_input.hpp"
-#include "ekg/draw/font.hpp"
-#include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
-#include "ekg/util/thread.hpp"
 
 void ekg::runtime::set_root(SDL_Window *sdl_win_root) {
     this->root = sdl_win_root;

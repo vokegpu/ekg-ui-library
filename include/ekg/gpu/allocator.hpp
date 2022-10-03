@@ -1,4 +1,3 @@
-#pragma once
 #ifndef EKG_GPU_ALLOCATOR_H
 #define EKG_GPU_ALLOCATOR_H
 

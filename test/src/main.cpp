@@ -1,8 +1,4 @@
-#include "ekg/ekg.hpp"
-
 #include "test_feature.hpp"
-#include "ekg/util/thread.hpp"
-#include "ekg/util/env.hpp"
 
 std::string test::name {};
 

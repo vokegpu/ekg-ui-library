@@ -1,6 +1,6 @@
 #include "ekg/gpu/gl.hpp"
 #include "ekg/cpu/info.hpp"
-#include "ekg/util/geometry.hpp"
+#include "ekg/util/env.hpp"
 
 void ekg::gpu::init_opengl_context() {
     switch (ekg::os) {

@@ -1,4 +1,3 @@
-#pragma once
 #ifndef EKG_UI_FRAME_WIDGET_H
 #define EKG_UI_FRAME_WIDGET_H
 

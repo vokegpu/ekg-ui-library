@@ -1,4 +1,3 @@
-#pragma once
 #ifndef EKG_DRAW_H
 #define EKG_DRAW_H
 

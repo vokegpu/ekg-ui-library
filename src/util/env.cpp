@@ -1,4 +1,3 @@
-#include "ekg/util/env.hpp"
 #include "ekg/util/thread.hpp"
 #include "ekg/cpu/info.hpp"
 #include <SDL2/SDL.h>

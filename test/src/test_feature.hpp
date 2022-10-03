@@ -1,8 +1,7 @@
-#pragma once
+#include "ekg/ekg.hpp"
+
 #ifndef TEST_FEATURE_H
 #define TEST_FEATURE_H
-
-#include "ekg/ekg.hpp"
 
 namespace test {
     extern std::string name;

@@ -1,8 +1,8 @@
-#pragma once
 #ifndef EKG_H
 #define EKG_H
 
 #include "ekg/core/runtime.hpp"
+#include "ekg/util/thread.hpp"
 
 namespace ekg {
     extern ekg::runtime* core;

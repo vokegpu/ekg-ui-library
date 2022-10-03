@@ -1,4 +1,3 @@
-#pragma once
 #ifndef EKG_CPU_INPUT_H
 #define EKG_CPU_INPUT_H
 

@@ -1,9 +1,7 @@
-#pragma once
 #ifndef EKG_UI_ABSTRACT_H
 #define EKG_UI_ABSTRACT_H
 
 #include <iostream>
-#include <string>
 
 namespace ekg {
     enum class state {

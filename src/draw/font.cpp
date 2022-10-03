@@ -1,4 +1,5 @@
 #include "ekg/draw/font.hpp"
+#include "ekg/util/env.hpp"
 
 FT_Library ekg::draw::font_renderer::ft_library {};
 
