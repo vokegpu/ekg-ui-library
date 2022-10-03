@@ -61,10 +61,8 @@ namespace ekg {
         uint16_t dock {};
     };
 
-    void log(const std::string &log_message);
     void orthographic2d(float* matrix, float left, float right, float bottom, float top);
 
-    bool file_to_string(std::string &string_builder, const std::string &path);
     bool rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b);
     bool rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec);
 

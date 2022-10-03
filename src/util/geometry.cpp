@@ -1,49 +1,13 @@
 #include "ekg/util/geometry.hpp"
-#include "ekg/cpu/info.hpp"
-#include <SDL2/SDL.h>
-#include <fstream>
 
 float ekg::display::dt {};
 int32_t ekg::display::width {};
 int32_t ekg::display::height {};
 char* const ekg::empty {};
 
-void ekg::log(const std::string &log_message) {
-    const std::string full_log_message = "[ekg] " + log_message;
-
-    switch (ekg::os) {
-        case ekg::platform::os_android: {
-            SDL_Log("%s", full_log_message.c_str());
-            break;
-        }
-
-        default: {
-            std::cout << full_log_message.c_str() << '\n';
-            break;
-        }
-    }
-}
-
 bool ekg::rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b) {
     return rect_a.x < rect_b.x + rect_b.w && rect_a.x + rect_a.w > rect_b.x &&
            rect_a.y < rect_b.y + rect_b.h && rect_a.x + rect_a.w > rect_b.y;
-}
-
-bool ekg::file_to_string(std::string &string_builder, const std::string &path) {
-    std::ifstream ifs {path};
-
-    if (ifs.is_open()) {
-        std::string string_buffer {};
-
-        while (getline(ifs, string_buffer)) {
-            string_builder += "\n" + string_buffer;
-        }
-
-        ifs.close();
-        return true;
-    }
-
-    return false;
 }
 
 void ekg::orthographic2d(float *matrix, float left, float right, float bottom, float top) {
