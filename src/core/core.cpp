@@ -11,6 +11,7 @@ SDL_Window* ekg::runtime::get_root() {
 
 void ekg::runtime::init() {
     this->allocator.init();
+    this->input.init();
 
     if (FT_Init_FreeType(&ekg::draw::font_renderer::ft_library)) {
         ekg::log("Could not init FreeType");

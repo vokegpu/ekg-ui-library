@@ -7,17 +7,11 @@
 #include <vector>
 #include <SDL2/SDL.h>
 
-namespace ekg {
-    struct task {
-        std::vector<std::string> call_bounds {};
-        bool state {};
-    };
-
-    namespace service {
+namespace ekg::service {
         class input {
         protected:
-            std::map<std::string, std::string> map_call_action {};
-            std::map<std::string, ekg::task> map_action_register {};
+            std::map<std::string, std::vector<std::string>> map_bind {};
+            std::map<std::string, bool> map_register {};
 
             bool pressed {};
             bool released {};
@@ -39,17 +33,17 @@ namespace ekg {
             bool was_motion();
             bool was_wheel();
 
-            void registry(const std::string &action_tag);
-            void add_bind(const std::string &action_tag, const std::string &action_key);
-            void remove_bind(const std::string &action_tag, const std::string &action_key);
+            void registry(const std::string &input_tag);
+            void bind(const std::string &input_tag, const std::string &key);
+            void unbind(const std::string &input_tag, const std::string &key);
+            void callback(const std::string &key, bool callback);
 
-            void set_state(const std::string &action_tag, bool action_state);
-            bool get_state(const std::string &action_tag);
+            void set(const std::string &input_tag, bool callback);
+            bool get(const std::string &input_tag);
 
             void on_event(SDL_Event &sdl_event);
             void on_update();
         };
     }
-}
 
 #endif

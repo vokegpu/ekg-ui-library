@@ -100,11 +100,6 @@ int main(int argv, char** argc) {
                         ekg::event(sdl_event);
                         break;
                     }
-
-                    case SDL_MOUSEBUTTONDOWN: {
-                        ekg::log("Button id click: " + std::to_string(sdl_event.button.button));
-                        break;
-                    }
                 }
             }
 
