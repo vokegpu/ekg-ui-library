@@ -6,9 +6,6 @@
 namespace ekg::ui {
 	class frame_widget : public ekg::ui::abstract_widget {
 	public:
-        ekg::docker docker_draggable {};
-        ekg::docker docker_resizable {};
-
 		void destroy() override;
 		void on_reload() override;
 		void on_pre_event(SDL_Event &sdl_event) override;

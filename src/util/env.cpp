@@ -5,16 +5,16 @@
 #include <SDL2/SDL.h>
 #include <fstream>
 
-bool ekg::flag::contains(uint16_t target, uint16_t flags) {
+bool ekg::bitwise::contains(uint16_t &target, uint16_t flags) {
     return target & (flags);
 }
 
-bool ekg::flag::remove(uint16_t &target, uint16_t flags) {
+bool ekg::bitwise::remove(uint16_t &target, uint16_t flags) {
     target &= ~(flags);
     return true;
 }
 
-bool ekg::flag::add(uint16_t &target, uint16_t flags) {
+bool ekg::bitwise::add(uint16_t &target, uint16_t flags) {
     target |= flags;
     return true;
 }

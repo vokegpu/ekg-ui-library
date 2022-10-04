@@ -100,7 +100,7 @@ int main(int argv, char** argc) {
                         ekg::event(sdl_event);
 
                         if (ekg::input("button-activy")) {
-                            ekg::log("The input bind for button-activy.");
+                            ekg::log("The input_manager bind for button-activy.");
                         }
 
                         break;

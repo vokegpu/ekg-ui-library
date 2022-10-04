@@ -1,18 +1,18 @@
 #include "ekg/ui/frame/ui_frame.hpp"
 
-void ekg::ui::frame::set_drag(const ekg::dock &dock) {
+void ekg::ui::frame::set_drag(uint16_t dock) {
 	this->dock_drag = dock;
 }
 
-ekg::dock ekg::ui::frame::get_drag_dock() {
+uint16_t ekg::ui::frame::get_drag_dock() {
 	return this->dock_drag;
 }
 
-void ekg::ui::frame::set_resize(const ekg::dock &dock) {
+void ekg::ui::frame::set_resize(uint16_t dock) {
 	this->dock_resize = dock;
 }
 
-ekg::dock ekg::ui::frame::get_resize_dock() {
+uint16_t ekg::ui::frame::get_resize_dock() {
 	return this->dock_resize;
 }
 
@@ -52,11 +52,11 @@ std::vector<uint32_t> &ekg::ui::frame::get_parent_id_list() {
 	return this->parent_id_list;
 }
 
-void ekg::ui::frame::set_embed(const ekg::dock &dock) {
+void ekg::ui::frame::set_embed(uint16_t dock) {
 	this->dock_embed = dock;
 }
 
-ekg::dock ekg::ui::frame::get_embed_dock() {
+uint16_t ekg::ui::frame::get_embed_dock() {
 	return this->dock_embed;
 }
 

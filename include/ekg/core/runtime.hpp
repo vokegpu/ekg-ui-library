@@ -4,6 +4,7 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include "ekg/cpu/virtual_thread.hpp"
 #include "ekg/draw/font.hpp"
+#include "ekg/service/theme.hpp"
 #include "ekg/service/input.hpp"
 #include <map>
 
@@ -31,7 +32,8 @@ namespace ekg {
         ekg::draw::font_renderer f_renderer_normal {};
         ekg::draw::font_renderer f_renderer_big {};
 
-        ekg::service::input input {};
+        ekg::service::input input_manager {};
+        ekg::service::theme theme_manager {};
 
         /* Security methods of ekg. */
 
@@ -48,6 +50,7 @@ namespace ekg {
         ekg::draw::font_renderer &get_f_renderer_big();
 
         ekg::service::input &get_service_input();
+        ekg::service::theme &get_service_theme();
 
         void update_widget(ekg::ui::abstract_widget* widget);
 

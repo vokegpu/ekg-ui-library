@@ -29,7 +29,7 @@ namespace ekg {
 
     std::string &set(std::string &var_mutable, const std::string &predicate);
 
-    namespace flag {
+    namespace bitwise {
         bool contains(uint16_t &target, uint16_t flag);
         bool add(uint16_t &target, uint16_t flags);
         bool remove(uint16_t &target, uint16_t flags);

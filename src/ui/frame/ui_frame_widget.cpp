@@ -2,12 +2,11 @@
 
 void ekg::ui::frame_widget::destroy() {
     abstract_widget::destroy();
-
-    
 }
 
 void ekg::ui::frame_widget::on_reload() {
     abstract_widget::on_reload();
+    auto ui = (ekg::ui::frame_widget*) this->data;
 }
 
 void ekg::ui::frame_widget::on_pre_event(SDL_Event &sdl_event) {

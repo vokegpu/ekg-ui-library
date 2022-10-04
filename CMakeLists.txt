@@ -12,7 +12,9 @@
 cmake_minimum_required(VERSION 3.9)
 project(ekg VERSION 1.0.0 DESCRIPTION "ui library")
 message("-- Preparing EKG setup")
+
 add_compile_options(-O3)
+add_compile_options(-std=c++17)
 
 if (WIN32)
     message("-- WIN32 platform detected!")

@@ -11,7 +11,8 @@ SDL_Window* ekg::runtime::get_root() {
 
 void ekg::runtime::init() {
     this->allocator.init();
-    this->input.init();
+    this->input_manager.init();
+    this->theme_manager.init();
 
     if (FT_Init_FreeType(&ekg::draw::font_renderer::ft_library)) {
         ekg::log("Could not init FreeType");
@@ -34,6 +35,7 @@ void ekg::runtime::init() {
 
 void ekg::runtime::quit() {
     this->allocator.quit();
+    this->theme_manager.quit();
 }
 
 ekg::draw::font_renderer &ekg::runtime::get_f_renderer_small() {
@@ -49,11 +51,11 @@ ekg::draw::font_renderer &ekg::runtime::get_f_renderer_big() {
 }
 
 void ekg::runtime::process_event(SDL_Event &sdl_event) {
-    this->input.on_event(sdl_event);
+    this->input_manager.on_event(sdl_event);
 }
 
 void ekg::runtime::process_update() {
-    this->input.on_update();
+    this->input_manager.on_update();
 
     if (this->thread_worker.should_thread_poll) {
         this->thread_worker.process_threads();
@@ -112,5 +114,9 @@ void ekg::runtime::update_widget(ekg::ui::abstract_widget *widget) {
 }
 
 ekg::service::input &ekg::runtime::get_service_input() {
-    return this->input;
+    return this->input_manager;
+}
+
+ekg::service::theme &ekg::runtime::get_service_theme() {
+    return this->theme_manager;
 }
