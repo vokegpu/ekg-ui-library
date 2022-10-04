@@ -38,6 +38,7 @@ namespace ekg {
         /* Security methods of ekg. */
 
         void prepare_virtual_threads();
+        void prepare_ui_env();
     public:
         void set_root(SDL_Window* sdl_win_root);
         SDL_Window* get_root();

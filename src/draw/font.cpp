@@ -36,6 +36,8 @@ float ekg::draw::font_renderer::get_text_height() {
 void ekg::draw::font_renderer::set_font(const std::string &path) {
 	if (this->font_path != path) {
 		this->font_path = path;
+
+        ekg::log("trying to load new font... " + path);
 		this->reload();
 	}
 }
@@ -51,11 +53,11 @@ void ekg::draw::font_renderer::reload() {
 	if (!this->flag_first_time) {
 		FT_Done_Face(this->ft_face);
 	}
-	
+
+    ekg::log("trying to create font face..." + this->font_path);
+
 	this->flag_unloaded = FT_New_Face(ekg::draw::font_renderer::ft_library, this->font_path.c_str(), 0, &this->ft_face);
 	this->flag_first_time = false;
-
-	ekg::log("Trying to load font.");
 
 	if (this->flag_unloaded) {
 		return;
@@ -126,7 +128,7 @@ void ekg::draw::font_renderer::reload() {
     glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-	ekg::log("Font " + this->font_path + " loaded.");
+	ekg::log("font " + this->font_path + " successfully loaded");
 }
 
 void ekg::draw::font_renderer::bind_allocator(ekg::gpu::allocator *gpu_allocator) {

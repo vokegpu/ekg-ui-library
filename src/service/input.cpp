@@ -2,35 +2,6 @@
 #include <string>
 #include <algorithm>
 
-void ekg::service::input::init() {
-    this->bind("frame-drag-activy", "mouse-left");
-    this->bind("frame-drag-activy", "finger-click");
-
-    this->bind("frame-resize-activy", "mouse-left");
-    this->bind("frame-resize-activy", "finger-click");
-
-    this->bind("button-activy", "lctrl+lshift+a");
-    this->bind("button-activy", "finger-click");
-
-    this->registry("popup-activy");
-    this->bind("popup-activy", "mouse-right");
-    this->bind("popup-activy", "finger-hold");
-
-    this->bind("popup-component-activy", "mouse-left");
-    this->bind("popup-component-activy", "finger-click");
-
-    this->bind("textbox-action-delete-left", "backspace");
-    this->bind("textbox-action-select-all", "lctrl+a");
-    this->bind("textbox-action-select-all", "finger-hold");
-    this->bind("textbox-action-select-all", "mouse-double-");
-    this->bind("textbox-action-delete-right", "delete");
-    this->bind("textbox-action-break-line", "return");
-    this->bind("textbox-action-up", "up");
-    this->bind("textbox-action-down", "down");
-    this->bind("textbox-action-down", "right");
-    this->bind("textbox-action-down", "left");
-}
-
 void ekg::service::input::on_event(SDL_Event &sdl_event) {
     this->pressed = sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_FINGERDOWN;
     this->released = sdl_event.type == SDL_KEYUP || sdl_event.type == SDL_MOUSEBUTTONUP || sdl_event.type == SDL_FINGERUP;

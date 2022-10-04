@@ -30,8 +30,6 @@ namespace ekg::service {
             ekg::timing timing_last_interact {};
             ekg::vec4 interact {};
 
-            void init();
-
             bool was_pressed();
             bool was_released();
             bool was_motion();

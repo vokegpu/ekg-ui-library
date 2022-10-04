@@ -11,7 +11,6 @@ SDL_Window* ekg::runtime::get_root() {
 
 void ekg::runtime::init() {
     this->allocator.init();
-    this->input_manager.init();
     this->theme_manager.init();
 
     if (FT_Init_FreeType(&ekg::draw::font_renderer::ft_library)) {
@@ -31,6 +30,7 @@ void ekg::runtime::init() {
     this->f_renderer_big.bind_allocator(&this->allocator);
 
     this->prepare_virtual_threads();
+    this->prepare_ui_env();
 }
 
 void ekg::runtime::quit() {
@@ -75,6 +75,8 @@ ekg::cpu::thread_worker &ekg::runtime::get_cpu_thread_worker() {
 }
 
 void ekg::runtime::prepare_virtual_threads() {
+    ekg::log("creating events allocating virtual threads");
+
     this->thread_worker.alloc_thread(new ekg::cpu::thread("swap", nullptr, [](void* data) {
     }));
 
@@ -119,4 +121,29 @@ ekg::service::input &ekg::runtime::get_service_input() {
 
 ekg::service::theme &ekg::runtime::get_service_theme() {
     return this->theme_manager;
+}
+
+void ekg::runtime::prepare_ui_env() {
+    ekg::log("creating ui binds");
+
+    this->input_manager.bind("frame-drag-activy", "mouse-left");
+    this->input_manager.bind("frame-drag-activy", "finger-click");
+    this->input_manager.bind("frame-resize-activy", "mouse-left");
+    this->input_manager.bind("frame-resize-activy", "finger-click");
+    this->input_manager.bind("button-activy", "lctrl+lshift+a");
+    this->input_manager.bind("button-activy", "finger-click");
+    this->input_manager.bind("popup-activy", "mouse-right");
+    this->input_manager.bind("popup-activy", "finger-hold");
+    this->input_manager.bind("popup-component-activy", "mouse-left");
+    this->input_manager.bind("popup-component-activy", "finger-click");
+    this->input_manager.bind("textbox-action-delete-left", "backspace");
+    this->input_manager.bind("textbox-action-select-all", "lctrl+a");
+    this->input_manager.bind("textbox-action-select-all", "finger-hold");
+    this->input_manager.bind("textbox-action-select-all", "mouse-double-");
+    this->input_manager.bind("textbox-action-delete-right", "delete");
+    this->input_manager.bind("textbox-action-break-line", "return");
+    this->input_manager.bind("textbox-action-up", "up");
+    this->input_manager.bind("textbox-action-down", "down");
+    this->input_manager.bind("textbox-action-down", "right");
+    this->input_manager.bind("textbox-action-down", "left");
 }
