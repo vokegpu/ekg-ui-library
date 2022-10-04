@@ -13,7 +13,14 @@ namespace ekg {
     };
 
     enum class dock {
-        free, top, bottom, right, left, center, full, none
+        free   = 1,
+        top    = 2,
+        bottom = 4,
+        right  = 8,
+        left   = 16,
+        center = 32,
+        full   = 64,
+        none   = 128
     };
 
     struct flag {

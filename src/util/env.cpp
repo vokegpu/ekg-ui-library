@@ -5,6 +5,20 @@
 #include <SDL2/SDL.h>
 #include <fstream>
 
+bool ekg::flag::contains(uint16_t target, uint16_t flags) {
+    return target & (flags);
+}
+
+bool ekg::flag::remove(uint16_t &target, uint16_t flags) {
+    target &= ~(flags);
+    return true;
+}
+
+bool ekg::flag::add(uint16_t &target, uint16_t flags) {
+    target |= flags;
+    return true;
+}
+
 void ekg::log(const std::string &log_message) {
     const std::string full_log_message = "[ekg] " + log_message;
 

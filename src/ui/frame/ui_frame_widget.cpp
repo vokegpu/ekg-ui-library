@@ -2,6 +2,8 @@
 
 void ekg::ui::frame_widget::destroy() {
     abstract_widget::destroy();
+
+    
 }
 
 void ekg::ui::frame_widget::on_reload() {
