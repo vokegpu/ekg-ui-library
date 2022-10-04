@@ -4,7 +4,8 @@ ekg::runtime* ekg::core {nullptr};
 std::string ekg::gl_version {"#version 450 core"};
 
 void ekg::init(SDL_Window* root, const std::string &font_path) {
-    ekg::log("Initialising ekg...");
+    ekg::log("initialising ekg...");
+    ekg::gpu::init_opengl_context();
 
 #if defined(_WIN)
     ekg::os = {ekg::platform::os_win};
@@ -23,11 +24,11 @@ void ekg::init(SDL_Window* root, const std::string &font_path) {
     ekg::core->set_root(root);
 
     SDL_GetWindowSize(root, &ekg::display::width, &ekg::display::height);
-    ekg::log("Root display size (" + std::to_string(ekg::display::width) + ", " + std::to_string(ekg::display::height) + ")");
+    ekg::log("root display size (" + std::to_string(ekg::display::width) + ", " + std::to_string(ekg::display::height) + ")");
 }
 
 void ekg::quit() {
-    ekg::log("Quiting from ekg...");
+    ekg::log("quiting from ekg...");
 
     ekg::core->quit();
     delete ekg::core;

@@ -36,9 +36,8 @@ int main(int argv, char** argc) {
         ekg::log("GLEW initialised");
     }
 
-    ekg::gpu::init_opengl_context();
     ekg::init(sdl_win, "JetBrainsMono-Bold.ttf");
-    ekg::log("OpenGL 4 context created");
+    ekg::log("OpenGL 4 context created!");
 
     ekg::timing mainloop_timing {};
     ekg::timing fps_timing {};

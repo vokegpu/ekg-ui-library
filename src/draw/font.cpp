@@ -54,7 +54,7 @@ void ekg::draw::font_renderer::reload() {
 		FT_Done_Face(this->ft_face);
 	}
 
-    ekg::log("trying to create font face..." + this->font_path);
+    ekg::log("trying to create font face... " + this->font_path);
 
 	this->flag_unloaded = FT_New_Face(ekg::draw::font_renderer::ft_library, this->font_path.c_str(), 0, &this->ft_face);
 	this->flag_first_time = false;
