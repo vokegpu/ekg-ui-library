@@ -12,6 +12,10 @@ namespace ekg::service {
         protected:
             std::map<std::string, std::vector<std::string>> map_bind {};
             std::map<std::string, bool> map_register {};
+            std::map<SDL_Keycode, std::string> special_key {};
+
+            std::vector<std::string> special_key_unit_pressed {};
+            std::vector<std::string> special_key_released {};
 
             bool pressed {};
             bool released {};

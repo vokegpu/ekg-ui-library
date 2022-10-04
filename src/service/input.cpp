@@ -1,25 +1,34 @@
 #include "ekg/service/input.hpp"
+#include <string>
+#include <algorithm>
 
 void ekg::service::input::init() {
-    this->registry("frame-drag-activy");
     this->bind("frame-drag-activy", "mouse-left");
     this->bind("frame-drag-activy", "finger-click");
 
-    this->registry("frame-resize-activy");
     this->bind("frame-resize-activy", "mouse-left");
     this->bind("frame-resize-activy", "finger-click");
 
-    this->registry("button-activy");
-    this->bind("button-activy", "mouse-left");
+    this->bind("button-activy", "lctrl+lshift+a");
     this->bind("button-activy", "finger-click");
 
     this->registry("popup-activy");
     this->bind("popup-activy", "mouse-right");
     this->bind("popup-activy", "finger-hold");
 
-    this->registry("popup-component-activy");
     this->bind("popup-component-activy", "mouse-left");
     this->bind("popup-component-activy", "finger-click");
+
+    this->bind("textbox-action-delete-left", "backspace");
+    this->bind("textbox-action-select-all", "lctrl+a");
+    this->bind("textbox-action-select-all", "finger-hold");
+    this->bind("textbox-action-select-all", "mouse-double-");
+    this->bind("textbox-action-delete-right", "delete");
+    this->bind("textbox-action-break-line", "return");
+    this->bind("textbox-action-up", "up");
+    this->bind("textbox-action-down", "down");
+    this->bind("textbox-action-down", "right");
+    this->bind("textbox-action-down", "left");
 }
 
 void ekg::service::input::on_event(SDL_Event &sdl_event) {
@@ -29,16 +38,146 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
 
     switch (sdl_event.type) {
         case SDL_KEYDOWN: {
-            for (const char* key_name = SDL_GetKeyName(sdl_event.key.keysym.sym); strcmp(key_name, "") != 0; key_name = nullptr) {
-                this->callback(key_name, true);
+            switch (sdl_event.key.keysym.sym) {
+                case SDLK_RCTRL: {
+                    this->special_key[sdl_event.key.keysym.sym] = "rctrl+";
+                    break;
+                }
+
+                case SDLK_LCTRL: {
+                    this->special_key[sdl_event.key.keysym.sym] = "lctrl+";
+                    break;
+                }
+
+                case SDLK_RSHIFT: {
+                    this->special_key[sdl_event.key.keysym.sym] = "rshift+";
+                    break;
+                }
+
+                case SDLK_LSHIFT: {
+                    this->special_key[sdl_event.key.keysym.sym] = "lshift+";
+                    break;
+                }
+
+                case SDLK_LALT: {
+                    this->special_key[sdl_event.key.keysym.sym] = "lalt+";
+                    break;
+                }
+
+                case SDLK_RALT: {
+                    this->special_key[sdl_event.key.keysym.sym] = "ralt+";
+                    break;
+                }
+
+                case SDLK_TAB: {
+                    this->special_key[sdl_event.key.keysym.sym] = "tab+";
+                    break;
+                }
+
+                default: {
+                    for (std::string key_name = SDL_GetKeyName(sdl_event.key.keysym.sym); !key_name.empty(); key_name) {
+                        std::string string_builder {};
+                        std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
+
+                        string_builder += this->special_key[SDLK_LCTRL];
+                        string_builder += this->special_key[SDLK_RCTRL];
+                        string_builder += this->special_key[SDLK_LSHIFT];
+                        string_builder += this->special_key[SDLK_RSHIFT];
+                        string_builder += this->special_key[SDLK_LALT];
+                        string_builder += this->special_key[SDLK_RALT];
+                        string_builder += this->special_key[SDLK_TAB];
+                        string_builder += key_name;
+
+                        if (string_builder != key_name) {
+                            bool add_unit_key {true};
+
+                            for (std::string &units : this->special_key_unit_pressed) {
+                                if (units == string_builder) {
+                                    add_unit_key = false;
+                                    break;
+                                }
+                            }
+
+                            if (add_unit_key) {
+                                this->special_key_unit_pressed.push_back(string_builder);
+                            }
+                        }
+
+                        this->callback(string_builder, true);
+                        break;
+                    }
+
+                    break;
+                }
             }
 
             break;
         }
 
         case SDL_KEYUP: {
-            for (const char* key_name = SDL_GetKeyName(sdl_event.key.keysym.sym); strcmp(key_name, "") != 0; key_name = nullptr) {
-                this->callback(key_name, false);
+            switch (sdl_event.key.keysym.sym) {
+                case SDLK_RCTRL: {
+                    this->special_key[sdl_event.key.keysym.sym] = "";
+                    this->special_key_released.emplace_back("rctrl");
+                    break;
+                }
+
+                case SDLK_LCTRL: {
+                    this->special_key[sdl_event.key.keysym.sym] = "";
+                    this->special_key_released.emplace_back("lctrl");
+                    break;
+                }
+
+                case SDLK_RSHIFT: {
+                    this->special_key[sdl_event.key.keysym.sym] = "";
+                    this->special_key_released.emplace_back("rshift");
+                    break;
+                }
+
+                case SDLK_LSHIFT: {
+                    this->special_key[sdl_event.key.keysym.sym] = "";
+                    this->special_key_released.emplace_back("lshift");
+                    break;
+                }
+
+                case SDLK_LALT: {
+                    this->special_key[sdl_event.key.keysym.sym] = "";
+                    this->special_key_released.emplace_back("lalt");
+                    break;
+                }
+
+                case SDLK_RALT: {
+                    this->special_key[sdl_event.key.keysym.sym] = "";
+                    this->special_key_released.emplace_back("ralt");
+                    break;
+                }
+
+                case SDLK_TAB: {
+                    this->special_key[sdl_event.key.keysym.sym] = "";
+                    this->special_key_released.emplace_back("tab");
+                    break;
+                }
+
+                default: {
+                    for (std::string key_name = SDL_GetKeyName(sdl_event.key.keysym.sym); !key_name.empty(); key_name) {
+                        std::string string_builder {};
+                        std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
+
+                        string_builder += this->special_key[SDLK_LCTRL];
+                        string_builder += this->special_key[SDLK_RCTRL];
+                        string_builder += this->special_key[SDLK_LSHIFT];
+                        string_builder += this->special_key[SDLK_RSHIFT];
+                        string_builder += this->special_key[SDLK_LALT];
+                        string_builder += this->special_key[SDLK_RALT];
+                        string_builder += this->special_key[SDLK_TAB];
+                        string_builder += key_name;
+
+                        this->callback(string_builder, false);
+                        break;
+                    }
+
+                    break;
+                }
             }
 
             break;
@@ -157,6 +296,32 @@ void ekg::service::input::on_update() {
 
     if (this->finger_hold_event) {
         this->finger_hold_event = false;
+    }
+
+    if (!this->special_key_released.empty()) {
+        bool set_false {};
+        std::vector<std::string> cached_units {};
+
+        for (std::string &units : this->special_key_unit_pressed) {
+            set_false = false;
+
+            for (std::string &keys : this->special_key_released) {
+                if (units.find(keys) != std::string::npos) {
+                    set_false = true;
+                    break;
+                }
+            }
+
+            if (set_false) {
+                this->callback(units, false);
+                break;
+            }
+
+            cached_units.push_back(units);
+        }
+
+        this->special_key_unit_pressed = cached_units;
+        this->special_key_released.clear();
     }
 }
 

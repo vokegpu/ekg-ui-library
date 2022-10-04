@@ -82,6 +82,6 @@ bool ekg::was_wheel() {
     return ekg::core->get_service_input().was_wheel();
 }
 
-bool ekg::action(const std::string &action_tag) {
+bool ekg::input(const std::string &action_tag) {
     return ekg::core->get_service_input().get(action_tag);
 }

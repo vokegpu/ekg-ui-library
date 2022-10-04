@@ -22,7 +22,7 @@ namespace ekg {
     bool set(bool &var_mutable, bool predicate);
     std::string &set(std::string &var_mutable, const std::string &predicate);
 
-    bool action(const std::string &action_tag);
+    bool input(const std::string &action_tag);
 
     bool was_motion();
     bool was_released();

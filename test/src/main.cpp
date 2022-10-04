@@ -98,6 +98,11 @@ int main(int argv, char** argc) {
 
                     default: {
                         ekg::event(sdl_event);
+
+                        if (ekg::input("button-activy")) {
+                            ekg::log("The input bind for button-activy.");
+                        }
+
                         break;
                     }
                 }
