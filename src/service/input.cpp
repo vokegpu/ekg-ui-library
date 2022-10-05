@@ -50,31 +50,13 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
                         std::string string_builder {};
                         std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
 
-                        string_builder += this->special_key[SDLK_LCTRL];
-                        string_builder += this->special_key[SDLK_RCTRL];
-                        string_builder += this->special_key[SDLK_LSHIFT];
-                        string_builder += this->special_key[SDLK_RSHIFT];
-                        string_builder += this->special_key[SDLK_LALT];
-                        string_builder += this->special_key[SDLK_RALT];
-                        string_builder += this->special_key[SDLK_TAB];
-                        string_builder += key_name;
+                        this->complete_with_units(string_builder, key_name);
+                        this->callback(string_builder, true);
 
-                        if (string_builder != key_name) {
-                            bool add_unit_key {true};
-
-                            for (std::string &units : this->special_key_unit_pressed) {
-                                if (units == string_builder) {
-                                    add_unit_key = false;
-                                    break;
-                                }
-                            }
-
-                            if (add_unit_key) {
-                                this->special_key_unit_pressed.push_back(string_builder);
-                            }
+                        if (string_builder != key_name && !this->contains_unit(string_builder)) {
+                            this->special_key_unit_pressed.push_back(string_builder);
                         }
 
-                        this->callback(string_builder, true);
                         break;
                     }
 
@@ -134,15 +116,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
                         std::string string_builder {};
                         std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
 
-                        string_builder += this->special_key[SDLK_LCTRL];
-                        string_builder += this->special_key[SDLK_RCTRL];
-                        string_builder += this->special_key[SDLK_LSHIFT];
-                        string_builder += this->special_key[SDLK_RSHIFT];
-                        string_builder += this->special_key[SDLK_LALT];
-                        string_builder += this->special_key[SDLK_RALT];
-                        string_builder += this->special_key[SDLK_TAB];
-                        string_builder += key_name;
-
+                        this->complete_with_units(string_builder, key_name);
                         this->callback(string_builder, false);
                         break;
                     }
@@ -270,28 +244,11 @@ void ekg::service::input::on_update() {
     }
 
     if (!this->special_key_released.empty()) {
-        bool set_false {};
-        std::vector<std::string> cached_units {};
-
         for (std::string &units : this->special_key_unit_pressed) {
-            set_false = false;
-
-            for (std::string &keys : this->special_key_released) {
-                if (units.find(keys) != std::string::npos) {
-                    set_false = true;
-                    break;
-                }
-            }
-
-            if (set_false) {
-                this->callback(units, false);
-                break;
-            }
-
-            cached_units.push_back(units);
+            this->callback(units, false);
         }
 
-        this->special_key_unit_pressed = cached_units;
+        this->special_key_unit_pressed.clear();
         this->special_key_released.clear();
     }
 }
@@ -344,4 +301,25 @@ void ekg::service::input::callback(const std::string &key, bool callback) {
     for (std::string &binds : this->map_bind[key]) {
         this->map_register[binds] = callback;
     }
+}
+
+void ekg::service::input::complete_with_units(std::string &string_builder, const std::string &key_name) {
+    string_builder += this->special_key[SDLK_LCTRL];
+    string_builder += this->special_key[SDLK_RCTRL];
+    string_builder += this->special_key[SDLK_LSHIFT];
+    string_builder += this->special_key[SDLK_RSHIFT];
+    string_builder += this->special_key[SDLK_LALT];
+    string_builder += this->special_key[SDLK_RALT];
+    string_builder += this->special_key[SDLK_TAB];
+    string_builder += key_name;
+}
+
+bool ekg::service::input::contains_unit(const std::string &label) {
+    for (std::string &units : this->special_key_unit_pressed) {
+        if (units == label) {
+            return true;
+        }
+    }
+
+    return false;
 }

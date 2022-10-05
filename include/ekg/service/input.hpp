@@ -26,6 +26,9 @@ namespace ekg::service {
 
             bool finger_hold_event {};
             bool finger_wheel_event {};
+
+            void complete_with_units(std::string &string_builder, const std::string &key_name);
+            bool contains_unit(const std::string &label);
         public:
             ekg::timing timing_last_interact {};
             ekg::vec4 interact {};
