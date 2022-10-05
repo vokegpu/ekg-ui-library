@@ -25,3 +25,8 @@ The ekg has two modes: hybrid and immediate; The hybrid mode joint immediate mod
 All buffers allocated into GPU are totally handled and optimized by `ekg::gpu::allocator`, it protects your gpu from multiples buffers dispatch, it only use one VBO and implement high shading communcation making a parcial instanced rendering.
 
 The scale manager works with dynamic offsets, for better interactions it automatically sets the scale of offset and button sizes (if auto-scale mode is enabled), other service of scale manager is set widgets position based on root display, small screens like smartphones, reduce the bounds interaction beetwen master (mommy/mother/me) parent and others widgets.
+
+# Author
+
+Hi I am rina the author (a), I do many commits sometime because I have a notebook and I need to handle the job a lot of times...
+The current version state of ekg depends all of my job, sometime I do not have motivation to code on it, but yes... I love to do GUIs and UIs library!
