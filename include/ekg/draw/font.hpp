@@ -1,7 +1,6 @@
 #ifndef EKG_DRAW_FONT_H
 #define EKG_DRAW_FONT_H
 
-#include <iostream>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "ekg/gpu/allocator.hpp"

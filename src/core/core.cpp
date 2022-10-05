@@ -17,18 +17,6 @@ void ekg::runtime::init() {
         ekg::log("Could not init FreeType");
     }
 
-    this->f_renderer_small.font_size = 16;
-    this->f_renderer_small.reload();
-    this->f_renderer_small.bind_allocator(&this->allocator);
-
-    this->f_renderer_normal.font_size = 18;
-    this->f_renderer_normal.reload();
-    this->f_renderer_normal.bind_allocator(&this->allocator);
-
-    this->f_renderer_big.font_size = 24;
-    this->f_renderer_big.reload();
-    this->f_renderer_big.bind_allocator(&this->allocator);
-
     this->prepare_virtual_threads();
     this->prepare_ui_env();
 }
@@ -124,6 +112,20 @@ ekg::service::theme &ekg::runtime::get_service_theme() {
 }
 
 void ekg::runtime::prepare_ui_env() {
+    ekg::log("creating ui fonts");
+
+    this->f_renderer_small.font_size = 16;
+    this->f_renderer_small.reload();
+    this->f_renderer_small.bind_allocator(&this->allocator);
+
+    this->f_renderer_normal.font_size = 18;
+    this->f_renderer_normal.reload();
+    this->f_renderer_normal.bind_allocator(&this->allocator);
+
+    this->f_renderer_big.font_size = 24;
+    this->f_renderer_big.reload();
+    this->f_renderer_big.bind_allocator(&this->allocator);
+
     ekg::log("creating ui binds");
 
     this->input_manager.bind("frame-drag-activy", "mouse-left");

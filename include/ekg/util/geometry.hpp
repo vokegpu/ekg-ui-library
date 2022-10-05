@@ -12,7 +12,7 @@ namespace ekg {
         static int32_t height;
     };
 
-    enum class dock {
+    enum dock {
         free   = 1,
         top    = 2,
         bottom = 4,

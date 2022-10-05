@@ -5,7 +5,7 @@
 #include <SDL2/SDL.h>
 #include <fstream>
 
-bool ekg::bitwise::contains(uint16_t &target, uint16_t flags) {
+bool ekg::bitwise::contains(uint16_t target, uint16_t flags) {
     return target & (flags);
 }
 
