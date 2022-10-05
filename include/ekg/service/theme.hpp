@@ -14,8 +14,7 @@ namespace ekg::service {
         ekg::vec4 frame_border {};
         ekg::vec4 frame_outline {};
 
-        int32_t frame_resize_offset {};
-        int32_t frame_drag_offset {};
+        int32_t frame_activy_offset {};
         /* End of frame theme. */
 
         /* Start of button theme. */

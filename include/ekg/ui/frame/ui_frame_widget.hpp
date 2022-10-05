@@ -9,6 +9,9 @@ namespace ekg::ui {
         uint16_t target_dock_drag {};
         uint16_t target_dock_resize {};
 
+        ekg::docker docker_activy_drag {};
+        ekg::docker docker_activy_resize {};
+
 		void destroy() override;
 		void on_reload() override;
 		void on_pre_event(SDL_Event &sdl_event) override;

@@ -3,6 +3,14 @@
 ekg::runtime* ekg::core {nullptr};
 std::string ekg::gl_version {"#version 450 core"};
 
+ekg::service::theme &ekg::theme() {
+    return ekg::core->get_service_theme();
+}
+
+ekg::service::input &ekg::input() {
+    return ekg::core->get_service_input();
+}
+
 void ekg::init(SDL_Window* root, const std::string &font_path) {
     ekg::log("initialising ekg...");
     ekg::gpu::init_opengl_context();

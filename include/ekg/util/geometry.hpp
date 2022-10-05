@@ -13,14 +13,14 @@ namespace ekg {
     };
 
     enum dock {
+        none   = 0,
         free   = 1,
         top    = 2,
         bottom = 4,
         right  = 8,
         left   = 16,
         center = 32,
-        full   = 64,
-        none   = 128
+        full   = 64
     };
 
     struct flag {
@@ -62,17 +62,15 @@ namespace ekg {
         ekg::rect right {};
         ekg::rect top {};
         ekg::rect bottom {};
-        ekg::rect area {};
-
-        uint16_t dock {};
+        ekg::rect rect {};
     };
 
     void orthographic2d(float* matrix, float left, float right, float bottom, float top);
     bool rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b);
     bool rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec);
 
-    uint16_t docker_collide_vec(const ekg::docker &docker, const ekg::vec4 &vec);
-    uint16_t docker_collide_rect(const ekg::docker &docker, const ekg::rect &rect);
+    void set_dock_scaled(const ekg::rect &rect, float offset, ekg::docker &docker);
+    uint16_t docker_collide_vec_docks(ekg::docker &docker, const ekg::vec4 &vec);
 
     ekg::vec4 &interact();
 }

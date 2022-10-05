@@ -43,38 +43,53 @@ bool ekg::rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec) {
     return vec.x > rect.x && vec.x < rect.x + rect.w && vec.y > rect.y && vec.y < rect.y + rect.h;
 }
 
-uint16_t ekg::docker_collide_vec(const ekg::docker &docker, const ekg::vec4 &vec) {
-    bool flag {};
-    uint16_t dock_hit {};
-
-    if (ekg::rect_collide_vec(docker.left, vec)) {
-        flag = true;
-        dock_hit |= (uint16_t) ekg::dock::left;
-    }
-
-    if (ekg::rect_collide_vec(docker.right, vec)) {
-        flag = true;
-        dock_hit |= (uint16_t) ekg::dock::right;
-    }
-
-    if (ekg::rect_collide_vec(docker.top, vec)) {
-        flag = true;
-        dock_hit |= (uint16_t) ekg::dock::top;
-    }
-
-    if (ekg::rect_collide_vec(docker.bottom, vec)) {
-        flag = true;
-        dock_hit |= (uint16_t) ekg::dock::bottom;
-    }
-
-    return flag ? dock_hit : (uint16_t) ekg::dock::none;
-}
-
-uint16_t ekg::docker_collide_rect(const ekg::docker &docker, const ekg::rect &rect) {
-    return (uint16_t) ekg::dock::none;
-}
-
 ekg::vec4 &ekg::interact() {
     return ekg::core->get_service_input().interact;
 }
 
+void ekg::set_dock_scaled(const ekg::rect &rect, float offset, ekg::docker &docker) {
+    docker.rect = rect;
+
+    docker.left.x = rect.x;
+    docker.left.y = rect.y;
+    docker.left.w = offset;
+    docker.left.h = rect.h;
+
+    docker.right.w = offset;
+    docker.right.h = rect.h;
+    docker.right.x = rect.x + rect.w - docker.right.w;
+    docker.right.y = rect.y;
+
+    docker.top.x = rect.x;
+    docker.top.y = rect.y;
+    docker.top.w = rect.w;
+    docker.top.h = offset;
+
+    docker.bottom.w = rect.w;
+    docker.bottom.h = offset;
+    docker.bottom.x = rect.x;
+    docker.bottom.y = rect.y + rect.h - docker.bottom.h;
+}
+
+uint16_t ekg::docker_collide_vec_docks(ekg::docker &docker, const ekg::vec4 &vec) {
+    uint16_t collided {ekg::dock::none};
+
+    if (ekg::rect_collide_vec(docker.left, vec)) {
+        ekg::bitwise::add(collided, ekg::dock::left);
+    }
+
+    if (ekg::rect_collide_vec(docker.right, vec)) {
+        ekg::bitwise::add(collided, ekg::dock::right);
+    }
+
+    if (ekg::rect_collide_vec(docker.top, vec)) {
+        ekg::bitwise::add(collided, ekg::dock::top);
+    }
+
+    if (ekg::rect_collide_vec(docker.bottom, vec)) {
+        ekg::bitwise::add(collided, ekg::dock::bottom);
+    }
+
+
+    return collided;
+}

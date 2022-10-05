@@ -8,6 +8,9 @@ namespace ekg {
     extern ekg::runtime* core;
     extern std::string gl_version;
 
+    ekg::service::theme &theme();
+    ekg::service::input &input();
+
     void depth(float depth_preset);
     void init(SDL_Window* root, const std::string &font_path);
     void quit();
