@@ -9,14 +9,14 @@ bool ekg::bitwise::contains(uint16_t target, uint16_t flags) {
     return target & (flags);
 }
 
-bool ekg::bitwise::remove(uint16_t &target, uint16_t flags) {
+uint16_t &ekg::bitwise::remove(uint16_t &target, uint16_t flags) {
     target &= ~(flags);
-    return true;
+    return target;
 }
 
-bool ekg::bitwise::add(uint16_t &target, uint16_t flags) {
+uint16_t &ekg::bitwise::add(uint16_t &target, uint16_t flags) {
     target |= flags;
-    return true;
+    return target;
 }
 
 void ekg::log(const std::string &log_message) {

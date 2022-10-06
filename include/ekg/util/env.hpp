@@ -31,8 +31,8 @@ namespace ekg {
 
     namespace bitwise {
         bool contains(uint16_t target, uint16_t flag);
-        bool add(uint16_t &target, uint16_t flags);
-        bool remove(uint16_t &target, uint16_t flags);
+        uint16_t &add(uint16_t &target, uint16_t flags);
+        uint16_t &remove(uint16_t &target, uint16_t flags);
     }
 };
 

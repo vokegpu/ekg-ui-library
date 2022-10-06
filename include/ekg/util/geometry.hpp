@@ -55,6 +55,9 @@ namespace ekg {
         float y {};
         float w {};
         float h {};
+
+        bool operator ==(const ekg::rect &rect) const;
+        bool operator !=(const ekg::rect &rect) const;
     };
 
     struct docker {
@@ -70,7 +73,7 @@ namespace ekg {
     bool rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec);
 
     void set_dock_scaled(const ekg::rect &rect, float offset, ekg::docker &docker);
-    uint16_t docker_collide_vec_docks(ekg::docker &docker, const ekg::vec4 &vec);
+    int32_t find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::vec4 &vec);
 
     ekg::vec4 &interact();
 }

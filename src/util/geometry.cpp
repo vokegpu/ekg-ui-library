@@ -71,25 +71,22 @@ void ekg::set_dock_scaled(const ekg::rect &rect, float offset, ekg::docker &dock
     docker.bottom.y = rect.y + rect.h - docker.bottom.h;
 }
 
-uint16_t ekg::docker_collide_vec_docks(ekg::docker &docker, const ekg::vec4 &vec) {
+int32_t ekg::find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::vec4 &vec) {
+    bool full {ekg::bitwise::contains(flags, ekg::dock::full)};
     uint16_t collided {ekg::dock::none};
 
-    if (ekg::rect_collide_vec(docker.left, vec)) {
-        ekg::bitwise::add(collided, ekg::dock::left);
-    }
-
-    if (ekg::rect_collide_vec(docker.right, vec)) {
-        ekg::bitwise::add(collided, ekg::dock::right);
-    }
-
-    if (ekg::rect_collide_vec(docker.top, vec)) {
-        ekg::bitwise::add(collided, ekg::dock::top);
-    }
-
-    if (ekg::rect_collide_vec(docker.bottom, vec)) {
-        ekg::bitwise::add(collided, ekg::dock::bottom);
-    }
-
+    collided = (ekg::bitwise::contains(flags, ekg::dock::left) || full) && ekg::rect_collide_vec(docker.left, vec) ? ekg::bitwise::add(collided, ekg::dock::left) : collided;
+    collided = (ekg::bitwise::contains(flags, ekg::dock::right) || full) && ekg::rect_collide_vec(docker.right, vec) ? ekg::bitwise::add(collided, ekg::dock::right) : collided;
+    collided = (ekg::bitwise::contains(flags, ekg::dock::top) || full) && ekg::rect_collide_vec(docker.top, vec) ? ekg::bitwise::add(collided, ekg::dock::top) : collided;
+    collided = (ekg::bitwise::contains(flags, ekg::dock::bottom) || full) && ekg::rect_collide_vec(docker.bottom, vec) ? ekg::bitwise::add(collided, ekg::dock::bottom) : collided;
 
     return collided;
+}
+
+bool ekg::rect::operator == (const ekg::rect &rect) const {
+    return this->x == rect.x && this->y == rect.y && this->w == rect.w && this->h == rect.h;
+}
+
+bool ekg::rect::operator!=(const ekg::rect &rect) const {
+    return this->x != rect.x || this->y != rect.y || this->w != rect.w || this->h != rect.h;
 }
