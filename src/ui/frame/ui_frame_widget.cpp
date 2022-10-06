@@ -1,6 +1,7 @@
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ekg.hpp"
+#include "ekg/draw/draw.hpp"
 
 void ekg::ui::frame_widget::destroy() {
     abstract_widget::destroy();
@@ -9,6 +10,7 @@ void ekg::ui::frame_widget::destroy() {
 void ekg::ui::frame_widget::on_reload() {
     abstract_widget::on_reload();
 
+    ekg::set_rect_clamped(this->rect, ekg::theme().min_widget_size);
     ekg::set_dock_scaled(this->rect, static_cast<float>(ekg::theme().frame_activy_offset), this->docker_activy_drag);
     ekg::set_dock_scaled(this->rect, static_cast<float>(ekg::theme().frame_activy_offset) / 2, this->docker_activy_resize);
 }
@@ -80,4 +82,5 @@ void ekg::ui::frame_widget::on_update() {
 
 void ekg::ui::frame_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
+    ekg::draw::rect(this->rect, ekg::theme().frame_background);
 }

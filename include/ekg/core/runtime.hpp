@@ -20,8 +20,8 @@ namespace ekg {
 
         std::vector<ekg::ui::abstract_widget*> list_update_widget {};
 
-        std::map<int32_t, ekg::ui::abstract_widget*> map_widget {};
-        std::map<int32_t, ekg::ui::abstract> map_interface {};
+        std::map<uint32_t, ekg::ui::abstract_widget*> map_widget {};
+        std::map<uint32_t, ekg::ui::abstract> map_interface {};
 
         /* Core services and instances. */
 
@@ -53,6 +53,7 @@ namespace ekg {
         ekg::service::input &get_service_input();
         ekg::service::theme &get_service_theme();
 
+        ekg::ui::abstract_widget* get_fast_widget_by_id(uint32_t id);
         void update_widget(ekg::ui::abstract_widget* widget);
 
         void init();

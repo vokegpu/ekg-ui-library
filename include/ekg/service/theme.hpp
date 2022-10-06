@@ -24,6 +24,8 @@ namespace ekg::service {
         ekg::vec4 button_activy {};
         /* End of button theme. */
 
+        float min_widget_size {5};
+
         void init();
         void quit();
 

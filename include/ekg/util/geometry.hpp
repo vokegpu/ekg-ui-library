@@ -72,6 +72,7 @@ namespace ekg {
     bool rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b);
     bool rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec);
 
+    void set_rect_clamped(ekg::rect &rect, float min_size);
     void set_dock_scaled(const ekg::rect &rect, float offset, ekg::docker &docker);
     int32_t find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::vec4 &vec);
 

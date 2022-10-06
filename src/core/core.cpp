@@ -98,9 +98,15 @@ void ekg::runtime::prepare_virtual_threads() {
     }));
 }
 
-void ekg::runtime::update_widget(ekg::ui::abstract_widget *widget) {
-    this->list_update_widget.push_back(widget);
-    ekg::process(ekg::env::update, ekg::thread::start);
+ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(uint32_t id) {
+    return this->map_widget[id];
+}
+
+void ekg::runtime::update_widget(ekg::ui::abstract_widget* widget) {
+    if (widget != nullptr) {
+        this->list_update_widget.push_back(widget);
+        ekg::process(ekg::env::update, ekg::thread::start);
+    }
 }
 
 ekg::service::input &ekg::runtime::get_service_input() {

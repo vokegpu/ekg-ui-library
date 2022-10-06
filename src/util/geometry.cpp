@@ -83,6 +83,13 @@ int32_t ekg::find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::v
     return collided;
 }
 
+void ekg::set_rect_clamped(ekg::rect &rect, float min_size) {
+    rect.x = std::min(rect.x, min_size);
+    rect.y = std::min(rect.y, min_size);
+    rect.w = std::min(rect.w, min_size);
+    rect.h = std::min(rect.h, min_size);
+}
+
 bool ekg::rect::operator == (const ekg::rect &rect) const {
     return this->x == rect.x && this->y == rect.y && this->w == rect.w && this->h == rect.h;
 }
