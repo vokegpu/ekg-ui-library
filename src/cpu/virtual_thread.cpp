@@ -1,7 +1,7 @@
 #include "ekg/cpu/virtual_thread.hpp"
 #include "ekg/util/geometry.hpp"
 
-ekg::cpu::thread::thread(const std::string &thread_tag, void *thread_data, const std::function<void(void *)> &thread_callback, bool thread_initial_state) {
+ekg::cpu::thread::thread(const std::string &thread_tag, ekg::feature* thread_data, const std::function<void(ekg::feature*)> &thread_callback, bool thread_initial_state) {
     this->tag = thread_tag;
     this->data = thread_data;
     this->callback = thread_callback;

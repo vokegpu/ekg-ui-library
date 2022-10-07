@@ -2,6 +2,7 @@
 #define EKG_UI_ABSTRACT_H
 
 #include <iostream>
+#include "ekg/core/feature.hpp"
 
 namespace ekg {
     enum class state {
@@ -9,7 +10,7 @@ namespace ekg {
     };
 
     namespace ui {
-        class abstract {
+        class abstract : public ekg::feature {
         protected:
             uint32_t id {};
             uint32_t parent_id {};

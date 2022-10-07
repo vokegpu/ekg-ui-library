@@ -48,6 +48,8 @@ void ekg::runtime::process_update() {
     if (this->thread_worker.should_thread_poll) {
         this->thread_worker.process_threads();
     }
+
+    ekg::log(std::to_string(this->list_widget.size()));
 }
 
 void ekg::runtime::process_render() {
@@ -65,35 +67,52 @@ ekg::cpu::thread_worker &ekg::runtime::get_cpu_thread_worker() {
 void ekg::runtime::prepare_virtual_threads() {
     ekg::log("creating events allocating virtual threads");
 
-    this->thread_worker.alloc_thread(new ekg::cpu::thread("swap", nullptr, [](void* data) {
+    this->thread_worker.alloc_thread(new ekg::cpu::thread("swap", nullptr, [](ekg::feature* data) {
     }));
 
-    this->thread_worker.alloc_thread(new ekg::cpu::thread("refresh", nullptr, [](void* data) {
+    this->thread_worker.alloc_thread(new ekg::cpu::thread("refresh", nullptr, [](ekg::feature* data) {
+        auto runtime = ekg::core;
+        auto list = runtime->list_refresh_widget;
+
+        for (ekg::ui::abstract_widget* &widgets : list) {
+            if (!widgets->data->is_alive()) {
+
+            }
+        }
     }));
 
-    this->thread_worker.alloc_thread(new ekg::cpu::thread("reset", nullptr, [](void* data) {
+    this->thread_worker.alloc_thread(new ekg::cpu::thread("reset", nullptr, [](ekg::feature* data) {
     }));
 
-    this->thread_worker.alloc_thread(new ekg::cpu::thread("update", &this->list_update_widget, [](void* data) {
-        auto list = static_cast<std::vector<ekg::ui::abstract_widget*>*>(data);
+    this->thread_worker.alloc_thread(new ekg::cpu::thread("update", nullptr, [](ekg::feature* data) {
+        auto runtime = ekg::core;
+        auto list = runtime->list_update_widget;
 
-        for (ekg::ui::abstract_widget* &widgets : *list) {
+        for (ekg::ui::abstract_widget* &widgets : list) {
             widgets->on_update();
         }
 
-        list->clear();
+        list.clear();
     }));
 
-    this->thread_worker.alloc_thread(new ekg::cpu::thread("redraw", &this->list_widget, [](void* data) {
-        auto list = *static_cast<std::vector<ekg::ui::abstract_widget*>*>(data);
+    this->thread_worker.alloc_thread(new ekg::cpu::thread("redraw", nullptr, [](ekg::feature* data) {
+        auto runtime = ekg::core;
+
+
+        runtime->list_widget.push_back(nullptr);
         ekg::core->allocator.invoke();
 
-        for (ekg::ui::abstract_widget* &widgets : list) {
+        for (ekg::ui::abstract_widget* &widgets : runtime->list_widget) {
+            if (widgets == nullptr) {
+                continue;
+            }
+
             if (widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {
                 widgets->on_draw_refresh();
             }
         }
 
+        ekg::log("redraw called once");
         ekg::core->allocator.revoke();
     }));
 }

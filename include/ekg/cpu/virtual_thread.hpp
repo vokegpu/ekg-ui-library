@@ -5,16 +5,17 @@
 #include <vector>
 #include <array>
 #include <functional>
+#include "ekg/core/feature.hpp"
 
 namespace ekg::cpu {
     struct thread {
-        std::function<void(void*)> callback {};
+        std::function<void(ekg::feature*)> callback {};
         std::string tag {};
 
-        void* data {nullptr};
+        ekg::feature* data {nullptr};
         bool state {};
 
-        thread(const std::string &thread_tag, void* thread_data, const std::function<void(void*)> &thread_callback, bool thread_initial_state = false);
+        thread(const std::string &thread_tag, ekg::feature* thread_data, const std::function<void(ekg::feature*)> &thread_callback, bool thread_initial_state = false);
         ~thread();
     };
 

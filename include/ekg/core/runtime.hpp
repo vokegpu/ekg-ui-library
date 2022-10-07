@@ -6,11 +6,12 @@
 #include "ekg/draw/font.hpp"
 #include "ekg/service/theme.hpp"
 #include "ekg/service/input.hpp"
+#include "ekg/core/feature.hpp"
 #include <map>
 
 namespace ekg {
-    struct runtime {
-    protected:
+    class runtime : public ekg::feature {
+    private:
         SDL_Window* root {};
 
         /* Widget env lists and maps for tasks. */
@@ -19,6 +20,7 @@ namespace ekg {
         std::vector<ekg::ui::abstract*> list_interface {};
 
         std::vector<ekg::ui::abstract_widget*> list_update_widget {};
+        std::vector<ekg::ui::abstract_widget*> list_refresh_widget {};
 
         std::map<uint32_t, ekg::ui::abstract_widget*> map_widget {};
         std::map<uint32_t, ekg::ui::abstract> map_interface {};

@@ -3,10 +3,11 @@
 
 #include "ekg/util/geometry.hpp"
 #include "ekg/ui/abstract/ui_abstract.hpp"
+#include "ekg/core/feature.hpp"
 #include <SDL2/SDL.h>
 
 namespace ekg::ui {
-    class abstract_widget {
+    class abstract_widget : public ekg::feature {
     public:
         abstract_widget();
         ~abstract_widget();
