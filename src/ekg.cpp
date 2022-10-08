@@ -89,3 +89,16 @@ void ekg::render() {
 void ekg::depth(float depth_preset) {
 
 }
+
+ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_position, ekg::vec2 size) {
+    auto element = new ekg::ui::frame();
+
+    element->set_type(ekg::type::frame);
+    ekg::core->create_ui(element);
+
+    element->set_pos_initial(initial_position.x, initial_position.y);
+    element->set_size_initial(size.x, size.y);
+    element->set_tag(tag);
+
+    return element;
+}

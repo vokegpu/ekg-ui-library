@@ -97,3 +97,67 @@ bool ekg::rect::operator == (const ekg::rect &rect) const {
 bool ekg::rect::operator!=(const ekg::rect &rect) const {
     return this->x != rect.x || this->y != rect.y || this->w != rect.w || this->h != rect.h;
 }
+
+bool ekg::rect::operator==(const ekg::vec4 &vec) const {
+    return this->x == vec.x && this->y == vec.y && this->w == vec.z && this->h == vec.w;
+}
+
+bool ekg::rect::operator!=(const ekg::vec4 &vec) const {
+    return this->x != vec.x || this->y != vec.y || this->w != vec.z || this->h != vec.w;
+}
+
+ekg::rect::rect(float posx, float posy, const ekg::vec2 &vec) {
+    this->x = posx;
+    this->y = posy;
+    this->w = vec.x;
+    this->h = vec.y;
+}
+
+ekg::rect::rect(const ekg::vec2 &vec, float sizew, float sizeh) {
+    this->x = vec.x;
+    this->y = vec.y;
+    this->w = sizew;
+    this->h = sizeh;
+}
+
+ekg::rect::rect(const ekg::vec2 &pos, const ekg::vec2 &size) {
+    this->x = pos.x;
+    this->y = pos.y;
+    this->w = size.x;
+    this->h = size.y;
+}
+
+ekg::rect::rect(float posx, float posy, float sizew, float sizeh) {
+    this->x = posx;
+    this->y = posy;
+    this->w = sizew;
+    this->h = sizeh;
+}
+
+ekg::vec4::vec4(float posx, float posy, const ekg::vec2 &vec) {
+    this->x = posx;
+    this->y = posy;
+    this->z = vec.x;
+    this->w = vec.y;
+}
+
+ekg::vec4::vec4(const ekg::vec2 &vec, float posz, float posw) {
+    this->x = vec.x;
+    this->y = vec.y;
+    this->z = posz;
+    this->w = posw;
+}
+
+ekg::vec4::vec4(const ekg::vec2 &pos, const ekg::vec2 &size) {
+    this->x = pos.x;
+    this->y = pos.y;
+    this->z = size.x;
+    this->w = size.y;
+}
+
+ekg::vec4::vec4(float posx, float posy, float posz, float posw) {
+    this->x = posx;
+    this->y = posy;
+    this->z = posz;
+    this->w = posw;
+}

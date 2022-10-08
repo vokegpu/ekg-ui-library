@@ -21,6 +21,7 @@ namespace ekg {
 
         std::vector<ekg::ui::abstract_widget*> list_update_widget {};
         std::vector<ekg::ui::abstract_widget*> list_refresh_widget {};
+        std::vector<ekg::ui::abstract_widget*> list_reset_widget {};
 
         std::map<uint32_t, ekg::ui::abstract_widget*> map_widget {};
         std::map<uint32_t, ekg::ui::abstract> map_interface {};
@@ -36,6 +37,10 @@ namespace ekg {
 
         ekg::service::input input_manager {};
         ekg::service::theme theme_manager {};
+
+        /* Tokens for use in creation of elements. */
+
+        uint32_t token_id {};
 
         /* Security methods of ekg. */
 
@@ -57,6 +62,8 @@ namespace ekg {
 
         ekg::ui::abstract_widget* get_fast_widget_by_id(uint32_t id);
         void update_widget(ekg::ui::abstract_widget* widget);
+        void create_ui(ekg::ui::abstract* ui);
+        void reset_widget(ekg::ui::abstract_widget* widget);
 
         void init();
         void quit();

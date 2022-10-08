@@ -48,6 +48,13 @@ namespace ekg {
         float y {};
         float z {};
         float w {};
+
+        vec4() = default;
+
+        vec4(float posx, float posy, float posz, float posw);
+        vec4(float posx, float posy, const ekg::vec2 &vec);
+        vec4(const ekg::vec2 &vec, float posz, float posw);
+        vec4(const ekg::vec2 &pos, const ekg::vec2 &size);
     };
 
     struct rect {
@@ -56,8 +63,18 @@ namespace ekg {
         float w {};
         float h {};
 
+        rect() = default;
+
+        rect(float posx, float posy, float sizew, float sizeh);
+        rect(float posx, float posy, const ekg::vec2 &vec);
+        rect(const ekg::vec2 &vec, float sizew, float sizeh);
+        rect(const ekg::vec2 &pos, const ekg::vec2 &size);
+
         bool operator ==(const ekg::rect &rect) const;
         bool operator !=(const ekg::rect &rect) const;
+
+        bool operator ==(const ekg::vec4 &vec) const;
+        bool operator !=(const ekg::vec4 &vec) const;
     };
 
     struct docker {

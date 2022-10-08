@@ -9,6 +9,10 @@ namespace ekg {
         visible, invisible
     };
 
+    enum class type {
+        abstract, frame, button, slider, slider2d, checkbox, textbox, entrybox, combobox, tab, popup
+    };
+
     namespace ui {
         class abstract : public ekg::feature {
         protected:
@@ -20,6 +24,7 @@ namespace ekg {
 
             bool alive {true};
             ekg::state state {};
+            ekg::type type {ekg::type::abstract};
         public:
             abstract();
             ~abstract();
@@ -30,10 +35,10 @@ namespace ekg {
             void set_parent_id(uint32_t token);
             uint32_t get_parent_id();
 
-            void set_tag(const std::string &str);
+            void set_tag(std::string_view str);
             std::string get_tag();
 
-            void set_extra_tag(const std::string &str);
+            void set_extra_tag(std::string_view str);
             std::string get_extra_tag();
 
             void set_alive(bool flag_alive);
@@ -41,6 +46,9 @@ namespace ekg {
 
             void set_state(const ekg::state &enum_state);
             ekg::state get_state();
+
+            void set_type(const ekg::type &enum_type);
+            ekg::type get_type();
         };
     }
 }

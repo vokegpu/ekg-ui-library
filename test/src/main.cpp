@@ -70,6 +70,8 @@ int main(int argv, char** argc) {
     test::end();
     /* End of virtual threads test. */
 
+    auto frame = ekg::frame("hi", {20, 20}, {200, 200});
+
     /*
      * Mainloop.
      */

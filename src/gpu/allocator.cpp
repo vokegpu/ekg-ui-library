@@ -47,6 +47,8 @@ void ekg::gpu::allocator::dispatch() {
     data.scissored_area[1] = this->current_scissor_bind[1];
     data.scissored_area[2] = this->current_scissor_bind[2];
     data.scissored_area[3] = this->current_scissor_bind[3];
+
+    data.begin_stride = this->begin_stride_count;
     data.end_stride = this->end_stride_count;
 
     this->begin_stride_count += this->end_stride_count;
@@ -57,6 +59,8 @@ void ekg::gpu::allocator::dispatch() {
 }
 
 void ekg::gpu::allocator::revoke() {
+    this->iterate_ticked_count--;
+
     glBindVertexArray(this->buffer_list);
     glBindBuffer(GL_ARRAY_BUFFER, this->buffer_vertex);
     glEnableVertexAttribArray(0);

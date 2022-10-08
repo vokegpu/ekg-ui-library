@@ -1,5 +1,6 @@
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/util/util_ui.hpp"
+#include "ekg/util/thread.hpp"
 
 void ekg::ui::frame::set_drag(uint16_t dock) {
 	this->dock_drag = dock;
@@ -18,8 +19,13 @@ uint16_t ekg::ui::frame::get_resize_dock() {
 }
 
 void ekg::ui::frame::set_pos_initial(float x, float y) {
-	this->initial_pos.x = x;
-	this->initial_pos.y = y;
+    if (this->initial_pos.x != x || this->initial_size.y != y) {
+        this->initial_pos.x = x;
+        this->initial_pos.y = y;
+
+        ekg::update(this->id);
+        ekg::process(ekg::env::reset, ekg::thread::start);
+    }
 }
 
 ekg::vec2 ekg::ui::frame::get_pos_initial() {
@@ -27,8 +33,13 @@ ekg::vec2 ekg::ui::frame::get_pos_initial() {
 }
 
 void ekg::ui::frame::set_size_initial(float w, float h) {
-	this->initial_size.x = w;
-	this->initial_size.y = h;
+    if (this->initial_size.x != w || this->initial_size.y != h) {
+        this->initial_size.x = w;
+        this->initial_size.y = h;
+
+        ekg::reset(this->id);
+        ekg::update(this->id);
+    }
 }
 
 ekg::vec2 ekg::ui::frame::get_size_initial() {

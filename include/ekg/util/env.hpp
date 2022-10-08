@@ -5,7 +5,7 @@
 
 namespace ekg {
     enum class env {
-        swap, refresh, reset, update, redraw
+        refresh, swap, reset, update, redraw
     };
 
     struct timing {

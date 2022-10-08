@@ -23,7 +23,7 @@ uint32_t ekg::ui::abstract::get_parent_id() {
     return this->parent_id;
 }
 
-void ekg::ui::abstract::set_tag(const std::string &str) {
+void ekg::ui::abstract::set_tag(std::string_view str) {
     this->tag = str;
 }
 
@@ -31,7 +31,7 @@ std::string ekg::ui::abstract::get_tag() {
     return this->tag;
 }
 
-void ekg::ui::abstract::set_extra_tag(const std::string &str) {
+void ekg::ui::abstract::set_extra_tag(std::string_view str) {
     this->extra_tag = str;
 }
 
@@ -53,4 +53,12 @@ void ekg::ui::abstract::set_state(const ekg::state &enum_state) {
 
 ekg::state ekg::ui::abstract::get_state() {
     return this->state;
+}
+
+void ekg::ui::abstract::set_type(const ekg::type &enum_type) {
+    this->type = enum_type;
+}
+
+ekg::type ekg::ui::abstract::get_type() {
+    return this->type;
 }
