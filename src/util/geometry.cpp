@@ -72,22 +72,33 @@ void ekg::set_dock_scaled(const ekg::rect &rect, float offset, ekg::docker &dock
 }
 
 int32_t ekg::find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::vec4 &vec) {
-    bool full {ekg::bitwise::contains(flags, ekg::dock::full)};
+    if (ekg::bitwise::contains(flags, ekg::dock::full) && ekg::rect_collide_vec(docker.rect, vec)) {
+        return ekg::dock::full;
+    }
+
     uint16_t collided {ekg::dock::none};
 
-    collided = (ekg::bitwise::contains(flags, ekg::dock::left) || full) && ekg::rect_collide_vec(docker.left, vec) ? ekg::bitwise::add(collided, ekg::dock::left) : collided;
-    collided = (ekg::bitwise::contains(flags, ekg::dock::right) || full) && ekg::rect_collide_vec(docker.right, vec) ? ekg::bitwise::add(collided, ekg::dock::right) : collided;
-    collided = (ekg::bitwise::contains(flags, ekg::dock::top) || full) && ekg::rect_collide_vec(docker.top, vec) ? ekg::bitwise::add(collided, ekg::dock::top) : collided;
-    collided = (ekg::bitwise::contains(flags, ekg::dock::bottom) || full) && ekg::rect_collide_vec(docker.bottom, vec) ? ekg::bitwise::add(collided, ekg::dock::bottom) : collided;
+    collided = ekg::bitwise::contains(flags, ekg::dock::left) && ekg::rect_collide_vec(docker.left, vec) ? ekg::bitwise::add(collided, ekg::dock::left) : collided;
+    collided = ekg::bitwise::contains(flags, ekg::dock::right) && ekg::rect_collide_vec(docker.right, vec) ? ekg::bitwise::add(collided, ekg::dock::right) : collided;
+    collided = ekg::bitwise::contains(flags, ekg::dock::top) && ekg::rect_collide_vec(docker.top, vec) ? ekg::bitwise::add(collided, ekg::dock::top) : collided;
+    collided = ekg::bitwise::contains(flags, ekg::dock::bottom) && ekg::rect_collide_vec(docker.bottom, vec) ? ekg::bitwise::add(collided, ekg::dock::bottom) : collided;
 
     return collided;
 }
 
 void ekg::set_rect_clamped(ekg::rect &rect, float min_size) {
-    rect.x = std::min(rect.x, min_size);
-    rect.y = std::min(rect.y, min_size);
-    rect.w = std::min(rect.w, min_size);
-    rect.h = std::min(rect.h, min_size);
+    rect.x = ekg::min(rect.x, min_size);
+    rect.y = ekg::min(rect.y, min_size);
+    rect.w = ekg::min(rect.w, min_size);
+    rect.h = ekg::min(rect.h, min_size);
+}
+
+float ekg::min(float a, float b) {
+    return a < b ? b : a;
+}
+
+float ekg::max(float a, float b) {
+    return a > b ? b : a;
 }
 
 bool ekg::rect::operator == (const ekg::rect &rect) const {

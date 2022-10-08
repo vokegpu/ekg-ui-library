@@ -23,8 +23,8 @@ void ekg::ui::frame::set_pos_initial(float x, float y) {
         this->initial_pos.x = x;
         this->initial_pos.y = y;
 
+        ekg::reset(this->id);
         ekg::update(this->id);
-        ekg::process(ekg::env::reset, ekg::thread::start);
     }
 }
 

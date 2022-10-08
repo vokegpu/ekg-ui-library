@@ -7,13 +7,16 @@
 namespace ekg::gpu {
     class allocator {
     protected:
-        std::array<ekg::gpu::data, 1024> cpu_allocated_data {};
+        std::array<ekg::gpu::data, 2048> cpu_allocated_data {};
         std::vector<GLfloat> loaded_vertex_list {};
         std::vector<GLfloat> loaded_uv_list {};
         std::vector<GLuint> loaded_texture_list {};
 
-        uint32_t iterate_ticked_count {};
+        uint32_t allocated_size {};
         uint32_t previous_allocated_size {};
+
+        bool factor_changed {};
+        int32_t previous_factor {};
 
         GLint begin_stride_count {};
         GLint end_stride_count {};

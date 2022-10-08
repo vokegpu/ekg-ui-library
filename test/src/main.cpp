@@ -70,7 +70,10 @@ int main(int argv, char** argc) {
     test::end();
     /* End of virtual threads test. */
 
-    auto frame = ekg::frame("hi", {20, 20}, {200, 200});
+    for (uint32_t i = 0; i < 256; i++) {
+        auto frame = ekg::frame("hi", {20 + (float) i, 50}, {200, 200});
+        frame->set_drag(ekg::dock::top);
+    }
 
     /*
      * Mainloop.

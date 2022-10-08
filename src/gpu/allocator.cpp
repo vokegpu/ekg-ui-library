@@ -5,7 +5,7 @@ ekg::gpu::program ekg::gpu::allocator::program {};
 float ekg::gpu::allocator::orthographicm4[16] {};
 
 void ekg::gpu::allocator::invoke() {
-    this->iterate_ticked_count = 0;
+    this->allocated_size = 0;
     this->begin_stride_count = 0;
     this->end_stride_count = 0;
 
@@ -51,27 +51,37 @@ void ekg::gpu::allocator::dispatch() {
     data.begin_stride = this->begin_stride_count;
     data.end_stride = this->end_stride_count;
 
+    if (!this->factor_changed) {
+        this->factor_changed = this->previous_factor != data.factor;
+    }
+
     this->begin_stride_count += this->end_stride_count;
     this->end_stride_count = 0;
 
-    this->iterate_ticked_count++;
+    this->allocated_size++;
     this->clear_current_data();;
 }
 
 void ekg::gpu::allocator::revoke() {
-    this->iterate_ticked_count--;
+    bool should_re_alloc_buffers = this->factor_changed || this->previous_allocated_size != this->allocated_size;
+    this->previous_allocated_size = this->allocated_size;
+    this->factor_changed = false;
 
-    glBindVertexArray(this->buffer_list);
-    glBindBuffer(GL_ARRAY_BUFFER, this->buffer_vertex);
-    glEnableVertexAttribArray(0);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->loaded_vertex_list.size(), &this->loaded_vertex_list[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, this->buffer_uv);
-    glEnableVertexAttribArray(1);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->loaded_uv_list.size(), &this->loaded_uv_list[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-    glBindVertexArray(0);
+    if (should_re_alloc_buffers) {
+        ekg::log("sending buffers for gpu | re allocating buffers for gpu");
+
+        glBindVertexArray(this->buffer_list);
+        glBindBuffer(GL_ARRAY_BUFFER, this->buffer_vertex);
+        glEnableVertexAttribArray(0);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->loaded_vertex_list.size(), &this->loaded_vertex_list[0], GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, this->buffer_uv);
+        glEnableVertexAttribArray(1);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->loaded_uv_list.size(), &this->loaded_uv_list[0], GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+        glBindVertexArray(0);
+    }
 
     this->loaded_texture_list.clear();
     this->loaded_vertex_list.clear();
@@ -96,7 +106,7 @@ void ekg::gpu::allocator::draw() {
 
     float depth_testing {this->depth_testing_preset};
 
-    for (uint32_t data_iterations = 0; data_iterations < this->iterate_ticked_count; data_iterations++) {
+    for (uint32_t data_iterations = 0; data_iterations < this->allocated_size; data_iterations++) {
         auto &data = this->cpu_allocated_data[data_iterations];
         active_texture = data.texture != 0;
 
@@ -226,13 +236,13 @@ void ekg::gpu::allocator::clear_current_data() {
     ekg::gpu::data &data = this->bind_current_data();
 
     data.outline = 0;
-    data.factor = 0;
     data.texture = 0;
     data.texture_slot = 0;
+    previous_factor = data.factor;
 }
 
 ekg::gpu::data &ekg::gpu::allocator::bind_current_data() {
-    return this->cpu_allocated_data[this->iterate_ticked_count];
+    return this->cpu_allocated_data[this->allocated_size];
 }
 
 void ekg::gpu::allocator::quit() {

@@ -143,9 +143,6 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     x = static_cast<float>(static_cast<int32_t>(x));
     y = static_cast<float>(static_cast<int32_t>(y - this->offset_text_height));
 
-    const char* c_str = text.c_str();
-    const int32_t str_len = strlen(c_str);
-
     ekg::gpu::data &data = this->allocator->bind_current_data();
 
     data.rect_area[0] = x;
@@ -164,13 +161,15 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     x = 0;
     y = 0;
 
-    for (const char* chars = c_str; *chars; chars++) {
-    	if (this->ft_bool_kerning && this->ft_uint_previous && *chars) {
-    		FT_Get_Kerning(this->ft_face, this->ft_uint_previous, *chars, 0, &this->ft_vector_previous_char);
+    data.factor = 1;
+
+    for (const char &chars : text) {
+    	if (this->ft_bool_kerning && this->ft_uint_previous && chars) {
+    		FT_Get_Kerning(this->ft_face, this->ft_uint_previous, chars, 0, &this->ft_vector_previous_char);
     		x += static_cast<float>(this->ft_vector_previous_char.x >> 6);
     	}
 
-    	ekg::char_data &char_data = this->allocated_char_data[*chars];
+    	ekg::char_data &char_data = this->allocated_char_data[chars];
 
         vertices.x = static_cast<float>(x + char_data.left);
         vertices.y = y + static_cast<float>(this->full_height) - char_data.top;
@@ -197,7 +196,8 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     	this->allocator->coord2f(coordinates.x, coordinates.y);
 
     	x += char_data.texture_x;
-    	this->ft_uint_previous = *chars;
+    	this->ft_uint_previous = chars;
+        data.factor += x + chars;
     }
 
     this->allocator->bind_texture(this->texture);

@@ -2,6 +2,7 @@
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
+#include "ekg/util/util_ui.hpp"
 
 void ekg::ui::frame_widget::destroy() {
     abstract_widget::destroy();
@@ -34,7 +35,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
         this->extra.w = this->rect.x + this->rect.w;
         this->extra.h = this->rect.y + this->rect.h;
 
-        this->flag.activy = (this->target_dock_drag != ekg::dock::none || this->target_dock_resize != ekg::dock::none);
+        this->flag.activy = this->target_dock_drag != ekg::dock::none || this->target_dock_resize != ekg::dock::none;
     } else if (ekg::was_motion() && this->flag.activy) {
         ekg::rect new_rect {this->rect};
 
@@ -63,9 +64,11 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
         if (this->rect != new_rect) {
             this->rect = new_rect;
-            ekg::process(ekg::env::update, ekg::thread::start);
+            ekg::update(this);
         }
-    } else if (ekg::was_released() && this->flag.activy) {
+    }
+
+    if (ekg::was_released()) {
         this->target_dock_resize = ekg::dock::none;
         this->target_dock_drag = ekg::dock::none;
         this->flag.activy = false;
@@ -83,4 +86,5 @@ void ekg::ui::frame_widget::on_update() {
 void ekg::ui::frame_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
     ekg::draw::rect(this->rect, ekg::theme().frame_background);
+    ekg::draw::rect(this->rect, {0, 0, 0, 255}, 1);
 }

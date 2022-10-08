@@ -178,6 +178,12 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
             }
         }
 
+        case SDL_MOUSEMOTION: {
+            this->interact.x = static_cast<float>(sdl_event.motion.x);
+            this->interact.y = static_cast<float>(sdl_event.motion.y);
+            break;
+        }
+
         case SDL_MOUSEWHEEL: {
             this->interact.z = static_cast<float>(sdl_event.wheel.preciseX);
             this->interact.w = static_cast<float>(sdl_event.wheel.preciseY);

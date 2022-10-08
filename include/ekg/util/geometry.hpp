@@ -93,6 +93,8 @@ namespace ekg {
     void set_dock_scaled(const ekg::rect &rect, float offset, ekg::docker &docker);
     int32_t find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::vec4 &vec);
 
+    float min(float a, float b);
+    float max(float a, float b);
     ekg::vec4 &interact();
 }
 

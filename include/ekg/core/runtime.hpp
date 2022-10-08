@@ -41,6 +41,11 @@ namespace ekg {
         /* Tokens for use in creation of elements. */
 
         uint32_t token_id {};
+        uint32_t widget_id_focused {};
+        uint32_t prev_widget_id_focused {};
+
+        uint32_t widget_id_pressed_focused {};
+        uint32_t widget_id_released_focused {};
 
         /* Security methods of ekg. */
 
