@@ -52,7 +52,7 @@ namespace ekg {
             void set_size(uint8_t size);
             void reload();
             void bind_allocator(ekg::gpu::allocator* gpu_allocator);
-            void blit(const std::string &text, float x, float y, const ekg::vec4 &color);
+            void blit(std::string_view text, float x, float y, const ekg::vec4 &color);
 
             void init();
             void quit();
