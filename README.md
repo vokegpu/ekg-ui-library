@@ -16,9 +16,7 @@ For use the library on your project, donwload the repo or release, then you add 
 
 The purpose of ekg is be fully customizable, smooth and with many animations. Also perform good in low pc specs.  
 
-`ekg` library automaticallly sets the OpenGL API, if your project is running in NDK the ekg sets to OpenGL ES, for high performance applications sets OpenGL 4 or 3.
-
-The ekg has two modes: hybrid and immediate; The hybrid mode joint immediate mode with buidable mode - If widget is created at once tick, the current mode of widget is WBO (widget built once), else WBI (widget built immedate).
+`ekg` library automatically sets the OpenGL API, if your project is running in NDK the ekg sets to OpenGL ES, for high performance applications sets OpenGL 4 or 3.
 
 # Hardware
 
