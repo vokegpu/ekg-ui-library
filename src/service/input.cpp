@@ -329,3 +329,7 @@ bool ekg::service::input::contains_unit(const std::string &label) {
 
     return false;
 }
+
+void ekg::service::input::set(const ekg::cursor &cursor) {
+    
+}

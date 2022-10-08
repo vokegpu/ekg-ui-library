@@ -8,8 +8,6 @@
 namespace ekg::ui {
     class frame : public ekg::ui::abstract {
     protected:
-        std::vector<uint32_t> parent_id_list {};
-
         uint16_t dock_resize {};
         uint16_t dock_drag {};
         uint16_t dock_embed {};
@@ -19,9 +17,6 @@ namespace ekg::ui {
         ekg::vec2 pos {};
         ekg::vec2 size {};
     public:
-        void parent(uint32_t token);
-        std::vector<uint32_t> &get_parent_id_list();
-
         void set_drag(uint16_t dock);
         uint16_t get_drag_dock();
 

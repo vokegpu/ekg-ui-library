@@ -17,7 +17,7 @@ void ekg::service::theme::gen_default_theme() {
     this->frame_background = {255, 255, 255, 255};
     this->frame_border = {0, 0, 190, 100};
     this->frame_outline = {0, 0, 0, 0};
-    this->frame_activy_offset = 10;
+    this->frame_activy_offset = 18;
 
     this->button_string = {0, 0, 0, 255};
     this->button_background = {255, 255, 255, 255};

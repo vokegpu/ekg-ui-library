@@ -7,6 +7,24 @@ ekg::ui::abstract::abstract() {
 ekg::ui::abstract::~abstract() {
 }
 
+void ekg::ui::abstract::parent(uint32_t token) {
+    bool not_contains {true};
+
+    for (uint32_t &tokens : this->parent_id_list) {
+        if (!(not_contains = tokens != token)) {
+            break;
+        }
+    }
+
+    if (not_contains) {
+        this->parent_id_list.push_back(token);
+    }
+}
+
+std::vector<uint32_t> &ekg::ui::abstract::get_parent_id_list() {
+    return this->parent_id_list;
+}
+
 void ekg::ui::abstract::set_id(uint32_t token) {
     this->id = token;
 }

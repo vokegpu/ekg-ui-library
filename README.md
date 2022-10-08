@@ -19,7 +19,7 @@ The purpose of ekg is being fully customizable, smooth and with many animations.
 
 # Hardware
 
-All buffers allocated into GPU are totally handled and optimized by `ekg::gpu::allocator`, it protects your gpu from multiples buffers dispatch, it only uses two buffers and implement high shading communication making a partial instanced rendering.
+All buffers swap into GPU are totally handled and optimized by `ekg::gpu::allocator`, it protects your gpu from multiples buffers dispatch, it only uses two buffers and implement high shading communication making a partial instanced rendering.
 
 The scale manager works with dynamic offsets, for better interactions it automatically sets the scale of offset and button sizes (if auto-scale mode is enabled), other service of scale manager is set widgets position based on root display, small screens like smartphones, reduce the bounds interaction between mother/master parent and others widgets.
 

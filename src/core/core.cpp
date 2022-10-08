@@ -2,6 +2,19 @@
 #include "ekg/util/thread.hpp"
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
+#include "ekg/util/util_ui.hpp"
+
+std::map<uint32_t, ekg::ui::abstract_widget*> ekg::swap::fast {};
+std::map<uint32_t, ekg::ui::abstract_widget*> ekg::swap::continuous {};
+std::map<uint32_t, ekg::ui::abstract_widget*> ekg::swap::target {};
+std::vector<ekg::ui::abstract_widget*> ekg::swap::buffer {};
+
+void ekg::swap::refresh() {
+    ekg::swap::fast.clear();
+    ekg::swap::continuous.clear();
+    ekg::swap::target.clear();
+    ekg::swap::buffer.clear();
+}
 
 void ekg::runtime::set_root(SDL_Window *sdl_win_root) {
     this->root = sdl_win_root;
@@ -16,7 +29,7 @@ void ekg::runtime::init() {
     this->theme_manager.init();
 
     if (FT_Init_FreeType(&ekg::draw::font_renderer::ft_library)) {
-        ekg::log("Could not init FreeType");
+        ekg::log("could not init FreeType");
     }
 
     this->prepare_virtual_threads();
@@ -68,6 +81,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         }
 
         widgets->on_event(sdl_event);
+        widgets->on_post_event(sdl_event);
     }
 
     if (ekg::was_pressed()) {
@@ -76,8 +90,9 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         this->widget_id_released_focused = this->widget_id_focused;
     }
 
-    if (this->prev_widget_id_focused != this->widget_id_focused) {
+    if (this->prev_widget_id_focused != this->widget_id_focused && this->widget_id_focused != 0) {
         ekg::process(ekg::env::swap, ekg::thread::start);
+        this->swap_widget_id_focused = this->widget_id_focused;
         this->prev_widget_id_focused = this->widget_id_focused;
     }
 }
@@ -126,6 +141,52 @@ void ekg::runtime::prepare_virtual_threads() {
 
     this->thread_worker.alloc_thread(new ekg::cpu::thread("swap", this, [](ekg::feature* data) {
         auto runtime = (ekg::runtime*) data;
+
+        if (runtime->swap_widget_id_focused == 0) {
+            return;
+        }
+
+        for (ekg::ui::abstract_widget* &widgets : runtime->list_widget) {
+            if (widgets == nullptr) {
+                continue;
+            }
+
+            if (ekg::swap::fast[widgets->data->get_id()] != nullptr || ekg::swap::target[widgets->data->get_id()] != nullptr) {
+                continue;
+            }
+
+            ekg::swap::fast.clear();
+            ekg::stack(widgets, ekg::swap::fast);
+
+            if (ekg::swap::fast[runtime->swap_widget_id_focused] != nullptr) {
+                ekg::swap::target = ekg::swap::fast;
+            } else {
+                for (std::pair<uint32_t, ekg::ui::abstract_widget*> entry : ekg::swap::fast) {
+                    ekg::swap::continuous[entry.first] = entry.second;
+                }
+            }
+        }
+
+        for (std::pair<uint32_t, ekg::ui::abstract_widget*> entry : ekg::swap::continuous) {
+            if (entry.second == nullptr) {
+                continue;
+            }
+
+            ekg::swap::buffer.push_back(entry.second);
+        }
+
+        for (std::pair<uint32_t, ekg::ui::abstract_widget*> entry : ekg::swap::target) {
+            if (entry.second == nullptr) {
+                continue;
+            }
+
+            ekg::swap::buffer.push_back(entry.second);
+        }
+
+        runtime->list_widget = ekg::swap::buffer;
+        runtime->swap_widget_id_focused = 0;
+
+        ekg::swap::refresh();
     }));
 
     this->thread_worker.alloc_thread(new ekg::cpu::thread("reset", this, [](ekg::feature* data) {
@@ -171,7 +232,7 @@ void ekg::runtime::prepare_virtual_threads() {
         auto runtime = (ekg::runtime*) data;
 
         runtime->allocator.invoke();
-        runtime->f_renderer_big.blit("widget list size: " + std::to_string(runtime->list_widget.size()), 10, 10, {255, 255, 255, 255});
+        runtime->f_renderer_big.blit("widget allocated_widget_list size: " + std::to_string(runtime->list_widget.size()), 10, 10, {255, 255, 255, 255});
 
         for (ekg::ui::abstract_widget* &widgets : runtime->list_widget) {
             if (widgets == nullptr) {
@@ -271,7 +332,10 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
     ekg::log("created ui " + std::to_string(ui->get_id()));
 
     ekg::process(ekg::env::refresh, ekg::thread::start);
+    ekg::process(ekg::env::swap, ekg::thread::start);
     ekg::process(ekg::env::redraw, ekg::thread::start);
+
+    this->swap_widget_id_focused = ui->get_id();
 }
 
 void ekg::runtime::reset_widget(ekg::ui::abstract_widget *widget) {

@@ -10,6 +10,17 @@
 #include <map>
 
 namespace ekg {
+    /* The swap maps for prevent copies of hashes and vector. */
+    struct swap {
+        static std::map<uint32_t, ekg::ui::abstract_widget*> fast;
+        static std::map<uint32_t, ekg::ui::abstract_widget*> continuous;
+        static std::map<uint32_t, ekg::ui::abstract_widget*> target;
+        static std::vector<ekg::ui::abstract_widget*> buffer;
+
+        static void refresh();
+    };
+
+    /* The main runtime for run ekg. */
     class runtime : public ekg::feature {
     private:
         SDL_Window* root {};
@@ -43,6 +54,7 @@ namespace ekg {
         uint32_t token_id {};
         uint32_t widget_id_focused {};
         uint32_t prev_widget_id_focused {};
+        uint32_t swap_widget_id_focused {};
 
         uint32_t widget_id_pressed_focused {};
         uint32_t widget_id_released_focused {};

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "ekg/core/feature.hpp"
+#include <vector>
 
 namespace ekg {
     enum class state {
@@ -18,6 +19,7 @@ namespace ekg {
         protected:
             uint32_t id {};
             uint32_t parent_id {};
+            std::vector<uint32_t> parent_id_list {};
 
             std::string tag {};
             std::string extra_tag {};
@@ -28,6 +30,9 @@ namespace ekg {
         public:
             abstract();
             ~abstract();
+
+            void parent(uint32_t token);
+            std::vector<uint32_t> &get_parent_id_list();
 
             void set_id(uint32_t token);
             uint32_t get_id();

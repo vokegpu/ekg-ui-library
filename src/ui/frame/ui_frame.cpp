@@ -46,24 +46,6 @@ ekg::vec2 ekg::ui::frame::get_size_initial() {
 	return this->initial_size;
 }
 
-void ekg::ui::frame::parent(uint32_t token) {
-	bool not_contains {true};
-
-	for (uint32_t &tokens : this->parent_id_list) {
-		if (!(not_contains = tokens != token)) {
-			break;
-		}
-	}
-
-	if (not_contains) {
-		this->parent_id_list.push_back(token);
-	} 
-}
-
-std::vector<uint32_t> &ekg::ui::frame::get_parent_id_list() {
-	return this->parent_id_list;
-}
-
 void ekg::ui::frame::set_embed(uint16_t dock) {
 	this->dock_embed = dock;
 }

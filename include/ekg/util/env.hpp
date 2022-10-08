@@ -8,6 +8,10 @@ namespace ekg {
         refresh, swap, reset, update, redraw
     };
 
+    enum class cursor {
+        normal, arrow_axis_x, arrowleft, arrowp, arrowdown, arrow
+    };
+
     struct timing {
         uint64_t elapsed_ticks {};
         uint64_t current_ticks {};

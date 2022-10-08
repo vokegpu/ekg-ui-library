@@ -43,6 +43,7 @@ namespace ekg::service {
             void unbind(const std::string &input_tag, const std::string &key);
             void callback(const std::string &key, bool callback);
 
+            void set(const ekg::cursor &cursor);
             void set(const std::string &input_tag, bool callback);
             bool get(const std::string &input_tag);
 
