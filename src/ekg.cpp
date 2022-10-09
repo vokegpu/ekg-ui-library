@@ -57,11 +57,10 @@ void ekg::event(SDL_Event &sdl_event) {
 
     switch (sdl_event.type) {
         case SDL_WINDOWEVENT: {
-            switch (sdl_event.window.type) {
+            switch (sdl_event.window.event) {
                 case SDL_WINDOWEVENT_SIZE_CHANGED: {
                     ekg::display::width = sdl_event.window.data1;
                     ekg::display::height = sdl_event.window.data2;
-                    ekg::log("window resize event");
                     break;
                 }
             }
