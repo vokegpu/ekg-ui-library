@@ -47,14 +47,13 @@ void ekg::event(SDL_Event &sdl_event) {
             sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
             sdl_event.type == SDL_FINGERUP        || sdl_event.type == SDL_FINGERDOWN ||
             sdl_event.type == SDL_FINGERMOTION    || sdl_event.type == SDL_MOUSEMOTION ||
-            sdl_event.type == SDL_KEYDOWN         || sdl_event.type == SDL_KEYUP
+            sdl_event.type == SDL_KEYDOWN         || sdl_event.type == SDL_KEYUP ||
+            sdl_event.type == SDL_WINDOWEVENT
     };
 
     if (!phase_keep_process) {
         return;
     }
-
-    ekg::core->process_event(sdl_event);
 
     switch (sdl_event.type) {
         case SDL_WINDOWEVENT: {
@@ -62,6 +61,7 @@ void ekg::event(SDL_Event &sdl_event) {
                 case SDL_WINDOWEVENT_SIZE_CHANGED: {
                     ekg::display::width = sdl_event.window.data1;
                     ekg::display::height = sdl_event.window.data2;
+                    ekg::log("window resize event");
                     break;
                 }
             }
@@ -69,6 +69,8 @@ void ekg::event(SDL_Event &sdl_event) {
             break;
         }
     }
+
+    ekg::core->process_event(sdl_event);
 }
 
 void ekg::update() {

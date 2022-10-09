@@ -103,6 +103,8 @@ void ekg::runtime::process_update() {
     if (this->thread_worker.should_thread_poll) {
         this->thread_worker.process_threads();
     }
+
+    glViewport(0, 0, static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height));
 }
 
 void ekg::runtime::process_render() {
