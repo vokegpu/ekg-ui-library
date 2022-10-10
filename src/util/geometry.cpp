@@ -69,6 +69,13 @@ void ekg::set_dock_scaled(const ekg::rect &rect, float offset, ekg::docker &dock
     docker.bottom.h = offset;
     docker.bottom.x = rect.x;
     docker.bottom.y = rect.y + rect.h - docker.bottom.h;
+
+    auto offset_div = offset / 2;
+
+    docker.center.x = rect.x + (rect.w / 2) - offset_div;
+    docker.center.y = rect.y + (rect.h / 2) - offset_div;
+    docker.center.w = offset;
+    docker.center.h = offset;
 }
 
 int32_t ekg::find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::vec4 &vec) {
@@ -82,6 +89,7 @@ int32_t ekg::find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::v
     collided = ekg::bitwise::contains(flags, ekg::dock::right) && ekg::rect_collide_vec(docker.right, vec) ? ekg::bitwise::add(collided, ekg::dock::right) : collided;
     collided = ekg::bitwise::contains(flags, ekg::dock::top) && ekg::rect_collide_vec(docker.top, vec) ? ekg::bitwise::add(collided, ekg::dock::top) : collided;
     collided = ekg::bitwise::contains(flags, ekg::dock::bottom) && ekg::rect_collide_vec(docker.bottom, vec) ? ekg::bitwise::add(collided, ekg::dock::bottom) : collided;
+    collided = ekg::bitwise::contains(flags, ekg::dock::center) && ekg::rect_collide_vec(docker.center, vec) ? ekg::bitwise::add(collided, ekg::dock::center) : collided;
 
     return collided;
 }
@@ -171,4 +179,11 @@ ekg::vec4::vec4(float posx, float posy, float posz, float posw) {
     this->y = posy;
     this->z = posz;
     this->w = posw;
+}
+
+ekg::vec4::vec4(const ekg::vec4 &pos, float depth) {
+    this->x = pos.x;
+    this->y = pos.y;
+    this->z = pos.z;
+    this->w = depth;
 }

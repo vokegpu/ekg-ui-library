@@ -77,3 +77,11 @@ void ekg::ui::frame::set_pos(float x, float y) {
 ekg::vec2 ekg::ui::frame::get_pos() {
 	return this->pos;
 }
+
+void ekg::ui::frame::set_tag(std::string_view new_tag) {
+    this->tag = new_tag;
+}
+
+std::string_view ekg::ui::frame::get_tag() {
+    return this->tag;
+}

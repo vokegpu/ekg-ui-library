@@ -21,9 +21,6 @@ namespace ekg {
             uint32_t parent_id {};
             std::vector<uint32_t> parent_id_list {};
 
-            std::string tag {};
-            std::string extra_tag {};
-
             bool alive {true};
             ekg::state state {};
             ekg::type type {ekg::type::abstract};
@@ -31,28 +28,22 @@ namespace ekg {
             abstract();
             ~abstract();
 
-            void parent(uint32_t token);
+            void parent(uint32_t);
             std::vector<uint32_t> &get_parent_id_list();
 
-            void set_id(uint32_t token);
+            void set_id(uint32_t);
             uint32_t get_id();
 
-            void set_parent_id(uint32_t token);
+            void set_parent_id(uint32_t);
             uint32_t get_parent_id();
 
-            void set_tag(std::string_view str);
-            std::string get_tag();
-
-            void set_extra_tag(std::string_view str);
-            std::string get_extra_tag();
-
-            void set_alive(bool flag_alive);
+            void set_alive(bool);
             bool is_alive();
 
-            void set_state(const ekg::state &enum_state);
+            void set_state(const ekg::state&);
             ekg::state get_state();
 
-            void set_type(const ekg::type &enum_type);
+            void set_type(const ekg::type&);
             ekg::type get_type();
         };
     }

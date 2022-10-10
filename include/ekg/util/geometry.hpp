@@ -51,10 +51,11 @@ namespace ekg {
 
         vec4() = default;
 
-        vec4(float posx, float posy, float posz, float posw);
-        vec4(float posx, float posy, const ekg::vec2 &vec);
-        vec4(const ekg::vec2 &vec, float posz, float posw);
-        vec4(const ekg::vec2 &pos, const ekg::vec2 &size);
+        vec4(float, float, float, float);
+        vec4(float, float, const ekg::vec2&);
+        vec4(const ekg::vec2&, float, float);
+        vec4(const ekg::vec2&, const ekg::vec2&);
+        vec4(const ekg::vec4&, float);
     };
 
     struct rect {
@@ -65,16 +66,16 @@ namespace ekg {
 
         rect() = default;
 
-        rect(float posx, float posy, float sizew, float sizeh);
-        rect(float posx, float posy, const ekg::vec2 &vec);
-        rect(const ekg::vec2 &vec, float sizew, float sizeh);
-        rect(const ekg::vec2 &pos, const ekg::vec2 &size);
+        rect(float, float, float, float);
+        rect(float, float, const ekg::vec2&);
+        rect(const ekg::vec2&, float, float);
+        rect(const ekg::vec2&, const ekg::vec2&);
 
-        bool operator ==(const ekg::rect &rect) const;
-        bool operator !=(const ekg::rect &rect) const;
+        bool operator ==(const ekg::rect&) const;
+        bool operator !=(const ekg::rect&) const;
 
-        bool operator ==(const ekg::vec4 &vec) const;
-        bool operator !=(const ekg::vec4 &vec) const;
+        bool operator ==(const ekg::vec4&) const;
+        bool operator !=(const ekg::vec4&) const;
     };
 
     struct docker {
@@ -82,6 +83,7 @@ namespace ekg {
         ekg::rect right {};
         ekg::rect top {};
         ekg::rect bottom {};
+        ekg::rect center {};
         ekg::rect rect {};
     };
 

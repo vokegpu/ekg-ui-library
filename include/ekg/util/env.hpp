@@ -18,7 +18,7 @@ namespace ekg {
         uint64_t ticks_going_on {};
     };
 
-    void log(const std::string &log_message);
+    void log(std::string_view log_message);
     bool reach(ekg::timing &timing, uint64_t ms);
     void reset(ekg::timing &timing);
 

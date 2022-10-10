@@ -23,6 +23,7 @@ void ekg::service::theme::gen_default_theme() {
     this->button_background = {255, 255, 255, 255};
     this->button_activy = {0, 0, 190, 100};
     this->button_outline = {0, 0, 0, 0};
+    this->button_highlight = {255, 255, 255, 50};
 }
 
 void ekg::service::theme::refresh_theme_list() {

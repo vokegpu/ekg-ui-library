@@ -2,6 +2,7 @@
 #include "ekg/util/thread.hpp"
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
+#include "ekg/ui/button/ui_button_widget.hpp"
 #include "ekg/util/util_ui.hpp"
 
 std::map<uint32_t, ekg::ui::abstract_widget*> ekg::swap::fast {};
@@ -310,34 +311,39 @@ void ekg::runtime::prepare_ui_env() {
 
 void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
     ui->set_id(++this->token_id);
+    this->swap_widget_id_focused = ui->get_id();
+    ekg::ui::abstract_widget* created_widget {nullptr};
 
     switch (ui->get_type()) {
         case type::abstract: {
             auto widget = new ekg::ui::abstract_widget();
             widget->data = ui;
-
-            this->list_refresh_widget.push_back(widget);
-            this->map_widget[widget->data->get_id()] = widget;
+            created_widget = widget;
             break;
         }
 
         case type::frame: {
             auto widget = new ekg::ui::frame_widget();
             widget->data = ui;
+            created_widget = widget;
+            break;
+        }
 
-            this->list_refresh_widget.push_back(widget);
-            this->map_widget[widget->data->get_id()] = widget;
+        case type::button: {
+            auto widget = new ekg::ui::button_widget();
+            widget->data = ui;
+            created_widget = widget;
             break;
         }
     }
 
+    this->list_refresh_widget.push_back(created_widget);
+    this->map_widget[created_widget->data->get_id()] = created_widget;
     ekg::log("created ui " + std::to_string(ui->get_id()));
 
     ekg::process(ekg::env::refresh, ekg::thread::start);
     ekg::process(ekg::env::swap, ekg::thread::start);
     ekg::process(ekg::env::redraw, ekg::thread::start);
-
-    this->swap_widget_id_focused = ui->get_id();
 }
 
 void ekg::runtime::reset_widget(ekg::ui::abstract_widget *widget) {

@@ -22,6 +22,7 @@ namespace ekg::service {
         ekg::vec4 button_string {};
         ekg::vec4 button_outline {};
         ekg::vec4 button_activy {};
+        ekg::vec4 button_highlight {};
         /* End of button theme. */
 
         float min_widget_size {5};

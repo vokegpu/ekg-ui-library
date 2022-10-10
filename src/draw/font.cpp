@@ -3,7 +3,7 @@
 
 FT_Library ekg::draw::font_renderer::ft_library {};
 
-float ekg::draw::font_renderer::get_text_width(const std::string &text) {
+float ekg::draw::font_renderer::get_text_width(std::string_view text) {
 	FT_Vector ft_vec {};
 	this->ft_uint_previous = 0;
 
@@ -11,18 +11,18 @@ float ekg::draw::font_renderer::get_text_width(const std::string &text) {
 	float render_x {};
 	float text_width {};
 
-	for (const char* chars = text.c_str(); *chars; chars++) {
-		if (this->ft_bool_kerning && this->ft_uint_previous && *chars) {
-			FT_Get_Kerning(this->ft_face, this->ft_uint_previous, *chars, 0, &ft_vec);
+	for (const char &chars : text) {
+		if (this->ft_bool_kerning && this->ft_uint_previous && chars) {
+			FT_Get_Kerning(this->ft_face, this->ft_uint_previous, chars, 0, &ft_vec);
 			start_x += static_cast<float>(ft_vec.x >> 6);
 		}
 
-		ekg::char_data &char_data = this->allocated_char_data[*chars];
+		ekg::char_data &char_data = this->allocated_char_data[chars];
 
 		render_x = start_x + char_data.left;
 		start_x += char_data.texture_x;
 
-		this->ft_uint_previous = *chars;
+		this->ft_uint_previous = chars;
 		text_width = render_x + char_data.w;
 	}
 

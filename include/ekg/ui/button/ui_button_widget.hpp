@@ -5,7 +5,9 @@
 
 namespace ekg::ui {
     class button_widget : public ekg::ui::abstract_widget {
-    protected:
+    public:
+        ekg::docker docker_text {};
+
         void destroy() override;
         void on_reload() override;
         void on_pre_event(SDL_Event &sdl_event) override;

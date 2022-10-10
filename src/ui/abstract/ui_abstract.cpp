@@ -41,22 +41,6 @@ uint32_t ekg::ui::abstract::get_parent_id() {
     return this->parent_id;
 }
 
-void ekg::ui::abstract::set_tag(std::string_view str) {
-    this->tag = str;
-}
-
-std::string ekg::ui::abstract::get_tag() {
-    return this->tag;
-}
-
-void ekg::ui::abstract::set_extra_tag(std::string_view str) {
-    this->extra_tag = str;
-}
-
-std::string ekg::ui::abstract::get_extra_tag() {
-    return this->extra_tag;
-}
-
 void ekg::ui::abstract::set_alive(bool flag_alive) {
     this->alive = flag_alive;
 }

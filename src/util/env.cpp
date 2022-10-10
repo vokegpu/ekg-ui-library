@@ -20,7 +20,7 @@ uint16_t &ekg::bitwise::add(uint16_t &target, uint16_t flags) {
     return target;
 }
 
-void ekg::log(const std::string &log_message) {
+void ekg::log(std::string_view log_message) {
     const std::string full_log_message = "[ekg] " + log_message;
 
     switch (ekg::os) {
