@@ -2,9 +2,8 @@
 #include "ekg/util/env.hpp"
 
 void ekg::service::handler::dispatch(ekg::cpu::event* event) {
-    if (event->should_free_memory && event->first_call) {
+    if (ekg::bitwise::contains(event->flags, ekg::event::alloc) && !ekg::bitwise::contains(event->flags, ekg::event::allocated) && ekg::bitwise::add(event->flags, ekg::event::allocated)) {
         this->allocated_task_list.push_back(event);
-        event->first_call = false;
     }
 
     this->event_queue.push(event);
@@ -24,7 +23,7 @@ void ekg::service::handler::on_update() {
         ekg::cpu::event* &ekg_event = this->event_queue.front();
         ekg_event->fun(ekg_event->callback);
 
-        if (!ekg_event->should_free_memory) {
+        if (!ekg::bitwise::contains(ekg_event->flags, ekg::event::alloc) && !ekg::bitwise::contains(ekg_event->flags, ekg::event::shared)) {
             delete ekg_event;
             ekg_event = {};
         }

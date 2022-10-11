@@ -34,3 +34,11 @@ void ekg::ui::button::set_text(uint16_t enum_docks) {
 uint16_t ekg::ui::button::get_text_dock() {
     return this->dock_text;
 }
+
+void ekg::ui::button::set_callback(ekg::cpu::event *callback) {
+    callback->flags = ekg::bitwise::add(callback->flags, ekg::event::shared);
+}
+
+ekg::cpu::event *ekg::ui::button::get_callback() {
+    return callback;
+}

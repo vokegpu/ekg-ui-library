@@ -140,7 +140,7 @@ void ekg::runtime::prepare_tasks() {
         }
 
         runtime->list_refresh_widget.clear();
-    }, true});
+    }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"swap", this, [](void* data) {
         auto runtime = static_cast<ekg::runtime*>(data);
@@ -190,7 +190,7 @@ void ekg::runtime::prepare_tasks() {
         runtime->swap_widget_id_focused = 0;
 
         ekg::swap::refresh();
-    }, true});
+    }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"reset", this, [](void* data) {
         auto runtime = static_cast<ekg::runtime*>(data);
@@ -215,7 +215,7 @@ void ekg::runtime::prepare_tasks() {
         }
 
         runtime->list_reset_widget.clear();
-    }, true});
+    }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"update", this, [](void* data) {
         auto runtime = static_cast<ekg::runtime*>(data);
@@ -229,7 +229,7 @@ void ekg::runtime::prepare_tasks() {
         }
 
         runtime->list_update_widget.clear();
-    }, true});
+    }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"redraw", this, [](void* data) {
         auto runtime = static_cast<ekg::runtime*>(data);
@@ -248,7 +248,7 @@ void ekg::runtime::prepare_tasks() {
         }
 
         runtime->allocator.revoke();
-    }, true});
+    }, ekg::event::alloc});
 }
 
 ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(uint32_t id) {
