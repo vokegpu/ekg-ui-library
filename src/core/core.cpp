@@ -1,5 +1,5 @@
 #include "ekg/core/runtime.hpp"
-#include "ekg/util/thread.hpp"
+#include "ekg/util/util_event.hpp"
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 #include "ekg/ui/button/ui_button_widget.hpp"
@@ -91,17 +91,18 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     }
 
     if (this->prev_widget_id_focused != this->widget_id_focused && this->widget_id_focused != 0) {
-        ekg::process(ekg::env::swap, ekg::thread::start);
         this->swap_widget_id_focused = this->widget_id_focused;
         this->prev_widget_id_focused = this->widget_id_focused;
+
+        ekg::dispatch(ekg::env::swap);
     }
 }
 
 void ekg::runtime::process_update() {
     this->input_manager.on_update();
 
-    if (this->thread_worker.should_thread_poll) {
-        this->thread_worker.process_threads();
+    if (this->handler.should_poll()) {
+        this->handler.on_update();
     }
 
     glViewport(0, 0, static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height));
@@ -115,15 +116,15 @@ ekg::gpu::allocator &ekg::runtime::get_gpu_allocator() {
     return this->allocator;
 }
 
-ekg::cpu::thread_worker &ekg::runtime::get_cpu_thread_worker() {
-    return this->thread_worker;
+ekg::service::handler &ekg::runtime::get_service_handler() {
+    return this->handler;
 }
 
 void ekg::runtime::prepare_virtual_threads() {
     ekg::log("creating events allocating virtual threads");
 
-    this->thread_worker.alloc_thread(new ekg::cpu::thread("refresh", this, [](ekg::feature* data) {
-        auto runtime = (ekg::runtime*) data;
+    this->handler.dispatch(new ekg::cpu::event {"refresh", this, [](void* data) {
+        auto runtime = static_cast<ekg::runtime*>(data);
 
         for (ekg::ui::abstract_widget* &widgets : runtime->list_refresh_widget) {
             if (widgets == nullptr) {
@@ -139,10 +140,10 @@ void ekg::runtime::prepare_virtual_threads() {
         }
 
         runtime->list_refresh_widget.clear();
-    }));
+    }, true});
 
-    this->thread_worker.alloc_thread(new ekg::cpu::thread("swap", this, [](ekg::feature* data) {
-        auto runtime = (ekg::runtime*) data;
+    this->handler.dispatch(new ekg::cpu::event {"swap", this, [](void* data) {
+        auto runtime = static_cast<ekg::runtime*>(data);
 
         if (runtime->swap_widget_id_focused == 0) {
             return;
@@ -189,10 +190,10 @@ void ekg::runtime::prepare_virtual_threads() {
         runtime->swap_widget_id_focused = 0;
 
         ekg::swap::refresh();
-    }));
+    }, true});
 
-    this->thread_worker.alloc_thread(new ekg::cpu::thread("reset", this, [](ekg::feature* data) {
-        auto runtime = (ekg::runtime*) data;
+    this->handler.dispatch(new ekg::cpu::event {"reset", this, [](void* data) {
+        auto runtime = static_cast<ekg::runtime*>(data);
 
         for (ekg::ui::abstract_widget* &widgets : runtime->list_reset_widget) {
             if (widgets == nullptr) {
@@ -214,10 +215,10 @@ void ekg::runtime::prepare_virtual_threads() {
         }
 
         runtime->list_reset_widget.clear();
-    }));
+    }, true});
 
-    this->thread_worker.alloc_thread(new ekg::cpu::thread("update", this, [](ekg::feature* data) {
-        auto runtime = (ekg::runtime*) data;
+    this->handler.dispatch(new ekg::cpu::event {"update", this, [](void* data) {
+        auto runtime = static_cast<ekg::runtime*>(data);
 
         for (ekg::ui::abstract_widget* &widgets : runtime->list_update_widget) {
             if (widgets == nullptr) {
@@ -228,10 +229,10 @@ void ekg::runtime::prepare_virtual_threads() {
         }
 
         runtime->list_update_widget.clear();
-    }));
+    }, true});
 
-    this->thread_worker.alloc_thread(new ekg::cpu::thread("redraw", this, [](ekg::feature* data) {
-        auto runtime = (ekg::runtime*) data;
+    this->handler.dispatch(new ekg::cpu::event {"redraw", this, [](void* data) {
+        auto runtime = static_cast<ekg::runtime*>(data);
 
         runtime->allocator.invoke();
         runtime->f_renderer_big.blit("widget allocated_widget_list size: " + std::to_string(runtime->list_widget.size()), 10, 10, {255, 255, 255, 255});
@@ -247,7 +248,7 @@ void ekg::runtime::prepare_virtual_threads() {
         }
 
         runtime->allocator.revoke();
-    }));
+    }, true});
 }
 
 ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(uint32_t id) {
@@ -257,7 +258,7 @@ ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(uint32_t id) {
 void ekg::runtime::update_widget(ekg::ui::abstract_widget* widget) {
     if (widget != nullptr) {
         this->list_update_widget.push_back(widget);
-        ekg::process(ekg::env::update, ekg::thread::start);
+        ekg::dispatch(ekg::env::update);
     }
 }
 
@@ -340,12 +341,12 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
     this->map_widget[created_widget->data->get_id()] = created_widget;
     ekg::log("created ui " + std::to_string(ui->get_id()));
 
-    ekg::process(ekg::env::refresh, ekg::thread::start);
-    ekg::process(ekg::env::swap, ekg::thread::start);
-    ekg::process(ekg::env::redraw, ekg::thread::start);
+    ekg::dispatch(ekg::env::refresh);
+    ekg::dispatch(ekg::env::swap);
+    ekg::dispatch(ekg::env::redraw);
 }
 
 void ekg::runtime::reset_widget(ekg::ui::abstract_widget *widget) {
     this->list_reset_widget.push_back(widget);
-    ekg::process(ekg::env::reset, ekg::thread::start);
+    ekg::dispatch(ekg::env::reset);
 }

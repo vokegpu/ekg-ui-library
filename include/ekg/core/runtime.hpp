@@ -2,7 +2,7 @@
 #define EKG_CORE_H
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
-#include "ekg/cpu/virtual_thread.hpp"
+#include "ekg/service/handler.hpp"
 #include "ekg/draw/font.hpp"
 #include "ekg/service/theme.hpp"
 #include "ekg/service/input.hpp"
@@ -40,7 +40,6 @@ namespace ekg {
         /* Core services and instances. */
 
         ekg::gpu::allocator allocator {};
-        ekg::cpu::thread_worker thread_worker {};
 
         ekg::draw::font_renderer f_renderer_small {};
         ekg::draw::font_renderer f_renderer_normal {};
@@ -48,6 +47,7 @@ namespace ekg {
 
         ekg::service::input input_manager {};
         ekg::service::theme theme_manager {};
+        ekg::service::handler handler {};
 
         /* Tokens for use in creation of elements. */
 
@@ -68,7 +68,6 @@ namespace ekg {
         SDL_Window* get_root();
 
         ekg::gpu::allocator &get_gpu_allocator();
-        ekg::cpu::thread_worker &get_cpu_thread_worker();
 
         ekg::draw::font_renderer &get_f_renderer_small();
         ekg::draw::font_renderer &get_f_renderer_normal();
@@ -76,6 +75,7 @@ namespace ekg {
 
         ekg::service::input &get_service_input();
         ekg::service::theme &get_service_theme();
+        ekg::service::handler &get_service_handler();
 
         ekg::ui::abstract_widget* get_fast_widget_by_id(uint32_t id);
         void update_widget(ekg::ui::abstract_widget* widget);

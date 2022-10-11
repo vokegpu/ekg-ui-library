@@ -1,6 +1,6 @@
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/util/util_ui.hpp"
-#include "ekg/util/thread.hpp"
+#include "ekg/util/util_event.hpp"
 
 void ekg::ui::frame::set_drag(uint16_t dock) {
 	this->dock_drag = dock;

@@ -2,7 +2,7 @@
 #define EKG_H
 
 #include "ekg/core/runtime.hpp"
-#include "ekg/util/thread.hpp"
+#include "ekg/util/util_event.hpp"
 
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ui/button/ui_button.hpp"

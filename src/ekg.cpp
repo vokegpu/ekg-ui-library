@@ -33,6 +33,10 @@ void ekg::init(SDL_Window* root, const std::string &font_path) {
 
     SDL_GetWindowSize(root, &ekg::display::width, &ekg::display::height);
     ekg::log("root display size (" + std::to_string(ekg::display::width) + ", " + std::to_string(ekg::display::height) + ")");
+
+    SDL_version sdl_version {};
+    SDL_GetVersion(&sdl_version);
+    ekg::log("SDL version: " + std::to_string(sdl_version.major) + "." + std::to_string(sdl_version.minor) + "." + std::to_string(sdl_version.patch));
 }
 
 void ekg::quit() {

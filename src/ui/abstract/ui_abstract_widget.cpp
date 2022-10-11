@@ -1,5 +1,5 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
-#include "ekg/util/thread.hpp"
+#include "ekg/util/util_event.hpp"
 
 ekg::ui::abstract_widget::abstract_widget() {
 
@@ -14,7 +14,7 @@ void ekg::ui::abstract_widget::destroy() {
 }
 
 void ekg::ui::abstract_widget::on_reload() {
-    ekg::process(ekg::env::redraw, ekg::thread::start);
+    ekg::dispatch(ekg::env::redraw);
 }
 
 void ekg::ui::abstract_widget::on_pre_event(SDL_Event &sdl_event) {

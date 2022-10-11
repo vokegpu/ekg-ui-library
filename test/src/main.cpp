@@ -1,6 +1,4 @@
-#include "test_feature.hpp"
-
-std::string test::name {};
+#include <ekg/ekg.hpp>
 
 /*
  * Test ekg ui library.
@@ -14,8 +12,8 @@ std::string test::name {};
 int main(int argv, char** argc) {
     ekg::log("Initialising demo showcase");
 
-    float root_width {1280.0f};
-    float root_height {768.0f};
+    int32_t root_width {1280};
+    int32_t root_height {768};
 
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window* sdl_win {SDL_CreateWindow("ekg showcase", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
@@ -50,24 +48,6 @@ int main(int argv, char** argc) {
     uint64_t fps_ms_interval {1000 / fps};
     uint64_t last_ticked_frames {};
     uint64_t ticked_frames {};
-
-    /* Start of virtual threads test. */
-    test::run("Virtual threads");
-
-    ekg::process(ekg::env::redraw, ekg::thread::start);
-    test::check("process redraw", test::result::a);
-
-    ekg::process(ekg::env::update, ekg::thread::start);
-    test::check("process update", test::result::a);
-
-    ekg::process(ekg::env::reset, ekg::thread::start);
-    test::check("process reset", test::result::a);
-
-    ekg::process(ekg::env::swap, ekg::thread::start);
-    test::check("process swap", test::result::a);
-
-    test::end();
-    /* End of virtual threads test. */
 
     auto frame = ekg::frame("hi", {20, 50}, {200, 200});
 
