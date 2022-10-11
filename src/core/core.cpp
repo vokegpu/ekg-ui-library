@@ -33,7 +33,7 @@ void ekg::runtime::init() {
         ekg::log("could not init FreeType");
     }
 
-    this->prepare_virtual_threads();
+    this->prepare_tasks();
     this->prepare_ui_env();
 }
 
@@ -120,8 +120,8 @@ ekg::service::handler &ekg::runtime::get_service_handler() {
     return this->handler;
 }
 
-void ekg::runtime::prepare_virtual_threads() {
-    ekg::log("creating events allocating virtual threads");
+void ekg::runtime::prepare_tasks() {
+    ekg::log("creating task events");
 
     this->handler.dispatch(new ekg::cpu::event {"refresh", this, [](void* data) {
         auto runtime = static_cast<ekg::runtime*>(data);
@@ -235,7 +235,7 @@ void ekg::runtime::prepare_virtual_threads() {
         auto runtime = static_cast<ekg::runtime*>(data);
 
         runtime->allocator.invoke();
-        runtime->f_renderer_big.blit("widget allocated_widget_list size: " + std::to_string(runtime->list_widget.size()), 10, 10, {255, 255, 255, 255});
+        runtime->f_renderer_big.blit("Widgets count: " + std::to_string(runtime->list_widget.size()), 10, 10, {255, 255, 255, 255});
 
         for (ekg::ui::abstract_widget* &widgets : runtime->list_widget) {
             if (widgets == nullptr) {

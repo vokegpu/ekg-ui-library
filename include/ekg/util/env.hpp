@@ -20,7 +20,7 @@ namespace ekg {
 
     void log(const std::string &log_message);
     bool reach(ekg::timing &timing, uint64_t ms);
-    void reset(ekg::timing &timing);
+    bool reset(ekg::timing &timing);
 
     bool file_to_string(std::string &string_builder, const std::string &path);
     bool set(bool &var_mutable, bool predicate);

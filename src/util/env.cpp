@@ -60,9 +60,10 @@ bool ekg::reach(ekg::timing &timing, uint64_t ms) {
     return timing.current_ticks >= ms;
 }
 
-void ekg::reset(ekg::timing &timing) {
+bool ekg::reset(ekg::timing &timing) {
     timing.elapsed_ticks = timing.current_ticks;
     timing.current_ticks = SDL_GetTicks64();
+    return true;
 }
 
 bool ekg::set(bool &var_mutable, bool predicate) {

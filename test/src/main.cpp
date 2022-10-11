@@ -1,15 +1,9 @@
 #include <ekg/ekg.hpp>
 
-/*
- * Test ekg ui library.
- *
- * -- result A = Approved - No problems passed.
- * -- result B = Partial  - No problems but not totally done.
- * -- result F = Reproved - Problems or not working correct.
- *
- * All tests were ran in Linux.
- */
-int main(int argv, char** argc) {
+/**
+ * Created by Rina.
+ **/
+int32_t main(int, char**) {
     ekg::log("Initialising demo showcase");
 
     int32_t root_width {1280};
@@ -66,13 +60,10 @@ int main(int argv, char** argc) {
         /*
          * Handle ticked loop each frame (1s).
          */
-        if (ekg::reach(mainloop_timing, fps_ms_interval)) {
-            ekg::reset(mainloop_timing);
+        if (ekg::reach(mainloop_timing, fps_ms_interval) && ekg::reset(mainloop_timing)) {
             ekg::display::dt = static_cast<float>(mainloop_timing.current_ticks) / 100;
 
-            if (ekg::reach(fps_timing, 1000)) {
-                ekg::reset(fps_timing);
-
+            if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
                 last_ticked_frames = ticked_frames;
                 ticked_frames = 0;
             }

@@ -1,8 +1,10 @@
 #include "ekg/service/handler.hpp"
+#include "ekg/util/env.hpp"
 
 void ekg::service::handler::dispatch(ekg::cpu::event* event) {
-    if (event->should_free_memory) {
+    if (event->should_free_memory && event->first_call) {
         this->allocated_task_list.push_back(event);
+        event->first_call = false;
     }
 
     this->event_queue.push(event);
@@ -18,14 +20,16 @@ void ekg::service::handler::task(std::size_t task_index) {
 }
 
 void ekg::service::handler::on_update() {
-    for (uint32_t poll_iterations = 0; poll_iterations < this->event_queue.size(); poll_iterations++) {
+    while (!this->event_queue.empty()) {
         ekg::cpu::event* &ekg_event = this->event_queue.front();
-        this->event_queue.pop();
+        ekg_event->fun(ekg_event->callback);
 
         if (!ekg_event->should_free_memory) {
             delete ekg_event;
             ekg_event = {};
         }
+
+        this->event_queue.pop();
     }
 }
 

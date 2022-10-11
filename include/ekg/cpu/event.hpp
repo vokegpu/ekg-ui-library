@@ -10,6 +10,7 @@ namespace ekg::cpu {
         void* callback {};
         std::function<void(void*)> fun {};
         bool should_free_memory {};
+        bool first_call {true};
     };
 };
 
