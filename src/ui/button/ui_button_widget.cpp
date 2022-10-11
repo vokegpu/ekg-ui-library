@@ -47,6 +47,11 @@ void ekg::ui::button_widget::on_pre_event(SDL_Event &sdl_event) {
 
 void ekg::ui::button_widget::on_event(SDL_Event &sdl_event) {
     abstract_widget::on_event(sdl_event);
+    ekg::set(this->flag.highlight, this->flag.hovered);
+
+    if (ekg::was_pressed() && !this->flag.activy && this->flag.activy && ekg::input("button-activy")) {
+        ekg::set(this->flag.activy, true);
+    }
 }
 
 void ekg::ui::button_widget::on_post_event(SDL_Event &sdl_event) {

@@ -57,6 +57,7 @@ ekg::draw::font_renderer &ekg::runtime::get_f_renderer_big() {
 void ekg::runtime::process_event(SDL_Event &sdl_event) {
     this->input_manager.on_event(sdl_event);
     this->widget_id_focused = 0;
+    ekg::ui::abstract_widget* focused_widget {nullptr};
 
     for (ekg::ui::abstract_widget* &widgets : this->list_widget) {
         if (widgets == nullptr || !widgets->data->is_alive()) {
@@ -67,22 +68,20 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
 
         if (widgets->flag.hovered && widgets->data->get_state() == ekg::state::visible) {
             this->widget_id_focused = widgets->data->get_id();
+            focused_widget = widgets;
         }
 
         widgets->on_post_event(sdl_event);
+
+        if (!widgets->flag.hovered) {
+            widgets->on_event(sdl_event);
+        }
     }
 
-    for (ekg::ui::abstract_widget* &widgets : this->list_widget) {
-        if (widgets == nullptr || !widgets->data->is_alive()) {
-            continue;
-        }
-
-        if (widgets->data->get_id() == this->widget_id_focused) {
-            widgets->on_pre_event(sdl_event);
-        }
-
-        widgets->on_event(sdl_event);
-        widgets->on_post_event(sdl_event);
+    if (focused_widget != nullptr) {
+        focused_widget->on_pre_event(sdl_event);
+        focused_widget->on_event(sdl_event);
+        focused_widget->on_post_event(sdl_event);
     }
 
     if (ekg::was_pressed()) {

@@ -20,17 +20,17 @@ uint16_t &ekg::bitwise::add(uint16_t &target, uint16_t flags) {
     return target;
 }
 
-void ekg::log(std::string_view log_message) {
-    const std::string full_log_message = "[ekg] " + log_message;
+void ekg::log(const std::string &log_message) {
+    const std::string &full_log_message = ("[ekg] " + log_message);
 
     switch (ekg::os) {
         case ekg::platform::os_android: {
-            SDL_Log("%s", full_log_message.c_str());
+            SDL_Log("%s", full_log_message.data());
             break;
         }
 
         default: {
-            std::cout << full_log_message.c_str() << '\n';
+            std::cout << full_log_message.data() << '\n';
             break;
         }
     }
