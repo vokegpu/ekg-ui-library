@@ -51,6 +51,16 @@ void ekg::ui::button_widget::on_event(SDL_Event &sdl_event) {
 
     if (ekg::was_pressed() && !this->flag.activy && this->flag.activy && ekg::input("button-activy")) {
         ekg::set(this->flag.activy, true);
+    } else if (ekg::was_released() && this->flag.activy) {
+        auto ui = (ekg::ui::button*) this->data;
+        ui->set_value(this->flag.hovered);
+
+        if (ui->get_value() && ui->get_callback() != nullptr) {
+            ekg::dispatch(ui->get_callback());
+            ui->set_value(false);
+        }
+
+        ekg::set(this->flag.activy, false);
     }
 }
 

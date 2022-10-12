@@ -66,7 +66,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
         if (this->rect != new_rect) {
             this->rect = new_rect;
-            ekg::update(this);
+            ekg::reload(this);
         }
     }
 

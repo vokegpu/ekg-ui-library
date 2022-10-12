@@ -5,7 +5,7 @@
 void ekg::ui::button::set_value(bool state) {
     if (this->value != state) {
         this->value = state;
-        ekg::update(this->id);
+        ekg::reload(this->id);
     }
 }
 
@@ -16,7 +16,7 @@ bool ekg::ui::button::get_value() {
 void ekg::ui::button::set_text(std::string_view new_text) {
     if (this->text != new_text) {
         this->text = new_text;
-        ekg::update(this->id);
+        ekg::reload(this->id);
     }
 }
 
@@ -27,7 +27,7 @@ std::string_view ekg::ui::button::get_text() {
 void ekg::ui::button::set_text(uint16_t enum_docks) {
     if (this->dock_text != enum_docks) {
         this->dock_text = enum_docks;
-        ekg::update(this->id);
+        ekg::reload(this->id);
     }
 }
 

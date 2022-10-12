@@ -5,8 +5,8 @@
 #include <map>
 
 namespace ekg {
-    void update(uint32_t id);
-    void update(ekg::ui::abstract_widget* widget);
+    void reload(uint32_t id);
+    void reload(ekg::ui::abstract_widget* widget);
 
     void reset(uint32_t id);
     void reset(ekg::ui::abstract_widget* widget);

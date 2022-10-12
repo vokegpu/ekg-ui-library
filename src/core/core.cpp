@@ -217,7 +217,7 @@ void ekg::runtime::prepare_tasks() {
         runtime->list_reset_widget.clear();
     }, ekg::event::alloc});
 
-    this->handler.dispatch(new ekg::cpu::event {"update", this, [](void* data) {
+    this->handler.dispatch(new ekg::cpu::event {"reload", this, [](void* data) {
         auto runtime = static_cast<ekg::runtime*>(data);
 
         for (ekg::ui::abstract_widget* &widgets : runtime->list_update_widget) {
@@ -255,10 +255,10 @@ ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(uint32_t id) {
     return this->map_widget[id];
 }
 
-void ekg::runtime::update_widget(ekg::ui::abstract_widget* widget) {
+void ekg::runtime::reload_widget(ekg::ui::abstract_widget* widget) {
     if (widget != nullptr) {
         this->list_update_widget.push_back(widget);
-        ekg::dispatch(ekg::env::update);
+        ekg::dispatch(ekg::env::reload);
     }
 }
 

@@ -24,7 +24,7 @@ void ekg::ui::frame::set_pos_initial(float x, float y) {
         this->initial_pos.y = y;
 
         ekg::reset(this->id);
-        ekg::update(this->id);
+        ekg::reload(this->id);
     }
 }
 
@@ -38,7 +38,7 @@ void ekg::ui::frame::set_size_initial(float w, float h) {
         this->initial_size.y = h;
 
         ekg::reset(this->id);
-        ekg::update(this->id);
+        ekg::reload(this->id);
     }
 }
 
@@ -58,7 +58,7 @@ void ekg::ui::frame::set_size(float w, float h) {
     if (this->size.x != w || this->size.y != h) {
         this->size.x = w;
         this->size.y = h;
-        ekg::update(this->id);
+        ekg::reload(this->id);
     }
 }
 
@@ -70,7 +70,7 @@ void ekg::ui::frame::set_pos(float x, float y) {
     if (this->pos.x != x || this->pos.y != y) {
         this->pos.x = x;
         this->pos.y = y;
-        ekg::update(this->id);
+        ekg::reload(this->id);
     }
 }
 

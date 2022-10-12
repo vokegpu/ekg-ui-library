@@ -78,7 +78,7 @@ namespace ekg {
         ekg::service::handler &get_service_handler();
 
         ekg::ui::abstract_widget* get_fast_widget_by_id(uint32_t id);
-        void update_widget(ekg::ui::abstract_widget* widget);
+        void reload_widget(ekg::ui::abstract_widget* widget);
         void create_ui(ekg::ui::abstract* ui);
         void reset_widget(ekg::ui::abstract_widget* widget);
 
