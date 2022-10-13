@@ -17,7 +17,7 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
 			start_x += static_cast<float>(ft_vec.x >> 6);
 		}
 
-		ekg::char_data &char_data = this->allocated_char_data[chars];
+		ekg::char_data &char_data {this->allocated_char_data[chars]};
 
 		render_x = start_x + char_data.left;
 		start_x += char_data.texture_x;
@@ -85,7 +85,7 @@ void ekg::draw::font_renderer::reload() {
 	this->offset_text_height = (this->text_height / 8) / 2;
 	this->text_height += this->text_height;
 
-	/* Phase of getting chars metrics. */
+	/* Phase of getting chars metric_list. */
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	if (this->texture != 0) {
@@ -103,7 +103,7 @@ void ekg::draw::font_renderer::reload() {
 			continue;
 		}
 
-		ekg::char_data &char_data = this->allocated_char_data[char_codes];
+		ekg::char_data &char_data {this->allocated_char_data[char_codes]};
 
 		char_data.x = offset / static_cast<float>(this->full_width);
 		char_data.w = static_cast<float>(this->ft_glyph_slot->bitmap.width);
@@ -143,7 +143,7 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     x = static_cast<float>(static_cast<int32_t>(x));
     y = static_cast<float>(static_cast<int32_t>(y - this->offset_text_height));
 
-    ekg::gpu::data &data = this->allocator->bind_current_data();
+    ekg::gpu::data &data {this->allocator->bind_current_data()};
 
     data.rect_area[0] = x;
     data.rect_area[1] = y;
@@ -169,7 +169,7 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     		x += static_cast<float>(this->ft_vector_previous_char.x >> 6);
     	}
 
-    	ekg::char_data &char_data = this->allocated_char_data[chars];
+    	ekg::char_data &char_data {this->allocated_char_data[chars]};
 
         vertices.x = static_cast<float>(x + char_data.left);
         vertices.y = y + static_cast<float>(this->full_height) - char_data.top;

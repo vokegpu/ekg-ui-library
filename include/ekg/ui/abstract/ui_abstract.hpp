@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "ekg/core/feature.hpp"
+#include "ekg/util/geometry.hpp"
 #include <vector>
 
 namespace ekg {
@@ -22,8 +23,10 @@ namespace ekg {
             std::vector<uint32_t> parent_id_list {};
 
             bool alive {true};
+            uint16_t dock {};
             ekg::state state {};
             ekg::type type {ekg::type::abstract};
+            ekg::rect rect_absolute {};
         public:
             abstract();
             ~abstract();
@@ -45,6 +48,9 @@ namespace ekg {
 
             void set_type(const ekg::type&);
             ekg::type get_type();
+
+            uint16_t get_dock();
+            ekg::rect &rect();
         };
     }
 }

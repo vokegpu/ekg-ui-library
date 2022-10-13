@@ -12,11 +12,7 @@ namespace ekg::ui {
         uint16_t dock_drag {};
         uint16_t dock_embed {};
 
-        ekg::vec2 initial_pos {};
-        ekg::vec2 initial_size {};
-        ekg::vec2 pos {};
-        ekg::vec2 size {};
-
+        ekg::rect rect_initial {};
         std::string tag {};
     public:
         void set_tag(std::string_view);
@@ -34,6 +30,12 @@ namespace ekg::ui {
         void set_size_initial(float, float);
         ekg::vec2 get_size_initial();
 
+        void set_initial_width(float);
+        float get_initial_width();
+
+        void set_initial_height(float);
+        float get_initial_height();
+
         void set_embed(uint16_t);
         uint16_t get_embed_dock();
 
@@ -42,6 +44,12 @@ namespace ekg::ui {
 
         void set_pos(float, float);
         ekg::vec2 get_pos();
+
+        void set_width(float);
+        float get_width();
+
+        void set_height(float);
+        float get_height();
     };
 }
 

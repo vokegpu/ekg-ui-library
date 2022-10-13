@@ -49,7 +49,6 @@ int32_t main(int, char**) {
     frame->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
 
     auto frame2 = ekg::frame("hi", {40, 50}, {200, 200});
-
     frame2->set_drag(ekg::dock::top);
     frame2->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
 

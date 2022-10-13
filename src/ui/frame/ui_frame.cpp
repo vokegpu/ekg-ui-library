@@ -19,31 +19,27 @@ uint16_t ekg::ui::frame::get_resize_dock() {
 }
 
 void ekg::ui::frame::set_pos_initial(float x, float y) {
-    if (this->initial_pos.x != x || this->initial_size.y != y) {
-        this->initial_pos.x = x;
-        this->initial_pos.y = y;
-
-        ekg::reset(this->id);
+    if (this->rect_initial.x != x || this->rect_initial.y != y) {
+        this->rect_initial.x = x;
+        this->rect_initial.y = y;
         ekg::reload(this->id);
     }
 }
 
 ekg::vec2 ekg::ui::frame::get_pos_initial() {
-	return this->initial_pos;
+	return {this->rect_initial.x, this->rect_initial.y};
 }
 
 void ekg::ui::frame::set_size_initial(float w, float h) {
-    if (this->initial_size.x != w || this->initial_size.y != h) {
-        this->initial_size.x = w;
-        this->initial_size.y = h;
-
-        ekg::reset(this->id);
+    if (this->rect_initial.x != w || this->rect_initial.y != h) {
+        this->rect_initial.x = w;
+        this->rect_initial.y = h;
         ekg::reload(this->id);
     }
 }
 
 ekg::vec2 ekg::ui::frame::get_size_initial() {
-	return this->initial_size;
+	return {this->rect_initial.w, this->rect_initial.h};
 }
 
 void ekg::ui::frame::set_embed(uint16_t dock) {
@@ -55,27 +51,27 @@ uint16_t ekg::ui::frame::get_embed_dock() {
 }
 
 void ekg::ui::frame::set_size(float w, float h) {
-    if (this->size.x != w || this->size.y != h) {
-        this->size.x = w;
-        this->size.y = h;
+    if (this->rect_absolute.x != w || this->rect_absolute.y != h) {
+        this->rect_absolute.x = w;
+        this->rect_absolute.y = h;
         ekg::reload(this->id);
     }
 }
 
 ekg::vec2 ekg::ui::frame::get_size() {
-	return this->size;
+	return {this->rect_absolute.x, rect_absolute.y};
 }
 
 void ekg::ui::frame::set_pos(float x, float y) {
-    if (this->pos.x != x || this->pos.y != y) {
-        this->pos.x = x;
-        this->pos.y = y;
+    if (this->rect_absolute.x != x || this->rect_absolute.y != y) {
+        this->rect_absolute.x = x;
+        this->rect_absolute.y = y;
         ekg::reload(this->id);
     }
 }
 
 ekg::vec2 ekg::ui::frame::get_pos() {
-	return this->pos;
+	return {this->rect_absolute.x, this->rect_absolute.y};
 }
 
 void ekg::ui::frame::set_tag(std::string_view new_tag) {
@@ -84,4 +80,46 @@ void ekg::ui::frame::set_tag(std::string_view new_tag) {
 
 std::string_view ekg::ui::frame::get_tag() {
     return this->tag;
+}
+
+void ekg::ui::frame::set_initial_width(float width) {
+    if (this->rect_initial.w != width) {
+        this->rect_initial.w = width;
+    }
+}
+
+float ekg::ui::frame::get_initial_width() {
+    return this->rect_initial.w;
+}
+
+void ekg::ui::frame::set_initial_height(float height) {
+    if (this->rect_initial.h != height) {
+        this->rect_initial.h = height;
+    }
+}
+
+float ekg::ui::frame::get_initial_height() {
+    return this->rect_initial.h;
+}
+
+void ekg::ui::frame::set_width(float width) {
+    if (this->rect_absolute.w != width) {
+        this->rect_absolute.w = width;
+        ekg::reload(this->id);
+    }
+}
+
+float ekg::ui::frame::get_width() {
+    return this->rect_absolute.w;
+}
+
+void ekg::ui::frame::set_height(float height) {
+    if (this->rect_absolute.h != height) {
+        this->rect_absolute.h = height;
+        ekg::reload(this->id);
+    }
+}
+
+float ekg::ui::frame::get_height() {
+    return this->rect_absolute.h;
 }

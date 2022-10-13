@@ -107,7 +107,7 @@ void ekg::gpu::allocator::draw() {
     float depth_testing {this->depth_testing_preset};
 
     for (uint32_t data_iterations = 0; data_iterations < this->allocated_size; data_iterations++) {
-        auto &data = this->cpu_allocated_data[data_iterations];
+        auto &data {this->cpu_allocated_data[data_iterations]};
         active_texture = data.texture != 0;
 
         if (active_texture) {

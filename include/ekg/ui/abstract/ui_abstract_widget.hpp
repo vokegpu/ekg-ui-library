@@ -15,7 +15,6 @@ namespace ekg::ui {
         ekg::ui::abstract* data {};
         ekg::flag flag {};
         ekg::rect offset {};
-        ekg::rect rect {};
         ekg::rect parent {};
         ekg::rect extra {};
 

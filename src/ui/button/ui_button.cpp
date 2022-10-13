@@ -35,10 +35,43 @@ uint16_t ekg::ui::button::get_text_dock() {
     return this->dock_text;
 }
 
-void ekg::ui::button::set_callback(ekg::cpu::event *callback) {
-    callback->flags = ekg::bitwise::add(callback->flags, ekg::event::shared);
+void ekg::ui::button::set_callback(ekg::cpu::event* event) {
+    event->flags = ekg::bitwise::add(event->flags, ekg::event::shared);
+
+    if (this->callback != event && this->callback != nullptr) {
+        delete this->callback;
+        this->callback = nullptr;
+    }
+
+    this->callback = event;
 }
 
 ekg::cpu::event *ekg::ui::button::get_callback() {
     return callback;
+}
+
+void ekg::ui::button::set_width(float width) {
+    if (this->rect_absolute.w != width) {
+        this->rect_absolute.w = width;
+        ekg::reload(this->id);
+    }
+}
+
+float ekg::ui::button::get_width() {
+    return this->rect_absolute.w;
+}
+
+void ekg::ui::button::set_scaled_height(int32_t scaled_height_factor) {
+    if (this->scaled_height != scaled_height_factor) {
+        this->scaled_height = scaled_height_factor;
+        ekg::reload(this->id);
+    }
+}
+
+float ekg::ui::button::get_height() {
+    return this->rect_absolute.h;
+}
+
+int32_t ekg::ui::button::get_scaled_height() {
+    return this->scaled_height;
 }

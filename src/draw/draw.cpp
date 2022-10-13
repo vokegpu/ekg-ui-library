@@ -6,8 +6,8 @@ void ekg::draw::rect(const ekg::rect &rect, const ekg::vec4 &color, int32_t line
 }
 
 void ekg::draw::rect(int32_t x, int32_t y, int32_t w, int32_t h, const ekg::vec4 &color, int32_t line_thickness) {
-    ekg::gpu::allocator &allocator = ekg::core->get_gpu_allocator();
-    ekg::gpu::data &data = allocator.bind_current_data();
+    ekg::gpu::allocator &allocator {ekg::core->get_gpu_allocator()};
+    ekg::gpu::data &data {allocator.bind_current_data()};
 
     allocator.vertex2f(0, 0);
     allocator.vertex2f(0, 1);

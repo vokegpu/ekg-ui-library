@@ -124,7 +124,7 @@ void ekg::runtime::prepare_tasks() {
     ekg::log("creating task events");
 
     this->handler.dispatch(new ekg::cpu::event {"refresh", this, [](void* data) {
-        auto runtime = static_cast<ekg::runtime*>(data);
+        auto runtime {static_cast<ekg::runtime*>(data)};
 
         for (ekg::ui::abstract_widget* &widgets : runtime->list_refresh_widget) {
             if (widgets == nullptr) {
@@ -143,7 +143,7 @@ void ekg::runtime::prepare_tasks() {
     }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"swap", this, [](void* data) {
-        auto runtime = static_cast<ekg::runtime*>(data);
+        auto runtime {static_cast<ekg::runtime*>(data)};
 
         if (runtime->swap_widget_id_focused == 0) {
             return;
@@ -193,20 +193,21 @@ void ekg::runtime::prepare_tasks() {
     }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"reset", this, [](void* data) {
-        auto runtime = static_cast<ekg::runtime*>(data);
+        auto runtime {static_cast<ekg::runtime*>(data)};
 
         for (ekg::ui::abstract_widget* &widgets : runtime->list_reset_widget) {
             if (widgets == nullptr) {
                 continue;
             }
 
+            auto &rect {widgets->data->rect()};
+
             switch (widgets->data->get_type()) {
                 case ekg::type::frame: {
-                    auto ui = (ekg::ui::frame*) widgets->data;
-                    auto widget = (ekg::ui::frame_widget*) widgets;
+                    auto ui {(ekg::ui::frame*) widgets->data};
 
-                    if (widget->rect != ekg::vec4 {ui->get_pos_initial(), ui->get_size_initial()}) {
-                        widget->rect = {ui->get_pos_initial(), ui->get_size_initial()};
+                    if (rect != ekg::vec4 {ui->get_pos_initial(), ui->get_size_initial()}) {
+                        rect = {ui->get_pos_initial(), ui->get_size_initial()};
                     }
 
                     break;
@@ -218,7 +219,7 @@ void ekg::runtime::prepare_tasks() {
     }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"reload", this, [](void* data) {
-        auto runtime = static_cast<ekg::runtime*>(data);
+        auto runtime {static_cast<ekg::runtime*>(data)};
 
         for (ekg::ui::abstract_widget* &widgets : runtime->list_update_widget) {
             if (widgets == nullptr) {
@@ -232,7 +233,7 @@ void ekg::runtime::prepare_tasks() {
     }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"redraw", this, [](void* data) {
-        auto runtime = static_cast<ekg::runtime*>(data);
+        auto runtime {static_cast<ekg::runtime*>(data)};
 
         runtime->allocator.invoke();
         runtime->f_renderer_big.blit("Widgets count: " + std::to_string(runtime->list_widget.size()), 10, 10, {255, 255, 255, 255});

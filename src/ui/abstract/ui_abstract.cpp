@@ -64,3 +64,11 @@ void ekg::ui::abstract::set_type(const ekg::type &enum_type) {
 ekg::type ekg::ui::abstract::get_type() {
     return this->type;
 }
+
+ekg::rect &ekg::ui::abstract::rect() {
+    return this->rect_absolute;
+}
+
+uint16_t ekg::ui::abstract::get_dock() {
+    return this->dock;
+}

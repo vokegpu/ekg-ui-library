@@ -11,13 +11,16 @@ void ekg::ui::button_widget::destroy() {
 void ekg::ui::button_widget::on_reload() {
     abstract_widget::on_reload();
 
-    auto ui = (ekg::ui::button*) this->data;
-    auto dock = ui->get_text_dock();
-    auto offset = ekg::core->get_f_renderer_normal().get_text_height() / 3;
-    auto text_width = ekg::core->get_f_renderer_normal().get_text_width(ui->get_text());
+    auto ui {(ekg::ui::button*) this->data};
+    auto &rect {this->data->rect()};
+    auto dock {ui->get_text_dock()};
+    auto layout_scale_data {ui->get_scaled_height()};
 
-    ekg::set_rect_clamped(this->rect, ekg::theme().min_widget_size);
-    ekg::set_dock_scaled(this->rect, text_width, this->docker_text);
+    float offset {ekg::core->get_f_renderer_normal().get_text_height() / 3};
+    float text_width {ekg::core->get_f_renderer_normal().get_text_width(ui->get_text())};
+
+    ekg::set_rect_clamped(rect, ekg::theme().min_widget_size);
+    ekg::set_dock_scaled(rect, text_width, this->docker_text);
 
     if (ekg::bitwise::contains(dock, ekg::dock::center)) {
         this->extra.x = this->docker_text.center.x;
@@ -52,7 +55,7 @@ void ekg::ui::button_widget::on_event(SDL_Event &sdl_event) {
     if (ekg::was_pressed() && !this->flag.activy && this->flag.activy && ekg::input("button-activy")) {
         ekg::set(this->flag.activy, true);
     } else if (ekg::was_released() && this->flag.activy) {
-        auto ui = (ekg::ui::button*) this->data;
+        auto ui {(ekg::ui::button*) this->data};
         ui->set_value(this->flag.hovered);
 
         if (ui->get_value() && ui->get_callback() != nullptr) {
@@ -74,18 +77,19 @@ void ekg::ui::button_widget::on_update() {
 
 void ekg::ui::button_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
-    auto ui = (ekg::ui::button*) this->data;
+    auto ui {(ekg::ui::button*) this->data};
+    auto &rect {ui->rect()};
 
-    ekg::draw::rect(this->rect, ekg::theme().button_background);
-    ekg::draw::rect(this->rect, ekg::theme().button_outline);
+    ekg::draw::rect(rect, ekg::theme().button_background);
+    ekg::draw::rect(rect, ekg::theme().button_outline);
 
     if (this->flag.highlight) {
-        ekg::draw::rect(this->rect, ekg::theme().button_highlight);
+        ekg::draw::rect(rect, ekg::theme().button_highlight);
     }
 
     if (this->flag.activy) {
-        ekg::draw::rect(this->rect, ekg::theme().button_activy);
-        ekg::draw::rect(this->rect, {ekg::theme().button_activy, ekg::theme().button_outline.w});
+        ekg::draw::rect(rect, ekg::theme().button_activy);
+        ekg::draw::rect(rect, {ekg::theme().button_activy, ekg::theme().button_outline.w});
     }
 
     ekg::core->get_f_renderer_normal().blit(ui->get_text(), this->extra.x, this->extra.y, ekg::theme().button_string);
