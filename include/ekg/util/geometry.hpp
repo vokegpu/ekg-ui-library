@@ -4,8 +4,6 @@
 #include <iostream>
 
 namespace ekg {
-    extern char* const empty;
-
     struct display {
         static float dt;
         static int32_t width;

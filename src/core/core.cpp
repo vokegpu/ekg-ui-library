@@ -225,6 +225,7 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler.dispatch(new ekg::cpu::event {"synclayout", this, [](void* data) {
         auto runtime {static_cast<ekg::runtime*>(data)};
+        ekg::log("hijihih");
 
         for (ekg::ui::abstract_widget* &widget : runtime->list_sync_layout_widget) {
             if (widget == nullptr) {

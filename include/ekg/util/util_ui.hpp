@@ -5,6 +5,8 @@
 #include <map>
 
 namespace ekg {
+    extern ekg::rect empty;
+
     void reload(uint32_t id);
     void reload(ekg::ui::abstract_widget* widget);
 

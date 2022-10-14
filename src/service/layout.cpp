@@ -69,12 +69,13 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget) {
             if (this->curr_flag.left) {
                 if (!this->prev_flag_top.left || this->prev_flag_bottom.bottom || this->prev_flag_top.next) {
                     this->curr_top.x = 0;
+                    ekg::log("hi");
                 }
 
                 this->curr_top.x += this->min_offset;
                 layout.x = this->curr_top.x;
                 layout.y = this->curr_top.y;
-                this->curr_top.x += rect.w;
+                this->curr_top.x += layout.w;
                 this->prev_flag_top.left = true;
 
                 if (this->curr_top.w > this->curr_grid.top_left.w) {

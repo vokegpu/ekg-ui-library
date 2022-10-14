@@ -1,6 +1,8 @@
 #include "ekg/util/util_ui.hpp"
 #include "ekg/ekg.hpp"
 
+ekg::rect ekg::empty {};
+
 void ekg::reload(uint32_t id) {
     ekg::core->reload_widget(ekg::core->get_fast_widget_by_id(id));
 }

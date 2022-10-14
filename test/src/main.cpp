@@ -47,7 +47,7 @@ int32_t main(int, char**) {
     frame->set_drag(ekg::dock::top);
     frame->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
 
-    auto button = ekg::button("hi");
+    ekg::dispatch(ekg::env::synclayout);
 
     /*
      * Mainloop.
