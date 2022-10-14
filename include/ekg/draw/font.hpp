@@ -10,10 +10,8 @@ namespace ekg {
     struct char_data {
         float x {};
         float texture_x {};
-
         float w {};
         float h {};
-
         float top {};
         float left {};
     };
@@ -43,7 +41,7 @@ namespace ekg {
             bool flag_first_time {true};
 
             ekg::gpu::allocator* allocator {};
-            ekg::char_data allocated_char_data[128];
+            ekg::char_data allocated_char_data[128] {};
 
             float get_text_width(std::string_view text);
             float get_text_height();

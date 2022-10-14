@@ -44,13 +44,10 @@ int32_t main(int, char**) {
     uint64_t ticked_frames {};
 
     auto frame = ekg::frame("hi", {20, 50}, {200, 200});
-
     frame->set_drag(ekg::dock::top);
     frame->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
 
-    auto frame2 = ekg::frame("hi", {40, 50}, {200, 200});
-    frame2->set_drag(ekg::dock::top);
-    frame2->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+    auto button = ekg::button("hi");
 
     /*
      * Mainloop.

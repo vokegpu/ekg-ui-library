@@ -10,7 +10,7 @@
 # END OF EKG-LICENSE.
 ##
 cmake_minimum_required(VERSION 3.9)
-project(ekg_ui_library VERSION 1.0.0 DESCRIPTION "ui library")
+project(ekg VERSION 1.0.0 DESCRIPTION "ui library")
 message("-- Preparing EKG setup")
 
 add_compile_options(-O3)
@@ -32,25 +32,25 @@ include(GNUInstallDirs)
 
 # Generate shared lib (DLL).
 message("-- Creating static lib")
-add_library(ekg_ui_library STATIC ${SOURCE_FILES})
+add_library(ekg STATIC ${SOURCE_FILES})
 
 message("-- Configuring static lib")
-set_target_properties(ekg_ui_library PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION 1)
-set_target_properties(ekg_ui_library PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-target_include_directories(ekg_ui_library PUBLIC include/)
+set_target_properties(ekg PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION 1)
+set_target_properties(ekg PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+target_include_directories(ekg PUBLIC include/)
 
 message("-- Setting configure file")
 configure_file(ekg.pc.in "ekg.pc" @ONLY)
 
 message("-- Ending EKG CMake")
-install(TARGETS ekg_ui_library LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(TARGETS ekg LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(FILES ${CMAKE_BINARY_DIR}/ekg.pc DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
 
 message("-- Lib successfully created")
 set(ENABLE_TEST TRUE)
 
 if (ENABLE_TEST)
-    project(ekg)
+    project(ekg_ui_library)
 
     if (WIN32)
         set(EXECUTABLE_OUTPUT_PATH ../test/build/win32/)
@@ -60,15 +60,15 @@ if (ENABLE_TEST)
 
     add_compile_options(-O3)
     include_directories(./include/)
-    add_executable(ekg test/src/main.cpp)
+    add_executable(ekg_ui_library test/src/main.cpp)
 
     if (WIN32)
         message("-- WIN32 platform detected!")
         file(GLOB LIBRARY_PATH "./lib/win32/libekg.a")
-        target_link_libraries(ekg ${LIBRARY_PATH} mingw32 SDL2main SDL2 opengl32 glew32 freetype)
+        target_link_libraries(ekg_ui_library ${LIBRARY_PATH} mingw32 SDL2main SDL2 opengl32 glew32 freetype)
     else()
         message("-- LINUX platform detected!")
         file(GLOB LIBRARY_PATH "./lib/linux/libekg.a")
-        target_link_libraries(ekg ${LIBRARY_PATH} SDL2main SDL2 GL GLEW freetype)
+        target_link_libraries(ekg_ui_library ${LIBRARY_PATH} SDL2main SDL2 GL GLEW freetype)
     endif()
 endif()

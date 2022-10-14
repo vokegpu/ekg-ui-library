@@ -1,7 +1,6 @@
 #ifndef EKG_UI_ABSTRACT_H
 #define EKG_UI_ABSTRACT_H
 
-#include <iostream>
 #include "ekg/core/feature.hpp"
 #include "ekg/util/geometry.hpp"
 #include <vector>
@@ -26,7 +25,7 @@ namespace ekg {
             uint16_t dock {};
             ekg::state state {};
             ekg::type type {ekg::type::abstract};
-            ekg::rect rect_absolute {};
+            ekg::rect rect_widget {};
         public:
             abstract();
             ~abstract();
@@ -50,7 +49,7 @@ namespace ekg {
             ekg::type get_type();
 
             uint16_t get_dock();
-            ekg::rect &rect();
+            ekg::rect &widget();
         };
     }
 }

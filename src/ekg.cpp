@@ -96,24 +96,28 @@ void ekg::depth(float depth_preset) {
 }
 
 ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_position, ekg::vec2 size) {
-    auto element = new ekg::ui::frame();
-    element->set_tag(tag);
+    auto ui = new ekg::ui::frame();
+    ui->set_tag(tag);
+    ui->set_type(ekg::type::frame);
+    ekg::core->create_ui(ui);
 
-    element->set_type(ekg::type::frame);
-    ekg::core->create_ui(element);
+    ui->set_pos_initial(initial_position.x, initial_position.y);
+    ui->set_size_initial(size.x, size.y);
 
-    element->set_pos_initial(initial_position.x, initial_position.y);
-    element->set_size_initial(size.x, size.y);
-
-    return element;
+    return ui;
 }
 
-ekg::ui::button *ekg::button(std::string_view text) {
-    auto element = new ekg::ui::button();
+ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
+    auto ui = new ekg::ui::button();
+    ui->set_type(ekg::type::button);
+    ekg::core->create_ui(ui);
 
-    element->set_type(ekg::type::button);
-    ekg::core->create_ui(element);
+    ui->set_text(ekg::dock::center);
+    ui->set_text(text);
+    ui->set_dock(dock);
+    return ui;
+}
 
-    element->set_text(text);
-    return element;
+void ekg::pop_group() {
+    ekg::core->pop_group();
 }

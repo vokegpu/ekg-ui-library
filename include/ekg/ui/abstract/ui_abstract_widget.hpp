@@ -1,9 +1,7 @@
 #ifndef EKG_UI_ABSTRACT_WIDGET_H
 #define EKG_UI_ABSTRACT_WIDGET_H
 
-#include "ekg/util/geometry.hpp"
 #include "ekg/ui/abstract/ui_abstract.hpp"
-#include "ekg/core/feature.hpp"
 #include <SDL2/SDL.h>
 
 namespace ekg::ui {
@@ -17,6 +15,7 @@ namespace ekg::ui {
         ekg::rect offset {};
         ekg::rect parent {};
         ekg::rect extra {};
+        ekg::rect layout {};
 
         virtual void destroy();
         virtual void on_reload();

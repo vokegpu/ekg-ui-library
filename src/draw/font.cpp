@@ -77,13 +77,13 @@ void ekg::draw::font_renderer::reload() {
 			continue;
 		}
 
-		this->full_width += this->ft_glyph_slot->bitmap.width;
+		this->full_width += static_cast<float>(this->ft_glyph_slot->bitmap.width);
 		this->full_height = std::max(this->full_height, static_cast<float>(this->ft_glyph_slot->bitmap.rows));
 	}
 	
 	this->text_height = static_cast<float>(this->full_height);
 	this->offset_text_height = (this->text_height / 8) / 2;
-	this->text_height += this->text_height;
+	this->text_height += this->offset_text_height;
 
 	/* Phase of getting chars metric_list. */
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

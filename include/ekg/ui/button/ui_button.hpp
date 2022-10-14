@@ -3,18 +3,19 @@
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/cpu/event.hpp"
-#include "ekg/util/geometry.hpp"
 
 namespace ekg::ui {
 	class button : public ekg::ui::abstract {
 	protected:
 		bool value {};
         uint16_t dock_text {};
-        int32_t scaled_height {};
+        int32_t scaled_height {1};
 
         std::string text {};
         ekg::cpu::event* callback {nullptr};
 	public:
+        void set_dock(uint16_t);
+
         void set_width(float);
         float get_width();
 

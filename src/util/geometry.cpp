@@ -153,6 +153,14 @@ ekg::rect::rect(float posx, float posy, float sizew, float sizeh) {
     this->h = sizeh;
 }
 
+ekg::rect ekg::rect::operator-(const ekg::rect &rect) const {
+    return {this->x - rect.x, this->y - rect.y, this->w, this->h};
+}
+
+ekg::rect ekg::rect::operator+(const ekg::rect &rect) const {
+    return {this->x + rect.x, this->y + rect.y, this->w, this->h};
+}
+
 ekg::vec4::vec4(float posx, float posy, const ekg::vec2 &vec) {
     this->x = posx;
     this->y = posy;

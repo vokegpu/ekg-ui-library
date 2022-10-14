@@ -18,9 +18,9 @@ void ekg::ui::abstract_widget::on_reload() {
 }
 
 void ekg::ui::abstract_widget::on_pre_event(SDL_Event &sdl_event) {
-    if (ekg::was_pressed() || ekg::was_released()) {
+    if (ekg::was_pressed() || ekg::was_released() || ekg::was_motion()) {
         auto interact {ekg::interact()};
-        this->flag.hovered = ekg::rect_collide_vec(this->data->rect(), interact) && (this->data->get_parent_id() == 0 || ekg::rect_collide_vec(this->parent, interact));
+        this->flag.hovered = ekg::rect_collide_vec(this->data->widget(), interact) && (this->data->get_parent_id() == 0 || ekg::rect_collide_vec(this->parent, interact));
     }
 }
 

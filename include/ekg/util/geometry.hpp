@@ -20,7 +20,8 @@ namespace ekg {
         right  = 8,
         left   = 16,
         center = 32,
-        full   = 64
+        full   = 64,
+        next   = 128
     };
 
     struct flag {
@@ -76,6 +77,9 @@ namespace ekg {
 
         bool operator ==(const ekg::vec4&) const;
         bool operator !=(const ekg::vec4&) const;
+
+        ekg::rect operator - (const ekg::rect&) const;
+        ekg::rect operator + (const ekg::rect&) const;
     };
 
     struct docker {

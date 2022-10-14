@@ -35,11 +35,13 @@ void ekg::runtime::init() {
 
     this->prepare_tasks();
     this->prepare_ui_env();
+    this->layout_manager.init();
 }
 
 void ekg::runtime::quit() {
     this->allocator.quit();
     this->theme_manager.quit();
+    this->layout_manager.quit();
 }
 
 ekg::draw::font_renderer &ekg::runtime::get_f_renderer_small() {
@@ -84,16 +86,18 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         focused_widget->on_post_event(sdl_event);
     }
 
-    if (ekg::was_pressed()) {
+    bool pressed {ekg::was_pressed()};
+    bool released {ekg::was_released()};
+
+    if (pressed) {
         this->widget_id_pressed_focused = this->widget_id_focused;
-    } else if (ekg::was_released()) {
+    } else if (released) {
         this->widget_id_released_focused = this->widget_id_focused;
     }
 
-    if (this->prev_widget_id_focused != this->widget_id_focused && this->widget_id_focused != 0) {
+    if (this->prev_widget_id_focused != this->widget_id_focused && this->widget_id_focused != 0 && (pressed || released)) {
         this->swap_widget_id_focused = this->widget_id_focused;
         this->prev_widget_id_focused = this->widget_id_focused;
-
         ekg::dispatch(ekg::env::swap);
     }
 }
@@ -200,7 +204,7 @@ void ekg::runtime::prepare_tasks() {
                 continue;
             }
 
-            auto &rect {widgets->data->rect()};
+            auto &rect {widgets->data->widget()};
 
             switch (widgets->data->get_type()) {
                 case ekg::type::frame: {
@@ -208,6 +212,7 @@ void ekg::runtime::prepare_tasks() {
 
                     if (rect != ekg::vec4 {ui->get_pos_initial(), ui->get_size_initial()}) {
                         rect = {ui->get_pos_initial(), ui->get_size_initial()};
+                        ekg::log("hi");
                     }
 
                     break;
@@ -218,18 +223,52 @@ void ekg::runtime::prepare_tasks() {
         runtime->list_reset_widget.clear();
     }, ekg::event::alloc});
 
-    this->handler.dispatch(new ekg::cpu::event {"reload", this, [](void* data) {
+    this->handler.dispatch(new ekg::cpu::event {"synclayout", this, [](void* data) {
         auto runtime {static_cast<ekg::runtime*>(data)};
 
-        for (ekg::ui::abstract_widget* &widgets : runtime->list_update_widget) {
-            if (widgets == nullptr) {
+        for (ekg::ui::abstract_widget* &widget : runtime->list_sync_layout_widget) {
+            if (widget == nullptr) {
                 continue;
             }
 
-            widgets->on_reload();
+            runtime->layout_manager.process_scaled(widget);
         }
 
-        runtime->list_update_widget.clear();
+        runtime->list_sync_layout_widget.clear();
+    }, ekg::event::alloc});
+
+    this->handler.dispatch(new ekg::cpu::event {"reload", this, [](void* data) {
+        auto runtime {static_cast<ekg::runtime*>(data)};
+
+        for (ekg::ui::abstract_widget* &widget : runtime->list_reload_widget) {
+            if (widget == nullptr) {
+                continue;
+            }
+
+            widget->on_reload();
+
+            switch (widget->data->get_type()) {
+                case ekg::type::frame: {
+                    ekg::ui::abstract_widget* widgets {};
+                    for (uint32_t &ids : widget->data->get_parent_id_list()) {
+                        widgets = runtime->get_fast_widget_by_id(ids);
+                        if (widgets == nullptr) {
+                            continue;
+                        }
+
+                        auto &rect = widgets->data->widget();
+                        widgets->layout.w = rect.w;
+                        widgets->layout.h = rect.h;
+
+                        widgets->parent = widget->data->widget();
+                        rect = widgets->layout + widgets->parent;
+                    }
+                    break;
+                }
+            }
+        }
+
+        runtime->list_reload_widget.clear();
     }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"redraw", this, [](void* data) {
@@ -258,7 +297,7 @@ ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(uint32_t id) {
 
 void ekg::runtime::reload_widget(ekg::ui::abstract_widget* widget) {
     if (widget != nullptr) {
-        this->list_update_widget.push_back(widget);
+        this->list_reload_widget.push_back(widget);
         ekg::dispatch(ekg::env::reload);
     }
 }
@@ -272,7 +311,7 @@ ekg::service::theme &ekg::runtime::get_service_theme() {
 }
 
 void ekg::runtime::prepare_ui_env() {
-    ekg::log("creating ui fonts");
+    ekg::log("creating widget fonts");
 
     this->f_renderer_small.font_size = 16;
     this->f_renderer_small.reload();
@@ -286,7 +325,7 @@ void ekg::runtime::prepare_ui_env() {
     this->f_renderer_big.reload();
     this->f_renderer_big.bind_allocator(&this->allocator);
 
-    ekg::log("creating ui binds");
+    ekg::log("creating widget binds");
 
     this->input_manager.bind("frame-drag-activy", "mouse-left");
     this->input_manager.bind("frame-drag-activy", "finger-click");
@@ -314,6 +353,7 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
     ui->set_id(++this->token_id);
     this->swap_widget_id_focused = ui->get_id();
     ekg::ui::abstract_widget* created_widget {nullptr};
+    bool is_group {};
 
     switch (ui->get_type()) {
         case type::abstract: {
@@ -327,6 +367,8 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
             auto widget = new ekg::ui::frame_widget();
             widget->data = ui;
             created_widget = widget;
+            this->current_bind_group = created_widget;
+            is_group = true;
             break;
         }
 
@@ -339,15 +381,35 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
     }
 
     this->list_refresh_widget.push_back(created_widget);
-    this->map_widget[created_widget->data->get_id()] = created_widget;
-    ekg::log("created ui " + std::to_string(ui->get_id()));
+    this->map_widget[ui->get_id()] = created_widget;
+    this->reset_widget(created_widget);
+    this->reload_widget(created_widget);
 
+    if (!is_group && this->current_bind_group != nullptr) {
+        this->current_bind_group->data->parent(ui->get_id());
+    } else if (is_group) {
+        this->sync_layout_widget(created_widget);
+    }
+
+    ekg::log("created widget " + std::to_string(ui->get_id()));
     ekg::dispatch(ekg::env::refresh);
     ekg::dispatch(ekg::env::swap);
-    ekg::dispatch(ekg::env::redraw);
 }
 
 void ekg::runtime::reset_widget(ekg::ui::abstract_widget *widget) {
-    this->list_reset_widget.push_back(widget);
-    ekg::dispatch(ekg::env::reset);
+    if (widget != nullptr) {
+        this->list_reset_widget.push_back(widget);
+        ekg::dispatch(ekg::env::reset);
+    }
+}
+
+void ekg::runtime::sync_layout_widget(ekg::ui::abstract_widget *widget) {
+    if (widget != nullptr) {
+        this->list_sync_layout_widget.push_back(widget);
+        ekg::dispatch(ekg::env::synclayout);
+    }
+}
+
+void ekg::runtime::pop_group() {
+    this->current_bind_group = nullptr;
 }

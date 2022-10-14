@@ -11,6 +11,9 @@ namespace ekg {
     void reset(uint32_t id);
     void reset(ekg::ui::abstract_widget* widget);
 
+    void sync_layout(uint32_t id);
+    void sync_layout(ekg::ui::abstract_widget* widget);
+
     void stack(ekg::ui::abstract_widget* widget, std::map<uint32_t, ekg::ui::abstract_widget*> &map);
 }
 

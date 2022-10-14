@@ -10,7 +10,7 @@ void ekg::ui::frame_widget::destroy() {
 
 void ekg::ui::frame_widget::on_reload() {
     abstract_widget::on_reload();
-    auto &rect {this->data->rect()};
+    auto &rect {this->data->widget()};
 
     ekg::set_rect_clamped(rect, ekg::theme().min_widget_size);
     ekg::set_dock_scaled(rect, static_cast<float>(ekg::theme().frame_activy_offset), this->docker_activy_drag);
@@ -26,7 +26,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
     auto interact {ekg::interact()};
     auto ui {(ekg::ui::frame*) this->data};
-    auto &rect {this->data->rect()};
+    auto &rect {this->data->widget()};
 
     if ((ui->get_drag_dock() != ekg::dock::none || ui->get_resize_dock() != ekg::dock::none) && ekg::was_pressed() && this->flag.hovered && !this->flag.activy && (ekg::input("frame-drag-activy") || ekg::input("frame-resize-activy"))) {
         this->target_dock_drag = ekg::find_collide_dock(this->docker_activy_drag, ui->get_drag_dock(), interact);
@@ -89,7 +89,7 @@ void ekg::ui::frame_widget::on_update() {
 
 void ekg::ui::frame_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
-    auto &rect {this->data->rect()};
+    auto &rect {this->data->widget()};
     auto &theme {ekg::theme()};
 
     ekg::draw::rect(rect, theme.frame_background);

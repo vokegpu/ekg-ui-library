@@ -1,4 +1,5 @@
 #include "ekg/ui/abstract/ui_abstract.hpp"
+#include "ekg/ekg.hpp"
 
 ekg::ui::abstract::abstract() {
 
@@ -17,7 +18,12 @@ void ekg::ui::abstract::parent(uint32_t token) {
     }
 
     if (not_contains) {
-        this->parent_id_list.push_back(token);
+        auto widget = ekg::core->get_fast_widget_by_id(token);
+
+        if (widget != nullptr) {
+            this->parent_id_list.push_back(token);
+            widget->data->set_parent_id(this->id);
+        }
     }
 }
 
@@ -65,8 +71,8 @@ ekg::type ekg::ui::abstract::get_type() {
     return this->type;
 }
 
-ekg::rect &ekg::ui::abstract::rect() {
-    return this->rect_absolute;
+ekg::rect &ekg::ui::abstract::widget() {
+    return this->rect_widget;
 }
 
 uint16_t ekg::ui::abstract::get_dock() {

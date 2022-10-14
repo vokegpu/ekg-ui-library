@@ -51,14 +51,14 @@ ekg::cpu::event *ekg::ui::button::get_callback() {
 }
 
 void ekg::ui::button::set_width(float width) {
-    if (this->rect_absolute.w != width) {
-        this->rect_absolute.w = width;
+    if (this->rect_widget.w != width) {
+        this->rect_widget.w = width;
         ekg::reload(this->id);
     }
 }
 
 float ekg::ui::button::get_width() {
-    return this->rect_absolute.w;
+    return this->rect_widget.w;
 }
 
 void ekg::ui::button::set_scaled_height(int32_t scaled_height_factor) {
@@ -69,9 +69,16 @@ void ekg::ui::button::set_scaled_height(int32_t scaled_height_factor) {
 }
 
 float ekg::ui::button::get_height() {
-    return this->rect_absolute.h;
+    return this->rect_widget.h;
 }
 
 int32_t ekg::ui::button::get_scaled_height() {
     return this->scaled_height;
+}
+
+void ekg::ui::button::set_dock(uint16_t flags) {
+    if (this->dock != flags) {
+        this->dock = flags;
+        ekg::sync_layout(this->id);
+    }
 }
