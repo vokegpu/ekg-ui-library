@@ -14,11 +14,14 @@ void ekg::ui::button_widget::on_reload() {
     auto ui {(ekg::ui::button*) this->data};
     auto &rect {this->data->rect()};
     auto dock {ui->get_text_dock()};
-    auto layout_scale_data {ui->get_scaled_height()};
+    auto scaled_height {ui->get_scaled_height()};
+    auto f_renderer_normal {ekg::core->get_f_renderer_normal()};
 
-    float offset {ekg::core->get_f_renderer_normal().get_text_height() / 3};
-    float text_width {ekg::core->get_f_renderer_normal().get_text_width(ui->get_text())};
+    float text_width {f_renderer_normal.get_text_width(ui->get_text())};
+    float text_height {f_renderer_normal.get_text_height()};
+    float offset {text_height / 3};
 
+    rect.h = (text_height + offset * 2) * static_cast<float>(scaled_height);
     ekg::set_rect_clamped(rect, ekg::theme().min_widget_size);
     ekg::set_dock_scaled(rect, text_width, this->docker_text);
 
@@ -79,18 +82,19 @@ void ekg::ui::button_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
     auto ui {(ekg::ui::button*) this->data};
     auto &rect {ui->rect()};
+    auto &theme {ekg::theme()};
 
-    ekg::draw::rect(rect, ekg::theme().button_background);
-    ekg::draw::rect(rect, ekg::theme().button_outline);
+    ekg::draw::rect(rect, theme.button_background);
+    ekg::draw::rect(rect, theme.button_outline);
 
     if (this->flag.highlight) {
-        ekg::draw::rect(rect, ekg::theme().button_highlight);
+        ekg::draw::rect(rect, theme.button_highlight);
     }
 
     if (this->flag.activy) {
-        ekg::draw::rect(rect, ekg::theme().button_activy);
-        ekg::draw::rect(rect, {ekg::theme().button_activy, ekg::theme().button_outline.w});
+        ekg::draw::rect(rect, theme.button_activy);
+        ekg::draw::rect(rect, {theme.button_activy, theme.button_outline.w});
     }
 
-    ekg::core->get_f_renderer_normal().blit(ui->get_text(), this->extra.x, this->extra.y, ekg::theme().button_string);
+    ekg::core->get_f_renderer_normal().blit(ui->get_text(), this->extra.x, this->extra.y, theme.button_string);
 }

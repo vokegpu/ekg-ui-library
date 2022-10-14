@@ -90,7 +90,8 @@ void ekg::ui::frame_widget::on_update() {
 void ekg::ui::frame_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
     auto &rect {this->data->rect()};
+    auto &theme {ekg::theme()};
 
-    ekg::draw::rect(rect, ekg::theme().frame_background);
-    ekg::draw::rect(rect, {0, 0, 0, 255}, 1);
+    ekg::draw::rect(rect, theme.frame_background);
+    ekg::draw::rect(rect, theme.frame_outline, 1);
 }
