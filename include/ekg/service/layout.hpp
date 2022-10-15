@@ -29,7 +29,7 @@ namespace ekg::service {
         void init();
         void quit();
 
-        void process_scaled(ekg::ui::abstract_widget* widget);
+        void process_scaled(ekg::ui::abstract_widget* widget_parent);
         void process(ekg::ui::abstract_widget* widget);
     };
 }

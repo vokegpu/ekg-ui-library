@@ -341,7 +341,7 @@ void ekg::runtime::prepare_ui_env() {
     this->input_manager.bind("frame-drag-activy", "finger-click");
     this->input_manager.bind("frame-resize-activy", "mouse-left");
     this->input_manager.bind("frame-resize-activy", "finger-click");
-    this->input_manager.bind("button-activy", "lctrl+lshift+a");
+    this->input_manager.bind("button-activy", "mouse-left");
     this->input_manager.bind("button-activy", "finger-click");
     this->input_manager.bind("popup-activy", "mouse-right");
     this->input_manager.bind("popup-activy", "finger-hold");
@@ -350,7 +350,7 @@ void ekg::runtime::prepare_ui_env() {
     this->input_manager.bind("textbox-action-delete-left", "backspace");
     this->input_manager.bind("textbox-action-select-all", "lctrl+a");
     this->input_manager.bind("textbox-action-select-all", "finger-hold");
-    this->input_manager.bind("textbox-action-select-all", "mouse-double-");
+    this->input_manager.bind("textbox-action-select-all", "mouse-left-double");
     this->input_manager.bind("textbox-action-delete-right", "delete");
     this->input_manager.bind("textbox-action-break-line", "return");
     this->input_manager.bind("textbox-action-up", "up");

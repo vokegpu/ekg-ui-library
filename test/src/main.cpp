@@ -47,25 +47,9 @@ int32_t main(int, char**) {
     auto frame2 = ekg::frame("hi this button button", {20, 50}, {200, 200});
     frame2->set_drag(ekg::dock::top);
     frame2->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
-    ekg::button("hi this");
-    ekg::pop_group();
-
-    auto frame3 = ekg::frame("hi this button button", {20, 50}, {200, 200});
-    frame3->set_drag(ekg::dock::top);
-    frame3->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
-    ekg::button("hi this");
-    ekg::pop_group();
-
-    auto frame4 = ekg::frame("hi this button button", {20, 50}, {200, 200});
-    frame4->set_drag(ekg::dock::top);
-    frame4->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
-    ekg::button("hi this");
-    ekg::pop_group();
-
-    auto frame5 = ekg::frame("hi this button button", {20, 50}, {200, 200});
-    frame5->set_drag(ekg::dock::top);
-    frame5->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
-    ekg::button("hi this");
+    ekg::button("button one", ekg::dock::next | ekg::dock::top | ekg::dock::left);
+    ekg::button("button two");
+    ekg::button("button three");
     ekg::pop_group();
 
     /*
@@ -92,11 +76,6 @@ int32_t main(int, char**) {
 
                     default: {
                         ekg::event(sdl_event);
-
-                        if (ekg::input("button-activy")) {
-                            ekg::log("The input_manager bind for button-activy.");
-                        }
-
                         break;
                     }
                 }

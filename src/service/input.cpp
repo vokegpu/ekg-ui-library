@@ -129,28 +129,44 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_MOUSEBUTTONDOWN: {
+            bool double_click_factor {ekg::reach(this->double_interact, 3000)};]
+            // todo fix double click
+
             switch (sdl_event.button.button) {
                 case SDL_BUTTON_LEFT: {
                     this->callback("mouse-left", true);
+                    this->callback("mouse-left-double", false);
+
+                    if (!double_click_factor) {
+                        this->callback("mouse-left-double", true);
+                    } else {
+                        ekg::reset(this->double_interact);
+                    }
                     break;
                 }
 
                 case SDL_BUTTON_RIGHT: {
                     this->callback("mouse-right", true);
+                    this->callback("mouse-right-double", !double_click_factor);
                     break;
                 }
 
                 case SDL_BUTTON_MIDDLE: {
                     this->callback("mouse-middle", true);
+                    this->callback("mouse-middle-double", !double_click_factor);
                     break;
                 }
 
                 default: {
                     this->callback("mouse-" + std::to_string(sdl_event.button.button), true);
+                    this->callback("mouse-" + std::to_string(sdl_event.button.button) + "-double", double_click_factor);
                     break;
                 }
             }
 
+            if (double_click_factor) {
+
+            }
             break;
         }
 
@@ -158,21 +174,25 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
             switch (sdl_event.button.button) {
                 case SDL_BUTTON_LEFT: {
                     this->callback("mouse-left", false);
+                    this->callback("mouse-left-double", false);
                     break;
                 }
 
                 case SDL_BUTTON_RIGHT: {
                     this->callback("mouse-right", false);
+                    this->callback("mouse-right-double", false);
                     break;
                 }
 
                 case SDL_BUTTON_MIDDLE: {
                     this->callback("mouse-middle", false);
+                    this->callback("mouse-middle-double", false);
                     break;
                 }
 
                 default: {
                     this->callback("mouse-" + std::to_string(sdl_event.button.button), false);
+                    this->callback("mouse-" + std::to_string(sdl_event.button.button) + "-double", false);
                     break;
                 }
             }
@@ -192,10 +212,17 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
 
         case SDL_FINGERDOWN: {
             ekg::reset(this->timing_last_interact);
+            bool reach_double_interact {ekg::reset(this->double_interact)};
 
-            this->callback("finger-click", true);
             this->last_finger_interact.x = sdl_event.tfinger.x;
             this->last_finger_interact.y = sdl_event.tfinger.y;
+
+            this->callback("finger-click", true);
+            this->callback("finger-click-double", !reach_double_interact);
+
+            if (reach_double_interact) {
+                ekg::reset(this->double_interact);
+            }
 
             break;
         }
@@ -203,6 +230,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         case SDL_FINGERUP: {
             this->callback("finger-hold", (this->finger_hold_event = ekg::reach(this->timing_last_interact, 750)));
             this->callback("finger-click", false);
+            this->callback("finger-click-double", false);
 
             break;
         }
@@ -257,10 +285,6 @@ void ekg::service::input::on_update() {
         this->special_key_unit_pressed.clear();
         this->special_key_released.clear();
     }
-}
-
-void ekg::service::input::registry(const std::string &input_tag) {
-    this->map_register[input_tag] = false;
 }
 
 void ekg::service::input::bind(const std::string &input_tag, const std::string &key) {

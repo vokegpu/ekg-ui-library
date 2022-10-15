@@ -23,6 +23,7 @@ namespace ekg::service {
             bool wheel {};
 
             ekg::vec4 last_finger_interact {};
+            ekg::timing double_interact {};
 
             bool finger_hold_event {};
             bool finger_wheel_event {};
@@ -38,7 +39,6 @@ namespace ekg::service {
             bool was_motion();
             bool was_wheel();
 
-            void registry(const std::string &input_tag);
             void bind(const std::string &input_tag, const std::string &key);
             void unbind(const std::string &input_tag, const std::string &key);
             void callback(const std::string &key, bool callback);
