@@ -1,4 +1,4 @@
-The official runtime ekg widget library.
+The official runtime ekg widget library source code.
 
 ---
 
