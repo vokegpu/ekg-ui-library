@@ -7,6 +7,12 @@
 namespace ekg {
     extern ekg::rect empty;
 
+    struct stack {
+        std::map<uint32_t, bool> registry {};
+        std::vector<ekg::ui::abstract_widget*> ordered_list {};
+        void clear();
+    };
+
     void reload(uint32_t id);
     void reload(ekg::ui::abstract_widget* widget);
 
@@ -16,7 +22,7 @@ namespace ekg {
     void sync_layout(uint32_t id);
     void sync_layout(ekg::ui::abstract_widget* widget);
 
-    void stack(ekg::ui::abstract_widget* widget, std::map<uint32_t, ekg::ui::abstract_widget*> &map);
+    void push_back_stack(ekg::ui::abstract_widget* widget, ekg::stack &stack);
 }
 
 #endif

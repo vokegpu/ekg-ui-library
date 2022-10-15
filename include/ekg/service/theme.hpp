@@ -25,6 +25,10 @@ namespace ekg::service {
         ekg::vec4 button_highlight {};
         /* End of button theme. */
 
+        /* Start of label. */
+        ekg::vec4 label_string {};
+        /* End of label. */
+
         float min_widget_size {5};
 
         void init();

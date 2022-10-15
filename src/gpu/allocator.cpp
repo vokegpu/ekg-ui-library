@@ -68,8 +68,6 @@ void ekg::gpu::allocator::revoke() {
     this->factor_changed = false;
 
     if (should_re_alloc_buffers) {
-        ekg::log("sending buffers for gpu | re allocating buffers for gpu");
-
         glBindVertexArray(this->buffer_list);
         glBindBuffer(GL_ARRAY_BUFFER, this->buffer_vertex);
         glEnableVertexAttribArray(0);

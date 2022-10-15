@@ -16,6 +16,7 @@ namespace ekg::ui {
         ekg::rect* parent {};
         ekg::rect extra {};
         ekg::rect layout {};
+        ekg::rect ghost {};
 
         virtual void destroy();
         virtual void on_reload();

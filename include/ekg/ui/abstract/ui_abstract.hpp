@@ -11,7 +11,7 @@ namespace ekg {
     };
 
     enum class type {
-        abstract, frame, button, slider, slider2d, checkbox, textbox, entrybox, combobox, tab, popup
+        abstract, frame, button, label, slider, slider2d, checkbox, textbox, entrybox, combobox, tab, popup
     };
 
     namespace ui {
@@ -23,9 +23,12 @@ namespace ekg {
 
             bool alive {true};
             uint16_t dock {};
+
             ekg::state state {};
             ekg::type type {ekg::type::abstract};
             ekg::rect rect_widget {};
+            ekg::rect sync_ui {};
+            bool sync_with_ui {};
         public:
             abstract();
             ~abstract();
@@ -48,8 +51,12 @@ namespace ekg {
             void set_type(const ekg::type&);
             ekg::type get_type();
 
+            void set_sync_with_ui(bool state);
+            bool should_sync_with_ui();
+
             uint16_t get_dock();
             ekg::rect &widget();
+            ekg::rect &ui();
         };
     }
 }

@@ -21,8 +21,10 @@ void ekg::ui::abstract::parent(uint32_t token) {
         auto widget = ekg::core->get_fast_widget_by_id(token);
 
         if (widget != nullptr) {
+            auto group = ekg::core->get_fast_widget_by_id(this->id);
             this->parent_id_list.push_back(token);
             widget->data->set_parent_id(this->id);
+            widget->parent = &group->data->widget();
         }
     }
 }
@@ -77,4 +79,16 @@ ekg::rect &ekg::ui::abstract::widget() {
 
 uint16_t ekg::ui::abstract::get_dock() {
     return this->dock;
+}
+
+ekg::rect &ekg::ui::abstract::ui() {
+    return this->sync_ui;
+}
+
+void ekg::ui::abstract::set_sync_with_ui(bool state) {
+    this->sync_with_ui = state;
+}
+
+bool ekg::ui::abstract::should_sync_with_ui() {
+    return this->sync_with_ui;
 }

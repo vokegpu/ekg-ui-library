@@ -5,7 +5,7 @@
 
 namespace ekg {
     enum class env {
-        refresh, swap, reset, synclayout, reload, redraw
+        refresh, swap, reset, reload, synclayout, redraw
     };
 
     enum class cursor {

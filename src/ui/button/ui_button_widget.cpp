@@ -12,7 +12,7 @@ void ekg::ui::button_widget::on_reload() {
     abstract_widget::on_reload();
 
     auto ui {(ekg::ui::button*) this->data};
-    auto &rect {this->data->widget()};
+    auto &rect = (this->data->widget() = this->layout + *this->parent);
     auto dock {ui->get_text_dock()};
     auto scaled_height {ui->get_scaled_height()};
     auto f_renderer_normal {ekg::core->get_f_renderer_normal()};
@@ -21,11 +21,11 @@ void ekg::ui::button_widget::on_reload() {
     float text_height {f_renderer_normal.get_text_height()};
     float offset {text_height / 3};
 
-    rect.h = (text_height + offset) * static_cast<float>(scaled_height);
-    rect.w = ekg::min(rect.h, text_width + offset * 2);
+    layout.h = (text_height + offset) * static_cast<float>(scaled_height);
+    layout.w = ekg::min(rect.h, text_width + offset * 2);
 
-    ekg::set_rect_clamped(rect, ekg::theme().min_widget_size);
-    ekg::set_dock_scaled({0, 0, rect.w, rect.h}, text_width, this->docker_text);
+    ekg::set_rect_clamped(layout, ekg::theme().min_widget_size);
+    ekg::set_dock_scaled({0, 0, rect.w, rect.h}, {text_width, text_height}, this->docker_text);
 
     if (ekg::bitwise::contains(dock, ekg::dock::center)) {
         this->extra.x = this->docker_text.center.x;
@@ -89,7 +89,7 @@ void ekg::ui::button_widget::on_update() {
 void ekg::ui::button_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
     auto ui {(ekg::ui::button*) this->data};
-    auto &rect {ui->widget()};
+    auto &rect = (this->data->widget() = this->layout + *this->parent);
     auto &theme {ekg::theme()};
 
     ekg::draw::rect(rect, theme.button_background);

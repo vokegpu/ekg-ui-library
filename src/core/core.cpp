@@ -4,10 +4,11 @@
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 #include "ekg/ui/button/ui_button_widget.hpp"
 #include "ekg/util/util_ui.hpp"
+#include "ekg/ui/label/ui_label_widget.hpp"
 
-std::map<uint32_t, ekg::ui::abstract_widget*> ekg::swap::fast {};
-std::map<uint32_t, ekg::ui::abstract_widget*> ekg::swap::continuous {};
-std::map<uint32_t, ekg::ui::abstract_widget*> ekg::swap::target {};
+ekg::stack ekg::swap::fast {};
+ekg::stack ekg::swap::continuous {};
+ekg::stack ekg::swap::target {};
 std::vector<ekg::ui::abstract_widget*> ekg::swap::buffer {};
 
 void ekg::swap::refresh() {
@@ -58,7 +59,14 @@ ekg::draw::font_renderer &ekg::runtime::get_f_renderer_big() {
 
 void ekg::runtime::process_event(SDL_Event &sdl_event) {
     this->input_manager.on_event(sdl_event);
-    this->widget_id_focused = 0;
+
+    bool pressed {ekg::was_pressed()};
+    bool released {ekg::was_released()};
+
+    if (pressed || released || ekg::was_motion()) {
+        this->widget_id_focused = 0;
+    }
+
     ekg::ui::abstract_widget* focused_widget {nullptr};
 
     for (ekg::ui::abstract_widget* &widgets : this->list_widget) {
@@ -86,9 +94,6 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         focused_widget->on_post_event(sdl_event);
     }
 
-    bool pressed {ekg::was_pressed()};
-    bool released {ekg::was_released()};
-
     if (pressed) {
         this->widget_id_pressed_focused = this->widget_id_focused;
     } else if (released) {
@@ -98,7 +103,9 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     if (this->prev_widget_id_focused != this->widget_id_focused && this->widget_id_focused != 0 && (pressed || released)) {
         this->swap_widget_id_focused = this->widget_id_focused;
         this->prev_widget_id_focused = this->widget_id_focused;
+
         ekg::dispatch(ekg::env::swap);
+        ekg::dispatch(ekg::env::redraw);
     }
 }
 
@@ -158,36 +165,34 @@ void ekg::runtime::prepare_tasks() {
                 continue;
             }
 
-            if (ekg::swap::fast[widgets->data->get_id()] != nullptr || ekg::swap::target[widgets->data->get_id()] != nullptr) {
+            if (ekg::swap::fast.registry[widgets->data->get_id()] || ekg::swap::target.registry[widgets->data->get_id()]) {
                 continue;
             }
 
             ekg::swap::fast.clear();
-            ekg::stack(widgets, ekg::swap::fast);
+            ekg::push_back_stack(widgets, ekg::swap::fast);
 
-            if (ekg::swap::fast[runtime->swap_widget_id_focused] != nullptr) {
+            if (ekg::swap::fast.registry[runtime->swap_widget_id_focused]) {
                 ekg::swap::target = ekg::swap::fast;
             } else {
-                for (std::pair<uint32_t, ekg::ui::abstract_widget*> entry : ekg::swap::fast) {
-                    ekg::swap::continuous[entry.first] = entry.second;
-                }
+                ekg::swap::continuous.ordered_list.insert(ekg::swap::continuous.ordered_list.end(), ekg::swap::fast.ordered_list.begin(), ekg::swap::fast.ordered_list.end());
             }
         }
 
-        for (std::pair<uint32_t, ekg::ui::abstract_widget*> entry : ekg::swap::continuous) {
-            if (entry.second == nullptr) {
+        for (ekg::ui::abstract_widget* &widget : ekg::swap::continuous.ordered_list) {
+            if (widget == nullptr) {
                 continue;
             }
 
-            ekg::swap::buffer.push_back(entry.second);
+            ekg::swap::buffer.push_back(widget);
         }
 
-        for (std::pair<uint32_t, ekg::ui::abstract_widget*> entry : ekg::swap::target) {
-            if (entry.second == nullptr) {
+        for (ekg::ui::abstract_widget* &widget : ekg::swap::target.ordered_list) {
+            if (widget) {
                 continue;
             }
 
-            ekg::swap::buffer.push_back(entry.second);
+            ekg::swap::buffer.push_back(widget);
         }
 
         runtime->list_widget = ekg::swap::buffer;
@@ -204,15 +209,23 @@ void ekg::runtime::prepare_tasks() {
                 continue;
             }
 
-            auto &rect {widgets->data->widget()};
-
             switch (widgets->data->get_type()) {
                 case ekg::type::frame: {
                     auto ui {(ekg::ui::frame*) widgets->data};
+                    auto pos {ui->get_pos_initial()};
+                    auto size {ui->get_size_initial()};
 
-                    if (rect != ekg::vec4 {ui->get_pos_initial(), ui->get_size_initial()}) {
-                        rect = {ui->get_pos_initial(), ui->get_size_initial()};
-                        ekg::log("hi");
+                    if (ui->widget() != ekg::vec4 {pos, size}) {
+                        widgets->layout.w = size.x;
+                        widgets->layout.h = size.y;
+
+                        if (ui->get_parent_id() != 0) {
+                            widgets->layout.x = pos.x - widgets->parent->x;
+                            widgets->layout.y = pos.y - widgets->parent->y;
+                        } else {
+                            widgets->parent->x = pos.x;
+                            widgets->parent->y = pos.y;
+                        }
                     }
 
                     break;
@@ -223,9 +236,38 @@ void ekg::runtime::prepare_tasks() {
         runtime->list_reset_widget.clear();
     }, ekg::event::alloc});
 
+    this->handler.dispatch(new ekg::cpu::event {"reload", this, [](void* data) {
+        auto runtime {static_cast<ekg::runtime*>(data)};
+
+        for (ekg::ui::abstract_widget* &widget : runtime->list_reload_widget) {
+            if (widget == nullptr) {
+                continue;
+            }
+
+            if (widget->data->should_sync_with_ui()) {
+                widget->data->set_sync_with_ui(false);
+                auto rect = widget->data->ui();
+
+                widget->layout.w = rect.w;
+                widget->layout.h = rect.h;
+
+                if (widget->data->get_parent_id() != 0) {
+                    widget->layout.x = rect.x - widget->parent->x;
+                    widget->layout.y = rect.y - widget->parent->y;
+                } else {
+                    widget->parent->x = rect.x;
+                    widget->parent->y = rect.y;
+                }
+            }
+
+            widget->on_reload();
+        }
+
+        runtime->list_reload_widget.clear();
+    }, ekg::event::alloc});
+
     this->handler.dispatch(new ekg::cpu::event {"synclayout", this, [](void* data) {
         auto runtime {static_cast<ekg::runtime*>(data)};
-        ekg::log("hijihih");
 
         for (ekg::ui::abstract_widget* &widget : runtime->list_sync_layout_widget) {
             if (widget == nullptr) {
@@ -236,40 +278,6 @@ void ekg::runtime::prepare_tasks() {
         }
 
         runtime->list_sync_layout_widget.clear();
-    }, ekg::event::alloc});
-
-    this->handler.dispatch(new ekg::cpu::event {"reload", this, [](void* data) {
-        auto runtime {static_cast<ekg::runtime*>(data)};
-
-        for (ekg::ui::abstract_widget* &widget : runtime->list_reload_widget) {
-            if (widget == nullptr) {
-                continue;
-            }
-
-            widget->on_reload();
-
-            switch (widget->data->get_type()) {
-                case ekg::type::frame: {
-                    ekg::ui::abstract_widget* widgets {};
-                    for (uint32_t &ids : widget->data->get_parent_id_list()) {
-                        widgets = runtime->get_fast_widget_by_id(ids);
-                        if (widgets == nullptr) {
-                            continue;
-                        }
-
-                        auto &rect = widgets->data->widget();
-                        widgets->layout.w = rect.w;
-                        widgets->layout.h = rect.h;
-
-                        widgets->parent = widget->data->widget();
-                        rect = widgets->layout + widgets->parent;
-                    }
-                    break;
-                }
-            }
-        }
-
-        runtime->list_reload_widget.clear();
     }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"redraw", this, [](void* data) {
@@ -375,6 +383,13 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
 
         case type::button: {
             auto widget = new ekg::ui::button_widget();
+            widget->data = ui;
+            created_widget = widget;
+            break;
+        }
+
+        case type::label: {
+            auto widget = new ekg::ui::label_widget();
             widget->data = ui;
             created_widget = widget;
             break;

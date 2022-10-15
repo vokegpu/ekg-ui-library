@@ -121,3 +121,14 @@ ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
 void ekg::pop_group() {
     ekg::core->pop_group();
 }
+
+ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
+    auto ui = new ekg::ui::label();
+    ui->set_type(ekg::type::label);
+    ekg::core->create_ui(ui);
+
+    ui->set_text(ekg::dock::center);
+    ui->set_text(text);
+    ui->set_dock(dock);
+    return ui;
+}

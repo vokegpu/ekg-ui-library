@@ -4,7 +4,6 @@
 float ekg::display::dt {};
 int32_t ekg::display::width {};
 int32_t ekg::display::height {};
-char* const ekg::empty {};
 
 bool ekg::rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b) {
     return rect_a.x < rect_b.x + rect_b.w && rect_a.x + rect_a.w > rect_b.x &&
@@ -47,15 +46,15 @@ ekg::vec4 &ekg::interact() {
     return ekg::core->get_service_input().interact;
 }
 
-void ekg::set_dock_scaled(const ekg::rect &rect, float offset, ekg::docker &docker) {
+void ekg::set_dock_scaled(const ekg::rect &rect, const ekg::vec2 &offset, ekg::docker &docker) {
     docker.rect = rect;
 
     docker.left.x = rect.x;
     docker.left.y = rect.y;
-    docker.left.w = offset;
+    docker.left.w = offset.x;
     docker.left.h = rect.h;
 
-    docker.right.w = offset;
+    docker.right.w = offset.x;
     docker.right.h = rect.h;
     docker.right.x = rect.x + rect.w - docker.right.w;
     docker.right.y = rect.y;
@@ -63,19 +62,20 @@ void ekg::set_dock_scaled(const ekg::rect &rect, float offset, ekg::docker &dock
     docker.top.x = rect.x;
     docker.top.y = rect.y;
     docker.top.w = rect.w;
-    docker.top.h = offset;
+    docker.top.h = offset.y;
 
     docker.bottom.w = rect.w;
-    docker.bottom.h = offset;
+    docker.bottom.h = offset.y;
     docker.bottom.x = rect.x;
     docker.bottom.y = rect.y + rect.h - docker.bottom.h;
 
-    auto offset_div = offset / 2;
+    auto dx = offset.x / 2;
+    auto dy = offset.y / 2;
 
-    docker.center.x = rect.x + (rect.w / 2) - offset_div;
-    docker.center.y = rect.y + (rect.h / 2) - offset_div;
-    docker.center.w = offset;
-    docker.center.h = offset;
+    docker.center.x = rect.x + (rect.w / 2) - dx;
+    docker.center.y = rect.y + (rect.h / 2) - dy;
+    docker.center.w = dx;
+    docker.center.h = dy;
 }
 
 int32_t ekg::find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::vec4 &vec) {
@@ -194,4 +194,8 @@ ekg::vec4::vec4(const ekg::vec4 &pos, float depth) {
     this->y = pos.y;
     this->z = pos.z;
     this->w = depth;
+}
+
+ekg::vec2 ekg::vec2::operator/(float f) {
+    return {this->x / f, this->y / f};
 }

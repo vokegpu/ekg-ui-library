@@ -8,14 +8,14 @@
 #include "ekg/service/input.hpp"
 #include "ekg/core/feature.hpp"
 #include "ekg/service/layout.hpp"
-#include <map>
+#include "ekg/util/util_ui.hpp"
 
 namespace ekg {
     /* The swap maps for prevent copies of hashes and vector. */
     struct swap {
-        static std::map<uint32_t, ekg::ui::abstract_widget*> fast;
-        static std::map<uint32_t, ekg::ui::abstract_widget*> continuous;
-        static std::map<uint32_t, ekg::ui::abstract_widget*> target;
+        static ekg::stack fast;
+        static ekg::stack continuous;
+        static ekg::stack target;
         static std::vector<ekg::ui::abstract_widget*> buffer;
 
         static void refresh();

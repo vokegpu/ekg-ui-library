@@ -51,8 +51,8 @@ ekg::cpu::event *ekg::ui::button::get_callback() {
 }
 
 void ekg::ui::button::set_width(float width) {
-    if (this->rect_widget.w != width) {
-        this->rect_widget.w = width;
+    if (this->sync_ui.w != width) {
+        this->sync_ui.w = width;
         ekg::reload(this->id);
     }
 }

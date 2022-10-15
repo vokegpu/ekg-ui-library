@@ -28,6 +28,7 @@ int32_t main(int, char**) {
         ekg::log("GLEW initialised");
     }
 
+    SDL_GL_SetSwapInterval(1);
     ekg::init(sdl_win, "JetBrainsMono-Bold.ttf");
     ekg::log("OpenGL 4 context created!");
 
@@ -43,11 +44,29 @@ int32_t main(int, char**) {
     uint64_t last_ticked_frames {};
     uint64_t ticked_frames {};
 
-    auto frame = ekg::frame("hi", {20, 50}, {200, 200});
-    frame->set_drag(ekg::dock::top);
-    frame->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+    auto frame2 = ekg::frame("hi this button button", {20, 50}, {200, 200});
+    frame2->set_drag(ekg::dock::top);
+    frame2->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+    ekg::button("hi this");
+    ekg::pop_group();
 
-    ekg::dispatch(ekg::env::synclayout);
+    auto frame3 = ekg::frame("hi this button button", {20, 50}, {200, 200});
+    frame3->set_drag(ekg::dock::top);
+    frame3->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+    ekg::button("hi this");
+    ekg::pop_group();
+
+    auto frame4 = ekg::frame("hi this button button", {20, 50}, {200, 200});
+    frame4->set_drag(ekg::dock::top);
+    frame4->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+    ekg::button("hi this");
+    ekg::pop_group();
+
+    auto frame5 = ekg::frame("hi this button button", {20, 50}, {200, 200});
+    frame5->set_drag(ekg::dock::top);
+    frame5->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+    ekg::button("hi this");
+    ekg::pop_group();
 
     /*
      * Mainloop.

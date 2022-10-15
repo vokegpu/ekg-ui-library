@@ -27,12 +27,13 @@ void ekg::sync_layout(ekg::ui::abstract_widget *widget) {
     ekg::core->sync_layout_widget(widget);
 }
 
-void ekg::stack(ekg::ui::abstract_widget* widget, std::map<uint32_t, ekg::ui::abstract_widget*> &map) {
-    if (widget == nullptr || map[widget->data->get_id()] != nullptr) {
+void ekg::push_back_stack(ekg::ui::abstract_widget* widget, ekg::stack &stack) {
+    if (widget == nullptr || stack.registry[widget->data->get_id()]) {
         return;
     }
 
-    map[widget->data->get_id()] = widget;
+    stack.registry[widget->data->get_id()] = true;
+    stack.ordered_list.push_back(widget);
 
     for (uint32_t &ids : widget->data->get_parent_id_list()) {
         auto widgets = ekg::core->get_fast_widget_by_id(ids);
@@ -41,6 +42,11 @@ void ekg::stack(ekg::ui::abstract_widget* widget, std::map<uint32_t, ekg::ui::ab
             continue;
         }
 
-        ekg::stack(widgets, map);
+        ekg::push_back_stack(widgets, stack);
     }
+}
+
+void ekg::stack::clear() {
+    this->ordered_list.clear();
+    this->registry.clear();
 }
