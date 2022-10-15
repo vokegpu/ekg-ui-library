@@ -16,7 +16,7 @@ namespace ekg::ui {
         void set_width(float width);
         float get_width();
 
-        void set_height(int32_t scaled_factor_height);
+        void set_scaled_height(int32_t scaled_factor_height);
         float get_height();
 
         void set_text(std::string_view);

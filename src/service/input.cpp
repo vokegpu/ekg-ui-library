@@ -129,7 +129,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_MOUSEBUTTONDOWN: {
-            bool double_click_factor {ekg::reach(this->double_interact, 3000)};]
+            bool double_click_factor {ekg::reach(this->double_interact, 3000)};
             // todo fix double click
 
             switch (sdl_event.button.button) {

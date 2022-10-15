@@ -33,7 +33,7 @@ float ekg::ui::label::get_width() {
     return this->rect_widget.w;
 }
 
-void ekg::ui::label::set_height(int32_t scaled_factor_height) {
+void ekg::ui::label::set_scaled_height(int32_t scaled_factor_height) {
     if (this->scaled_height != scaled_factor_height) {
         this->scaled_height = scaled_factor_height;
         ekg::reload(this->id);

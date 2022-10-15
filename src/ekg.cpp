@@ -115,6 +115,7 @@ ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
     ui->set_text(ekg::dock::center);
     ui->set_text(text);
     ui->set_dock(dock);
+    ui->set_scaled_height(1);
     return ui;
 }
 
@@ -130,5 +131,6 @@ ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
     ui->set_text(ekg::dock::center);
     ui->set_text(text);
     ui->set_dock(dock);
+    ui->set_scaled_height(1);
     return ui;
 }

@@ -21,11 +21,11 @@ void ekg::ui::button_widget::on_reload() {
     float text_height {f_renderer_normal.get_text_height()};
     float offset {text_height / 3};
 
-    layout.h = (text_height + offset) * static_cast<float>(scaled_height);
-    layout.w = ekg::min(rect.h, text_width + offset * 2);
+    this->layout.w = ekg::min(this->layout.w, text_width + offset);
+    this->layout.h = (text_height + offset) * static_cast<float>(scaled_height);
 
-    ekg::set_rect_clamped(layout, ekg::theme().min_widget_size);
-    ekg::set_dock_scaled({0, 0, rect.w, rect.h}, {text_width, text_height}, this->docker_text);
+    ekg::set_rect_clamped(this->layout, ekg::theme().min_widget_size);
+    ekg::set_dock_scaled({0, 0, this->layout.w, this->layout.h}, {text_width, text_height}, this->docker_text);
 
     if (ekg::bitwise::contains(dock, ekg::dock::center)) {
         this->extra.x = this->docker_text.center.x;

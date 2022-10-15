@@ -47,9 +47,26 @@ int32_t main(int, char**) {
     auto frame2 = ekg::frame("hi this button button", {20, 50}, {200, 200});
     frame2->set_drag(ekg::dock::top);
     frame2->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+    ekg::label("Looking for buttons?", ekg::dock::next | ekg::dock::top | ekg::dock::left);
     ekg::button("button one", ekg::dock::next | ekg::dock::top | ekg::dock::left);
-    ekg::button("button two");
-    ekg::button("button three");
+    ekg::button("button two", ekg::dock::next | ekg::dock::top | ekg::dock::left);
+    ekg::button("button three", ekg::dock::next | ekg::dock::top | ekg::dock::left);
+    ekg::pop_group();
+
+    auto frame3 = ekg::frame("hi this button button", {20, 50}, {200, 200});
+    frame3->set_drag(ekg::dock::top);
+    frame3->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+    ekg::label("What?", ekg::dock::next | ekg::dock::top | ekg::dock::left);
+    ekg::button("this is another button!", ekg::dock::next | ekg::dock::top | ekg::dock::left);
+    ekg::button("stop looking me", ekg::dock::next | ekg::dock::top | ekg::dock::left);
+    ekg::pop_group();
+
+    auto frame4 = ekg::frame("hi this button button", {20, 50}, {200, 200});
+    frame4->set_drag(ekg::dock::top);
+    frame4->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+    ekg::label("Please!! My IP is...", ekg::dock::next | ekg::dock::top | ekg::dock::left);
+    ekg::button("192.16.8.2.2", ekg::dock::next | ekg::dock::top | ekg::dock::left);
+    ekg::button("Kisses", ekg::dock::next | ekg::dock::top | ekg::dock::left);
     ekg::pop_group();
 
     /*

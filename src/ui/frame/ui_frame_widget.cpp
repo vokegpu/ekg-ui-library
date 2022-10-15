@@ -108,5 +108,6 @@ void ekg::ui::frame_widget::on_draw_refresh() {
     auto &theme {ekg::theme()};
 
     ekg::draw::rect(rect, theme.frame_background);
+    ekg::draw::rect(this->docker_activy_drag.top, theme.frame_border);
     ekg::draw::rect(rect, theme.frame_outline, 1);
 }
