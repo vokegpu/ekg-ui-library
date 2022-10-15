@@ -13,9 +13,9 @@
 namespace ekg {
     /* The swap maps for prevent copies of hashes and vector. */
     struct swap {
-        static ekg::stack fast;
-        static ekg::stack continuous;
-        static ekg::stack target;
+        static ekg::stack collect;
+        static ekg::stack back;
+        static ekg::stack front;
         static std::vector<ekg::ui::abstract_widget*> buffer;
 
         static void refresh();

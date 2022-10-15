@@ -3,18 +3,17 @@
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 #include "ekg/ui/button/ui_button_widget.hpp"
-#include "ekg/util/util_ui.hpp"
 #include "ekg/ui/label/ui_label_widget.hpp"
 
-ekg::stack ekg::swap::fast {};
-ekg::stack ekg::swap::continuous {};
-ekg::stack ekg::swap::target {};
+ekg::stack ekg::swap::collect {};
+ekg::stack ekg::swap::back {};
+ekg::stack ekg::swap::front {};
 std::vector<ekg::ui::abstract_widget*> ekg::swap::buffer {};
 
 void ekg::swap::refresh() {
-    ekg::swap::fast.clear();
-    ekg::swap::continuous.clear();
-    ekg::swap::target.clear();
+    ekg::swap::collect.clear();
+    ekg::swap::back.clear();
+    ekg::swap::front.clear();
     ekg::swap::buffer.clear();
 }
 
@@ -165,38 +164,40 @@ void ekg::runtime::prepare_tasks() {
                 continue;
             }
 
-            if (ekg::swap::fast.registry[widgets->data->get_id()] || ekg::swap::target.registry[widgets->data->get_id()]) {
+            if (ekg::swap::collect.registry[widgets->data->get_id()] || ekg::swap::front.registry[widgets->data->get_id()]) {
                 continue;
             }
 
-            ekg::swap::fast.clear();
-            ekg::push_back_stack(widgets, ekg::swap::fast);
+            ekg::swap::collect.clear();
+            ekg::push_back_stack(widgets, ekg::swap::collect);
 
-            if (ekg::swap::fast.registry[runtime->swap_widget_id_focused]) {
-                ekg::swap::target = ekg::swap::fast;
+            if (ekg::swap::collect.registry[runtime->swap_widget_id_focused]) {
+                ekg::swap::front.registry.insert(ekg::swap::collect.registry.begin(), ekg::swap::collect.registry.end());
+                ekg::swap::front.ordered_list.insert(ekg::swap::front.ordered_list.end(), ekg::swap::collect.ordered_list.begin(), ekg::swap::collect.ordered_list.end());
             } else {
-                ekg::swap::continuous.ordered_list.insert(ekg::swap::continuous.ordered_list.end(), ekg::swap::fast.ordered_list.begin(), ekg::swap::fast.ordered_list.end());
+                ekg::swap::back.registry.insert(ekg::swap::collect.registry.begin(), ekg::swap::collect.registry.end());
+                ekg::swap::back.ordered_list.insert(ekg::swap::back.ordered_list.end(), ekg::swap::collect.ordered_list.begin(), ekg::swap::collect.ordered_list.end());
             }
         }
 
-        for (ekg::ui::abstract_widget* &widget : ekg::swap::continuous.ordered_list) {
+        runtime->swap_widget_id_focused = 0;
+        runtime->list_widget.clear();
+
+        for (ekg::ui::abstract_widget* &widget : ekg::swap::back.ordered_list) {
             if (widget == nullptr) {
                 continue;
             }
 
-            ekg::swap::buffer.push_back(widget);
+            runtime->list_widget.push_back(widget);
         }
 
-        for (ekg::ui::abstract_widget* &widget : ekg::swap::target.ordered_list) {
-            if (widget) {
+        for (ekg::ui::abstract_widget* &widget : ekg::swap::front.ordered_list) {
+            if (widget == nullptr) {
                 continue;
             }
 
-            ekg::swap::buffer.push_back(widget);
+            runtime->list_widget.push_back(widget);
         }
-
-        runtime->list_widget = ekg::swap::buffer;
-        runtime->swap_widget_id_focused = 0;
 
         ekg::swap::refresh();
     }, ekg::event::alloc});
