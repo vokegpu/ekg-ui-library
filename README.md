@@ -14,7 +14,7 @@ For use the library on your project, download the repo or release, then you add 
 
 # Services
 
-The theme store the current colors scheme loaded, you can use the default or load one theme file. One of important objectives is make the UI smooth in mobile devices.
+The theme store the current colors scheme loaded, you can use the default or load one theme file. One of important objectives is make the UI looks pretty and smooth in mobile devices.
 
 Input manager handle all bindings of widgets element, you can tag combinations of different inputs.  
 When pressing units keybinds (special keys + random keyboard key) you need to write in the correct pattern: ctrl -> shift -> tab; E.g "lshift+tab+b"; l (left) r (right).  
