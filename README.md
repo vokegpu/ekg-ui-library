@@ -33,7 +33,7 @@ int32_t main(int32_t, char**) {
   // do samething to create new widgets.
   
   /*
-   * mainloop of your application/program.
+   * mainloop of your application/game.
    */
   while (running) {
     // reduce CPU ticks and sync with refresh rate...
