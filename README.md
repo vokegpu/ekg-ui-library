@@ -2,8 +2,7 @@ The official runtime ekg widget library source code.
 
 ---
 
-This is the new core version of ekg, rewrite of legacy core.
-Images bellow showcasing the current state of ekg.  
+The purpose of ekg is being fully customizable, smooth and with many animations. Also perform good in low pc specs. This is the new core version of ekg, rewrite of legacy core. Images bellow showcasing the current state of ekg.  
 
 ![Image Text](https://github.com/ekg-ui-library/ekg/blob/version-core/splash/splash-showcase-1-1.0.0.png.png?raw=true)
 # Running
@@ -13,13 +12,36 @@ For use the library on your project, download the repo or release, then you add 
 `lib/win32/libekg.a` - Windows 32/64bits  
 `lib/linux/libekg.a` - Linux x86_x64  
 
-# About
+# Services
 
-The purpose of ekg is being fully customizable, smooth and with many animations. Also perform good in low pc specs.  
+The theme store the current colors scheme loaded, you can use the default or load one theme file. One of important objectives is make the UI smooth in mobile devices.
+
+Input manager handle all bindings of widgets element, you can tag combinations of different inputs.  
+When pressing units keybinds (special keys + randome keyboard key) you need to write in the correct pattern: ctrl -> shift -> tab; E.g "lshift+tab+b"; l (left) r (right).  
+```c++
+ekg::input::bind("custom-tag-a", "mouse-left");
+ekg::input::bind("custom-tag-a", "mouse-left-double");
+ekg::input::bind("custom-tag-b", "r"); // multiples buttons of mouse.
+ekg::input::bind("custom-tag-b", "lctrl+a"); // also be sure you are keybinding in correct pattern.
+ekg::input::bind("custom-tag-c", "r");
+
+// ... any place of your code:
+if (ekg::input::pressed("custom-tag-a")) {
+  ekg::log("you pressed a!");
+}
+
+if (ekg::input::pressed("custom-tag-b")) {
+  ekg::log("you pressed b!");
+}
+
+if (ekg::input::pressed("custom-tag-c")) {
+  ekg::log("you pressed a!");
+}
+```
+
+# Buffering
 
 `ekg` library automatically sets the OpenGL API, if your project is running in NDK the ekg sets to OpenGL ES, for high performance applications sets OpenGL 4 or 3.
-
-# Hardware
 
 All buffers swap into GPU are totally handled and optimized by `ekg::gpu::allocator`, it protects your gpu from multiples buffers dispatch, it only uses two buffers and implement high shading communication making a partial instanced rendering.
 
