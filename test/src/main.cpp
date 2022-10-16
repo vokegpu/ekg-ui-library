@@ -44,31 +44,10 @@ int32_t main(int, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    auto frame2 {ekg::frame("hi this button button", {20, 50}, {200, 200})};
-    frame2->set_drag(ekg::dock::top);
-    frame2->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
-    ekg::label("Looking for buttons?", ekg::dock::next | ekg::dock::top | ekg::dock::left);
-    ekg::button("button one", ekg::dock::next | ekg::dock::top | ekg::dock::left);
-    ekg::button("button two", ekg::dock::next | ekg::dock::top | ekg::dock::left);
-    ekg::button("button three");
+    ekg::frame("tag", {20, 20}, {200, 200})->set_drag(ekg::dock::top);
+    ekg::label("Hi, the label:"); // dock automatically set to ekg::dock::left | ekg::dock::top
+    ekg::button("Button Press Me!", ekg::dock::top | ekg::dock::left | ekg::dock::next); // next does the "break line" dock (bottom to up and top to bottom).
     ekg::pop_group();
-
-    auto frame3 {ekg::frame("hi this button button", {20, 50}, {200, 200})};
-    frame3->set_drag(ekg::dock::top);
-    frame3->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
-    ekg::label("What?", ekg::dock::next | ekg::dock::top | ekg::dock::left);
-    ekg::button("this is another button!", ekg::dock::next | ekg::dock::top | ekg::dock::left);
-    ekg::button("stop looking me", ekg::dock::next | ekg::dock::top | ekg::dock::left);
-    ekg::pop_group();
-
-    auto frame4 {ekg::frame("hi this button button", {20, 50}, {200, 200})};
-    frame4->set_drag(ekg::dock::top);
-    frame4->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
-    auto label {ekg::label("Please!! My IP is...", ekg::dock::next | ekg::dock::top | ekg::dock::left)};
-    ekg::button("192.16.8.2.2", ekg::dock::next | ekg::dock::top | ekg::dock::left);
-    ekg::button("Kisses", ekg::dock::next | ekg::dock::top | ekg::dock::left);
-    ekg::pop_group();
-
     ekg::input::bind("hi", "lctrl+a");
 
     auto l {ekg::label("Double clicking!")};
@@ -91,7 +70,6 @@ int32_t main(int, char**) {
             if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
                 display_fps = ticked_frames;
                 ticked_frames = 0;
-                label->set_text("The FPS: " + std::to_string(display_fps));
             }
 
             while (SDL_PollEvent(&sdl_event)) {
