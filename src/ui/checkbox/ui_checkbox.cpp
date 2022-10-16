@@ -5,6 +5,7 @@ void ekg::ui::checkbox::set_font_size(ekg::font font) {
     if (this->font_size != font) {
         this->font_size = font;
         ekg::reset(this->id);
+        ekg::sync_layout(this->parent_id);
     }
 }
 

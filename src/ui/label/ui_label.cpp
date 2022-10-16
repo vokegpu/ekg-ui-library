@@ -2,13 +2,17 @@
 #include "ekg/util/util_ui.hpp"
 
 void ekg::ui::label::set_dock(uint16_t flags) {
-    this->dock = flags;
+    if (this->dock != flags) {
+        this->dock = flags;
+        ekg::sync_layout(this->parent_id);
+    }
 }
 
 void ekg::ui::label::set_text(std::string_view string) {
     if (this->text != string) {
         this->text = string;
         ekg::reload(this->id);
+        ekg::sync_layout(this->parent_id);
     }
 }
 
@@ -39,6 +43,7 @@ void ekg::ui::label::set_scaled_height(int32_t scaled_factor_height) {
     if (this->scaled_height != scaled_factor_height) {
         this->scaled_height = scaled_factor_height;
         ekg::reload(this->id);
+        ekg::sync_layout(this->parent_id);
     }
 }
 
@@ -54,6 +59,7 @@ void ekg::ui::label::set_font_size(ekg::font font) {
     if (this->font_size != font) {
         this->font_size = font;
         ekg::reload(this->id);
+        ekg::sync_layout(this->parent_id);
     }
 }
 
