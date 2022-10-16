@@ -15,7 +15,7 @@ For use the library on your project, download the repo or release, then you add 
 # Setup
 
 To setup ekg in your project, first link the library and after put `include/` in your compiler include directory or your project directory.  
-Note that you need to link the dependencies used in ekg: ![SDL2](https://www.libsdl.org/), ![GLEW](https://glew.sourceforge.net/), ![FreeType](http://freetype.org/).
+Note that you need to link the dependencies used in ekg: ![SDL2](https://www.libsdl.org/), ![GLEW](https://glew.sourceforge.net/) and ![FreeType](http://freetype.org/).
 
 ```c++
 #include <ekg/ekg.hpp>
@@ -57,8 +57,9 @@ int32_t main(int32_t, char**) {
   
   return 0;
 }
-
 ```
+
+There is more things, theses steps are the official way to setup.
 
 # Services
 
