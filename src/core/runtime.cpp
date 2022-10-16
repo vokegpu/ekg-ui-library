@@ -421,7 +421,16 @@ void ekg::runtime::reset_widget(ekg::ui::abstract_widget *widget) {
 }
 
 void ekg::runtime::sync_layout_widget(ekg::ui::abstract_widget *widget) {
-    if (widget != nullptr) {
+    if (widget == nullptr) {
+        return;
+    }
+
+    bool is_group  {widget->data->get_type() == ekg::type::frame};
+    if (!is_group) {
+        widget = this->get_fast_widget_by_id(widget->data->get_parent_id());
+    }
+
+    if (is_group || (!is_group || widget != nullptr)) {
         this->list_sync_layout_widget.push_back(widget);
         ekg::dispatch(ekg::env::synclayout);
     }

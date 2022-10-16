@@ -19,7 +19,6 @@ int32_t main(int, char**) {
 
     SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
     bool running {true};
-
     glewExperimental = GL_TRUE;
 
     if (glewInit() != GLEW_OK) {
@@ -28,7 +27,7 @@ int32_t main(int, char**) {
         ekg::log("GLEW initialised");
     }
 
-    SDL_GL_SetSwapInterval(1);
+    SDL_GL_SetSwapInterval(1); // v-sync on
     ekg::init(sdl_win, "JetBrainsMono-Bold.ttf");
     ekg::log("OpenGL 4 context created!");
 
@@ -39,7 +38,7 @@ int32_t main(int, char**) {
     // z-depth testing.
     glEnable(GL_DEPTH_TEST);
 
-    uint64_t fps = 60;
+    uint64_t fps {60};
     uint64_t fps_ms_interval {1000 / fps};
     uint64_t display_fps {};
     uint64_t ticked_frames {};
@@ -48,14 +47,6 @@ int32_t main(int, char**) {
     ekg::label("Hi, the label:"); // dock automatically set to ekg::dock::left | ekg::dock::top
     ekg::button("Button Press Me!", ekg::dock::top | ekg::dock::left | ekg::dock::next); // next does the "break line" dock (bottom to up and top to bottom).
     ekg::pop_group();
-    ekg::input::bind("hi", "lctrl+a");
-
-    auto l {ekg::label("Double clicking!")};
-    l->ui().x = 1920 / 2;
-    l->ui().y = 10;
-    l->set_sync_with_ui(true);
-    l->set_font_size(ekg::font::big);
-    auto count {2};
 
     /*
      * Mainloop.
@@ -81,12 +72,6 @@ int32_t main(int, char**) {
 
                     default: {
                         ekg::event(sdl_event);
-
-                        if (ekg::input::pressed("hi")) {
-                            l->set_text("Double clicking (" + std::to_string(count) + ")!!");
-                            count++;
-                        }
-
                         break;
                     }
                 }

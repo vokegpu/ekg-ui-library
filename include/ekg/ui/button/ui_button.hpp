@@ -11,10 +11,9 @@ namespace ekg::ui {
 		bool value {};
         uint16_t dock_text {};
         int32_t scaled_height {};
-
         std::string text {};
         ekg::cpu::event* callback {nullptr};
-        ekg:: font font_size {};
+        ekg::font font_size {};
     public:
         void set_font_size(ekg::font font);
         ekg::font get_font_size();

@@ -84,7 +84,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
 
         if (this->curr_flag.top) {
             if (this->curr_flag.left) {
-                if (!this->prev_flag_top.left || this->prev_flag_bottom.bottom || this->prev_flag_top.next || this->curr_flag.next) {
+                if (!this->prev_flag_top.left || this->prev_flag_bottom.bottom || this->curr_flag.next) {
                     this->curr_top.x = 0;
                     this->curr_top.y += prev_rect.h + this->min_offset;
                 }
