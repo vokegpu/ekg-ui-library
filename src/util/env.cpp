@@ -56,13 +56,11 @@ bool ekg::file_to_string(std::string &string_builder, const std::string &path) {
 bool ekg::reach(ekg::timing &timing, uint64_t ms) {
     timing.ticks_going_on = SDL_GetTicks64();
     timing.current_ticks = timing.ticks_going_on - timing.elapsed_ticks;
-
-    return timing.current_ticks >= ms;
+    return timing.current_ticks > ms;
 }
 
 bool ekg::reset(ekg::timing &timing) {
-    timing.elapsed_ticks = timing.current_ticks;
-    timing.current_ticks = SDL_GetTicks64();
+    timing.elapsed_ticks = timing.ticks_going_on;
     return true;
 }
 
@@ -82,22 +80,26 @@ std::string &ekg::set(std::string &var_mutable, const std::string &predicate) {
     return (var_mutable = predicate);
 }
 
-bool ekg::was_released() {
-    return ekg::core->get_service_input().was_released();
+bool ekg::input::pressed(std::string_view key_input) {
+    return ekg::core->get_service_input().pressed(key_input);
 }
 
-bool ekg::was_pressed() {
-    return ekg::core->get_service_input().was_pressed();
+void ekg::input::bind(std::string_view key_input, std::string_view value_input) {
+    return ekg::core->get_service_input().bind(key_input, value_input);
 }
 
-bool ekg::was_motion() {
+bool ekg::input::motion() {
     return ekg::core->get_service_input().was_motion();
 }
 
-bool ekg::was_wheel() {
-    return ekg::core->get_service_input().was_wheel();
+bool ekg::input::released() {
+    return ekg::core->get_service_input().was_released();
 }
 
-bool ekg::input(const std::string &action_tag) {
-    return ekg::core->get_service_input().get(action_tag);
+bool ekg::input::pressed() {
+    return ekg::core->get_service_input().was_pressed();
+}
+
+bool ekg::input::wheel() {
+    return ekg::core->get_service_input().was_wheel();
 }

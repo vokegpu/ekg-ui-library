@@ -6,7 +6,10 @@ void ekg::ui::label::set_dock(uint16_t flags) {
 }
 
 void ekg::ui::label::set_text(std::string_view string) {
-    this->text = string;
+    if (this->text != string) {
+        this->text = string;
+        ekg::reload(this->id);
+    }
 }
 
 std::string_view ekg::ui::label::get_text() {
@@ -24,8 +27,7 @@ uint16_t ekg::ui::label::get_text_dock() {
 void ekg::ui::label::set_width(float width) {
     if (this->sync_ui.w != width) {
         this->sync_ui.h = width;
-        this->sync_with_ui = true;
-        ekg::reload(this->id);
+        this->set_sync_with_ui(true);
     }
 }
 
@@ -46,5 +48,16 @@ float ekg::ui::label::get_height() {
 
 int32_t ekg::ui::label::get_scaled_height() {
     return this->scaled_height;
+}
+
+void ekg::ui::label::set_font_size(ekg::font font) {
+    if (this->font_size != font) {
+        this->font_size = font;
+        ekg::reload(this->id);
+    }
+}
+
+ekg::font ekg::ui::label::get_font_size() {
+    return this->font_size;
 }
 

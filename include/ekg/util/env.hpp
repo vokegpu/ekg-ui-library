@@ -12,6 +12,10 @@ namespace ekg {
         normal, arrow_axis_x, arrowleft, arrowp, arrowdown, arrow
     };
 
+    enum class font {
+        small, normal, big
+    };
+
     struct timing {
         uint64_t elapsed_ticks {};
         uint64_t current_ticks {};
@@ -24,12 +28,6 @@ namespace ekg {
 
     bool file_to_string(std::string &string_builder, const std::string &path);
     bool set(bool &var_mutable, bool predicate);
-    bool input(const std::string &action_tag);
-
-    bool was_motion();
-    bool was_released();
-    bool was_pressed();
-    bool was_wheel();
 
     std::string &set(std::string &var_mutable, const std::string &predicate);
 
@@ -38,6 +36,17 @@ namespace ekg {
         uint16_t &add(uint16_t &target, uint16_t flags);
         uint16_t &remove(uint16_t &target, uint16_t flags);
     }
+
+    namespace input {
+        bool pressed(std::string_view);
+        void bind(std::string_view, std::string_view);
+        bool motion();
+        bool released();
+        bool pressed();
+        bool wheel();
+    }
+
+
 };
 
 #endif

@@ -41,19 +41,19 @@ int32_t main(int, char**) {
 
     uint64_t fps = 60;
     uint64_t fps_ms_interval {1000 / fps};
-    uint64_t last_ticked_frames {};
+    uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    auto frame2 = ekg::frame("hi this button button", {20, 50}, {200, 200});
+    auto frame2 {ekg::frame("hi this button button", {20, 50}, {200, 200})};
     frame2->set_drag(ekg::dock::top);
     frame2->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
     ekg::label("Looking for buttons?", ekg::dock::next | ekg::dock::top | ekg::dock::left);
     ekg::button("button one", ekg::dock::next | ekg::dock::top | ekg::dock::left);
     ekg::button("button two", ekg::dock::next | ekg::dock::top | ekg::dock::left);
-    ekg::button("button three", ekg::dock::next | ekg::dock::top | ekg::dock::left);
+    ekg::button("button three");
     ekg::pop_group();
 
-    auto frame3 = ekg::frame("hi this button button", {20, 50}, {200, 200});
+    auto frame3 {ekg::frame("hi this button button", {20, 50}, {200, 200})};
     frame3->set_drag(ekg::dock::top);
     frame3->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
     ekg::label("What?", ekg::dock::next | ekg::dock::top | ekg::dock::left);
@@ -61,13 +61,22 @@ int32_t main(int, char**) {
     ekg::button("stop looking me", ekg::dock::next | ekg::dock::top | ekg::dock::left);
     ekg::pop_group();
 
-    auto frame4 = ekg::frame("hi this button button", {20, 50}, {200, 200});
+    auto frame4 {ekg::frame("hi this button button", {20, 50}, {200, 200})};
     frame4->set_drag(ekg::dock::top);
     frame4->set_resize(ekg::dock::top | ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
-    ekg::label("Please!! My IP is...", ekg::dock::next | ekg::dock::top | ekg::dock::left);
+    auto label {ekg::label("Please!! My IP is...", ekg::dock::next | ekg::dock::top | ekg::dock::left)};
     ekg::button("192.16.8.2.2", ekg::dock::next | ekg::dock::top | ekg::dock::left);
     ekg::button("Kisses", ekg::dock::next | ekg::dock::top | ekg::dock::left);
     ekg::pop_group();
+
+    ekg::input::bind("hi", "lctrl+a");
+
+    auto l {ekg::label("Double clicking!")};
+    l->ui().x = 1920 / 2;
+    l->ui().y = 10;
+    l->set_sync_with_ui(true);
+    l->set_font_size(ekg::font::big);
+    auto count {2};
 
     /*
      * Mainloop.
@@ -80,8 +89,9 @@ int32_t main(int, char**) {
             ekg::display::dt = static_cast<float>(mainloop_timing.current_ticks) / 100;
 
             if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
-                last_ticked_frames = ticked_frames;
+                display_fps = ticked_frames;
                 ticked_frames = 0;
+                label->set_text("The FPS: " + std::to_string(display_fps));
             }
 
             while (SDL_PollEvent(&sdl_event)) {
@@ -93,6 +103,12 @@ int32_t main(int, char**) {
 
                     default: {
                         ekg::event(sdl_event);
+
+                        if (ekg::input::pressed("hi")) {
+                            l->set_text("Double clicking (" + std::to_string(count) + ")!!");
+                            count++;
+                        }
+
                         break;
                     }
                 }

@@ -3,6 +3,7 @@
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/cpu/event.hpp"
+#include "ekg/util/env.hpp"
 
 namespace ekg::ui {
 	class button : public ekg::ui::abstract {
@@ -13,7 +14,10 @@ namespace ekg::ui {
 
         std::string text {};
         ekg::cpu::event* callback {nullptr};
-	public:
+        ekg:: font font_size {};
+    public:
+        void set_font_size(ekg::font font);
+        ekg::font get_font_size();
         void set_dock(uint16_t);
 
         void set_width(float);

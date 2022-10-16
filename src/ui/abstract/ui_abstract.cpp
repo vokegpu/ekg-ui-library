@@ -85,8 +85,11 @@ ekg::rect &ekg::ui::abstract::ui() {
     return this->sync_ui;
 }
 
-void ekg::ui::abstract::set_sync_with_ui(bool state) {
-    this->sync_with_ui = state;
+void ekg::ui::abstract::set_sync_with_ui(bool sync_state) {
+    if (this->sync_with_ui != sync_state) {
+        this->sync_with_ui = sync_state;
+        ekg::reload(this->id);
+    }
 }
 
 bool ekg::ui::abstract::should_sync_with_ui() {

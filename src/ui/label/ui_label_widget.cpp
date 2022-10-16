@@ -11,12 +11,12 @@ void ekg::ui::label_widget::on_reload() {
 
     auto ui {(ekg::ui::label*) this->data};
     auto &rect = (this->data->widget() = this->layout + *this->parent);
+    auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
     auto dock {ui->get_text_dock()};
     auto scaled_height {ui->get_scaled_height()};
-    auto f_renderer_normal {ekg::core->get_f_renderer_normal()};
 
-    float text_width {f_renderer_normal.get_text_width(ui->get_text())};
-    float text_height {f_renderer_normal.get_text_height()};
+    float text_width {f_renderer.get_text_width(ui->get_text())};
+    float text_height {f_renderer.get_text_height()};
     float offset {text_height / 3};
 
     this->layout.w = ekg::min(this->layout.w, text_width + offset);
@@ -67,5 +67,6 @@ void ekg::ui::label_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
     auto ui {(ekg::ui::label*) this->data};
     auto &rect = (this->data->widget() = this->layout + *this->parent);
-    ekg::core->get_f_renderer_normal().blit(ui->get_text(), rect.x + this->extra.x, rect.y + this->extra.y, ekg::theme().label_string);
+    auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
+    f_renderer.blit(ui->get_text(), rect.x + this->extra.x, rect.y + this->extra.y, ekg::theme().label_string);
 }

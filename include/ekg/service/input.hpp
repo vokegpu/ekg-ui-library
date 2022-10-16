@@ -10,26 +10,29 @@
 namespace ekg::service {
         class input {
         protected:
-            std::map<std::string, std::vector<std::string>> map_bind {};
-            std::map<std::string, bool> map_register {};
-            std::map<SDL_Keycode, std::string> special_key {};
+            static std::map<std::string, const char*> special_keys_name_map;
 
-            std::vector<std::string> special_key_unit_pressed {};
-            std::vector<std::string> special_key_released {};
+            std::map<std::string, std::vector<std::string>> input_bind_map {};
+            std::map<std::string, bool> input_register_map {};
+            std::map<int32_t, std::string> special_keys_sdl_map {};
 
-            bool pressed {};
-            bool released {};
-            bool motion {};
-            bool wheel {};
+            std::vector<std::string> special_keys_unit_pressed {};
+            std::vector<std::string> special_keys_released {};
+            std::vector<std::string> double_click_mouse_buttons_pressed {};
+
+            bool pressed_event {};
+            bool released_event {};
+            bool motion_event {};
+            bool wheel_event {};
+            bool finger_hold_event {};
+            bool finger_wheel_event {};
 
             ekg::vec4 last_finger_interact {};
             ekg::timing double_interact {};
 
-            bool finger_hold_event {};
-            bool finger_wheel_event {};
-
             void complete_with_units(std::string &string_builder, const std::string &key_name);
             bool contains_unit(const std::string &label);
+            bool is_special_key(int32_t sdl_key_code);
         public:
             ekg::timing timing_last_interact {};
             ekg::vec4 interact {};
@@ -39,13 +42,10 @@ namespace ekg::service {
             bool was_motion();
             bool was_wheel();
 
-            void bind(const std::string &input_tag, const std::string &key);
-            void unbind(const std::string &input_tag, const std::string &key);
-            void callback(const std::string &key, bool callback);
-
-            void set(const ekg::cursor &cursor);
-            void set(const std::string &input_tag, bool callback);
-            bool get(const std::string &input_tag);
+            void bind(std::string_view input_tag, std::string_view key);
+            void unbind(std::string_view input_tag, std::string_view key);
+            void callback(std::string_view key, bool callback);
+            bool pressed(std::string_view key);
 
             void on_event(SDL_Event &sdl_event);
             void on_update();

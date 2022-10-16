@@ -2,6 +2,7 @@
 #define EKG_UI_LABEL_H
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
+#include "ekg/util/env.hpp"
 
 namespace ekg::ui {
     class label : public ekg::ui::abstract {
@@ -9,7 +10,11 @@ namespace ekg::ui {
         std::string text {};
         uint16_t dock_text {};
         int32_t scaled_height {};
+        ekg:: font font_size {};
     public:
+        void set_font_size(ekg::font font);
+        ekg::font get_font_size();
+
         void set_dock(uint16_t);
         int32_t get_scaled_height();
 

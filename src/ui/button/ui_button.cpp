@@ -53,7 +53,7 @@ ekg::cpu::event *ekg::ui::button::get_callback() {
 void ekg::ui::button::set_width(float width) {
     if (this->sync_ui.w != width) {
         this->sync_ui.w = width;
-        ekg::reload(this->id);
+        this->set_sync_with_ui(true);
     }
 }
 
@@ -81,4 +81,15 @@ void ekg::ui::button::set_dock(uint16_t flags) {
         this->dock = flags;
         ekg::sync_layout(this->id);
     }
+}
+
+void ekg::ui::button::set_font_size(ekg::font font) {
+    if (this->font_size != font) {
+        this->font_size = font;
+        ekg::reload(this->id);
+    }
+}
+
+ekg::font ekg::ui::button::get_font_size() {
+    return this->font_size;
 }

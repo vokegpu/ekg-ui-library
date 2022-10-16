@@ -48,8 +48,7 @@ void ekg::ui::frame::set_size(float w, float h) {
     if (this->sync_ui.w != w || this->sync_ui.h != h) {
         this->sync_ui.w = w;
         this->sync_ui.h = h;
-        this->sync_with_ui = true;
-        ekg::reload(this->id);
+        this->set_sync_with_ui(true);
     }
 }
 
@@ -61,8 +60,7 @@ void ekg::ui::frame::set_pos(float x, float y) {
     if (this->sync_ui.x != x || this->sync_ui.y != y) {
         this->sync_ui.x = x;
         this->sync_ui.y = y;
-        this->sync_with_ui = true;
-        ekg::reload(this->id);
+        this->set_sync_with_ui(true);
     }
 }
 
@@ -97,8 +95,7 @@ float ekg::ui::frame::get_initial_height() {
 void ekg::ui::frame::set_width(float width) {
     if (this->sync_ui.w != width) {
         this->sync_ui.w = width;
-        this->sync_with_ui = true;
-        ekg::reload(this->id);
+        this->set_sync_with_ui(true);
     }
 }
 
@@ -109,8 +106,7 @@ float ekg::ui::frame::get_width() {
 void ekg::ui::frame::set_height(float height) {
     if (this->sync_ui.h != height) {
         this->sync_ui.h = height;
-        this->sync_with_ui = true;
-        ekg::reload(this->id);
+        this->set_sync_with_ui(true);
     }
 }
 

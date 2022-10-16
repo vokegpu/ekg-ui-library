@@ -15,10 +15,10 @@ void ekg::ui::button_widget::on_reload() {
     auto &rect = (this->data->widget() = this->layout + *this->parent);
     auto dock {ui->get_text_dock()};
     auto scaled_height {ui->get_scaled_height()};
-    auto f_renderer_normal {ekg::core->get_f_renderer_normal()};
+    auto f_renderer {ekg::f_renderer(ui->get_font_size())};
 
-    float text_width {f_renderer_normal.get_text_width(ui->get_text())};
-    float text_height {f_renderer_normal.get_text_height()};
+    float text_width {f_renderer.get_text_width(ui->get_text())};
+    float text_height {f_renderer.get_text_height()};
     float offset {text_height / 3};
 
     this->layout.w = ekg::min(this->layout.w, text_width + offset);
@@ -56,14 +56,14 @@ void ekg::ui::button_widget::on_pre_event(SDL_Event &sdl_event) {
 void ekg::ui::button_widget::on_event(SDL_Event &sdl_event) {
     abstract_widget::on_event(sdl_event);
 
-    bool pressed {ekg::was_pressed()};
-    bool released {ekg::was_released()};
+    bool pressed {ekg::input::pressed()};
+    bool released {ekg::input::released()};
 
-    if (ekg::was_motion() || pressed || released) {
+    if (ekg::input::motion() || pressed || released) {
         ekg::set(this->flag.highlight, this->flag.hovered);
     }
 
-    if (pressed && this->flag.hovered && !this->flag.activy && ekg::input("button-activy")) {
+    if (pressed && this->flag.hovered && !this->flag.activy && ekg::input::pressed("button-activy")) {
         ekg::set(this->flag.activy, true);
     } else if (released && this->flag.activy) {
         auto ui {(ekg::ui::button*) this->data};
@@ -91,6 +91,7 @@ void ekg::ui::button_widget::on_draw_refresh() {
     auto ui {(ekg::ui::button*) this->data};
     auto &rect = (this->data->widget() = this->layout + *this->parent);
     auto &theme {ekg::theme()};
+    auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
 
     ekg::draw::rect(rect, theme.button_background);
     ekg::draw::rect(rect, theme.button_outline);
@@ -104,5 +105,5 @@ void ekg::ui::button_widget::on_draw_refresh() {
         ekg::draw::rect(rect, {theme.button_activy, theme.button_outline.w});
     }
 
-    ekg::core->get_f_renderer_normal().blit(ui->get_text(), rect.x + this->extra.x, rect.y + this->extra.y, theme.button_string);
+    f_renderer.blit(ui->get_text(), rect.x + this->extra.x, rect.y + this->extra.y, theme.button_string);
 }

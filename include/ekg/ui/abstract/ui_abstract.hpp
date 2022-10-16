@@ -51,7 +51,7 @@ namespace ekg {
             void set_type(const ekg::type&);
             ekg::type get_type();
 
-            void set_sync_with_ui(bool state);
+            void set_sync_with_ui(bool sync_state);
             bool should_sync_with_ui();
 
             uint16_t get_dock();
