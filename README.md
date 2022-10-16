@@ -4,7 +4,7 @@ The official runtime ekg widget library source code.
 
 The purpose of ekg is being fully customizable, smooth and with many animations. Also perform good in low pc specs. This is the new core version of ekg, rewrite of legacy core. Images bellow showcasing the current state of ekg.  
 
-![Image Text](https://github.com/ekg-ui-library/ekg/blob/version-core/splash/splash-showcase-3-1.0.0.png.png?raw=true)
+![Image Text](https://github.com/ekg-ui-library/ekg/blob/version-core/splash/splash-showcase-1-1.0.0.png.png?raw=true)
 # Running
 
 The current version of ekg only support the MinGW64 compiler.  
@@ -58,6 +58,8 @@ int32_t main(int32_t, char**) {
   return 0;
 }
 ```
+
+![Image Text](https://github.com/ekg-ui-library/ekg/blob/version-core/splash/splash-showcase-3-1.0.0.png.png?raw=true)
 
 There is more things, theses steps are the official way to setup.
 
