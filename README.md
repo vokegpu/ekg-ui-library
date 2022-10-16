@@ -30,7 +30,7 @@ int32_t main(int32_t, char**) {
   ekg::button("Button Press Me!", ekg::dock::top | ekg::dock::left | ekg::dock::next); // next does the "break line" dock (bottom to up and top to bottom).
   ekg::pop_group();
   
-  // do samething to create new button.
+  // do samething to create new widgets.
   
   /*
    * mainloop of your application/program.
