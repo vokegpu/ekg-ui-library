@@ -21,9 +21,10 @@ When pressing units keybinds (special keys + random keyboard key) you need to wr
 ```c++
 ekg::input::bind("custom-tag-a", "mouse-left");
 ekg::input::bind("custom-tag-a", "mouse-left-double");
-ekg::input::bind("custom-tag-b", "r"); // multiples buttons of mouse.
+ekg::input::bind("custom-tag-b", "r");
 ekg::input::bind("custom-tag-b", "lctrl+a"); // also be sure you are keybinding in correct pattern.
 ekg::input::bind("custom-tag-c", "r");
+ekg::input::bind("hii!! :))", "mouse-5-double"); // multiples buttons of mouse.
 
 // ... any place of your code:
 if (ekg::input::pressed("custom-tag-a")) {
@@ -36,6 +37,10 @@ if (ekg::input::pressed("custom-tag-b")) {
 
 if (ekg::input::pressed("custom-tag-c")) {
   ekg::log("you pressed a!");
+}
+
+if (ekg::input::pressed("hii!! :))")) {
+  ekg::log("hii!");
 }
 ```
 
