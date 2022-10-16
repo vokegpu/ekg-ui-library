@@ -33,7 +33,7 @@ int32_t main(int32_t, char**) {
   // do samething to create new widgets.
   
   /*
-   * mainloop of your application/program.
+   * mainloop of your application/game.
    */
   while (running) {
     // reduce CPU ticks and sync with refresh rate...
@@ -58,6 +58,8 @@ int32_t main(int32_t, char**) {
   return 0;
 }
 ```
+
+![Image Text](https://github.com/ekg-ui-library/ekg/blob/version-core/splash/splash-showcase-3-1.0.0.png.png?raw=true)
 
 There is more things, theses steps are the official way to setup.
 
