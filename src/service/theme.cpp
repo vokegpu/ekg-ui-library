@@ -25,6 +25,12 @@ void ekg::service::theme::gen_default_theme() {
     this->button_outline = {0, 0, 0, 0};
     this->button_highlight = {44, 166, 255, 50};
 
+    this->checkbox_string = {0, 0, 0, 255};
+    this->checkbox_background = {0, 0, 0, 0};
+    this->checkbox_activy = {44, 166, 255, 200};
+    this->checkbox_outline = {0, 0, 0, 0};
+    this->checkbox_highlight = {44, 166, 255, 50};
+
     this->label_string = {0, 0, 0, 255};
 }
 

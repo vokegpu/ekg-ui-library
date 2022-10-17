@@ -1,5 +1,7 @@
 #include "ekg/ekg.hpp"
 #include "ekg/util/env.hpp"
+#include "ekg/cpu/info.hpp"
+#include "ekg/ui/checkbox/ui_checkbox.hpp"
 
 ekg::runtime* ekg::core {nullptr};
 std::string ekg::gl_version {"#version 450 core"};
@@ -139,6 +141,20 @@ void ekg::pop_group() {
 ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
     auto ui = new ekg::ui::label();
     ui->set_type(ekg::type::label);
+    ekg::core->create_ui(ui);
+
+    ui->set_text(ekg::dock::center);
+    ui->set_text(text);
+    ui->set_dock(dock);
+    ui->set_scaled_height(1);
+    ui->set_font_size(ekg::font::normal);
+
+    return ui;
+}
+
+ekg::ui::checkbox *ekg::checkbox(std::string_view text, uint16_t dock) {
+    auto ui = new ekg::ui::checkbox();
+    ui->set_type(ekg::type::checkbox);
     ekg::core->create_ui(ui);
 
     ui->set_text(ekg::dock::center);

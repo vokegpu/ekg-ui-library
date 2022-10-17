@@ -64,7 +64,6 @@ void ekg::ui::checkbox::set_value(bool val) {
     if (this->value != val) {
         this->value = val;
         ekg::reload(this->id);
-        ekg::reset(this->id);
     }
 }
 

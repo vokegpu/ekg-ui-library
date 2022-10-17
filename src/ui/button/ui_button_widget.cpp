@@ -102,7 +102,7 @@ void ekg::ui::button_widget::on_draw_refresh() {
 
     if (this->flag.activy) {
         ekg::draw::rect(rect, theme.button_activy);
-        ekg::draw::rect(rect, {theme.button_activy, theme.button_outline.w});
+        ekg::draw::rect(rect, {theme.button_activy, theme.button_outline.w}, 1);
     }
 
     f_renderer.blit(ui->get_text(), rect.x + this->extra.x, rect.y + this->extra.y, theme.button_string);

@@ -25,6 +25,14 @@ namespace ekg::service {
         ekg::vec4 button_highlight {};
         /* End of button theme. */
 
+        /* Start of checkbox theme. */
+        ekg::vec4 checkbox_background {};
+        ekg::vec4 checkbox_string {};
+        ekg::vec4 checkbox_outline {};
+        ekg::vec4 checkbox_activy {};
+        ekg::vec4 checkbox_highlight {};
+        /* End of checkbox theme. */
+
         /* Start of label. */
         ekg::vec4 label_string {};
         /* End of label. */

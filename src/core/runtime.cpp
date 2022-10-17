@@ -4,6 +4,7 @@
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 #include "ekg/ui/button/ui_button_widget.hpp"
 #include "ekg/ui/label/ui_label_widget.hpp"
+#include "ekg/ui/checkbox/ui_checkbox_widget.hpp"
 
 ekg::stack ekg::swap::collect {};
 ekg::stack ekg::swap::back {};
@@ -343,6 +344,8 @@ void ekg::runtime::prepare_ui_env() {
     this->input_manager.bind("frame-resize-activy", "finger-click");
     this->input_manager.bind("button-activy", "mouse-left");
     this->input_manager.bind("button-activy", "finger-click");
+    this->input_manager.bind("checkbox-activy", "mouse-left");
+    this->input_manager.bind("checkbox-activy", "finger-click");
     this->input_manager.bind("popup-activy", "mouse-right");
     this->input_manager.bind("popup-activy", "finger-hold");
     this->input_manager.bind("popup-component-activy", "mouse-left");
@@ -391,6 +394,13 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
 
         case type::label: {
             auto widget = new ekg::ui::label_widget();
+            widget->data = ui;
+            created_widget = widget;
+            break;
+        }
+
+        case type::checkbox: {
+            auto widget = new ekg::ui::checkbox_widget();
             widget->data = ui;
             created_widget = widget;
             break;

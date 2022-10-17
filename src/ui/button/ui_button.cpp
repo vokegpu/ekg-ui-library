@@ -29,6 +29,7 @@ void ekg::ui::button::set_text(uint16_t enum_docks) {
     if (this->dock_text != enum_docks) {
         this->dock_text = enum_docks;
         ekg::reload(this->id);
+        ekg::sync_layout(this->parent_id);
     }
 }
 
