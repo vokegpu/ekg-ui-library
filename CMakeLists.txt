@@ -58,9 +58,12 @@ if (ENABLE_TEST)
         set(EXECUTABLE_OUTPUT_PATH ../test/build/linux/)
     endif()
 
+
     add_compile_options(-O3)
+    add_compile_options(-std=c++17)
+
     include_directories(./include/)
-    add_executable(ekg_ui_library test/src/main.cpp)
+    add_executable(ekg_ui_library "test/src/main.cpp")
 
     if (WIN32)
         message("-- WIN32 platform detected!")
@@ -69,6 +72,7 @@ if (ENABLE_TEST)
     else()
         message("-- LINUX platform detected!")
         file(GLOB LIBRARY_PATH "./lib/linux/libekg.a")
+        message("${LIBRARY_PATH}")
         target_link_libraries(ekg_ui_library ${LIBRARY_PATH} SDL2main SDL2 GL GLEW freetype)
     endif()
 endif()
