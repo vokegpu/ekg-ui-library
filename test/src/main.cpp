@@ -46,7 +46,7 @@ int32_t main(int, char**) {
     ekg::frame("tag", {20, 20}, {200, 200})->set_drag(ekg::dock::top);
     ekg::label("Hi, the label:"); // dock automatically set to ekg::dock::left | ekg::dock::top
     ekg::button("Button Press Me!", ekg::dock::top | ekg::dock::left | ekg::dock::next); // next does the "break line" dock (bottom to up and top to bottom).
-    ekg::checkbox("hi", ekg::dock::top | ekg::dock::left | ekg::dock::next);
+    ekg::checkbox("hi", ekg::dock::top | ekg::dock::left | ekg::dock::next)->set_text(ekg::dock::right | ekg::dock::center);
     ekg::pop_group();
 
     /*

@@ -56,7 +56,7 @@ void ekg::set_dock_scaled(const ekg::rect &rect, const ekg::vec2 &offset, ekg::d
 
     docker.right.w = offset.x;
     docker.right.h = rect.h;
-    docker.right.x = rect.x + rect.w - docker.right.w;
+    docker.right.x = rect.x + rect.w - offset.x;
     docker.right.y = rect.y;
 
     docker.top.x = rect.x;
@@ -67,7 +67,7 @@ void ekg::set_dock_scaled(const ekg::rect &rect, const ekg::vec2 &offset, ekg::d
     docker.bottom.w = rect.w;
     docker.bottom.h = offset.y;
     docker.bottom.x = rect.x;
-    docker.bottom.y = rect.y + rect.h - docker.bottom.h;
+    docker.bottom.y = rect.y + rect.h - offset.y;
 
     auto dx = offset.x / 2;
     auto dy = offset.y / 2;

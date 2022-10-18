@@ -2,10 +2,10 @@
 #include "ekg/ekg.hpp"
 
 void ekg::draw::rect(const ekg::rect &rect, const ekg::vec4 &color, int32_t line_thickness) {
-    ekg::draw::rect(static_cast<int32_t>(rect.x), static_cast<int32_t>(rect.y), static_cast<int32_t>(rect.w), static_cast<int32_t>(rect.h), color, line_thickness);
+    ekg::draw::rect(rect.x, rect.y, rect.w, rect.h, color, line_thickness);
 }
 
-void ekg::draw::rect(int32_t x, int32_t y, int32_t w, int32_t h, const ekg::vec4 &color, int32_t line_thickness) {
+void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color, int32_t line_thickness) {
     if (color.w <= 0) {
         return;
     }
@@ -27,10 +27,10 @@ void ekg::draw::rect(int32_t x, int32_t y, int32_t w, int32_t h, const ekg::vec4
     allocator.coord2f(1, 0);
     allocator.coord2f(0, 0);
 
-    data.rect_area[0] = static_cast<float>(x);
-    data.rect_area[1] = static_cast<float>(y);
-    data.rect_area[2] = static_cast<float>(w);
-    data.rect_area[3] = static_cast<float>(h);
+    data.rect_area[0] = x;
+    data.rect_area[1] = y;
+    data.rect_area[2] = w;
+    data.rect_area[3] = h;
 
     data.colored_area[0] = color.x / 255;
     data.colored_area[1] = color.y / 255;

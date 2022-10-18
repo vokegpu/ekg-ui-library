@@ -21,7 +21,7 @@ void ekg::ui::checkbox_widget::on_reload() {
     float text_height {f_renderer.get_text_height()};
     float offset {text_height / 3};
     float box_size {text_height};
-    float min_width {box_size + offset + text_width};
+    float min_width {box_size + offset + offset + (ui->get_text().empty() ? 0 : text_width + offset)};
 
     this->layout.w = ekg::min(this->layout.w, min_width);
     this->layout.h = (text_height + offset) * static_cast<float>(scaled_height);
@@ -29,7 +29,7 @@ void ekg::ui::checkbox_widget::on_reload() {
     this->offset.h = box_size;
 
     ekg::set_rect_clamped(this->layout, ekg::theme().min_widget_size);
-    ekg::set_dock_scaled({0, 0, this->layout.w, this->layout.h}, {box_size + offset + text_width + offset, text_height}, this->docker_text);
+    ekg::set_dock_scaled({0, 0, this->layout.w, this->layout.h}, {min_width, text_height}, this->docker_text);
 
     if (ekg::bitwise::contains(dock, ekg::dock::center)) {
         this->extra.x = this->docker_text.center.x + offset + text_width;
@@ -39,13 +39,13 @@ void ekg::ui::checkbox_widget::on_reload() {
     }
 
     if (ekg::bitwise::contains(dock, ekg::dock::left)) {
-        this->extra.x = this->docker_text.left.x;
-        this->offset.x = this->docker_text.left.x;
+        this->extra.x = this->docker_text.left.x + box_size + offset + offset;
+        this->offset.x = this->docker_text.left.x + offset;
     }
 
     if (ekg::bitwise::contains(dock, ekg::dock::right)) {
-        this->extra.x = this->docker_text.right.x;
-        this->offset.x = this->docker_text.right.x;
+        this->extra.x = this->docker_text.right.x + offset;
+        this->offset.x = this->docker_text.right.x + box_size + offset + offset;
     }
 
     if (ekg::bitwise::contains(dock, ekg::dock::top)) {
