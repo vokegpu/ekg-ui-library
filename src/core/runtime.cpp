@@ -68,6 +68,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     }
 
     ekg::ui::abstract_widget* focused_widget {nullptr};
+    bool hovered {};
 
     for (ekg::ui::abstract_widget* &widgets : this->list_widget) {
         if (widgets == nullptr || !widgets->data->is_alive()) {
@@ -75,15 +76,16 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         }
 
         widgets->on_pre_event(sdl_event);
+        hovered = widgets->flag.hovered && widgets->data->get_state() == ekg::state::visible;
 
-        if (widgets->flag.hovered && widgets->data->get_state() == ekg::state::visible) {
+        if (hovered) {
             this->widget_id_focused = widgets->data->get_id();
             focused_widget = widgets;
         }
 
         widgets->on_post_event(sdl_event);
 
-        if (!widgets->flag.hovered) {
+        if (!hovered) {
             widgets->on_event(sdl_event);
         }
     }

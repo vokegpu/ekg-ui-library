@@ -71,9 +71,10 @@ void ekg::ui::checkbox_widget::on_event(SDL_Event &sdl_event) {
 
     if (ekg::input::motion() || pressed || released) {
         ekg::set(this->flag.highlight, this->flag.hovered);
+        ekg::set(this->flag.focused, this->flag.hovered && ekg::rect_collide_vec(this->offset + (this->layout + *this->parent), ekg::interact()));
     }
 
-    if (pressed && this->flag.hovered && !this->flag.activy && ekg::input::pressed("checkbox-activy")) {
+    if (pressed && !this->flag.activy && this->flag.hovered && ekg::input::pressed("checkbox-activy")) {
         ekg::set(this->flag.activy, true);
     } else if (released && this->flag.activy) {
         if (this->flag.hovered) {
@@ -108,10 +109,14 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
         ekg::draw::rect(rect, theme.checkbox_highlight);
     }
 
+    if (this->flag.focused && !ui->get_value()) {
+        ekg::draw::rect(box, theme.checkbox_highlight);
+    }
+
     ekg::draw::rect(box, theme.checkbox_highlight);
 
     if (this->flag.activy) {
-        ekg::draw::rect(rect, theme.checkbox_activy);
+        ekg::draw::rect(this->flag.focused ? box : rect, theme.checkbox_activy);
     }
 
     if (ui->get_value()) {
