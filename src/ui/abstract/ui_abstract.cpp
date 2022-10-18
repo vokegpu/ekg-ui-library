@@ -95,3 +95,11 @@ void ekg::ui::abstract::set_sync_with_ui(bool sync_state) {
 bool ekg::ui::abstract::should_sync_with_ui() {
     return this->sync_with_ui;
 }
+
+void ekg::ui::abstract::set_tag(std::string_view string) {
+    this->tag = string;
+}
+
+std::string_view ekg::ui::abstract::get_tag() {
+    return this->tag;
+}

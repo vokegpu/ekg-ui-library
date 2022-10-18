@@ -15,9 +15,6 @@ namespace ekg::ui {
         ekg::rect rect_initial {};
         std::string tag {};
     public:
-        void set_tag(std::string_view);
-        std::string_view get_tag();
-
         void set_drag(uint16_t);
         uint16_t get_drag_dock();
 

@@ -68,14 +68,6 @@ ekg::vec2 ekg::ui::frame::get_pos() {
 	return {this->rect_widget.x, this->rect_widget.y};
 }
 
-void ekg::ui::frame::set_tag(std::string_view new_tag) {
-    this->tag = new_tag;
-}
-
-std::string_view ekg::ui::frame::get_tag() {
-    return this->tag;
-}
-
 void ekg::ui::frame::set_initial_width(float width) {
     this->rect_initial.w = width;
 }

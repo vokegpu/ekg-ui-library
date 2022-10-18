@@ -23,6 +23,7 @@ namespace ekg {
 
             bool alive {true};
             uint16_t dock {};
+            std::string tag {};
 
             ekg::state state {};
             ekg::type type {ekg::type::abstract};
@@ -32,6 +33,9 @@ namespace ekg {
         public:
             abstract();
             ~abstract();
+
+            void set_tag(std::string_view);
+            std::string_view get_tag();
 
             void parent(uint32_t);
             std::vector<uint32_t> &get_parent_id_list();
