@@ -103,7 +103,6 @@ All buffers swap into GPU are totally handled and optimized by `ekg::gpu::alloca
 
 The scale manager works with dynamic offsets, for better interactions it automatically sets the scale of min_offset and button sizes (if auto-scale mode is enabled), other service of scale manager is set loaded_widget_list position based on root display, small screens like smartphones, reduce the bounds interaction between mother/master parent and others loaded_widget_list.
 
-# Author
+---
 
-Hi I am rina the author (a), I do many commits sometime because I have a notebook and I need to handle the job a lot of times...
-The current version state of ekg depends on all of my job, sometime I do not have motivation to code on it, but yes... I love to do GUIs and UIs library!
+@VokeGpu 2022 All rights reserved.
