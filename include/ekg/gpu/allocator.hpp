@@ -7,7 +7,9 @@
 namespace ekg::gpu {
     class allocator {
     protected:
-        std::array<ekg::gpu::data, 2048> cpu_allocated_data {};
+        std::vector<ekg::gpu::data> cpu_allocated_data {};
+        std::vector<ekg::gpu::data> cache_data {};
+
         std::vector<GLfloat> loaded_vertex_list {};
         std::vector<GLfloat> loaded_uv_list {};
         std::vector<GLuint> loaded_texture_list {};
@@ -25,7 +27,7 @@ namespace ekg::gpu {
         GLuint buffer_vertex {};
         GLuint buffer_uv {};
         GLuint buffer_list {};
-        GLfloat depth_testing_preset {0.001f};
+        GLfloat depth_testing_preset {};
 
         static gpu::program program;
         static float orthographicm4[16];

@@ -22,15 +22,6 @@ namespace ekg {
         next   = 128
     };
 
-    struct flag {
-        bool highlight {};
-        bool hovered {};
-        bool activy {};
-        bool focused {};
-        bool state {};
-        bool extra_state {};
-    };
-
     struct vec2 {
         float x {};
         float y {};

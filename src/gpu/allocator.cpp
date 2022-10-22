@@ -63,7 +63,14 @@ void ekg::gpu::allocator::dispatch() {
 }
 
 void ekg::gpu::allocator::revoke() {
-    bool should_re_alloc_buffers = this->factor_changed || this->previous_allocated_size != this->allocated_size;
+    bool should_re_alloc_buffers = this->previous_allocated_size != this->allocated_size;
+
+    if (should_re_alloc_buffers) {
+        this->cpu_allocated_data.resize(this->allocated_size);
+    }
+
+    should_re_alloc_buffers = should_re_alloc_buffers || this->factor_changed;
+
     this->previous_allocated_size = this->allocated_size;
     this->factor_changed = false;
 
@@ -104,8 +111,7 @@ void ekg::gpu::allocator::draw() {
 
     float depth_testing {this->depth_testing_preset};
 
-    for (uint32_t data_iterations = 0; data_iterations < this->allocated_size; data_iterations++) {
-        auto &data {this->cpu_allocated_data[data_iterations]};
+    for (ekg::gpu::data &data : this->cpu_allocated_data) {
         active_texture = data.texture != 0;
 
         if (active_texture) {
@@ -149,7 +155,7 @@ void ekg::gpu::allocator::draw() {
             }
         }
 
-        depth_testing += 0.001f;
+        depth_testing += 1;
     }
 
     if (scissor_enabled || texture_enabled) {
@@ -187,7 +193,7 @@ ekg::gl_version + "\n"
 "    }\n"
 ""
 "    ProcessedVertex += Rect.xy;\n"
-"    gl_Position = MatrixProjection * vec4(ProcessedVertex, Depth, 1.0f);\n"
+"    gl_Position = MatrixProjection * vec4(ProcessedVertex, Depth / 10000000, 1.0f);\n"
 ""
 "    TextureUV = UVData;\n"
 "    ShapeRect = Rect;\n"
@@ -231,6 +237,10 @@ ekg::gl_version + "\n"
 }
 
 void ekg::gpu::allocator::clear_current_data() {
+    if (this->allocated_size >= this->cpu_allocated_data.size()) {
+        this->cpu_allocated_data.emplace_back();
+    }
+
     ekg::gpu::data &data = this->bind_current_data();
 
     data.outline = 0;

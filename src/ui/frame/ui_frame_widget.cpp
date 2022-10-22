@@ -40,6 +40,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
         this->extra.h = rect.y + rect.h;
 
         this->flag.activy = this->target_dock_drag != ekg::dock::none || this->target_dock_resize != ekg::dock::none;
+        this->flag.absolute = this->flag.activy;
     } else if (ekg::input::motion() && this->flag.activy) {
         ekg::rect new_rect {rect};
 
@@ -88,6 +89,10 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
     }
 
     if (ekg::input::released()) {
+        if (this->flag.activy) {
+            this->flag.absolute = false;
+        }
+
         this->target_dock_resize = ekg::dock::none;
         this->target_dock_drag = ekg::dock::none;
         this->flag.activy = false;

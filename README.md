@@ -30,7 +30,7 @@ int32_t main(int32_t, char**) {
   ekg::button("Button Press Me!", ekg::dock::top | ekg::dock::left | ekg::dock::next); // next does the "break line" dock (bottom to up and top to bottom).
   ekg::pop_group();
   
-  // do samething to create new widgets.
+  // do samething to create new loaded_widget_list.
   
   /*
    * mainloop of your application/game.
@@ -67,7 +67,7 @@ There is more things, theses steps are the official way to setup.
 
 The theme store the current colors scheme loaded, you can use the default or load one theme file. One of important objectives is make the UI looks pretty and smooth in mobile devices.
 
-Input manager handle all bindings of widgets element, you can tag combinations of different inputs.  
+Input manager handle all bindings of loaded_widget_list element, you can tag combinations of different inputs.  
 When pressing units keybinds (special keys + random keyboard key) you need to write in the correct pattern: ctrl -> shift -> tab; E.g "lshift+tab+b"; l (left) r (right).  
 ```c++
 ekg::input::bind("custom-tag-a", "mouse-left");
@@ -101,7 +101,7 @@ if (ekg::input::pressed("hii!! :))")) {
 
 All buffers swap into GPU are totally handled and optimized by `ekg::gpu::allocator`, it protects your gpu from multiples buffers dispatch, it only uses two buffers and implement high shading communication making a partial instanced rendering.
 
-The scale manager works with dynamic offsets, for better interactions it automatically sets the scale of min_offset and button sizes (if auto-scale mode is enabled), other service of scale manager is set widgets position based on root display, small screens like smartphones, reduce the bounds interaction between mother/master parent and others widgets.
+The scale manager works with dynamic offsets, for better interactions it automatically sets the scale of min_offset and button sizes (if auto-scale mode is enabled), other service of scale manager is set loaded_widget_list position based on root display, small screens like smartphones, reduce the bounds interaction between mother/master parent and others loaded_widget_list.
 
 # Author
 

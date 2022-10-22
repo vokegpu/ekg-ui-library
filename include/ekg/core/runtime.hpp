@@ -28,16 +28,17 @@ namespace ekg {
 
         /* Widget env lists and maps for tasks. */
 
-        std::vector<ekg::ui::abstract_widget*> list_widget {};
-        std::vector<ekg::ui::abstract*> list_interface {};
+        std::vector<ekg::ui::abstract_widget*> loaded_widget_list {};
+        std::vector<ekg::ui::abstract*> loaded_interface_list {};
 
-        std::vector<ekg::ui::abstract_widget*> list_reload_widget {};
-        std::vector<ekg::ui::abstract_widget*> list_refresh_widget {};
-        std::vector<ekg::ui::abstract_widget*> list_reset_widget {};
-        std::vector<ekg::ui::abstract_widget*> list_sync_layout_widget {};
+        std::vector<ekg::ui::abstract_widget*> to_reload_widgets {};
+        std::vector<ekg::ui::abstract_widget*> to_refresh_widgets {};
+        std::vector<ekg::ui::abstract_widget*> to_reset_widgets {};
+        std::vector<ekg::ui::abstract_widget*> to_sync_layout_widgets {};
 
-        std::map<uint32_t, ekg::ui::abstract_widget*> map_widget {};
-        std::map<uint32_t, ekg::ui::abstract> map_interface {};
+        std::map<uint32_t, ekg::ui::abstract_widget*> widgets_map {};
+        std::map<uint32_t, ekg::ui::abstract> interfaces_map {};
+        std::map<uint32_t, bool> processed_widgets_map {};
 
         /* Core services and instances. */
 

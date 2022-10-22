@@ -16,6 +16,16 @@ namespace ekg {
         small, normal, big
     };
 
+    struct flag {
+        bool highlight {};
+        bool hovered {};
+        bool activy {};
+        bool focused {};
+        bool state {};
+        bool extra_state {};
+        bool absolute {};
+    };
+
     struct timing {
         uint64_t elapsed_ticks {};
         uint64_t current_ticks {};

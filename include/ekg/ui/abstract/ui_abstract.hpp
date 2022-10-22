@@ -3,6 +3,7 @@
 
 #include "ekg/core/feature.hpp"
 #include "ekg/util/geometry.hpp"
+#include "ekg/util/env.hpp"
 #include <vector>
 
 namespace ekg {

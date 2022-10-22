@@ -27,8 +27,14 @@ namespace ekg::ui {
         void set_text(std::string_view);
         std::string_view get_text();
 
-        void set_value(bool);
-        bool get_value();
+        void set_value(double);
+        double get_value();
+
+        void set_min_value(float);
+        float get_min_value();
+
+        void set_max_value(double);
+        double get_max_value();
 
         void set_text(uint16_t);
         uint16_t get_text_dock();

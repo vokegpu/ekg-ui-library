@@ -2,7 +2,6 @@
 #include "ekg/util/env.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
-#include "ekg/ui/checkbox/ui_checkbox.hpp"
 
 void ekg::ui::checkbox_widget::destroy() {
     abstract_widget::destroy();

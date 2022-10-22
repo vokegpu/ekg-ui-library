@@ -69,8 +69,9 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
 
     ekg::ui::abstract_widget* focused_widget {nullptr};
     bool hovered {};
+    bool found_absolute_widget {};
 
-    for (ekg::ui::abstract_widget* &widgets : this->list_widget) {
+    for (ekg::ui::abstract_widget* &widgets : this->loaded_widget_list) {
         if (widgets == nullptr || !widgets->data->is_alive()) {
             continue;
         }
@@ -78,14 +79,15 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         widgets->on_pre_event(sdl_event);
         hovered = widgets->flag.hovered && widgets->data->get_state() == ekg::state::visible;
 
-        if (hovered) {
+        if ((hovered || widgets->flag.absolute) && !found_absolute_widget) {
             this->widget_id_focused = widgets->data->get_id();
             focused_widget = widgets;
+            found_absolute_widget = widgets->flag.absolute;
         }
 
         widgets->on_post_event(sdl_event);
 
-        if (!hovered) {
+        if (!hovered || found_absolute_widget) {
             widgets->on_event(sdl_event);
         }
     }
@@ -139,7 +141,7 @@ void ekg::runtime::prepare_tasks() {
     this->handler.dispatch(new ekg::cpu::event {"refresh", this, [](void* data) {
         auto runtime {static_cast<ekg::runtime*>(data)};
 
-        for (ekg::ui::abstract_widget* &widgets : runtime->list_refresh_widget) {
+        for (ekg::ui::abstract_widget* &widgets : runtime->to_refresh_widgets) {
             if (widgets == nullptr) {
                 continue;
             }
@@ -149,10 +151,10 @@ void ekg::runtime::prepare_tasks() {
                 widgets = nullptr;
             }
 
-            runtime->list_widget.push_back(widgets);
+            runtime->loaded_widget_list.push_back(widgets);
         }
 
-        runtime->list_refresh_widget.clear();
+        runtime->to_refresh_widgets.clear();
     }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"swap", this, [](void* data) {
@@ -162,7 +164,7 @@ void ekg::runtime::prepare_tasks() {
             return;
         }
 
-        for (ekg::ui::abstract_widget* &widgets : runtime->list_widget) {
+        for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_list) {
             if (widgets == nullptr) {
                 continue;
             }
@@ -184,14 +186,14 @@ void ekg::runtime::prepare_tasks() {
         }
 
         runtime->swap_widget_id_focused = 0;
-        runtime->list_widget.clear();
+        runtime->loaded_widget_list.clear();
 
         for (ekg::ui::abstract_widget* &widget : ekg::swap::back.ordered_list) {
             if (widget == nullptr) {
                 continue;
             }
 
-            runtime->list_widget.push_back(widget);
+            runtime->loaded_widget_list.push_back(widget);
         }
 
         for (ekg::ui::abstract_widget* &widget : ekg::swap::front.ordered_list) {
@@ -199,7 +201,7 @@ void ekg::runtime::prepare_tasks() {
                 continue;
             }
 
-            runtime->list_widget.push_back(widget);
+            runtime->loaded_widget_list.push_back(widget);
         }
 
         ekg::swap::refresh();
@@ -208,8 +210,8 @@ void ekg::runtime::prepare_tasks() {
     this->handler.dispatch(new ekg::cpu::event {"reset", this, [](void* data) {
         auto runtime {static_cast<ekg::runtime*>(data)};
 
-        for (ekg::ui::abstract_widget* &widgets : runtime->list_reset_widget) {
-            if (widgets == nullptr) {
+        for (ekg::ui::abstract_widget* &widgets : runtime->to_reset_widgets) {
+            if (widgets == nullptr || runtime->processed_widgets_map[widgets->data->get_id()]) {
                 continue;
             }
 
@@ -237,13 +239,14 @@ void ekg::runtime::prepare_tasks() {
             }
         }
 
-        runtime->list_reset_widget.clear();
+        runtime->to_reset_widgets.clear();
+        runtime->processed_widgets_map.clear();
     }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"reload", this, [](void* data) {
         auto runtime {static_cast<ekg::runtime*>(data)};
 
-        for (ekg::ui::abstract_widget* &widget : runtime->list_reload_widget) {
+        for (ekg::ui::abstract_widget* &widget : runtime->to_reload_widgets) {
             if (widget == nullptr) {
                 continue;
             }
@@ -265,32 +268,37 @@ void ekg::runtime::prepare_tasks() {
             }
 
             widget->on_reload();
+            runtime->processed_widgets_map[widget->data->get_id()] = true;
         }
 
-        runtime->list_reload_widget.clear();
+        runtime->to_reload_widgets.clear();
+        runtime->processed_widgets_map.clear();
     }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"synclayout", this, [](void* data) {
         auto runtime {static_cast<ekg::runtime*>(data)};
+        // todo fix the issue with sync layout offset.
 
-        for (ekg::ui::abstract_widget* &widget : runtime->list_sync_layout_widget) {
-            if (widget == nullptr) {
+        for (ekg::ui::abstract_widget* &widget : runtime->to_sync_layout_widgets) {
+            if (widget == nullptr || runtime->processed_widgets_map[widget->data->get_id()]) {
                 continue;
             }
 
             runtime->layout_manager.process_scaled(widget);
+            runtime->processed_widgets_map[widget->data->get_id()] = true;
         }
 
-        runtime->list_sync_layout_widget.clear();
+        runtime->to_sync_layout_widgets.clear();
+        runtime->processed_widgets_map.clear();
     }, ekg::event::alloc});
 
     this->handler.dispatch(new ekg::cpu::event {"redraw", this, [](void* data) {
         auto runtime {static_cast<ekg::runtime*>(data)};
 
         runtime->allocator.invoke();
-        runtime->f_renderer_big.blit("Widgets count: " + std::to_string(runtime->list_widget.size()), 10, 10, {255, 255, 255, 255});
+        runtime->f_renderer_big.blit("Widgets count: " + std::to_string(runtime->loaded_widget_list.size()), 10, 10, {255, 255, 255, 255});
 
-        for (ekg::ui::abstract_widget* &widgets : runtime->list_widget) {
+        for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_list) {
             if (widgets == nullptr) {
                 continue;
             }
@@ -305,12 +313,12 @@ void ekg::runtime::prepare_tasks() {
 }
 
 ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(uint32_t id) {
-    return this->map_widget[id];
+    return this->widgets_map[id];
 }
 
 void ekg::runtime::reload_widget(ekg::ui::abstract_widget* widget) {
     if (widget != nullptr) {
-        this->list_reload_widget.push_back(widget);
+        this->to_reload_widgets.push_back(widget);
         ekg::dispatch(ekg::env::reload);
     }
 }
@@ -409,8 +417,8 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
         }
     }
 
-    this->list_refresh_widget.push_back(created_widget);
-    this->map_widget[ui->get_id()] = created_widget;
+    this->to_refresh_widgets.push_back(created_widget);
+    this->widgets_map[ui->get_id()] = created_widget;
     this->reset_widget(created_widget);
     this->reload_widget(created_widget);
 
@@ -427,7 +435,7 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
 
 void ekg::runtime::reset_widget(ekg::ui::abstract_widget *widget) {
     if (widget != nullptr) {
-        this->list_reset_widget.push_back(widget);
+        this->to_reset_widgets.push_back(widget);
         ekg::dispatch(ekg::env::reset);
     }
 }
@@ -443,7 +451,7 @@ void ekg::runtime::sync_layout_widget(ekg::ui::abstract_widget *widget) {
     }
 
     if (is_group || (!is_group || widget != nullptr)) {
-        this->list_sync_layout_widget.push_back(widget);
+        this->to_sync_layout_widgets.push_back(widget);
         ekg::dispatch(ekg::env::synclayout);
     }
 }

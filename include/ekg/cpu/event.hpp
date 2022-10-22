@@ -15,8 +15,8 @@ namespace ekg {
     namespace cpu {
         struct event {
             const char *uuid {};
-            void *callback {};
-            std::function<void(void *)> fun {};
+            void* callback {};
+            std::function<void(void*)> fun {};
             uint16_t flags {};
         };
     }

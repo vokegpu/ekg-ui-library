@@ -43,15 +43,21 @@ int32_t main(int, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    ekg::frame("tag", {20, 20}, {200, 200})->set_drag(ekg::dock::top);
-    ekg::label("Hi, the label:"); // dock automatically set to ekg::dock::left | ekg::dock::top
-    ekg::button("Button Press Me!", ekg::dock::top | ekg::dock::left | ekg::dock::next)->set_callback(new ekg::cpu::event{"button press", nullptr, [](void* data) {
-        SDL_Event sdl_event {};
-        sdl_event.type = SDL_QUIT;
-        SDL_PushEvent(&sdl_event);
-    }}); // next does the "break line" dock (bottom to up and top to bottom).
-    ekg::checkbox("hi", ekg::dock::top | ekg::dock::left | ekg::dock::next)->set_text(ekg::dock::right | ekg::dock::center);
-    ekg::pop_group();
+    for (int32_t i {}; i < 200; i++) {
+        auto frame {ekg::frame("tag", {20, 20}, {200, 200})};
+        frame->set_drag(ekg::dock::top);
+        frame->set_resize(ekg::dock::left | ekg::dock::bottom);
+        ekg::label("Hi, the label:"); // dock automatically set to ekg::dock::left | ekg::dock::top
+        ekg::button("Button Press Me!", ekg::dock::top | ekg::dock::left | ekg::dock::next)->set_callback(
+                new ekg::cpu::event {"button press", nullptr, [](void *data) {
+                    SDL_Event sdl_event {};
+                    sdl_event.type = SDL_QUIT;
+                    SDL_PushEvent(&sdl_event);
+                }}); // next does the "break line" dock (bottom to up and top to bottom).
+        ekg::checkbox("hi", ekg::dock::top | ekg::dock::left | ekg::dock::next)->set_width(200);
+        ekg::checkbox("hello", ekg::dock::top | ekg::dock::left)->set_width(200);
+        ekg::pop_group();
+    }
 
     /*
      * Mainloop.

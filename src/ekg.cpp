@@ -1,7 +1,4 @@
 #include "ekg/ekg.hpp"
-#include "ekg/util/env.hpp"
-#include "ekg/cpu/info.hpp"
-#include "ekg/ui/checkbox/ui_checkbox.hpp"
 
 ekg::runtime* ekg::core {nullptr};
 std::string ekg::gl_version {"#version 450 core"};
@@ -157,7 +154,7 @@ ekg::ui::checkbox *ekg::checkbox(std::string_view text, uint16_t dock) {
     ui->set_type(ekg::type::checkbox);
     ekg::core->create_ui(ui);
 
-    ui->set_text(ekg::dock::center);
+    ui->set_text(ekg::dock::left | ekg::dock::center);
     ui->set_text(text);
     ui->set_dock(dock);
     ui->set_scaled_height(1);
