@@ -16,8 +16,8 @@ namespace ekg::ui {
         bool ieee754 {};
 	public:
         void set_dock(uint16_t);
-        void set_bar(uint16_t);
-        uint16_t get_bar()
+        void set_bar(ekg::dock);
+        ekg::dock get_bar();
 
         void set_font_size(ekg::font font);
         ekg::font get_font_size();
@@ -40,6 +40,8 @@ namespace ekg::ui {
         void set_value_max(int32_t);
         void set_value_max(float);
         float get_value_max();
+
+        bool is_float_precision();
 	};
 }
 

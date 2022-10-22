@@ -9,11 +9,15 @@ void ekg::ui::slider::set_dock(uint16_t flags) {
     }
 }
 
-void ekg::ui::slider::set_bar(uint16_t flags) {
-    if (this->dock_bar != flags) {
-        this->dock_bar = flags;
+void ekg::ui::slider::set_bar(ekg::dock orientation) {
+    if (this->dock_bar != orientation) {
+        this->dock_bar = orientation;
         ekg::reload(this->id);
     }
+}
+
+ekg::dock ekg::ui::slider::get_bar() {
+    return this->dock_bar;
 }
 
 void ekg::ui::slider::set_font_size(ekg::font font) {
