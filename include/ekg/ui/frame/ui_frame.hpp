@@ -14,7 +14,11 @@ namespace ekg::ui {
 
         ekg::rect rect_initial {};
         std::string tag {};
+        ekg::vec2 scale_factor {};
     public:
+        void set_scale_factor(float, float);
+        ekg::vec2 get_scale_factor();
+
         void set_drag(uint16_t);
         uint16_t get_drag_dock();
 

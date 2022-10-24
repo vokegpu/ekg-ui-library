@@ -69,7 +69,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
             }
         }
 
-        // todo fix the rect reverse axis resize, when is out of window and at min of size.
+        // todo fix the rect reverse axis resize, when is out of window too at min of size.
         ekg::set_rect_clamped(new_rect, ekg::theme().min_widget_size);
 
         if (rect != new_rect) {

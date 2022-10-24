@@ -1,6 +1,15 @@
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/util/util_event.hpp"
 
+void ekg::ui::frame::set_scale_factor(float x, float y) {
+    this->scale_factor.x = x;
+    this->scale_factor.y = y;
+}
+
+ekg::vec2 ekg::ui::frame::get_scale_factor() {
+    return this->scale_factor;
+}
+
 void ekg::ui::frame::set_drag(uint16_t dock) {
 	this->dock_drag = dock;
 }
