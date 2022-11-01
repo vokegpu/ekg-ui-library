@@ -30,7 +30,7 @@ void ekg::ui::slider::set_bar(ekg::dock orientation) {
     }
 }
 
-ekg::dock ekg::ui::slider::get_bar() {
+ekg::dock ekg::ui::slider::get_bar_dock() {
     return this->dock_bar;
 }
 

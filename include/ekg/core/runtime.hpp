@@ -100,7 +100,7 @@ namespace ekg {
         void create_ui(ekg::ui::abstract* ui);
         void reset_widget(ekg::ui::abstract_widget* widget);
         void sync_layout_widget(ekg::ui::abstract_widget* widget);
-        void pop_group();
+        void reset_group_instance();
 
         void init();
         void quit();

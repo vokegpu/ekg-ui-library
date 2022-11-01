@@ -134,7 +134,7 @@ void ekg::gpu::allocator::draw() {
         ekg::gpu::allocator::program.set4("Color", data.colored_area);
         ekg::gpu::allocator::program.set4("Rect", data.rect_area);
         ekg::gpu::allocator::program.set("Depth", depth_testing);
-        ekg::gpu::allocator::program.set("LineThickness", data.outline);
+        ekg::gpu::allocator::program.set("LineThickness", data.mode);
 
         switch (data.scissor_id) {
             case -1: {
@@ -188,7 +188,7 @@ void ekg::gpu::allocator::clear_current_data() {
     this->cache_scissor[this->allocated_size].rect[0] = -1; // it means that this scissor cache element no longer be used.
     ekg::gpu::data &data = this->bind_current_data();
 
-    data.outline = 0;
+    data.mode = 0;
     data.texture = 0;
     data.texture_slot = 0;
     data.scissor_id = -1;

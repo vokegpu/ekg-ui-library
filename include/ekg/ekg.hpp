@@ -45,7 +45,7 @@ namespace ekg {
     ekg::ui::button* button(std::string_view, uint16_t = ekg::dock::left | ekg::dock::top);
     ekg::ui::label* label(std::string_view, uint16_t = ekg::dock::left | ekg::dock::top);
     ekg::ui::checkbox *checkbox(std::string_view text, uint16_t = ekg::dock::left | ekg::dock::top);
-    void pop_group();
+    void popgroup();
 }
 
 #endif

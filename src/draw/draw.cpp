@@ -50,7 +50,7 @@ void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color,
     data.colored_area[1] = color.y / 255;
     data.colored_area[2] = color.z / 255;
     data.colored_area[3] = color.w / 255;
-    data.outline = line_thickness;
+    data.mode = line_thickness;
     data.factor = 1;
 
     allocator.dispatch();

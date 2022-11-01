@@ -106,7 +106,7 @@ ekg::gl_version + "\n"
 "void main() {"
 "    OutColor = Color;\n"
 ""
-"    if (LineThickness != 0) {"
+"    if (LineThickness > 0) {"
 "        vec2 FragPos = vec2(gl_FragCoord.x, ViewportHeight - gl_FragCoord.y);\n"
 "        vec4 OutlineRect = vec4(ShapeRect.x + LineThickness, ShapeRect.y + LineThickness, ShapeRect.z - (LineThickness * 2), ShapeRect.w - (LineThickness * 2));\n"
 ""
@@ -115,8 +115,11 @@ ekg::gl_version + "\n"
 "        if (Collide) {"
 "            discard;"
 "        }"
-"    }\n"
-""
+"    } else if (LineThickness < 0) {\n"
+"        vec2 FragPos = vec2(gl_FragCoord.x, ViewportHeight - gl_FragCoord.y);\n"
+"        float L = LineThickness * 4;\n"
+"        \n"
+"    }"
 "    if (ActiveTexture) {"
 "        OutColor = texture(ActiveTextureSlot, TextureUV);\n"
 "        OutColor = vec4(OutColor.xyz - ((1.0f - Color.xyz) - 1.0f), OutColor.w - (1.0f - Color.w));"
@@ -228,8 +231,8 @@ ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
     return ui;
 }
 
-void ekg::pop_group() {
-    ekg::core->pop_group();
+void ekg::popgroup() {
+    ekg::core->reset_group_instance();
 }
 
 ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {

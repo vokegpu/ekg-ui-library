@@ -70,7 +70,7 @@ int32_t main(int, char**) {
                 }}); // next does the "break line" dock (bottom to up and top to bottom).
         ekg::checkbox("hi", ekg::dock::top | ekg::dock::left | ekg::dock::next)->set_width(200);
         ekg::checkbox("hello", ekg::dock::top | ekg::dock::left)->set_width(200);
-        ekg::pop_group();
+        ekg::popgroup();
     }
 
     /*

@@ -470,6 +470,6 @@ void ekg::runtime::sync_layout_widget(ekg::ui::abstract_widget *widget) {
     }
 }
 
-void ekg::runtime::pop_group() {
+void ekg::runtime::reset_group_instance() {
     this->current_bind_group = nullptr;
 }

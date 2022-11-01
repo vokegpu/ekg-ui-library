@@ -23,23 +23,23 @@ namespace ekg::service {
     protected:
         std::vector<std::string> loaded_theme_list {};
     public:
-        /* Start of frame theme. */
+        /* Start of frame scheme colors. */
         ekg::vec4 frame_background {};
         ekg::vec4 frame_border {};
         ekg::vec4 frame_outline {};
 
         int32_t frame_activy_offset {};
-        /* End of frame theme. */
+        /* End of frame scheme colors. */
 
-        /* Start of button theme. */
+        /* Start of button scheme colors. */
         ekg::vec4 button_background {};
         ekg::vec4 button_string {};
         ekg::vec4 button_outline {};
         ekg::vec4 button_activy {};
         ekg::vec4 button_highlight {};
-        /* End of button theme. */
+        /* End of button scheme colors. */
 
-        /* Start of checkbox theme. */
+        /* Start of checkbox scheme colors. */
         ekg::vec4 checkbox_background {};
         ekg::vec4 checkbox_string {};
         ekg::vec4 checkbox_outline {};
@@ -47,9 +47,17 @@ namespace ekg::service {
         ekg::vec4 checkbox_highlight {};
         /* End of checkbox theme. */
 
-        /* Start of label. */
+        /* Start of slider scheme colors. */
+        ekg::vec4 slider_string {};
+        ekg::vec4 slider_background {};
+        ekg::vec4 slider_outline {};
+        ekg::vec4 slider_activy {};
+        ekg::vec4 slider_highlight {};
+        /* End of slider scheme colors.*/
+
+        /* Start of label scheme colors. */
         ekg::vec4 label_string {};
-        /* End of label. */
+        /* End of label scheme colors. */
 
         float min_widget_size {5};
 

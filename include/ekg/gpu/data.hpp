@@ -28,7 +28,7 @@ namespace ekg::gpu {
 
         GLint begin_stride {};
         GLint end_stride {};
-        GLint outline {};
+        GLint mode {};
 
         int32_t factor {};
         int32_t scissor_id {-1};

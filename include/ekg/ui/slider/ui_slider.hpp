@@ -18,8 +18,8 @@
 #include "ekg/ui/abstract/ui_abstract.hpp"
 
 namespace ekg::ui {
-	class slider : public ekg::ui::abstract {
-	protected:
+    class slider : public ekg::ui::abstract {
+protected:
         float value {};
         float minimum_value {};
         float maximum_value {};
@@ -27,11 +27,12 @@ namespace ekg::ui {
         ekg::dock dock_bar {};
         ekg::font font_size {};
         int32_t scaled_height {};
+        int32_t scaled_size {};
         bool ieee754 {};
-	public:
+    public:
         void set_dock(uint16_t);
         void set_bar(ekg::dock);
-        ekg::dock get_bar();
+        ekg::dock get_bar_dock();
 
         void set_font_size(ekg::font font);
         ekg::font get_font_size();
@@ -56,7 +57,7 @@ namespace ekg::ui {
         float get_value_max();
 
         bool is_float_precision();
-	};
+    };
 }
 
 #endif
