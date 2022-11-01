@@ -1,8 +1,23 @@
+/*
+ * VOKEGPU EKG LICENSE
+ *
+ * Respect ekg license policy terms, please take a time and read it.
+ * 1- Any "skidd" or "stole" is not allowed.
+ * 2- Forks and pull requests should follow the license policy terms.
+ * 3- For commercial use, do not sell without give credit to vokegpu ekg.
+ * 4- For ekg users and users-programmer, we do not care, use in any thing (hacking, cheating, games, softwares).
+ * 5- All malwares, rat and others virus. We do not care.
+ * 6- Do not modify this license under any circunstancie.
+ *
+ * @VokeGpu 2022 all rights reserved.
+ */
+
 #include "ekg/gpu/allocator.hpp"
 #include "ekg/ekg.hpp"
 
 ekg::gpu::program ekg::gpu::allocator::program {};
 float ekg::gpu::allocator::orthographicm4[16] {};
+float ekg::gpu::allocator::viewport[4] {};
 
 void ekg::gpu::allocator::invoke() {
     this->allocated_size = 0;
@@ -12,7 +27,6 @@ void ekg::gpu::allocator::invoke() {
     // Set stride to 0 vertex position.
     this->clear_current_data();
     this->bind_current_data().begin_stride = this->begin_stride_count;
-    this->bind_scissor(-1, -1, -1, -1);
 }
 
 void ekg::gpu::allocator::bind_texture(GLuint &texture) {
@@ -43,11 +57,7 @@ void ekg::gpu::allocator::bind_texture(GLuint &texture) {
 void ekg::gpu::allocator::dispatch() {
     auto &data = this->bind_current_data();
 
-    data.scissored_area[0] = this->current_scissor_bind[0];
-    data.scissored_area[1] = this->current_scissor_bind[1];
-    data.scissored_area[2] = this->current_scissor_bind[2];
-    data.scissored_area[3] = this->current_scissor_bind[3];
-
+    data.scissor_id = this->scissor_instance_id;
     data.begin_stride = this->begin_stride_count;
     data.end_stride = this->end_stride_count;
 
@@ -67,6 +77,7 @@ void ekg::gpu::allocator::revoke() {
 
     if (should_re_alloc_buffers) {
         this->cpu_allocated_data.resize(this->allocated_size);
+        this->cache_scissor.resize(this->allocated_size);
     }
 
     should_re_alloc_buffers = should_re_alloc_buffers || this->factor_changed;
@@ -94,15 +105,7 @@ void ekg::gpu::allocator::revoke() {
 }
 
 void ekg::gpu::allocator::draw() {
-    GLfloat viewport[4];
-    glGetFloatv(GL_VIEWPORT, viewport);
-
-    ekg::orthographic2d(ekg::gpu::allocator::orthographicm4, 0, viewport[2], viewport[3], 0);
     ekg::gpu::invoke(ekg::gpu::allocator::program);
-
-    ekg::gpu::allocator::program.setm4("MatrixProjection", ekg::gpu::allocator::orthographicm4);
-    ekg::gpu::allocator::program.set("ViewportHeight", viewport[3]);
-
     glBindVertexArray(this->buffer_list);
 
     bool scissor_enabled {};
@@ -110,6 +113,7 @@ void ekg::gpu::allocator::draw() {
     bool texture_enabled {};
 
     float depth_testing {this->depth_testing_preset};
+    ekg::gpu::scissor* scissor {};
 
     for (ekg::gpu::data &data : this->cpu_allocated_data) {
         active_texture = data.texture != 0;
@@ -132,7 +136,7 @@ void ekg::gpu::allocator::draw() {
         ekg::gpu::allocator::program.set("Depth", depth_testing);
         ekg::gpu::allocator::program.set("LineThickness", data.outline);
 
-        switch (data.scissored_area[0]) {
+        switch (data.scissor_id) {
             case -1: {
                 if (scissor_enabled) {
                     glDisable(GL_SCISSOR_TEST);
@@ -145,9 +149,11 @@ void ekg::gpu::allocator::draw() {
 
             default: {
                 if (!scissor_enabled) {
-                    glEnable(GL_SCISSOR_TEST);
-                    glScissor(data.scissored_area[0], static_cast<GLint>(viewport[3]) - (data.scissored_area[1] + data.scissored_area[3]), data.scissored_area[2], data.scissored_area[3]);
                     scissor_enabled = true;
+                    scissor = this->bind_scissor(data.scissor_id);
+
+                    glEnable(GL_SCISSOR_TEST);
+                    glScissor(scissor->rect[0], scissor->rect[1], scissor->rect[2], scissor->rect[3]);
                 }
 
                 glDrawArrays(GL_TRIANGLES, data.begin_stride, data.end_stride);
@@ -171,86 +177,38 @@ void ekg::gpu::allocator::init() {
     glGenVertexArrays(1, &this->buffer_list);
     glGenBuffers(1, &this->buffer_vertex);
     glGenBuffers(1, &this->buffer_uv);
-
-    const std::string vsh_src {
-ekg::gl_version + "\n"
-"layout (location = 0) in vec2 VertexData;\n"
-"layout (location = 1) in vec2 UVData;\n"
-
-"uniform mat4 MatrixProjection;\n"
-"uniform vec4 Rect;\n"
-"uniform float Depth;\n"
-""
-"out vec2 TextureUV;\n"
-"out vec4 ShapeRect;\n"
-""
-"void main() {"
-"    vec2 ProcessedVertex = VertexData;\n"
-"    bool FixedShape = Rect.z != 0 || Rect.w != 0;\n"
-""
-"    if (FixedShape) {"
-"        ProcessedVertex *= Rect.zw;"
-"    }\n"
-""
-"    ProcessedVertex += Rect.xy;\n"
-"    gl_Position = MatrixProjection * vec4(ProcessedVertex, Depth / 10000000, 1.0f);\n"
-""
-"    TextureUV = UVData;\n"
-"    ShapeRect = Rect;\n"
-"}"};
-
-    const std::string fsh_src {
-ekg::gl_version + "\n"
-""
-"layout (location = 0) out vec4 OutColor;\n"
-""
-"in vec2 TextureUV;\n"
-"in vec4 ShapeRect;\n"
-""
-"uniform int LineThickness;\n"
-"uniform float ViewportHeight;\n"
-"uniform bool ActiveTexture;\n"
-"uniform sampler2D ActiveTextureSlot;\n"
-"uniform vec4 Color;\n"
-""
-"void main() {"
-"    OutColor = Color;\n"
-""
-"    if (LineThickness != 0) {"
-"        vec2 FragPos = vec2(gl_FragCoord.x, ViewportHeight - gl_FragCoord.y);\n"
-"        vec4 OutlineRect = vec4(ShapeRect.x + LineThickness, ShapeRect.y + LineThickness, ShapeRect.z - (LineThickness * 2), ShapeRect.w - (LineThickness * 2));\n"
-""
-"        bool Collide = FragPos.x > OutlineRect.x && FragPos.x < OutlineRect.x + OutlineRect.z && FragPos.y > OutlineRect.y && FragPos.y < OutlineRect.y + OutlineRect.w;\n"
-"        "
-"        if (Collide) {"
-"            discard;"
-"        }"
-"    }\n"
-""
-"    if (ActiveTexture) {"
-"        OutColor = texture(ActiveTextureSlot, TextureUV);\n"
-"        OutColor = vec4(OutColor.xyz - ((1.0f - Color.xyz) - 1.0f), OutColor.w - (1.0f - Color.w));"
-"    }\n"
-"}"};
-
-    gpu::create_basic_program(ekg::gpu::allocator::program, vsh_src.c_str(), fsh_src.c_str());
 }
 
 void ekg::gpu::allocator::clear_current_data() {
     if (this->allocated_size >= this->cpu_allocated_data.size()) {
         this->cpu_allocated_data.emplace_back();
+        this->cache_scissor.emplace_back();
     }
 
+    this->cache_scissor[this->allocated_size].rect[0] = -1; // it means that this scissor cache element no longer be used.
     ekg::gpu::data &data = this->bind_current_data();
 
     data.outline = 0;
     data.texture = 0;
     data.texture_slot = 0;
+    data.scissor_id = -1;
     previous_factor = data.factor;
 }
 
 ekg::gpu::data &ekg::gpu::allocator::bind_current_data() {
     return this->cpu_allocated_data[this->allocated_size];
+}
+
+int32_t ekg::gpu::allocator::get_current_data_id() {
+    return this->allocated_size;
+}
+
+ekg::gpu::data* ekg::gpu::allocator::bind_data(int32_t id) {
+    if (id < 0 || id > this->allocated_size) {
+        return nullptr;
+    }
+
+    return &this->cpu_allocated_data[id];
 }
 
 void ekg::gpu::allocator::quit() {
@@ -260,11 +218,32 @@ void ekg::gpu::allocator::quit() {
     glDeleteVertexArrays(1, &this->buffer_list);
 }
 
-void ekg::gpu::allocator::bind_scissor(int32_t x, int32_t y, int32_t w, int32_t h) {
-    this->current_scissor_bind[0] = x;
-    this->current_scissor_bind[1] = y;
-    this->current_scissor_bind[2] = w;
-    this->current_scissor_bind[3] = h;
+ekg::gpu::scissor* ekg::gpu::allocator::bind_scissor(int32_t id) {
+    if (id < 0 || id > this->allocated_size) {
+        return nullptr;
+    }
+
+    return &this->cache_scissor[id];
+}
+
+int32_t ekg::gpu::allocator::get_instance_scissor_id() {
+    return this->scissor_instance_id;
+}
+
+void ekg::gpu::allocator::invoke_scissor() {
+    this->scissor_instance_id = this->allocated_size;
+}
+
+void ekg::gpu::allocator::scissor(int32_t x, int32_t y, int32_t w, int32_t h) {
+    auto &scissor {this->cache_scissor[this->allocated_size]};
+    scissor.rect[0] = x;
+    scissor.rect[1] = ekg::display::height - (y + h);
+    scissor.rect[2] = w;
+    scissor.rect[3] = h;
+}
+
+void ekg::gpu::allocator::revoke_scissor() {
+    this->scissor_instance_id = -1;
 }
 
 void ekg::gpu::allocator::vertex2f(float x, float y) {

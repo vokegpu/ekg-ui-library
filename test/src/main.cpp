@@ -1,3 +1,17 @@
+/*
+ * VOKEGPU EKG LICENSE
+ *
+ * Respect ekg license policy terms, please take a time and read it.
+ * 1- Any "skidd" or "stole" is not allowed.
+ * 2- Forks and pull requests should follow the license policy terms.
+ * 3- For commercial use, do not sell without give credit to vokegpu ekg.
+ * 4- For ekg users and users-programmer, we do not care, use in any thing (hacking, cheating, games, softwares).
+ * 5- All malwares, rat and others virus. We do not care.
+ * 6- Do not modify this license under any circunstancie.
+ *
+ * @VokeGpu 2022 all rights reserved.
+ */
+
 #include <ekg/ekg.hpp>
 
 /**
@@ -43,7 +57,7 @@ int32_t main(int, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    for (int32_t i {}; i < 200; i++) {
+    for (int32_t i {}; i < 2; i++) {
         auto frame {ekg::frame("tag", {20, 20}, {200, 200})};
         frame->set_drag(ekg::dock::top);
         frame->set_resize(ekg::dock::left | ekg::dock::bottom);

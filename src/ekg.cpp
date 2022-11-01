@@ -1,4 +1,19 @@
+/*
+ * VOKEGPU EKG LICENSE
+ *
+ * Respect ekg license policy terms, please take a time and read it.
+ * 1- Any "skidd" or "stole" is not allowed.
+ * 2- Forks and pull requests should follow the license policy terms.
+ * 3- For commercial use, do not sell without give credit to vokegpu ekg.
+ * 4- For ekg users and users-programmer, we do not care, use in any thing (hacking, cheating, games, softwares).
+ * 5- All malwares, rat and others virus. We do not care.
+ * 6- Do not modify this license under any circunstancie.
+ *
+ * @VokeGpu 2022 all rights reserved.
+ */
+
 #include "ekg/ekg.hpp"
+#include "ekg/cpu/info.hpp"
 
 ekg::runtime* ekg::core {nullptr};
 std::string ekg::gl_version {"#version 450 core"};
@@ -45,8 +60,82 @@ void ekg::init(SDL_Window* root, const std::string &font_path) {
     ekg::core->init();
     ekg::core->set_root(root);
 
+    /* Create main shading program. */
+
+    const std::string vsh_src {
+ekg::gl_version + "\n"
+"layout (location = 0) in vec2 VertexData;\n"
+"layout (location = 1) in vec2 UVData;\n"
+
+"uniform mat4 MatrixProjection;\n"
+"uniform vec4 Rect;\n"
+"uniform float Depth;\n"
+""
+"out vec2 TextureUV;\n"
+"out vec4 ShapeRect;\n"
+""
+"void main() {"
+"    vec2 ProcessedVertex = VertexData;\n"
+"    bool FixedShape = Rect.z != 0 || Rect.w != 0;\n"
+""
+"    if (FixedShape) {"
+"        ProcessedVertex *= Rect.zw;"
+"    }\n"
+""
+"    ProcessedVertex += Rect.xy;\n"
+"    gl_Position = MatrixProjection * vec4(ProcessedVertex, Depth / 10000000, 1.0f);\n"
+""
+"    TextureUV = UVData;\n"
+"    ShapeRect = Rect;\n"
+"}"};
+
+    const std::string fsh_src {
+ekg::gl_version + "\n"
+""
+"layout (location = 0) out vec4 OutColor;\n"
+""
+"in vec2 TextureUV;\n"
+"in vec4 ShapeRect;\n"
+""
+"uniform int LineThickness;\n"
+"uniform float ViewportHeight;\n"
+"uniform bool ActiveTexture;\n"
+"uniform sampler2D ActiveTextureSlot;\n"
+"uniform vec4 Color;\n"
+""
+"void main() {"
+"    OutColor = Color;\n"
+""
+"    if (LineThickness != 0) {"
+"        vec2 FragPos = vec2(gl_FragCoord.x, ViewportHeight - gl_FragCoord.y);\n"
+"        vec4 OutlineRect = vec4(ShapeRect.x + LineThickness, ShapeRect.y + LineThickness, ShapeRect.z - (LineThickness * 2), ShapeRect.w - (LineThickness * 2));\n"
+""
+"        bool Collide = FragPos.x > OutlineRect.x && FragPos.x < OutlineRect.x + OutlineRect.z && FragPos.y > OutlineRect.y && FragPos.y < OutlineRect.y + OutlineRect.w;\n"
+"        "
+"        if (Collide) {"
+"            discard;"
+"        }"
+"    }\n"
+""
+"    if (ActiveTexture) {"
+"        OutColor = texture(ActiveTextureSlot, TextureUV);\n"
+"        OutColor = vec4(OutColor.xyz - ((1.0f - Color.xyz) - 1.0f), OutColor.w - (1.0f - Color.w));"
+"    }\n"
+"}"};
+
+    gpu::create_basic_program(ekg::gpu::allocator::program, vsh_src.c_str(), fsh_src.c_str());
+
+    /* First update of ortographic matrix and uniforms. */
+
     SDL_GetWindowSize(root, &ekg::display::width, &ekg::display::height);
-    ekg::log("root display size (" + std::to_string(ekg::display::width) + ", " + std::to_string(ekg::display::height) + ")");
+    ekg::gpu::invoke(ekg::gpu::allocator::program);
+    ekg::orthographic2d(ekg::gpu::allocator::orthographicm4, 0, ekg::display::width, ekg::display::height, 0);
+    ekg::gpu::allocator::program.setm4("MatrixProjection", ekg::gpu::allocator::orthographicm4);
+    ekg::gpu::allocator::program.set("ViewportHeight", static_cast<float>(ekg::display::height));
+    ekg::gpu::revoke();
+    ekg::log("ortographic root display (" + std::to_string(ekg::display::width) + ", " + std::to_string(ekg::display::height) + ")");
+
+    /* SDL info. */
 
     SDL_version sdl_version {};
     SDL_GetVersion(&sdl_version);
@@ -77,8 +166,16 @@ void ekg::event(SDL_Event &sdl_event) {
         case SDL_WINDOWEVENT: {
             switch (sdl_event.window.event) {
                 case SDL_WINDOWEVENT_SIZE_CHANGED: {
+                    /* Set new display size, update ortographic matrix and pass the uniforms to the main shader. */
+
                     ekg::display::width = sdl_event.window.data1;
                     ekg::display::height = sdl_event.window.data2;
+
+                    ekg::gpu::invoke(ekg::gpu::allocator::program);
+                    ekg::orthographic2d(ekg::gpu::allocator::orthographicm4, 0, ekg::display::width, ekg::display::height, 0);
+                    ekg::gpu::allocator::program.setm4("MatrixProjection", ekg::gpu::allocator::orthographicm4);
+                    ekg::gpu::allocator::program.set("ViewportHeight", static_cast<float>(ekg::display::height));
+                    ekg::gpu::revoke();
                     break;
                 }
             }
