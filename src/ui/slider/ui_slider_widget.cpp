@@ -91,7 +91,7 @@ void ekg::ui::slider_widget::on_update() {
 
 void ekg::ui::slider_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
-    auto ui {(ekg::ui::button*) this->data};
+    auto ui {(ekg::ui::slider*) this->data};
     auto &rect = (this->data->widget() = this->layout + *this->parent);
     auto &theme {ekg::theme()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};

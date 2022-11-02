@@ -45,6 +45,12 @@ void ekg::service::theme::gen_default_theme() {
     this->checkbox_outline = {0, 0, 0, 0};
     this->checkbox_highlight = {44, 166, 255, 50};
 
+    this->slider_string = {0, 0, 0, 255};
+    this->slider_background = {0, 0, 0, 0};
+    this->slider_activy = {44, 166, 255, 200};
+    this->slider_outline = {0, 0, 0, 0};
+    this->slider_highlight = {44, 166, 255, 50};
+
     this->label_string = {0, 0, 0, 255};
 }
 

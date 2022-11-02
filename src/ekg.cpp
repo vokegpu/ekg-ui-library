@@ -40,7 +40,7 @@ ekg::draw::font_renderer &ekg::f_renderer(ekg::font font_size) {
     return ekg::core->get_f_renderer_normal();
 }
 
-void ekg::init(SDL_Window* root, const std::string &font_path) {
+void ekg::init(SDL_Window* root, std::string_view font_path) {
     ekg::log("initialising ekg...");
     ekg::gpu::init_opengl_context();
 
@@ -249,13 +249,27 @@ ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
     return ui;
 }
 
-ekg::ui::checkbox *ekg::checkbox(std::string_view text, uint16_t dock) {
+ekg::ui::checkbox* ekg::checkbox(std::string_view text, uint16_t dock) {
     auto ui = new ekg::ui::checkbox();
     ui->set_type(ekg::type::checkbox);
     ekg::core->create_ui(ui);
 
     ui->set_text(ekg::dock::left | ekg::dock::center);
     ui->set_text(text);
+    ui->set_dock(dock);
+    ui->set_scaled_height(1);
+    ui->set_font_size(ekg::font::normal);
+
+    return ui;
+}
+
+ekg::ui::slider* ekg::slider(std::string_view tag, float val, float min, float max, uint16_t dock) {
+    auto ui = new ekg::ui::slider();
+    ui->set_type(ekg::type::slider);
+    ekg::core->create_ui(ui);
+
+    ui->set_bar(ekg::dock::left);
+    ui->set_tag(tag);
     ui->set_dock(dock);
     ui->set_scaled_height(1);
     ui->set_font_size(ekg::font::normal);
