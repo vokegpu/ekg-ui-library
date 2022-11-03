@@ -78,6 +78,14 @@ bool ekg::reset(ekg::timing &timing) {
     return true;
 }
 
+float ekg::lerp(float a, float b, float dt) {
+    if (dt < 0 || dt >= 1) {
+        return b;
+    }
+
+    return a + (b - a) * dt;
+}
+
 bool ekg::set(bool &var_mutable, bool predicate) {
     if (var_mutable != predicate) {
         ekg::dispatch(ekg::env::redraw);

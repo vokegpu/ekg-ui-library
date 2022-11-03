@@ -24,6 +24,7 @@ namespace ekg::gpu {
     protected:
         std::vector<ekg::gpu::data> cpu_allocated_data {};
         std::vector<ekg::gpu::scissor> cache_scissor {};
+        std::vector<ekg::gpu::data*> loaded_animation_list {};
 
         std::vector<GLfloat> loaded_vertex_list {};
         std::vector<GLfloat> loaded_uv_list {};
@@ -31,6 +32,7 @@ namespace ekg::gpu {
 
         uint32_t allocated_size {};
         uint32_t previous_allocated_size {};
+        int32_t previous_data_id {};
 
         bool factor_changed {};
         int32_t previous_factor {};
@@ -38,6 +40,7 @@ namespace ekg::gpu {
         GLint begin_stride_count {};
         GLint end_stride_count {};
 
+        GLfloat current_color_pass[4] {};
         GLint current_scissor_bind[4] {};
         int32_t scissor_instance_id {-1};
 
@@ -71,6 +74,7 @@ namespace ekg::gpu {
         void vertex2f(float x, float y);
         void coord2f(float x, float y);
 
+        void on_update();
         void invoke();
         void dispatch();
         void revoke();

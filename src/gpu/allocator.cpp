@@ -60,6 +60,13 @@ void ekg::gpu::allocator::dispatch() {
     data.scissor_id = this->scissor_instance_id;
     data.begin_stride = this->begin_stride_count;
     data.end_stride = this->end_stride_count;
+    data.id = this->allocated_size;
+
+    if (data.id != this->previous_data_id) {
+        data.colored_area[4] = data.colored_area[3];
+    } else {
+        this->loaded_animation_list.push_back(&data);
+    }
 
     if (!this->factor_changed) {
         this->factor_changed = this->previous_factor != data.factor;
@@ -104,6 +111,26 @@ void ekg::gpu::allocator::revoke() {
     this->loaded_uv_list.clear();
 }
 
+void ekg::gpu::allocator::on_update() {
+    if (!this->loaded_animation_list.empty()) {
+        int32_t animation_progress_count {};
+        ekg::log(std::to_string(this->loaded_animation_list.size()));
+
+        for (ekg::gpu::data* &data : this->loaded_animation_list) {
+            if (data == nullptr || data->colored_area[4] == data->colored_area[3]) {
+                animation_progress_count++;
+                continue;
+            }
+
+            data->colored_area[4] = static_cast<uint32_t>(ekg::lerp(static_cast<float>(data->colored_area[4]), static_cast<float>(data->colored_area[3]), ekg::display::dt));
+        }
+
+        if (animation_progress_count == this->loaded_animation_list.size() - 1) {
+            this->loaded_animation_list.clear();
+        }
+    }
+}
+
 void ekg::gpu::allocator::draw() {
     ekg::gpu::invoke(ekg::gpu::allocator::program);
     glBindVertexArray(this->buffer_list);
@@ -130,8 +157,13 @@ void ekg::gpu::allocator::draw() {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
+        this->current_color_pass[0] = static_cast<float>(data.colored_area[0]) / 255;
+        this->current_color_pass[1] = static_cast<float>(data.colored_area[1]) / 255;
+        this->current_color_pass[2] = static_cast<float>(data.colored_area[2]) / 255;
+        this->current_color_pass[3] = static_cast<float>(data.colored_area[3]) / 255;
+
         ekg::gpu::allocator::program.set("ActiveTexture", active_texture);
-        ekg::gpu::allocator::program.set4("Color", data.colored_area);
+        ekg::gpu::allocator::program.set4("Color", this->current_color_pass);
         ekg::gpu::allocator::program.set4("Rect", data.rect_area);
         ekg::gpu::allocator::program.set("Depth", depth_testing);
         ekg::gpu::allocator::program.set("LineThickness", data.mode);
@@ -161,7 +193,7 @@ void ekg::gpu::allocator::draw() {
             }
         }
 
-        depth_testing += 1;
+        depth_testing += 0.001f;
     }
 
     if (scissor_enabled || texture_enabled) {
@@ -193,6 +225,7 @@ void ekg::gpu::allocator::clear_current_data() {
     data.texture_slot = 0;
     data.scissor_id = -1;
     previous_factor = data.factor;
+    this->previous_data_id = data.id;
 }
 
 ekg::gpu::data &ekg::gpu::allocator::bind_current_data() {

@@ -129,6 +129,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
 
 void ekg::runtime::process_update() {
     this->input_manager.on_update();
+    this->allocator.on_update();
 
     if (this->handler.should_poll()) {
         this->handler.on_update();

@@ -21,7 +21,7 @@
 namespace ekg::gpu {
     struct data {
         GLfloat rect_area[4] {};
-        GLfloat colored_area[4] {};
+        GLuint colored_area[5] {};
 
         GLuint texture {};
         GLuint texture_slot {};
@@ -32,6 +32,7 @@ namespace ekg::gpu {
 
         int32_t factor {};
         int32_t scissor_id {-1};
+        int32_t id {};
     };
 }
 

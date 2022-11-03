@@ -46,6 +46,7 @@ namespace ekg {
         uint64_t ticks_going_on {};
     };
 
+    float lerp(float a, float b, float dt);
     void log(const std::string &log_message);
     bool reach(ekg::timing &timing, uint64_t ms);
     bool reset(ekg::timing &timing);

@@ -164,10 +164,10 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     data.rect_area[2] = 0;
     data.rect_area[3] = 0;
 
-    data.colored_area[0] = color.x / 255;
-    data.colored_area[1] = color.y / 255;
-    data.colored_area[2] = color.z / 255;
-    data.colored_area[3] = color.w / 255;
+    data.colored_area[0] = color.x;
+    data.colored_area[1] = color.y;
+    data.colored_area[2] = color.z;
+    data.colored_area[3] = color.w;
 
     ekg::rect vertices {};
     ekg::rect coordinates {};
