@@ -20,22 +20,27 @@ float ekg::gpu::allocator::orthographicm4[16] {};
 float ekg::gpu::allocator::viewport[4] {};
 
 void ekg::gpu::allocator::invoke() {
+    /* reset all "flags", everything is used tick by tick to compare factores */
+
     this->allocated_size = 0;
     this->begin_stride_count = 0;
     this->end_stride_count = 0;
     this->simple_shape_index = -1;
 
-    // Set stride to 0 vertex position.
+    /* unique shape data will broken if not clear the first index. */
+
     this->clear_current_data();
-    this->bind_current_data().begin_stride = this->begin_stride_count;
+    this->bind_current_data().begin_stride = this->begin_stride_count; // reset to 0
 }
 
 void ekg::gpu::allocator::bind_texture(GLuint &texture) {
-    bool should_alloc_new_texture {};
+    bool should_alloc_new_texture {true};
     GLuint texture_slot {};
 
+    /* repeating textures increase the active textures, for this reason allocator prevent "dupes" */
+
     for (std::size_t it = 0; it < this->loaded_texture_list.size(); it++) {
-        GLuint &textures = this->loaded_texture_list.at(it);
+        auto &textures = this->loaded_texture_list.at(it);
         should_alloc_new_texture = textures != texture;
 
         if (!should_alloc_new_texture) {
@@ -58,7 +63,7 @@ void ekg::gpu::allocator::bind_texture(GLuint &texture) {
 void ekg::gpu::allocator::dispatch() {
     auto &data = this->bind_current_data();
 
-    /* if this data draw one simple rect shape, save first index and reuse later */
+    /* if this data contains a simple rect shape scheme, save this index and reuse later */
 
     if (this->simple_shape_index == -1 && this->simple_shape) {
         this->simple_shape_index = this->begin_stride_count;
@@ -76,14 +81,16 @@ void ekg::gpu::allocator::dispatch() {
     data.scissor_id = this->scissor_instance_id;
     data.id = this->allocated_size;
 
+    /* animate this data adding the reference into loaded widget list */
+
     if (this->animation_flag && !this->id_repeated_map[data.id]) {
         this->loaded_animation_list.push_back(&data);
         this->id_repeated_map[data.id] = true;
-    }
-
-    if (!this->animation_flag) {
+    } else if (!this->animation_flag) {
         data.colored_area[4] = data.colored_area[3];
     }
+
+    /* flag re alloc buffers if factor changed */
 
     if (!this->factor_changed) {
         this->factor_changed = this->previous_factor != data.factor;
@@ -110,11 +117,18 @@ void ekg::gpu::allocator::revoke() {
     this->factor_changed = false;
 
     if (should_re_alloc_buffers) {
+        /* bind the vertex array object (list of vbos) */
+
         glBindVertexArray(this->buffer_list);
+
+        /* set shader binding location 0 and dispatch mesh of vertices collected by allocator */
+
         glBindBuffer(GL_ARRAY_BUFFER, this->buffer_vertex);
         glEnableVertexAttribArray(0);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->loaded_vertex_list.size(), &this->loaded_vertex_list[0], GL_STATIC_DRAW);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+
+        /* set shader binding location 1 and dispatch mesh of texture coordinates collected by allocator */
 
         glBindBuffer(GL_ARRAY_BUFFER, this->buffer_uv);
         glEnableVertexAttribArray(1);
@@ -132,6 +146,8 @@ void ekg::gpu::allocator::on_update() {
     if (!this->loaded_animation_list.empty()) {
         int32_t animation_progress_count {};
 
+        /* interpolate the alpha using interpolation linear (lerp) */
+
         for (ekg::gpu::data* &data : this->loaded_animation_list) {
             if (data == nullptr || data->colored_area[4] == data->colored_area[3]) {
                 animation_progress_count++;
@@ -140,6 +156,8 @@ void ekg::gpu::allocator::on_update() {
 
             data->colored_area[4] = static_cast<int32_t>(ekg::lerp(static_cast<float>(data->colored_area[4]), static_cast<float>(data->colored_area[3]), ekg::display::dt));
         }
+
+        /* no problem with segment fault, because this is a reference pointer */
 
         if (animation_progress_count == this->loaded_animation_list.size() - 1) {
             this->loaded_animation_list.clear();
@@ -167,10 +185,12 @@ void ekg::gpu::allocator::draw() {
             glBindTexture(GL_TEXTURE_2D, data.texture);
 
             ekg::gpu::allocator::program.set("ActiveTextureSlot", data.texture_slot);
+            ekg::gpu::allocator::program.set("ActiveTexture", true);
             texture_enabled = true;
         }
 
         if (texture_enabled && !active_texture) {
+            ekg::gpu::allocator::program.set("ActiveTexture", false);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
@@ -179,11 +199,12 @@ void ekg::gpu::allocator::draw() {
         this->current_color_pass[2] = static_cast<float>(data.colored_area[2]) / 255;
         this->current_color_pass[3] = static_cast<float>(data.colored_area[4]) / 255;
 
-        ekg::gpu::allocator::program.set("ActiveTexture", active_texture);
         ekg::gpu::allocator::program.set4("Color", this->current_color_pass);
         ekg::gpu::allocator::program.set4("Rect", data.rect_area);
         ekg::gpu::allocator::program.set("Depth", depth_testing);
         ekg::gpu::allocator::program.set("LineThickness", data.mode);
+
+        /* allocator use 6 vertices to draw, no need for element buffer object */
 
         switch (data.scissor_id) {
             case -1: {
@@ -197,6 +218,8 @@ void ekg::gpu::allocator::draw() {
             }
 
             default: {
+                /* there is no reason for invoke gl calls every cpu tick */
+
                 if (!scissor_enabled) {
                     scissor_enabled = true;
                     scissor = this->bind_scissor(data.scissor_id);
@@ -209,6 +232,8 @@ void ekg::gpu::allocator::draw() {
                 break;
             }
         }
+
+        /* plus: depth testing is needed for layout level */
 
         depth_testing += 0.001f;
     }
@@ -229,6 +254,8 @@ void ekg::gpu::allocator::init() {
 }
 
 void ekg::gpu::allocator::clear_current_data() {
+    /* allocator handle automatically the size of data */
+
     if (this->allocated_size >= this->cpu_allocated_data.size()) {
         this->cpu_allocated_data.emplace_back();
         this->cache_scissor.emplace_back();
@@ -241,8 +268,8 @@ void ekg::gpu::allocator::clear_current_data() {
     data.texture = 0;
     data.texture_slot = 0;
     data.scissor_id = -1;
-    previous_factor = data.factor;
 
+    this->previous_factor = data.factor;
     this->previous_data_id = data.id;
 }
 
@@ -298,8 +325,10 @@ void ekg::gpu::allocator::revoke_scissor() {
 }
 
 void ekg::gpu::allocator::vertex2f(float x, float y) {
+    /* check simple shape for prevent extra vertices & textures allocation */
+
     auto &data = this->bind_current_data();
-    if (this->simple_shape_index != -1 && (this->simple_shape = data.rect_area[1] != 0 && data.rect_area[3] != 0)) {
+    if (this->simple_shape_index != -1 && (this->simple_shape = data.rect_area[2] != 0 && data.rect_area[3] != 0)) {
         return;
     }
 
@@ -310,7 +339,7 @@ void ekg::gpu::allocator::vertex2f(float x, float y) {
 
 void ekg::gpu::allocator::coord2f(float x, float y) {
     auto &data = this->bind_current_data();
-    if (this->simple_shape_index != -1 && (this->simple_shape = data.rect_area[1] != 0 && data.rect_area[3] != 0)) {
+    if (this->simple_shape_index != -1 && (this->simple_shape = data.rect_area[2] != 0 && data.rect_area[3] != 0)) {
         return;
     }
 
