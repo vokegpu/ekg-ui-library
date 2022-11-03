@@ -23,6 +23,9 @@ namespace ekg::draw {
 
     void scissor(int32_t x, int32_t y, int32_t w, int32_t h);
     void pop_scissor();
+
+    void enable_animation();
+    void disable_animation();
 }
 
 #endif

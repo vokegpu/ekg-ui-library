@@ -66,7 +66,7 @@ void ekg::gpu::allocator::dispatch() {
 
     if (this->simple_shape) {
         data.begin_stride = this->simple_shape_index;
-        data.end_stride = 6; // simple shape contains 6 vertices.
+        data.end_stride = this->end_stride_count; // simple shape contains 6 vertices.
         this->end_stride_count = 0;
     } else {
         data.begin_stride = this->begin_stride_count;
@@ -76,14 +76,14 @@ void ekg::gpu::allocator::dispatch() {
     data.scissor_id = this->scissor_instance_id;
     data.id = this->allocated_size;
 
-    if (this->previous_data_id != data.id && this->previous_color_pos != data.colored_area[5] && !this->id_repeated_map[data.id]) {
+    if (this->animation_flag && !this->id_repeated_map[data.id]) {
         this->loaded_animation_list.push_back(&data);
         this->id_repeated_map[data.id] = true;
-    } else {
-        data.colored_area[4] = data.colored_area[3];
     }
 
-    data.colored_area[5] = static_cast<float>(data.rect_area[0] * data.colored_area[2]);
+    if (!this->animation_flag) {
+        data.colored_area[4] = data.colored_area[3];
+    }
 
     if (!this->factor_changed) {
         this->factor_changed = this->previous_factor != data.factor;
@@ -93,7 +93,7 @@ void ekg::gpu::allocator::dispatch() {
     this->end_stride_count = 0;
 
     this->allocated_size++;
-    this->clear_current_data();;
+    this->clear_current_data();
 }
 
 void ekg::gpu::allocator::revoke() {
@@ -234,7 +234,7 @@ void ekg::gpu::allocator::clear_current_data() {
         this->cache_scissor.emplace_back();
     }
 
-    this->cache_scissor[this->allocated_size].rect[0] = -1; // it means that this scissor cache element no longer be used.
+    this->cache_scissor[this->allocated_size].rect[0] = -1; // it means that this scissor cache element is no longer used.
     ekg::gpu::data &data = this->bind_current_data();
 
     data.mode = 0;
@@ -242,8 +242,8 @@ void ekg::gpu::allocator::clear_current_data() {
     data.texture_slot = 0;
     data.scissor_id = -1;
     previous_factor = data.factor;
+
     this->previous_data_id = data.id;
-    this->previous_color_pos = data.colored_area[5];
 }
 
 ekg::gpu::data &ekg::gpu::allocator::bind_current_data() {
@@ -316,4 +316,12 @@ void ekg::gpu::allocator::coord2f(float x, float y) {
 
     this->loaded_uv_list.push_back(x);
     this->loaded_uv_list.push_back(y);
+}
+
+void ekg::gpu::allocator::enable_animation() {
+    this->animation_flag = true;
+}
+
+void ekg::gpu::allocator::disable_animation() {
+    this->animation_flag = false;
 }

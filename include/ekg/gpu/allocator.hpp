@@ -38,6 +38,7 @@ namespace ekg::gpu {
 
         bool factor_changed {};
         bool simple_shape {};
+        bool animation_flag {};
 
         int32_t previous_factor {};
         int32_t previous_color_pos {};
@@ -85,6 +86,9 @@ namespace ekg::gpu {
         void dispatch();
         void revoke();
         void draw();
+    
+        void enable_animation();
+        void disable_animation();
     };
 }
 

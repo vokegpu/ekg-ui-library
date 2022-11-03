@@ -21,7 +21,7 @@
 namespace ekg::gpu {
     struct data {
         GLfloat rect_area[4] {};
-        GLint colored_area[6] {};
+        GLint colored_area[4] {};
 
         GLuint texture {};
         GLuint texture_slot {};

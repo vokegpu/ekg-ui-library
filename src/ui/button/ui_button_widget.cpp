@@ -111,7 +111,9 @@ void ekg::ui::button_widget::on_draw_refresh() {
     ekg::draw::rect(rect, theme.button_outline);
 
     if (this->flag.highlight) {
+        ekg::draw::enable_animation();
         ekg::draw::rect(rect, theme.button_highlight);
+        ekg::draw::disable_animation();
     }
 
     if (this->flag.activy) {
