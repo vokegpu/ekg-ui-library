@@ -27,6 +27,11 @@ void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color,
     ekg::gpu::allocator &allocator {ekg::core->get_gpu_allocator()};
     ekg::gpu::data &data {allocator.bind_current_data()};
 
+    data.rect_area[0] = x;
+    data.rect_area[1] = y;
+    data.rect_area[2] = w;
+    data.rect_area[3] = h;
+
     allocator.vertex2f(0, 0);
     allocator.vertex2f(0, 1);
     allocator.vertex2f(1, 1);
@@ -40,11 +45,6 @@ void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color,
     allocator.coord2f(1, 1);
     allocator.coord2f(1, 0);
     allocator.coord2f(0, 0);
-
-    data.rect_area[0] = x;
-    data.rect_area[1] = y;
-    data.rect_area[2] = w;
-    data.rect_area[3] = h;
 
     data.colored_area[0] = static_cast<uint32_t>(color.x);
     data.colored_area[1] = static_cast<uint32_t>(color.y);

@@ -23,6 +23,7 @@ void ekg::gpu::allocator::invoke() {
     this->allocated_size = 0;
     this->begin_stride_count = 0;
     this->end_stride_count = 0;
+    this->simple_shape_index = -1;
 
     // Set stride to 0 vertex position.
     this->clear_current_data();
@@ -57,16 +58,32 @@ void ekg::gpu::allocator::bind_texture(GLuint &texture) {
 void ekg::gpu::allocator::dispatch() {
     auto &data = this->bind_current_data();
 
+    /* if this data draw one simple rect shape, save first index and reuse later */
+
+    if (this->simple_shape_index == -1 && this->simple_shape) {
+        this->simple_shape_index = this->begin_stride_count;
+    }
+
+    if (this->simple_shape) {
+        data.begin_stride = this->simple_shape_index;
+        data.end_stride = 6; // simple shape contains 6 vertices.
+        this->end_stride_count = 0;
+    } else {
+        data.begin_stride = this->begin_stride_count;
+        data.end_stride = this->end_stride_count;
+    }
+
     data.scissor_id = this->scissor_instance_id;
-    data.begin_stride = this->begin_stride_count;
-    data.end_stride = this->end_stride_count;
     data.id = this->allocated_size;
 
-    if (data.id != this->previous_data_id) {
-        data.colored_area[4] = data.colored_area[3];
-    } else {
+    if (this->previous_data_id != data.id && this->previous_color_pos != data.colored_area[5] && !this->id_repeated_map[data.id]) {
         this->loaded_animation_list.push_back(&data);
+        this->id_repeated_map[data.id] = true;
+    } else {
+        data.colored_area[4] = data.colored_area[3];
     }
+
+    data.colored_area[5] = static_cast<float>(data.rect_area[0] * data.colored_area[2]);
 
     if (!this->factor_changed) {
         this->factor_changed = this->previous_factor != data.factor;
@@ -114,7 +131,6 @@ void ekg::gpu::allocator::revoke() {
 void ekg::gpu::allocator::on_update() {
     if (!this->loaded_animation_list.empty()) {
         int32_t animation_progress_count {};
-        ekg::log(std::to_string(this->loaded_animation_list.size()));
 
         for (ekg::gpu::data* &data : this->loaded_animation_list) {
             if (data == nullptr || data->colored_area[4] == data->colored_area[3]) {
@@ -122,11 +138,12 @@ void ekg::gpu::allocator::on_update() {
                 continue;
             }
 
-            data->colored_area[4] = static_cast<uint32_t>(ekg::lerp(static_cast<float>(data->colored_area[4]), static_cast<float>(data->colored_area[3]), ekg::display::dt));
+            data->colored_area[4] = static_cast<int32_t>(ekg::lerp(static_cast<float>(data->colored_area[4]), static_cast<float>(data->colored_area[3]), ekg::display::dt));
         }
 
         if (animation_progress_count == this->loaded_animation_list.size() - 1) {
             this->loaded_animation_list.clear();
+            this->id_repeated_map.clear();
         }
     }
 }
@@ -160,7 +177,7 @@ void ekg::gpu::allocator::draw() {
         this->current_color_pass[0] = static_cast<float>(data.colored_area[0]) / 255;
         this->current_color_pass[1] = static_cast<float>(data.colored_area[1]) / 255;
         this->current_color_pass[2] = static_cast<float>(data.colored_area[2]) / 255;
-        this->current_color_pass[3] = static_cast<float>(data.colored_area[3]) / 255;
+        this->current_color_pass[3] = static_cast<float>(data.colored_area[4]) / 255;
 
         ekg::gpu::allocator::program.set("ActiveTexture", active_texture);
         ekg::gpu::allocator::program.set4("Color", this->current_color_pass);
@@ -226,6 +243,7 @@ void ekg::gpu::allocator::clear_current_data() {
     data.scissor_id = -1;
     previous_factor = data.factor;
     this->previous_data_id = data.id;
+    this->previous_color_pos = data.colored_area[5];
 }
 
 ekg::gpu::data &ekg::gpu::allocator::bind_current_data() {
@@ -280,12 +298,22 @@ void ekg::gpu::allocator::revoke_scissor() {
 }
 
 void ekg::gpu::allocator::vertex2f(float x, float y) {
+    auto &data = this->bind_current_data();
+    if (this->simple_shape_index != -1 && (this->simple_shape = data.rect_area[1] != 0 && data.rect_area[3] != 0)) {
+        return;
+    }
+
     this->loaded_vertex_list.push_back(x);
     this->loaded_vertex_list.push_back(y);
     this->end_stride_count++;
 }
 
 void ekg::gpu::allocator::coord2f(float x, float y) {
+    auto &data = this->bind_current_data();
+    if (this->simple_shape_index != -1 && (this->simple_shape = data.rect_area[1] != 0 && data.rect_area[3] != 0)) {
+        return;
+    }
+
     this->loaded_uv_list.push_back(x);
     this->loaded_uv_list.push_back(y);
 }

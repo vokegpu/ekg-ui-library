@@ -18,6 +18,7 @@
 #include "data.hpp"
 #include "impl.hpp"
 #include <array>
+#include <map>
 
 namespace ekg::gpu {
     class allocator {
@@ -25,6 +26,7 @@ namespace ekg::gpu {
         std::vector<ekg::gpu::data> cpu_allocated_data {};
         std::vector<ekg::gpu::scissor> cache_scissor {};
         std::vector<ekg::gpu::data*> loaded_animation_list {};
+        std::map<uint32_t, bool> id_repeated_map {};
 
         std::vector<GLfloat> loaded_vertex_list {};
         std::vector<GLfloat> loaded_uv_list {};
@@ -35,7 +37,11 @@ namespace ekg::gpu {
         int32_t previous_data_id {};
 
         bool factor_changed {};
+        bool simple_shape {};
+
         int32_t previous_factor {};
+        int32_t previous_color_pos {};
+        int32_t simple_shape_index {-1};
 
         GLint begin_stride_count {};
         GLint end_stride_count {};
