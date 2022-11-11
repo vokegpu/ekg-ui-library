@@ -16,11 +16,13 @@
 #define EKG_GPU_SCHEME_H
 
 #include <iostream>
+#include "data.hpp"
 
 namespace ekg::gpu {
     struct animation {
-        int32_t allocated_slot {};
-        uint8_t alpha {};
+        bool finished {};
+        bool initial {true};
+        ekg::gpu::data* data {};
     };
 
     struct scissor {

@@ -20,14 +20,15 @@ float ekg::gpu::allocator::orthographicm4[16] {};
 float ekg::gpu::allocator::viewport[4] {};
 
 void ekg::gpu::allocator::invoke() {
-    /* reset all "flags", everything is used tick by tick to compare factores */
+    /* reset all "flags", everything is used tick by tick to compare factories */
 
-    this->allocated_size = 0;
+    this->data_instance_index = 0;
     this->begin_stride_count = 0;
     this->end_stride_count = 0;
     this->simple_shape_index = -1;
+    this->persistent_animation_ids.clear();
 
-    /* unique shape data will broken if not clear the first index. */
+    /* unique shape data will break if not clear the first index. */
 
     this->clear_current_data();
     this->bind_current_data().begin_stride = this->begin_stride_count; // reset to 0
@@ -39,8 +40,8 @@ void ekg::gpu::allocator::bind_texture(GLuint &texture) {
 
     /* repeating textures increase the active textures, for this reason allocator prevent "dupes" */
 
-    for (std::size_t it = 0; it < this->loaded_texture_list.size(); it++) {
-        auto &textures = this->loaded_texture_list.at(it);
+    for (std::size_t it = 0; it < this->cached_textures.size(); it++) {
+        auto &textures = this->cached_textures.at(it);
         should_alloc_new_texture = textures != texture;
 
         if (!should_alloc_new_texture) {
@@ -50,8 +51,8 @@ void ekg::gpu::allocator::bind_texture(GLuint &texture) {
     }
 
     if (should_alloc_new_texture) {
-        this->loaded_texture_list.push_back(texture);
-        texture_slot = (GLuint) this->loaded_texture_list.size() - 1;
+        this->cached_textures.push_back(texture);
+        texture_slot = (GLuint) this->cached_textures.size() - 1;
     }
 
     ekg::gpu::data &data = this->bind_current_data();
@@ -79,14 +80,27 @@ void ekg::gpu::allocator::dispatch() {
     }
 
     data.scissor_id = this->scissor_instance_id;
-    data.id = this->allocated_size;
+    data.id = static_cast<int32_t>(this->data_instance_index);
 
     /* animate this data adding the reference into loaded widget list */
 
-    if (this->animation_flag && !this->id_repeated_map[data.id]) {
-        this->loaded_animation_list.push_back(&data);
-        this->id_repeated_map[data.id] = true;
-    } else if (!this->animation_flag) {
+    if (this->active_animation != nullptr) {
+        if (this->animation_index >= this->active_animation->size()) this->active_animation->emplace_back();
+        auto &animation = this->active_animation->at(this->animation_index);
+        animation.data = &data;
+
+        /* if this animation still exists, independent of states, we keep to not remove from list */
+
+        this->persistent_animation_ids.push_back(this->animation_instance_id);
+
+        if (animation.finished) {
+            data.colored_area[4] = data.colored_area[3];
+        } else if (animation.initial && !animation.finished) {
+            this->animation_update_list.push_back(&animation);
+            animation.initial = false;
+        }
+    } else {
+        /* else we do not need to process animation update in this data */
         data.colored_area[4] = data.colored_area[3];
     }
 
@@ -99,58 +113,69 @@ void ekg::gpu::allocator::dispatch() {
     this->begin_stride_count += this->end_stride_count;
     this->end_stride_count = 0;
 
-    this->allocated_size++;
+    this->data_instance_index++;
     this->clear_current_data();
 }
 
 void ekg::gpu::allocator::revoke() {
-    bool should_re_alloc_buffers = this->previous_allocated_size != this->allocated_size;
+    bool should_re_alloc_buffers = this->previous_data_list_size != this->data_instance_index;
 
     if (should_re_alloc_buffers) {
-        this->cpu_allocated_data.resize(this->allocated_size);
-        this->cache_scissor.resize(this->allocated_size);
+        this->data_list.resize(this->data_instance_index);
+        this->scissor_list.resize(this->data_instance_index);
     }
 
     should_re_alloc_buffers = should_re_alloc_buffers || this->factor_changed;
 
-    this->previous_allocated_size = this->allocated_size;
+    this->previous_data_list_size = this->data_instance_index;
     this->factor_changed = false;
 
     if (should_re_alloc_buffers) {
         /* bind the vertex array object (list of vbos) */
 
-        glBindVertexArray(this->buffer_list);
+        glBindVertexArray(this->vbo_array);
 
         /* set shader binding location 0 and dispatch mesh of vertices collected by allocator */
 
-        glBindBuffer(GL_ARRAY_BUFFER, this->buffer_vertex);
+        glBindBuffer(GL_ARRAY_BUFFER, this->vbo_vertices);
         glEnableVertexAttribArray(0);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->loaded_vertex_list.size(), &this->loaded_vertex_list[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
         /* set shader binding location 1 and dispatch mesh of texture coordinates collected by allocator */
 
-        glBindBuffer(GL_ARRAY_BUFFER, this->buffer_uv);
+        glBindBuffer(GL_ARRAY_BUFFER, this->vbo_uvs);
         glEnableVertexAttribArray(1);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->loaded_uv_list.size(), &this->loaded_uv_list[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_uvs.size(), &this->cached_uvs[0], GL_STATIC_DRAW);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
         glBindVertexArray(0);
     }
 
-    this->loaded_texture_list.clear();
-    this->loaded_vertex_list.clear();
-    this->loaded_uv_list.clear();
+    if (!this->persistent_animation_ids.empty()) {
+        for (uint32_t &ids : this->persistent_animation_ids) {
+            
+        }
+    }
+
+    this->cached_textures.clear();
+    this->cached_vertices.clear();
+    this->cached_uvs.clear();
 }
 
 void ekg::gpu::allocator::on_update() {
-    if (!this->loaded_animation_list.empty()) {
+    if (!this->animation_update_list.empty()) {
         int32_t animation_progress_count {};
+        ekg::gpu::data *data {};
 
         /* interpolate the alpha using interpolation linear (lerp) */
 
-        for (ekg::gpu::data* &data : this->loaded_animation_list) {
-            if (data == nullptr || data->colored_area[4] == data->colored_area[3]) {
+        for (ekg::gpu::animation* &animation : this->animation_update_list) {
+            if (animation == nullptr) continue;
+            data = animation->data;
+
+            if (data->colored_area[4] == data->colored_area[3]) {
                 animation_progress_count++;
+                animation->finished = true;
                 continue;
             }
 
@@ -159,8 +184,8 @@ void ekg::gpu::allocator::on_update() {
 
         /* no problem with segment fault, because this is a reference pointer */
 
-        if (animation_progress_count == this->loaded_animation_list.size() - 1) {
-            this->loaded_animation_list.clear();
+        if (animation_progress_count == this->animation_update_list.size() - 1) {
+            this->animation_update_list.clear();
             this->id_repeated_map.clear();
         }
     }
@@ -168,7 +193,7 @@ void ekg::gpu::allocator::on_update() {
 
 void ekg::gpu::allocator::draw() {
     ekg::gpu::invoke(ekg::gpu::allocator::program);
-    glBindVertexArray(this->buffer_list);
+    glBindVertexArray(this->vbo_array);
 
     bool scissor_enabled {};
     bool active_texture {};
@@ -177,7 +202,7 @@ void ekg::gpu::allocator::draw() {
     float depth_testing {this->depth_testing_preset};
     ekg::gpu::scissor* scissor {};
 
-    for (ekg::gpu::data &data : this->cpu_allocated_data) {
+    for (ekg::gpu::data &data : this->data_list) {
         active_texture = data.texture != 0;
 
         if (active_texture) {
@@ -248,20 +273,20 @@ void ekg::gpu::allocator::draw() {
 }
 
 void ekg::gpu::allocator::init() {
-    glGenVertexArrays(1, &this->buffer_list);
-    glGenBuffers(1, &this->buffer_vertex);
-    glGenBuffers(1, &this->buffer_uv);
+    glGenVertexArrays(1, &this->vbo_array);
+    glGenBuffers(1, &this->vbo_vertices);
+    glGenBuffers(1, &this->vbo_uvs);
 }
 
 void ekg::gpu::allocator::clear_current_data() {
     /* allocator handle automatically the size of data */
 
-    if (this->allocated_size >= this->cpu_allocated_data.size()) {
-        this->cpu_allocated_data.emplace_back();
-        this->cache_scissor.emplace_back();
+    if (this->data_instance_index >= this->data_list.size()) {
+        this->data_list.emplace_back();
+        this->scissor_list.emplace_back();
     }
 
-    this->cache_scissor[this->allocated_size].rect[0] = -1; // it means that this scissor cache element is no longer used.
+    this->scissor_list[this->data_instance_index].rect[0] = -1; // it means that this scissors cache element is no longer used.
     ekg::gpu::data &data = this->bind_current_data();
 
     data.mode = 0;
@@ -270,50 +295,49 @@ void ekg::gpu::allocator::clear_current_data() {
     data.scissor_id = -1;
 
     this->previous_factor = data.factor;
-    this->previous_data_id = data.id;
 }
 
 ekg::gpu::data &ekg::gpu::allocator::bind_current_data() {
-    return this->cpu_allocated_data[this->allocated_size];
+    return this->data_list[this->data_instance_index];
 }
 
-int32_t ekg::gpu::allocator::get_current_data_id() {
-    return this->allocated_size;
+uint32_t ekg::gpu::allocator::get_current_data_id() {
+    return this->data_instance_index;
 }
 
 ekg::gpu::data* ekg::gpu::allocator::bind_data(int32_t id) {
-    if (id < 0 || id > this->allocated_size) {
+    if (id < 0 || id > this->data_instance_index) {
         return nullptr;
     }
 
-    return &this->cpu_allocated_data[id];
+    return &this->data_list[id];
 }
 
 void ekg::gpu::allocator::quit() {
-    glDeleteTextures((GLint) this->loaded_texture_list.size(), &this->loaded_texture_list[0]);
-    glDeleteBuffers(1, &this->buffer_list);
-    glDeleteBuffers(1, &this->buffer_uv);
-    glDeleteVertexArrays(1, &this->buffer_list);
+    glDeleteTextures((GLint) this->cached_textures.size(), &this->cached_textures[0]);
+    glDeleteBuffers(1, &this->vbo_array);
+    glDeleteBuffers(1, &this->vbo_uvs);
+    glDeleteVertexArrays(1, &this->vbo_array);
 }
 
 ekg::gpu::scissor* ekg::gpu::allocator::bind_scissor(int32_t id) {
-    if (id < 0 || id > this->allocated_size) {
+    if (id < 0 || id > this->data_instance_index) {
         return nullptr;
     }
 
-    return &this->cache_scissor[id];
+    return &this->scissor_list[id];
 }
 
-int32_t ekg::gpu::allocator::get_instance_scissor_id() {
+uint32_t ekg::gpu::allocator::get_instance_scissor_id() {
     return this->scissor_instance_id;
 }
 
 void ekg::gpu::allocator::invoke_scissor() {
-    this->scissor_instance_id = this->allocated_size;
+    this->scissor_instance_id = static_cast<int32_t>(this->data_instance_index);
 }
 
 void ekg::gpu::allocator::scissor(int32_t x, int32_t y, int32_t w, int32_t h) {
-    auto &scissor {this->cache_scissor[this->allocated_size]};
+    auto &scissor {this->scissor_list[this->data_instance_index]};
     scissor.rect[0] = x;
     scissor.rect[1] = ekg::display::height - (y + h);
     scissor.rect[2] = w;
@@ -325,32 +349,34 @@ void ekg::gpu::allocator::revoke_scissor() {
 }
 
 void ekg::gpu::allocator::vertex2f(float x, float y) {
-    /* check simple shape for prevent extra vertices & textures allocation */
-
-    auto &data = this->bind_current_data();
-    if (this->simple_shape_index != -1 && (this->simple_shape = data.rect_area[2] != 0 && data.rect_area[3] != 0)) {
+    if (this->check_simple_shape()) {
         return;
     }
 
-    this->loaded_vertex_list.push_back(x);
-    this->loaded_vertex_list.push_back(y);
+    this->cached_vertices.push_back(x);
+    this->cached_vertices.push_back(y);
     this->end_stride_count++;
 }
 
 void ekg::gpu::allocator::coord2f(float x, float y) {
-    auto &data = this->bind_current_data();
-    if (this->simple_shape_index != -1 && (this->simple_shape = data.rect_area[2] != 0 && data.rect_area[3] != 0)) {
+    if (this->check_simple_shape()) {
         return;
     }
 
-    this->loaded_uv_list.push_back(x);
-    this->loaded_uv_list.push_back(y);
+    this->cached_uvs.push_back(x);
+    this->cached_uvs.push_back(y);
 }
 
-void ekg::gpu::allocator::enable_animation() {
-    this->animation_flag = true;
+void ekg::gpu::allocator::bind_animation(uint32_t id_tag) {
+    this->active_animation = &this->animation_map[id_tag];
+    this->animation_instance_id = static_cast<int32_t>(id_tag);
 }
 
-void ekg::gpu::allocator::disable_animation() {
-    this->animation_flag = false;
+void ekg::gpu::allocator::bind_off_animation() {
+    this->active_animation = nullptr;
+}
+
+bool ekg::gpu::allocator::check_simple_shape() {
+    auto &data = this->bind_current_data();
+    return (this->simple_shape_index != -1 && (this->simple_shape = data.rect_area[2] != 0 && data.rect_area[3] != 0));
 }

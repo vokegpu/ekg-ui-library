@@ -65,10 +65,10 @@ void ekg::draw::pop_scissor() {
     ekg::core->get_gpu_allocator().revoke_scissor();
 }
 
-void ekg::draw::enable_animation() {
-    ekg::core->get_gpu_allocator().enable_animation();
+void ekg::draw::bind_animation(uint32_t id_tag) {
+    ekg::core->get_gpu_allocator().bind_animation(id_tag);
 }
 
-void ekg::draw::disable_animation() {
-    ekg::core->get_gpu_allocator().disable_animation();
+void ekg::draw::bind_off_animation() {
+    ekg::core->get_gpu_allocator().bind_off_animation();
 }

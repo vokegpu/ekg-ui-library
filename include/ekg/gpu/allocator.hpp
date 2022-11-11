@@ -15,7 +15,6 @@
 #ifndef EKG_GPU_ALLOCATOR_H
 #define EKG_GPU_ALLOCATOR_H
 
-#include "data.hpp"
 #include "impl.hpp"
 #include <array>
 #include <map>
@@ -23,40 +22,36 @@
 namespace ekg::gpu {
     class allocator {
     protected:
-        std::vector<ekg::gpu::data> cpu_allocated_data {};
-        std::vector<ekg::gpu::scissor> cache_scissor {};
-        std::vector<ekg::gpu::data*> loaded_animation_list {};
+        std::vector<ekg::gpu::data> data_list {};
+        std::vector<ekg::gpu::scissor> scissor_list {};
+        std::vector<ekg::gpu::animation*> animation_update_list {};
+
         std::map<uint32_t, bool> id_repeated_map {};
+        std::map<uint32_t, std::vector<ekg::gpu::animation>> animation_map {};
+        std::vector<ekg::gpu::animation> *active_animation {nullptr};
+        std::vector<uint32_t> persistent_animation_ids {};
 
-        std::vector<GLfloat> loaded_vertex_list {};
-        std::vector<GLfloat> loaded_uv_list {};
-        std::vector<GLuint> loaded_texture_list {};
+        std::vector<GLfloat> cached_vertices {};
+        std::vector<GLfloat> cached_uvs {};
+        std::vector<GLuint> cached_textures {};
 
-        uint32_t allocated_size {};
-        uint32_t previous_allocated_size {};
-        int32_t previous_data_id {};
-
-        bool factor_changed {};
-        bool simple_shape {};
-        bool animation_flag {};
-
-        int32_t previous_factor {};
-        int32_t previous_color_pos {};
-        int32_t simple_shape_index {-1};
+        uint32_t data_instance_index {}, previous_data_list_size {};
+        int32_t animation_index {}, simple_shape_index {-1}, previous_factor {};
 
         GLint begin_stride_count {};
         GLint end_stride_count {};
 
+        int32_t scissor_instance_id {-1}, animation_instance_id {};
         GLfloat current_color_pass[4] {};
-        GLint current_scissor_bind[4] {};
-        int32_t scissor_instance_id {-1};
 
-        GLuint buffer_vertex {};
-        GLuint buffer_uv {};
-        GLuint buffer_list {};
+        GLuint vbo_vertices {}, vbo_uvs {}, vbo_array {};
         GLfloat depth_testing_preset {};
 
+        bool factor_changed {};
+        bool simple_shape {};
+
         static float viewport[4];
+        bool check_simple_shape();
     public:
         static gpu::program program;
         static float orthographicm4[16];
@@ -67,28 +62,28 @@ namespace ekg::gpu {
         ekg::gpu::data &bind_current_data();
         void clear_current_data();
 
-        ekg::gpu::data* bind_data(int32_t id);
-        int32_t get_current_data_id();
+        ekg::gpu::data* bind_data(int32_t);
+        uint32_t get_current_data_id();
         
-        ekg::gpu::scissor* bind_scissor(int32_t id);
-        int32_t get_instance_scissor_id();
+        ekg::gpu::scissor* bind_scissor(int32_t);
+        uint32_t get_instance_scissor_id();
 
         void invoke_scissor();
-        void scissor(int32_t x, int32_t y, int32_t w, int32_t h);
+        void scissor(int32_t, int32_t, int32_t, int32_t);
         void revoke_scissor();
 
-        void bind_texture(GLuint &texture);
-        void vertex2f(float x, float y);
-        void coord2f(float x, float y);
+        void bind_texture(GLuint&);
+        void vertex2f(float, float);
+        void coord2f(float, float);
 
         void on_update();
         void invoke();
         void dispatch();
         void revoke();
         void draw();
-    
-        void enable_animation();
-        void disable_animation();
+
+        void bind_animation(uint32_t);
+        void bind_off_animation();
     };
 }
 

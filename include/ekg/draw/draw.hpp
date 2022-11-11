@@ -18,14 +18,14 @@
 #include "ekg/util/geometry.hpp"
 
 namespace ekg::draw {
-    void rect(const ekg::rect &rect, const ekg::vec4 &color, int32_t line_thickness = 0);
-    void rect(float x, float y, float w, float h, const ekg::vec4 &color, int32_t line_thickness = 0);
+    void rect(const ekg::rect&, const ekg::vec4&, int32_t = 0);
+    void rect(float, float, float, float, const ekg::vec4&, int32_t = 0);
 
-    void scissor(int32_t x, int32_t y, int32_t w, int32_t h);
+    void scissor(int32_t, int32_t, int32_t, int32_t);
     void pop_scissor();
 
-    void enable_animation();
-    void disable_animation();
+    void bind_animation(uint32_t);
+    void bind_off_animation();
 }
 
 #endif
