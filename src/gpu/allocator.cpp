@@ -35,7 +35,7 @@ void ekg::gpu::allocator::invoke() {
 }
 
 void ekg::gpu::allocator::bind_texture(GLuint &texture) {
-    bool should_alloc_new_texture {true};
+    bool should_alloc_new_texture {};
     GLuint texture_slot {};
 
     /* repeating textures increase the active textures, for this reason allocator prevent "dupes" */
@@ -66,13 +66,14 @@ void ekg::gpu::allocator::dispatch() {
 
     /* if this data contains a simple rect shape scheme, save this index and reuse later */
 
+    this->simple_shape = static_cast<int32_t>(data.rect_area[2]) != 0 && static_cast<int32_t>(data.rect_area[3]) != 0;
     if (this->simple_shape_index == -1 && this->simple_shape) {
         this->simple_shape_index = this->begin_stride_count;
     }
 
     if (this->simple_shape) {
         data.begin_stride = this->simple_shape_index;
-        data.end_stride = this->end_stride_count; // simple shape contains 6 vertices.
+        data.end_stride = 6; // simple shape contains 6 vertices.
         this->end_stride_count = 0;
     } else {
         data.begin_stride = this->begin_stride_count;
@@ -91,6 +92,7 @@ void ekg::gpu::allocator::dispatch() {
 
         /* if this animation still exists, independent of states, we keep to not remove from list */
 
+        this->persistent_animation_ids_map[this->animation_instance_id] = true;
         this->persistent_animation_ids.push_back(this->animation_instance_id);
 
         if (animation.finished) {
@@ -131,6 +133,8 @@ void ekg::gpu::allocator::revoke() {
     this->factor_changed = false;
 
     if (should_re_alloc_buffers) {
+        ekg::log(std::to_string(this->cached_uvs.size()));
+
         /* bind the vertex array object (list of vbos) */
 
         glBindVertexArray(this->vbo_array);
@@ -153,8 +157,15 @@ void ekg::gpu::allocator::revoke() {
 
     if (!this->persistent_animation_ids.empty()) {
         for (uint32_t &ids : this->persistent_animation_ids) {
-            
+            if (this->persistent_animation_ids_map[ids]) {
+                continue;
+            }
+
+            this->persistent_animation_ids_map.erase(ids);
+            this->animation_map.erase(ids);
         }
+
+        this->persistent_animation_ids.clear();
     }
 
     this->cached_textures.clear();
@@ -173,20 +184,20 @@ void ekg::gpu::allocator::on_update() {
             if (animation == nullptr) continue;
             data = animation->data;
 
-            if (data->colored_area[4] == data->colored_area[3]) {
+            if (animation->finished || data->colored_area[4] == data->colored_area[3]) {
                 animation_progress_count++;
                 animation->finished = true;
                 continue;
             }
 
-            data->colored_area[4] = static_cast<int32_t>(ekg::lerp(static_cast<float>(data->colored_area[4]), static_cast<float>(data->colored_area[3]), ekg::display::dt));
+            data->colored_area[4] = static_cast<int32_t>(ekg::lerp(static_cast<float>(data->colored_area[4]), static_cast<float>(data->colored_area[3]), 0.01f));
+            ekg::log(std::to_string(data->colored_area[4]));
         }
 
         /* no problem with segment fault, because this is a reference pointer */
 
         if (animation_progress_count == this->animation_update_list.size() - 1) {
             this->animation_update_list.clear();
-            this->id_repeated_map.clear();
         }
     }
 }
@@ -378,5 +389,6 @@ void ekg::gpu::allocator::bind_off_animation() {
 
 bool ekg::gpu::allocator::check_simple_shape() {
     auto &data = this->bind_current_data();
-    return (this->simple_shape_index != -1 && (this->simple_shape = data.rect_area[2] != 0 && data.rect_area[3] != 0));
+    this->simple_shape = static_cast<int32_t>(data.rect_area[2]) != 0 && static_cast<int32_t>(data.rect_area[3]) != 0;
+    return this->simple_shape_index != -1 && this->simple_shape;
 }

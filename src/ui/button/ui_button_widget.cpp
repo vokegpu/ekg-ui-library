@@ -122,4 +122,5 @@ void ekg::ui::button_widget::on_draw_refresh() {
     }
 
     f_renderer.blit(ui->get_text(), rect.x + this->extra.x, rect.y + this->extra.y, theme.button_string);
+    float f {};
 }

@@ -26,9 +26,9 @@ namespace ekg::gpu {
         std::vector<ekg::gpu::scissor> scissor_list {};
         std::vector<ekg::gpu::animation*> animation_update_list {};
 
-        std::map<uint32_t, bool> id_repeated_map {};
         std::map<uint32_t, std::vector<ekg::gpu::animation>> animation_map {};
         std::vector<ekg::gpu::animation> *active_animation {nullptr};
+        std::map<uint32_t, bool> persistent_animation_ids_map {};
         std::vector<uint32_t> persistent_animation_ids {};
 
         std::vector<GLfloat> cached_vertices {};

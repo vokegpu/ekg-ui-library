@@ -46,10 +46,10 @@ void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color,
     allocator.coord2f(1, 0);
     allocator.coord2f(0, 0);
 
-    data.colored_area[0] = static_cast<uint32_t>(color.x);
-    data.colored_area[1] = static_cast<uint32_t>(color.y);
-    data.colored_area[2] = static_cast<uint32_t>(color.z);
-    data.colored_area[3] = static_cast<uint32_t>(color.w);
+    data.colored_area[0] = static_cast<int32_t>(color.x);
+    data.colored_area[1] = static_cast<int32_t>(color.y);
+    data.colored_area[2] = static_cast<int32_t>(color.z);
+    data.colored_area[3] = static_cast<int32_t>(color.w);
     data.mode = line_thickness;
     data.factor = 1;
 
