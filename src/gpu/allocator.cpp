@@ -62,7 +62,7 @@ void ekg::gpu::allocator::bind_texture(GLuint &texture) {
 }
 
 void ekg::gpu::allocator::dispatch() {
-    auto &data = this->bind_current_data();
+    auto &data {this->bind_current_data()};
 
     /* if this data contains a simple rect shape scheme, save this index and reuse later */
 
@@ -88,7 +88,7 @@ void ekg::gpu::allocator::dispatch() {
 
     if (this->active_animation != nullptr) {
         if (this->animation_index >= this->active_animation->size()) this->active_animation->emplace_back();
-        auto &animation = this->active_animation->at(this->animation_index);
+        auto &animation {this->active_animation->at(this->animation_index)};
         animation.data = &data;
 
         /* if this animation still exists, independent of states, we keep not remove from list */
@@ -126,7 +126,7 @@ void ekg::gpu::allocator::dispatch() {
 }
 
 void ekg::gpu::allocator::revoke() {
-    bool should_re_alloc_buffers = this->previous_data_list_size != this->data_instance_index;
+    bool should_re_alloc_buffers {this->previous_data_list_size != this->data_instance_index};
 
     if (should_re_alloc_buffers) {
         this->data_list.resize(this->data_instance_index);
@@ -304,7 +304,7 @@ void ekg::gpu::allocator::clear_current_data() {
     }
 
     this->scissor_list[this->data_instance_index].rect[0] = -1; // it means that this scissors cache element is no longer used.
-    ekg::gpu::data &data = this->bind_current_data();
+    ekg::gpu::data &data {this->bind_current_data()};
 
     data.mode = 0;
     data.texture = 0;
@@ -395,7 +395,7 @@ void ekg::gpu::allocator::bind_off_animation() {
 }
 
 bool ekg::gpu::allocator::check_simple_shape() {
-    auto &data = this->bind_current_data();
+    auto &data {this->bind_current_data()};
     this->simple_shape = static_cast<int32_t>(data.rect_area[2]) != 0 && static_cast<int32_t>(data.rect_area[3]) != 0;
     return this->simple_shape_index != -1 && this->simple_shape;
 }

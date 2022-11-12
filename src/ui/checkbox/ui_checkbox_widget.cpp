@@ -142,5 +142,4 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
     }
 
     f_renderer.blit(ui->get_text(), rect.x + this->extra.x, rect.y + this->extra.y, theme.checkbox_string);
-    ekg::draw::bind_off_animation();
 }

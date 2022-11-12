@@ -47,9 +47,7 @@ namespace ekg::gpu {
         GLuint vbo_vertices {}, vbo_uvs {}, vbo_array {};
         GLfloat depth_testing_preset {};
 
-        bool factor_changed {};
-        bool simple_shape {};
-
+        bool factor_changed {}, simple_shape {};
         static float viewport[4];
         bool check_simple_shape();
     public:
