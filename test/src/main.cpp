@@ -57,7 +57,7 @@ int32_t main(int, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    for (int32_t i {4}; i < 3; i++) {
+    for (int32_t i {0}; i < 100; i++) {
         auto frame {ekg::frame("tag", {20, 20}, {200, 200})};
         frame->set_drag(ekg::dock::top);
         frame->set_resize(ekg::dock::left | ekg::dock::bottom);
@@ -73,19 +73,6 @@ int32_t main(int, char**) {
         ekg::slider("slider", 20, 20, 200);
         ekg::popgroup();
     }
-
-    auto frame {ekg::frame("tag", {20, 20}, {200, 200})};
-    ekg::popgroup();
-
-    ekg::frame("tag", {20, 20}, {200, 200});
-    ekg::popgroup();
-
-    ekg::frame("tag", {20, 20}, {200, 200});
-    ekg::popgroup();
-
-    ekg::frame("tag", {20, 20}, {200, 200});
-    ekg::label("hiii");
-    ekg::popgroup();
 
     /*
      * Mainloop.

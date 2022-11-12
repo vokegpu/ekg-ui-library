@@ -115,6 +115,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
     auto box {this->offset + rect};
 
+    ekg::draw::bind_animation(this->data->get_id());
     ekg::draw::rect(rect, theme.checkbox_background);
     ekg::draw::rect(rect, theme.checkbox_outline);
 
@@ -141,4 +142,5 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
     }
 
     f_renderer.blit(ui->get_text(), rect.x + this->extra.x, rect.y + this->extra.y, theme.checkbox_string);
+    ekg::draw::bind_off_animation();
 }

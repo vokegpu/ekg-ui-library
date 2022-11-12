@@ -126,7 +126,9 @@ void ekg::ui::frame_widget::on_draw_refresh() {
     auto &rect = (this->data->widget() = this->layout + *this->parent);
     auto &theme {ekg::theme()};
 
+    ekg::draw::bind_animation(this->data->get_id());
     ekg::draw::rect(rect, theme.frame_background);
     ekg::draw::rect(this->docker_activy_drag.top, theme.frame_border);
     ekg::draw::rect(rect, theme.frame_outline, 1);
+    ekg::draw::bind_off_animation();
 }

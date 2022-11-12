@@ -22,7 +22,7 @@ namespace ekg::gpu {
     struct animation {
         bool finished {};
         bool initial {true};
-        ekg::gpu::data* data {};
+        ekg::gpu::data* data {nullptr};
     };
 
     struct scissor {

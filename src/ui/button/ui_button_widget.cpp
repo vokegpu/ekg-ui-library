@@ -107,13 +107,12 @@ void ekg::ui::button_widget::on_draw_refresh() {
     auto &theme {ekg::theme()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
 
+    ekg::draw::bind_animation(this->data->get_id());
     ekg::draw::rect(rect, theme.button_background);
     ekg::draw::rect(rect, theme.button_outline);
 
     if (this->flag.highlight) {
-        ekg::draw::bind_animation(this->data->get_id());
         ekg::draw::rect(rect, theme.button_highlight);
-        ekg::draw::bind_off_animation();
     }
 
     if (this->flag.activy) {
@@ -122,5 +121,5 @@ void ekg::ui::button_widget::on_draw_refresh() {
     }
 
     f_renderer.blit(ui->get_text(), rect.x + this->extra.x, rect.y + this->extra.y, theme.button_string);
-    float f {};
+    ekg::draw::bind_off_animation();
 }
