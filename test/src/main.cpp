@@ -62,12 +62,14 @@ int32_t main(int, char**) {
         frame->set_drag(ekg::dock::top);
         frame->set_resize(ekg::dock::left | ekg::dock::bottom);
         ekg::label("Hi, the label:"); // dock automatically set to ekg::dock::left | ekg::dock::top
-        ekg::button("Button Press Me!", ekg::dock::top | ekg::dock::left | ekg::dock::next)->set_callback(
+        auto button {ekg::button("Button Press Me!", ekg::dock::top | ekg::dock::left | ekg::dock::next)};
+        button->set_callback(
                 new ekg::cpu::event {"button press", nullptr, [](void *data) {
                     SDL_Event sdl_event {};
                     sdl_event.type = SDL_QUIT;
                     SDL_PushEvent(&sdl_event);
                 }}); // next does the "break line" dock (bottom to up and top to bottom).
+        button->set_text(ekg::dock::left | ekg::dock::center);
         ekg::checkbox("hi", ekg::dock::top | ekg::dock::left | ekg::dock::next)->set_width(200);
         ekg::checkbox("hello", ekg::dock::top | ekg::dock::left)->set_width(200);
         ekg::slider("slider", 20, 20, 200);

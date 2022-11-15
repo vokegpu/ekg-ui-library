@@ -24,7 +24,7 @@ void ekg::ui::frame_widget::destroy() {
 
 void ekg::ui::frame_widget::on_reload() {
     abstract_widget::on_reload();
-    auto &rect = (this->data->widget() = this->layout + *this->parent);
+    auto &rect {this->get_abs_rect()};
     auto limit_offset = static_cast<float>(ekg::theme().frame_activy_offset);
     ekg::vec2 vec_limit_offset = {limit_offset, limit_offset};
 
@@ -42,7 +42,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
     auto interact {ekg::interact()};
     auto ui {(ekg::ui::frame*) this->data};
-    auto &rect = (this->data->widget() = this->layout + *this->parent);
+    auto &rect {this->get_abs_rect()};
 
     if ((ui->get_drag_dock() != ekg::dock::none || ui->get_resize_dock() != ekg::dock::none) && ekg::input::pressed() && this->flag.hovered && !this->flag.activy && (ekg::input::pressed("frame-drag-activy") || ekg::input::pressed("frame-resize-activy"))) {
         this->target_dock_drag = ekg::find_collide_dock(this->docker_activy_drag, ui->get_drag_dock(), interact);
@@ -88,15 +88,15 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
         if (rect != new_rect) {
             if (ui->get_parent_id() != 0) {
-                this->layout.x = new_rect.x - this->parent->x;
-                this->layout.y = new_rect.y - this->parent->y;
+                this->dimension.x = new_rect.x - this->parent->x;
+                this->dimension.y = new_rect.y - this->parent->y;
             } else {
                 this->parent->x = new_rect.x;
                 this->parent->y = new_rect.y;
             }
 
-            this->layout.w = new_rect.w;
-            this->layout.h = new_rect.h;
+            this->dimension.w = new_rect.w;
+            this->dimension.h = new_rect.h;
 
             ekg::reload(this);
         }
@@ -123,7 +123,7 @@ void ekg::ui::frame_widget::on_update() {
 
 void ekg::ui::frame_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
-    auto &rect = (this->data->widget() = this->layout + *this->parent);
+    auto &rect = (this->data->widget() = this->dimension + *this->parent);
     auto &theme {ekg::theme()};
 
     ekg::draw::rect(rect, theme.frame_background);

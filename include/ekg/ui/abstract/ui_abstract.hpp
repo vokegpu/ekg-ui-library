@@ -42,8 +42,7 @@ namespace ekg {
 
             ekg::state state {};
             ekg::type type {ekg::type::abstract};
-            ekg::rect rect_widget {};
-            ekg::rect sync_ui {};
+            ekg::rect rect_widget {}, sync_ui {};
             bool sync_with_ui {};
         public:
             abstract();

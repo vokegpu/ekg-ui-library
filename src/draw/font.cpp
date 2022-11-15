@@ -95,8 +95,8 @@ void ekg::draw::font_renderer::reload() {
         this->full_height = std::max(this->full_height, static_cast<float>(this->ft_glyph_slot->bitmap.rows));
     }
 	
-    this->text_height = static_cast<float>(this->full_height);
-    this->offset_text_height = (this->text_height / 8) / 2;
+    this->text_height = this->full_height;
+    this->offset_text_height = (this->text_height / 6) / 2;
     this->text_height += this->offset_text_height;
 
     /* Phase of getting chars metric_list. */
@@ -185,15 +185,15 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
 
         ekg::char_data &char_data {this->allocated_char_data[chars]};
 
-        vertices.x = static_cast<float>(x + char_data.left);
-        vertices.y = y + static_cast<float>(this->full_height) - char_data.top;
+        vertices.x = x + char_data.left;
+        vertices.y = y + this->full_height - char_data.top;
 
         vertices.w = char_data.w;
         vertices.h = char_data.h;
 
         coordinates.x = char_data.x;
-        coordinates.w = vertices.w / static_cast<float>(this->full_width);
-        coordinates.h = vertices.h / static_cast<float>(this->full_height);
+        coordinates.w = vertices.w / this->full_width;
+        coordinates.h = vertices.h / this->full_height;
 
         this->allocator->vertex2f(vertices.x, vertices.y);
         this->allocator->vertex2f(vertices.x, vertices.y + vertices.h);

@@ -237,12 +237,12 @@ void ekg::runtime::prepare_tasks() {
                     auto size {ui->get_size_initial()};
 
                     if (ui->widget() != ekg::vec4 {pos, size}) {
-                        widgets->layout.w = size.x;
-                        widgets->layout.h = size.y;
+                        widgets->dimension.w = size.x;
+                        widgets->dimension.h = size.y;
 
                         if (ui->get_parent_id() != 0) {
-                            widgets->layout.x = pos.x - widgets->parent->x;
-                            widgets->layout.y = pos.y - widgets->parent->y;
+                            widgets->dimension.x = pos.x - widgets->parent->x;
+                            widgets->dimension.y = pos.y - widgets->parent->y;
                         } else {
                             widgets->parent->x = pos.x;
                             widgets->parent->y = pos.y;
@@ -270,12 +270,12 @@ void ekg::runtime::prepare_tasks() {
                 widget->data->set_sync_with_ui(false);
                 auto rect = widget->data->ui();
 
-                widget->layout.w = rect.w;
-                widget->layout.h = rect.h;
+                widget->dimension.w = rect.w;
+                widget->dimension.h = rect.h;
 
                 if (widget->data->get_parent_id() != 0) {
-                    widget->layout.x = rect.x - widget->parent->x;
-                    widget->layout.y = rect.y - widget->parent->y;
+                    widget->dimension.x = rect.x - widget->parent->x;
+                    widget->dimension.y = rect.y - widget->parent->y;
                 } else {
                     widget->parent->x = rect.x;
                     widget->parent->y = rect.y;

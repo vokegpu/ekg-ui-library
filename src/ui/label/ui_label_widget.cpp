@@ -24,20 +24,20 @@ void ekg::ui::label_widget::on_reload() {
     abstract_widget::on_reload();
 
     auto ui {(ekg::ui::label*) this->data};
-    auto &rect = (this->data->widget() = this->layout + *this->parent);
+    auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
     auto dock {ui->get_text_dock()};
     auto scaled_height {ui->get_scaled_height()};
 
     float text_width {f_renderer.get_text_width(ui->get_text())};
     float text_height {f_renderer.get_text_height()};
-    float offset {text_height / 3};
+    float offset {text_height / 2};
 
-    this->layout.w = ekg::min(this->layout.w, text_width + offset);
-    this->layout.h = (text_height + offset) * static_cast<float>(scaled_height);
+    this->dimension.w = ekg::min(this->dimension.w, text_width + offset);
+    this->dimension.h = (text_height + offset) * static_cast<float>(scaled_height);
 
-    ekg::set_rect_clamped(this->layout, ekg::theme().min_widget_size);
-    ekg::set_dock_scaled({0, 0, this->layout.w, this->layout.h}, {text_width, text_height}, this->docker_text);
+    ekg::set_rect_clamped(this->dimension, ekg::theme().min_widget_size);
+    ekg::set_dock_scaled({0, 0, this->dimension.w, this->dimension.h}, {text_width, text_height}, this->docker_text);
 
     if (ekg::bitwise::contains(dock, ekg::dock::center)) {
         this->extra.x = this->docker_text.center.x;
@@ -80,7 +80,8 @@ void ekg::ui::label_widget::on_update() {
 void ekg::ui::label_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
     auto ui {(ekg::ui::label*) this->data};
-    auto &rect = (this->data->widget() = this->layout + *this->parent);
+    auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
+
     f_renderer.blit(ui->get_text(), rect.x + this->extra.x, rect.y + this->extra.y, ekg::theme().label_string);
 }

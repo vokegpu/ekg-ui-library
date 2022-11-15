@@ -28,6 +28,10 @@ namespace ekg::gpu {
     struct scissor {
         int32_t rect[4] {-1, 0, 0, 0};
     };
+
+    struct node {
+        int32_t index {};
+    };
 }
 
 #endif

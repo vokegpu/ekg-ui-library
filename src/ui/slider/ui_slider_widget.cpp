@@ -21,7 +21,7 @@ void ekg::ui::slider_widget::destroy() {
     abstract_widget::destroy();
 
     auto ui {(ekg::ui::slider*) this->data};
-    auto &rect = (this->data->widget() = this->layout + *this->parent);
+    auto &rect {this->get_abs_rect()};
     auto dock {ui->get_bar_dock()};
     auto scaled_height {ui->get_scaled_height()};
     auto f_renderer {ekg::f_renderer(ui->get_font_size())};
@@ -29,41 +29,41 @@ void ekg::ui::slider_widget::destroy() {
     float size_bar {f_renderer.get_text_height()};
     float offset {size_bar / 3};
     
-    ekg::set_rect_clamped(this->layout, ekg::theme().min_widget_size);
+    ekg::set_rect_clamped(this->dimension, ekg::theme().min_widget_size);
 
-    this->layout.w = ekg::min(this->layout.w, offset * 2);
-    this->layout.h = this->layout.h, (size_bar + offset) * static_cast<float>(ui->get_scaled_height());
+    this->dimension.w = ekg::min(this->dimension.w, offset * 2);
+    this->dimension.h = this->dimension.h, (size_bar + offset) * static_cast<float>(ui->get_scaled_height());
 
     switch (dock) {
         case ekg::dock::top: {
-            this->offset.h = this->layout.h;
+            this->offset.h = this->dimension.h;
             this->offset.w = (ui->get_width() / 2.0) - offset;
-            this->offset.x = (this->layout.w / 2) - (this->offset.w / 2);
+            this->offset.x = (this->dimension.w / 2) - (this->offset.w / 2);
             this->offset.y = offset;
             break;
         }
 
         case ekg::dock::bottom: {
-            this->offset.h = this->layout.h;
-            this->offset.w = (this->layout.w / 2.0) - offset;
-            this->offset.x = (this->layout.w / 2) - (this->offset.w / 2);
+            this->offset.h = this->dimension.h;
+            this->offset.w = (this->dimension.w / 2.0) - offset;
+            this->offset.x = (this->dimension.w / 2) - (this->offset.w / 2);
             this->offset.y = offset;
             break;
         }
 
         case ekg::dock::right: {
             this->offset.w = rect.w;
-            this->offset.h = (this->layout.w / 2.0) - offset;
+            this->offset.h = (this->dimension.w / 2.0) - offset;
             this->offset.x = offset;
-            this->offset.y = (this->layout.h / 2) - (this->offset.h / 2);
+            this->offset.y = (this->dimension.h / 2) - (this->offset.h / 2);
             break;
         }
 
         default: {
             this->offset.w = rect.w;
-            this->offset.h = (this->layout.w / 2.0) - offset;
+            this->offset.h = (this->dimension.w / 2.0) - offset;
             this->offset.x = offset;
-            this->offset.y = (this->layout.h / 2) - (this->offset.h / 2);
+            this->offset.y = (this->dimension.h / 2) - (this->offset.h / 2);
             break;
         }
     }
@@ -92,7 +92,7 @@ void ekg::ui::slider_widget::on_update() {
 void ekg::ui::slider_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
     auto ui {(ekg::ui::slider*) this->data};
-    auto &rect = (this->data->widget() = this->layout + *this->parent);
+    auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
 

@@ -88,12 +88,7 @@ namespace ekg {
     };
 
     struct docker {
-        ekg::rect left {};
-        ekg::rect right {};
-        ekg::rect top {};
-        ekg::rect bottom {};
-        ekg::rect center {};
-        ekg::rect rect {};
+        ekg::rect left {}, right {}, top {}, bottom {}, center {}, rect {};
     };
 
     void orthographic2d(float* matrix, float left, float right, float bottom, float top);
@@ -103,6 +98,7 @@ namespace ekg {
     void set_rect_clamped(ekg::rect &rect, float min_size);
     void set_dock_scaled(const ekg::rect &rect, const ekg::vec2 &offset, ekg::docker &docker);
     int32_t find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::vec4 &vec);
+    float find_min_offset(float text_width, float offset);
 
     float min(float a, float b);
     float max(float a, float b);

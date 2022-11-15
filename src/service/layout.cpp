@@ -79,7 +79,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
         }
 
         auto &rect {widgets->data->widget()};
-        auto &layout {widgets->layout};
+        auto &layout {widgets->dimension};
 
         layout.w = rect.w;
         layout.h = rect.h;

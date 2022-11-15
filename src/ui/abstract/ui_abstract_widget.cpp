@@ -16,7 +16,7 @@
 #include "ekg/util/util_event.hpp"
 
 ekg::ui::abstract_widget::abstract_widget() {
-    this->parent = &this->ghost;
+    this->parent = &this->empty;
 }
 
 ekg::ui::abstract_widget::~abstract_widget() {
@@ -34,7 +34,7 @@ void ekg::ui::abstract_widget::on_reload() {
 void ekg::ui::abstract_widget::on_pre_event(SDL_Event &sdl_event) {
     if (ekg::input::pressed() || ekg::input::released() || ekg::input::motion()) {
         auto interact {ekg::interact()};
-        auto &rect = (this->data->widget() = this->layout + *this->parent);
+        auto &rect {this->get_abs_rect()};
         this->flag.hovered = ekg::rect_collide_vec(rect, interact) && (this->data->get_parent_id() == 0 || ekg::rect_collide_vec(*this->parent, interact));
     }
 }
@@ -53,4 +53,9 @@ void ekg::ui::abstract_widget::on_update() {
 
 void ekg::ui::abstract_widget::on_draw_refresh() {
 
+}
+
+ekg::rect &ekg::ui::abstract_widget::get_abs_rect() const {
+    auto &rect = (this->data->widget() = this->dimension + *this->parent);
+    return rect;
 }

@@ -28,30 +28,30 @@ void ekg::service::theme::quit() {
 }
 
 void ekg::service::theme::gen_default_theme() {
-    this->frame_background = {38, 50, 56, 255};
+    this->frame_background = {70, 81, 109, 255};
     this->frame_border = {190, 190, 190, 0};
-    this->frame_outline = {190, 190, 190, 100};
+    this->frame_outline = {70, 81, 109, 100};
     this->frame_activy_offset = 18;
 
-    this->button_string = {0, 0, 0, 255};
-    this->button_background = {0, 0, 0, 0};
+    this->button_string = {202, 207, 222, 255};
+    this->button_background = {53, 61, 81, 255};
     this->button_activy = {44, 166, 255, 200};
-    this->button_outline = {0, 0, 0, 0};
+    this->button_outline = {202, 207, 222, 150};
     this->button_highlight = {44, 166, 255, 50};
 
-    this->checkbox_string = {0, 0, 0, 255};
-    this->checkbox_background = {0, 0, 0, 0};
+    this->checkbox_string = {202, 207, 222, 255};
+    this->checkbox_background = {53, 61, 81, 255};
     this->checkbox_activy = {44, 166, 255, 200};
-    this->checkbox_outline = {0, 0, 0, 0};
+    this->checkbox_outline = {202, 207, 222, 150};
     this->checkbox_highlight = {44, 166, 255, 50};
 
-    this->slider_string = {0, 0, 0, 255};
-    this->slider_background = {0, 0, 0, 0};
+    this->slider_string = {202, 207, 222, 255};
+    this->slider_background = {53, 61, 81, 255};
     this->slider_activy = {44, 166, 255, 200};
-    this->slider_outline = {0, 0, 0, 0};
+    this->slider_outline = {202, 207, 222, 150};
     this->slider_highlight = {44, 166, 255, 50};
 
-    this->label_string = {0, 0, 0, 255};
+    this->label_string = {202, 207, 222, 255};
 }
 
 void ekg::service::theme::refresh_theme_list() {

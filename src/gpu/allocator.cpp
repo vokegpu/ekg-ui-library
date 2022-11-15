@@ -85,8 +85,8 @@ void ekg::gpu::allocator::dispatch() {
     data.id = static_cast<int32_t>(this->data_instance_index);
 
     /* animate this data adding the reference into loaded widget list */
-
-    if (this->active_animation != nullptr) {
+    // todo: animation
+    if (this->active_animation != nullptr && false) {
         if (this->animation_index >= this->active_animation->size()) this->active_animation->emplace_back();
         auto &animation {this->active_animation->at(this->animation_index)};
         animation.data = &data;
@@ -182,18 +182,18 @@ void ekg::gpu::allocator::revoke() {
 void ekg::gpu::allocator::on_update() {
     if (!this->animation_update_list.empty()) {
         int32_t animation_progress_count {};
+        ekg::log(std::to_string(this->animation_update_list.size()));
 
         /* interpolate the alpha using interpolation linear (lerp) */
 
         for (ekg::gpu::animation* &animation : this->animation_update_list) {
-            if (animation == nullptr || animation->data == nullptr) {
+                if (animation == NULL || animation->data == NULL) {
                 animation_progress_count++;
                 continue;
             }
 
-            if (animation->finished || animation->data->colored_area[4] == animation->data->colored_area[3]) {
+            if ((animation->finished = animation->data->colored_area[4] == animation->data->colored_area[3])) {
                 animation_progress_count++;
-                animation->finished = true;
                 continue;
             }
 
@@ -385,13 +385,17 @@ void ekg::gpu::allocator::coord2f(float x, float y) {
 }
 
 void ekg::gpu::allocator::bind_animation(uint32_t id_tag) {
-    this->active_animation = &this->animation_map[id_tag];
-    this->animation_instance_id = static_cast<int32_t>(id_tag);
-    this->animation_index = 0;
+    if (id_tag == 0) {
+        this->active_animation = nullptr;
+    } else {
+        this->active_animation = &this->animation_map[id_tag];
+        this->animation_instance_id = static_cast<int32_t>(id_tag);
+    }
 }
 
 void ekg::gpu::allocator::bind_off_animation() {
     this->active_animation = nullptr;
+    this->animation_index = 0;
 }
 
 bool ekg::gpu::allocator::check_simple_shape() {

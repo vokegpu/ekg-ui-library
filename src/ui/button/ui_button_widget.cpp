@@ -26,20 +26,22 @@ void ekg::ui::button_widget::on_reload() {
     abstract_widget::on_reload();
 
     auto ui {(ekg::ui::button*) this->data};
-    auto &rect = (this->data->widget() = this->layout + *this->parent);
+    auto &rect {this->get_abs_rect()};
     auto dock {ui->get_text_dock()};
     auto scaled_height {ui->get_scaled_height()};
     auto f_renderer {ekg::f_renderer(ui->get_font_size())};
 
     float text_width {f_renderer.get_text_width(ui->get_text())};
     float text_height {f_renderer.get_text_height()};
-    float offset {text_height / 3};
 
-    this->layout.w = ekg::min(this->layout.w, text_width + offset);
-    this->layout.h = (text_height + offset) * static_cast<float>(scaled_height);
+    float dimension_offset = text_height / 2;
+    float offset {ekg::find_min_offset(text_width, dimension_offset)};
 
-    ekg::set_rect_clamped(this->layout, ekg::theme().min_widget_size);
-    ekg::set_dock_scaled({0, 0, this->layout.w, this->layout.h}, {text_width, text_height}, this->docker_text);
+    this->dimension.w = ekg::min(this->dimension.w, text_width + dimension_offset);
+    this->dimension.h = (text_height + dimension_offset) * static_cast<float>(scaled_height);
+
+    ekg::set_rect_clamped(this->dimension, ekg::theme().min_widget_size);
+    ekg::set_dock_scaled({0, 0, this->dimension.w, this->dimension.h}, {text_width, text_height}, this->docker_text);
 
     if (ekg::bitwise::contains(dock, ekg::dock::center)) {
         this->extra.x = this->docker_text.center.x;
@@ -103,12 +105,12 @@ void ekg::ui::button_widget::on_update() {
 void ekg::ui::button_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
     auto ui {(ekg::ui::button*) this->data};
-    auto &rect = (this->data->widget() = this->layout + *this->parent);
+    auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
 
     ekg::draw::rect(rect, theme.button_background);
-    ekg::draw::rect(rect, theme.button_outline);
+    ekg::draw::rect(rect, theme.button_outline, 1);
 
     if (this->flag.highlight) {
         ekg::draw::rect(rect, theme.button_highlight);

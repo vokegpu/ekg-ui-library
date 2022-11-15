@@ -20,17 +20,15 @@
 
 namespace ekg::ui {
     class abstract_widget : public ekg::feature {
+    protected:
+        [[nodiscard]] ekg::rect &get_abs_rect() const;
     public:
         abstract_widget();
         ~abstract_widget();
 
         ekg::ui::abstract* data {};
         ekg::flag flag {};
-        ekg::rect offset {};
-        ekg::rect* parent {};
-        ekg::rect extra {};
-        ekg::rect layout {};
-        ekg::rect ghost {};
+        ekg::rect *parent {}, offset {}, extra {}, dimension {}, empty {};
 
         virtual void destroy();
         virtual void on_reload();
