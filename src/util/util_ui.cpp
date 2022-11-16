@@ -21,36 +21,36 @@ void ekg::reload(uint32_t id) {
     ekg::core->reload_widget(ekg::core->get_fast_widget_by_id(id));
 }
 
-void ekg::reload(ekg::ui::abstract_widget *widget) {
-    ekg::core->reload_widget(widget);
+void ekg::reload(ekg::ui::abstract_widget *pwidget) {
+    ekg::core->reload_widget(pwidget);
 }
 
 void ekg::reset(uint32_t id) {
     ekg::core->reset_widget(ekg::core->get_fast_widget_by_id(id));
 }
 
-void ekg::reset(ekg::ui::abstract_widget *widget) {
-    ekg::core->reset_widget(widget);
+void ekg::reset(ekg::ui::abstract_widget *pwidget) {
+    ekg::core->reset_widget(pwidget);
 }
 
 void ekg::sync_layout(uint32_t id) {
     ekg::core->sync_layout_widget(ekg::core->get_fast_widget_by_id(id));
 }
 
-void ekg::sync_layout(ekg::ui::abstract_widget *widget) {
-    ekg::core->sync_layout_widget(widget);
+void ekg::sync_layout(ekg::ui::abstract_widget *pwidget) {
+    ekg::core->sync_layout_widget(pwidget);
 }
 
-void ekg::push_back_stack(ekg::ui::abstract_widget* widget, ekg::stack &stack) {
-    if (widget == nullptr || stack.registry[widget->data->get_id()]) {
+void ekg::push_back_stack(ekg::ui::abstract_widget *pwidget, ekg::stack &stack) {
+    if (pwidget == nullptr || stack.registry[pwidget->data->get_id()]) {
         return;
     }
 
-    stack.registry[widget->data->get_id()] = true;
-    stack.ordered_list.push_back(widget);
+    stack.registry[pwidget->data->get_id()] = true;
+    stack.ordered_list.push_back(pwidget);
 
-    for (uint32_t &ids : widget->data->get_parent_id_list()) {
-        auto widgets = ekg::core->get_fast_widget_by_id(ids);
+    for (uint32_t &ids : pwidget->data->get_parent_id_list()) {
+        auto widgets {ekg::core->get_fast_widget_by_id(ids)};
 
         if (widgets == nullptr) {
             continue;
@@ -63,4 +63,13 @@ void ekg::push_back_stack(ekg::ui::abstract_widget* widget, ekg::stack &stack) {
 void ekg::stack::clear() {
     this->ordered_list.clear();
     this->registry.clear();
+}
+
+ekg::ui::abstract_widget *ekg::find_absolute_parent_master(ekg::ui::abstract_widget *pwidget) {
+    if (pwidget == nullptr || pwidget->data->get_parent_id() == 0) {
+        return pwidget;
+    }
+
+    auto widget {ekg::core->get_fast_widget_by_id(pwidget->data->get_parent_id())};
+    return ekg::find_absolute_parent_master(widget);
 }

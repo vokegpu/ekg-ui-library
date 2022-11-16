@@ -26,13 +26,14 @@ void ekg::ui::slider_widget::destroy() {
     auto scaled_height {ui->get_scaled_height()};
     auto f_renderer {ekg::f_renderer(ui->get_font_size())};
 
-    float size_bar {f_renderer.get_text_height()};
-    float offset {size_bar / 3};
-    
-    ekg::set_rect_clamped(this->dimension, ekg::theme().min_widget_size);
+    float text_height {f_renderer.get_text_height()};
+    float text_width {6.0f};
 
-    this->dimension.w = ekg::min(this->dimension.w, offset * 2);
-    this->dimension.h = this->dimension.h, (size_bar + offset) * static_cast<float>(ui->get_scaled_height());
+    float dimension_offset {text_height / 2};
+    float offset {ekg::find_min_offset(text_width, dimension_offset)};
+
+    this->dimension.w = ekg::min(this->dimension.w, dimension_offset * 2);
+    this->dimension.h = this->dimension.h, (text_height + dimension_offset) * static_cast<float>(ui->get_scaled_height());
 
     switch (dock) {
         case ekg::dock::top: {

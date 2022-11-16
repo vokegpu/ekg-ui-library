@@ -27,16 +27,17 @@ namespace ekg {
         void clear();
     };
 
-    void reload(uint32_t id);
-    void reload(ekg::ui::abstract_widget* widget);
+    void reload(uint32_t);
+    void reload(ekg::ui::abstract_widget*);
 
-    void reset(uint32_t id);
-    void reset(ekg::ui::abstract_widget* widget);
+    void reset(uint32_t);
+    void reset(ekg::ui::abstract_widget*);
 
-    void sync_layout(uint32_t id);
-    void sync_layout(ekg::ui::abstract_widget* widget);
+    void sync_layout(uint32_t);
+    void sync_layout(ekg::ui::abstract_widget*);
 
-    void push_back_stack(ekg::ui::abstract_widget* widget, ekg::stack &stack);
+    void push_back_stack(ekg::ui::abstract_widget*, ekg::stack&);
+    ekg::ui::abstract_widget *find_absolute_parent_master(ekg::ui::abstract_widget*);
 }
 
 #endif

@@ -31,10 +31,12 @@ void ekg::ui::label_widget::on_reload() {
 
     float text_width {f_renderer.get_text_width(ui->get_text())};
     float text_height {f_renderer.get_text_height()};
-    float offset {text_height / 2};
 
-    this->dimension.w = ekg::min(this->dimension.w, text_width + offset);
-    this->dimension.h = (text_height + offset) * static_cast<float>(scaled_height);
+    float dimension_offset {text_height / 2};
+    float offset {ekg::find_min_offset(text_width, dimension_offset)};
+
+    this->dimension.w = ekg::min(this->dimension.w, text_width + dimension_offset);
+    this->dimension.h = (text_height + dimension_offset) * static_cast<float>(scaled_height);
 
     ekg::set_rect_clamped(this->dimension, ekg::theme().min_widget_size);
     ekg::set_dock_scaled({0, 0, this->dimension.w, this->dimension.h}, {text_width, text_height}, this->docker_text);

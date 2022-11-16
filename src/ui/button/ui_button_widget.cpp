@@ -34,7 +34,7 @@ void ekg::ui::button_widget::on_reload() {
     float text_width {f_renderer.get_text_width(ui->get_text())};
     float text_height {f_renderer.get_text_height()};
 
-    float dimension_offset = text_height / 2;
+    float dimension_offset {text_height / 2};
     float offset {ekg::find_min_offset(text_width, dimension_offset)};
 
     this->dimension.w = ekg::min(this->dimension.w, text_width + dimension_offset);
