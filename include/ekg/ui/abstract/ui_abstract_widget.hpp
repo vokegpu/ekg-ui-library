@@ -30,6 +30,7 @@ namespace ekg::ui {
         ekg::flag flag {};
         ekg::rect *parent {}, offset {}, extra {}, dimension {}, empty {};
         bool is_scissor_refresh {};
+        int32_t scissor_id {};
 
         virtual void destroy();
         virtual void on_reload();

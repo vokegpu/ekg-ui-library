@@ -262,7 +262,9 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler.dispatch(new ekg::cpu::event {"reload", this, [](void* pdata) {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
-        ekg::ui::widget *absolute_parent {nullptr};
+        ekg::ui::abstract_widget *absolute_parent {nullptr};
+        ekg::rect scissor {};
+        int32_t abs_id {};
 
         for (ekg::ui::abstract_widget* &widget : runtime->to_reload_widgets) {
             if (widget == nullptr) {
@@ -286,7 +288,24 @@ void ekg::runtime::prepare_tasks() {
             }
 
             if (widget->is_scissor_refresh && (absolute_parent = ekg::find_absolute_parent_master(widget)) != nullptr) {
+                ekg::swap::front.clear();
+                ekg::push_back_stack(absolute_parent, ekg::swap::front);
                 
+                scissor.x = 0;
+                scissor.y = 0;
+                scissor.w = 0;
+                scissor.h = 0;
+
+                /* refresh scissor based */
+                abs_id = absolute_parent->data->get_id();
+
+                for (bicudo::ui::abstract_widget* &scissor_widget : ekg::swap::front.ordered_list) {
+                    if (scissor_widget->data->get_parent_id() != abs_id) {
+                        
+                    }
+                }
+
+                runtime->allocator.revoke_scissor();
             }
 
             widget->on_reload();
