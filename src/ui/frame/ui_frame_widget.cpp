@@ -99,6 +99,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
             this->dimension.h = new_rect.h;
 
             ekg::reload(this);
+            this->is_scissor_refresh = true;
         }
     }
 

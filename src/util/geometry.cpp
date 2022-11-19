@@ -217,3 +217,13 @@ ekg::vec4::vec4(const ekg::vec4 &pos, float depth) {
 ekg::vec2 ekg::vec2::operator/(float f) {
     return {this->x / f, this->y / f};
 }
+
+void ekg::transform_to_scissor(ekg::rect &rect, int32_t *pscissor) {
+    /* Scissor viewport y is located at bottom,
+       for this reason we must need to flip y axis. */
+
+    pscissor[0] = static_cast<int32_t>(rect.x);
+    pscissor[1] = ekg::display::height - static_cast<int32_t>(rect.y + rect.h);
+    pscissor[2] = static_cast<int32_t>(rect.w);
+    pscissor[3] = static_cast<int32_t>(rect.h);
+}
