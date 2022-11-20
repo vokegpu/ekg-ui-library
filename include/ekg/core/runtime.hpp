@@ -45,14 +45,14 @@ namespace ekg {
         std::vector<ekg::ui::abstract_widget*> loaded_widget_list {};
         std::vector<ekg::ui::abstract*> loaded_interface_list {};
 
-        std::vector<ekg::ui::abstract_widget*> to_reload_widgets {};
-        std::vector<ekg::ui::abstract_widget*> to_refresh_widgets {};
-        std::vector<ekg::ui::abstract_widget*> to_reset_widgets {};
-        std::vector<ekg::ui::abstract_widget*> to_sync_layout_widgets {};
+        std::vector<ekg::ui::abstract_widget*> loaded_widget_reload_list {};
+        std::vector<ekg::ui::abstract_widget*> loaded_widget_refresh_list {};
+        std::vector<ekg::ui::abstract_widget*> loaded_widget_reset_list {};
+        std::vector<ekg::ui::abstract_widget*> loaded_widget_sync_layou_list {};
 
-        std::map<int32_t, ekg::ui::abstract_widget*> widgets_map {};
-        std::map<int32_t, ekg::ui::abstract> interfaces_map {};
-        std::map<int32_t, bool> processed_widgets_map {};
+        std::map<int32_t, ekg::ui::abstract_widget*> widget_map {};
+        std::map<int32_t, ekg::ui::abstract> interface_map {};
+        std::map<int32_t, bool> processed_widget_map {};
 
         /* Core services and instances. */
 
@@ -63,10 +63,10 @@ namespace ekg {
         ekg::draw::font_renderer f_renderer_normal {};
         ekg::draw::font_renderer f_renderer_big {};
 
-        ekg::service::input input_manager {};
-        ekg::service::theme theme_manager {};
-        ekg::service::handler handler {};
-        ekg::service::layout layout_manager {};
+        ekg::service::input input_service {};
+        ekg::service::theme theme_service {};
+        ekg::service::handler handler_service {};
+        ekg::service::layout layout_service {};
 
         /* Tokens for use in creation of elements. */
 

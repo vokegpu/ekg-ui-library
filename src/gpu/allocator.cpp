@@ -256,7 +256,7 @@ void ekg::gpu::allocator::draw() {
                     break;
                 }
 
-                glScissor(scissor->rect[0], ekg::display::height - (scissor->rect[1] + scissor->rect[3]), scissor->rect[2], scissor->rect[3]);
+                glScissor(scissor->rect[0], ekg::display::height - (scissor->rect[1] + (scissor->rect[3] + 2)), scissor->rect[2] + 2, scissor->rect[3] + 2);
                 glEnable(GL_SCISSOR_TEST);
                 break;
             }

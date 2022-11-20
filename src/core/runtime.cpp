@@ -43,7 +43,7 @@ SDL_Window* ekg::runtime::get_root() {
 
 void ekg::runtime::init() {
     this->allocator.init();
-    this->theme_manager.init();
+    this->theme_service.init();
 
     if (FT_Init_FreeType(&ekg::draw::font_renderer::ft_library)) {
         ekg::log("could not init FreeType");
@@ -51,13 +51,13 @@ void ekg::runtime::init() {
 
     this->prepare_tasks();
     this->prepare_ui_env();
-    this->layout_manager.init();
+    this->layout_service.init();
 }
 
 void ekg::runtime::quit() {
     this->allocator.quit();
-    this->theme_manager.quit();
-    this->layout_manager.quit();
+    this->theme_service.quit();
+    this->layout_service.quit();
 }
 
 ekg::draw::font_renderer &ekg::runtime::get_f_renderer_small() {
@@ -73,7 +73,7 @@ ekg::draw::font_renderer &ekg::runtime::get_f_renderer_big() {
 }
 
 void ekg::runtime::process_event(SDL_Event &sdl_event) {
-    this->input_manager.on_event(sdl_event);
+    this->input_service.on_event(sdl_event);
 
     bool pressed {ekg::input::pressed()};
     bool released {ekg::input::released()};
@@ -129,10 +129,10 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
 }
 
 void ekg::runtime::process_update() {
-    this->input_manager.on_update();
+    this->input_service.on_update();
 
-    if (this->handler.should_poll()) {
-        this->handler.on_update();
+    if (this->handler_service.should_poll()) {
+        this->handler_service.on_update();
     }
 
     this->allocator.on_update();
@@ -148,22 +148,22 @@ ekg::gpu::allocator &ekg::runtime::get_gpu_allocator() {
 }
 
 ekg::service::handler &ekg::runtime::get_service_handler() {
-    return this->handler;
+    return this->handler_service;
 }
 
 void ekg::runtime::prepare_tasks() {
     ekg::log("creating task events");
 
-    this->handler.dispatch(new ekg::cpu::event {"refresh", this, [](void* pdata) {
+    this->handler_service.dispatch(new ekg::cpu::event {"refresh", this, [](void* pdata) {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
 
-        for (ekg::ui::abstract_widget* &widgets : runtime->to_refresh_widgets) {
+        for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_refresh_list) {
             if (widgets == nullptr) {
                 continue;
             }
 
             if (!widgets->data->is_alive()) {
-                runtime->widgets_map.erase(widgets->data->get_id());
+                runtime->widget_map.erase(widgets->data->get_id());
                 delete widgets;
                 widgets = nullptr;
             }
@@ -171,10 +171,10 @@ void ekg::runtime::prepare_tasks() {
             runtime->loaded_widget_list.push_back(widgets);
         }
 
-        runtime->to_refresh_widgets.clear();
+        runtime->loaded_widget_refresh_list.clear();
     }, ekg::event::alloc});
 
-    this->handler.dispatch(new ekg::cpu::event {"swap", this, [](void* pdata) {
+    this->handler_service.dispatch(new ekg::cpu::event {"swap", this, [](void* pdata) {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
 
         if (runtime->swap_widget_id_focused == 0) {
@@ -224,11 +224,11 @@ void ekg::runtime::prepare_tasks() {
         ekg::swap::refresh();
     }, ekg::event::alloc});
 
-    this->handler.dispatch(new ekg::cpu::event {"reset", this, [](void* pdata) {
+    this->handler_service.dispatch(new ekg::cpu::event {"reset", this, [](void* pdata) {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
 
-        for (ekg::ui::abstract_widget* &widgets : runtime->to_reset_widgets) {
-            if (widgets == nullptr || runtime->processed_widgets_map[widgets->data->get_id()]) {
+        for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_reset_list) {
+            if (widgets == nullptr || runtime->processed_widget_map[widgets->data->get_id()]) {
                 continue;
             }
 
@@ -256,18 +256,18 @@ void ekg::runtime::prepare_tasks() {
             }
         }
 
-        runtime->to_reset_widgets.clear();
-        runtime->processed_widgets_map.clear();
+        runtime->loaded_widget_reset_list.clear();
+        runtime->processed_widget_map.clear();
     }, ekg::event::alloc});
 
-    this->handler.dispatch(new ekg::cpu::event {"reload", this, [](void* pdata) {
+    this->handler_service.dispatch(new ekg::cpu::event {"reload", this, [](void* pdata) {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
         ekg::ui::abstract_widget *parent_master {nullptr};
         int32_t abs_id {}, scissor[4] {}, scissor_parent_master[4] {};
         ekg::gpu::scissor *gpu_scissor {nullptr}, *gpu_parent_master_scissor {nullptr};
         ekg::rect widget_rect {};
 
-        for (ekg::ui::abstract_widget* &widget : runtime->to_reload_widgets) {
+        for (ekg::ui::abstract_widget* &widget : runtime->loaded_widget_reload_list) {
             if (widget == nullptr) {
                 continue;
             }
@@ -320,7 +320,7 @@ void ekg::runtime::prepare_tasks() {
                         continue;
                     }
 
-                    parent_master = runtime->widgets_map[scissor_widget->data->get_parent_id()];
+                    parent_master = runtime->widget_map[scissor_widget->data->get_parent_id()];
                     gpu_parent_master_scissor = runtime->get_gpu_allocator().get_scissor_by_id(parent_master->data->get_id());
                     if (gpu_parent_master_scissor == nullptr) {
                         continue;
@@ -362,31 +362,31 @@ void ekg::runtime::prepare_tasks() {
             }
 
             widget->on_reload();
-            runtime->processed_widgets_map[widget->data->get_id()] = true;
+            runtime->processed_widget_map[widget->data->get_id()] = true;
         }
 
-        runtime->to_reload_widgets.clear();
-        runtime->processed_widgets_map.clear();
+        runtime->loaded_widget_reload_list.clear();
+        runtime->processed_widget_map.clear();
     }, ekg::event::alloc});
 
-    this->handler.dispatch(new ekg::cpu::event {"synclayout", this, [](void* pdata) {
+    this->handler_service.dispatch(new ekg::cpu::event {"synclayout", this, [](void* pdata) {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
         // todo fix the issue with sync layout offset.
 
-        for (ekg::ui::abstract_widget* &widget : runtime->to_sync_layout_widgets) {
-            if (widget == nullptr || runtime->processed_widgets_map[widget->data->get_id()]) {
+        for (ekg::ui::abstract_widget* &widget : runtime->loaded_widget_sync_layou_list) {
+            if (widget == nullptr || runtime->processed_widget_map[widget->data->get_id()]) {
                 continue;
             }
 
-            runtime->layout_manager.process_scaled(widget);
-            runtime->processed_widgets_map[widget->data->get_id()] = true;
+            runtime->layout_service.process_scaled(widget);
+            runtime->processed_widget_map[widget->data->get_id()] = true;
         }
 
-        runtime->to_sync_layout_widgets.clear();
-        runtime->processed_widgets_map.clear();
+        runtime->loaded_widget_sync_layou_list.clear();
+        runtime->processed_widget_map.clear();
     }, ekg::event::alloc});
 
-    this->handler.dispatch(new ekg::cpu::event {"redraw", this, [](void* pdata) {
+    this->handler_service.dispatch(new ekg::cpu::event {"redraw", this, [](void* pdata) {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
 
         runtime->allocator.invoke();
@@ -403,22 +403,22 @@ void ekg::runtime::prepare_tasks() {
 }
 
 ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(int32_t id) {
-    return this->widgets_map[id];
+    return this->widget_map[id];
 }
 
 void ekg::runtime::reload_widget(ekg::ui::abstract_widget* widget) {
     if (widget != nullptr) {
-        this->to_reload_widgets.push_back(widget);
+        this->loaded_widget_reload_list.push_back(widget);
         ekg::dispatch(ekg::env::reload);
     }
 }
 
 ekg::service::input &ekg::runtime::get_service_input() {
-    return this->input_manager;
+    return this->input_service;
 }
 
 ekg::service::theme &ekg::runtime::get_service_theme() {
-    return this->theme_manager;
+    return this->theme_service;
 }
 
 void ekg::runtime::prepare_ui_env() {
@@ -438,28 +438,28 @@ void ekg::runtime::prepare_ui_env() {
 
     ekg::log("creating widget binds");
 
-    this->input_manager.bind("frame-drag-activy", "mouse-left");
-    this->input_manager.bind("frame-drag-activy", "finger-click");
-    this->input_manager.bind("frame-resize-activy", "mouse-left");
-    this->input_manager.bind("frame-resize-activy", "finger-click");
-    this->input_manager.bind("button-activy", "mouse-left");
-    this->input_manager.bind("button-activy", "finger-click");
-    this->input_manager.bind("checkbox-activy", "mouse-left");
-    this->input_manager.bind("checkbox-activy", "finger-click");
-    this->input_manager.bind("popup-activy", "mouse-right");
-    this->input_manager.bind("popup-activy", "finger-hold");
-    this->input_manager.bind("popup-component-activy", "mouse-left");
-    this->input_manager.bind("popup-component-activy", "finger-click");
-    this->input_manager.bind("textbox-action-delete-left", "backspace");
-    this->input_manager.bind("textbox-action-select-all", "lctrl+a");
-    this->input_manager.bind("textbox-action-select-all", "finger-hold");
-    this->input_manager.bind("textbox-action-select-all", "mouse-left-double");
-    this->input_manager.bind("textbox-action-delete-right", "delete");
-    this->input_manager.bind("textbox-action-break-line", "return");
-    this->input_manager.bind("textbox-action-up", "up");
-    this->input_manager.bind("textbox-action-down", "down");
-    this->input_manager.bind("textbox-action-down", "right");
-    this->input_manager.bind("textbox-action-down", "left");
+    this->input_service.bind("frame-drag-activy", "mouse-left");
+    this->input_service.bind("frame-drag-activy", "finger-click");
+    this->input_service.bind("frame-resize-activy", "mouse-left");
+    this->input_service.bind("frame-resize-activy", "finger-click");
+    this->input_service.bind("button-activy", "mouse-left");
+    this->input_service.bind("button-activy", "finger-click");
+    this->input_service.bind("checkbox-activy", "mouse-left");
+    this->input_service.bind("checkbox-activy", "finger-click");
+    this->input_service.bind("popup-activy", "mouse-right");
+    this->input_service.bind("popup-activy", "finger-hold");
+    this->input_service.bind("popup-component-activy", "mouse-left");
+    this->input_service.bind("popup-component-activy", "finger-click");
+    this->input_service.bind("textbox-action-delete-left", "backspace");
+    this->input_service.bind("textbox-action-select-all", "lctrl+a");
+    this->input_service.bind("textbox-action-select-all", "finger-hold");
+    this->input_service.bind("textbox-action-select-all", "mouse-left-double");
+    this->input_service.bind("textbox-action-delete-right", "delete");
+    this->input_service.bind("textbox-action-break-line", "return");
+    this->input_service.bind("textbox-action-up", "up");
+    this->input_service.bind("textbox-action-down", "down");
+    this->input_service.bind("textbox-action-down", "right");
+    this->input_service.bind("textbox-action-down", "left");
 }
 
 void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
@@ -516,8 +516,8 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
         }
     }
 
-    this->to_refresh_widgets.push_back(created_widget);
-    this->widgets_map[ui->get_id()] = created_widget;
+    this->loaded_widget_refresh_list.push_back(created_widget);
+    this->widget_map[ui->get_id()] = created_widget;
     this->reset_widget(created_widget);
     this->reload_widget(created_widget);
 
@@ -534,7 +534,7 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
 
 void ekg::runtime::reset_widget(ekg::ui::abstract_widget *widget) {
     if (widget != nullptr) {
-        this->to_reset_widgets.push_back(widget);
+        this->loaded_widget_reset_list.push_back(widget);
         ekg::dispatch(ekg::env::reset);
     }
 }
@@ -550,7 +550,7 @@ void ekg::runtime::sync_layout_widget(ekg::ui::abstract_widget *widget) {
     }
 
     if (is_group || (!is_group || widget != nullptr)) {
-        this->to_sync_layout_widgets.push_back(widget);
+        this->loaded_widget_sync_layou_list.push_back(widget);
         ekg::dispatch(ekg::env::synclayout);
     }
 }
