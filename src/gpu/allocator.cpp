@@ -246,25 +246,18 @@ void ekg::gpu::allocator::draw() {
 
         switch (data.scissor_id) {
             case -1: {
-                if (active_scissor) {
-                    glDisable(GL_SCISSOR_TEST);
-                    active_scissor = false;
-                }
+                glDisable(GL_SCISSOR_TEST);
                 break;
             }
 
             default: {
-                if (!active_scissor) {
-                    glEnable(GL_SCISSOR_TEST);
-                    active_scissor = true;
-                }
-
                 scissor = this->get_scissor_by_id(data.scissor_id);
                 if (scissor == nullptr) {
                     break;
                 }
 
-                glScissor(scissor->rect[0] - 2, ekg::display::height - (scissor->rect[1] - 2 + scissor->rect[3]), scissor->rect[2] + 4, scissor->rect[3] + 4);
+                glScissor(scissor->rect[0], ekg::display::height - (scissor->rect[1] + scissor->rect[3]), scissor->rect[2], scissor->rect[3]);
+                glEnable(GL_SCISSOR_TEST);
                 break;
             }
         }
@@ -341,6 +334,12 @@ ekg::gpu::scissor* ekg::gpu::allocator::get_scissor_by_id(int32_t id) {
 
 uint32_t ekg::gpu::allocator::get_instance_scissor_id() {
     return this->scissor_instance_id;
+}
+
+void ekg::gpu::allocator::sync_scissor_pos(int32_t x, int32_t y) {
+    auto &scissor {this->scissor_map[this->scissor_instance_id]};
+    scissor.rect[0] += x - scissor.rect[0];
+    scissor.rect[1] += y - scissor.rect[1];
 }
 
 void ekg::gpu::allocator::bind_scissor(int32_t scissor_id) {

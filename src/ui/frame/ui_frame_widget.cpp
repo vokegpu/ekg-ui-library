@@ -55,6 +55,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
         this->flag.activy = this->target_dock_drag != ekg::dock::none || this->target_dock_resize != ekg::dock::none;
         this->flag.absolute = this->flag.activy;
+        this->is_scissor_refresh = this->flag.activy;
     } else if (ekg::input::motion() && this->flag.activy) {
         ekg::rect new_rect {rect};
 
@@ -97,9 +98,9 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
             this->dimension.w = new_rect.w;
             this->dimension.h = new_rect.h;
+            this->is_scissor_refresh = this->target_dock_resize != ekg::dock::none;
 
             ekg::reload(this);
-            this->is_scissor_refresh = true;
         }
     }
 
@@ -128,8 +129,11 @@ void ekg::ui::frame_widget::on_draw_refresh() {
     auto &theme {ekg::theme()};
 
     ekg::draw::bind_scissor(this->data->get_id());
+    ekg::draw::sync_scissor_pos(static_cast<int32_t>(rect.x), static_cast<int32_t>(rect.y));
+
     ekg::draw::rect(rect, theme.frame_background);
     ekg::draw::rect(this->docker_activy_drag.top, theme.frame_border);
     ekg::draw::rect(rect, theme.frame_outline, 1);
+
     ekg::draw::bind_off_scissor();
 }

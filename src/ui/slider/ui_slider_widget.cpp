@@ -97,6 +97,8 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     auto &theme {ekg::theme()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
 
+    ekg::draw::bind_scissor(ui->get_id());
+    ekg::draw::sync_scissor_pos(static_cast<int32_t>(rect.x), static_cast<int32_t>(rect.y));
     ekg::draw::rect(this->offset + rect, theme.slider_background);
 
     if (this->flag.highlight) {
@@ -104,4 +106,5 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     }
     
     ekg::draw::rect(this->extra + rect, theme.slider_activy);
+    ekg::draw::bind_off_scissor();
 }

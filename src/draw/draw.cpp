@@ -56,6 +56,10 @@ void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color,
     allocator.dispatch();
 }
 
+void ekg::draw::sync_scissor_pos(int32_t x, int32_t y) {
+    ekg::core->get_gpu_allocator().sync_scissor_pos(x, y);
+}
+
 void ekg::draw::bind_scissor(int32_t id) {
     ekg::core->get_gpu_allocator().bind_scissor(id);
 }

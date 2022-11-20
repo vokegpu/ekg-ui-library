@@ -262,6 +262,11 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler.dispatch(new ekg::cpu::event {"reload", this, [](void* pdata) {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
+        ekg::ui::abstract_widget *parent_master {nullptr};
+        int32_t abs_id {}, scissor[4] {}, scissor_parent_master[4] {};
+        ekg::gpu::scissor *gpu_scissor {nullptr}, *gpu_parent_master_scissor {nullptr};
+        ekg::rect widget_rect {};
+
         for (ekg::ui::abstract_widget* &widget : runtime->to_reload_widgets) {
             if (widget == nullptr) {
                 continue;
@@ -280,6 +285,79 @@ void ekg::runtime::prepare_tasks() {
                 } else {
                     widget->parent->x = rect.x;
                     widget->parent->y = rect.y;
+                }
+            }
+
+            if (widget->is_scissor_refresh && widget->data->is_alive() && (parent_master = ekg::find_absolute_parent_master(widget)) != nullptr) {
+                widget->is_scissor_refresh = false;
+
+                ekg::swap::front.clear();
+                ekg::push_back_stack(parent_master, ekg::swap::front);
+
+                /*
+                 Scissor is a great feature from OpenGL, but it
+                 does not stack, means that GL context does not
+                 accept scissor inside scissor.
+
+                 After 1 year studying scissor, I  built one scheme,
+                 compute bounds of all parent widgets with the parent
+                 master, obvious it takes some ticks but there is no
+                 other way (maybe I am wrong).
+
+                 Two things important:
+                 1 - This scissors scheme use scissor IDs from widgets.
+                 2 - Iteration collect ALL parent families and sub parent of target.
+                */
+
+                for (ekg::ui::abstract_widget* &scissor_widget : ekg::swap::front.ordered_list) {
+                    gpu_scissor = runtime->allocator.get_scissor_by_id(scissor_widget->data->get_id());
+                    if (gpu_scissor == nullptr) {
+                        continue;
+                    }
+
+                    if (scissor_widget->data->get_parent_id() == 0) {
+                        ekg::transform_to_scissor(scissor_widget->get_abs_rect(), gpu_scissor->rect);
+                        continue;
+                    }
+
+                    parent_master = runtime->widgets_map[scissor_widget->data->get_parent_id()];
+                    gpu_parent_master_scissor = runtime->get_gpu_allocator().get_scissor_by_id(parent_master->data->get_id());
+                    if (gpu_parent_master_scissor == nullptr) {
+                        continue;
+                    }
+
+                    widget_rect = scissor_widget->get_abs_rect();
+
+                    scissor_parent_master[0] = gpu_parent_master_scissor->rect[0];
+                    scissor_parent_master[1] = gpu_parent_master_scissor->rect[1];
+                    scissor_parent_master[2] = gpu_parent_master_scissor->rect[2];
+                    scissor_parent_master[3] = gpu_parent_master_scissor->rect[3];
+
+                    scissor[0] = static_cast<int32_t>(widget_rect.x);
+                    scissor[1] = static_cast<int32_t>(widget_rect.y);
+                    scissor[2] = static_cast<int32_t>(widget_rect.w);
+                    scissor[3] = static_cast<int32_t>(widget_rect.h);
+
+                    if (scissor[0] < scissor_parent_master[0]) {
+                        scissor[0] = scissor_parent_master[0];
+                    }
+
+                    if (scissor[1] < scissor_parent_master[1]) {
+                        scissor[1] = scissor_parent_master[1];
+                    }
+
+                    if (scissor[0] + scissor[2] > scissor_parent_master[0] + scissor_parent_master[2]) {
+                        scissor[2] -= ((scissor[0] + scissor[2]) - (scissor_parent_master[0] + scissor_parent_master[2]));
+                    }
+
+                    if (scissor[1] + scissor[3] > scissor_parent_master[1] + scissor_parent_master[3]) {
+                        scissor[3] -= (scissor[1] + scissor[3] - (scissor_parent_master[1] + scissor_parent_master[3]));
+                    }
+
+                    gpu_scissor->rect[0] = scissor[0];
+                    gpu_scissor->rect[1] = scissor[1];
+                    gpu_scissor->rect[2] = scissor[2];
+                    gpu_scissor->rect[3] = scissor[3];
                 }
             }
 
@@ -310,95 +388,13 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler.dispatch(new ekg::cpu::event {"redraw", this, [](void* pdata) {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
-        ekg::ui::abstract_widget *parent_master {nullptr};
-        int32_t abs_id {}, scissor[4] {}, scissor_parent_master[4] {};
-        ekg::gpu::scissor *gpu_scissor {nullptr}, *gpu_parent_master_scissor {};
-        ekg::rect widget_rect {};
 
         runtime->allocator.invoke();
         runtime->f_renderer_big.blit("Widgets count: " + std::to_string(runtime->loaded_widget_list.size()), 10, 10, {255, 255, 255, 255});
 
         for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_list) {
-            if (widgets == nullptr) {
-                continue;
-            }
-
-            if (widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {
+            if (widgets != nullptr && widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {
                 widgets->on_draw_refresh();
-
-
-                if (widgets->is_scissor_refresh && (parent_master = ekg::find_absolute_parent_master(widgets)) != nullptr) {
-                    widgets->is_scissor_refresh = false;
-
-                    ekg::swap::front.clear();
-                    ekg::push_back_stack(parent_master, ekg::swap::front);
-
-                    /*
-                     Scissor is a great feature from OpenGL, but it
-                     does not stack, means that GL context does not
-                     accept scissor inside scissor.
-
-                     After 1 year studying scissor, I  built one scheme,
-                     compute bounds of all parent widgets with the parent
-                     master, obvious it takes some ticks but there is no
-                     other way (maybe I am wrong).
-
-                     Note this two steps:
-                     1 - This scissors scheme use scissor IDs from widgets.
-                     2 - Iteration collect ALL parent families and sub parent of target.
-                    */
-
-                    for (ekg::ui::abstract_widget* &scissor_widget : ekg::swap::front.ordered_list) {
-                        gpu_scissor = runtime->allocator.get_scissor_by_id(scissor_widget->data->get_id());
-                        if (gpu_scissor == nullptr) {
-                            continue;
-                        }
-
-                        if (scissor_widget->data->get_parent_id() == 0) {
-                            ekg::transform_to_scissor(scissor_widget->data->widget(), gpu_scissor->rect);
-                            continue;
-                        }
-
-                        parent_master = runtime->widgets_map[scissor_widget->data->get_parent_id()];
-                        gpu_parent_master_scissor = runtime->get_gpu_allocator().get_scissor_by_id(parent_master->data->get_id());
-                        if (gpu_parent_master_scissor == nullptr) {
-                            continue;
-                        }
-
-                        widget_rect = scissor_widget->data->widget();
-
-                        scissor_parent_master[0] = gpu_parent_master_scissor->rect[0];
-                        scissor_parent_master[1] = gpu_parent_master_scissor->rect[1];
-                        scissor_parent_master[2] = gpu_parent_master_scissor->rect[2];
-                        scissor_parent_master[3] = gpu_parent_master_scissor->rect[3];
-
-                        scissor[0] = static_cast<int32_t>(widget_rect.x);
-                        scissor[1] = static_cast<int32_t>(widget_rect.y);
-                        scissor[2] = static_cast<int32_t>(widget_rect.w);
-                        scissor[3] = static_cast<int32_t>(widget_rect.h);
-
-                        if (scissor[0] < scissor_parent_master[0]) {
-                            scissor[0] = scissor_parent_master[0];
-                        }
-
-                        if (scissor[1] < scissor_parent_master[1]) {
-                            scissor[1] = scissor_parent_master[1];
-                        }
-
-                        if (scissor[0] + scissor[2] > scissor_parent_master[0] + scissor_parent_master[2]) {
-                            scissor[2] -= ((scissor[0] + scissor[2]) - (scissor_parent_master[0] + scissor_parent_master[2]));
-                        }
-
-                        if (scissor[1] + scissor[3] > scissor_parent_master[1] + scissor_parent_master[3]) {
-                            scissor[3] -= (scissor[1] + scissor[3] - (scissor_parent_master[1] + scissor_parent_master[3]));
-                        }
-
-                        gpu_scissor->rect[0] = scissor[0];
-                        gpu_scissor->rect[1] = scissor[1];
-                        gpu_scissor->rect[2] = scissor[2];
-                        gpu_scissor->rect[3] = scissor[3];
-                    }
-                }
             }
         }
 

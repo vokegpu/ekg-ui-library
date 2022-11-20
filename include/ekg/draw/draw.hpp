@@ -21,6 +21,7 @@ namespace ekg::draw {
     void rect(const ekg::rect&, const ekg::vec4&, int32_t = 0);
     void rect(float, float, float, float, const ekg::vec4&, int32_t = 0);
 
+    void sync_scissor_pos(int32_t, int32_t);
     void bind_scissor(int32_t);
     void bind_off_scissor();
 
