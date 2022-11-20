@@ -23,8 +23,8 @@ namespace ekg::gpu {
     class allocator {
     protected:
         std::vector<ekg::gpu::data> data_list {};
-        std::vector<ekg::gpu::scissor> scissor_list {};
         std::vector<ekg::gpu::animation*> animation_update_list {};
+        std::map<int32_t, ekg::gpu::scissor> scissor_map {};
 
         std::map<uint32_t, std::vector<ekg::gpu::animation>> animation_map {};
         std::vector<ekg::gpu::animation> *active_animation {nullptr};
@@ -60,15 +60,11 @@ namespace ekg::gpu {
         ekg::gpu::data &bind_current_data();
         void clear_current_data();
 
-        ekg::gpu::data* bind_data(int32_t);
+        ekg::gpu::data* get_data_by_id(int32_t id);
         uint32_t get_current_data_id();
         
-        ekg::gpu::scissor* bind_scissor(int32_t);
+        ekg::gpu::scissor *get_scissor_by_id(int32_t id);
         uint32_t get_instance_scissor_id();
-
-        void invoke_scissor();
-        void scissor(int32_t, int32_t, int32_t, int32_t);
-        void revoke_scissor();
 
         void bind_texture(GLuint&);
         void vertex2f(float, float);
@@ -80,7 +76,10 @@ namespace ekg::gpu {
         void revoke();
         void draw();
 
-        void bind_animation(uint32_t);
+        void bind_scissor(int32_t);
+        void bind_off_scissor();
+
+        void bind_animation(int32_t);
         void bind_off_animation();
     };
 }

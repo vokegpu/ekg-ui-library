@@ -22,18 +22,18 @@ namespace ekg {
     extern ekg::rect empty;
 
     struct stack {
-        std::map<uint32_t, bool> registry {};
+        std::map<int32_t, bool> registry {};
         std::vector<ekg::ui::abstract_widget*> ordered_list {};
         void clear();
     };
 
-    void reload(uint32_t);
+    void reload(int32_t);
     void reload(ekg::ui::abstract_widget*);
 
-    void reset(uint32_t);
+    void reset(int32_t);
     void reset(ekg::ui::abstract_widget*);
 
-    void sync_layout(uint32_t);
+    void sync_layout(int32_t);
     void sync_layout(ekg::ui::abstract_widget*);
 
     void push_back_stack(ekg::ui::abstract_widget*, ekg::stack&);

@@ -50,9 +50,9 @@ namespace ekg {
         std::vector<ekg::ui::abstract_widget*> to_reset_widgets {};
         std::vector<ekg::ui::abstract_widget*> to_sync_layout_widgets {};
 
-        std::map<uint32_t, ekg::ui::abstract_widget*> widgets_map {};
-        std::map<uint32_t, ekg::ui::abstract> interfaces_map {};
-        std::map<uint32_t, bool> processed_widgets_map {};
+        std::map<int32_t, ekg::ui::abstract_widget*> widgets_map {};
+        std::map<int32_t, ekg::ui::abstract> interfaces_map {};
+        std::map<int32_t, bool> processed_widgets_map {};
 
         /* Core services and instances. */
 
@@ -70,13 +70,13 @@ namespace ekg {
 
         /* Tokens for use in creation of elements. */
 
-        uint32_t token_id {};
-        uint32_t widget_id_focused {};
-        uint32_t prev_widget_id_focused {};
-        uint32_t swap_widget_id_focused {};
+        int32_t token_id {};
+        int32_t widget_id_focused {};
+        int32_t prev_widget_id_focused {};
+        int32_t swap_widget_id_focused {};
 
-        uint32_t widget_id_pressed_focused {};
-        uint32_t widget_id_released_focused {};
+        int32_t widget_id_pressed_focused {};
+        int32_t widget_id_released_focused {};
 
         /* Security methods of ekg. */
 
@@ -94,7 +94,7 @@ namespace ekg {
         ekg::service::input &get_service_input();
         ekg::service::theme &get_service_theme();
         ekg::service::handler &get_service_handler();
-        ekg::ui::abstract_widget* get_fast_widget_by_id(uint32_t id);
+        ekg::ui::abstract_widget* get_fast_widget_by_id(int32_t id);
 
         void reload_widget(ekg::ui::abstract_widget* widget);
         void create_ui(ekg::ui::abstract* ui);

@@ -97,6 +97,8 @@ ekg::gl_version + "\n"
 "in vec2 TextureUV;\n"
 "in vec4 ShapeRect;\n"
 ""
+"const int PixelDifference = 1;\n"
+""
 "uniform int LineThickness;\n"
 "uniform float ViewportHeight;\n"
 "uniform bool ActiveTexture;\n"
@@ -105,11 +107,9 @@ ekg::gl_version + "\n"
 ""
 "void main() {"
 "    OutColor = Color;\n"
-""
+"    vec2 FragPos = vec2(gl_FragCoord.x, ViewportHeight - gl_FragCoord.y);\n"
 "    if (LineThickness > 0) {"
-"        vec2 FragPos = vec2(gl_FragCoord.x, ViewportHeight - gl_FragCoord.y);\n"
 "        vec4 OutlineRect = vec4(ShapeRect.x + LineThickness, ShapeRect.y + LineThickness, ShapeRect.z - (LineThickness * 2), ShapeRect.w - (LineThickness * 2));\n"
-""
 "        bool Collide = FragPos.x > OutlineRect.x && FragPos.x < OutlineRect.x + OutlineRect.z && FragPos.y > OutlineRect.y && FragPos.y < OutlineRect.y + OutlineRect.w;\n"
 "        "
 "        if (Collide) {"
@@ -119,7 +119,7 @@ ekg::gl_version + "\n"
 "        vec2 FragPos = vec2(gl_FragCoord.x, ViewportHeight - gl_FragCoord.y);\n"
 "        float L = LineThickness * 4;\n"
 "        \n"
-"    }"
+"    }\n"
 "    if (ActiveTexture) {"
 "        OutColor = texture(ActiveTextureSlot, TextureUV);\n"
 "        OutColor = vec4(OutColor.xyz - ((1.0f - Color.xyz) - 1.0f), OutColor.w - (1.0f - Color.w));"
@@ -128,15 +128,15 @@ ekg::gl_version + "\n"
 
     gpu::create_basic_program(ekg::gpu::allocator::program, vsh_src.c_str(), fsh_src.c_str());
 
-    /* First update of ortographic matrix and uniforms. */
+    /* First update of orthographic matrix and uniforms. */
 
     SDL_GetWindowSize(root, &ekg::display::width, &ekg::display::height);
     ekg::gpu::invoke(ekg::gpu::allocator::program);
-    ekg::orthographic2d(ekg::gpu::allocator::orthographicm4, 0, ekg::display::width, ekg::display::height, 0);
+    ekg::orthographic2d(ekg::gpu::allocator::orthographicm4, 0, static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height), 0);
     ekg::gpu::allocator::program.setm4("MatrixProjection", ekg::gpu::allocator::orthographicm4);
     ekg::gpu::allocator::program.set("ViewportHeight", static_cast<float>(ekg::display::height));
     ekg::gpu::revoke();
-    ekg::log("ortographic root display (" + std::to_string(ekg::display::width) + ", " + std::to_string(ekg::display::height) + ")");
+    ekg::log("orthographic root display (" + std::to_string(ekg::display::width) + ", " + std::to_string(ekg::display::height) + ")");
 
     /* SDL info. */
 

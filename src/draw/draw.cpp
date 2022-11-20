@@ -60,21 +60,11 @@ void ekg::draw::bind_scissor(int32_t id) {
     ekg::core->get_gpu_allocator().bind_scissor(id);
 }
 
-int32_t ekg::draw::bind_scissor() {
-    auto &allocator {ekg::core->get_gpu_allocator()};
-    allocator.invoke_scissor();
-    return allocator.get_instance_scissor_id();
-}
-
-void ekg::draw::scissor(int32_t x, int32_t y, int32_t w, int32_t h) {
-    ekg::core->get_gpu_allocator().scissor(x, y, w, h);
-}
-
 void ekg::draw::bind_off_scissor() {
-    ekg::core->get_gpu_allocator().revoke_scissor();
+    ekg::core->get_gpu_allocator().bind_off_scissor();
 }
 
-void ekg::draw::bind_animation(uint32_t id_tag) {
+void ekg::draw::bind_animation(int32_t id_tag) {
     ekg::core->get_gpu_allocator().bind_animation(id_tag);
 }
 

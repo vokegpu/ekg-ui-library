@@ -32,9 +32,9 @@ namespace ekg {
     namespace ui {
         class abstract : public ekg::feature {
         protected:
-            uint32_t id {};
-            uint32_t parent_id {};
-            std::vector<uint32_t> parent_id_list {};
+            int32_t id {};
+            int32_t parent_id {};
+            std::vector<int32_t> parent_id_list {};
 
             bool alive {true};
             uint16_t dock {};
@@ -51,14 +51,14 @@ namespace ekg {
             void set_tag(std::string_view);
             std::string_view get_tag();
 
-            void parent(uint32_t);
-            std::vector<uint32_t> &get_parent_id_list();
+            void parent(int32_t);
+            std::vector<int32_t> &get_parent_id_list();
 
-            void set_id(uint32_t);
-            uint32_t get_id();
+            void set_id(int32_t);
+            int32_t get_id();
 
-            void set_parent_id(uint32_t);
-            uint32_t get_parent_id();
+            void set_parent_id(int32_t);
+            int32_t get_parent_id();
 
             void set_alive(bool);
             bool is_alive();

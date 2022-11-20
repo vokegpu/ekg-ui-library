@@ -118,7 +118,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
     auto box {this->offset + rect};
 
-    this->scissor_id = ekg::draw::bind_scissor();
+    ekg::draw::bind_scissor(ui->get_id());
     ekg::draw::rect(rect, theme.checkbox_background);
     ekg::draw::rect(rect, theme.checkbox_outline, 1);
 

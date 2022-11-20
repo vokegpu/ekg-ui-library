@@ -22,11 +22,9 @@ namespace ekg::draw {
     void rect(float, float, float, float, const ekg::vec4&, int32_t = 0);
 
     void bind_scissor(int32_t);
-    int32_t bind_scissor();
-    void scissor(int32_t, int32_t, int32_t, int32_t);
     void bind_off_scissor();
 
-    void bind_animation(uint32_t);
+    void bind_animation(int32_t);
     void bind_off_animation();
 }
 

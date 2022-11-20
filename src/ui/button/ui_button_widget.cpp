@@ -109,7 +109,7 @@ void ekg::ui::button_widget::on_draw_refresh() {
     auto &theme {ekg::theme()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
 
-    this->scissor_id = ekg::draw::bind_scissor();
+    ekg::draw::bind_scissor(ui->get_id());
     ekg::draw::rect(rect, theme.button_background);
     ekg::draw::rect(rect, theme.button_outline, 1);
 

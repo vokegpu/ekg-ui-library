@@ -130,7 +130,6 @@ void ekg::gpu::allocator::revoke() {
 
     if (should_re_alloc_buffers) {
         this->data_list.resize(this->data_instance_index);
-        this->scissor_list.resize(this->data_instance_index);
     }
 
     should_re_alloc_buffers = should_re_alloc_buffers || this->factor_changed;
@@ -212,11 +211,8 @@ void ekg::gpu::allocator::draw() {
     ekg::gpu::invoke(ekg::gpu::allocator::program);
     glBindVertexArray(this->vbo_array);
 
-    bool scissor_enabled {};
-    bool active_texture {};
-    bool texture_enabled {};
-
-    float depth_testing {this->depth_testing_preset};
+    bool active_texture {}, texture_enabled {}, active_scissor {};
+    float depth_testing {this->depth_testing_preset}, scissor_rect[4] {};
     ekg::gpu::scissor* scissor {};
 
     for (ekg::gpu::data &data : this->data_list) {
@@ -250,37 +246,37 @@ void ekg::gpu::allocator::draw() {
 
         switch (data.scissor_id) {
             case -1: {
-                if (scissor_enabled) {
+                if (active_scissor) {
                     glDisable(GL_SCISSOR_TEST);
-                    scissor_enabled = false;
+                    active_scissor = false;
                 }
-
-                glDrawArrays(GL_TRIANGLES, data.begin_stride, data.end_stride);
                 break;
             }
 
             default: {
-                /* there is no reason for invoke gl calls every cpu tick */
-
-                if (!scissor_enabled) {
-                    scissor_enabled = true;
-                    scissor = this->bind_scissor(data.scissor_id);
-
+                if (!active_scissor) {
                     glEnable(GL_SCISSOR_TEST);
-                    glScissor(scissor->rect[0], scissor->rect[1], scissor->rect[2], scissor->rect[3]);
+                    active_scissor = true;
                 }
 
-                glDrawArrays(GL_TRIANGLES, data.begin_stride, data.end_stride);
+                scissor = this->get_scissor_by_id(data.scissor_id);
+                if (scissor == nullptr) {
+                    break;
+                }
+
+                glScissor(scissor->rect[0] - 2, ekg::display::height - (scissor->rect[1] - 2 + scissor->rect[3]), scissor->rect[2] + 4, scissor->rect[3] + 4);
                 break;
             }
         }
+
+        glDrawArrays(GL_TRIANGLES, data.begin_stride, data.end_stride);
 
         /* plus: depth testing is needed for layout level */
 
         depth_testing += 0.001f;
     }
 
-    if (scissor_enabled || texture_enabled) {
+    if (texture_enabled) {
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_SCISSOR_TEST);
     }
@@ -300,10 +296,8 @@ void ekg::gpu::allocator::clear_current_data() {
 
     if (this->data_instance_index >= this->data_list.size()) {
         this->data_list.emplace_back();
-        this->scissor_list.emplace_back();
     }
 
-    this->scissor_list[this->data_instance_index].rect[0] = -1; // it means that this scissors cache element is no longer used.
     ekg::gpu::data &data {this->bind_current_data()};
 
     data.mode = 0;
@@ -322,7 +316,7 @@ uint32_t ekg::gpu::allocator::get_current_data_id() {
     return this->data_instance_index;
 }
 
-ekg::gpu::data* ekg::gpu::allocator::bind_data(int32_t id) {
+ekg::gpu::data* ekg::gpu::allocator::get_data_by_id(int32_t id) {
     if (id < 0 || id > this->data_instance_index) {
         return nullptr;
     }
@@ -337,31 +331,23 @@ void ekg::gpu::allocator::quit() {
     glDeleteVertexArrays(1, &this->vbo_array);
 }
 
-ekg::gpu::scissor* ekg::gpu::allocator::bind_scissor(int32_t id) {
+ekg::gpu::scissor* ekg::gpu::allocator::get_scissor_by_id(int32_t id) {
     if (id < 0 || id > this->data_instance_index) {
         return nullptr;
     }
 
-    return &this->scissor_list[id];
+    return &this->scissor_map[id];
 }
 
 uint32_t ekg::gpu::allocator::get_instance_scissor_id() {
     return this->scissor_instance_id;
 }
 
-void ekg::gpu::allocator::invoke_scissor() {
-    this->scissor_instance_id = static_cast<int32_t>(this->data_instance_index);
+void ekg::gpu::allocator::bind_scissor(int32_t scissor_id) {
+    this->scissor_instance_id = scissor_id;
 }
 
-void ekg::gpu::allocator::scissor(int32_t x, int32_t y, int32_t w, int32_t h) {
-    auto &scissor {this->scissor_list[this->data_instance_index]};
-    scissor.rect[0] = x;
-    scissor.rect[1] = ekg::display::height - (y + h);
-    scissor.rect[2] = w;
-    scissor.rect[3] = h;
-}
-
-void ekg::gpu::allocator::revoke_scissor() {
+void ekg::gpu::allocator::bind_off_scissor() {
     this->scissor_instance_id = -1;
 }
 
@@ -384,12 +370,12 @@ void ekg::gpu::allocator::coord2f(float x, float y) {
     this->cached_uvs.push_back(y);
 }
 
-void ekg::gpu::allocator::bind_animation(uint32_t id_tag) {
-    if (id_tag == 0) {
+void ekg::gpu::allocator::bind_animation(int32_t animation_id) {
+    if (animation_id == 0) {
         this->active_animation = nullptr;
     } else {
-        this->active_animation = &this->animation_map[id_tag];
-        this->animation_instance_id = static_cast<int32_t>(id_tag);
+        this->active_animation = &this->animation_map[animation_id];
+        this->animation_instance_id = static_cast<int32_t>(animation_id);
     }
 }
 

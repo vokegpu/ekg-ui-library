@@ -17,7 +17,7 @@
 
 ekg::rect ekg::empty {};
 
-void ekg::reload(uint32_t id) {
+void ekg::reload(int32_t id) {
     ekg::core->reload_widget(ekg::core->get_fast_widget_by_id(id));
 }
 
@@ -25,7 +25,7 @@ void ekg::reload(ekg::ui::abstract_widget *pwidget) {
     ekg::core->reload_widget(pwidget);
 }
 
-void ekg::reset(uint32_t id) {
+void ekg::reset(int32_t id) {
     ekg::core->reset_widget(ekg::core->get_fast_widget_by_id(id));
 }
 
@@ -33,7 +33,7 @@ void ekg::reset(ekg::ui::abstract_widget *pwidget) {
     ekg::core->reset_widget(pwidget);
 }
 
-void ekg::sync_layout(uint32_t id) {
+void ekg::sync_layout(int32_t id) {
     ekg::core->sync_layout_widget(ekg::core->get_fast_widget_by_id(id));
 }
 
@@ -49,7 +49,7 @@ void ekg::push_back_stack(ekg::ui::abstract_widget *pwidget, ekg::stack &stack) 
     stack.registry[pwidget->data->get_id()] = true;
     stack.ordered_list.push_back(pwidget);
 
-    for (uint32_t &ids : pwidget->data->get_parent_id_list()) {
+    for (int32_t &ids : pwidget->data->get_parent_id_list()) {
         auto widgets {ekg::core->get_fast_widget_by_id(ids)};
 
         if (widgets == nullptr) {

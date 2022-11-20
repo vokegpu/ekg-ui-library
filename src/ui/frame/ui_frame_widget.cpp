@@ -40,7 +40,7 @@ void ekg::ui::frame_widget::on_pre_event(SDL_Event &sdl_event) {
 void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
     abstract_widget::on_event(sdl_event);
 
-    auto interact {ekg::interact()};
+    auto &interact {ekg::interact()};
     auto ui {(ekg::ui::frame*) this->data};
     auto &rect {this->get_abs_rect()};
 
@@ -127,7 +127,7 @@ void ekg::ui::frame_widget::on_draw_refresh() {
     auto &rect = (this->data->widget() = this->dimension + *this->parent);
     auto &theme {ekg::theme()};
 
-    this->scissor_id = ekg::draw::bind_scissor();
+    ekg::draw::bind_scissor(this->data->get_id());
     ekg::draw::rect(rect, theme.frame_background);
     ekg::draw::rect(this->docker_activy_drag.top, theme.frame_border);
     ekg::draw::rect(rect, theme.frame_outline, 1);

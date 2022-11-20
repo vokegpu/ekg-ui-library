@@ -22,10 +22,10 @@ ekg::ui::abstract::abstract() {
 ekg::ui::abstract::~abstract() {
 }
 
-void ekg::ui::abstract::parent(uint32_t token) {
+void ekg::ui::abstract::parent(int32_t token) {
     bool not_contains {true};
 
-    for (uint32_t &tokens : this->parent_id_list) {
+    for (int32_t &tokens : this->parent_id_list) {
         if (!(not_contains = tokens != token)) {
             break;
         }
@@ -43,23 +43,23 @@ void ekg::ui::abstract::parent(uint32_t token) {
     }
 }
 
-std::vector<uint32_t> &ekg::ui::abstract::get_parent_id_list() {
+std::vector<int32_t> &ekg::ui::abstract::get_parent_id_list() {
     return this->parent_id_list;
 }
 
-void ekg::ui::abstract::set_id(uint32_t token) {
+void ekg::ui::abstract::set_id(int32_t token) {
     this->id = token;
 }
 
-uint32_t ekg::ui::abstract::get_id() {
+int32_t ekg::ui::abstract::get_id() {
     return this->id;
 }
 
-void ekg::ui::abstract::set_parent_id(uint32_t token) {
+void ekg::ui::abstract::set_parent_id(int32_t token) {
     this->parent_id = token;
 }
 
-uint32_t ekg::ui::abstract::get_parent_id() {
+int32_t ekg::ui::abstract::get_parent_id() {
     return this->parent_id;
 }
 
