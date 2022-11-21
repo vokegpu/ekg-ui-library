@@ -57,7 +57,7 @@ int32_t main(int, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    for (int32_t i {0}; i < 50; i++) {
+    for (int32_t i {0}; i < 1; i++) {
         auto frame {ekg::frame("tag", {20, 20}, {200, 200})};
         frame->set_drag(ekg::dock::top);
         frame->set_resize(ekg::dock::left | ekg::dock::bottom);
@@ -71,7 +71,7 @@ int32_t main(int, char**) {
                 }}); // next does the "break line" dock (bottom to up and top to bottom).
         button->set_text(ekg::dock::left | ekg::dock::center);
         ekg::checkbox("hi", ekg::dock::top | ekg::dock::left | ekg::dock::next)->set_width(200);
-        ekg::checkbox("hello", ekg::dock::top | ekg::dock::left)->set_width(200);
+        ekg::checkbox("hi", ekg::dock::top | ekg::dock::left)->set_width(200);
         ekg::slider("slider", 20, 20, 200);
         ekg::popgroup();
     }

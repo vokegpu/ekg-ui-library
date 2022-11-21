@@ -241,7 +241,7 @@ void ekg::gpu::allocator::draw() {
         }
 
         if (texture_enabled && !active_texture) {
-            ekg::gpu::allocator::program.set("ActiveTexture", false);
+            glUniform1i(this->uniform_active_texture, false);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
@@ -259,7 +259,7 @@ void ekg::gpu::allocator::draw() {
 
         switch (data.scissor_id) {
             case -1: {
-                glDisable(GL_SCISSOR_TEST);
+                glUniform1i(this->uniform_enable_scissor, false);
                 break;
             }
 
@@ -269,8 +269,8 @@ void ekg::gpu::allocator::draw() {
                     break;
                 }
 
-                glScissor(scissor->rect[0], ekg::display::height - (scissor->rect[1] + (scissor->rect[3] + 2)), scissor->rect[2] + 2, scissor->rect[3] + 2);
-                glEnable(GL_SCISSOR_TEST);
+                glUniform1i(this->uniform_enable_scissor, true);
+                glUniform4f(this->uniform_scissor, static_cast<float>(scissor->rect[0]), static_cast<float>(scissor->rect[1]), static_cast<float>(scissor->rect[2]), static_cast<float>(scissor->rect[3]));
                 break;
             }
         }
@@ -284,7 +284,6 @@ void ekg::gpu::allocator::draw() {
 
     if (texture_enabled) {
         glBindTexture(GL_TEXTURE_2D, 0);
-        glDisable(GL_SCISSOR_TEST);
     }
 
     glBindVertexArray(0);
@@ -304,6 +303,8 @@ void ekg::gpu::allocator::init() {
     this->uniform_rect = glGetUniformLocation(shading_program_id, "Rect");
     this->uniform_line_thickness = glGetUniformLocation(shading_program_id, "LineThickness");
     this->uniform_depth = glGetUniformLocation(shading_program_id, "Depth");
+    this->uniform_scissor = glGetUniformLocation(shading_program_id, "Scissor");
+    this->uniform_enable_scissor = glGetUniformLocation(shading_program_id, "EnableScissor");
 
     ekg::log("gpu allocator shading program loaded uniforms successfully!");
 }

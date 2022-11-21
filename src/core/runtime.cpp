@@ -262,8 +262,10 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler_service.dispatch(new ekg::cpu::event {"reload", this, [](void* pdata) {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
+        float scissor[4] {}, scissor_parent_master[4] {};
+        int32_t abs_id {};
+
         ekg::ui::abstract_widget *parent_master {nullptr};
-        int32_t abs_id {}, scissor[4] {}, scissor_parent_master[4] {};
         ekg::gpu::scissor *gpu_scissor {nullptr}, *gpu_parent_master_scissor {nullptr};
         ekg::rect widget_rect {};
 
@@ -318,7 +320,11 @@ void ekg::runtime::prepare_tasks() {
                     }
 
                     if (scissor_widget->data->get_parent_id() == 0) {
-                        ekg::transform_to_scissor(scissor_widget->get_abs_rect(), gpu_scissor->rect);
+                        widget_rect = scissor_widget->get_abs_rect();
+                        gpu_scissor->rect[0] = widget_rect.x;
+                        gpu_scissor->rect[1] = widget_rect.y;
+                        gpu_scissor->rect[2] = widget_rect.w;
+                        gpu_scissor->rect[3] = widget_rect.h;
                         continue;
                     }
 
@@ -335,10 +341,10 @@ void ekg::runtime::prepare_tasks() {
                     scissor_parent_master[2] = gpu_parent_master_scissor->rect[2];
                     scissor_parent_master[3] = gpu_parent_master_scissor->rect[3];
 
-                    scissor[0] = static_cast<int32_t>(widget_rect.x);
-                    scissor[1] = static_cast<int32_t>(widget_rect.y);
-                    scissor[2] = static_cast<int32_t>(widget_rect.w);
-                    scissor[3] = static_cast<int32_t>(widget_rect.h);
+                    scissor[0] = widget_rect.x;
+                    scissor[1] = widget_rect.y;
+                    scissor[2] = widget_rect.w;
+                    scissor[3] = widget_rect.h;
 
                     if (scissor[0] < scissor_parent_master[0]) {
                         scissor[0] = scissor_parent_master[0];
@@ -349,7 +355,7 @@ void ekg::runtime::prepare_tasks() {
                     }
 
                     if (scissor[0] + scissor[2] > scissor_parent_master[0] + scissor_parent_master[2]) {
-                        scissor[2] -= ((scissor[0] + scissor[2]) - (scissor_parent_master[0] + scissor_parent_master[2]));
+                        scissor[2] -= (scissor[0] + scissor[2] - (scissor_parent_master[0] + scissor_parent_master[2]));
                     }
 
                     if (scissor[1] + scissor[3] > scissor_parent_master[1] + scissor_parent_master[3]) {
