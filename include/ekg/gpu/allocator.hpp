@@ -40,6 +40,7 @@ namespace ekg::gpu {
 
         GLint begin_stride_count {};
         GLint end_stride_count {};
+        GLint uniform_active_texture_slot {}, uniform_active_texture {}, uniform_color {}, uniform_rect {}, uniform_depth {}, uniform_line_thickness {};
 
         int32_t scissor_instance_id {-1}, animation_instance_id {};
         GLfloat current_color_pass[4] {};

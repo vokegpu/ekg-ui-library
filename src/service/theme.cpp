@@ -30,7 +30,7 @@ void ekg::service::theme::quit() {
 void ekg::service::theme::gen_default_theme() {
     this->frame_background = {70, 81, 109, 255};
     this->frame_border = {190, 190, 190, 0};
-    this->frame_outline = {70, 81, 109, 100};
+    this->frame_outline = {30, 40, 60, 100};
     this->frame_activy_offset = 18;
 
     this->button_string = {202, 207, 222, 255};

@@ -101,7 +101,7 @@ if (ekg::input::pressed("hii!! :))")) {
 
 All buffers swap into GPU are totally handled and optimized by `ekg::gpu::allocator`, it protects your gpu from multiples buffers dispatch, it only uses two buffers and implement high shading communication making a partial instanced rendering.
 
-The scale manager works with dynamic offsets, for better interactions it automatically sets the scale of min_offset and button sizes (if auto-scale mode is enabled), other service of scale manager is set widget position based on root display, small screens like smartphones, reduce the bounds interaction between mother/master parent and others widget.
+The scale manager works with dynamic offsets, for better interactions it automatically sets the scale of min_offset and button sizes (if auto-scale line_thickness is enabled), other service of scale manager is set widget position based on root display, small screens like smartphones, reduce the bounds interaction between mother/master parent and others widget.
 
 ---
 

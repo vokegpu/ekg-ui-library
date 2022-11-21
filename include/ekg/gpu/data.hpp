@@ -20,15 +20,15 @@
 
 namespace ekg::gpu {
     struct data {
-        GLfloat rect_area[4] {};
-        GLint colored_area[5] {};
+        GLfloat shape_rect[4] {};
+        GLint material_color[5] {};
 
-        GLuint texture {};
-        GLuint texture_slot {};
+        GLuint material_texture {};
+        GLuint active_tex_slot {};
 
         GLint begin_stride {};
         GLint end_stride {};
-        GLint mode {};
+        GLint line_thickness {};
 
         int32_t factor {};
         int32_t scissor_id {-1};

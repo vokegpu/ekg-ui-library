@@ -267,29 +267,31 @@ void ekg::runtime::prepare_tasks() {
         ekg::gpu::scissor *gpu_scissor {nullptr}, *gpu_parent_master_scissor {nullptr};
         ekg::rect widget_rect {};
 
-        for (ekg::ui::abstract_widget* &widget : runtime->loaded_widget_reload_list) {
-            if (widget == nullptr) {
+        for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_reload_list) {
+            if (widgets == nullptr) {
                 continue;
             }
 
-            if (widget->data->should_sync_with_ui()) {
-                widget->data->set_sync_with_ui(false);
-                auto rect = widget->data->ui();
+            if (widgets->data->should_sync_with_ui()) {
+                widgets->data->set_sync_with_ui(false);
+                auto rect = widgets->data->ui();
 
-                widget->dimension.w = rect.w;
-                widget->dimension.h = rect.h;
+                widgets->dimension.w = rect.w;
+                widgets->dimension.h = rect.h;
 
-                if (widget->data->get_parent_id() != 0) {
-                    widget->dimension.x = rect.x - widget->parent->x;
-                    widget->dimension.y = rect.y - widget->parent->y;
+                if (widgets->data->get_parent_id() != 0) {
+                    widgets->dimension.x = rect.x - widgets->parent->x;
+                    widgets->dimension.y = rect.y - widgets->parent->y;
                 } else {
-                    widget->parent->x = rect.x;
-                    widget->parent->y = rect.y;
+                    widgets->parent->x = rect.x;
+                    widgets->parent->y = rect.y;
                 }
             }
 
-            if (widget->is_scissor_refresh && widget->data->is_alive() && (parent_master = ekg::find_absolute_parent_master(widget)) != nullptr) {
-                widget->is_scissor_refresh = false;
+            widgets->on_reload();
+
+            if (widgets->is_scissor_refresh && widgets->data->is_alive() && (parent_master = ekg::find_absolute_parent_master(widgets)) != nullptr) {
+                widgets->is_scissor_refresh = false;
 
                 ekg::swap::front.clear();
                 ekg::push_back_stack(parent_master, ekg::swap::front);
@@ -361,8 +363,7 @@ void ekg::runtime::prepare_tasks() {
                 }
             }
 
-            widget->on_reload();
-            runtime->processed_widget_map[widget->data->get_id()] = true;
+            runtime->processed_widget_map[widgets->data->get_id()] = true;
         }
 
         runtime->loaded_widget_reload_list.clear();
@@ -373,13 +374,13 @@ void ekg::runtime::prepare_tasks() {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
         // todo fix the issue with sync layout offset.
 
-        for (ekg::ui::abstract_widget* &widget : runtime->loaded_widget_sync_layou_list) {
-            if (widget == nullptr || runtime->processed_widget_map[widget->data->get_id()]) {
+        for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_sync_layou_list) {
+            if (widgets == nullptr || runtime->processed_widget_map[widgets->data->get_id()]) {
                 continue;
             }
 
-            runtime->layout_service.process_scaled(widget);
-            runtime->processed_widget_map[widget->data->get_id()] = true;
+            runtime->layout_service.process_scaled(widgets);
+            runtime->processed_widget_map[widgets->data->get_id()] = true;
         }
 
         runtime->loaded_widget_sync_layou_list.clear();
@@ -518,6 +519,7 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
 
     this->loaded_widget_refresh_list.push_back(created_widget);
     this->widget_map[ui->get_id()] = created_widget;
+
     this->reset_widget(created_widget);
     this->reload_widget(created_widget);
 

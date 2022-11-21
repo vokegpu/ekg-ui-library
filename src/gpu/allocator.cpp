@@ -57,8 +57,8 @@ void ekg::gpu::allocator::bind_texture(GLuint &texture) {
 
     ekg::gpu::data &data = this->bind_current_data();
 
-    data.texture = texture;
-    data.texture_slot = texture_slot;
+    data.material_texture = texture;
+    data.active_tex_slot = texture_slot;
 }
 
 void ekg::gpu::allocator::dispatch() {
@@ -66,7 +66,7 @@ void ekg::gpu::allocator::dispatch() {
 
     /* if this data contains a simple rect shape scheme, save this index and reuse later */
 
-    this->simple_shape = static_cast<int32_t>(data.rect_area[2]) != 0 && static_cast<int32_t>(data.rect_area[3]) != 0;
+    this->simple_shape = static_cast<int32_t>(data.shape_rect[2]) != 0 && static_cast<int32_t>(data.shape_rect[3]) != 0;
     if (this->simple_shape_index == -1 && this->simple_shape) {
         this->simple_shape_index = this->begin_stride_count;
         this->begin_stride_count += this->end_stride_count;
@@ -99,17 +99,17 @@ void ekg::gpu::allocator::dispatch() {
         }
 
         if (animation.finished) {
-            data.colored_area[4] = data.colored_area[3];
+            data.material_color[4] = data.material_color[3];
         } else if (animation.initial) {
             this->animation_update_list.push_back(&animation);
-            data.colored_area[4] = 0;
+            data.material_color[4] = 0;
             animation.initial = false;
         }
 
         this->animation_index++;
     } else {
         /* else we do not need to process animation update in this data */
-        data.colored_area[4] = data.colored_area[3];
+        data.material_color[4] = data.material_color[3];
     }
 
     /* flag re alloc buffers if factor changed */
@@ -191,12 +191,12 @@ void ekg::gpu::allocator::on_update() {
                 continue;
             }
 
-            if ((animation->finished = animation->data->colored_area[4] == animation->data->colored_area[3])) {
+            if ((animation->finished = animation->data->material_color[4] == animation->data->material_color[3])) {
                 animation_progress_count++;
                 continue;
             }
 
-            animation->data->colored_area[4] = static_cast<int32_t>(ekg::lerp(static_cast<float>(animation->data->colored_area[4]), static_cast<float>(animation->data->colored_area[3]), ekg::display::dt));
+            animation->data->material_color[4] = static_cast<int32_t>(ekg::lerp(static_cast<float>(animation->data->material_color[4]), static_cast<float>(animation->data->material_color[3]), ekg::display::dt));
         }
 
         /* no problem with segment fault, because this is a reference pointer */
@@ -212,18 +212,31 @@ void ekg::gpu::allocator::draw() {
     glBindVertexArray(this->vbo_array);
 
     bool active_texture {}, texture_enabled {}, active_scissor {};
-    float depth_testing {this->depth_testing_preset}, scissor_rect[4] {};
+    float depth_level {this->depth_testing_preset}, scissor_rect[4] {};
     ekg::gpu::scissor* scissor {};
+    auto &shading_program_id {ekg::gpu::allocator::program.id};
+
+    /*
+      The batching system of gpu allocator use instanced rendering concept, if there is some simple shape rect
+      (gpu data rect that contains x, y, w & h rectangle), allocator reuse this to every draw call.
+      For text rendering, allocator do draw calls per text, or be, rendering a long text only use one draw call!
+
+      Why there is glUniforms direct calls? I think it can reduce some wrappers runtime calls, but only here.
+      What is the depth level? That is the layer level of current gpu data rendered, processing layer depth testing.
+
+      VokeGpu coded powerfully gpu allocator for drawing UIs, the batching system have animations, scissor & others
+      important draw features for UI context.
+     */
 
     for (ekg::gpu::data &data : this->data_list) {
-        active_texture = data.texture != 0;
+        active_texture = data.material_texture != 0;
 
         if (active_texture) {
-            glActiveTexture(GL_TEXTURE0 + data.texture_slot);
-            glBindTexture(GL_TEXTURE_2D, data.texture);
+            glActiveTexture(GL_TEXTURE0 + data.active_tex_slot);
+            glBindTexture(GL_TEXTURE_2D, data.material_texture);
 
-            ekg::gpu::allocator::program.set("ActiveTextureSlot", data.texture_slot);
-            ekg::gpu::allocator::program.set("ActiveTexture", true);
+            glUniform1i(this->uniform_active_texture_slot, static_cast<int32_t>(data.active_tex_slot));
+            glUniform1i(this->uniform_active_texture, true);
             texture_enabled = true;
         }
 
@@ -232,15 +245,15 @@ void ekg::gpu::allocator::draw() {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
-        this->current_color_pass[0] = static_cast<float>(data.colored_area[0]) / 255;
-        this->current_color_pass[1] = static_cast<float>(data.colored_area[1]) / 255;
-        this->current_color_pass[2] = static_cast<float>(data.colored_area[2]) / 255;
-        this->current_color_pass[3] = static_cast<float>(data.colored_area[4]) / 255;
+        this->current_color_pass[0] = static_cast<float>(data.material_color[0]) / 255;
+        this->current_color_pass[1] = static_cast<float>(data.material_color[1]) / 255;
+        this->current_color_pass[2] = static_cast<float>(data.material_color[2]) / 255;
+        this->current_color_pass[3] = static_cast<float>(data.material_color[4]) / 255;
 
-        ekg::gpu::allocator::program.set4("Color", this->current_color_pass);
-        ekg::gpu::allocator::program.set4("Rect", data.rect_area);
-        ekg::gpu::allocator::program.set("Depth", depth_testing);
-        ekg::gpu::allocator::program.set("LineThickness", data.mode);
+        glUniform4f(this->uniform_color, this->current_color_pass[0], this->current_color_pass[1], this->current_color_pass[2], this->current_color_pass[3]);
+        glUniform4f(this->uniform_rect, data.shape_rect[0], data.shape_rect[1], data.shape_rect[2], data.shape_rect[3]);
+        glUniform1i(this->uniform_line_thickness, data.line_thickness);
+        glUniform1f(this->uniform_depth, depth_level);
 
         /* allocator use 6 vertices to draw, no need for element buffer object */
 
@@ -266,7 +279,7 @@ void ekg::gpu::allocator::draw() {
 
         /* plus: depth testing is needed for layout level */
 
-        depth_testing += 0.001f;
+        depth_level += 0.001f;
     }
 
     if (texture_enabled) {
@@ -282,6 +295,17 @@ void ekg::gpu::allocator::init() {
     glGenVertexArrays(1, &this->vbo_array);
     glGenBuffers(1, &this->vbo_vertices);
     glGenBuffers(1, &this->vbo_uvs);
+
+    /* reduce glGetLocation calls when rendering the batch */
+    auto &shading_program_id {ekg::gpu::allocator::program.id};
+    this->uniform_active_texture = glGetUniformLocation(shading_program_id, "ActiveTexture");
+    this->uniform_active_texture_slot = glGetUniformLocation(shading_program_id, "ActiveTextureSlot");
+    this->uniform_color = glGetUniformLocation(shading_program_id, "Color");
+    this->uniform_rect = glGetUniformLocation(shading_program_id, "Rect");
+    this->uniform_line_thickness = glGetUniformLocation(shading_program_id, "LineThickness");
+    this->uniform_depth = glGetUniformLocation(shading_program_id, "Depth");
+
+    ekg::log("gpu allocator shading program loaded uniforms successfully!");
 }
 
 void ekg::gpu::allocator::clear_current_data() {
@@ -293,9 +317,9 @@ void ekg::gpu::allocator::clear_current_data() {
 
     ekg::gpu::data &data {this->bind_current_data()};
 
-    data.mode = 0;
-    data.texture = 0;
-    data.texture_slot = 0;
+    data.line_thickness = 0;
+    data.material_texture = 0;
+    data.active_tex_slot = 0;
     data.scissor_id = -1;
 
     this->previous_factor = data.factor;
@@ -385,6 +409,6 @@ void ekg::gpu::allocator::bind_off_animation() {
 
 bool ekg::gpu::allocator::check_simple_shape() {
     auto &data {this->bind_current_data()};
-    this->simple_shape = static_cast<int32_t>(data.rect_area[2]) != 0 && static_cast<int32_t>(data.rect_area[3]) != 0;
+    this->simple_shape = static_cast<int32_t>(data.shape_rect[2]) != 0 && static_cast<int32_t>(data.shape_rect[3]) != 0;
     return this->simple_shape_index != -1 && this->simple_shape;
 }

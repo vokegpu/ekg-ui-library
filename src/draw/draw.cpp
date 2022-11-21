@@ -27,10 +27,10 @@ void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color,
     ekg::gpu::allocator &allocator {ekg::core->get_gpu_allocator()};
     ekg::gpu::data &data {allocator.bind_current_data()};
 
-    data.rect_area[0] = x;
-    data.rect_area[1] = y;
-    data.rect_area[2] = w;
-    data.rect_area[3] = h;
+    data.shape_rect[0] = x;
+    data.shape_rect[1] = y;
+    data.shape_rect[2] = w;
+    data.shape_rect[3] = h;
 
     allocator.vertex2f(0, 0);
     allocator.vertex2f(0, 1);
@@ -46,11 +46,11 @@ void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color,
     allocator.coord2f(1, 0);
     allocator.coord2f(0, 0);
 
-    data.colored_area[0] = static_cast<int32_t>(color.x);
-    data.colored_area[1] = static_cast<int32_t>(color.y);
-    data.colored_area[2] = static_cast<int32_t>(color.z);
-    data.colored_area[3] = static_cast<int32_t>(color.w);
-    data.mode = line_thickness;
+    data.material_color[0] = static_cast<int32_t>(color.x);
+    data.material_color[1] = static_cast<int32_t>(color.y);
+    data.material_color[2] = static_cast<int32_t>(color.z);
+    data.material_color[3] = static_cast<int32_t>(color.w);
+    data.line_thickness = line_thickness;
     data.factor = 1;
 
     allocator.dispatch();

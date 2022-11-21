@@ -52,15 +52,7 @@ void ekg::init(SDL_Window* root, std::string_view font_path) {
     ekg::os = {ekg::platform::os_android};
 #endif
 
-    ekg::core = new ekg::runtime();
-    ekg::core->get_f_renderer_small().font_path = font_path;
-    ekg::core->get_f_renderer_normal().font_path = font_path;
-    ekg::core->get_f_renderer_big().font_path = font_path;
-
-    ekg::core->init();
-    ekg::core->set_root(root);
-
-    /* Create main shading program. */
+    /* The VokeGpu gpu allocator vertex shader stage. */
 
     const std::string vsh_src {
 ekg::gl_version + "\n"
@@ -88,6 +80,8 @@ ekg::gl_version + "\n"
 "    TextureUV = UVData;\n"
 "    ShapeRect = Rect;\n"
 "}"};
+
+    /* The VokeGpu gpu allocator fragment shader stage. */
 
     const std::string fsh_src {
 ekg::gl_version + "\n"
@@ -126,7 +120,16 @@ ekg::gl_version + "\n"
 "    }\n"
 "}"};
 
-    gpu::create_basic_program(ekg::gpu::allocator::program, vsh_src.c_str(), fsh_src.c_str());
+    /* Create main shading program using two basic shaders (vertex & fragment). */
+    ekg::gpu::create_basic_program(ekg::gpu::allocator::program, vsh_src.c_str(), fsh_src.c_str());
+
+    /* The runtime core, everything need to be setup before init. */
+    ekg::core = new ekg::runtime();
+    ekg::core->get_f_renderer_small().font_path = font_path;
+    ekg::core->get_f_renderer_normal().font_path = font_path;
+    ekg::core->get_f_renderer_big().font_path = font_path;
+    ekg::core->set_root(root);
+    ekg::core->init();
 
     /* First update of orthographic matrix and uniforms. */
 
