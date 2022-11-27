@@ -397,11 +397,11 @@ void ekg::runtime::prepare_tasks() {
                 }
 
                 if (scissor[0] + scissor[2] > scissor_parent_master[0] + scissor_parent_master[2]) {
-                    scissor[2] -= (scissor[0] + scissor[2] - (scissor_parent_master[0] + scissor_parent_master[2]));
+                    scissor[2] -= (scissor[0] + scissor[2]) - (scissor_parent_master[0] + scissor_parent_master[2]);
                 }
 
                 if (scissor[1] + scissor[3] > scissor_parent_master[1] + scissor_parent_master[3]) {
-                    scissor[3] -= (scissor[1] + scissor[3] - (scissor_parent_master[1] + scissor_parent_master[3]));
+                    scissor[3] -= (scissor[1] + scissor[3]) - (scissor_parent_master[1] + scissor_parent_master[3]);
                 }
 
                 gpu_scissor->rect[0] = scissor[0];
