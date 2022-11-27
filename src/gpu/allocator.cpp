@@ -279,7 +279,7 @@ void ekg::gpu::allocator::draw() {
 
         /* plus: depth testing is needed for layout level */
 
-        depth_level += 0.001f;
+        depth_level += 0.000001f;
     }
 
     if (texture_enabled) {
@@ -361,7 +361,7 @@ uint32_t ekg::gpu::allocator::get_instance_scissor_id() {
     return this->scissor_instance_id;
 }
 
-void ekg::gpu::allocator::sync_scissor_pos(int32_t x, int32_t y) {
+void ekg::gpu::allocator::sync_scissor_pos(float x, float y) {
     auto &scissor {this->scissor_map[this->scissor_instance_id]};
     scissor.rect[0] += x - scissor.rect[0];
     scissor.rect[1] += y - scissor.rect[1];

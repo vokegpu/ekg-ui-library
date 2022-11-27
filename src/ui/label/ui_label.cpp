@@ -16,17 +16,19 @@
 #include "ekg/util/util_ui.hpp"
 
 void ekg::ui::label::set_dock(uint16_t flags) {
-    if (this->dock != flags) {
-        this->dock = flags;
-        ekg::sync_layout(this->parent_id);
+    if (this->dock_flags != flags) {
+        this->dock_flags = flags;
+
+        ekg::synclayout(this->parent_id);
     }
 }
 
 void ekg::ui::label::set_text(std::string_view string) {
     if (this->text != string) {
         this->text = string;
+
         ekg::reload(this->id);
-        ekg::sync_layout(this->parent_id);
+        ekg::synclayout(this->parent_id);
     }
 }
 
@@ -45,7 +47,10 @@ uint16_t ekg::ui::label::get_text_dock() {
 void ekg::ui::label::set_width(float width) {
     if (this->sync_ui.w != width) {
         this->sync_ui.h = width;
-        this->set_sync_with_ui(true);
+
+        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
+        ekg::reload(this->id);
+        ekg::synclayout(this->parent_id);
     }
 }
 
@@ -56,8 +61,9 @@ float ekg::ui::label::get_width() {
 void ekg::ui::label::set_scaled_height(int32_t scaled_factor_height) {
     if (this->scaled_height != scaled_factor_height) {
         this->scaled_height = scaled_factor_height;
+
         ekg::reload(this->id);
-        ekg::sync_layout(this->parent_id);
+        ekg::synclayout(this->parent_id);
     }
 }
 
@@ -72,8 +78,9 @@ int32_t ekg::ui::label::get_scaled_height() {
 void ekg::ui::label::set_font_size(ekg::font font) {
     if (this->font_size != font) {
         this->font_size = font;
+
         ekg::reload(this->id);
-        ekg::sync_layout(this->parent_id);
+        ekg::synclayout(this->parent_id);
     }
 }
 

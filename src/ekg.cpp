@@ -214,7 +214,7 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_positi
     auto ui = new ekg::ui::frame();
     ui->set_tag(tag);
     ui->set_type(ekg::type::frame);
-    ekg::core->create_ui(ui);
+    ekg::core->gen_widget(ui);
 
     ui->set_pos_initial(initial_position.x, initial_position.y);
     ui->set_size_initial(size.x, size.y);
@@ -225,7 +225,7 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_positi
 ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
     auto ui = new ekg::ui::button();
     ui->set_type(ekg::type::button);
-    ekg::core->create_ui(ui);
+    ekg::core->gen_widget(ui);
 
     ui->set_text(ekg::dock::center);
     ui->set_text(text);
@@ -237,13 +237,13 @@ ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
 }
 
 void ekg::popgroup() {
-    ekg::core->reset_group_instance();
+    ekg::core->end_group_flag();
 }
 
 ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
     auto ui = new ekg::ui::label();
     ui->set_type(ekg::type::label);
-    ekg::core->create_ui(ui);
+    ekg::core->gen_widget(ui);
 
     ui->set_text(ekg::dock::center);
     ui->set_text(text);
@@ -257,7 +257,7 @@ ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
 ekg::ui::checkbox* ekg::checkbox(std::string_view text, uint16_t dock) {
     auto ui = new ekg::ui::checkbox();
     ui->set_type(ekg::type::checkbox);
-    ekg::core->create_ui(ui);
+    ekg::core->gen_widget(ui);
 
     ui->set_text(ekg::dock::left | ekg::dock::center);
     ui->set_text(text);
@@ -271,7 +271,7 @@ ekg::ui::checkbox* ekg::checkbox(std::string_view text, uint16_t dock) {
 ekg::ui::slider* ekg::slider(std::string_view tag, float val, float min, float max, uint16_t dock) {
     auto ui = new ekg::ui::slider();
     ui->set_type(ekg::type::slider);
-    ekg::core->create_ui(ui);
+    ekg::core->gen_widget(ui);
 
     ui->set_bar(ekg::dock::left);
     ui->set_tag(tag);

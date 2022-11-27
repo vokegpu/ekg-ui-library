@@ -1,10 +1,10 @@
-The official runtime ekg widget library source code.
+The official runtime ekg dimension library source code.
 
 ---
 
 The purpose of ekg is being fully customizable, smooth and with many animations. Also perform good in low pc specs. This is the new core version of ekg, rewrite of legacy core. Images bellow showcasing the current state of ekg.  
 
-![Image Text](https://github.com/ekg-ui-library/ekg/blob/version-core/splash/splash-showcase-1-1.0.0.png.png?raw=true)
+![Image Text](https://github.com/ekg-reset-library/ekg/blob/version-core/splash/splash-showcase-1-1.0.0.png.png?raw=true)
 # Running
 
 The current version of ekg only support the MinGW64 compiler.  
@@ -22,24 +22,24 @@ Note that you need to link the dependencies used in ekg: ![SDL2](https://www.lib
 
 int32_t main(int32_t, char**) {
   // create SDL2 context and OpenGL context.
-  //... init ekg ui library.
+  //... init ekg reset library.
   ekg::init(sdl_window);
   
-  ekg::frame("tag", {20, 20}, {200, 200})->set_drag(ekg::dock::top);
-  ekg::label("Hi, the label:"); // dock automatically set to ekg::dock::left | ekg::dock::top
-  ekg::button("Button Press Me!", ekg::dock::top | ekg::dock::left | ekg::dock::next); // next does the "break line" dock (bottom to up and top to bottom).
+  ekg::frame("tag", {20, 20}, {200, 200})->set_drag(ekg::dock_flags::top);
+  ekg::label("Hi, the label:"); // dock_flags automatically set to ekg::dock_flags::left | ekg::dock_flags::top
+  ekg::button("Button Press Me!", ekg::dock_flags::top | ekg::dock_flags::left | ekg::dock_flags::next); // next does the "break line" dock_flags (bottom to up and top to bottom).
   ekg::pop_group();
   
-  // do samething to create new widget.
+  // do samething to create new dimension.
   
   /*
    * mainloop of your application/game.
    */
   while (running) {
-    // reduce CPU ticks and sync with refresh rate...
+    // reduce CPU ticks and sync_flags with refresh rate...
     while (SDL_PollEvents(sdl_event)) {
       // handle the events here.
-      // remember to poll ekg ui events:
+      // remember to poll ekg reset events:
       ekg::event(sdl_event);
     }
     
@@ -59,7 +59,7 @@ int32_t main(int32_t, char**) {
 }
 ```
 
-![Image Text](https://github.com/ekg-ui-library/ekg/blob/version-core/splash/splash-showcase-3-1.0.0.png.png?raw=true)
+![Image Text](https://github.com/ekg-reset-library/ekg/blob/version-core/splash/splash-showcase-3-1.0.0.png.png?raw=true)
 
 There is more things, theses steps are the official way to setup.
 
@@ -67,7 +67,7 @@ There is more things, theses steps are the official way to setup.
 
 The theme store the current colors scheme loaded, you can use the default or load one theme file. One of important objectives is make the UI looks pretty and smooth in mobile devices.
 
-Input manager handle all bindings of widget element, you can tag combinations of different inputs.  
+Input manager handle all bindings of dimension element, you can tag combinations of different inputs.  
 When pressing units keybinds (special keys + random keyboard key) you need to write in the correct pattern: ctrl -> shift -> tab; E.g "lshift+tab+b"; l (left) r (right).  
 ```c++
 ekg::input::bind("custom-tag-a", "mouse-left");
@@ -101,7 +101,7 @@ if (ekg::input::pressed("hii!! :))")) {
 
 All buffers swap into GPU are totally handled and optimized by `ekg::gpu::allocator`, it protects your gpu from multiples buffers dispatch, it only uses two buffers and implement high shading communication making a partial instanced rendering.
 
-The scale manager works with dynamic offsets, for better interactions it automatically sets the scale of min_offset and button sizes (if auto-scale line_thickness is enabled), other service of scale manager is set widget position based on root display, small screens like smartphones, reduce the bounds interaction between mother/master parent and others widget.
+The scale manager works with dynamic offsets, for better interactions it automatically sets the scale of min_offset and button sizes (if auto-scale line_thickness is enabled), other service of scale manager is set dimension position based on root display, small screens like smartphones, reduce the bounds interaction between mother/master parent and others dimension.
 
 ---
 

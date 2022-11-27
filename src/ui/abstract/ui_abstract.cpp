@@ -92,22 +92,11 @@ ekg::rect &ekg::ui::abstract::widget() {
 }
 
 uint16_t ekg::ui::abstract::get_dock() {
-    return this->dock;
+    return this->dock_flags;
 }
 
 ekg::rect &ekg::ui::abstract::ui() {
     return this->sync_ui;
-}
-
-void ekg::ui::abstract::set_sync_with_ui(bool sync_state) {
-    if (this->sync_with_ui != sync_state) {
-        this->sync_with_ui = sync_state;
-        ekg::reload(this->id);
-    }
-}
-
-bool ekg::ui::abstract::should_sync_with_ui() {
-    return this->sync_with_ui;
 }
 
 void ekg::ui::abstract::set_tag(std::string_view string) {
@@ -116,4 +105,13 @@ void ekg::ui::abstract::set_tag(std::string_view string) {
 
 std::string_view ekg::ui::abstract::get_tag() {
     return this->tag;
+}
+
+uint16_t &ekg::ui::abstract::get_sync() {
+    return this->sync_flags;
+}
+
+void ekg::ui::abstract::reset() {
+    ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::reset);
+    ekg::reload(this->id);
 }

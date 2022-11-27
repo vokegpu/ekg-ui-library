@@ -98,8 +98,8 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
             this->dimension.w = new_rect.w;
             this->dimension.h = new_rect.h;
-            this->is_scissor_refresh = this->target_dock_resize != ekg::dock::none;
 
+            ekg::scissor(this);
             ekg::reload(this);
         }
     }

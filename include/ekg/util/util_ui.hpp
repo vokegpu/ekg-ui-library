@@ -30,11 +30,11 @@ namespace ekg {
     void reload(int32_t);
     void reload(ekg::ui::abstract_widget*);
 
-    void reset(int32_t);
-    void reset(ekg::ui::abstract_widget*);
+    void scissor(int32_t);
+    void scissor(ekg::ui::abstract_widget*);
 
-    void sync_layout(int32_t);
-    void sync_layout(ekg::ui::abstract_widget*);
+    void synclayout(int32_t id);
+    void synclayout(ekg::ui::abstract_widget *pwidget);
 
     void push_back_stack(ekg::ui::abstract_widget*, ekg::stack&);
     ekg::ui::abstract_widget *find_absolute_parent_master(ekg::ui::abstract_widget*);

@@ -17,9 +17,9 @@
 #include "ekg/ui/slider/ui_slider.hpp"
 
 void ekg::ui::slider::set_dock(uint16_t flags) {
-    if (this->dock != flags) {
-        this->dock = flags;
-        ekg::sync_layout(this->id);
+    if (this->dock_flags != flags) {
+        this->dock_flags = flags;
+        ekg::synclayout(this->id);
     }
 }
 
@@ -48,7 +48,10 @@ ekg::font ekg::ui::slider::get_font_size() {
 void ekg::ui::slider::set_width(float width) {
     if (this->sync_ui.w != width) {
         this->sync_ui.w = width;
-        this->set_sync_with_ui(true);
+
+        ekg::reload(this->id);
+        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
+        ekg::synclayout(this->parent_id);
     }
 }
 
@@ -59,7 +62,7 @@ float ekg::ui::slider::get_width() {
 void ekg::ui::slider::set_scaled_height(int32_t scaled_factor_height) {
     if (this->scaled_height != scaled_factor_height) {
         this->scaled_height = scaled_factor_height;
-        ekg::reset(this->id);
+        ekg::reload(this->id);
     }
 }
 
@@ -75,7 +78,7 @@ void ekg::ui::slider::set_value(float val) {
     if (this->value != val) {
         this->value = val;
         this->ieee754 = false;
-        ekg::reset(this->id);
+        ekg::reload(this->id);
     }
 }
 
@@ -83,7 +86,7 @@ void ekg::ui::slider::set_value(int32_t val) {
     if (this->value != static_cast<float>(val)) {
         this->value = static_cast<float>(val);
         this->ieee754 = true;
-        ekg::reset(this->id);
+        ekg::reload(this->id);
     }
 }
 

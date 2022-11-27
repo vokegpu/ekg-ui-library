@@ -82,7 +82,7 @@ namespace ekg::gpu {
          * This method calculate the difference betwen previous pos with new.
          * Reduce tons of iterations for update scissored UI elements.
          */
-        void sync_scissor_pos(int32_t, int32_t);
+        void sync_scissor_pos(float, float);
         void bind_scissor(int32_t);
         void bind_off_scissor();
 

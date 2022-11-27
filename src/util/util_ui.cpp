@@ -18,27 +18,27 @@
 ekg::rect ekg::empty {};
 
 void ekg::reload(int32_t id) {
-    ekg::core->reload_widget(ekg::core->get_fast_widget_by_id(id));
+    ekg::core->do_task_reload(ekg::core->get_fast_widget_by_id(id));
 }
 
 void ekg::reload(ekg::ui::abstract_widget *pwidget) {
-    ekg::core->reload_widget(pwidget);
+    ekg::core->do_task_reload(pwidget);
 }
 
-void ekg::reset(int32_t id) {
-    ekg::core->reset_widget(ekg::core->get_fast_widget_by_id(id));
+void ekg::scissor(int32_t id) {
+    ekg::core->do_task_scissor(ekg::core->get_fast_widget_by_id(id));
 }
 
-void ekg::reset(ekg::ui::abstract_widget *pwidget) {
-    ekg::core->reset_widget(pwidget);
+void ekg::scissor(ekg::ui::abstract_widget *pwidget) {
+    ekg::core->do_task_scissor(pwidget);
 }
 
-void ekg::sync_layout(int32_t id) {
-    ekg::core->sync_layout_widget(ekg::core->get_fast_widget_by_id(id));
+void ekg::synclayout(int32_t id) {
+    ekg::core->do_task_synclayout(ekg::core->get_fast_widget_by_id(id));
 }
 
-void ekg::sync_layout(ekg::ui::abstract_widget *pwidget) {
-    ekg::core->sync_layout_widget(pwidget);
+void ekg::synclayout(ekg::ui::abstract_widget *pwidget) {
+    ekg::core->do_task_synclayout(pwidget);
 }
 
 void ekg::push_back_stack(ekg::ui::abstract_widget *pwidget, ekg::stack &stack) {

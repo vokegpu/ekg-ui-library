@@ -29,21 +29,23 @@ namespace ekg {
         abstract, frame, button, label, slider, slider2d, checkbox, textbox, entrybox, combobox, tab, popup
     };
 
+    enum class uisync {
+        reset = 1, dimension = 2
+    };
+
     namespace ui {
         class abstract : public ekg::feature {
         protected:
-            int32_t id {};
-            int32_t parent_id {};
+            int32_t id {}, parent_id {};
             std::vector<int32_t> parent_id_list {};
 
             bool alive {true};
-            uint16_t dock {};
+            uint16_t dock_flags {}, sync_flags {};
             std::string tag {};
 
             ekg::state state {};
             ekg::type type {ekg::type::abstract};
             ekg::rect rect_widget {}, sync_ui {};
-            bool sync_with_ui {};
         public:
             abstract();
             ~abstract();
@@ -69,10 +71,10 @@ namespace ekg {
             void set_type(const ekg::type&);
             ekg::type get_type();
 
-            void set_sync_with_ui(bool sync_state);
-            bool should_sync_with_ui();
-
             uint16_t get_dock();
+            uint16_t &get_sync();
+            void reset();
+
             ekg::rect &widget();
             ekg::rect &ui();
         };

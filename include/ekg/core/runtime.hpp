@@ -47,7 +47,7 @@ namespace ekg {
 
         std::vector<ekg::ui::abstract_widget*> loaded_widget_reload_list {};
         std::vector<ekg::ui::abstract_widget*> loaded_widget_refresh_list {};
-        std::vector<ekg::ui::abstract_widget*> loaded_widget_reset_list {};
+        std::vector<ekg::ui::abstract_widget*> loaded_widget_scissor_list {};
         std::vector<ekg::ui::abstract_widget*> loaded_widget_sync_layou_list {};
 
         std::map<int32_t, ekg::ui::abstract_widget*> widget_map {};
@@ -96,11 +96,11 @@ namespace ekg {
         ekg::service::handler &get_service_handler();
         ekg::ui::abstract_widget* get_fast_widget_by_id(int32_t id);
 
-        void reload_widget(ekg::ui::abstract_widget* widget);
-        void create_ui(ekg::ui::abstract* ui);
-        void reset_widget(ekg::ui::abstract_widget* widget);
-        void sync_layout_widget(ekg::ui::abstract_widget* widget);
-        void reset_group_instance();
+        void gen_widget(ekg::ui::abstract* ui);
+        void do_task_reload(ekg::ui::abstract_widget* widget);
+        void do_task_scissor(ekg::ui::abstract_widget* widget);
+        void do_task_synclayout(ekg::ui::abstract_widget* widget);
+        void end_group_flag();
 
         void init();
         void quit();

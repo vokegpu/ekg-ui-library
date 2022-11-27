@@ -14,6 +14,7 @@
 
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/util/util_event.hpp"
+#include "ekg/util/util_ui.hpp"
 
 void ekg::ui::frame::set_scale_factor(float x, float y) {
     this->scale_factor.x = x;
@@ -70,7 +71,9 @@ void ekg::ui::frame::set_size(float w, float h) {
     if (this->sync_ui.w != w || this->sync_ui.h != h) {
         this->sync_ui.w = w;
         this->sync_ui.h = h;
-        this->set_sync_with_ui(true);
+
+        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
+        ekg::reload(this->id);
     }
 }
 
@@ -82,7 +85,9 @@ void ekg::ui::frame::set_pos(float x, float y) {
     if (this->sync_ui.x != x || this->sync_ui.y != y) {
         this->sync_ui.x = x;
         this->sync_ui.y = y;
-        this->set_sync_with_ui(true);
+
+        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
+        ekg::reload(this->id);
     }
 }
 
@@ -109,7 +114,9 @@ float ekg::ui::frame::get_initial_height() {
 void ekg::ui::frame::set_width(float width) {
     if (this->sync_ui.w != width) {
         this->sync_ui.w = width;
-        this->set_sync_with_ui(true);
+
+        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
+        ekg::reload(this->id);
     }
 }
 
@@ -120,7 +127,9 @@ float ekg::ui::frame::get_width() {
 void ekg::ui::frame::set_height(float height) {
     if (this->sync_ui.h != height) {
         this->sync_ui.h = height;
-        this->set_sync_with_ui(true);
+
+        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
+        ekg::reload(this->id);
     }
 }
 

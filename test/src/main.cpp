@@ -58,7 +58,7 @@ int32_t main(int, char**) {
     uint64_t ticked_frames {};
 
     for (int32_t i {0}; i < 1; i++) {
-        auto frame {ekg::frame("tag", {20, 20}, {200, 200})};
+        auto frame {ekg::frame("tag", {20, 60}, {200, 200})};
         frame->set_drag(ekg::dock::top);
         frame->set_resize(ekg::dock::left | ekg::dock::bottom);
         ekg::label("Hi, the label:"); // dock automatically set to ekg::dock::left | ekg::dock::top
@@ -76,48 +76,51 @@ int32_t main(int, char**) {
         ekg::popgroup();
     }
 
+    ekg::frame("fps", {200, 200}, {200, 200});
+    auto fps_element = ekg::label("the fps");
+    uint64_t cpu_now_ticks  {}, cpu_last_ticks {};
+
     /*
      * Mainloop.
      */
     while (running) {
-        /*
-         * Handle ticked loop each frame (1s).
-         */
-        if (ekg::reach(mainloop_timing, fps_ms_interval) && ekg::reset(mainloop_timing)) {
-            ekg::display::dt = static_cast<float>(mainloop_timing.current_ticks) / 100;
+        cpu_last_ticks = cpu_now_ticks;
+        cpu_now_ticks = SDL_GetPerformanceCounter();
+        ekg::display::dt = static_cast<float>(cpu_now_ticks - cpu_last_ticks) / static_cast<float>(SDL_GetPerformanceFrequency());
 
-            if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
-                display_fps = ticked_frames;
-                ticked_frames = 0;
-            }
+        if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
+            display_fps = ticked_frames;
+            ticked_frames = 0;
+            fps_element->set_text(std::to_string(display_fps));
+        }
 
-            while (SDL_PollEvent(&sdl_event)) {
-                switch (sdl_event.type) {
-                    case SDL_QUIT: {
-                        running = false;
-                        break;
-                    }
+        while (SDL_PollEvent(&sdl_event)) {
+            switch (sdl_event.type) {
+                case SDL_QUIT: {
+                    running = false;
+                    break;
+                }
 
-                    default: {
-                        ekg::event(sdl_event);
-                        break;
-                    }
+                default: {
+                    ekg::event(sdl_event);
+                    break;
                 }
             }
-
-            ekg::update();
-
-            glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-            glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
-
-            ekg::render();
-
-            // Count the FPS.
-            ticked_frames++;
-
-            // Swap buffers.
-            SDL_GL_SwapWindow(sdl_win);
         }
+
+        ekg::update();
+
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+
+        ekg::render();
+
+        // Count the FPS.
+        ticked_frames++;
+
+        // Swap buffers.
+        SDL_GL_SwapWindow(sdl_win);
+        SDL_Delay(fps_ms_interval);
     }
 
     ekg::quit();

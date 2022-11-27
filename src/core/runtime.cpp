@@ -154,6 +154,11 @@ ekg::service::handler &ekg::runtime::get_service_handler() {
 void ekg::runtime::prepare_tasks() {
     ekg::log("creating task events");
 
+    /*
+      The priority of tasks is organised by compilation code, means that you need
+      to dispatch tasks in n sequence. This is only a feature for allocated tasks.
+     */
+
     this->handler_service.dispatch(new ekg::cpu::event {"refresh", this, [](void* pdata) {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
 
@@ -176,7 +181,6 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler_service.dispatch(new ekg::cpu::event {"swap", this, [](void* pdata) {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
-
         if (runtime->swap_widget_id_focused == 0) {
             return;
         }
@@ -224,60 +228,50 @@ void ekg::runtime::prepare_tasks() {
         ekg::swap::refresh();
     }, ekg::event::alloc});
 
-    this->handler_service.dispatch(new ekg::cpu::event {"reset", this, [](void* pdata) {
-        auto runtime {static_cast<ekg::runtime*>(pdata)};
-
-        for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_reset_list) {
-            if (widgets == nullptr || runtime->processed_widget_map[widgets->data->get_id()]) {
-                continue;
-            }
-
-            switch (widgets->data->get_type()) {
-                case ekg::type::frame: {
-                    auto ui {(ekg::ui::frame*) widgets->data};
-                    auto pos {ui->get_pos_initial()};
-                    auto size {ui->get_size_initial()};
-
-                    if (ui->widget() != ekg::vec4 {pos, size}) {
-                        widgets->dimension.w = size.x;
-                        widgets->dimension.h = size.y;
-
-                        if (ui->get_parent_id() != 0) {
-                            widgets->dimension.x = pos.x - widgets->parent->x;
-                            widgets->dimension.y = pos.y - widgets->parent->y;
-                        } else {
-                            widgets->parent->x = pos.x;
-                            widgets->parent->y = pos.y;
-                        }
-                    }
-
-                    break;
-                }
-            }
-        }
-
-        runtime->loaded_widget_reset_list.clear();
-        runtime->processed_widget_map.clear();
-    }, ekg::event::alloc});
-
     this->handler_service.dispatch(new ekg::cpu::event {"reload", this, [](void* pdata) {
         auto runtime {static_cast<ekg::runtime*>(pdata)};
-        float scissor[4] {}, scissor_parent_master[4] {};
-        int32_t abs_id {};
-
-        ekg::ui::abstract_widget *parent_master {nullptr};
-        ekg::gpu::scissor *gpu_scissor {nullptr}, *gpu_parent_master_scissor {nullptr};
-        ekg::rect widget_rect {};
 
         for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_reload_list) {
             if (widgets == nullptr) {
                 continue;
             }
 
-            if (widgets->data->should_sync_with_ui()) {
-                widgets->data->set_sync_with_ui(false);
-                auto rect = widgets->data->ui();
+            auto &sync_flags {widgets->data->get_sync()};
+            if (ekg::bitwise::contains(sync_flags, (uint16_t) ekg::uisync::reset)) {
+                ekg::bitwise::remove(sync_flags, (uint16_t) ekg::uisync::reset);
 
+                switch (widgets->data->get_type()) {
+                    case ekg::type::frame: {
+                        auto ui {(ekg::ui::frame *) widgets->data};
+                        auto pos {ui->get_pos_initial()};
+                        auto size {ui->get_size_initial()};
+
+                        if (ui->widget() != ekg::vec4 {pos, size}) {
+                            widgets->dimension.w = size.x;
+                            widgets->dimension.h = size.y;
+
+                            if (ui->get_parent_id() != 0) {
+                                widgets->dimension.x = pos.x - widgets->parent->x;
+                                widgets->dimension.y = pos.y - widgets->parent->y;
+                            } else {
+                                widgets->parent->x = pos.x;
+                                widgets->parent->y = pos.y;
+                            }
+                        }
+
+                        break;
+                    }
+
+                    default: {
+                        break;
+                    }
+                }
+            }
+
+            if (ekg::bitwise::contains(sync_flags, (uint16_t) ekg::uisync::dimension)) {
+                ekg::bitwise::remove(sync_flags, (uint16_t) ekg::uisync::dimension);
+
+                auto &rect {widgets->data->ui()};
                 widgets->dimension.w = rect.w;
                 widgets->dimension.h = rect.h;
 
@@ -291,84 +285,6 @@ void ekg::runtime::prepare_tasks() {
             }
 
             widgets->on_reload();
-
-            if (widgets->is_scissor_refresh && widgets->data->is_alive() && (parent_master = ekg::find_absolute_parent_master(widgets)) != nullptr) {
-                widgets->is_scissor_refresh = false;
-
-                ekg::swap::front.clear();
-                ekg::push_back_stack(parent_master, ekg::swap::front);
-
-                /*
-                 Scissor is a great feature from OpenGL, but it
-                 does not stack, means that GL context does not
-                 accept scissor inside scissor.
-
-                 After 1 year studying scissor, I  built one scheme,
-                 compute bounds of all parent widgets with the parent
-                 master, obvious it takes some ticks but there is no
-                 other way (maybe I am wrong).
-
-                 Two things important:
-                 1 - This scissors scheme use scissor IDs from widgets.
-                 2 - Iteration collect ALL parent families and sub parent of target.
-                */
-
-                for (ekg::ui::abstract_widget* &scissor_widget : ekg::swap::front.ordered_list) {
-                    gpu_scissor = runtime->allocator.get_scissor_by_id(scissor_widget->data->get_id());
-                    if (gpu_scissor == nullptr) {
-                        continue;
-                    }
-
-                    if (scissor_widget->data->get_parent_id() == 0) {
-                        widget_rect = scissor_widget->get_abs_rect();
-                        gpu_scissor->rect[0] = widget_rect.x;
-                        gpu_scissor->rect[1] = widget_rect.y;
-                        gpu_scissor->rect[2] = widget_rect.w;
-                        gpu_scissor->rect[3] = widget_rect.h;
-                        continue;
-                    }
-
-                    parent_master = runtime->widget_map[scissor_widget->data->get_parent_id()];
-                    gpu_parent_master_scissor = runtime->get_gpu_allocator().get_scissor_by_id(parent_master->data->get_id());
-                    if (gpu_parent_master_scissor == nullptr) {
-                        continue;
-                    }
-
-                    widget_rect = scissor_widget->get_abs_rect();
-
-                    scissor_parent_master[0] = gpu_parent_master_scissor->rect[0];
-                    scissor_parent_master[1] = gpu_parent_master_scissor->rect[1];
-                    scissor_parent_master[2] = gpu_parent_master_scissor->rect[2];
-                    scissor_parent_master[3] = gpu_parent_master_scissor->rect[3];
-
-                    scissor[0] = widget_rect.x;
-                    scissor[1] = widget_rect.y;
-                    scissor[2] = widget_rect.w;
-                    scissor[3] = widget_rect.h;
-
-                    if (scissor[0] < scissor_parent_master[0]) {
-                        scissor[0] = scissor_parent_master[0];
-                    }
-
-                    if (scissor[1] < scissor_parent_master[1]) {
-                        scissor[1] = scissor_parent_master[1];
-                    }
-
-                    if (scissor[0] + scissor[2] > scissor_parent_master[0] + scissor_parent_master[2]) {
-                        scissor[2] -= (scissor[0] + scissor[2] - (scissor_parent_master[0] + scissor_parent_master[2]));
-                    }
-
-                    if (scissor[1] + scissor[3] > scissor_parent_master[1] + scissor_parent_master[3]) {
-                        scissor[3] -= (scissor[1] + scissor[3] - (scissor_parent_master[1] + scissor_parent_master[3]));
-                    }
-
-                    gpu_scissor->rect[0] = scissor[0];
-                    gpu_scissor->rect[1] = scissor[1];
-                    gpu_scissor->rect[2] = scissor[2];
-                    gpu_scissor->rect[3] = scissor[3];
-                }
-            }
-
             runtime->processed_widget_map[widgets->data->get_id()] = true;
         }
 
@@ -407,13 +323,107 @@ void ekg::runtime::prepare_tasks() {
 
         runtime->allocator.revoke();
     }, ekg::event::alloc});
+
+    this->handler_service.dispatch(new ekg::cpu::event {"scissor", this, [](void* pdata) {
+        auto runtime {static_cast<ekg::runtime*>(pdata)};
+
+        float scissor[4] {}, scissor_parent_master[4] {};
+        ekg::ui::abstract_widget *parent_master {nullptr};
+        ekg::gpu::scissor *gpu_scissor {nullptr}, *gpu_parent_master_scissor {nullptr};
+        ekg::rect widget_rect {};
+
+        for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_scissor_list) {
+            if (runtime->processed_widget_map[widgets->data->get_id()] || (parent_master = ekg::find_absolute_parent_master(widgets)) == nullptr) {
+                continue;
+            }
+
+            ekg::swap::front.clear();
+            ekg::push_back_stack(parent_master, ekg::swap::front);
+
+            /*
+             Scissor is a great feature from OpenGL, but it
+             does not stack, means that GL context does not
+             accept scissor inside scissor.
+
+             After 1 year studying scissor, I  built one scheme,
+             compute bounds of all parent widgets with the parent
+             master, obvious it takes some ticks but there is no
+             other way (maybe I am wrong).
+
+             Two things important:
+             1 - This scissors scheme use scissor IDs from widgets.
+             2 - Iteration collect ALL parent families and sub parent of target.
+            */
+
+            for (ekg::ui::abstract_widget* &scissor_widget : ekg::swap::front.ordered_list) {
+                gpu_scissor = runtime->allocator.get_scissor_by_id(scissor_widget->data->get_id());
+                if (gpu_scissor == nullptr) {
+                    continue;
+                }
+
+                if (scissor_widget->data->get_parent_id() == 0) {
+                    widget_rect = scissor_widget->get_abs_rect();
+                    gpu_scissor->rect[0] = widget_rect.x;
+                    gpu_scissor->rect[1] = widget_rect.y;
+                    gpu_scissor->rect[2] = widget_rect.w;
+                    gpu_scissor->rect[3] = widget_rect.h;
+                    continue;
+                }
+
+                parent_master = runtime->widget_map[scissor_widget->data->get_parent_id()];
+                gpu_parent_master_scissor = runtime->get_gpu_allocator().get_scissor_by_id(parent_master->data->get_id());
+                if (gpu_parent_master_scissor == nullptr) {
+                    continue;
+                }
+
+                widget_rect = scissor_widget->get_abs_rect();
+
+                scissor_parent_master[0] = gpu_parent_master_scissor->rect[0];
+                scissor_parent_master[1] = gpu_parent_master_scissor->rect[1];
+                scissor_parent_master[2] = gpu_parent_master_scissor->rect[2];
+                scissor_parent_master[3] = gpu_parent_master_scissor->rect[3];
+
+                scissor[0] = widget_rect.x;
+                scissor[1] = widget_rect.y;
+                scissor[2] = widget_rect.w;
+                scissor[3] = widget_rect.h;
+
+                if (scissor[0] < scissor_parent_master[0]) {
+                    scissor[0] = scissor_parent_master[0];
+                }
+
+                if (scissor[1] < scissor_parent_master[1]) {
+                    scissor[1] = scissor_parent_master[1];
+                }
+
+                if (scissor[0] + scissor[2] > scissor_parent_master[0] + scissor_parent_master[2]) {
+                    scissor[2] -= (scissor[0] + scissor[2] - (scissor_parent_master[0] + scissor_parent_master[2]));
+                }
+
+                if (scissor[1] + scissor[3] > scissor_parent_master[1] + scissor_parent_master[3]) {
+                    scissor[3] -= (scissor[1] + scissor[3] - (scissor_parent_master[1] + scissor_parent_master[3]));
+                }
+
+                gpu_scissor->rect[0] = scissor[0];
+                gpu_scissor->rect[1] = scissor[1];
+                gpu_scissor->rect[2] = scissor[2];
+                gpu_scissor->rect[3] = scissor[3];
+            }
+
+            runtime->processed_widget_map[widgets->data->get_id()] = true;
+        }
+
+        runtime->processed_widget_map.clear();
+        runtime->loaded_widget_scissor_list.clear();
+        ekg::swap::front.clear();
+    }, ekg::event::alloc});
 }
 
 ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(int32_t id) {
     return this->widget_map[id];
 }
 
-void ekg::runtime::reload_widget(ekg::ui::abstract_widget* widget) {
+void ekg::runtime::do_task_reload(ekg::ui::abstract_widget* widget) {
     if (widget != nullptr) {
         this->loaded_widget_reload_list.push_back(widget);
         ekg::dispatch(ekg::env::reload);
@@ -469,8 +479,9 @@ void ekg::runtime::prepare_ui_env() {
     this->input_service.bind("textbox-action-down", "left");
 }
 
-void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
+void ekg::runtime::gen_widget(ekg::ui::abstract* ui) {
     ui->set_id(++this->token_id);
+
     this->swap_widget_id_focused = ui->get_id();
     ekg::ui::abstract_widget* created_widget {nullptr};
     bool is_group {};
@@ -491,6 +502,8 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
             is_group = true;
             created_widget = widget;
             this->current_bind_group = created_widget;
+            ui->reset();
+
             break;
         }
 
@@ -526,13 +539,13 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
     this->loaded_widget_refresh_list.push_back(created_widget);
     this->widget_map[ui->get_id()] = created_widget;
 
-    this->reset_widget(created_widget);
-    this->reload_widget(created_widget);
+    this->do_task_reload(created_widget);
 
     if (!is_group && this->current_bind_group != nullptr) {
         this->current_bind_group->data->parent(ui->get_id());
     } else if (is_group) {
-        this->sync_layout_widget(created_widget);
+        this->do_task_synclayout(created_widget);
+        this->do_task_scissor(created_widget);
     }
 
     ekg::log("created widget " + std::to_string(ui->get_id()));
@@ -540,20 +553,20 @@ void ekg::runtime::create_ui(ekg::ui::abstract* ui) {
     ekg::dispatch(ekg::env::swap);
 }
 
-void ekg::runtime::reset_widget(ekg::ui::abstract_widget *widget) {
+void ekg::runtime::do_task_scissor(ekg::ui::abstract_widget *widget) {
     if (widget != nullptr) {
-        this->loaded_widget_reset_list.push_back(widget);
-        ekg::dispatch(ekg::env::reset);
+        this->loaded_widget_scissor_list.push_back(widget);
+        ekg::dispatch(ekg::env::scissor);
     }
 }
 
-void ekg::runtime::sync_layout_widget(ekg::ui::abstract_widget *widget) {
+void ekg::runtime::do_task_synclayout(ekg::ui::abstract_widget *widget) {
     if (widget == nullptr) {
         return;
     }
 
     bool is_group  {widget->data->get_type() == ekg::type::frame};
-    if (!is_group) {
+    if (!is_group && widget->data->get_parent_id() != widget->data->get_id()) {
         widget = this->get_fast_widget_by_id(widget->data->get_parent_id());
     }
 
@@ -563,6 +576,6 @@ void ekg::runtime::sync_layout_widget(ekg::ui::abstract_widget *widget) {
     }
 }
 
-void ekg::runtime::reset_group_instance() {
+void ekg::runtime::end_group_flag() {
     this->current_bind_group = nullptr;
 }
