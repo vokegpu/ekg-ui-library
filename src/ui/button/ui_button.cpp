@@ -33,6 +33,7 @@ void ekg::ui::button::set_text(std::string_view new_text) {
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
+        ekg::scissor(this->parent_id);
     }
 }
 
@@ -43,8 +44,10 @@ std::string_view ekg::ui::button::get_text() {
 void ekg::ui::button::set_text(uint16_t enum_docks) {
     if (this->dock_text != enum_docks) {
         this->dock_text = enum_docks;
+
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
+        ekg::scissor(this->parent_id);
     }
 }
 
@@ -74,6 +77,7 @@ void ekg::ui::button::set_width(float width) {
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
+        ekg::scissor(this->parent_id);
     }
 }
 
@@ -84,8 +88,10 @@ float ekg::ui::button::get_width() {
 void ekg::ui::button::set_scaled_height(int32_t scaled_height_factor) {
     if (this->scaled_height != scaled_height_factor) {
         this->scaled_height = scaled_height_factor;
+
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
+        ekg::scissor(this->parent_id);
     }
 }
 
@@ -103,6 +109,7 @@ void ekg::ui::button::set_dock(uint16_t flags) {
 
         ekg::reload(this->id);
         ekg::synclayout(this->id);
+        ekg::scissor(this->parent_id);
     }
 }
 
@@ -112,6 +119,7 @@ void ekg::ui::button::set_font_size(ekg::font font) {
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
+        ekg::scissor(this->parent_id);
     }
 }
 

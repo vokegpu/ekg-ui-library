@@ -74,6 +74,7 @@ void ekg::ui::frame::set_size(float w, float h) {
 
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
+        ekg::scissor(this->parent_id);
     }
 }
 
@@ -88,6 +89,7 @@ void ekg::ui::frame::set_pos(float x, float y) {
 
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
+        ekg::scissor(this->parent_id);
     }
 }
 
@@ -117,6 +119,7 @@ void ekg::ui::frame::set_width(float width) {
 
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
+        ekg::scissor(this->parent_id);
     }
 }
 
@@ -130,6 +133,7 @@ void ekg::ui::frame::set_height(float height) {
 
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
+        ekg::scissor(this->parent_id);
     }
 }
 

@@ -420,7 +420,8 @@ void ekg::runtime::prepare_tasks() {
 }
 
 ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(int32_t id) {
-    return this->widget_map[id];
+    /* widget ID 0 is defined as none, or be, ID token accumulation start with 1 and not 0 */
+    return id ? this->widget_map[id] : nullptr;
 }
 
 void ekg::runtime::do_task_reload(ekg::ui::abstract_widget* widget) {
@@ -538,7 +539,6 @@ void ekg::runtime::gen_widget(ekg::ui::abstract* ui) {
 
     this->loaded_widget_refresh_list.push_back(created_widget);
     this->widget_map[ui->get_id()] = created_widget;
-
     this->do_task_reload(created_widget);
 
     if (!is_group && this->current_bind_group != nullptr) {

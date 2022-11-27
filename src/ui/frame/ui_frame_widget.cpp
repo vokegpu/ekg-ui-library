@@ -129,7 +129,7 @@ void ekg::ui::frame_widget::on_draw_refresh() {
     auto &theme {ekg::theme()};
 
     ekg::draw::bind_scissor(this->data->get_id());
-    ekg::draw::sync_scissor_pos(static_cast<int32_t>(rect.x), static_cast<int32_t>(rect.y));
+    ekg::draw::sync_scissor_pos(rect.x, rect.y);
 
     ekg::draw::rect(rect, theme.frame_background);
     ekg::draw::rect(this->docker_activy_drag.top, theme.frame_border);

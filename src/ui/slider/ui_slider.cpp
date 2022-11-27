@@ -20,6 +20,7 @@ void ekg::ui::slider::set_dock(uint16_t flags) {
     if (this->dock_flags != flags) {
         this->dock_flags = flags;
         ekg::synclayout(this->id);
+        ekg::scissor(this->parent_id);
     }
 }
 
@@ -37,7 +38,10 @@ ekg::dock ekg::ui::slider::get_bar_dock() {
 void ekg::ui::slider::set_font_size(ekg::font font) {
     if (this->font_size != font) {
         this->font_size = font;
+
         ekg::reload(this->id);
+        ekg::synclayout(this->parent_id);
+        ekg::scissor(this->parent_id);
     }
 }
 
@@ -49,8 +53,8 @@ void ekg::ui::slider::set_width(float width) {
     if (this->sync_ui.w != width) {
         this->sync_ui.w = width;
 
-        ekg::reload(this->id);
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
+        ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
     }
 }
@@ -62,7 +66,10 @@ float ekg::ui::slider::get_width() {
 void ekg::ui::slider::set_scaled_height(int32_t scaled_factor_height) {
     if (this->scaled_height != scaled_factor_height) {
         this->scaled_height = scaled_factor_height;
+
         ekg::reload(this->id);
+        ekg::synclayout(this->parent_id);
+        ekg::scissor(this->parent_id);
     }
 }
 

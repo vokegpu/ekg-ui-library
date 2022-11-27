@@ -60,7 +60,7 @@ int32_t main(int, char**) {
     for (int32_t i {0}; i < 1; i++) {
         auto frame {ekg::frame("tag", {20, 60}, {200, 200})};
         frame->set_drag(ekg::dock::top);
-        frame->set_resize(ekg::dock::left | ekg::dock::bottom);
+        frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
         ekg::label("Hi, the label:"); // dock automatically set to ekg::dock::left | ekg::dock::top
         auto button {ekg::button("Button Press Me!", ekg::dock::top | ekg::dock::left | ekg::dock::next)};
         button->set_callback(
@@ -70,9 +70,7 @@ int32_t main(int, char**) {
                     SDL_PushEvent(&sdl_event);
                 }}); // next does the "break line" dock (bottom to up and top to bottom).
         button->set_text(ekg::dock::left | ekg::dock::center);
-        ekg::checkbox("hi", ekg::dock::top | ekg::dock::left | ekg::dock::next)->set_width(200);
-        ekg::checkbox("hi", ekg::dock::top | ekg::dock::left)->set_width(200);
-        ekg::slider("slider", 20, 20, 200);
+        ekg::slider("slider", 20, 20, 200, ekg::dock::top | ekg::dock::left | ekg::dock::next);
         ekg::popgroup();
     }
 

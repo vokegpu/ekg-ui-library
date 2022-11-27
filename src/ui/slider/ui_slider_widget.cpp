@@ -19,6 +19,10 @@
 
 void ekg::ui::slider_widget::destroy() {
     abstract_widget::destroy();
+}
+
+void ekg::ui::slider_widget::on_reload() {
+    abstract_widget::on_reload();
 
     auto ui {(ekg::ui::slider*) this->data};
     auto &rect {this->get_abs_rect()};
@@ -33,7 +37,7 @@ void ekg::ui::slider_widget::destroy() {
     float offset {ekg::find_min_offset(text_width, dimension_offset)};
 
     this->dimension.w = ekg::min(this->dimension.w, dimension_offset * 2);
-    this->dimension.h = this->dimension.h, (text_height + dimension_offset) * static_cast<float>(ui->get_scaled_height());
+    this->dimension.h = ekg::min(this->dimension.h, (text_height + dimension_offset) * static_cast<float>(ui->get_scaled_height()));
 
     switch (dock) {
         case ekg::dock::top: {
@@ -70,10 +74,6 @@ void ekg::ui::slider_widget::destroy() {
     }
 }
 
-void ekg::ui::slider_widget::on_reload() {
-    abstract_widget::on_reload();
-}
-
 void ekg::ui::slider_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
 }
@@ -98,7 +98,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
 
     ekg::draw::bind_scissor(ui->get_id());
-    ekg::draw::sync_scissor_pos(static_cast<int32_t>(rect.x), static_cast<int32_t>(rect.y));
+    ekg::draw::sync_scissor_pos(rect.x, rect.y);
     ekg::draw::rect(this->offset + rect, theme.slider_background);
 
     if (this->flag.highlight) {

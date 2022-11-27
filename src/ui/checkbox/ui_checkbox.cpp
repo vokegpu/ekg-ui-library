@@ -18,8 +18,10 @@
 void ekg::ui::checkbox::set_font_size(ekg::font font) {
     if (this->font_size != font) {
         this->font_size = font;
-        ekg::scissor(this->id);
+
         ekg::synclayout(this->parent_id);
+        ekg::reload(this->id);
+        ekg::scissor(this->parent_id);
     }
 }
 
@@ -30,6 +32,8 @@ ekg::font ekg::ui::checkbox::get_font_size() {
 void ekg::ui::checkbox::set_dock(uint16_t docks) {
     if (this->dock_flags != docks) {
         this->dock_flags = docks;
+
+        ekg::scissor(this->parent_id);
         ekg::synclayout(this->id);
     }
 }
@@ -41,6 +45,7 @@ void ekg::ui::checkbox::set_width(float width) {
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
+        ekg::scissor(this->parent_id);
     }
 }
 
@@ -54,6 +59,7 @@ void ekg::ui::checkbox::set_scaled_height(int32_t scaled_height_factor) {
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
+        ekg::scissor(this->parent_id);
     }
 }
 
@@ -68,8 +74,10 @@ float ekg::ui::checkbox::get_height() {
 void ekg::ui::checkbox::set_text(std::string_view string) {
     if (this->text != string) {
         this->text = string;
+
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
+        ekg::scissor(this->parent_id);
     }
 }
 
