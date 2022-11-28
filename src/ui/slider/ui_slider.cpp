@@ -82,6 +82,7 @@ float ekg::ui::slider::get_height() {
 }
 
 void ekg::ui::slider::set_value(float val) {
+    val = ekg::clamp(val, this->minimum_value, this->maximum_value);;
     if (this->value != val) {
         this->value = val;
         this->ieee754 = false;

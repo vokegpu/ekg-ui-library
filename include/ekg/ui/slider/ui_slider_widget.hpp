@@ -19,6 +19,8 @@
 
 namespace ekg::ui {
 	class slider_widget : public ekg::ui::abstract_widget {
+    protected:
+        void update_bar(float, float);
 	public:
         ekg::docker docker_bar {};
 

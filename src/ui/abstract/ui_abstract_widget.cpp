@@ -32,7 +32,7 @@ void ekg::ui::abstract_widget::on_reload() {
 }
 
 void ekg::ui::abstract_widget::on_pre_event(SDL_Event &sdl_event) {
-    if (ekg::input::pressed() || ekg::input::released() || ekg::input::motion()) {
+    if (ekg::input::pressed() || ekg::input::released() || ekg::input::motion() || ekg::input::wheel()) {
         auto interact {ekg::interact()};
         auto &rect {this->get_abs_rect()};
         this->flag.hovered = ekg::rect_collide_vec(rect, interact) && (this->data->get_parent_id() == 0 || ekg::rect_collide_vec(*this->parent, interact));

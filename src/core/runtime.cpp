@@ -456,18 +456,31 @@ void ekg::runtime::prepare_ui_env() {
 
     ekg::log("creating widget binds");
 
+    /* start of frame input binds */
     this->input_service.bind("frame-drag-activy", "mouse-left");
     this->input_service.bind("frame-drag-activy", "finger-click");
     this->input_service.bind("frame-resize-activy", "mouse-left");
     this->input_service.bind("frame-resize-activy", "finger-click");
+    /* end of frame input binds */
+
+    /* start of button input binds */
     this->input_service.bind("button-activy", "mouse-left");
     this->input_service.bind("button-activy", "finger-click");
+    /* end of button input binds */
+
+    /* start of checkbox input binds */
     this->input_service.bind("checkbox-activy", "mouse-left");
     this->input_service.bind("checkbox-activy", "finger-click");
     this->input_service.bind("popup-activy", "mouse-right");
     this->input_service.bind("popup-activy", "finger-hold");
+    /* end of checkbox input binds */
+    
+    /* start of popup input binds */
     this->input_service.bind("popup-component-activy", "mouse-left");
     this->input_service.bind("popup-component-activy", "finger-click");
+    /* end of popup input binds */
+
+    /* start of text input binds */
     this->input_service.bind("textbox-action-delete-left", "backspace");
     this->input_service.bind("textbox-action-select-all", "lctrl+a");
     this->input_service.bind("textbox-action-select-all", "finger-hold");
@@ -478,6 +491,14 @@ void ekg::runtime::prepare_ui_env() {
     this->input_service.bind("textbox-action-down", "down");
     this->input_service.bind("textbox-action-down", "right");
     this->input_service.bind("textbox-action-down", "left");
+    /* end of textbox input binds */
+
+    /* start of slider input binds */
+    this->input_service.bind("slider-activy", "mouse-left");
+    this->input_service.bind("slider-activy", "finger-click");
+    this->input_service.bind("slider-bar-increase", "mouse-wheel-up");
+    this->input_service.bind("slider-bar-decrease", "mouse-wheel-down");
+    /* end of slider input binds */
 }
 
 void ekg::runtime::gen_widget(ekg::ui::abstract* ui) {

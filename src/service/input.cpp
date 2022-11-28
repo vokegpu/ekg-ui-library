@@ -24,12 +24,14 @@ std::map<std::string, const char*> ekg::service::input::special_keys_name_map = 
 };
 
 void ekg::service::input::on_event(SDL_Event &sdl_event) {
-    this->pressed_event = sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_FINGERDOWN;
-    this->released_event = sdl_event.type == SDL_KEYUP || sdl_event.type == SDL_MOUSEBUTTONUP || sdl_event.type == SDL_FINGERUP;
-    this->motion_event = sdl_event.type == SDL_MOUSEMOTION || sdl_event.type == SDL_FINGERMOTION;
+    this->pressed_event = false;
+    this->released_event = false;
+    this->motion_event = false;
 
     switch (sdl_event.type) {
         case SDL_KEYDOWN: {
+            this->pressed_event = true;
+
             for (std::string key_name = SDL_GetKeyName(sdl_event.key.keysym.sym); !key_name.empty(); key_name) {
                 if (this->is_special_key(sdl_event.key.keysym.sym)) {
                     this->special_keys_sdl_map[sdl_event.key.keysym.sym] = ekg::service::input::special_keys_name_map[key_name];
@@ -53,6 +55,8 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_KEYUP: {
+            this->pressed_event = true;
+
             for (std::string key_name = SDL_GetKeyName(sdl_event.key.keysym.sym); !key_name.empty(); key_name) {
                 if (this->is_special_key(sdl_event.key.keysym.sym)) {
                     this->special_keys_sdl_map[sdl_event.key.keysym.sym] = "";
@@ -72,6 +76,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_MOUSEBUTTONDOWN: {
+            this->pressed_event = true;
             bool double_click_factor {ekg::reach(this->double_interact, 500)};
 
             switch (sdl_event.button.button) {
@@ -130,6 +135,8 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_MOUSEBUTTONUP: {
+            this->released_event = true;
+            
             switch (sdl_event.button.button) {
                 case SDL_BUTTON_LEFT: {
                     this->callback("mouse-left", false);
@@ -158,18 +165,24 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_MOUSEMOTION: {
+            this->motion_event = true;
             this->interact.x = static_cast<float>(sdl_event.motion.x);
             this->interact.y = static_cast<float>(sdl_event.motion.y);
             break;
         }
 
         case SDL_MOUSEWHEEL: {
-            this->interact.z = static_cast<float>(sdl_event.wheel.preciseX);
-            this->interact.w = static_cast<float>(sdl_event.wheel.preciseY);
+            this->wheel_event = true;
+            this->interact.z = sdl_event.wheel.preciseX;
+            this->interact.w = sdl_event.wheel.preciseY;
+
+            this->callback("mouse-wheel-up", this->interact.w > 0);
+            this->callback("mouse-wheel-down", this->interact.w < 0);
             break;
         }
 
         case SDL_FINGERDOWN: {
+            this->pressed_event = true;
             ekg::reset(this->timing_last_interact);
             bool reach_double_interact {ekg::reach(this->double_interact, 500)};
 
@@ -187,6 +200,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_FINGERUP: {
+            this->released_event = true;
             this->callback("finger-hold", (this->finger_hold_event = ekg::reach(this->timing_last_interact, 750)));
             this->callback("finger-click", false);
             this->callback("finger-click-double", false);
@@ -194,6 +208,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_FINGERMOTION: {
+            this->motion_event = true;
             this->interact.x = sdl_event.tfinger.x;
             this->interact.y = sdl_event.tfinger.y;
 
@@ -232,6 +247,12 @@ bool ekg::service::input::was_wheel() {
 }
 
 void ekg::service::input::on_update() {
+    if (this->wheel_event) {
+        this->callback("mouse-wheel-up", false);
+        this->callback("mouse-wheel-down", false);
+        this->wheel_event = false;
+    }
+
     if (this->finger_wheel_event) {
         this->interact.z = 0.0f;
         this->interact.w = 0.0f;

@@ -114,6 +114,10 @@ void ekg::set_rect_clamped(ekg::rect &rect, float min_size) {
     rect.h = ekg::min(rect.h, min_size);
 }
 
+float ekg::clamp(float value, float min, float max) {
+    return value < min ? min : (value > max ? max : value);
+}
+
 float ekg::min(float a, float b) {
     return a < b ? b : a;
 }
@@ -123,6 +127,11 @@ float ekg::max(float a, float b) {
 }
 
 float ekg::find_min_offset(float text_width, float offset) {
+    /* 
+     Use initial offset to get the min possible offset.
+     Initial offset value sometime is font height divided by 2.
+    */
+
     float full_rect {text_width + offset};
     return ((full_rect / 2) - (text_width / 2));
 }

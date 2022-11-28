@@ -34,12 +34,7 @@ namespace ekg::service {
             std::vector<std::string> special_keys_released {};
             std::vector<std::string> double_click_mouse_buttons_pressed {};
 
-            bool pressed_event {};
-            bool released_event {};
-            bool motion_event {};
-            bool wheel_event {};
-            bool finger_hold_event {};
-            bool finger_wheel_event {};
+            bool pressed_event {}, released_event {}, motion_event {}, wheel_event {}, finger_hold_event {}, finger_wheel_event {};
 
             ekg::vec4 last_finger_interact {};
             ekg::timing double_interact {};

@@ -91,6 +91,7 @@ namespace ekg {
         ekg::rect left {}, right {}, top {}, bottom {}, center {}, rect {};
     };
 
+    float clamp(float, float, float);
     void orthographic2d(float* matrix, float left, float right, float bottom, float top);
     bool rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b);
     bool rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec);

@@ -70,7 +70,9 @@ int32_t main(int, char**) {
                     SDL_PushEvent(&sdl_event);
                 }}); // next does the "break line" dock (bottom to up and top to bottom).
         button->set_text(ekg::dock::left | ekg::dock::center);
-        ekg::slider("slider", 20, 20, 200, ekg::dock::top | ekg::dock::left | ekg::dock::next);
+        auto slider = ekg::slider("slider", 20, 20, 200, ekg::dock::top | ekg::dock::left | ekg::dock::next);
+        slider->set_width(200);
+        slider->set_bar(ekg::dock::right);
         ekg::popgroup();
     }
 

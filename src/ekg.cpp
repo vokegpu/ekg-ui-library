@@ -104,15 +104,16 @@ ekg::gl_version + "\n"
 "void main() {"
 "    OutColor = Color;\n"
 "    vec2 FragPos = vec2(gl_FragCoord.x, ViewportHeight - gl_FragCoord.y);\n"
-"    bool ShouldDiscard = EnableScissor && (FragPos.x < Scissor.x || FragPos.y < Scissor.y || FragPos.x > Scissor.x + Scissor.z + PixelDifference || FragPos.y > Scissor.y + Scissor.w);"
+"    bool ShouldDiscard = EnableScissor && (FragPos.x < Scissor.x || FragPos.y < Scissor.y || FragPos.x > Scissor.x + Scissor.z || FragPos.y > Scissor.y + Scissor.w);"
 "    if (LineThickness > 0) {"
 "        vec4 OutlineRect = vec4(ShapeRect.x + LineThickness, ShapeRect.y + LineThickness, ShapeRect.z - (LineThickness * 2), ShapeRect.w - (LineThickness * 2));\n"
 "        ShouldDiscard = ShouldDiscard || (FragPos.x > OutlineRect.x && FragPos.x < OutlineRect.x + OutlineRect.z && FragPos.y > OutlineRect.y && FragPos.y < OutlineRect.y + OutlineRect.w);\n"
 "    } else if (LineThickness < 0) {\n"
-"        vec2 FragPos = vec2(gl_FragCoord.x, ViewportHeight - gl_FragCoord.y);\n"
-"        float L = LineThickness * 4;\n"
-"        \n"
-"    }\n"
+"       float Radius = ShapeRect.z / 2;\n"
+"       vec2 Diff = vec2(FragPos.x - (ShapeRect.x + Radius), FragPos.y - (ShapeRect.y + Radius));\n"
+"       float Distance = Diff.x * Diff.x + Diff.y * Diff.y;\n"
+"       OutColor.w = 1.0f - (Distance - Radius);\n"
+"    }"
 "    if (ShouldDiscard) {"
 "        discard;"
 "    }\n"
@@ -160,10 +161,10 @@ void ekg::quit() {
 void ekg::event(SDL_Event &sdl_event) {
     bool phase_keep_process {
             sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
-            sdl_event.type == SDL_FINGERUP        || sdl_event.type == SDL_FINGERDOWN ||
-            sdl_event.type == SDL_FINGERMOTION    || sdl_event.type == SDL_MOUSEMOTION ||
-            sdl_event.type == SDL_KEYDOWN         || sdl_event.type == SDL_KEYUP ||
-            sdl_event.type == SDL_WINDOWEVENT
+            sdl_event.type == SDL_FINGERUP                      || sdl_event.type == SDL_FINGERDOWN ||
+            sdl_event.type == SDL_FINGERMOTION            || sdl_event.type == SDL_MOUSEMOTION ||
+            sdl_event.type == SDL_KEYDOWN                     || sdl_event.type == SDL_KEYUP ||
+            sdl_event.type == SDL_WINDOWEVENT            || sdl_event.type == SDL_MOUSEWHEEL
     };
 
     if (!phase_keep_process) {
@@ -278,6 +279,8 @@ ekg::ui::slider* ekg::slider(std::string_view tag, float val, float min, float m
     ui->set_dock(dock);
     ui->set_scaled_height(1);
     ui->set_font_size(ekg::font::normal);
+    ui->set_value_min(min);
+    ui->set_value_max(max);
 
     return ui;
 }
