@@ -133,7 +133,7 @@ void ekg::ui::frame_widget::on_draw_refresh() {
 
     ekg::draw::rect(rect, theme.frame_background);
     ekg::draw::rect(this->docker_activy_drag.top, theme.frame_border);
-    ekg::draw::rect(rect, theme.frame_outline, 1);
+    ekg::draw::rect(rect, theme.frame_outline, ekg::drawmode::outline);
 
     ekg::draw::bind_off_scissor();
 }

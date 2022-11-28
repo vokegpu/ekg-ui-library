@@ -81,6 +81,17 @@ float ekg::ui::slider::get_height() {
     return this->rect_widget.h;
 }
 
+void ekg::ui::slider::set_text(uint16_t flags) {
+    if (this->text_flags != flags) {
+        this->text_flags = flags;
+        ekg::reload(this->id);
+    }
+}
+
+uint16_t ekg::ui::slider::get_text_dock() {
+    return this->text_flags;
+}
+
 void ekg::ui::slider::set_value(float val) {
     val = ekg::clamp(val, this->minimum_value, this->maximum_value);;
     if (this->value != val) {

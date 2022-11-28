@@ -150,7 +150,7 @@ void ekg::draw::font_renderer::bind_allocator(ekg::gpu::allocator *gpu_allocator
 }
 
 void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, const ekg::vec4 &color) {
-    if (this->allocator == nullptr || this->flag_unloaded) {
+    if (this->allocator == nullptr || this->flag_unloaded || text.empty()) {
         return;
     }
 

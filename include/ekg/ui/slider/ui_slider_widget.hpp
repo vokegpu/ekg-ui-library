@@ -23,6 +23,8 @@ namespace ekg::ui {
         void update_bar(float, float);
 	public:
         ekg::docker docker_bar {};
+        ekg::rect circle {};
+        std::string parsed_value {};
 
         void destroy() override;
         void on_reload() override;

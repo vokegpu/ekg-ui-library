@@ -16,17 +16,39 @@
 #define EKG_DRAW_H
 
 #include "ekg/util/geometry.hpp"
+#include <vector>
+#include <iostream>
 
-namespace ekg::draw {
-    void rect(const ekg::rect&, const ekg::vec4&, int32_t = 0);
-    void rect(float, float, float, float, const ekg::vec4&, int32_t = 0);
+namespace ekg {
+    enum drawmode {
+        filled = 0, circle = -1, outline = 1
+    };
 
-    void sync_scissor_pos(float, float);
-    void bind_scissor(int32_t);
-    void bind_off_scissor();
+    namespace draw {
+        struct box {
+            std::string text {};
+            ekg::rect rect {};
+            int32_t id {};
+        };
 
-    void bind_animation(int32_t);
-    void bind_off_animation();
+        class immediate {
+        protected:
+            std::vector<ekg::draw::box> loaded_box_list {};
+            int32_t token_id {};
+        public:
+            void send_popup(ekg::draw::box&);
+        };
+
+        void rect(const ekg::rect&, const ekg::vec4&, int32_t = 0);
+        void rect(float, float, float, float, const ekg::vec4&, int32_t = 0);
+
+        void sync_scissor_pos(float, float);
+        void bind_scissor(int32_t);
+        void bind_off_scissor();
+
+        void bind_animation(int32_t);
+        void bind_off_animation();
+    }
 }
 
 #endif

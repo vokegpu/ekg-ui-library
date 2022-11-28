@@ -122,7 +122,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
     ekg::draw::sync_scissor_pos(rect.x, rect.y);
 
     ekg::draw::rect(rect, theme.checkbox_background);
-    ekg::draw::rect(rect, theme.checkbox_outline, 1);
+    ekg::draw::rect(rect, theme.checkbox_outline, ekg::drawmode::outline);
 
     if (this->flag.highlight) {
         ekg::draw::bind_animation(this->data->get_id());
@@ -152,7 +152,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
 
     if (ui->get_value() && this->flag.highlight) {
         ekg::draw::bind_animation(this->data->get_id());
-        ekg::draw::rect(box, {theme.checkbox_activy, theme.checkbox_outline.w}, 1);
+        ekg::draw::rect(box, {theme.checkbox_activy, theme.checkbox_outline.w}, ekg::drawmode::outline);
         ekg::draw::bind_animation(false);
     }
 

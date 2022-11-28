@@ -56,7 +56,8 @@ void ekg::ui::slider_widget::on_reload() {
     auto &rect {this->get_abs_rect()};
     auto dock {ui->get_bar_dock()};
     auto scaled_height {ui->get_scaled_height()};
-    auto f_renderer {ekg::f_renderer(ui->get_font_size())};
+    auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
+    auto &f_renderer_small {ekg::f_renderer(ekg::font::small)};
 
     /* Use text height as text width because slider does not have text to display.. */
     float text_height {f_renderer.get_text_height()};
@@ -68,13 +69,20 @@ void ekg::ui::slider_widget::on_reload() {
 
     this->dimension.w = ekg::min(this->dimension.w, dimension_offset * 2);
     this->dimension.h = ekg::min(this->dimension.h, (text_height + dimension_offset) * static_cast<float>(ui->get_scaled_height()));
+    this->parsed_value = std::to_string(value);
 
     /*
       Offset rect is the fully bar metric.
-      Extra rect is the current value bar metric.
+      Extra size is the current value bar metric.
+      Extra pos is the parsed value text position.
      */
 
     // todo bar top, down & left orientation.;
+
+    /*
+      circle radius is the current axis circle size and not only height radius size,
+      bar extra & offset use the radius dived by 2 value for limit the space between begin and end of bar.
+     */
 
     switch (dock) {
         case ekg::dock::top: {
@@ -90,18 +98,25 @@ void ekg::ui::slider_widget::on_reload() {
         }
 
         default: {
-            this->offset.w = rect.w - offset;
-            this->offset.h = (this->dimension.h / 2) - offset;
-            this->offset.x = offset;
-            this->offset.y = (this->dimension.h / 2) - (this->offset.h / 2);
-            this->extra.h = this->offset.h;
+            this->circle.w = (this->dimension.h / 2) - offset;
+            this->circle.h = this->circle.w;
+
+            this->offset.w = rect.w - (this->circle.w / 2) * 2;
+            this->offset.h = (this->dimension.h / 2) - offset * 2;
+
             this->extra.w = this->offset.w * (value - min) / (max - min);
+            this->extra.h = this->offset.h;
+
+            this->offset.x = (this->circle_radius / 2);
+            this->offset.y = (this->dimension.h / 2) - (this->offset.h / 2);
+
+            this->circle.x = this->offset.x + this->extra.w - (this->circle.w / 2);
+            this->circle.y = this->offset.y + (this->offset.h / 2) - (this->circle.w / 2);
+
+            this->extra.x = this->offset.x + this->extra.w f_renderer_small.get_text_height();
             break;
         }
     }
-
-    this->extra.x = this->offset.x;
-    this->extra.y = this->offset.y;
 }
 
 void ekg::ui::slider_widget::on_pre_event(SDL_Event &sdl_event) {
@@ -124,6 +139,7 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
         ui->set_value(ui->get_value() + (interact.w * 2));
     } else if (this->flag.hovered && pressed && ekg::input::pressed("slider-activy")) {
         this->flag.activy = true;
+        this->update_bar(interact.x, interact.y);
     } else if  (released) {
         this->flag.activy = false;
     } else if (this->flag.activy && motion) {
@@ -145,17 +161,19 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};
     auto &f_renderer_small {ekg::f_renderer(ekg::font::small)};
+    auto bar {this->offset + rect}, bar_value {this->extra + rect};;
 
     ekg::draw::bind_scissor(ui->get_id());
     ekg::draw::sync_scissor_pos(rect.x, rect.y);
-    ekg::draw::rect(this->offset + rect, theme.slider_background);
+    ekg::draw::rect(bar, theme.slider_background);
 
     if (this->flag.highlight) {
-        ekg::draw::rect(this->offset + rect, theme.slider_highlight);
+        ekg::draw::rect(bar, theme.slider_highlight);
     }
     
-    ekg::draw::rect(this->extra + rect, theme.slider_activy);
-    ekg::draw::bind_off_scissor();
+    ekg::draw::rect(this->circle + rect, theme.slider_activy, ekg::drawmode::circle);
+    ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activy);
 
-    ekg::draw::rect(20, 80, 200, 200, {255, 255, 255, 255}, -1);
+    f_renderer_small.blit(this->parsed_value, bar_value.x, bar_value.y - this->circle_radius, theme.slider_string);
+    ekg::draw::bind_off_scissor();
 }
