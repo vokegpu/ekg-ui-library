@@ -58,7 +58,7 @@ int32_t main(int, char**) {
     uint64_t ticked_frames {};
 
     for (int32_t i {0}; i < 1; i++) {
-        auto frame {ekg::frame("tag", {20, 60}, {200, 200})};
+        auto frame {ekg::frame("tag", {20, 60}, {400, 400})};
         frame->set_drag(ekg::dock::top);
         frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
         ekg::label("Hi, the label:"); // dock automatically set to ekg::dock::left | ekg::dock::top
@@ -70,9 +70,13 @@ int32_t main(int, char**) {
                     SDL_PushEvent(&sdl_event);
                 }}); // next does the "break line" dock (bottom to up and top to bottom).
         button->set_text(ekg::dock::left | ekg::dock::center);
-        auto slider = ekg::slider("slider", 20, 20, 200, ekg::dock::top | ekg::dock::left | ekg::dock::next);
-        slider->set_width(200);
-        slider->set_bar(ekg::dock::right);
+
+        for (int32_t v = 0; v < 6; v++) {
+            auto slider = ekg::slider("slider", 20, 20, 200, ekg::dock::top | ekg::dock::left | ekg::dock::next);
+            slider->set_width(200);
+            slider->set_bar(ekg::dock::right);
+        }
+
         ekg::popgroup();
     }
 
