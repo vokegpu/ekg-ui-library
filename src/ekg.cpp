@@ -275,10 +275,12 @@ ekg::ui::slider* ekg::slider(std::string_view tag, float val, float min, float m
     ui->set_bar(ekg::dock::left);
     ui->set_tag(tag);
     ui->set_dock(dock);
+    ui->set_text(ekg::dock::top);
     ui->set_scaled_height(1);
     ui->set_font_size(ekg::font::normal);
     ui->set_value_min(min);
     ui->set_value_max(max);
+    ui->set_precision(0);
 
     return ui;
 }

@@ -25,9 +25,8 @@ protected:
         ekg::dock dock_bar {};
         ekg::font font_size {};
 
-        int32_t scaled_height {}, scaled_size {};
+        int32_t scaled_height {}, scaled_size {}, float_precision {};
         uint16_t text_flags {};
-        bool ieee754 {};
     public:
         void set_dock(uint16_t);
         void set_bar(ekg::dock);
@@ -43,22 +42,20 @@ protected:
         int32_t get_scaled_height();
         float get_height();
 
-        void set_text(uint16_t):
+        void set_text(uint16_t);
         uint16_t get_text_dock();
 
-        void set_value(int32_t);
         void set_value(float);
         float get_value();
 
-        void set_value_min(int32_t);
         void set_value_min(float);
         float get_value_min();
 
-        void set_value_max(int32_t);
         void set_value_max(float);
         float get_value_max();
 
-        bool is_float_precision();
+        void set_precision(int32_t);
+        int32_t get_precision();
     };
 }
 

@@ -96,15 +96,6 @@ void ekg::ui::slider::set_value(float val) {
     val = ekg::clamp(val, this->minimum_value, this->maximum_value);;
     if (this->value != val) {
         this->value = val;
-        this->ieee754 = false;
-        ekg::reload(this->id);
-    }
-}
-
-void ekg::ui::slider::set_value(int32_t val) {
-    if (this->value != static_cast<float>(val)) {
-        this->value = static_cast<float>(val);
-        this->ieee754 = true;
         ekg::reload(this->id);
     }
 }
@@ -113,18 +104,9 @@ float ekg::ui::slider::get_value() {
     return this->value;
 }
 
-void ekg::ui::slider::set_value_min(int32_t val_min) {
-    if (this->minimum_value != static_cast<float>(val_min)) {
-        this->minimum_value = static_cast<float>(val_min);
-        this->ieee754 = true;
-        ekg::reload(this->id);
-    }
-}
-
 void ekg::ui::slider::set_value_min(float val_min) {
     if (this->minimum_value != val_min) {
         this->minimum_value = val_min;
-        this->ieee754 = false;
         ekg::reload(this->id);
     }
 }
@@ -133,18 +115,9 @@ float ekg::ui::slider::get_value_min() {
     return this->minimum_value;
 }
 
-void ekg::ui::slider::set_value_max(int32_t val_max) {
-    if (this->maximum_value != static_cast<float>(val_max)) {
-        this->maximum_value = static_cast<float>(val_max);
-        this->ieee754 = true;
-        ekg::reload(this->id);
-    }
-}
-
 void ekg::ui::slider::set_value_max(float val_max) {
     if (this->maximum_value != val_max) {
         this->maximum_value = val_max;
-        this->ieee754 = false;
         ekg::reload(this->id);
     }
 }
@@ -153,6 +126,13 @@ float ekg::ui::slider::get_value_max() {
     return this->maximum_value;
 }
 
-bool ekg::ui::slider::is_float_precision() {
-    return this->ieee754;
+void ekg::ui::slider::set_precision(int32_t precision) {
+    if (this->float_precision != precision) {
+        this->float_precision = precision;
+        ekg::reload(this->id);
+    }
+}
+
+int32_t ekg::ui::slider::get_precision() {
+    return this->float_precision;
 }
