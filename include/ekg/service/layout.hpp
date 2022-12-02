@@ -22,26 +22,22 @@
 namespace ekg::service {
     class layout {
     protected:
-        float min_offset {};
-        float min_height {};
-
-        float scaled_width_divided {};
-        float scaled_height_divided {};
-
+        float min_offset {}, min_height {}, scaled_width_divided {}, scaled_height_divided {};
         int32_t min_factor_height {};
-        uint16_t enum_docks_flag {};
+        uint16_t enum_docks_flag {}, layout_mask_flags {};
 
         std::map<uint32_t, ekg::layout::grid> grid_map {};
-        ekg::rect curr_top {};
-        ekg::rect curr_bottom {};
+        std::vector<ekg::rect*> rect_list {};
 
-        ekg::layout::flag prev_flag_top {};
-        ekg::layout::flag prev_flag_bottom {};
-        ekg::layout::flag curr_flag {};
-        ekg::layout::grid curr_grid {};
+        ekg::rect curr_top {}, curr_bottom {}, layout_mask {};
+        ekg::layout::flag prev_flag_top {}, prev_flag_bottom {}, curr_flag {}, curr_grid {};
     public:
         void init();
         void quit();
+
+        void add(ekg::rect*);
+        void process_layout_mask(const ekg::vec2&, uint16_t);
+        ekg::rect &get_layout_mask();
 
         void process_scaled(ekg::ui::abstract_widget* widget_parent);
         void process(ekg::ui::abstract_widget* widget);

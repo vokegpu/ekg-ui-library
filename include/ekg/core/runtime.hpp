@@ -94,6 +94,7 @@ namespace ekg {
         ekg::service::input &get_service_input();
         ekg::service::theme &get_service_theme();
         ekg::service::handler &get_service_handler();
+        ekg::service::layout &get_service_layout();
         ekg::ui::abstract_widget* get_fast_widget_by_id(int32_t id);
 
         void gen_widget(ekg::ui::abstract* ui);

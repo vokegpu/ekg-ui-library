@@ -439,6 +439,10 @@ ekg::service::theme &ekg::runtime::get_service_theme() {
     return this->theme_service;
 }
 
+ekg::service::layout &ekg::runtime::get_service_layout() {
+    return this->layout_service;
+}
+
 void ekg::runtime::prepare_ui_env() {
     ekg::log("creating widget fonts");
 

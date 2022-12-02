@@ -16,7 +16,33 @@
 #include "ekg/ekg.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 
-void ekg::service::layout::process(ekg::ui::abstract_widget *widget) {
+void ekg::service::layout::add(ekg::rect *rect) {
+    this->rect_list.push_back(rect);
+}
+
+void ekg::service::layout::process_layout_mask(const ekg::vec2 offset, uint16_t flags) {
+    this->layout_mask.w = offset.x;
+    this->layout_mask.h = offset.y;
+
+    for (ekg::rect *&rect : this->rect_list) {
+        rect->x = this->layout_mask.w;
+        rect->y = this->layout_mask.h;
+
+        if (ekg::bitwise::contains(flags, ekg::dock::left) || ekg::bitwise::contains(flags, ekg::dock::right)) {
+            this->layout_mask.w += rect->w + offset;
+        }
+
+        if (rect->h == 0) {
+            rect->h = 
+        }
+    }
+}
+
+ekg::rect &ekg::service::layout::get_layout_mask() {
+    return this->layout_mask;
+}
+
+void ekg::service::layout::process(ekg::ui::abstract_widget *pwidget) {
 
 }
 

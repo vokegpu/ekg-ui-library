@@ -77,6 +77,8 @@ void ekg::ui::slider_widget::on_reload() {
         this->parsed_value.clear();
     }
 
+    float min_width {box_size + dimension_offset + dimension_offset + (ui->get_text().empty() ? 0 : text_width + dimension_offset)};
+
     /*
       Offset rect is the fully bar metric.
       Extra size is the current value bar metric.
