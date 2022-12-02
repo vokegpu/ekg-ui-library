@@ -20,22 +20,47 @@ void ekg::service::layout::add(ekg::rect *rect) {
     this->rect_list.push_back(rect);
 }
 
-void ekg::service::layout::process_layout_mask(const ekg::vec2 offset, uint16_t flags) {
-    this->layout_mask.w = offset.x;
-    this->layout_mask.h = offset.y;
+void ekg::service::layout::process_layout_mask(const ekg::vec3 &offset, uint16_t flags) {
+    if (this->rect_list.empty()) {
+        return;
+    }
 
-    for (ekg::rect *&rect : this->rect_list) {
-        rect->x = this->layout_mask.w;
-        rect->y = this->layout_mask.h;
+    bool opposite {ekg::bitwise::contains(flags, ekg::dock::right) || ekg::bitwise::contains(flags, ekg::dock::bottom)}, 
+         axis {ekg::bitwise::contains(flags, ekg::dock::left | ekg::dock::right)};
+    float v {}, centered_dimension {offset.z / 2};
 
-        if (ekg::bitwise::contains(flags, ekg::dock::left) || ekg::bitwise::contains(flags, ekg::dock::right)) {
-            this->layout_mask.w += rect->w + offset;
-        }
+    /* offset z is the dimension respective (width if height else height) size */
+    this->layout_mask.w = axis ? offset.z : offset.x;
+    this->layout_mask.h = axis ? offset.y : offset.z;
 
-        if (rect->h == 0) {
-            rect->h = 
+    /* check for opposite dock and get the full size respective for the axis dock */
+    if (opposite) {
+        v = ekg::bitwise::contains(flags, ekg::dock::right) ? offset.x : offset.y;
+        for (ekg::rect *&rect : this->rect_list) {
+            if (rect != nullptr) {
+                v += ekg::bitwise::contains(flags, ekg::dock::right) ? (rect->w + offset.x) : (rect->h + offset.y);
+            }
         }
     }
+
+    /* axis false is equals X else is equals Y */
+    for (ekg::rect *&rect : this->rect_list) {
+        if (rect == nullptr) {
+            continue;
+        }
+
+        if (!axis) {
+            rect->x = v - this->layout_mask.w;
+            rect->y = centered_dimension - (rect->h / 2);
+            this->layout_mask.w += rect->w + offset.x;
+        } else {
+            rect->x = centered_dimension - (rect->w / 2);
+            rect->y = v - this->layout_mask.h;
+            this->layout_mask.h += rect->h + offset.y;
+        }
+    }
+
+    this->rect_list.clear();
 }
 
 ekg::rect &ekg::service::layout::get_layout_mask() {

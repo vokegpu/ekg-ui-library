@@ -30,13 +30,14 @@ namespace ekg::service {
         std::vector<ekg::rect*> rect_list {};
 
         ekg::rect curr_top {}, curr_bottom {}, layout_mask {};
-        ekg::layout::flag prev_flag_top {}, prev_flag_bottom {}, curr_flag {}, curr_grid {};
+        ekg::layout::grid curr_grid {};
+        ekg::layout::flag prev_flag_top {}, curr_flag {}, prev_flag_bottom {};
     public:
         void init();
         void quit();
 
         void add(ekg::rect*);
-        void process_layout_mask(const ekg::vec2&, uint16_t);
+        void process_layout_mask(const ekg::vec3&, uint16_t);
         ekg::rect &get_layout_mask();
 
         void process_scaled(ekg::ui::abstract_widget* widget_parent);
