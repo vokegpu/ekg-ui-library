@@ -41,7 +41,7 @@ int32_t main(int, char**) {
         ekg::log("GLEW initialised");
     }
 
-    SDL_GL_SetSwapInterval(1); // v-sync on
+    SDL_GL_SetSwapInterval(0); // v-sync on
     ekg::init(sdl_win, "JetBrainsMono-Bold.ttf");
     ekg::log("OpenGL 4 context created!");
 
@@ -70,6 +70,8 @@ int32_t main(int, char**) {
                     SDL_PushEvent(&sdl_event);
                 }}); // next does the "break line" dock (bottom to up and top to bottom).
         button->set_text(ekg::dock::left | ekg::dock::center);
+        auto checkbox {ekg::checkbox("hii checkbox", ekg::dock::top | ekg::dock::left | ekg::dock::next)};
+        checkbox->set_box_align(ekg::right | ekg::dock::center);
 
         for (int32_t v = 0; v < 6; v++) {
             auto slider = ekg::slider("slider", 20, 20, 200, ekg::dock::top | ekg::dock::left | ekg::dock::next);

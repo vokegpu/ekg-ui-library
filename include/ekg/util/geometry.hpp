@@ -18,6 +18,8 @@
 #include <iostream>
 
 namespace ekg {
+    extern double pi;
+
     struct display {
         static float dt;
         static int32_t width;
@@ -89,6 +91,34 @@ namespace ekg {
 
     struct docker {
         ekg::rect left {}, right {}, top {}, bottom {}, center {}, rect {};
+    };
+
+    struct grid {
+        ekg::rect top {},
+                  top_left {},
+                  top_center {},
+                  top_right {};
+        ekg::rect bottom {},
+                  bottom_center {},
+                  bottom_left {},
+                  bottom_right {};
+    };
+
+    struct docking {
+        bool top {},
+             bottom {},
+             left {},
+             right {},
+             center {},
+             full {},
+             free {},
+             none {},
+             next {};
+    };
+
+    struct dockrect {
+        ekg::rect *rect {nullptr};
+        uint16_t dock {};        
     };
 
     float clamp(float, float, float);

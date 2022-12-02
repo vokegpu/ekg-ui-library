@@ -23,7 +23,7 @@ namespace ekg::ui {
     protected:
         bool value {};
         int32_t scaled_height {};
-        uint16_t dock_text {};
+        uint16_t dock_text {}, dock_box {};
         std::string text {};
         ekg::font font_size {};
     public:
@@ -44,8 +44,11 @@ namespace ekg::ui {
         void set_value(bool);
         bool get_value();
 
-        void set_text(uint16_t);
-        uint16_t get_text_dock();
+        void set_text_align(uint16_t);
+        uint16_t get_text_align();
+
+        void set_box_align(uint16_t);
+        uint16_t get_box_align();
     };
 }
 

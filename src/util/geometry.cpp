@@ -17,6 +17,7 @@
 float ekg::display::dt {};
 int32_t ekg::display::width {};
 int32_t ekg::display::height {};
+double ekg::pi {3.141592653589793238462643383279502884};
 
 bool ekg::rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b) {
     return rect_a.x < rect_b.x + rect_b.w && rect_a.x + rect_a.w > rect_b.x &&

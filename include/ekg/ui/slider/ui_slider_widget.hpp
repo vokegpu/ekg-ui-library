@@ -23,7 +23,7 @@ namespace ekg::ui {
         void update_bar(float, float);
 	public:
         ekg::docker docker_bar {};
-        ekg::rect circle {};
+        ekg::rect rect_circle {}, extra {}, offset {};
         std::string parsed_value {};
 
         void destroy() override;

@@ -119,20 +119,20 @@ void ekg::ui::slider_widget::on_reload() {
         }
 
         default: {
-            this->circle.w = (this->dimension.h / 2) - offset;
-            this->circle.h = this->circle.w;
+            this->rect_circle.w = (this->dimension.h / 2) - offset;
+            this->rect_circle.h = this->rect_circle.w;
 
-            this->offset.w = rect.w - (this->circle.w / 2) * 2;
+            this->offset.w = rect.w - (this->rect_circle.w / 2) * 2;
             this->offset.h = (this->dimension.h / 2) - offset * 2;
 
             this->extra.w = this->offset.w * (value - min) / (max - min);
             this->extra.h = this->offset.h;
 
-            this->offset.x = (this->circle.w / 2);
+            this->offset.x = (this->rect_circle.w / 2);
             this->offset.y = (this->dimension.h / 2) - (this->offset.h / 2);
 
-            this->circle.x = this->offset.x + this->extra.w - (this->circle.w / 2);
-            this->circle.y = this->offset.y + (this->offset.h / 2) - (this->circle.w / 2);
+            this->rect_circle.x = this->offset.x + this->extra.w - (this->rect_circle.w / 2);
+            this->rect_circle.y = this->offset.y + (this->offset.h / 2) - (this->rect_circle.w / 2);
             break;
         }
     }
@@ -157,7 +157,7 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
     this->flag.hovered = this->flag.hovered && this->flag.highlight;
 
     if (this->flag.hovered && ekg::input::wheel() && ((increase = ekg::input::pressed("slider-bar-increase")) || (descrease = ekg::input::pressed("slider-bar-decrease")))) {
-        ui->set_value(ui->get_value() - (interact.w * 2));
+        ui->set_value(ui->get_value() + (interact.w * static_cast<float>(ekg::pi)));
     } else if (this->flag.hovered && pressed && ekg::input::pressed("slider-activy")) {
         this->flag.activy = true;
         this->update_bar(interact.x, interact.y);
@@ -192,7 +192,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
         ekg::draw::rect(bar, theme.slider_highlight);
     }
     
-    ekg::draw::rect(this->circle + rect, theme.slider_activy, ekg::drawmode::circle);
+    ekg::draw::rect(this->rect_circle + rect, theme.slider_activy, ekg::drawmode::circle);
     ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activy);
 
     ekg::draw::bind_off_scissor();

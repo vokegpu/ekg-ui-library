@@ -96,13 +96,24 @@ bool ekg::ui::checkbox::get_value() {
     return this->value;
 }
 
-void ekg::ui::checkbox::set_text(uint16_t docks) {
+void ekg::ui::checkbox::set_text_align(uint16_t docks) {
     if (this->dock_text != docks) {
         this->dock_text = docks;
         ekg::reload(this->id);
     }
 }
 
-uint16_t ekg::ui::checkbox::get_text_dock() {
+uint16_t ekg::ui::checkbox::get_text_align() {
     return this->dock_text;
+}
+
+void ekg::ui::checkbox::set_box_align(uint16_t docks) {
+    if (this->dock_box != docks) {
+        this->dock_box = docks;
+        ekg::reload(this->id);
+    }
+}
+
+uint16_t ekg::ui::checkbox::get_box_align() {
+    return this->dock_box;    
 }

@@ -21,6 +21,7 @@ namespace ekg::ui {
     class checkbox_widget : public ekg::ui::abstract_widget {
     public:
         ekg::docker docker_text {};
+        ekg::rect rect_text {}, rect_box {};
 
         void destroy() override;
         void on_reload() override;

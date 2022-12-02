@@ -42,24 +42,24 @@ void ekg::ui::label_widget::on_reload() {
     ekg::set_dock_scaled({0, 0, this->dimension.w, this->dimension.h}, {text_width, text_height}, this->docker_text);
 
     if (ekg::bitwise::contains(dock, ekg::dock::center)) {
-        this->extra.x = this->docker_text.center.x;
-        this->extra.y = this->docker_text.center.y;
+        this->rect_text.x = this->docker_text.center.x;
+        this->rect_text.y = this->docker_text.center.y;
     }
 
     if (ekg::bitwise::contains(dock, ekg::dock::left)) {
-        this->extra.x = this->docker_text.left.x + offset;
+        this->rect_text.x = this->docker_text.left.x + offset;
     }
 
     if (ekg::bitwise::contains(dock, ekg::dock::right)) {
-        this->extra.x = this->docker_text.right.x - offset;
+        this->rect_text.x = this->docker_text.right.x - offset;
     }
 
     if (ekg::bitwise::contains(dock, ekg::dock::top)) {
-        this->extra.y = this->docker_text.top.y + offset;
+        this->rect_text.y = this->docker_text.top.y + offset;
     }
 
     if (ekg::bitwise::contains(dock, ekg::dock::bottom)) {
-        this->extra.y = this->docker_text.bottom.y - offset;
+        this->rect_text.y = this->docker_text.bottom.y - offset;
     }
 }
 
@@ -88,6 +88,6 @@ void ekg::ui::label_widget::on_draw_refresh() {
     ekg::draw::bind_scissor(this->data->get_id());
     ekg::draw::sync_scissor_pos(rect.x, rect.y);
 
-    f_renderer.blit(ui->get_text(), rect.x + this->extra.x, rect.y + this->extra.y, ekg::theme().label_string);
+    f_renderer.blit(ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, ekg::theme().label_string);
     ekg::draw::bind_off_scissor();
 }

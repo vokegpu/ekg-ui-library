@@ -16,55 +16,114 @@
 #include "ekg/ekg.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 
-void ekg::service::layout::add(ekg::rect *rect) {
-    this->rect_list.push_back(rect);
+void ekg::service::layout::set_preset_mask(const ekg::vec3 &offset, ekg::dock axis) {
+    this->dock_axis_mask = axis;    
+    this->offset_mask = offset;
 }
 
-void ekg::service::layout::process_layout_mask(const ekg::vec3 &offset, uint16_t flags) {
-    if (this->rect_list.empty()) {
+void ekg::service::layout::insert_into_mask(const ekg::dockrect &dockrect) {
+    this->dockrect_list.push_back(dockrect);
+}
+
+void ekg::service::layout::process_layout_mask() {
+    if (this->dockrect_list.empty()) {
         return;
     }
 
-    bool opposite {ekg::bitwise::contains(flags, ekg::dock::right) || ekg::bitwise::contains(flags, ekg::dock::bottom)}, 
-         axis {ekg::bitwise::contains(flags, ekg::dock::left | ekg::dock::right)};
-    float v {}, centered_dimension {offset.z / 2};
+    bool axis {this->dock_axis_mask == ekg::dock::left || this->dock_axis_mask == ekg::dock::right};
+    float v {this->respective_axis_size_mask}, centered_dimension {this->offset_mask.z / 2}, opposite {0};
 
     /* offset z is the dimension respective (width if height else height) size */
-    this->layout_mask.w = axis ? offset.z : offset.x;
-    this->layout_mask.h = axis ? offset.y : offset.z;
+    this->layout_mask.w = axis ? this->offset_mask.x : this->offset_mask.z;
+    this->layout_mask.h = axis ? this->offset_mask.z : this->offset_mask.y;
 
     /* check for opposite dock and get the full size respective for the axis dock */
-    if (opposite) {
-        v = ekg::bitwise::contains(flags, ekg::dock::right) ? offset.x : offset.y;
-        for (ekg::rect *&rect : this->rect_list) {
-            if (rect != nullptr) {
-                v += ekg::bitwise::contains(flags, ekg::dock::right) ? (rect->w + offset.x) : (rect->h + offset.y);
+    if (v == 0) {
+        v = this->get_respective_axis_size_mask();
+    }
+
+    /* axis false is equals X else is equals Y */
+    for (ekg::dockrect &dockrect : this->dockrect_list) {
+        if (dockrect.rect == nullptr) {
+            continue;
+        }
+
+        if (axis) {
+            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center)) {
+                dockrect.rect->y = centered_dimension - (dockrect.rect->h / 2);
+            }
+
+            /* when there is a opposite dock, layout should fix the dock position to actual position */
+            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::left)) {
+                if (static_cast<int32_t>(opposite) != 0) {
+                    this->layout_mask.w -= opposite;
+                } 
+
+                dockrect.rect->x = this->layout_mask.w;
+                this->layout_mask.w += dockrect.rect->w + this->offset_mask.x + opposite;
+                opposite = 0;
+            }
+
+            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::right)) {
+                this->layout_mask.w += dockrect.rect->w;;
+                dockrect.rect->x = v - this->layout_mask.w;
+                this->layout_mask.w += this->offset_mask.x;
+                opposite = dockrect.rect->w + this->offset_mask.x;
+            }
+
+            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::top)) {
+                dockrect.rect->y = this->offset_mask.y;
+            }
+
+            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::bottom)) {
+                dockrect.rect->y = this->offset_mask.z - this->offset_mask.y - dockrect.rect->h;
+            }
+        } else {
+            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center)) {
+                dockrect.rect->x = centered_dimension - (dockrect.rect->w / 2);
+            }
+
+            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::top)) {
+                dockrect.rect->y = this->layout_mask.h;
+                this->layout_mask.h += dockrect.rect->h + this->offset_mask.y;
+            }
+
+            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::bottom)) {
+                this->layout_mask.h += dockrect.rect->h;
+                dockrect.rect->y = v - this->layout_mask.h;
+                this->layout_mask.h += + this->offset_mask.y;
+            }
+
+            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::left)) {
+                dockrect.rect->x = this->offset_mask.x;
+            }
+
+            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::bottom)) {
+                dockrect.rect->x = this->offset_mask.z - this->offset_mask.x - dockrect.rect->w;
             }
         }
     }
 
-    /* axis false is equals X else is equals Y */
-    for (ekg::rect *&rect : this->rect_list) {
-        if (rect == nullptr) {
-            continue;
-        }
-
-        if (!axis) {
-            rect->x = v - this->layout_mask.w;
-            rect->y = centered_dimension - (rect->h / 2);
-            this->layout_mask.w += rect->w + offset.x;
-        } else {
-            rect->x = centered_dimension - (rect->w / 2);
-            rect->y = v - this->layout_mask.h;
-            this->layout_mask.h += rect->h + offset.y;
-        }
-    }
-
-    this->rect_list.clear();
+    this->dockrect_list.clear();
 }
 
 ekg::rect &ekg::service::layout::get_layout_mask() {
     return this->layout_mask;
+}
+
+float ekg::service::layout::get_respective_axis_size_mask() {
+    if (this->dockrect_list.empty()) {
+        return 0;
+    }
+
+    this->respective_axis_size_mask = (this->dock_axis_mask == ekg::dock::left  || this->dock_axis_mask == ekg::dock::right) ? this->offset_mask.x : this->offset_mask.y;
+    for (ekg::dockrect &dockrect : this->dockrect_list) {
+        if (dockrect.rect != nullptr) {
+            this->respective_axis_size_mask += (this->dock_axis_mask == ekg::dock::left  || this->dock_axis_mask == ekg::dock::right) ? (dockrect.rect->w + this->offset_mask.x) : (dockrect.rect->h + this->offset_mask.y);
+        }
+    }
+
+    return this->respective_axis_size_mask;
 }
 
 void ekg::service::layout::process(ekg::ui::abstract_widget *pwidget) {
@@ -103,9 +162,9 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
 
     this->curr_top = {0, group_top_offset, 0, 0};
     this->curr_bottom = {0, parent_rect.h - this->min_offset, 0, 0};
-    this->prev_flag_top = {};
-    this->prev_flag_bottom = {};
-    this->curr_flag = {};
+    this->prev_docking_top = {};
+    this->prev_docking_bottom = {};
+    this->curr_docking = {};
     this->curr_grid = {
             // top left | top center | top right
             {0, 0, 0, 0},
@@ -136,19 +195,19 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
         layout.h = rect.h;
         enum_docks_flag = widgets->data->get_dock();
 
-        this->curr_flag.top    = ekg::bitwise::contains(enum_docks_flag, ekg::dock::top);
-        this->curr_flag.bottom = ekg::bitwise::contains(enum_docks_flag, ekg::dock::bottom);
-        this->curr_flag.left   = ekg::bitwise::contains(enum_docks_flag, ekg::dock::left);
-        this->curr_flag.right  = ekg::bitwise::contains(enum_docks_flag, ekg::dock::right);
-        this->curr_flag.center = ekg::bitwise::contains(enum_docks_flag, ekg::dock::center);
-        this->curr_flag.full   = ekg::bitwise::contains(enum_docks_flag, ekg::dock::full);
-        this->curr_flag.free   = ekg::bitwise::contains(enum_docks_flag, ekg::dock::free);
-        this->curr_flag.none   = ekg::bitwise::contains(enum_docks_flag, ekg::dock::none);
-        this->curr_flag.next   = ekg::bitwise::contains(enum_docks_flag, ekg::dock::next);
+        this->curr_docking.top    = ekg::bitwise::contains(enum_docks_flag, ekg::dock::top);
+        this->curr_docking.bottom = ekg::bitwise::contains(enum_docks_flag, ekg::dock::bottom);
+        this->curr_docking.left   = ekg::bitwise::contains(enum_docks_flag, ekg::dock::left);
+        this->curr_docking.right  = ekg::bitwise::contains(enum_docks_flag, ekg::dock::right);
+        this->curr_docking.center = ekg::bitwise::contains(enum_docks_flag, ekg::dock::center);
+        this->curr_docking.full   = ekg::bitwise::contains(enum_docks_flag, ekg::dock::full);
+        this->curr_docking.free   = ekg::bitwise::contains(enum_docks_flag, ekg::dock::free);
+        this->curr_docking.none   = ekg::bitwise::contains(enum_docks_flag, ekg::dock::none);
+        this->curr_docking.next   = ekg::bitwise::contains(enum_docks_flag, ekg::dock::next);
 
-        if (this->curr_flag.top) {
-            if (this->curr_flag.left) {
-                if (this->prev_flag_bottom.bottom || this->curr_flag.next) {
+        if (this->curr_docking.top) {
+            if (this->curr_docking.left) {
+                if (this->prev_docking_bottom.bottom || this->curr_docking.next) {
                     this->curr_top.x = 0;
                     this->curr_top.y += prev_rect.h + this->min_offset;
                 }
@@ -157,7 +216,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
                 layout.x = this->curr_top.x;
                 layout.y = this->curr_top.y;
                 this->curr_top.x += layout.w;
-                this->prev_flag_top.left = true;
+                this->prev_docking_top.left = true;
 
                 if (this->curr_top.w > this->curr_grid.top_left.w) {
                     this->curr_grid.top_left.w = this->curr_top.w;
@@ -168,12 +227,12 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
                 }
             }
 
-            this->prev_flag_top.top = true;
-            this->prev_flag_bottom.bottom = false;
-            this->prev_flag_top.next = this->curr_flag.next;
-        } else if (this->curr_flag.bottom) {
-            this->prev_flag_top.top = false;
-            this->prev_flag_bottom.bottom = true;
+            this->prev_docking_top.top = true;
+            this->prev_docking_bottom.bottom = false;
+            this->prev_docking_top.next = this->curr_docking.next;
+        } else if (this->curr_docking.bottom) {
+            this->prev_docking_top.top = false;
+            this->prev_docking_bottom.bottom = true;
         }
 
         prev_rect = rect;

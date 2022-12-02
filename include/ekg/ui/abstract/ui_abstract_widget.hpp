@@ -24,9 +24,9 @@ namespace ekg::ui {
         abstract_widget();
         ~abstract_widget();
 
-        ekg::ui::abstract* data {};
+        ekg::ui::abstract *data {};
         ekg::flag flag {};
-        ekg::rect *parent {}, offset {}, extra {}, dimension {}, empty {};
+        ekg::rect *parent {}, dimension {}, empty {};
         bool is_scissor_refresh {};
         int32_t scissor_id {};
 
