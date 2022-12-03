@@ -101,7 +101,7 @@ void ekg::service::layout::process_layout_mask() {
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::bottom)) {
                 this->layout_mask.h += dockrect.rect->h;
                 dockrect.rect->y = v - this->layout_mask.h;
-                this->layout_mask.h += + this->offset_mask.y;
+                this->layout_mask.h += this->offset_mask.y;
             }
 
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::left)) {
