@@ -128,7 +128,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     }
 }
 
-void ekg::runtime::process_update() {
+void ekg::runtime::process_update() {    
     this->input_service.on_update();
 
     if (this->handler_service.should_poll()) {

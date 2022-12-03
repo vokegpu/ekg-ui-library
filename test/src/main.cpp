@@ -71,7 +71,10 @@ int32_t main(int, char**) {
                 }}); // next does the "break line" dock (bottom to up and top to bottom).
         button->set_text(ekg::dock::left | ekg::dock::center);
         auto checkbox {ekg::checkbox("hii checkbox", ekg::dock::top | ekg::dock::left | ekg::dock::next)};
-        checkbox->set_box_align(ekg::right | ekg::dock::center);
+        checkbox->set_box_align(ekg::dock::left | ekg::dock::bottom);
+        checkbox->set_text_align(ekg::dock::right | ekg::dock::top);
+        checkbox->set_width(400);
+        checkbox->set_scaled_height(3);
 
         for (int32_t v = 0; v < 6; v++) {
             auto slider = ekg::slider("slider", 20, 20, 200, ekg::dock::top | ekg::dock::left | ekg::dock::next);

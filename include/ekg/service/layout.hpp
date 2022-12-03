@@ -21,7 +21,7 @@
 namespace ekg::service {
     class layout {
     protected:
-        float min_offset {}, min_height {}, scaled_width_divided {}, scaled_height_divided {}, respective_axis_size_mask {};
+        float min_offset {}, min_height {}, scaled_width_divided {}, scaled_height_divided {}, respective_mask_all {}, respective_mask_center {};
         int32_t min_factor_height {};
         uint16_t enum_docks_flag {}, layout_mask_flags {};
         ekg::dock dock_axis_mask {};
@@ -37,11 +37,12 @@ namespace ekg::service {
         void init();
         void quit();
 
-        void set_preset_mask(const ekg::vec3&, ekg::dock);
+        void set_preset_mask(const ekg::vec3&, ekg::dock, float = 0.0f);
         void insert_into_mask(const ekg::dockrect&);
         void process_layout_mask();
         ekg::rect &get_layout_mask();
-        float get_respective_axis_size_mask();
+        float get_respective_mask_size();
+        float get_respective_mask_center();
 
         void process_scaled(ekg::ui::abstract_widget* widget_parent);
         void process(ekg::ui::abstract_widget* widget);

@@ -40,16 +40,16 @@ void ekg::ui::checkbox_widget::on_reload() {
     float dimension_height {(text_height + dimension_offset) * static_cast<float>(scaled_height)};
 
     this->rect_box.w = box_size;
-    this->rect_box.h = dimension_height - dimension_offset;
+    this->rect_box.h = box_size;
 
     this->rect_text.w = text_width;
-    this->rect_text.h = this->rect_box.h;
+    this->rect_text.h = text_height;
 
     auto &layout {ekg::core->get_service_layout()};
-    layout.set_preset_mask({offset, offset, dimension_height}, ekg::dock::left);
+    layout.set_preset_mask({offset, offset, dimension_height}, ekg::dock::left, this->dimension.w);
     layout.insert_into_mask({&this->rect_box, dock_box});
     layout.insert_into_mask({&this->rect_text, dock_text});
-    layout.get_respective_axis_size_mask();
+    layout.get_respective_mask_size();
     layout.process_layout_mask();
 
     auto &layout_mask {layout.get_layout_mask()};

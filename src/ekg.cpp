@@ -110,7 +110,7 @@ ekg::gl_version + "\n"
 "       float Radius = ShapeRect.z / 2;\n"
 "       vec2 Diff = vec2((ShapeRect.x + Radius) - FragPos.x, (ShapeRect.y + Radius) - FragPos.y);\n"
 "       float Distance = sqrt(Diff.x * Diff.x + Diff.y * Diff.y);\n"
-"       OutColor.w = 1.0f - smoothstep(0.0, Radius * Radius, dot(Distance, Distance));\n"
+"       OutColor.w = (1.0f - smoothstep(0.0, Radius * Radius, dot(Distance, Distance)));\n"
 "    }"
 "    if (ShouldDiscard) {"
 "        discard;"
@@ -258,7 +258,6 @@ ekg::ui::checkbox* ekg::checkbox(std::string_view text, uint16_t dock) {
     ui->set_type(ekg::type::checkbox);
     ekg::core->gen_widget(ui);
 
-    ui->set_text_align(ekg::dock::left | ekg::dock::center);
     ui->set_text(text);
     ui->set_dock(dock);
     ui->set_scaled_height(1);
