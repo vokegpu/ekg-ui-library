@@ -89,26 +89,42 @@ void ekg::service::layout::process_layout_mask() {
                 dockrect.rect->y = this->offset_mask.z - this->offset_mask.y - dockrect.rect->h;
             }
         } else {
-            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center)) {
+            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center) && !(ekg::bitwise::contains(dockrect.dock, ekg::dock::left | ekg::dock::right))) {
+                dockrect.rect->y = (this->respective_mask_center) + (dockrect.rect->h / 2);
+                dockrect.rect->x = centered_dimension - (dockrect.rect->w / 2);
+            } else if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center)) {
                 dockrect.rect->x = centered_dimension - (dockrect.rect->w / 2);
             }
 
+            /* when there is a opposite dock, layout should fix the dock position to actual position */
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::top)) {
+                if (static_cast<int32_t>(opposite) != 0) {
+                    this->layout_mask.h -= opposite;
+                } 
+
                 dockrect.rect->y = this->layout_mask.h;
-                this->layout_mask.h += dockrect.rect->h + this->offset_mask.y;
+                this->layout_mask.h += dockrect.rect->h + this->offset_mask.y + opposite;
+                opposite = 0;
+                uniform = dockrect.rect->h + this->offset_mask.y;
             }
 
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::bottom)) {
+                if (static_cast<int32_t>(uniform) != 0) {
+                    this->layout_mask.h -= uniform;
+                } 
+
                 this->layout_mask.h += dockrect.rect->h;
                 dockrect.rect->y = v - this->layout_mask.h;
-                this->layout_mask.h += this->offset_mask.y;
+                this->layout_mask.h += uniform + this->offset_mask.y;
+                opposite = dockrect.rect->h + this->offset_mask.y;
+                uniform = 0;
             }
 
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::left)) {
                 dockrect.rect->x = this->offset_mask.x;
             }
 
-            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::bottom)) {
+            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::right)) {
                 dockrect.rect->x = this->offset_mask.z - this->offset_mask.x - dockrect.rect->w;
             }
         }
