@@ -181,7 +181,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     auto ui {(ekg::ui::slider*) this->data};
     auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};
-    auto &f_renderer_small {ekg::f_renderer(ekg::font::small)};
+    auto &f_renderer_small {ekg::f_renderer(ekg::font::big)};
     auto bar {this->offset + rect}, bar_value {this->extra + rect};;
 
     ekg::draw::bind_scissor(ui->get_id());

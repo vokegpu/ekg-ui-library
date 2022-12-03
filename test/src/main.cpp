@@ -62,7 +62,7 @@ int32_t main(int, char**) {
         frame->set_drag(ekg::dock::top);
         frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
         ekg::label("Hi, the label:"); // dock automatically set to ekg::dock::left | ekg::dock::top
-        auto button {ekg::button("Button Press Me!", ekg::dock::top | ekg::dock::left | ekg::dock::next)};
+        auto button {ekg::button("Exit", ekg::dock::top | ekg::dock::left | ekg::dock::next)};
         button->set_callback(
                 new ekg::cpu::event {"button press", nullptr, [](void *data) {
                     SDL_Event sdl_event {};
@@ -71,14 +71,14 @@ int32_t main(int, char**) {
                 }}); // next does the "break line" dock (bottom to up and top to bottom).
         button->set_text(ekg::dock::left | ekg::dock::center);
         auto checkbox {ekg::checkbox("hii checkbox", ekg::dock::top | ekg::dock::left | ekg::dock::next)};
-        checkbox->set_box_align(ekg::dock::left | ekg::dock::bottom);
-        checkbox->set_text_align(ekg::dock::right | ekg::dock::top);
+        checkbox->set_box_align(ekg::dock::center | ekg::dock::center);
+        checkbox->set_text_align(ekg::dock::center | ekg::dock::center);
         checkbox->set_width(400);
         checkbox->set_scaled_height(3);
 
-        for (int32_t v = 0; v < 6; v++) {
-            auto slider = ekg::slider("slider", 20, 20, 200, ekg::dock::top | ekg::dock::left | ekg::dock::next);
-            slider->set_width(200);
+        for (int32_t v = 0; v < 1; v++) {
+            auto slider = ekg::slider("slider", 20, -200, 200, ekg::dock::top | ekg::dock::left | ekg::dock::next);
+            slider->set_width(600);
             slider->set_bar(ekg::dock::right);
         }
 

@@ -50,12 +50,10 @@ void ekg::service::layout::process_layout_mask() {
         }
 
         if (axis) {
-            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center)) {
+            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center) && !(ekg::bitwise::contains(dockrect.dock, ekg::dock::left | ekg::dock::right))) {
+                dockrect.rect->x = (this->respective_mask_center) + (dockrect.rect->w / 2);
                 dockrect.rect->y = centered_dimension - (dockrect.rect->h / 2);
-            }
-            
-            if (dockrect.dock == ekg::dock::center) {
-                dockrect.rect->x = (this->respective_mask_center / 2) - (dockrect.rect->w / 2);
+            } else if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center)) {
                 dockrect.rect->y = centered_dimension - (dockrect.rect->h / 2);
             }
 
@@ -137,7 +135,7 @@ float ekg::service::layout::get_respective_mask_size() {
         }
 
         size = (this->dock_axis_mask == ekg::dock::left  || this->dock_axis_mask == ekg::dock::right) ? (dockrect.rect->w + this->offset_mask.x) : (dockrect.rect->h + this->offset_mask.y);
-        if (dockrect.dock == ekg::dock::center) {
+        if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center) && !(ekg::bitwise::contains(dockrect.dock, ekg::dock::left | ekg::dock::right))) {
             respective_center_size += size;
             only_center_count++;
         }
@@ -145,7 +143,7 @@ float ekg::service::layout::get_respective_mask_size() {
         respective_size +=size;
     }
 
-    this->respective_mask_center = (only_center_count != 0 ?  respective_center_size  / only_center_count : 0);
+    this->respective_mask_center = (only_center_count != 0 ?  (respective_center_size  / only_center_count) : 0);
     this->respective_mask_all = ekg::min(this->respective_mask_all, respective_size);
 
     return this->respective_mask_all;
