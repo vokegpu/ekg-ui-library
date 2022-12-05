@@ -24,35 +24,35 @@ namespace ekg::service {
         std::vector<std::string> loaded_theme_list {};
     public:
         /* Start of frame scheme colors. */
-        ekg::vec4 frame_background {};
-        ekg::vec4 frame_border {};
-        ekg::vec4 frame_outline {};
-
+        ekg::vec4 frame_background {},
+                        frame_border {},
+                        frame_outline {};
         int32_t frame_activy_offset {};
         /* End of frame scheme colors. */
 
         /* Start of button scheme colors. */
-        ekg::vec4 button_background {};
-        ekg::vec4 button_string {};
-        ekg::vec4 button_outline {};
-        ekg::vec4 button_activy {};
-        ekg::vec4 button_highlight {};
+        ekg::vec4 button_background {},
+                        button_string {},
+                        button_outline {},
+                        button_activy {},
+                        button_highlight {};
         /* End of button scheme colors. */
 
         /* Start of checkbox scheme colors. */
-        ekg::vec4 checkbox_background {};
-        ekg::vec4 checkbox_string {};
-        ekg::vec4 checkbox_outline {};
-        ekg::vec4 checkbox_activy {};
-        ekg::vec4 checkbox_highlight {};
+        ekg::vec4 checkbox_background {},
+                        checkbox_string {},
+                        checkbox_outline {},
+                        checkbox_activy {},
+                        checkbox_highlight {};
         /* End of checkbox theme. */
 
         /* Start of slider scheme colors. */
-        ekg::vec4 slider_string {};
-        ekg::vec4 slider_background {};
-        ekg::vec4 slider_outline {};
-        ekg::vec4 slider_activy {};
-        ekg::vec4 slider_highlight {};
+        ekg::vec4 slider_string {},
+                        slider_background {},
+                        slider_outline {},
+                        slider_activy {},
+                        slider_highlight {};
+        int32_t slider_bar_thicnkess {}, slider_target_thickness {};
         /* End of slider scheme colors.*/
 
         /* Start of label scheme colors. */

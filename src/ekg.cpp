@@ -226,9 +226,9 @@ ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
     ui->set_type(ekg::type::button);
     ekg::core->gen_widget(ui);
 
-    ui->set_text(ekg::dock::center);
+    ui->set_text_align(ekg::dock::center);
     ui->set_text(text);
-    ui->set_dock(dock);
+    ui->set_place(dock);
     ui->set_scaled_height(1);
     ui->set_font_size(ekg::font::normal);
 
@@ -244,9 +244,9 @@ ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
     ui->set_type(ekg::type::label);
     ekg::core->gen_widget(ui);
 
-    ui->set_text(ekg::dock::center);
+    ui->set_text_align(ekg::dock::center);
     ui->set_text(text);
-    ui->set_dock(dock);
+    ui->set_place(dock);
     ui->set_scaled_height(1);
     ui->set_font_size(ekg::font::normal);
 
@@ -259,7 +259,7 @@ ekg::ui::checkbox* ekg::checkbox(std::string_view text, uint16_t dock) {
     ekg::core->gen_widget(ui);
 
     ui->set_text(text);
-    ui->set_dock(dock);
+    ui->set_place(dock);
     ui->set_scaled_height(1);
     ui->set_font_size(ekg::font::normal);
     ui->set_text_align(ekg::dock::left | ekg::dock::center);
@@ -273,10 +273,10 @@ ekg::ui::slider* ekg::slider(std::string_view tag, float val, float min, float m
     ui->set_type(ekg::type::slider);
     ekg::core->gen_widget(ui);
 
-    ui->set_bar(ekg::dock::left);
+    ui->set_bar_align(ekg::dock::left);
     ui->set_tag(tag);
-    ui->set_dock(dock);
-    ui->set_text(ekg::dock::top);
+    ui->set_place(dock);
+    ui->set_text_align(ekg::dock::top);
     ui->set_scaled_height(1);
     ui->set_font_size(ekg::font::normal);
     ui->set_value_min(min);

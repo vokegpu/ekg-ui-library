@@ -26,7 +26,7 @@ void ekg::ui::label_widget::on_reload() {
     auto ui {(ekg::ui::label*) this->data};
     auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
-    auto dock {ui->get_text_dock()};
+    auto dock {ui->get_text_align()};
     auto scaled_height {ui->get_scaled_height()};
 
     float text_width {f_renderer.get_text_width(ui->get_text())};

@@ -41,7 +41,7 @@ std::string_view ekg::ui::button::get_text() {
     return this->text;
 }
 
-void ekg::ui::button::set_text(uint16_t enum_docks) {
+void ekg::ui::button::set_text_align(uint16_t enum_docks) {
     if (this->dock_text != enum_docks) {
         this->dock_text = enum_docks;
 
@@ -51,7 +51,7 @@ void ekg::ui::button::set_text(uint16_t enum_docks) {
     }
 }
 
-uint16_t ekg::ui::button::get_text_dock() {
+uint16_t ekg::ui::button::get_text_align() {
     return this->dock_text;
 }
 
@@ -103,7 +103,7 @@ int32_t ekg::ui::button::get_scaled_height() {
     return this->scaled_height;
 }
 
-void ekg::ui::button::set_dock(uint16_t flags) {
+void ekg::ui::button::set_place(uint16_t flags) {
     if (this->dock_flags != flags) {
         this->dock_flags = flags;
 

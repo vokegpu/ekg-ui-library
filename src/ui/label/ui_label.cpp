@@ -15,7 +15,7 @@
 #include "ekg/ui/label/ui_label.hpp"
 #include "ekg/util/util_ui.hpp"
 
-void ekg::ui::label::set_dock(uint16_t flags) {
+void ekg::ui::label::set_place(uint16_t flags) {
     if (this->dock_flags != flags) {
         this->dock_flags = flags;
 
@@ -37,11 +37,11 @@ std::string_view ekg::ui::label::get_text() {
     return this->text;
 }
 
-void ekg::ui::label::set_text(uint16_t flags) {
+void ekg::ui::label::set_text_align(uint16_t flags) {
     this->dock_text = flags;
 }
 
-uint16_t ekg::ui::label::get_text_dock() {
+uint16_t ekg::ui::label::get_text_align() {
     return this->dock_text;
 }
 

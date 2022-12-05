@@ -29,7 +29,7 @@ ekg::font ekg::ui::checkbox::get_font_size() {
     return this->font_size;
 }
 
-void ekg::ui::checkbox::set_dock(uint16_t docks) {
+void ekg::ui::checkbox::set_place(uint16_t docks) {
     if (this->dock_flags != docks) {
         this->dock_flags = docks;
 

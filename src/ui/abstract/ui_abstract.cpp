@@ -91,7 +91,7 @@ ekg::rect &ekg::ui::abstract::widget() {
     return this->rect_widget;
 }
 
-uint16_t ekg::ui::abstract::get_dock() {
+uint16_t ekg::ui::abstract::get_place_dock() {
     return this->dock_flags;
 }
 

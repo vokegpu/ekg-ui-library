@@ -21,9 +21,10 @@ namespace ekg::ui {
 	class slider_widget : public ekg::ui::abstract_widget {
     protected:
         void update_bar(float, float);
+        void update_bar_axis(ekg::dock);
 	public:
         ekg::docker docker_bar {};
-        ekg::rect rect_circle {}, extra {}, offset {};
+        ekg::rect rect_circle {}, rect_text {}, rect_bar {}, rect_bar_value {};
         std::string parsed_value {};
 
         void destroy() override;

@@ -21,16 +21,20 @@ namespace ekg::ui {
     class slider : public ekg::ui::abstract {
 protected:
         float value {}, minimum_value {}, maximum_value {};
-
-        ekg::dock dock_bar {};
-        ekg::font font_size {};
-
         int32_t scaled_height {}, scaled_size {}, float_precision {};
-        uint16_t text_flags {};
+        uint16_t bar_flags {}, text_flags {};
+        ekg::font font_size {};
+        ekg::axis bar_axis {};
     public:
-        void set_dock(uint16_t);
-        void set_bar(ekg::dock);
-        ekg::dock get_bar_dock();
+        void set_place(uint16_t);
+        void set_bar_axis(ekg::axis);
+        ekg::axis get_bar_axis();
+
+        void set_text_align(uint16_t);
+        uint16_t get_text_align();
+
+        void set_bar_align(uint16_t);
+        uint16_t get_bar_align();
 
         void set_font_size(ekg::font font);
         ekg::font get_font_size();
@@ -41,9 +45,6 @@ protected:
         void set_scaled_height(int32_t);
         int32_t get_scaled_height();
         float get_height();
-
-        void set_text(uint16_t);
-        uint16_t get_text_dock();
 
         void set_value(float);
         float get_value();

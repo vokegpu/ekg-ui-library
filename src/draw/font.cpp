@@ -18,6 +18,10 @@
 FT_Library ekg::draw::font_renderer::ft_library {};
 
 float ekg::draw::font_renderer::get_text_width(std::string_view text) {
+    if (text.empty()) {
+        return 0;
+    }
+
     FT_Vector ft_vec {};
     this->ft_uint_previous = 0;
 

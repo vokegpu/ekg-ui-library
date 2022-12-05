@@ -23,6 +23,10 @@ void ekg::service::layout::set_preset_mask(const ekg::vec3 &offset, ekg::dock ax
 }
 
 void ekg::service::layout::insert_into_mask(const ekg::dockrect &dockrect) {
+    if ((static_cast<int32_t>(dockrect.rect->w == 0) || static_cast<int32_t>(dockrect.rect->h) == 0)) {
+        return;
+    }
+
     this->dockrect_list.push_back(dockrect);
 }
 
@@ -53,6 +57,7 @@ void ekg::service::layout::process_layout_mask() {
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center) && !(ekg::bitwise::contains(dockrect.dock, ekg::dock::left | ekg::dock::right))) {
                 dockrect.rect->x = (this->respective_mask_center) + (dockrect.rect->w / 2);
                 dockrect.rect->y = centered_dimension - (dockrect.rect->h / 2);
+                this->layout_mask.w += dockrect.rect->w + this->offset_mask.x;
             } else if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center)) {
                 dockrect.rect->y = centered_dimension - (dockrect.rect->h / 2);
             }
@@ -142,7 +147,7 @@ float ekg::service::layout::get_respective_mask_size() {
         return 0;
     }
 
-    float respective_size {(this->dock_axis_mask == ekg::dock::left  || this->dock_axis_mask == ekg::dock::right) ? this->offset_mask.x : this->offset_mask.y}, respective_center_size {}, size {};
+    float respective_size {(this->dock_axis_mask == ekg::dock::left  || this->dock_axis_mask == ekg::dock::right) ? this->offset_mask.x : this->offset_mask.y}, respective_center_size {respective_size}, size {};
     int32_t only_center_count {};
 
     for (ekg::dockrect &dockrect : this->dockrect_list) {
@@ -156,7 +161,7 @@ float ekg::service::layout::get_respective_mask_size() {
             only_center_count++;
         }
 
-        respective_size +=size;
+        respective_size += size;
     }
 
     this->respective_mask_center = (only_center_count != 0 ?  (respective_center_size  / only_center_count) : 0);
@@ -232,7 +237,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
 
         layout.w = rect.w;
         layout.h = rect.h;
-        enum_docks_flag = widgets->data->get_dock();
+        enum_docks_flag = widgets->data->get_place_dock();
 
         this->curr_docking.top    = ekg::bitwise::contains(enum_docks_flag, ekg::dock::top);
         this->curr_docking.bottom = ekg::bitwise::contains(enum_docks_flag, ekg::dock::bottom);

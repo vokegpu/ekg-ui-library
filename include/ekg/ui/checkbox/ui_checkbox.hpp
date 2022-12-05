@@ -29,7 +29,7 @@ namespace ekg::ui {
     public:
         void set_font_size(ekg::font font);
         ekg::font get_font_size();
-        void set_dock(uint16_t);
+        void set_place(uint16_t);
 
         void set_width(float);
         float get_width();

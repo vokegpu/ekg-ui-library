@@ -57,33 +57,23 @@ int32_t main(int, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    for (int32_t i {0}; i < 1; i++) {
-        auto frame {ekg::frame("tag", {20, 60}, {400, 400})};
-        frame->set_drag(ekg::dock::top);
+    for (int i {}; i < 1; i++) {
+        auto frame {ekg::frame("hello", {80, 80}, {200, 200})};
         frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
-        ekg::label("Hi, the label:"); // dock automatically set to ekg::dock::left | ekg::dock::top
-        auto button {ekg::button("Exit", ekg::dock::top | ekg::dock::left | ekg::dock::next)};
-        button->set_callback(
-                new ekg::cpu::event {"button press", nullptr, [](void *data) {
-                    SDL_Event sdl_event {};
-                    sdl_event.type = SDL_QUIT;
-                    SDL_PushEvent(&sdl_event);
-                }}); // next does the "break line" dock (bottom to up and top to bottom).
-        button->set_text(ekg::dock::left | ekg::dock::center);
-        auto checkbox {ekg::checkbox("hii checkbox", ekg::dock::top | ekg::dock::left | ekg::dock::next)};
-        checkbox->set_box_align(ekg::dock::center | ekg::dock::center);
-        checkbox->set_text_align(ekg::dock::center | ekg::dock::center);
-        checkbox->set_width(400);
-        checkbox->set_scaled_height(3);
+        frame->set_drag(ekg::dock::top);
 
-        for (int32_t v = 0; v < 1; v++) {
-            auto slider = ekg::slider("slider", 20, -200, 200, ekg::dock::top | ekg::dock::left | ekg::dock::next);
-            slider->set_width(600);
-            slider->set_bar(ekg::dock::right);
-        }
-
-        ekg::popgroup();
+        ekg::label("Welcome to DeathWishes.com", ekg::dock::left | ekg::dock::top | ekg::dock::next);
+        ekg::button("Register", ekg::dock::left | ekg::dock::top | ekg::dock::next);
+        ekg::button("Login", ekg::dock::left | ekg::dock::top | ekg::dock::next);
+        ekg::button("User List", ekg::dock::left | ekg::dock::top | ekg::dock::next);
+        ekg::button("Exit", ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_callback(new ekg::cpu::event {"exit-callback", nullptr, [](void *pdata) {
+            SDL_Event custom_sdl_event {};
+            custom_sdl_event.type = SDL_QUIT;
+            SDL_PushEvent(&custom_sdl_event);
+        }});
     }
+
+    ekg::popgroup();
 
     ekg::frame("fps", {200, 200}, {200, 200});
     auto fps_element = ekg::label("the fps");

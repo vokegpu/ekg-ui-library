@@ -38,6 +38,14 @@ namespace ekg {
         next   = 128
     };
 
+    /*
+     * Enum linked to dock.
+     */
+    enum axis {
+        vertical      = 256,
+        horizontal = 512
+    };
+
     struct vec2 {
         float x {};
         float y {};

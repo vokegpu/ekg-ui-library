@@ -16,7 +16,19 @@
 #include "ekg/util/util_ui.hpp"
 #include "ekg/ui/slider/ui_slider.hpp"
 
-void ekg::ui::slider::set_dock(uint16_t flags) {
+void ekg::ui::slider::set_bar_axis(ekg::axis axis) {
+    if (this->bar_axis != axis) {
+        this->bar_axis = axis;
+        ekg::reload(this->id);
+        ekg::synclayout(this->parent_id);
+    }
+}
+
+ekg::axis ekg::ui::slider::get_bar_axis() {
+    return this->bar_axis;
+}
+
+void ekg::ui::slider::set_place(uint16_t flags) {
     if (this->dock_flags != flags) {
         this->dock_flags = flags;
         ekg::synclayout(this->id);
@@ -24,15 +36,15 @@ void ekg::ui::slider::set_dock(uint16_t flags) {
     }
 }
 
-void ekg::ui::slider::set_bar(ekg::dock orientation) {
-    if (this->dock_bar != orientation) {
-        this->dock_bar = orientation;
+void ekg::ui::slider::set_bar_align(uint16_t dock) {
+    if (this->bar_flags != dock) {
+        this->bar_flags = dock;
         ekg::reload(this->id);
     }
 }
 
-ekg::dock ekg::ui::slider::get_bar_dock() {
-    return this->dock_bar;
+uint16_t ekg::ui::slider::get_bar_align() {
+    return this->bar_flags;;
 }
 
 void ekg::ui::slider::set_font_size(ekg::font font) {
@@ -81,14 +93,14 @@ float ekg::ui::slider::get_height() {
     return this->rect_widget.h;
 }
 
-void ekg::ui::slider::set_text(uint16_t flags) {
+void ekg::ui::slider::set_text_align(uint16_t flags) {
     if (this->text_flags != flags) {
         this->text_flags = flags;
         ekg::reload(this->id);
     }
 }
 
-uint16_t ekg::ui::slider::get_text_dock() {
+uint16_t ekg::ui::slider::get_text_align() {
     return this->text_flags;
 }
 

@@ -27,7 +27,7 @@ void ekg::ui::button_widget::on_reload() {
 
     auto ui {(ekg::ui::button*) this->data};
     auto &rect {this->get_abs_rect()};
-    auto dock {ui->get_text_dock()};
+    auto dock {ui->get_text_align()};
     auto scaled_height {ui->get_scaled_height()};
     auto f_renderer {ekg::f_renderer(ui->get_font_size())};
 

@@ -71,7 +71,7 @@ namespace ekg {
             void set_type(const ekg::type&);
             ekg::type get_type();
 
-            uint16_t get_dock();
+            uint16_t get_place_dock();
             uint16_t &get_sync();
             void reset();
 

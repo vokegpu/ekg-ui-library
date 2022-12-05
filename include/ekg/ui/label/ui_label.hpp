@@ -29,7 +29,7 @@ namespace ekg::ui {
         void set_font_size(ekg::font font);
         ekg::font get_font_size();
 
-        void set_dock(uint16_t);
+        void set_place(uint16_t);
         int32_t get_scaled_height();
 
         void set_width(float width);
@@ -41,8 +41,8 @@ namespace ekg::ui {
         void set_text(std::string_view);
         std::string_view get_text();
 
-        void set_text(uint16_t);
-        uint16_t get_text_dock();
+        void set_text_align(uint16_t);
+        uint16_t get_text_align();
     };
 }
 
