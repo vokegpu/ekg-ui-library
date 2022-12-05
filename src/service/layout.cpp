@@ -16,7 +16,7 @@
 #include "ekg/ekg.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 
-void ekg::service::layout::set_preset_mask(const ekg::vec3 &offset, ekg::dock axis, float initial_respective_size) {
+void ekg::service::layout::set_preset_mask(const ekg::vec3 &offset, ekg::axis axis, float initial_respective_size) {
     this->dock_axis_mask = axis;    
     this->offset_mask = offset;
     this->respective_mask_all = initial_respective_size;
@@ -35,8 +35,8 @@ void ekg::service::layout::process_layout_mask() {
         return;
     }
 
-    bool axis {this->dock_axis_mask == ekg::dock::left || this->dock_axis_mask == ekg::dock::right};
-    float v {this->respective_mask_all}, centered_dimension {this->offset_mask.z / 2}, opposite {}, uniform {};
+    bool axis {this->dock_axis_mask == ekg::axis::horizontal};
+    float v {this->respective_mask_all}, centered_dimension {this->offset_mask.z / 2}, opposite {}, uniform {}, clamped_offset {};
 
     /* offset z is the dimension respective (width if height else height) size */
     this->layout_mask.w = axis ? this->offset_mask.x : this->offset_mask.z;
@@ -54,6 +54,8 @@ void ekg::service::layout::process_layout_mask() {
         }
 
         if (axis) {
+            clamped_offset = ekg::clamp((dockrect.rect->h + this->offset_mask.y) - this->offset_mask.z, 0, this->offset_mask.y);
+            
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center) && !(ekg::bitwise::contains(dockrect.dock, ekg::dock::left | ekg::dock::right))) {
                 dockrect.rect->x = (this->respective_mask_center / 2) - (dockrect.rect->w / 2);
                 dockrect.rect->y = centered_dimension - (dockrect.rect->h / 2);
@@ -87,13 +89,15 @@ void ekg::service::layout::process_layout_mask() {
             }
 
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::top)) {
-                dockrect.rect->y = this->offset_mask.y;
+                dockrect.rect->y = clamped_offset;
             }
 
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::bottom)) {
-                dockrect.rect->y = this->offset_mask.z - this->offset_mask.y - dockrect.rect->h;
+                dockrect.rect->y = this->offset_mask.z - clamped_offset - dockrect.rect->h;
             }
         } else {
+            clamped_offset = ekg::clamp((dockrect.rect->w + this->offset_mask.x) - this->offset_mask.z, 0, this->offset_mask.x);
+            
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center) && !(ekg::bitwise::contains(dockrect.dock, ekg::dock::left | ekg::dock::right))) {
                 dockrect.rect->y = (this->respective_mask_center) + (dockrect.rect->h / 2);
                 dockrect.rect->x = centered_dimension - (dockrect.rect->w / 2);
@@ -126,11 +130,11 @@ void ekg::service::layout::process_layout_mask() {
             }
 
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::left)) {
-                dockrect.rect->x = this->offset_mask.x;
+                dockrect.rect->x = clamped_offset;
             }
 
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::right)) {
-                dockrect.rect->x = this->offset_mask.z - this->offset_mask.x - dockrect.rect->w;
+                dockrect.rect->x = this->offset_mask.z - clamped_offset - dockrect.rect->w;
             }
         }
     }
@@ -147,7 +151,7 @@ float ekg::service::layout::get_respective_mask_size() {
         return 0;
     }
 
-    float respective_size {(this->dock_axis_mask == ekg::dock::left  || this->dock_axis_mask == ekg::dock::right) ? this->offset_mask.x : this->offset_mask.y}, respective_center_size {respective_size}, size {};
+    float respective_size {(this->dock_axis_mask == ekg::axis::horizontal) ? this->offset_mask.x : this->offset_mask.y}, respective_center_size {respective_size}, size {};
     int32_t only_center_count {};
 
     for (ekg::dockrect &dockrect : this->dockrect_list) {
@@ -155,7 +159,7 @@ float ekg::service::layout::get_respective_mask_size() {
             continue;
         }
 
-        size = (this->dock_axis_mask == ekg::dock::left  || this->dock_axis_mask == ekg::dock::right) ? (dockrect.rect->w + this->offset_mask.x) : (dockrect.rect->h + this->offset_mask.y);
+        size = (this->dock_axis_mask == ekg::axis::horizontal) ? (dockrect.rect->w + this->offset_mask.x) : (dockrect.rect->h + this->offset_mask.y);
         if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center) && !(ekg::bitwise::contains(dockrect.dock, ekg::dock::left | ekg::dock::right))) {
             respective_center_size += size;
             only_center_count++;

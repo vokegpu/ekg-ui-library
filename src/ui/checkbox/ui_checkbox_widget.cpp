@@ -46,7 +46,7 @@ void ekg::ui::checkbox_widget::on_reload() {
     this->rect_text.h = text_height;
 
     auto &layout {ekg::core->get_service_layout()};
-    layout.set_preset_mask({offset, offset, dimension_height}, ekg::dock::left, this->dimension.w);
+    layout.set_preset_mask({offset, offset, dimension_height}, ekg::axis::horizontal, this->dimension.w);
     layout.insert_into_mask({&this->rect_box, dock_box});
     layout.insert_into_mask({&this->rect_text, dock_text});
     layout.get_respective_mask_size();

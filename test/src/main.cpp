@@ -64,6 +64,7 @@ int32_t main(int, char**) {
 
         ekg::label("DeathWishes.com", ekg::dock::left | ekg::dock::top);
         ekg::checkbox("", ekg::dock::left | ekg::dock::top)->set_box_align(ekg::dock::center | ekg::dock::left);
+        ekg::slider("", 20, 20, 200, ekg::dock::left | ekg::dock::top | ekg::dock::next);
         ekg::button("Register", ekg::dock::left | ekg::dock::top | ekg::dock::next);
         ekg::button("Login", ekg::dock::left | ekg::dock::top | ekg::dock::next);
         ekg::button("User List", ekg::dock::left | ekg::dock::top | ekg::dock::next);

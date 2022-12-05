@@ -273,15 +273,18 @@ ekg::ui::slider* ekg::slider(std::string_view tag, float val, float min, float m
     ui->set_type(ekg::type::slider);
     ekg::core->gen_widget(ui);
 
-    ui->set_bar_align(ekg::dock::left);
+    ui->set_bar_align(ekg::dock::left); 
     ui->set_tag(tag);
     ui->set_place(dock);
-    ui->set_text_align(ekg::dock::top);
+    ui->set_text_align(ekg::dock::none);
+    ui->set_bar_align(ekg::dock::left | ekg::dock::center);
     ui->set_scaled_height(1);
     ui->set_font_size(ekg::font::normal);
     ui->set_value_min(min);
     ui->set_value_max(max);
     ui->set_precision(0);
+    ui->set_bar_axis(ekg::axis::horizontal);
+    ui->set_width(200);
 
     return ui;
 }

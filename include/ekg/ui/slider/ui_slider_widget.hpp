@@ -24,7 +24,7 @@ namespace ekg::ui {
         void update_bar_axis(ekg::dock);
 	public:
         ekg::docker docker_bar {};
-        ekg::rect rect_circle {}, rect_text {}, rect_bar {}, rect_bar_value {};
+        ekg::rect rect_target {}, rect_text {}, rect_bar {}, rect_bar_value {};
         std::string parsed_value {};
 
         void destroy() override;

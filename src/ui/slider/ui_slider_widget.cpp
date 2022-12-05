@@ -61,6 +61,7 @@ void ekg::ui::slider_widget::on_reload() {
     auto text_dock_flags {ui->get_text_align()};
     auto bar_dock_flags {ui->get_bar_align()};
     auto bar_axis {ui->get_bar_axis()};
+    auto &theme {ekg::theme()};
 
     /* Use text height as text width because slider does not have text to display.. */
     float text_height {f_renderer.get_text_height()};
@@ -69,12 +70,6 @@ void ekg::ui::slider_widget::on_reload() {
     float dimension_offset {text_height / 2};
     float offset {ekg::find_min_offset(text_width, dimension_offset)};
     float value {ui->get_value()}, min {ui->get_value_min()}, max {ui->get_value_max()};
-
-    if (ekg::bitwise::contains(text_dock_flags, ekg::dock::none)) {
-        text_width = 0;
-    }
-
-    float min_dimension_width {text_height};
     float dimension_height {(text_height + dimension_offset) * static_cast<float>(ui->get_scaled_height())};
 
     const std::string parsed {std::to_string(value)};
@@ -83,11 +78,45 @@ void ekg::ui::slider_widget::on_reload() {
         this->parsed_value.clear();
     }
 
+    float normalised_bar_thicnkess {static_cast<float>(theme.slider_bar_thicnkess) / 100},
+            normalised_target_thickness {static_cast<float>(theme.slider_target_thickness / 100)};
+    auto &layout {ekg::core->get_service_layout()};
+
+    this->rect_text.w = text_width;
+    this->rect_text.h = text_height;
+
+    if (ekg::bitwise::contains(text_dock_flags, ekg::dock::none)) {
+        text_width = 0;
+    }
+
     if (bar_axis == ekg::axis::horizontal) {
-        this->rect_bar.w = this->dimension.w;
+        this->rect_bar.w = this->dimension.w - (offset  * 2);
+        this->rect_bar.h = (dimension_height) * normalised_bar_thicnkess;
+
+        this->rect_bar_value.w = this->rect_bar.w * (value - min) / (max - min);
+        this->rect_bar_value.h = this->rect_bar.h;
+
+        this->rect_target.w = this->rect_bar.h;
+        this->rect_target.h = this->rect_bar.h;
+
+        layout.set_preset_mask({offset, offset, dimension_height}, bar_axis, this->dimension.w);
     } else {
 
     }
+
+    if (text_dock_flags != ekg::center && text_dock_flags != ekg::dock::none) {
+        layout.insert_into_mask({&this->rect_text, text_dock_flags});
+    }
+
+    layout.insert_into_mask({&this->rect_bar, bar_dock_flags});
+    layout.process_layout_mask();
+
+    auto &layout_mask {layout.get_layout_mask()};
+
+    this->rect_target.y = this->rect_bar.y + (this->rect_bar.h  / 2) - (this->rect_target.h / 2);
+    this->rect_target.x = this->rect_bar.x + this->rect_bar_value.w - (this->rect_target.w / 2);
+    this->dimension.w = ekg::min(this->dimension.w, layout_mask.w);
+    this->dimension.h = ekg::min(this->dimension.h, layout_mask.h);
 }
 
 void ekg::ui::slider_widget::on_pre_event(SDL_Event &sdl_event) {
@@ -144,7 +173,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
         ekg::draw::rect(bar, theme.slider_highlight);
     }
     
-    ekg::draw::rect(this->rect_circle + rect, theme.slider_activy, ekg::drawmode::circle);
+    ekg::draw::rect(this->rect_target + rect, theme.slider_activy, ekg::drawmode::circle);
     ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activy);
 
     ekg::draw::bind_off_scissor();

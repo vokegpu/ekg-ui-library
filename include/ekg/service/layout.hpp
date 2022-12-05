@@ -24,7 +24,7 @@ namespace ekg::service {
         float min_offset {}, min_height {}, scaled_width_divided {}, scaled_height_divided {}, respective_mask_all {}, respective_mask_center {};
         int32_t min_factor_height {};
         uint16_t enum_docks_flag {}, layout_mask_flags {};
-        ekg::dock dock_axis_mask {};
+        ekg::axis dock_axis_mask {};
         ekg::vec3 offset_mask {};
 
         std::map<uint32_t, ekg::grid> grid_map {};
@@ -37,7 +37,7 @@ namespace ekg::service {
         void init();
         void quit();
 
-        void set_preset_mask(const ekg::vec3&, ekg::dock, float = 0.0f);
+        void set_preset_mask(const ekg::vec3&, ekg::axis, float = 0.0f);
         void insert_into_mask(const ekg::dockrect&);
         void process_layout_mask();
         ekg::rect &get_layout_mask();
