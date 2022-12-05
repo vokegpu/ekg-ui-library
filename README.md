@@ -25,26 +25,7 @@ int32_t main(int32_t, char**) {
   //... init ekg reset library.
   ekg::init(sdl_window);
   
-  for (int i {}; i < 1; i++) {
-    auto frame {ekg::frame("hello", {80, 80}, {200, 200})};
-    frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
-    frame->set_drag(ekg::dock::top);
-
-    ekg::label("DeathWishes.com", ekg::dock::left | ekg::dock::top);
-    ekg::checkbox("", ekg::dock::left | ekg::dock::top)->set_box_align(ekg::dock::center | ekg::dock::left);
-    ekg::button("Register", ekg::dock::left | ekg::dock::top | ekg::dock::next);
-    ekg::button("Login", ekg::dock::left | ekg::dock::top | ekg::dock::next);
-    ekg::button("User List", ekg::dock::left | ekg::dock::top | ekg::dock::next);
-    ekg::button("Exit", ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_callback(new ekg::cpu::event {"exit-callback", nullptr, [](void *pdata) {
-      SDL_Event custom_sdl_event {};
-      custom_sdl_event.type = SDL_QUIT;
-      SDL_PushEvent(&custom_sdl_event);
-    }});
-  }
-
-  ekg::popgroup();
-  
-  // do samething to create new dimension.
+  // Create GUI elements once tick here or in some place of mainloop.
   
   /*
    * mainloop of your application/game.
@@ -70,6 +51,25 @@ int32_t main(int32_t, char**) {
   }
   
   return 0;
+}
+```
+
+```cpp  
+for (int i {}; i < 1; i++) {
+  auto frame {ekg::frame("hello", {80, 80}, {200, 200})};
+  frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
+  frame->set_drag(ekg::dock::top);
+
+  ekg::label("DeathWishes.com", ekg::dock::left | ekg::dock::top);
+  ekg::checkbox("", ekg::dock::left | ekg::dock::top)->set_box_align(ekg::dock::center | ekg::dock::left);
+  ekg::button("Register", ekg::dock::left | ekg::dock::top | ekg::dock::next);
+  ekg::button("Login", ekg::dock::left | ekg::dock::top | ekg::dock::next);
+  ekg::button("User List", ekg::dock::left | ekg::dock::top | ekg::dock::next);
+  ekg::button("Exit", ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_callback(new ekg::cpu::event {"exit-callback", nullptr, [](void *pdata) {
+    SDL_Event custom_sdl_event {};
+    custom_sdl_event.type = SDL_QUIT;
+    SDL_PushEvent(&custom_sdl_event);
+  }});
 }
 ```
 
