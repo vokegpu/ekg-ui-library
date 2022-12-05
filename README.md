@@ -39,7 +39,7 @@ int32_t main(int32_t, char**) {
       ekg::event(sdl_event);
     }
     
-    if (/* check timing each 1 to set display fps */) {
+    if (/* check timing each 1s to update display fps */) {
       display_fps = frames_elapsed;
       frames_elapsed = 0;
       label_fps->set_text(std::to_string(display_fps));
