@@ -20,10 +20,10 @@
 
 namespace ekg {
     enum event {
-        unique = 0,
-        alloc = 2,
+        unique    = 0,
+        alloc     = 2,
         allocated = 4,
-        shared = 8
+        shared    = 8
     };
 
     namespace cpu {

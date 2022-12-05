@@ -165,13 +165,13 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
 
     data.shape_rect[0] = x;
     data.shape_rect[1] = y;
-    data.shape_rect[2] = 0;
-    data.shape_rect[3] = 0;
+    data.shape_rect[2] = static_cast<float>(ekg::concave);
+    data.shape_rect[3] = static_cast<float>(ekg::concave);
 
-    data.material_color[0] = static_cast<int32_t>(color.x);
-    data.material_color[1] = static_cast<int32_t>(color.y);
-    data.material_color[2] = static_cast<int32_t>(color.z);
-    data.material_color[3] = static_cast<int32_t>(color.w);
+    data.material_color[0] = static_cast<uint8_t>(color.x);
+    data.material_color[1] = static_cast<uint8_t>(color.y);
+    data.material_color[2] = static_cast<uint8_t>(color.z);
+    data.material_color[3] = static_cast<uint8_t>(color.w);
 
     ekg::rect vertices {};
     ekg::rect coordinates {};

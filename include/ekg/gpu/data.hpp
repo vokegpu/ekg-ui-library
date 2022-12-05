@@ -15,25 +15,38 @@
 #ifndef EKG_GPU_DATA_H
 #define EKG_GPU_DATA_H
 
-#include "gl.hpp"
-#include <vector>
+#include <iostream>
 
-namespace ekg::gpu {
-    struct data {
-        GLfloat shape_rect[4] {};
-        GLint material_color[5] {};
+namespace ekg {
+    extern int32_t concave;
 
-        GLuint material_texture {};
-        GLuint active_tex_slot {};
+    namespace gpu {
+        struct data {
+            float shape_rect[4] {};
+            uint8_t material_color[5] {};
 
-        GLint begin_stride {};
-        GLint end_stride {};
-        GLint line_thickness {};
+            uint32_t material_texture {};
+            uint8_t active_tex_slot {};
 
-        int32_t factor {};
-        int32_t scissor_id {-1};
-        int32_t id {};
-    };
+            int32_t begin_stride {};
+            int32_t end_stride {};
+            int32_t line_thickness {};
+
+            int32_t factor {};
+            int32_t scissor_id {-1};
+            int32_t id {};
+        };
+
+        struct animation {
+            bool finished {};
+            bool initial {true};
+            ekg::gpu::data *data {nullptr};
+        };
+
+        struct scissor {
+            float rect[4] {.0f, .0f, .0f, .0f};
+        };
+    }
 }
 
 #endif

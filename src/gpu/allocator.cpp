@@ -14,6 +14,7 @@
 
 #include "ekg/gpu/allocator.hpp"
 #include "ekg/ekg.hpp"
+#include "ekg/gpu/gl.hpp"
 
 ekg::gpu::program ekg::gpu::allocator::program {};
 float ekg::gpu::allocator::orthographicm4[16] {};
@@ -34,9 +35,9 @@ void ekg::gpu::allocator::invoke() {
     this->bind_current_data().begin_stride = this->begin_stride_count; // reset to 0
 }
 
-void ekg::gpu::allocator::bind_texture(GLuint &texture) {
+void ekg::gpu::allocator::bind_texture(uint32_t &texture) {
     bool should_alloc_new_texture {};
-    GLuint texture_slot {};
+    uint8_t texture_slot {};
 
     /* repeating textures increase the active textures, for this reason allocator prevent "dupes" */
 
@@ -45,18 +46,17 @@ void ekg::gpu::allocator::bind_texture(GLuint &texture) {
         should_alloc_new_texture = textures != texture;
 
         if (!should_alloc_new_texture) {
-            texture_slot = (uint32_t) it;
+            texture_slot = (uint8_t) it;
             break;
         }
     }
 
     if (should_alloc_new_texture) {
         this->cached_textures.push_back(texture);
-        texture_slot = (GLuint) this->cached_textures.size() - 1;
+        texture_slot = (uint8_t) this->cached_textures.size() - 1;
     }
 
-    ekg::gpu::data &data = this->bind_current_data();
-
+    auto &data {this->bind_current_data()};
     data.material_texture = texture;
     data.active_tex_slot = texture_slot;
 }
@@ -66,7 +66,7 @@ void ekg::gpu::allocator::dispatch() {
 
     /* if this data contains a simple rect shape scheme, save this index and reuse later */
 
-    this->simple_shape = static_cast<int32_t>(data.shape_rect[2]) != 0 && static_cast<int32_t>(data.shape_rect[3]) != 0;
+    this->simple_shape = static_cast<int32_t>(data.shape_rect[2]) != ekg::concave && static_cast<int32_t>(data.shape_rect[3]) != ekg::concave;
     if (this->simple_shape_index == -1 && this->simple_shape) {
         this->simple_shape_index = this->begin_stride_count;
         this->begin_stride_count += this->end_stride_count;
@@ -146,14 +146,14 @@ void ekg::gpu::allocator::revoke() {
 
         glBindBuffer(GL_ARRAY_BUFFER, this->vbo_vertices);
         glEnableVertexAttribArray(0);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
         /* set shader binding location 1 and dispatch mesh of texture coordinates collected by allocator */
 
         glBindBuffer(GL_ARRAY_BUFFER, this->vbo_uvs);
         glEnableVertexAttribArray(1);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->cached_uvs.size(), &this->cached_uvs[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_uvs.size(), &this->cached_uvs[0], GL_STATIC_DRAW);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
         glBindVertexArray(0);
     }
@@ -196,7 +196,7 @@ void ekg::gpu::allocator::on_update() {
                 continue;
             }
 
-            animation->data->material_color[4] = static_cast<int32_t>(ekg::lerp(static_cast<float>(animation->data->material_color[4]), static_cast<float>(animation->data->material_color[3]), ekg::display::dt));
+            animation->data->material_color[4] = static_cast<uint8_t>(ekg::lerp(static_cast<float>(animation->data->material_color[4]), static_cast<float>(animation->data->material_color[3]), ekg::display::dt));
         }
 
         /* no problem with segment fault, because this is a reference pointer */
@@ -213,7 +213,7 @@ void ekg::gpu::allocator::draw() {
 
     bool active_texture {}, texture_enabled {}, active_scissor {};
     float depth_level {this->depth_testing_preset}, scissor_rect[4] {};
-    ekg::gpu::scissor* scissor {};
+    ekg::gpu::scissor *scissor {};
     auto &shading_program_id {ekg::gpu::allocator::program.id};
 
     /*
@@ -232,7 +232,7 @@ void ekg::gpu::allocator::draw() {
         active_texture = data.material_texture != 0;
 
         if (active_texture) {
-            glActiveTexture(GL_TEXTURE0 + data.active_tex_slot);
+            glActiveTexture(GL_TEXTURE0 + static_cast<int32_t>(data.active_tex_slot));
             glBindTexture(GL_TEXTURE_2D, data.material_texture);
 
             glUniform1i(this->uniform_active_texture_slot, static_cast<int32_t>(data.active_tex_slot));
@@ -270,7 +270,7 @@ void ekg::gpu::allocator::draw() {
                 }
 
                 glUniform1i(this->uniform_enable_scissor, true);
-                glUniform4f(this->uniform_scissor, static_cast<float>(scissor->rect[0]), static_cast<float>(scissor->rect[1]), static_cast<float>(scissor->rect[2]), static_cast<float>(scissor->rect[3]));
+                glUniform4f(this->uniform_scissor, scissor->rect[0], scissor->rect[1], scissor->rect[2], scissor->rect[3]);
                 break;
             }
         }
@@ -343,7 +343,7 @@ ekg::gpu::data* ekg::gpu::allocator::get_data_by_id(int32_t id) {
 }
 
 void ekg::gpu::allocator::quit() {
-    glDeleteTextures((GLint) this->cached_textures.size(), &this->cached_textures[0]);
+    glDeleteTextures((int32_t) this->cached_textures.size(), &this->cached_textures[0]);
     glDeleteBuffers(1, &this->vbo_array);
     glDeleteBuffers(1, &this->vbo_uvs);
     glDeleteVertexArrays(1, &this->vbo_array);
@@ -376,7 +376,7 @@ void ekg::gpu::allocator::bind_off_scissor() {
 }
 
 void ekg::gpu::allocator::vertex2f(float x, float y) {
-    if (this->check_simple_shape()) {
+    if (this->check_convex_shape()) {
         return;
     }
 
@@ -386,7 +386,7 @@ void ekg::gpu::allocator::vertex2f(float x, float y) {
 }
 
 void ekg::gpu::allocator::coord2f(float x, float y) {
-    if (this->check_simple_shape()) {
+    if (this->check_convex_shape()) {
         return;
     }
 
@@ -408,8 +408,8 @@ void ekg::gpu::allocator::bind_off_animation() {
     this->animation_index = 0;
 }
 
-bool ekg::gpu::allocator::check_simple_shape() {
+bool ekg::gpu::allocator::check_convex_shape() {
     auto &data {this->bind_current_data()};
-    this->simple_shape = static_cast<int32_t>(data.shape_rect[2]) != 0 && static_cast<int32_t>(data.shape_rect[3]) != 0;
+    this->simple_shape = static_cast<int32_t>(data.shape_rect[2]) != ekg::concave && static_cast<int32_t>(data.shape_rect[3]) != ekg::concave;
     return this->simple_shape_index != -1 && this->simple_shape;
 }

@@ -43,7 +43,7 @@ namespace ekg {
 
             std::string font_path {};
             uint8_t font_size {18};
-            GLuint texture {};
+            uint32_t texture {};
 
             float full_width {};
             float full_height {};
@@ -54,7 +54,7 @@ namespace ekg {
             bool flag_unloaded {};
             bool flag_first_time {true};
 
-            ekg::gpu::allocator* allocator {};
+            ekg::gpu::allocator *allocator {};
             ekg::char_data allocated_char_data[128] {};
 
             float get_text_width(std::string_view text);

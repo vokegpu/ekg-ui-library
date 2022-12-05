@@ -71,11 +71,11 @@ namespace ekg {
         /* Tokens for use in creation of elements. */
 
         int32_t token_id {},
-                    widget_id_focused {},
-                    prev_widget_id_focused {},
-                    swap_widget_id_focused {},
-                    widget_id_pressed_focused {},
-                    widget_id_released_focused {};
+                widget_id_focused {},
+                prev_widget_id_focused {},
+                swap_widget_id_focused {},
+                widget_id_pressed_focused {},
+                widget_id_released_focused {};
         
         /* Security methods of ekg. */
 

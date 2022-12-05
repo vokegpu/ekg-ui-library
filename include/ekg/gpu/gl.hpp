@@ -39,7 +39,7 @@ namespace ekg::gpu {
         void set4(const std::string &str, GLfloat* value);
         void setm2(const std::string &str, GLfloat* matrix);
         void setm3(const std::string &str, GLfloat* matrix);
-        void setm4(const std::string &str, GLfloat* matrix);
+        void setm4(const std::string &str, float* matrix);
     };
 
     void init_opengl_context();
@@ -47,8 +47,8 @@ namespace ekg::gpu {
     void revoke();
 
     bool compile_shader(GLuint &shader, GLuint shader_type, const char* src);
-    bool load_basic_program(gpu::program &program, const std::string &vsh_path, const std::string &fsh_path);
-    bool create_basic_program(gpu::program &program, const char* vsh_src, const char* fsh_src);
+    bool load_basic_program(ekg::gpu::program &program, const std::string &vsh_path, const std::string &fsh_path);
+    bool create_basic_program(ekg::gpu::program &program, const char* vsh_src, const char* fsh_src);
 };
 
 #endif

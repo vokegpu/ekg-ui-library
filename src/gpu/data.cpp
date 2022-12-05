@@ -13,3 +13,5 @@
  */
 
 #include "ekg/gpu/data.hpp"
+
+int32_t ekg::concave {-256};

@@ -59,24 +59,26 @@ ekg::gl_version + "\n"
 "layout (location = 0) in vec2 VertexData;\n"
 "layout (location = 1) in vec2 UVData;\n"
 
+"const float CONVEX  = -256;\n"
+
 "uniform mat4 MatrixProjection;\n"
 "uniform vec4 Rect;\n"
 "uniform float Depth;\n"
-""
+
 "out vec2 TextureUV;\n"
 "out vec4 ShapeRect;\n"
-""
+
 "void main() {"
 "    vec2 ProcessedVertex = VertexData;\n"
-"    bool FixedShape = Rect.z != 0 || Rect.w != 0;\n"
-""
+"    bool FixedShape = Rect.z != CONVEX || Rect.w != CONVEX;\n"
+
 "    if (FixedShape) {"
 "        ProcessedVertex *= Rect.zw;"
 "    }\n"
-""
+
 "    ProcessedVertex += Rect.xy;\n"
 "    gl_Position = MatrixProjection * vec4(ProcessedVertex, Depth, 1.0f);\n"
-""
+
 "    TextureUV = UVData;\n"
 "    ShapeRect = Rect;\n"
 "}"};
@@ -87,10 +89,10 @@ ekg::gl_version + "\n"
 ekg::gl_version + "\n"
 ""
 "layout (location = 0) out vec4 OutColor;\n"
-""
+
 "in vec2 TextureUV;\n"
 "in vec4 ShapeRect;\n"
-""
+
 "uniform int LineThickness;\n"
 "uniform float ViewportHeight;\n"
 "uniform bool ActiveTexture;\n"
@@ -98,11 +100,12 @@ ekg::gl_version + "\n"
 "uniform vec4 Color;\n"
 "uniform vec4 Scissor;\n"
 "uniform bool EnableScissor;\n"
-""
+
 "void main() {"
 "    OutColor = Color;\n"
 "    vec2 FragPos = vec2(gl_FragCoord.x, ViewportHeight - gl_FragCoord.y);\n"
 "    bool ShouldDiscard = EnableScissor && (FragPos.x < Scissor.x || FragPos.y < Scissor.y || FragPos.x > Scissor.x + Scissor.z || FragPos.y > Scissor.y + Scissor.w);"
+
 "    if (LineThickness > 0) {"
 "        vec4 OutlineRect = vec4(ShapeRect.x + LineThickness, ShapeRect.y + LineThickness, ShapeRect.z - (LineThickness * 2), ShapeRect.w - (LineThickness * 2));\n"
 "        ShouldDiscard = ShouldDiscard || (FragPos.x > OutlineRect.x && FragPos.x < OutlineRect.x + OutlineRect.z && FragPos.y > OutlineRect.y && FragPos.y < OutlineRect.y + OutlineRect.w);\n"
@@ -110,11 +113,14 @@ ekg::gl_version + "\n"
 "       float Radius = ShapeRect.z / 2;\n"
 "       vec2 Diff = vec2((ShapeRect.x + Radius) - FragPos.x, (ShapeRect.y + Radius) - FragPos.y);\n"
 "       float Distance = sqrt(Diff.x * Diff.x + Diff.y * Diff.y);\n"
+
 "       OutColor.w = (1.0f - smoothstep(0.0, Radius * Radius, dot(Distance, Distance)));\n"
 "    }"
+
 "    if (ShouldDiscard) {"
 "        discard;"
 "    }\n"
+
 "    if (ActiveTexture) {"
 "        OutColor = texture(ActiveTextureSlot, TextureUV);\n"
 "        OutColor = vec4(OutColor.xyz - ((1.0f - Color.xyz) - 1.0f), OutColor.w - (1.0f - Color.w));"
