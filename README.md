@@ -25,10 +25,24 @@ int32_t main(int32_t, char**) {
   //... init ekg reset library.
   ekg::init(sdl_window);
   
-  ekg::frame("tag", {20, 20}, {200, 200})->set_drag(ekg::dock_flags::top);
-  ekg::label("Hi, the label:"); // dock_flags automatically set to ekg::dock_flags::left | ekg::dock_flags::top
-  ekg::button("Button Press Me!", ekg::dock_flags::top | ekg::dock_flags::left | ekg::dock_flags::next); // next does the "break line" dock_flags (bottom to up and top to bottom).
-  ekg::pop_group();
+  for (int i {}; i < 1; i++) {
+    auto frame {ekg::frame("hello", {80, 80}, {200, 200})};
+    frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
+    frame->set_drag(ekg::dock::top);
+
+    ekg::label("DeathWishes.com", ekg::dock::left | ekg::dock::top);
+    ekg::checkbox("", ekg::dock::left | ekg::dock::top)->set_box_align(ekg::dock::center | ekg::dock::left);
+    ekg::button("Register", ekg::dock::left | ekg::dock::top | ekg::dock::next);
+    ekg::button("Login", ekg::dock::left | ekg::dock::top | ekg::dock::next);
+    ekg::button("User List", ekg::dock::left | ekg::dock::top | ekg::dock::next);
+    ekg::button("Exit", ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_callback(new ekg::cpu::event {"exit-callback", nullptr, [](void *pdata) {
+      SDL_Event custom_sdl_event {};
+      custom_sdl_event.type = SDL_QUIT;
+      SDL_PushEvent(&custom_sdl_event);
+    }});
+  }
+
+  ekg::popgroup();
   
   // do samething to create new dimension.
   
