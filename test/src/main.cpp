@@ -62,7 +62,8 @@ int32_t main(int, char**) {
         frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
         frame->set_drag(ekg::dock::top);
 
-        ekg::label("Welcome to DeathWishes.com", ekg::dock::left | ekg::dock::top | ekg::dock::next);
+        ekg::label("DeathWishes.com", ekg::dock::left | ekg::dock::top);
+        ekg::checkbox("", ekg::dock::left | ekg::dock::top)->set_box_align(ekg::dock::center | ekg::dock::left);
         ekg::button("Register", ekg::dock::left | ekg::dock::top | ekg::dock::next);
         ekg::button("Login", ekg::dock::left | ekg::dock::top | ekg::dock::next);
         ekg::button("User List", ekg::dock::left | ekg::dock::top | ekg::dock::next);

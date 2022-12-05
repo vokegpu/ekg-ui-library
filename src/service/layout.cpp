@@ -55,7 +55,7 @@ void ekg::service::layout::process_layout_mask() {
 
         if (axis) {
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center) && !(ekg::bitwise::contains(dockrect.dock, ekg::dock::left | ekg::dock::right))) {
-                dockrect.rect->x = (this->respective_mask_center) + (dockrect.rect->w / 2);
+                dockrect.rect->x = (this->respective_mask_center / 2) - (dockrect.rect->w / 2);
                 dockrect.rect->y = centered_dimension - (dockrect.rect->h / 2);
                 this->layout_mask.w += dockrect.rect->w + this->offset_mask.x;
             } else if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center)) {
