@@ -73,7 +73,7 @@ int32_t main(int32_t, char**) {
 }
 ```
 
-![Image Text](https://github.com/ekg-reset-library/ekg/blob/version-core/splash/splash-showcase-4-1.0.0.png?raw=true)
+![Image Text](https://github.com/ekg-reset-library/ekg-ui-library/blob/version-core/splash/splash-showcase-4-1.0.0.png?raw=true)
 
 There is more things, theses steps are the official way to setup.
 
