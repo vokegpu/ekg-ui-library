@@ -6,7 +6,7 @@ The purpose of ekg is being fully customizable, smooth and with many animations.
 
 # Running
 
-GCC only (soon not onl gcc).   
+Supported compilers: GNU.  
 For use the library on your project, download the repo or release, then you add include and lib files:  
 `lib/win32/libekg.a` - Windows 32/64bits  
 `lib/linux/libekg.a` - Linux x86_x64
