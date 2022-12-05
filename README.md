@@ -25,6 +25,8 @@ int32_t main(int32_t, char**) {
   ekg::init(sdl_window);
   
   // Create GUI elements once tick here or in some place of mainloop.
+  ekg::frame("fps frame", {20, 20}, {200, 200});
+  auto label_fps = ekg::label("fps", ekg::dock::left | ekg::dock::top);
   
   /*
    * mainloop of your application/game.
@@ -35,6 +37,12 @@ int32_t main(int32_t, char**) {
       // handle the events here.
       // remember to poll ekg reset events:
       ekg::event(sdl_event);
+    }
+    
+    if (/* check timing each 1 to set display fps */) {
+      display_fps = frames_elapsed;
+      frames_elapsed = 0;
+      label_fps->set_text(std::to_string(display_fps));
     }
     
     // remember to set delta time ticks of ekg.
