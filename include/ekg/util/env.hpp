@@ -55,6 +55,7 @@ namespace ekg {
     bool set(bool &var_mutable, bool predicate);
 
     std::string &set(std::string &var_mutable, const std::string &predicate);
+    std::string parse_float_precision(float, int32_t);
 
     namespace bitwise {
         bool contains(uint16_t target, uint16_t flag);
@@ -70,8 +71,6 @@ namespace ekg {
         bool pressed();
         bool wheel();
     }
-
-
 };
 
 #endif

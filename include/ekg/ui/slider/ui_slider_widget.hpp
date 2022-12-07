@@ -25,6 +25,7 @@ namespace ekg::ui {
 	public:
         ekg::rect rect_target {}, rect_text {}, rect_bar {}, rect_bar_value {};
         std::string parsed_value {};
+        ekg::font font_render_size {};
 
         void destroy() override;
         void on_reload() override;

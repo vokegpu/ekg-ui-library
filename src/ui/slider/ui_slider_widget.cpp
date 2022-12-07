@@ -57,41 +57,42 @@ void ekg::ui::slider_widget::on_reload() {
     auto dock {ui->get_bar_align()};
     auto scaled_height {ui->get_scaled_height()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
-    auto &f_renderer_small {ekg::f_renderer(ekg::font::small)};
     auto text_dock_flags {ui->get_text_align()};
     auto bar_dock_flags {ui->get_bar_align()};
     auto bar_axis {ui->get_bar_axis()};
     auto &theme {ekg::theme()};
+    auto value_precision {ui->get_precision()};
 
-    /* Use text height as text width because slider does not have text to display.. */
     float text_height {f_renderer.get_text_height()};
-    float text_width {f_renderer.get_text_height()};
+    float value {ui->get_value()}, min {ui->get_value_min()}, max {ui->get_value_max()};
+
+    this->parsed_value = ekg::parse_float_precision(max, value_precision);
+    float text_width {f_renderer.get_text_width(this->parsed_value)}; // use max val as width
+    this->parsed_value = ekg::parse_float_precision(value, value_precision);
 
     float dimension_offset {text_height / 2};
     float offset {ekg::find_min_offset(text_width, dimension_offset)};
-    float value {ui->get_value()}, min {ui->get_value_min()}, max {ui->get_value_max()};
     float dimension_height {(text_height + dimension_offset) * static_cast<float>(ui->get_scaled_height())};
-
-    const std::string parsed {std::to_string(value)};
-    this->parsed_value = parsed.substr(0, ekg::max(parsed.find('.') + ui->get_precision() + (1 * ui->get_precision()), parsed.size()));
-    if (text_dock_flags == ekg::dock::none) {
-        this->parsed_value.clear();
-    }
 
     float normalised_bar_thicnkess {static_cast<float>(theme.slider_bar_thicnkess) / 100},
           normalised_target_thickness {static_cast<float>(theme.slider_target_thickness) / 100};
     auto &layout {ekg::core->get_service_layout()};
+    bool centered_text {text_dock_flags == ekg::dock::center};
 
+    this->dimension.w = ekg::min(this->dimension.w, text_height);
     this->rect_text.w = text_width;
     this->rect_text.h = text_height;
 
     if (bar_axis == ekg::axis::horizontal) {
-        this->rect_bar.w = this->dimension.w - (offset  * 2);
+        /* We need to set the bar size small if text rendering is not center (center follows the target) */
+        float text_rendering_not_center {((text_width + offset * 2) * (!centered_text))};
+        this->rect_bar.w = this->dimension.w - (offset  * 2) - text_rendering_not_center;
         this->rect_bar.h = dimension_height * normalised_bar_thicnkess;
 
         this->rect_bar_value.w = this->rect_bar.w * (value - min) / (max - min);
         this->rect_bar_value.h = this->rect_bar.h;
 
+        // Radius are equals to both dimension (w, h)
         this->rect_target.w = dimension_height * normalised_target_thickness;
         this->rect_target.h = this->rect_target.w;
 
@@ -100,8 +101,10 @@ void ekg::ui::slider_widget::on_reload() {
 
     }
 
-    if (text_dock_flags != ekg::center) {
+    this->font_render_size = ekg::font::small;
+    if (!centered_text) {
         layout.insert_into_mask({&this->rect_text, text_dock_flags});
+        this->font_render_size = ekg::font::normal;
     }
 
     layout.insert_into_mask({&this->rect_bar, bar_dock_flags});
@@ -157,7 +160,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     auto ui {(ekg::ui::slider*) this->data};
     auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};
-    auto &f_renderer_small {ekg::f_renderer(ekg::font::big)};
+    auto &f_renderer {ekg::f_renderer(this->font_render_size)};
     auto bar {this->rect_bar + rect}, bar_value {this->rect_bar_value + rect};;
 
     ekg::draw::bind_scissor(ui->get_id());
@@ -171,6 +174,6 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     ekg::draw::rect(this->rect_target + rect, theme.slider_activy, ekg::drawmode::circle);
     ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activy);
 
+    f_renderer.blit(this->parsed_value, rect.x + this->rect_text.x, rect.y + this->rect_text.x, theme.slider_string);
     ekg::draw::bind_off_scissor();
-    f_renderer_small.blit(this->parsed_value, 20, 80, theme.slider_string);
 }
