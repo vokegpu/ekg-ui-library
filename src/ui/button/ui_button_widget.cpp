@@ -42,9 +42,6 @@ void ekg::ui::button_widget::on_reload() {
     this->rect_text.w = text_width;
     this->rect_text.h = text_height;
 
-    ekg::set_rect_clamped(this->dimension, ekg::theme().min_widget_size);
-    ekg::set_dock_scaled({0, 0, this->dimension.w, this->dimension.h}, {text_width, text_height}, this->docker_text);
-
     auto &layout {ekg::core->get_service_layout()};
     layout.set_preset_mask({offset, offset, this->dimension.h}, ekg::axis::horizontal, this->dimension.w);
     layout.insert_into_mask({&this->rect_text, ui->get_text_align()});
