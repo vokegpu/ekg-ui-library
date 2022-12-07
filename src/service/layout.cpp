@@ -23,7 +23,7 @@ void ekg::service::layout::set_preset_mask(const ekg::vec3 &offset, ekg::axis ax
 }
 
 void ekg::service::layout::insert_into_mask(const ekg::dockrect &dockrect) {
-    if ((static_cast<int32_t>(dockrect.rect->w == 0) || static_cast<int32_t>(dockrect.rect->h) == 0)) {
+    if ((static_cast<int32_t>(dockrect.rect->w == 0) || static_cast<int32_t>(dockrect.rect->h) == 0) || ekg::bitwise::contains(dockrect.dock, ekg::dock::none)) {
         return;
     }
 
@@ -284,6 +284,9 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
         }
 
         prev_rect = rect;
+
+        /* Temp Fix: Maybe not the better performance way but works to prevent position desyncs. */
+        widgets->on_reload();
     }
 }
 

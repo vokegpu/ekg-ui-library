@@ -79,32 +79,28 @@ void ekg::ui::slider_widget::on_reload() {
     }
 
     float normalised_bar_thicnkess {static_cast<float>(theme.slider_bar_thicnkess) / 100},
-            normalised_target_thickness {static_cast<float>(theme.slider_target_thickness / 100)};
+          normalised_target_thickness {static_cast<float>(theme.slider_target_thickness) / 100};
     auto &layout {ekg::core->get_service_layout()};
 
     this->rect_text.w = text_width;
     this->rect_text.h = text_height;
 
-    if (ekg::bitwise::contains(text_dock_flags, ekg::dock::none)) {
-        text_width = 0;
-    }
-
     if (bar_axis == ekg::axis::horizontal) {
         this->rect_bar.w = this->dimension.w - (offset  * 2);
-        this->rect_bar.h = (dimension_height) * normalised_bar_thicnkess;
+        this->rect_bar.h = dimension_height * normalised_bar_thicnkess;
 
         this->rect_bar_value.w = this->rect_bar.w * (value - min) / (max - min);
         this->rect_bar_value.h = this->rect_bar.h;
 
-        this->rect_target.w = this->rect_bar.h;
-        this->rect_target.h = this->rect_bar.h;
+        this->rect_target.w = dimension_height * normalised_target_thickness;
+        this->rect_target.h = this->rect_target.w;
 
         layout.set_preset_mask({offset, offset, dimension_height}, bar_axis, this->dimension.w);
     } else {
 
     }
 
-    if (text_dock_flags != ekg::center && text_dock_flags != ekg::dock::none) {
+    if (text_dock_flags != ekg::center) {
         layout.insert_into_mask({&this->rect_text, text_dock_flags});
     }
 
@@ -115,7 +111,6 @@ void ekg::ui::slider_widget::on_reload() {
 
     this->rect_target.y = this->rect_bar.y + (this->rect_bar.h  / 2) - (this->rect_target.h / 2);
     this->rect_target.x = this->rect_bar.x + this->rect_bar_value.w - (this->rect_target.w / 2);
-    this->dimension.w = ekg::min(this->dimension.w, layout_mask.w);
     this->dimension.h = ekg::min(this->dimension.h, layout_mask.h);
 }
 

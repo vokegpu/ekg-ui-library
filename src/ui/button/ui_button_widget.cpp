@@ -27,7 +27,6 @@ void ekg::ui::button_widget::on_reload() {
 
     auto ui {(ekg::ui::button*) this->data};
     auto &rect {this->get_abs_rect()};
-    auto dock {ui->get_text_align()};
     auto scaled_height {ui->get_scaled_height()};
     auto f_renderer {ekg::f_renderer(ui->get_font_size())};
 
@@ -37,32 +36,23 @@ void ekg::ui::button_widget::on_reload() {
     float dimension_offset {text_height / 2};
     float offset {ekg::find_min_offset(text_width, dimension_offset)};
 
-    this->dimension.w = ekg::min(this->dimension.w, text_width + dimension_offset);
+    this->dimension.w = ekg::min(this->dimension.w, text_height);
     this->dimension.h = (text_height + dimension_offset) * static_cast<float>(scaled_height);
+
+    this->rect_text.w = text_width;
+    this->rect_text.h = text_height;
 
     ekg::set_rect_clamped(this->dimension, ekg::theme().min_widget_size);
     ekg::set_dock_scaled({0, 0, this->dimension.w, this->dimension.h}, {text_width, text_height}, this->docker_text);
 
-    if (ekg::bitwise::contains(dock, ekg::dock::center)) {
-        this->rect_text.x = this->docker_text.center.x;
-        this->rect_text.y = this->docker_text.center.y;
-    }
+    auto &layout {ekg::core->get_service_layout()};
+    layout.set_preset_mask({offset, offset, this->dimension.h}, ekg::axis::horizontal, this->dimension.w);
+    layout.insert_into_mask({&this->rect_text, ui->get_text_align()});
+    layout.process_layout_mask();
 
-    if (ekg::bitwise::contains(dock, ekg::dock::left)) {
-        this->rect_text.x = this->docker_text.left.x + offset;
-    }
-
-    if (ekg::bitwise::contains(dock, ekg::dock::right)) {
-        this->rect_text.x = this->docker_text.right.x - offset;
-    }
-
-    if (ekg::bitwise::contains(dock, ekg::dock::top)) {
-        this->rect_text.y = this->docker_text.top.y + offset;
-    }
-
-    if (ekg::bitwise::contains(dock, ekg::dock::bottom)) {
-        this->rect_text.y = this->docker_text.bottom.y - offset;
-    }
+    auto &layout_mask {layout.get_layout_mask()};
+    this->dimension.w = layout_mask.w;
+    this->dimension.h = layout_mask.h;
 }
 
 void ekg::ui::button_widget::on_pre_event(SDL_Event &sdl_event) {

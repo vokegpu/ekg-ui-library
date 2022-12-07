@@ -232,11 +232,11 @@ ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
     ui->set_type(ekg::type::button);
     ekg::core->gen_widget(ui);
 
-    ui->set_text_align(ekg::dock::center);
     ui->set_text(text);
     ui->set_place(dock);
     ui->set_scaled_height(1);
     ui->set_font_size(ekg::font::normal);
+    ui->set_text_align(ekg::dock::left | ekg::dock::center);
 
     return ui;
 }
@@ -255,6 +255,7 @@ ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
     ui->set_place(dock);
     ui->set_scaled_height(1);
     ui->set_font_size(ekg::font::normal);
+    ui->set_text_align(ekg::dock::left | ekg::dock::center);
 
     return ui;
 }
@@ -282,13 +283,14 @@ ekg::ui::slider* ekg::slider(std::string_view tag, float val, float min, float m
     ui->set_bar_align(ekg::dock::left); 
     ui->set_tag(tag);
     ui->set_place(dock);
-    ui->set_text_align(ekg::dock::none);
+    ui->set_text_align(ekg::dock::left);
     ui->set_bar_align(ekg::dock::left | ekg::dock::center);
     ui->set_scaled_height(1);
     ui->set_font_size(ekg::font::normal);
     ui->set_value_min(min);
     ui->set_value_max(max);
     ui->set_precision(0);
+    ui->set_font_size(ekg::font::normal);
     ui->set_bar_axis(ekg::axis::horizontal);
     ui->set_width(200);
 
