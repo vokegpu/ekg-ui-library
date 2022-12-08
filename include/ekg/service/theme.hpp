@@ -51,6 +51,7 @@ namespace ekg::service {
                         slider_background {},
                         slider_outline {},
                         slider_activy {},
+                        slider_activy_bar {},
                         slider_highlight {};
         int32_t slider_bar_thicnkess {}, slider_target_thickness {};
         /* End of slider scheme colors.*/

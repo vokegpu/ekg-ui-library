@@ -81,7 +81,7 @@ void ekg::ui::slider_widget::on_reload() {
 
     this->dimension.w = ekg::min(this->dimension.w, text_height);
     this->rect_text.w = text_width;
-    this->rect_text.h = text_height;
+    this->rect_text.h = text_height - offset;
 
     if (bar_axis == ekg::axis::horizontal) {
         /* We need to set the bar size small if text rendering is not center (center follows the target) */
@@ -172,7 +172,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     }
     
     ekg::draw::rect(this->rect_target + rect, theme.slider_activy, ekg::drawmode::circle);
-    ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activy);
+    ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activy_bar);
 
     f_renderer.blit(this->parsed_value, rect.x + this->rect_text.x, rect.y + this->rect_text.x, theme.slider_string);
     ekg::draw::bind_off_scissor();

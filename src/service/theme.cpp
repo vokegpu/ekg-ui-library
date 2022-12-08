@@ -50,6 +50,7 @@ void ekg::service::theme::gen_default_theme() {
     this->slider_activy = {44, 166, 255, 200};
     this->slider_outline = {202, 207, 222, 150};
     this->slider_highlight = {44, 166, 255, 50};
+    this->slider_activy_bar = this->slider_activy;
     this->slider_bar_thicnkess = 15;
     this->slider_target_thickness = 30;
 
