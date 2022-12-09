@@ -27,7 +27,6 @@ void ekg::ui::button_widget::on_reload() {
 
     auto ui {(ekg::ui::button*) this->data};
     auto &rect {this->get_abs_rect()};
-    auto scaled_height {ui->get_scaled_height()};
     auto f_renderer {ekg::f_renderer(ui->get_font_size())};
 
     float text_width {f_renderer.get_text_width(ui->get_text())};
@@ -37,7 +36,7 @@ void ekg::ui::button_widget::on_reload() {
     float offset {ekg::find_min_offset(text_width, dimension_offset)};
 
     this->dimension.w = ekg::min(this->dimension.w, text_height);
-    this->dimension.h = (text_height + dimension_offset) * static_cast<float>(scaled_height);
+    this->dimension.h = (text_height + dimension_offset) * static_cast<float>(ui->get_scaled_height());
 
     this->rect_text.w = text_width;
     this->rect_text.h = text_height;

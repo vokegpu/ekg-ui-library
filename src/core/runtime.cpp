@@ -37,7 +37,7 @@ void ekg::runtime::set_root(SDL_Window *sdl_win_root) {
     this->root = sdl_win_root;
 }
 
-SDL_Window* ekg::runtime::get_root() {
+SDL_Window *ekg::runtime::get_root() {
     return this->root;
 }
 

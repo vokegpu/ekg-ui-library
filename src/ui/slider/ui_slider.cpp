@@ -19,6 +19,7 @@
 void ekg::ui::slider::set_bar_axis(ekg::axis axis) {
     if (this->bar_axis != axis) {
         this->bar_axis = axis;
+
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
     }
