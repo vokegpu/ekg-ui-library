@@ -80,25 +80,42 @@ void ekg::ui::slider_widget::on_reload() {
     bool centered_text {text_dock_flags == ekg::dock::center};
 
     this->dimension.w = ekg::min(this->dimension.w, text_height);
+
+    if (centered_text) {
+        auto &f_renderer_small {ekg::f_renderer(this->font_render_size)};
+        text_width = f_renderer_small.get_text_width(this->parsed_value);
+        text_height = f_renderer_small.get_text_height();
+    }
+
     this->rect_text.w = text_width;
-    this->rect_text.h = text_height - offset;
+    this->rect_text.h = text_height;
 
-    if (bar_axis == ekg::axis::horizontal) {
-        /* We need to set the bar size small if text rendering is not center (center follows the target) */
-        float text_rendering_not_center {((text_width + offset * 2) * (!centered_text))};
-        this->rect_bar.w = this->dimension.w - (offset  * 2) - text_rendering_not_center;
-        this->rect_bar.h = dimension_height * normalised_bar_thicnkess;
+    float bar_difference_size {};
 
-        this->rect_bar_value.w = this->rect_bar.w * (value - min) / (max - min);
-        this->rect_bar_value.h = this->rect_bar.h;
+    switch (bar_axis) {
+        case ekg::axis::horizontal: {
+            /* we need to subtract the bar with the text size if text align is not center (center follows the target) */
+            float text_rendering_not_center {((text_width + offset * 2) * (!centered_text))};
+            this->rect_bar.w = this->dimension.w - (offset  * 2) - text_rendering_not_center;
+            this->rect_bar.h = dimension_height * normalised_bar_thicnkess;
 
-        // Radius are equals to both dimension (w, h)
-        this->rect_target.w = dimension_height * normalised_target_thickness;
-        this->rect_target.h = this->rect_target.w;
+            this->rect_bar_value.w = this->rect_bar.w * (value - min) / (max - min);
+            this->rect_bar_value.h = this->rect_bar.h;
 
-        layout.set_preset_mask({offset, offset, dimension_height}, bar_axis, this->dimension.w);
-    } else {
+            // Radius are equals to both dimension (w, h)
+            this->rect_target.w = dimension_height * normalised_target_thickness;
+            this->rect_target.h = this->rect_target.w;
 
+            bar_difference_size = this->rect_bar.h;
+            this->rect_bar.h = ekg::min(this->rect_bar.h, this->rect_target.h);
+
+            layout.set_preset_mask({offset, offset, dimension_height}, bar_axis, this->dimension.w);
+            break;
+        }
+
+        case ekg::axis::vertical: {
+            break;
+        }
     }
 
     this->font_render_size = ekg::font::small;
@@ -112,9 +129,31 @@ void ekg::ui::slider_widget::on_reload() {
 
     auto &layout_mask {layout.get_layout_mask()};
 
-    this->rect_target.y = this->rect_bar.y + (this->rect_bar.h  / 2) - (this->rect_target.h / 2);
+    this->rect_bar.h = bar_difference_size;
     this->rect_target.x = this->rect_bar.x + this->rect_bar_value.w - (this->rect_target.w / 2);
+    this->rect_target.y = this->rect_bar.y + (this->rect_bar.h / 2) - (this->rect_target.h / 2);
     this->dimension.h = ekg::min(this->dimension.h, layout_mask.h);
+
+    if (centered_text && bar_axis == ekg::axis::horizontal && ekg::bitwise::contains(bar_dock_flags, ekg::dock::center)) {
+        /* first phase: set right text */
+        this->rect_text.x = this->rect_target.x + this->rect_target.w + offset;
+
+        /* second phase: check text bounds and set left text if necessary */
+        bool text_out_dimension_right {this->rect_text.x + this->rect_text.w > this->dimension.w - offset};
+        this->rect_text.x -= (this->rect_target.w + this->rect_text.w + offset) * text_out_dimension_right;
+    } else if (centered_text && bar_axis == ekg::axis::horizontal && ekg::bitwise::contains(bar_dock_flags, ekg::dock::top | bottom)) {
+        float middle_size {this->dimension.h - (this->rect_target.y + this->rect_target.h)};
+        middle_size /= 2;
+
+        this->rect_text.x = this->rect_target.x + (this->rect_target.w / 2) - (this->rect_text.w / 2);
+        this->rect_text.y = ekg::bitwise::contains(bar_dock_flags, ekg::dock::top) ? this->rect_target.y + this->rect_target.h + (middle_size - (this->rect_text.h / 2)) : offset + (middle_size - (this->rect_text.h / 2));
+    
+        bool text_out_dimension_left {this->rect_text.x < offset};
+        this->rect_text.x = text_out_dimension_left ? offset : this->rect_text.x;
+
+        bool text_out_dimension_right {this->rect_text.x + this->rect_text.w > this->dimension.w - offset};
+        this->rect_text.x = text_out_dimension_right ? (this->dimension.w - offset - this->rect_text.w) : this->rect_text.x;
+    }
 }
 
 void ekg::ui::slider_widget::on_pre_event(SDL_Event &sdl_event) {
@@ -174,6 +213,6 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     ekg::draw::rect(this->rect_target + rect, theme.slider_activy, ekg::drawmode::circle);
     ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activy_bar);
 
-    f_renderer.blit(this->parsed_value, rect.x + this->rect_text.x, rect.y + this->rect_text.x, theme.slider_string);
+    f_renderer.blit(this->parsed_value, rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.slider_string);
     ekg::draw::bind_off_scissor();
 }

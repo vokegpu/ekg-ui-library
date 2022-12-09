@@ -175,6 +175,7 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
 
     ekg::rect vertices {};
     ekg::rect coordinates {};
+    ekg::char_data char_data {};
 
     x = 0;
     y = 0;
@@ -187,7 +188,7 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
             x += static_cast<float>(this->ft_vector_previous_char.x >> 6);
         }
 
-        ekg::char_data &char_data {this->allocated_char_data[chars]};
+        char_data = this->allocated_char_data[chars];
 
         vertices.x = x + char_data.left;
         vertices.y = y + this->full_height - char_data.top;

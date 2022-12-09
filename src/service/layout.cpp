@@ -54,7 +54,7 @@ void ekg::service::layout::process_layout_mask() {
         }
 
         if (axis) {
-            clamped_offset = ekg::clamp((dockrect.rect->h + this->offset_mask.y) - this->offset_mask.z, 0, this->offset_mask.y);
+            clamped_offset = (dockrect.rect->h + this->offset_mask.y) - this->offset_mask.z > 0 ? 0 : this->offset_mask.y;
             
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center) && !(ekg::bitwise::contains(dockrect.dock, ekg::dock::left | ekg::dock::right))) {
                 dockrect.rect->x = (this->respective_mask_center / 2) - (dockrect.rect->w / 2);
@@ -284,9 +284,6 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
         }
 
         prev_rect = rect;
-
-        /* Temp Fix: Maybe not the better performance way but works to prevent position desyncs. */
-        widgets->on_reload();
     }
 }
 

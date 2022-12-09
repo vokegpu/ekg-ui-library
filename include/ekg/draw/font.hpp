@@ -57,14 +57,14 @@ namespace ekg {
             ekg::gpu::allocator *allocator {};
             ekg::char_data allocated_char_data[128] {};
 
-            float get_text_width(std::string_view text);
+            float get_text_width(std::string_view);
             float get_text_height();
 
-            void set_font(const std::string &path);
-            void set_size(uint8_t size);
+            void set_font(const std::string&);
+            void set_size(uint8_t);
             void reload();
-            void bind_allocator(ekg::gpu::allocator* gpu_allocator);
-            void blit(std::string_view text, float x, float y, const ekg::vec4 &color);
+            void bind_allocator(ekg::gpu::allocator*);
+            void blit(std::string_view, float, float, const ekg::vec4&);
 
             void init();
             void quit();
