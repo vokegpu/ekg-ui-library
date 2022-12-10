@@ -66,9 +66,9 @@ void ekg::ui::slider_widget::on_reload() {
     float text_height {f_renderer.get_text_height()};
     float value {ui->get_value()}, min {ui->get_value_min()}, max {ui->get_value_max()};
 
-    this->parsed_value = ekg::parse_float_precision(max, value_precision);
-    float text_width {f_renderer.get_text_width(this->parsed_value)}, max_text_width {text_width}; // use max val as width
-    this->parsed_value = ekg::parse_float_precision(value, value_precision);
+    this->string_value = ekg::string_float_precision(max, value_precision);
+    float text_width {f_renderer.get_text_width(this->string_value)}, max_text_width {text_width}; // use max val as width
+    this->string_value = ekg::string_float_precision(value, value_precision);
 
     float dimension_offset {text_height / 2};
     float offset {ekg::find_min_offset(text_width, dimension_offset)};
@@ -84,7 +84,7 @@ void ekg::ui::slider_widget::on_reload() {
 
     if (centered_text) {
         auto &f_renderer_small {ekg::f_renderer(this->font_render_size)};
-        text_width = f_renderer_small.get_text_width(this->parsed_value);
+        text_width = f_renderer_small.get_text_width(this->string_value);
         text_height = f_renderer_small.get_text_height();
     }
 
@@ -208,8 +208,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     
     ekg::draw::rect(this->rect_target + rect, theme.slider_activy, ekg::drawmode::circle);
     ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activy_bar);
-    ekg::draw::rect(rect, theme.slider_string, ekg::drawmode::outline);
 
-    f_renderer.blit(this->parsed_value, rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.slider_string);
+    f_renderer.blit(this->string_value, rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.slider_string);
     ekg::draw::bind_off_scissor();
 }

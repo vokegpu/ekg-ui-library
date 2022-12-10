@@ -46,6 +46,17 @@ namespace ekg {
         uint64_t ticks_going_on {};
     };
 
+    struct component {
+        std::string name {};
+        ekg::flag flag {};
+        ekg::rect rect {};
+
+        void *data1 {nullptr};
+        int32_t id {};
+
+        component(std::string_view) = default;
+    };
+
     float lerp(float a, float b, float dt);
     void log(const std::string &log_message);
     bool reach(ekg::timing &timing, uint64_t ms);
@@ -55,7 +66,7 @@ namespace ekg {
     bool set(bool &var_mutable, bool predicate);
 
     std::string &set(std::string &var_mutable, const std::string &predicate);
-    std::string parse_float_precision(float, int32_t);
+    std::string string_float_precision(float, int32_t);
 
     namespace bitwise {
         bool contains(uint16_t target, uint16_t flag);

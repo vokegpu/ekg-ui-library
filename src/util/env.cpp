@@ -20,6 +20,10 @@
 #include <SDL2/SDL.h>
 #include <fstream>
 
+ekg::component::component(std::string_view nameof) {
+    this->name = nameof;
+}
+
 bool ekg::bitwise::contains(uint16_t target, uint16_t flags) {
     return target & (flags);
 }
@@ -102,9 +106,9 @@ std::string &ekg::set(std::string &var_mutable, const std::string &predicate) {
     return (var_mutable = predicate);
 }
 
-std::string ekg::parse_float_precision(float n, int32_t precision) {
-    std::string parsed {std::to_string(n)};
-    return parsed.substr(0, ekg::max(parsed.find('.') + precision + (1 * precision), parsed.size()));
+std::string ekg::string_float_precision(float n, int32_t precision) {
+    const std::string string {std::to_string(n)};
+    return string.substr(0, ekg::max(string.find('.') + precision + (1 * precision), string.size()));
 }
 
 bool ekg::input::pressed(std::string_view key_input) {

@@ -24,7 +24,7 @@ namespace ekg::ui {
         void update_bar_axis(ekg::dock);
 	public:
         ekg::rect rect_target {}, rect_text {}, rect_bar {}, rect_bar_value {};
-        std::string parsed_value {};
+        std::string string_value {};
         ekg::font font_render_size {};
 
         void destroy() override;
