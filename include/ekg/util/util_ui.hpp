@@ -27,6 +27,15 @@ namespace ekg {
         void clear();
     };
 
+    struct component {
+        std::string name {};
+        ekg::flag flag {};
+        ekg::rect rect {};
+
+        void *data1 {nullptr};
+        int32_t id {};
+    };
+
     void reload(int32_t);
     void reload(ekg::ui::abstract_widget*);
 

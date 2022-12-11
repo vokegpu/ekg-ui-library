@@ -27,7 +27,7 @@ namespace ekg {
     };
 
     enum class font {
-        small, normal, big
+        small = 0, normal = 1, big = 2
     };
 
     struct flag {
@@ -44,17 +44,6 @@ namespace ekg {
         uint64_t elapsed_ticks {};
         uint64_t current_ticks {};
         uint64_t ticks_going_on {};
-    };
-
-    struct component {
-        std::string name {};
-        ekg::flag flag {};
-        ekg::rect rect {};
-
-        void *data1 {nullptr};
-        int32_t id {};
-
-        component(std::string_view) = default;
     };
 
     float lerp(float a, float b, float dt);

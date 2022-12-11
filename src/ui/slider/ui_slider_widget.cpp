@@ -54,8 +54,6 @@ void ekg::ui::slider_widget::on_reload() {
 
     auto ui {(ekg::ui::slider*) this->data};
     auto &rect {this->get_abs_rect()};
-    auto dock {ui->get_bar_align()};
-    auto scaled_height {ui->get_scaled_height()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
     auto text_dock_flags {ui->get_text_align()};
     auto bar_dock_flags {ui->get_bar_align()};
@@ -74,7 +72,7 @@ void ekg::ui::slider_widget::on_reload() {
     float offset {ekg::find_min_offset(text_width, dimension_offset)};
     float dimension_height {(text_height + dimension_offset) * static_cast<float>(ui->get_scaled_height())};
 
-    float normalised_bar_thicnkess {static_cast<float>(theme.slider_bar_thicnkess) / 100},
+    float normalised_bar_thickness {static_cast<float>(theme.slider_bar_thicnkess) / 100},
           normalised_target_thickness {static_cast<float>(theme.slider_target_thickness) / 100};
     auto &layout {ekg::core->get_service_layout()};
     bool centered_text {text_dock_flags == ekg::dock::center};
@@ -98,7 +96,7 @@ void ekg::ui::slider_widget::on_reload() {
             /* we need to subtract the bar with the text size if text align is not center (center follows the target) */
             float text_rendering_not_center {((text_width + offset * 2) * (!centered_text))};
             this->rect_bar.w = this->dimension.w - (offset  * 2) - text_rendering_not_center;
-            this->rect_bar.h = dimension_height * normalised_bar_thicnkess;
+            this->rect_bar.h = dimension_height * normalised_bar_thickness;
 
             this->rect_bar_value.w = this->rect_bar.w * (value - min) / (max - min);
             this->rect_bar_value.h = this->rect_bar.h;
@@ -130,7 +128,6 @@ void ekg::ui::slider_widget::on_reload() {
     layout.process_layout_mask();
 
     auto &layout_mask {layout.get_layout_mask()};
-    this->dimension.w = layout_mask.w;
     this->dimension.h = layout_mask.h;
 
     this->rect_bar.h = bar_difference_size;

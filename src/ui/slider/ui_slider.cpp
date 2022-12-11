@@ -59,7 +59,7 @@ void ekg::ui::slider::set_font_size(ekg::font font) {
 }
 
 ekg::font ekg::ui::slider::get_font_size() {
-    return ekg::font::big;
+    return this->font_size;
 }
 
 void ekg::ui::slider::set_width(float width) {

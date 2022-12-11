@@ -28,6 +28,7 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
     float start_x {};
     float render_x {};
     float text_width {};
+    ekg::char_data char_data {};
 
     for (const char &chars : text) {
         if (this->ft_bool_kerning && this->ft_uint_previous && chars) {
@@ -35,7 +36,7 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
             start_x += static_cast<float>(ft_vec.x >> 6);
         }
 
-        ekg::char_data &char_data {this->allocated_char_data[chars]};
+        char_data = this->allocated_char_data[chars];
 
         render_x = start_x + char_data.left;
         start_x += char_data.texture_x;

@@ -63,9 +63,9 @@ int32_t main(int, char**) {
         frame->set_drag(ekg::dock::top);
 
         ekg::label("DeathWishes.com", ekg::dock::left | ekg::dock::top);
-        ekg::checkbox("", ekg::dock::left | ekg::dock::top)->set_box_align(ekg::dock::center | ekg::dock::left);
-        ekg::slider("", 20, 20, 255, ekg::dock::left | ekg::dock::top | ekg::dock::next);
-        ekg::slider("", 20, 20, 255, ekg::dock::left | ekg::dock::top)->set_bar_align(ekg::dock::bottom | ekg::dock::left);
+        ekg::checkbox("Check box!! uwu", ekg::dock::left | ekg::dock::top)->set_box_align(ekg::dock::center | ekg::dock::right);
+        ekg::slider("", 20, 20, 255, ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_text_align(ekg::dock::center | ekg::dock::left);
+        ekg::slider("", 20, 20, 255, ekg::dock::left | ekg::dock::top)->set_bar_align(ekg::dock::top | ekg::dock::left);
         ekg::button("Register", ekg::dock::left | ekg::dock::top | ekg::dock::next);
         ekg::button("Login", ekg::dock::left | ekg::dock::top | ekg::dock::next);
         ekg::button("User List", ekg::dock::left | ekg::dock::top | ekg::dock::next);

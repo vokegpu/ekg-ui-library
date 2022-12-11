@@ -1,7 +1,7 @@
 #ifndef EKG_UI_POPUP_H
 #define EKG_UI_POPUP_H
 
-#include "ekg/ui/abstract/ui_abstract.hpp"
+#include "ekg/util/util_ui.hpp"
 
 namespace ekg::ui {
 	class popup : public ekg::ui::abstract {
@@ -12,7 +12,7 @@ namespace ekg::ui {
 		void append(const std::vector<std::string>&);
 		void append(const ekg::component&);
 		void remove(std::string_view);
-		void linked(std::string_view, ekg::popup*);
+		void linked(std::string_view, ekg::ui::popup*);
 
 		void set_place(uint16_t);
 		void set_text_align(uint16_t);

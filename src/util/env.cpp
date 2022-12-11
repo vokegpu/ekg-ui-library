@@ -20,10 +20,6 @@
 #include <SDL2/SDL.h>
 #include <fstream>
 
-ekg::component::component(std::string_view nameof) {
-    this->name = nameof;
-}
-
 bool ekg::bitwise::contains(uint16_t target, uint16_t flags) {
     return target & (flags);
 }
