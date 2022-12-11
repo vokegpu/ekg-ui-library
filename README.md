@@ -6,15 +6,15 @@ The purpose of ekg is being fully customizable, smooth and with many animations.
 
 # Running
 
-Supported compilers: GNU.  
+C++ compiler(s) support: GNU  
 Library output path:   
 `lib/win32/libekg.a` - Windows 32/64bits  
 `lib/linux/libekg.a` - Linux x86_x64
 
 # Setup
 
-To setup ekg in your project, first link the library and after put `include/` in your compiler include directory or your project directory.  
-Note that you need to link the dependencies used in ekg: ![SDL2](https://www.libsdl.org/), ![GLEW](https://glew.sourceforge.net/) and ![FreeType](http://freetype.org/).
+First move `include/` to compiler include path or set in cmake/makefile/other project directory, then you need to link the library.  
+Note that you need to link all dependencies that come with ekg: ![SDL2](https://www.libsdl.org/), ![GLEW](https://glew.sourceforge.net/) and ![FreeType](http://freetype.org/).
 
 ```c++
 #include <ekg/ekg.hpp>
