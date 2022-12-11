@@ -6,7 +6,7 @@ The purpose of ekg is being fully customizable, smooth and with many animations.
 
 # Running
 
-C++ Compiler(s) support: GNU.  
+C++ compiler(s) support: GNU.  
 Library output path:   
 `lib/win32/libekg.a` - Windows 32/64bits  
 `lib/linux/libekg.a` - Linux x86_x64
