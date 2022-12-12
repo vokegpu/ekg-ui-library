@@ -20,11 +20,11 @@ Note that you need to link all dependencies that come with ekg: ![SDL2](https://
 #include <ekg/ekg.hpp>
 
 int32_t main(int32_t, char**) {
-  // create SDL2 context and OpenGL context.
-  //... init ekg reset library.
+  // create SDL2 window and OpenGL context.
+  //... init ekg.
   ekg::init(sdl_window);
   
-  // Create GUI elements once tick here or in some place of mainloop.
+  // create GUI elements here or somewhere in the code, but once tick.
   ekg::frame("fps frame", {20, 20}, {200, 200});
   auto label_fps = ekg::label("fps", ekg::dock::left | ekg::dock::top);
   
