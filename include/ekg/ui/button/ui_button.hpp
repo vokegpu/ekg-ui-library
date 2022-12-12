@@ -42,7 +42,7 @@ namespace ekg::ui {
         float get_height();
 
         void set_callback(ekg::cpu::event*);
-        ekg::cpu::event* get_callback();
+        ekg::cpu::event *get_callback();
 
         void set_text(std::string_view);
         std::string_view get_text();

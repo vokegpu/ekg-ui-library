@@ -33,7 +33,7 @@ namespace ekg {
         ekg::rect rect {};
 
         void *data1 {nullptr};
-        int32_t id {};
+        int32_t id {}, linked_id {};
     };
 
     void reload(int32_t);
