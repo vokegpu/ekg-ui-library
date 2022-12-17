@@ -20,7 +20,12 @@
 namespace ekg::ui {
 	class popup_widget : public ekg::ui::abstract_widget {
 	protected:
-        std::vector<ekg::rect> component_rect_list {};
+        struct element {
+            ekg::rect rect {};
+            bool separator {};
+        };
+
+        std::vector<ekg::ui::popup_widget::element> element_list {};
 	public:
         void destroy() override;
         void on_reload() override;

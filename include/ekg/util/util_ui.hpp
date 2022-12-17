@@ -31,6 +31,7 @@ namespace ekg {
         std::string name {};
         ekg::flag flag {};
         ekg::rect rect {};
+        bool boolean {};
 
         void *data1 {nullptr};
         int32_t id {}, linked_id {};

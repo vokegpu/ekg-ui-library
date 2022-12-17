@@ -21,27 +21,27 @@ bool ekg::ui::popup::contains(std::string_view component_name) {
 
 void ekg::ui::popup::append(const std::vector<std::string> &component_name_list) {
     for (const std::string &component_name : component_name_list) {
-        if (this->contains(component_name)) {
-            continue;
-        }
-
-        ekg::component component {};
-        component.id = ++this->token_id;
-        component.name = component_name;
-
-        this->registered_component_map[component_name] = this->component_list.size();
-        this->component_list.push_back(component);
+        this->append(component_name);
     }
 }
 
 void ekg::ui::popup::append(std::string_view component_name) {
-    if (this->contains(component_name)) {
+    std::string factored_component_name {component_name};
+    bool is_seperator {component_name.size() >= 3 && component_name.at(0) == '-' && component_name.at(1) == '-' && component_name.at(2) == '-'};
+
+    if (is_seperator) {
+        factored_component_name = factored_component_name.substr(3, factored_component_name.size());
+        is_seperator = true;
+    }
+
+    if (this->contains(factored_component_name)) {
         return;
     }
 
     ekg::component component {};
-    component.id = this->token_id;
-    component.name = component_name;
+    component.id = ++this->token_id;
+    component.name = factored_component_name;
+    component.boolean = is_seperator;
 
     this->registered_component_map[component_name.data()] = true;
     this->component_list.push_back(component);
