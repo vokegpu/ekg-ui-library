@@ -37,7 +37,7 @@ namespace ekg {
         class abstract : public ekg::feature {
         protected:
             int32_t id {}, parent_id {};
-            std::vector<int32_t> parent_id_list {};
+            std::vector<int32_t> child_id_list {};
 
             bool alive {true};
             uint16_t dock_flags {}, sync_flags {};
@@ -77,6 +77,9 @@ namespace ekg {
 
             ekg::rect &widget();
             ekg::rect &ui();
+
+            bool has_parent();
+            bool has_children();
         };
     }
 }

@@ -25,6 +25,7 @@ namespace ekg::ui {
 
 		uint16_t text_flags {};
         uint32_t scaled_height {}, token_id {};
+        ekg::font font_size;
 	public:
 		void append(const std::vector<std::string>&);
 		void append(std::string_view);
@@ -42,6 +43,9 @@ namespace ekg::ui {
         void set_scaled_height(int32_t);
         int32_t get_scaled_height();
         float get_height();
+
+        void set_font_size(ekg::font font);
+        ekg::font get_font_size();
 	};
 }
 

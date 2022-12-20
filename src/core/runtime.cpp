@@ -590,12 +590,14 @@ void ekg::runtime::do_task_synclayout(ekg::ui::abstract_widget *widget) {
         return;
     }
 
-    bool is_group  {widget->data->get_type() == ekg::type::frame};
-    if (!is_group && widget->data->get_parent_id() != widget->data->get_id()) {
+    bool is_group {widget->data->get_type() == ekg::type::frame};
+    bool check_parent {is_group == false && widget->data->has_parent()};
+
+    if (check_parent) {
         widget = this->get_fast_widget_by_id(widget->data->get_parent_id());
     }
 
-    if (is_group || (!is_group || widget != nullptr)) {
+    if (widget != nullptr) {
         this->loaded_widget_sync_layou_list.push_back(widget);
         ekg::dispatch(ekg::env::synclayout);
     }

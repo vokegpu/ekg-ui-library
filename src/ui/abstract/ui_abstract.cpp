@@ -22,49 +22,45 @@ ekg::ui::abstract::abstract() {
 ekg::ui::abstract::~abstract() {
 }
 
-void ekg::ui::abstract::parent(int32_t token) {
-    bool not_contains {true};
+void ekg::ui::abstract::parent(int32_t element_id) {
+    bool contains {};
+    ekg::ui::abstract_widget *widget {nullptr};
 
-    for (int32_t &tokens : this->parent_id_list) {
-        if (!(not_contains = tokens != token)) {
+    for (int32_t &element_ids : this->child_id_list) {
+        if ((contains = element_ids == element_id)) {
             break;
         }
     }
 
-    if (not_contains) {
-        auto widget = ekg::core->get_fast_widget_by_id(token);
-
-        if (widget != nullptr) {
-            auto group = ekg::core->get_fast_widget_by_id(this->id);
-            this->parent_id_list.push_back(token);
-            widget->data->set_parent_id(this->id);
-            widget->parent = &group->data->widget();
-        }
+    if (contains == false && (widget = ekg::core->get_fast_widget_by_id(element_id)) != nullptr) {        
+        this->child_id_list.push_back(element_id);
+        widget->data->set_parent_id(this->id);
+        widget->parent = &rect_widget;
     }
 }
 
 std::vector<int32_t> &ekg::ui::abstract::get_parent_id_list() {
-    return this->parent_id_list;
+    return this->child_id_list;
 }
 
-void ekg::ui::abstract::set_id(int32_t token) {
-    this->id = token;
+void ekg::ui::abstract::set_id(int32_t element_id) {
+    this->id = element_id;
 }
 
 int32_t ekg::ui::abstract::get_id() {
     return this->id;
 }
 
-void ekg::ui::abstract::set_parent_id(int32_t token) {
-    this->parent_id = token;
+void ekg::ui::abstract::set_parent_id(int32_t element_id) {
+    this->parent_id = element_id;
 }
 
 int32_t ekg::ui::abstract::get_parent_id() {
     return this->parent_id;
 }
 
-void ekg::ui::abstract::set_alive(bool flag_alive) {
-    this->alive = flag_alive;
+void ekg::ui::abstract::set_alive(bool element_alive) {
+    this->alive = element_alive;
 }
 
 bool ekg::ui::abstract::is_alive() {
@@ -114,4 +110,12 @@ uint16_t &ekg::ui::abstract::get_sync() {
 void ekg::ui::abstract::reset() {
     ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::reset);
     ekg::reload(this->id);
+}
+
+bool ekg::ui::abstract::has_parent() {
+    return this->parent_id != 0;
+}
+
+bool ekg::ui::abstract::has_children() {
+    return !this->child_id_list.empty();
 }

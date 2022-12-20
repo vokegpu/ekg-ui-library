@@ -125,3 +125,12 @@ int32_t ekg::ui::popup::get_scaled_height() {
 float ekg::ui::popup::get_height() {
     return this->rect_widget.h;
 }
+
+void ekg::ui::popup::set_font_size(ekg::font f_size) {
+    if (this->font_size != f_size) {
+        this->font_size = f_size;
+        ekg::reload(this->id);
+        ekg::synclayout(this->parent_id);
+        ekg::scissor(this->parent_id);
+    }
+}
