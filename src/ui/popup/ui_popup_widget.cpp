@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
  * VOKEGPU EKG LICENSE
  *
@@ -13,29 +12,6 @@
  * @VokeGpu 2022 all rights reserved.
  */
 
-#include "ekg/ui/popup/ui_popup_widget.hpp"
-
-void ekg::ui::popup_widget::destroy() {
-    abstract_widget::destroy();
-
-    
-}
-
-void ekg::ui::popup_widget::on_reload() {
-    abstract_widget::on_reload();
-}
-
-void ekg::ui::popup_widget::on_pre_event(SDL_Event &sdl_event) {
-    abstract_widget::on_pre_event(sdl_event);
-}
-
-void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
-    abstract_widget::on_event(sdl_event);
-}
-
-void ekg::ui::popup_widget::on_post_event(SDL_Event &sdl_event) {
-    abstract_widget::on_post_event(sdl_event);
-=======
 #include "ekg/ui/popup/ui_popup_widget.hpp"
 #include "ekg/ui/popup/ui_popup.hpp"
 #include "ekg/ekg.hpp"
@@ -59,8 +35,6 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::popup_widget::on_post_event(SDL_Event &sdl_event) {
-
->>>>>>> ed6d07b (Refactored base structure UI methods.)
 }
 
 void ekg::ui::popup_widget::on_update() {
@@ -68,8 +42,4 @@ void ekg::ui::popup_widget::on_update() {
 }
 
 void ekg::ui::popup_widget::on_draw_refresh() {
-<<<<<<< HEAD
-=======
-
->>>>>>> ed6d07b (Refactored base structure UI methods.)
 }
