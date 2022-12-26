@@ -23,7 +23,29 @@ void ekg::ui::popup_widget::destroy() {
 void ekg::ui::popup_widget::on_reload() {
 	auto ui {(ekg::ui::popup*) this->data};
 	auto &theme {ekg::theme()};
-	auto &font_renderer {ekg::f_renderer(ui->get_font_size())};
+	auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
+    auto &rect {this->get_abs_rect()};
+
+    float max_width {};
+    float text_width {};
+
+    for (ekg::component &components : ui->get_component_list()) {
+        text_width = f_renderer.get_text_width(components.name);
+        if (text_width > max_width) {
+            max_width = text_width;
+        }
+    }
+
+    float text_height {f_renderer.get_text_height()};
+    float dimension_offset {text_height / 2};
+    float offset {ekg::find_min_offset(text_width, dimension_offset)};
+
+    this->dimension.w = ekg::min(this->dimension.w, max_width);
+
+    ekg::ui::popup_widget::element element {};
+    for (ekg::component &components : ui->get_component_list()) {
+        text_width = f_renderer.get_text_width(components.name);
+    }
 }
 
 void ekg::ui::popup_widget::on_pre_event(SDL_Event &sdl_event) {

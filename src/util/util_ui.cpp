@@ -49,7 +49,7 @@ void ekg::push_back_stack(ekg::ui::abstract_widget *pwidget, ekg::stack &stack) 
     stack.registry[pwidget->data->get_id()] = true;
     stack.ordered_list.push_back(pwidget);
 
-    for (int32_t &ids : pwidget->data->get_parent_id_list()) {
+    for (int32_t &ids : pwidget->data->get_child_id_list()) {
         auto widgets {ekg::core->get_fast_widget_by_id(ids)};
 
         if (widgets == nullptr) {

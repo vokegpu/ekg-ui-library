@@ -127,6 +127,12 @@ float ekg::max(float a, float b) {
     return a > b ? b : a;
 }
 
+void ekg::find_aligned_dock(uint16_t flags, ekg::rect target, ekg::rect bound, float offset) {
+    if (ekg::bitwise::contains(flags, ekg::dock::center)) {
+        
+    }
+}
+
 float ekg::find_min_offset(float text_width, float offset) {
     /* 
      Use initial offset to get the min possible offset.

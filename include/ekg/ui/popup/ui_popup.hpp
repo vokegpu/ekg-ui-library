@@ -24,7 +24,7 @@ namespace ekg::ui {
         std::map<std::string, int32_t> registered_component_map {};
 
 		uint16_t text_flags {};
-        uint32_t scaled_height {}, token_id {};
+        int32_t scaled_height {}, token_id {};
         ekg::font font_size;
 	public:
 		void append(const std::vector<std::string>&);
@@ -32,6 +32,8 @@ namespace ekg::ui {
 		void append_linked(std::string_view, ekg::ui::popup*);
 		void remove(std::string_view);
         bool contains(std::string_view);
+
+        std::vector<ekg::component> &get_component_list();
 
 		void set_place(uint16_t);
 		void set_text_align(uint16_t);

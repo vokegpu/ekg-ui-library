@@ -53,8 +53,8 @@ namespace ekg {
             void set_tag(std::string_view);
             std::string_view get_tag();
 
-            void parent(int32_t);
-            std::vector<int32_t> &get_parent_id_list();
+            void add_child(int32_t);
+            std::vector<int32_t> &get_child_id_list();
 
             void set_id(int32_t);
             int32_t get_id();

@@ -57,7 +57,7 @@ int32_t main(int, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    for (int i {}; i < 1; i++) {
+    for (int i {}; i < 100; i++) {
         auto frame {ekg::frame("hello", {80, 80}, {200, 200})};
         frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
         frame->set_drag(ekg::dock::top);
@@ -69,7 +69,7 @@ int32_t main(int, char**) {
         ekg::button("Register", ekg::dock::left | ekg::dock::top | ekg::dock::next);
         ekg::button("Login", ekg::dock::left | ekg::dock::top | ekg::dock::next);
         ekg::button("User List", ekg::dock::left | ekg::dock::top | ekg::dock::next);
-        ekg::button("Exit", ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_callback(new ekg::cpu::event {"exit-callback", nullptr, [](void *pdata) {
+        ekg::button("Exit", ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_callback(new ekg::cpu::event {"exit-callback", nullptr, [](void *p_data) {
             SDL_Event custom_sdl_event {};
             custom_sdl_event.type = SDL_QUIT;
             SDL_PushEvent(&custom_sdl_event);

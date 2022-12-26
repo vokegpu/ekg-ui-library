@@ -22,7 +22,7 @@ ekg::ui::abstract::abstract() {
 ekg::ui::abstract::~abstract() {
 }
 
-void ekg::ui::abstract::parent(int32_t element_id) {
+void ekg::ui::abstract::add_child(int32_t element_id) {
     bool contains {};
     ekg::ui::abstract_widget *widget {nullptr};
 
@@ -39,7 +39,7 @@ void ekg::ui::abstract::parent(int32_t element_id) {
     }
 }
 
-std::vector<int32_t> &ekg::ui::abstract::get_parent_id_list() {
+std::vector<int32_t> &ekg::ui::abstract::get_child_id_list() {
     return this->child_id_list;
 }
 

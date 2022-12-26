@@ -33,7 +33,7 @@ file(GLOB_RECURSE HEADER_FILES "include/ekg/*.hpp")
 
 include(GNUInstallDirs)
 
-# Generate shared lib (DLL).
+# Generate static lib (non - DLL).
 message("-- Creating static lib")
 add_library(ekg STATIC ${SOURCE_FILES})
 

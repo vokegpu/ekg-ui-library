@@ -228,7 +228,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
 
     ekg::rect prev_rect {};
 
-    for (int32_t &ids : widget_parent->data->get_parent_id_list()) {
+    for (int32_t &ids : widget_parent->data->get_child_id_list()) {
         widgets = ekg::core->get_fast_widget_by_id(ids);
 
         if (widgets == nullptr) {

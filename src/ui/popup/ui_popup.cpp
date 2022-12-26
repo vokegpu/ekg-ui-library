@@ -27,11 +27,11 @@ void ekg::ui::popup::append(const std::vector<std::string> &component_name_list)
 
 void ekg::ui::popup::append(std::string_view component_name) {
     std::string factored_component_name {component_name};
-    bool is_seperator {component_name.size() >= 3 && component_name.at(0) == '-' && component_name.at(1) == '-' && component_name.at(2) == '-'};
+    bool is_separator {component_name.size() >= 3 && component_name.at(0) == '-' && component_name.at(1) == '-' && component_name.at(2) == '-'};
 
-    if (is_seperator) {
+    if (is_separator) {
         factored_component_name = factored_component_name.substr(3, factored_component_name.size());
-        is_seperator = true;
+        is_separator = true;
     }
 
     if (this->contains(factored_component_name)) {
@@ -41,7 +41,7 @@ void ekg::ui::popup::append(std::string_view component_name) {
     ekg::component component {};
     component.id = ++this->token_id;
     component.name = factored_component_name;
-    component.boolean = is_seperator;
+    component.boolean = is_separator;
 
     this->registered_component_map[component_name.data()] = true;
     this->component_list.push_back(component);
@@ -73,6 +73,10 @@ void ekg::ui::popup::remove(std::string_view component_name) {
         new_list.push_back(component);
         this->registered_component_map[component.name] = this->token_id;
     }
+}
+
+std::vector<ekg::component> &ekg::ui::popup::get_component_list() {
+    return this->component_list;
 }
 
 void ekg::ui::popup::set_place(uint16_t flags) {
@@ -133,4 +137,8 @@ void ekg::ui::popup::set_font_size(ekg::font f_size) {
         ekg::synclayout(this->parent_id);
         ekg::scissor(this->parent_id);
     }
+}
+
+ekg::font ekg::ui::popup::get_font_size() {
+    return this->font_size;
 }

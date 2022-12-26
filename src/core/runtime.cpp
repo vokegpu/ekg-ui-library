@@ -100,7 +100,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
             found_absolute_widget = widgets->flag.absolute;
         }
 
-        widgets->on_post_event(sdl_event);
+        widgets->flag.hovered = false;
 
         if (!hovered || found_absolute_widget) {
             widgets->on_event(sdl_event);
@@ -110,7 +110,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     if (focused_widget != nullptr) {
         focused_widget->on_pre_event(sdl_event);
         focused_widget->on_event(sdl_event);
-        focused_widget->on_post_event(sdl_event);
+        focused_widget->flag.hovered = false;
     }
 
     if (pressed) {
@@ -159,8 +159,8 @@ void ekg::runtime::prepare_tasks() {
       to dispatch tasks in n sequence. This is only a feature for allocated tasks.
      */
 
-    this->handler_service.dispatch(new ekg::cpu::event {"refresh", this, [](void* pdata) {
-        auto runtime {static_cast<ekg::runtime*>(pdata)};
+    this->handler_service.dispatch(new ekg::cpu::event {"refresh", this, [](void* p_data) {
+        auto runtime {static_cast<ekg::runtime*>(p_data)};
 
         for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_refresh_list) {
             if (widgets == nullptr) {
@@ -179,8 +179,8 @@ void ekg::runtime::prepare_tasks() {
         runtime->loaded_widget_refresh_list.clear();
     }, ekg::event::alloc});
 
-    this->handler_service.dispatch(new ekg::cpu::event {"swap", this, [](void* pdata) {
-        auto runtime {static_cast<ekg::runtime*>(pdata)};
+    this->handler_service.dispatch(new ekg::cpu::event {"swap", this, [](void* p_data) {
+        auto runtime {static_cast<ekg::runtime*>(p_data)};
         if (runtime->swap_widget_id_focused == 0) {
             return;
         }
@@ -228,8 +228,8 @@ void ekg::runtime::prepare_tasks() {
         ekg::swap::refresh();
     }, ekg::event::alloc});
 
-    this->handler_service.dispatch(new ekg::cpu::event {"reload", this, [](void* pdata) {
-        auto runtime {static_cast<ekg::runtime*>(pdata)};
+    this->handler_service.dispatch(new ekg::cpu::event {"reload", this, [](void* p_data) {
+        auto runtime {static_cast<ekg::runtime*>(p_data)};
 
         for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_reload_list) {
             if (widgets == nullptr) {
@@ -292,8 +292,8 @@ void ekg::runtime::prepare_tasks() {
         runtime->processed_widget_map.clear();
     }, ekg::event::alloc});
 
-    this->handler_service.dispatch(new ekg::cpu::event {"synclayout", this, [](void* pdata) {
-        auto runtime {static_cast<ekg::runtime*>(pdata)};
+    this->handler_service.dispatch(new ekg::cpu::event {"synclayout", this, [](void* p_data) {
+        auto runtime {static_cast<ekg::runtime*>(p_data)};
         // todo fix the issue with sync layout offset.
 
         for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_sync_layou_list) {
@@ -309,8 +309,8 @@ void ekg::runtime::prepare_tasks() {
         runtime->processed_widget_map.clear();
     }, ekg::event::alloc});
 
-    this->handler_service.dispatch(new ekg::cpu::event {"redraw", this, [](void* pdata) {
-        auto runtime {static_cast<ekg::runtime*>(pdata)};
+    this->handler_service.dispatch(new ekg::cpu::event {"redraw", this, [](void* p_data) {
+        auto runtime {static_cast<ekg::runtime*>(p_data)};
 
         runtime->allocator.invoke();
         runtime->f_renderer_big.blit("Widgets count: " + std::to_string(runtime->loaded_widget_list.size()), 10, 10, {255, 255, 255, 255});
@@ -324,8 +324,8 @@ void ekg::runtime::prepare_tasks() {
         runtime->allocator.revoke();
     }, ekg::event::alloc});
 
-    this->handler_service.dispatch(new ekg::cpu::event {"scissor", this, [](void* pdata) {
-        auto runtime {static_cast<ekg::runtime*>(pdata)};
+    this->handler_service.dispatch(new ekg::cpu::event {"scissor", this, [](void* p_data) {
+        auto runtime {static_cast<ekg::runtime*>(p_data)};
 
         float scissor[4] {}, scissor_parent_master[4] {};
         ekg::ui::abstract_widget *parent_master {nullptr};
@@ -567,7 +567,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract* ui) {
     this->do_task_reload(created_widget);
 
     if (!is_group && this->current_bind_group != nullptr) {
-        this->current_bind_group->data->parent(ui->get_id());
+        this->current_bind_group->data->add_child(ui->get_id());
     } else if (is_group) {
         this->do_task_synclayout(created_widget);
         this->do_task_scissor(created_widget);
