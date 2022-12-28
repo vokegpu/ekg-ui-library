@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #ifndef EKG_UI_POPUP_H
@@ -46,7 +46,7 @@ namespace ekg::ui {
         int32_t get_scaled_height();
         float get_height();
 
-        void set_font_size(ekg::font font);
+        void set_font_size(ekg::font);
         ekg::font get_font_size();
 	};
 }

@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #ifndef EKG_UTIL_EVENT_H
@@ -20,8 +20,8 @@
 #include <iostream>
 
 namespace ekg {
-    void dispatch(ekg::cpu::event* event);
-    void dispatch(const ekg::env &env);
+    void dispatch(ekg::cpu::event*);
+    void dispatch(const ekg::env&);
 }
 
 #endif

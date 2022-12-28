@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #ifndef EKG_UTIL_ENV_H
@@ -46,10 +46,10 @@ namespace ekg {
         uint64_t ticks_going_on {};
     };
 
-    float lerp(float a, float b, float dt);
-    void log(const std::string &log_message);
-    bool reach(ekg::timing &timing, uint64_t ms);
-    bool reset(ekg::timing &timing);
+    float lerp(float, float, float);
+    void log(const std::string&);
+    bool reach(ekg::timing&, uint64_t);
+    bool reset(ekg::timing&);
 
     bool file_to_string(std::string &string_builder, const std::string &path);
     bool set(bool &var_mutable, bool predicate);

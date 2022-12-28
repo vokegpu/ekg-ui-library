@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #ifndef EKG_UTIL_GEOMETRY_H
@@ -42,7 +42,7 @@ namespace ekg {
      * Enum linked to dock.
      */
     enum axis {
-        vertical      = 256,
+        vertical   = 256,
         horizontal = 512
     };
 
@@ -130,19 +130,19 @@ namespace ekg {
     };
 
     float clamp(float, float, float);
-    void orthographic2d(float* matrix, float left, float right, float bottom, float top);
-    bool rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b);
-    bool rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec);
+    void orthographic2d(float*, float, float, float, float);
+    bool rect_collide_rect(const ekg::rect&, const ekg::rect&);
+    bool rect_collide_vec(const ekg::rect&, const ekg::vec4&);
 
-    void set_rect_clamped(ekg::rect &rect, float min_size);
-    void set_dock_scaled(const ekg::rect &rect, const ekg::vec2 &offset, ekg::docker &docker);
+    void set_rect_clamped(ekg::rect&, float);
+    void set_dock_scaled(const ekg::rect&, const ekg::vec2&, ekg::docker&);
     
     void find_aligned_dock(uint16_t, ekg::rect, ekg::rect, float);
-    int32_t find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::vec4 &vec);
-    float find_min_offset(float text_width, float offset);
+    int32_t find_collide_dock(ekg::docker&, uint16_t, const ekg::vec4&);
+    float find_min_offset(float, float);
 
-    float min(float a, float b);
-    float max(float a, float b);
+    float min(float, float);
+    float max(float, float);
     ekg::vec4 &interact();
 }
 

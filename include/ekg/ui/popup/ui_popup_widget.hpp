@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #ifndef EKG_UI_POPUP_WIDGET_H
@@ -29,9 +29,9 @@ namespace ekg::ui {
 	public:
         void destroy() override;
         void on_reload() override;
-        void on_pre_event(SDL_Event &sdl_event) override;
-        void on_event(SDL_Event &sdl_event) override;
-        void on_post_event(SDL_Event &sdl_event) override;
+        void on_pre_event(SDL_Event&) override;
+        void on_event(SDL_Event&) override;
+        void on_post_event(SDL_Event&) override;
         void on_update() override;
         void on_draw_refresh() override;
 	};

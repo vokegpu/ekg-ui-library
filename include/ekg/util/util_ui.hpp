@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #ifndef EKG_UTIL_UI_H
@@ -43,8 +43,8 @@ namespace ekg {
     void scissor(int32_t);
     void scissor(ekg::ui::abstract_widget*);
 
-    void synclayout(int32_t id);
-    void synclayout(ekg::ui::abstract_widget *pwidget);
+    void synclayout(int32_t);
+    void synclayout(ekg::ui::abstract_widget*);
 
     void push_back_stack(ekg::ui::abstract_widget*, ekg::stack&);
     ekg::ui::abstract_widget *find_absolute_parent_master(ekg::ui::abstract_widget*);

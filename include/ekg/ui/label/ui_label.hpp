@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #ifndef EKG_UI_LABEL_H
@@ -32,10 +32,10 @@ namespace ekg::ui {
         void set_place(uint16_t);
         int32_t get_scaled_height();
 
-        void set_width(float width);
+        void set_width(float);
         float get_width();
 
-        void set_scaled_height(int32_t scaled_factor_height);
+        void set_scaled_height(int32_t);
         float get_height();
 
         void set_text(std::string_view);
