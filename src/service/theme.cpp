@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #include "ekg/service/theme.hpp"
@@ -55,6 +55,11 @@ void ekg::service::theme::gen_default_theme() {
     this->slider_target_thickness = 30;
 
     this->label_string = {202, 207, 222, 255};
+
+    this->popup_string = {202, 207, 222, 255};
+    this->popup_background = {53, 61, 81, 255};
+    this->popup_outline = {202, 207, 222, 150};
+    this->popup_highlight = {44, 166, 255, 50};
 }
 
 void ekg::service::theme::refresh_theme_list() {

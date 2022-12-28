@@ -9,8 +9,9 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
+
 #include "ekg/util/geometry.hpp"
 #include "ekg/ekg.hpp"
 
@@ -125,12 +126,6 @@ float ekg::min(float a, float b) {
 
 float ekg::max(float a, float b) {
     return a > b ? b : a;
-}
-
-void ekg::find_aligned_dock(uint16_t flags, ekg::rect target, ekg::rect bound, float offset) {
-    if (ekg::bitwise::contains(flags, ekg::dock::center)) {
-        
-    }
 }
 
 float ekg::find_min_offset(float text_width, float offset) {

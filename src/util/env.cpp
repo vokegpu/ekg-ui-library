@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #include "ekg/util/util_event.hpp"
@@ -35,7 +35,7 @@ uint16_t &ekg::bitwise::add(uint16_t &target, uint16_t flags) {
 }
 
 void ekg::log(const std::string &log_message) {
-    const std::string &full_log_message = ("[ekg] " + log_message);
+    const std::string &full_log_message = ("EKG: " + log_message);
 
     switch (ekg::os) {
         case ekg::platform::os_android: {

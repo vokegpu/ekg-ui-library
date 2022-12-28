@@ -9,8 +9,9 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
+
 #include "ekg/service/layout.hpp"
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ekg.hpp"

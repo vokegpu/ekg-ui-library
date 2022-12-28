@@ -23,42 +23,49 @@ namespace ekg::service {
     protected:
         std::vector<std::string> loaded_theme_list {};
     public:
-        /* Start of frame scheme colors. */
+        /* Start of frame color scheme. */
         ekg::vec4 frame_background {},
-                        frame_border {},
-                        frame_outline {};
+                  frame_border {},
+                  frame_outline {};
         int32_t frame_activy_offset {};
-        /* End of frame scheme colors. */
+        /* End of frame color scheme. */
 
-        /* Start of button scheme colors. */
+        /* Start of button color scheme. */
         ekg::vec4 button_background {},
-                        button_string {},
-                        button_outline {},
-                        button_activy {},
-                        button_highlight {};
-        /* End of button scheme colors. */
+                  button_string {},
+                  button_outline {},
+                  button_activy {},
+                  button_highlight {};
+        /* End of button color scheme. */
 
-        /* Start of checkbox scheme colors. */
+        /* Start of checkbox color scheme. */
         ekg::vec4 checkbox_background {},
-                        checkbox_string {},
-                        checkbox_outline {},
-                        checkbox_activy {},
-                        checkbox_highlight {};
-        /* End of checkbox theme. */
+                  checkbox_string {},
+                  checkbox_outline {},
+                  checkbox_activy {},
+                  checkbox_highlight {};
+        /* End of checkbox color scheme. */
 
-        /* Start of slider scheme colors. */
+        /* Start of slider color scheme. */
         ekg::vec4 slider_string {},
-                        slider_background {},
-                        slider_outline {},
-                        slider_activy {},
-                        slider_activy_bar {},
-                        slider_highlight {};
+                  slider_background {},
+                  slider_outline {},
+                  slider_activy {},
+                  slider_activy_bar {},
+                  slider_highlight {};
         int32_t slider_bar_thicnkess {}, slider_target_thickness {};
-        /* End of slider scheme colors.*/
+        /* End of slider color scheme.*/
 
-        /* Start of label scheme colors. */
+        /* Start of label color scheme. */
         ekg::vec4 label_string {};
-        /* End of label scheme colors. */
+        /* End of label color scheme. */
+
+        /* Start of popup color scheme. */
+        ekg::vec4 popup_string {},
+                  popup_background {},
+                  popup_outline {},
+                  popup_highlight {};
+        /* End of popup color scheme. */
 
         float min_widget_size {5};
 

@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #include <ekg/ekg.hpp>
@@ -57,7 +57,7 @@ int32_t main(int, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    for (int i {}; i < 100; i++) {
+    for (int i {}; i < 1; i++) {
         auto frame {ekg::frame("hello", {80, 80}, {200, 200})};
         frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
         frame->set_drag(ekg::dock::top);

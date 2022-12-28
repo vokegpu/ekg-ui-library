@@ -137,7 +137,6 @@ namespace ekg {
     void set_rect_clamped(ekg::rect&, float);
     void set_dock_scaled(const ekg::rect&, const ekg::vec2&, ekg::docker&);
     
-    void find_aligned_dock(uint16_t, ekg::rect, ekg::rect, float);
     int32_t find_collide_dock(ekg::docker&, uint16_t, const ekg::vec4&);
     float find_min_offset(float, float);
 
