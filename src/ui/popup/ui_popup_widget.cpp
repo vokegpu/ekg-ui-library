@@ -15,6 +15,7 @@
 #include "ekg/ui/popup/ui_popup_widget.hpp"
 #include "ekg/ui/popup/ui_popup.hpp"
 #include "ekg/ekg.hpp"
+#include "ekg/draw/draw.hpp"
 
 void ekg::ui::popup_widget::destroy() {
 
@@ -50,8 +51,8 @@ void ekg::ui::popup_widget::on_reload() {
 
     /* Second phase: compute bounds and layout mask. */
 
-    float offset {ekg::find_min_offset(max_width, dimension_offset)};
-    float text_dock_flags {ui->get_text_align()};
+    auto offset {ekg::find_min_offset(max_width, dimension_offset)};
+    auto text_dock_flags {ui->get_text_align()};
     
     ekg::vec3 layout_offset {offset, offset, text_height + dimension_offset};
     auto &layout_mask {layout.get_layout_mask()};
@@ -80,14 +81,45 @@ void ekg::ui::popup_widget::on_reload() {
 }
 
 void ekg::ui::popup_widget::on_pre_event(SDL_Event &sdl_event) {
-
+    abstract_widget::on_pre_event(sdl_event);
 }
 
 void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
+    bool check_hovered {};
 
+    bool pressed {ekg::input::pressed()};
+    bool released {ekg::input::released()};
+
+    if (ekg::input::motion() || pressed || released) {
+        check_hovered = this->flag.hovered;
+    }
+
+    if (check_hovered) {
+        ekg::vec2 &interact {ekg::interact()};
+        ekg::rect &rect {this->get_abs_rect()};
+        int32_t hovered {-1};
+
+        for (int32_t it {}; it < this->element_list.size(); it++) {
+            auto &element {this->element_list.at(it)};
+
+            if (ekg::rect_collide_vec(element.rect_bound + rect, interact)) {
+                hovered = it;
+                break;
+            }
+        }
+
+        ekg::set(this->flag.hovered, this->hovered_element != hovered);
+
+        if (hovered != -1 && pressed) {
+            this->focused_element = hovered;
+        } else if (hovered != -1 && released) {
+            
+        }
+    }
 }
 
 void ekg::ui::popup_widget::on_post_event(SDL_Event &sdl_event) {
+    abstract_widget::on_post_event(sdl_event);
 }
 
 void ekg::ui::popup_widget::on_update() {
@@ -99,14 +131,16 @@ void ekg::ui::popup_widget::on_draw_refresh() {
     auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
+    auto &component_list {ui->get_component_list()};
 
     ekg::draw::bind_scissor(ui->get_id());
 
     for (uint32_t it {}; it < this->element_list.size(); it++) {
+        auto &component {component_list.at(it)};
         auto &element {this->element_list.at(it)};
 
         ekg::draw::rect(element.rect_bound + rect, theme.popup_background);
-        f_renderer.blit(rect.x + element.rect_text.x, rect.y + element_list.rect_text.y, theme.popup_string);
+        f_renderer.blit(component.name, rect.x + element.rect_text.x, rect.y + element.rect_text.y, theme.popup_string);
     }
 
     ekg::draw::bind_off_scissor();

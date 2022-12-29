@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #include "ekg/core/runtime.hpp"
@@ -186,11 +186,7 @@ void ekg::runtime::prepare_tasks() {
         }
 
         for (ekg::ui::abstract_widget* &widgets : runtime->loaded_widget_list) {
-            if (widgets == nullptr) {
-                continue;
-            }
-
-            if (ekg::swap::collect.registry[widgets->data->get_id()] || ekg::swap::front.registry[widgets->data->get_id()]) {
+            if (widgets == nullptr || ekg::swap::collect.registry[widgets->data->get_id()] || ekg::swap::front.registry[widgets->data->get_id()]) {
                 continue;
             }
 
@@ -493,8 +489,8 @@ void ekg::runtime::prepare_ui_env() {
     this->input_service.bind("textbox-action-break-line", "return");
     this->input_service.bind("textbox-action-up", "up");
     this->input_service.bind("textbox-action-down", "down");
-    this->input_service.bind("textbox-action-down", "right");
-    this->input_service.bind("textbox-action-down", "left");
+    this->input_service.bind("textbox-action-right", "right");
+    this->input_service.bind("textbox-action-left", "left");
     /* end of textbox input binds */
 
     /* start of slider input binds */
@@ -509,7 +505,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract* ui) {
     ui->set_id(++this->token_id);
 
     this->swap_widget_id_focused = ui->get_id();
-    ekg::ui::abstract_widget* created_widget {nullptr};
+    ekg::ui::abstract_widget *created_widget {nullptr};
     bool is_group {};
 
     switch (ui->get_type()) {

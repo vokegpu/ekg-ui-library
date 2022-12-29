@@ -27,6 +27,7 @@ namespace ekg::ui {
         };
     public:
         std::vector<ekg::ui::popup_widget::element> element_list {};
+        int32_t focused_element {};
         int32_t hovered_element {};
 
         void destroy() override;
