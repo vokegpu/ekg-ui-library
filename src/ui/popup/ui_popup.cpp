@@ -79,13 +79,6 @@ std::vector<ekg::component> &ekg::ui::popup::get_component_list() {
     return this->component_list;
 }
 
-void ekg::ui::popup::set_place(uint16_t flags) {
-    if (this->dock_flags != flags) {
-        this->dock_flags = flags;
-        ekg::synclayout(this->id);
-    }
-}
-
 void ekg::ui::popup::set_text_align(uint16_t flags) {
     if (this->dock_flags != flags) {
         this->dock_flags = flags;
@@ -141,4 +134,12 @@ void ekg::ui::popup::set_font_size(ekg::font f_size) {
 
 ekg::font ekg::ui::popup::get_font_size() {
     return this->font_size;
+}
+
+void ekg::ui::popup::set_pos(float, float) {
+
+}
+
+ekg::vec2 ekg::ui::popup::get_pos() {
+    return ekg::vec2();
 }

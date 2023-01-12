@@ -16,6 +16,11 @@
 #define EKG_UTIL_GEOMETRY_H
 
 #include <iostream>
+#include <cfloat>
+#include <cmath>
+
+#define EQUALS_FLOAT(x, y) (\
+(fabsf((x) - (y))) <= FLT_EPSILON * fmaxf(1.0f, fmaxf(fabsf(x), fabsf(y))))
 
 namespace ekg {
     extern double pi;
@@ -46,56 +51,122 @@ namespace ekg {
         horizontal = 512
     };
 
-    struct vec2 {
-        float x {};
-        float y {};
+    typedef struct vec2 {
+        union {
+            struct {
+                float x;
+                float y;
+            };
+        };
+    } vec2;
 
-        ekg::vec2 operator / (float);
-    };
+    ekg::vec2 operator/(const ekg::vec2&, float);
 
-    struct vec3 {
-        float x {};
-        float y {};
-        float z {};
-    };
+    typedef struct vec3 {
+        union {
+            struct {
+                float x;
+                float y;
+                float z;
+            };
+        };
+    } vec3;
 
-    struct vec4 {
-        float x {};
-        float y {};
-        float z {};
-        float w {};
+    typedef struct vec4 {
+        union {
+            struct {
+                float x;
+                float y;
+                float z;
+                float w;
+            };
+        };
 
-        vec4() = default;
+        inline vec4() = default;
+        inline vec4(float _x, float _y, float _z, float _w) {
+            this->x = _x;
+            this->y = _y;
+            this->z = _z;
+            this->w = _w;
+        }
 
-        vec4(float, float, float, float);
-        vec4(float, float, const ekg::vec2&);
-        vec4(const ekg::vec2&, float, float);
-        vec4(const ekg::vec2&, const ekg::vec2&);
-        vec4(const ekg::vec4&, float);
-    };
+        inline vec4(float _x, float _y, const ekg::vec2 &_v) {
+            this->x = _x;
+            this->y = _y;
+            this->z = _v.x;
+            this->w = _v.y;
+        }
 
-    struct rect {
-        float x {};
-        float y {};
-        float w {};
-        float h {};
+        inline vec4(const ekg::vec2 &_v, float _z, float _w) {
+            this->x = _v.x;
+            this->y = _v.y;
+            this->z = _z;
+            this->w = _w;
+        }
 
-        rect() = default;
+        inline vec4(const ekg::vec2 &l, const ekg::vec2 &r) {
+            this->x = l.x;
+            this->y = l.y;
+            this->z = r.x;
+            this->w = r.y;
+        }
 
-        rect(float, float, float, float);
-        rect(float, float, const ekg::vec2&);
-        rect(const ekg::vec2&, float, float);
-        rect(const ekg::vec2&, const ekg::vec2&);
+        inline vec4(const ekg::vec4 &_v, float _z) {
+            this->x = _v.x;
+            this->y = _v.y;
+            this->z = _v.z;
+            this->w = _z;
+        }
+    } vec4;
 
-        bool operator ==(const ekg::rect&) const;
-        bool operator !=(const ekg::rect&) const;
+    typedef struct rect {
+        union {
+            struct {
+                float x;
+                float y;
+                float w;
+                float h;
+            };
+        };
 
-        bool operator ==(const ekg::vec4&) const;
-        bool operator !=(const ekg::vec4&) const;
+        inline rect() = default;
+        inline rect(float _x, float _y, float _w, float _h) {
+            this->x = _x;
+            this->y = _y;
+            this->w = _w;
+            this->h = _h;
+        }
 
-        ekg::rect operator - (const ekg::rect&) const;
-        ekg::rect operator + (const ekg::rect&) const;
-    };
+        inline rect(float _x, float _y, const ekg::vec2 &_v) {
+            this->x = _x;
+            this->y = _y;
+            this->w = _v.x;
+            this->h = _v.y;
+        }
+
+        inline rect(const ekg::vec2 &_v, float _w, float _h) {
+            this->x = _v.x;
+            this->y = _v.y;
+            this->w = _w;
+            this->h = _h;
+        }
+
+        inline rect(const ekg::vec2 &_l, const ekg::vec2 &_r) {
+            this->x = _l.x;
+            this->y = _l.y;
+            this->w = _r.x;
+            this->h = _r.y;
+        }
+    } rect;
+
+    bool operator ==(const ekg::rect&, const ekg::rect&);
+    bool operator !=(const ekg::rect&, const ekg::rect&);
+
+    bool operator ==(const ekg::rect &l, const ekg::vec4 &r);
+    bool operator !=(const ekg::rect &l, const ekg::vec4 &r);
+
+    ekg::rect operator-(const ekg::rect &l, const ekg::rect &r);
+    ekg::rect operator+(const ekg::rect &l, const ekg::rect &r);
 
     struct docker {
         ekg::rect left {}, right {}, top {}, bottom {}, center {}, rect {};

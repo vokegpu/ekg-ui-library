@@ -23,6 +23,7 @@
 #include "ekg/ui/button/ui_button.hpp"
 #include "ekg/ui/checkbox/ui_checkbox.hpp"
 #include "ekg/ui/slider/ui_slider.hpp"
+#include "ekg/ui/popup/ui_popup.hpp"
 
 namespace ekg {
     /*
@@ -77,27 +78,32 @@ namespace ekg {
     /*
      * Create frame UI.
      */
-    ekg::ui::frame* frame(std::string_view, const ekg::vec2&, ekg::vec2 = {75, 75});
+    ekg::ui::frame *frame(std::string_view, const ekg::vec2&, ekg::vec2 = {75, 75});
 
     /*
      * Create button UI.
      */
-    ekg::ui::button* button(std::string_view, uint16_t = ekg::dock::left | ekg::dock::top);
+    ekg::ui::button *button(std::string_view, uint16_t = ekg::dock::left | ekg::dock::top);
 
     /*
      * Create label UI.
      */
-    ekg::ui::label* label(std::string_view, uint16_t = ekg::dock::left | ekg::dock::top);
+    ekg::ui::label *label(std::string_view, uint16_t = ekg::dock::left | ekg::dock::top);
 
     /*
      * Create checkbox UI.
      */
-    ekg::ui::checkbox* checkbox(std::string_view, uint16_t = ekg::dock::left | ekg::dock::top);
+    ekg::ui::checkbox *checkbox(std::string_view, uint16_t = ekg::dock::left | ekg::dock::top);
 
     /*
      * Create slider UI.
      */
-    ekg::ui::slider* slider(std::string_view, float, float, float, uint16_t = ekg::dock::left | ekg::dock::top);
+    ekg::ui::slider *slider(std::string_view, float, float, float, uint16_t = ekg::dock::left | ekg::dock::top);
+
+    /*
+     * Create popup ID.
+     */
+    ekg::ui::popup *popup(std::string_view, const std::vector<std::string>&, bool = true);
 
     /*
      * Stop collecting UIs to group.

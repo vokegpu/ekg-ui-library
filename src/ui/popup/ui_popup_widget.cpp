@@ -95,7 +95,7 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
     }
 
     if (check_hovered) {
-        ekg::vec2 &interact {ekg::interact()};
+        ekg::vec4 &interact {ekg::interact()};
         ekg::rect &rect {this->get_abs_rect()};
         int32_t hovered {-1};
 

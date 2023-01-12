@@ -211,8 +211,8 @@ void ekg::gpu::allocator::draw() {
     ekg::gpu::invoke(ekg::gpu::allocator::program);
     glBindVertexArray(this->vbo_array);
 
-    bool active_texture {}, texture_enabled {}, active_scissor {};
-    float depth_level {this->depth_testing_preset}, scissor_rect[4] {};
+    bool active_texture {}, texture_enabled {};
+    float depth_level {this->depth_testing_preset};
     ekg::gpu::scissor *scissor {};
     auto &shading_program_id {ekg::gpu::allocator::program.id};
 

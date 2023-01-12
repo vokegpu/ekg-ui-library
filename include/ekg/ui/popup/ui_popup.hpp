@@ -35,7 +35,9 @@ namespace ekg::ui {
 
         std::vector<ekg::component> &get_component_list();
 
-		void set_place(uint16_t);
+        void set_pos(float, float);
+        ekg::vec2 get_pos();
+
 		void set_text_align(uint16_t);
 		uint16_t get_text_align();
 

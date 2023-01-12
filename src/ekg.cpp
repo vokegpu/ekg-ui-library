@@ -216,7 +216,7 @@ void ekg::render() {
 }
 
 ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_position, ekg::vec2 size) {
-    auto ui {new ekg::ui::frame {}};
+    auto ui {new ekg::ui::frame()};
     ui->set_tag(tag);
     ui->set_type(ekg::type::frame);
     ekg::core->gen_widget(ui);
@@ -228,7 +228,7 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_positi
 }
 
 ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
-    auto ui {new ekg::ui::button {}};
+    auto ui {new ekg::ui::button()};
     ui->set_type(ekg::type::button);
     ekg::core->gen_widget(ui);
 
@@ -241,12 +241,8 @@ ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
     return ui;
 }
 
-void ekg::popgroup() {
-    ekg::core->end_group_flag();
-}
-
 ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
-    auto ui {new ekg::ui::label {}};
+    auto ui {new ekg::ui::label()};
     ui->set_type(ekg::type::label);
     ekg::core->gen_widget(ui);
 
@@ -260,7 +256,7 @@ ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
 }
 
 ekg::ui::checkbox *ekg::checkbox(std::string_view text, uint16_t dock) {
-    auto ui {new ekg::ui::checkbox {}};
+    auto ui {new ekg::ui::checkbox()};
     ui->set_type(ekg::type::checkbox);
     ekg::core->gen_widget(ui);
 
@@ -275,7 +271,7 @@ ekg::ui::checkbox *ekg::checkbox(std::string_view text, uint16_t dock) {
 }
 
 ekg::ui::slider *ekg::slider(std::string_view tag, float val, float min, float max, uint16_t dock) {
-    auto ui {new ekg::ui::slider {}};
+    auto ui {new ekg::ui::slider()};
     ui->set_type(ekg::type::slider);
     ekg::core->gen_widget(ui);
 
@@ -292,4 +288,19 @@ ekg::ui::slider *ekg::slider(std::string_view tag, float val, float min, float m
     ui->set_width(200);
 
     return ui;
+}
+
+ekg::ui::popup *ekg::popup(std::string_view tag, const std::vector<std::string> &component_list, bool interact_position) {
+    auto ui {new ekg::ui::popup()};
+    ui->set_type(ekg::type::popup);
+    ekg::core->gen_widget(ui);
+
+    if (interact_position) {
+    }
+
+    return nullptr;
+}
+
+void ekg::popgroup() {
+    ekg::core->end_group_flag();
 }

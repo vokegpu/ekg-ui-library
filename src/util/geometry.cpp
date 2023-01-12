@@ -15,6 +15,7 @@
 #include "ekg/util/geometry.hpp"
 #include "ekg/ekg.hpp"
 
+
 float ekg::display::dt {};
 int32_t ekg::display::width {};
 int32_t ekg::display::height {};
@@ -138,93 +139,30 @@ float ekg::find_min_offset(float text_width, float offset) {
     return ((full_rect / 2) - (text_width / 2));
 }
 
-bool ekg::rect::operator == (const ekg::rect &rect) const {
-    return this->x == rect.x && this->y == rect.y && this->w == rect.w && this->h == rect.h;
+bool ekg::operator==(const ekg::rect &l, const ekg::rect &r) {
+    return EQUALS_FLOAT(l.x, r.x) && EQUALS_FLOAT(l.y, r.y) && EQUALS_FLOAT(l.w, r.w) && EQUALS_FLOAT(l.h, r.h);
 }
 
-bool ekg::rect::operator!=(const ekg::rect &rect) const {
-    return this->x != rect.x || this->y != rect.y || this->w != rect.w || this->h != rect.h;
+bool ekg::operator!=(const ekg::rect &l, const ekg::rect &r) {
+    return !(l == r);
 }
 
-bool ekg::rect::operator==(const ekg::vec4 &vec) const {
-    return this->x == vec.x && this->y == vec.y && this->w == vec.z && this->h == vec.w;
+bool ekg::operator==(const ekg::rect &l, const ekg::vec4 &r) {
+    return EQUALS_FLOAT(l.x, r.x) && EQUALS_FLOAT(l.y, r.y) && EQUALS_FLOAT(l.w, r.z) && EQUALS_FLOAT(l.h, r.w);
 }
 
-bool ekg::rect::operator!=(const ekg::vec4 &vec) const {
-    return this->x != vec.x || this->y != vec.y || this->w != vec.z || this->h != vec.w;
+bool ekg::operator!=(const ekg::rect &l, const ekg::vec4 &r) {
+    return !(l == r);
 }
 
-ekg::rect::rect(float posx, float posy, const ekg::vec2 &vec) {
-    this->x = posx;
-    this->y = posy;
-    this->w = vec.x;
-    this->h = vec.y;
+ekg::rect ekg::operator-(const ekg::rect &l, const ekg::rect &r) {
+    return {l.x - r.x, l.y - r.y, l.w, l.h};
 }
 
-ekg::rect::rect(const ekg::vec2 &vec, float sizew, float sizeh) {
-    this->x = vec.x;
-    this->y = vec.y;
-    this->w = sizew;
-    this->h = sizeh;
+ekg::rect ekg::operator+(const ekg::rect &l, const ekg::rect &r) {
+    return {l.x + r.x, l.y + r.y, l.w, l.h};
 }
 
-ekg::rect::rect(const ekg::vec2 &pos, const ekg::vec2 &size) {
-    this->x = pos.x;
-    this->y = pos.y;
-    this->w = size.x;
-    this->h = size.y;
-}
-
-ekg::rect::rect(float posx, float posy, float sizew, float sizeh) {
-    this->x = posx;
-    this->y = posy;
-    this->w = sizew;
-    this->h = sizeh;
-}
-
-ekg::rect ekg::rect::operator-(const ekg::rect &rect) const {
-    return {this->x - rect.x, this->y - rect.y, this->w, this->h};
-}
-
-ekg::rect ekg::rect::operator+(const ekg::rect &rect) const {
-    return {this->x + rect.x, this->y + rect.y, this->w, this->h};
-}
-
-ekg::vec4::vec4(float posx, float posy, const ekg::vec2 &vec) {
-    this->x = posx;
-    this->y = posy;
-    this->z = vec.x;
-    this->w = vec.y;
-}
-
-ekg::vec4::vec4(const ekg::vec2 &vec, float posz, float posw) {
-    this->x = vec.x;
-    this->y = vec.y;
-    this->z = posz;
-    this->w = posw;
-}
-
-ekg::vec4::vec4(const ekg::vec2 &pos, const ekg::vec2 &size) {
-    this->x = pos.x;
-    this->y = pos.y;
-    this->z = size.x;
-    this->w = size.y;
-}
-
-ekg::vec4::vec4(float posx, float posy, float posz, float posw) {
-    this->x = posx;
-    this->y = posy;
-    this->z = posz;
-    this->w = posw;
-}
-
-ekg::vec4::vec4(const ekg::vec4 &pos, float depth) {
-    this->x = pos.x;
-    this->y = pos.y;
-    this->z = pos.z;
-    this->w = depth;
-}
-
-ekg::vec2 ekg::vec2::operator/(float f) {
-    return {this->x / f, this->y / f};
+ekg::vec2 ekg::operator/(const ekg::vec2 &l, float r) {
+    return {l.x / r, l.y / r};
 }
