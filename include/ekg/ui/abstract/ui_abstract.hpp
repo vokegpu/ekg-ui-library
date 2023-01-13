@@ -40,12 +40,14 @@ namespace ekg {
             std::vector<int32_t> child_id_list {};
 
             bool alive {true};
-            uint16_t dock_flags {}, sync_flags {};
+            uint16_t dock_flags {};
+            uint16_t sync_flags {};
             std::string tag {};
 
             ekg::state state {};
             ekg::type type {ekg::type::abstract};
-            ekg::rect rect_widget {}, sync_ui {};
+            ekg::rect rect_widget {};
+            ekg::rect sync_ui {};
         public:
             abstract();
             ~abstract();

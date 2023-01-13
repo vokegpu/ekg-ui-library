@@ -27,6 +27,9 @@ namespace ekg::ui {
         };
     public:
         std::vector<ekg::ui::popup_widget::element> element_list {};
+        float scissor_opened_height {};
+        uint64_t elapsed_animation_ticks {};
+
         int32_t focused_element {};
         int32_t hovered_element {};
 

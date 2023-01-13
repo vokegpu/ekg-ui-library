@@ -87,7 +87,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     bool hovered {};
     bool found_absolute_widget {};
 
-    for (ekg::ui::abstract_widget* &widgets : this->widget_manager["all"]) {
+    for (ekg::ui::abstract_widget* &widgets : this->widget_list_map["all"]) {
         if (widgets == nullptr || !widgets->data->is_alive()) {
             continue;
         }
@@ -129,8 +129,27 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     }
 }
 
-void ekg::runtime::process_update() {    
+void ekg::runtime::process_update() {
     this->input_service.on_update();
+
+    if (this->enable_high_priority_frequency) {
+        auto &update {this->widget_list_map["update"]};
+        size_t counter {};
+
+        for (ekg::ui::abstract_widget *&widgets : update) {
+            if (widgets == nullptr || !widgets->is_high_frequency) {
+                ++counter;
+                continue;
+            }
+
+            widgets->on_update();
+        }
+
+        if (counter == update.size()) {
+            this->enable_high_priority_frequency = false;
+            update.clear();
+        }
+    }
 
     if (this->handler_service.should_poll()) {
         this->handler_service.on_update();
@@ -162,8 +181,8 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler_service.dispatch(new ekg::cpu::event {"refresh", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
-        auto &all {runtime->widget_manager["all"]};
-        auto &refresh {runtime->widget_manager["refresh"]};
+        auto &all {runtime->widget_list_map["all"]};
+        auto &refresh {runtime->widget_list_map["refresh"]};
 
         for (ekg::ui::abstract_widget *&widgets : refresh) {
             if (widgets == nullptr || runtime->processed_widget_map[widgets->data->get_id()]) {
@@ -195,7 +214,7 @@ void ekg::runtime::prepare_tasks() {
             return;
         }
 
-        auto &all {runtime->widget_manager["all"]};
+        auto &all {runtime->widget_list_map["all"]};
 
         for (ekg::ui::abstract_widget *&widgets : all) {
             if (widgets == nullptr || ekg::swap::collect.registry[widgets->data->get_id()] || ekg::swap::front.registry[widgets->data->get_id()]) {
@@ -238,7 +257,7 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler_service.dispatch(new ekg::cpu::event {"reload", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
-        auto &reload {runtime->widget_manager["reload"]};
+        auto &reload {runtime->widget_list_map["reload"]};
 
         for (ekg::ui::abstract_widget *&widgets : reload) {
             if (widgets == nullptr) {
@@ -316,7 +335,7 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler_service.dispatch(new ekg::cpu::event {"synclayout", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
-        auto &reload {runtime->widget_manager["synclayout"]};
+        auto &reload {runtime->widget_list_map["synclayout"]};
         // todo fix the issue with sync layout offset.
 
         for (ekg::ui::abstract_widget *&widgets : reload) {
@@ -334,7 +353,7 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler_service.dispatch(new ekg::cpu::event {"redraw", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
-        auto &all {runtime->widget_manager["all"]};
+        auto &all {runtime->widget_list_map["all"]};
 
         runtime->allocator.invoke();
         runtime->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {255, 255, 255, 255});
@@ -350,7 +369,7 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler_service.dispatch(new ekg::cpu::event {"scissor", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
-        auto &scissor_list {runtime->widget_manager["scissor"]};
+        auto &scissor_list {runtime->widget_list_map["scissor"]};
 
         float scissor[4] {}, scissor_parent_master[4] {};
         ekg::ui::abstract_widget *parent_master {nullptr};
@@ -451,7 +470,7 @@ ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(int32_t id) {
 
 void ekg::runtime::do_task_reload(ekg::ui::abstract_widget* widget) {
     if (widget != nullptr) {
-        this->widget_manager["reload"].push_back(widget);
+        this->widget_list_map["reload"].push_back(widget);
         ekg::dispatch(ekg::env::reload);
     }
 }
@@ -470,14 +489,15 @@ ekg::service::layout &ekg::runtime::get_service_layout() {
 
 void ekg::runtime::prepare_ui_env() {
     ekg::log("Registering handler features!");
-    this->widget_manager.insert("all");
-    this->widget_manager.insert("refresh");
-    this->widget_manager.insert("reload");
-    this->widget_manager.insert("synclayout");
-    this->widget_manager.insert("redraw");
-    this->widget_manager.insert("scissor");
+    this->widget_list_map["all"] = {};
+    this->widget_list_map["refresh"] = {};
+    this->widget_list_map["reload"] = {};
+    this->widget_list_map["synclayout"] = {};
+    this->widget_list_map["redraw"] = {};
+    this->widget_list_map["scissor"] = {};
+    this->widget_list_map["update"] = {};
 
-    ekg::log("creating widget fonts");
+    ekg::log("Creating fonts renderer...");
 
     this->f_renderer_small.font_size = 16;
     this->f_renderer_small.reload();
@@ -491,7 +511,7 @@ void ekg::runtime::prepare_ui_env() {
     this->f_renderer_big.reload();
     this->f_renderer_big.bind_allocator(&this->allocator);
 
-    ekg::log("creating widget binds");
+    ekg::log("Registering UI input binds...");
 
     /* start of frame input binds */
     this->input_service.bind("frame-drag-activy", "mouse-1");
@@ -632,7 +652,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
 
 void ekg::runtime::do_task_scissor(ekg::ui::abstract_widget *widget) {
     if (widget != nullptr) {
-        this->widget_manager["scissor"].push_back(widget);
+        this->widget_list_map["scissor"].push_back(widget);
         ekg::dispatch(ekg::env::scissor);
     }
 }
@@ -650,7 +670,7 @@ void ekg::runtime::do_task_synclayout(ekg::ui::abstract_widget *widget) {
     }
 
     if (widget != nullptr) {
-        this->widget_manager["synclayout"].push_back(widget);
+        this->widget_list_map["synclayout"].push_back(widget);
         ekg::dispatch(ekg::env::synclayout);
     }
 }
@@ -660,7 +680,7 @@ void ekg::runtime::do_task_refresh(ekg::ui::abstract_widget *widget) {
         return;
     }
 
-    this->widget_manager["refresh"].push_back(widget);
+    this->widget_list_map["refresh"].push_back(widget);
     ekg::dispatch(ekg::env::refresh);
     ekg::dispatch(ekg::env::redraw);
 }
@@ -670,7 +690,7 @@ void ekg::runtime::end_group_flag() {
 }
 
 void ekg::runtime::erase(int32_t id) {
-    auto &all {this->widget_manager["all"]};
+    auto &all {this->widget_list_map["all"]};
 
     for (size_t it {}; it < all.size(); it++) {
         auto &widget {all[it]};
@@ -683,6 +703,22 @@ void ekg::runtime::erase(int32_t id) {
     }
 }
 
-void ekg::runtime::set_high_priority_frequency(ekg::ui::abstract_widget *widget) {
+void ekg::runtime::set_update_high_frequency(ekg::ui::abstract_widget *widget) {
+    if (widget != nullptr && !widget->is_high_frequency) {
+        this->enable_high_priority_frequency = true;
+        auto &update {this->widget_list_map["update"]};
+        bool contains {};
 
+        for (ekg::ui::abstract_widget *&widgets : update) {
+            contains = widgets == widget;
+            if (contains) {
+                break;
+            }
+        }
+
+        if (!contains) {
+            update.push_back(widget);
+            widget->is_high_frequency = true;
+        }
+    }
 }

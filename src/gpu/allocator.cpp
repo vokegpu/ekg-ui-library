@@ -349,11 +349,7 @@ void ekg::gpu::allocator::quit() {
     glDeleteVertexArrays(1, &this->vbo_array);
 }
 
-ekg::gpu::scissor* ekg::gpu::allocator::get_scissor_by_id(int32_t id) {
-    if (id < 0 || id > this->data_instance_index) {
-        return nullptr;
-    }
-
+ekg::gpu::scissor *ekg::gpu::allocator::get_scissor_by_id(int32_t id) {
     return &this->scissor_map[id];
 }
 

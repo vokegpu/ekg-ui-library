@@ -39,12 +39,12 @@ namespace ekg {
     class runtime : public ekg::feature {
     protected:
         void erase(int32_t id);
-    private:;
+    private:
         SDL_Window* root {};
 
         /* Widget env lists and maps for tasks. */
 
-        ekg::feature_manager<ekg::ui::abstract_widget*> widget_manager {};
+        std::map<std::string, std::vector<ekg::ui::abstract_widget*>> widget_list_map {};
         std::map<int32_t, ekg::ui::abstract_widget*> widget_map {};
         std::map<int32_t, bool> processed_widget_map {};
 
@@ -97,7 +97,7 @@ namespace ekg {
         void do_task_scissor(ekg::ui::abstract_widget *widget);
         void do_task_synclayout(ekg::ui::abstract_widget *widget);
         void do_task_refresh(ekg::ui::abstract_widget *widget);
-        void set_high_priority_frequency(ekg::ui::abstract_widget *widget);
+        void set_update_high_frequency(ekg::ui::abstract_widget *widget);
         void end_group_flag();
 
         void init();

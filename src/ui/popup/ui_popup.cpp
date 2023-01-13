@@ -57,6 +57,7 @@ void ekg::ui::popup::append_linked(std::string_view component_name, ekg::ui::pop
 
     auto &component {this->component_list.at(index)};
     component.linked_id = popup_linked == nullptr ? 0 : popup_linked->get_id();
+    if (popup_linked != nullptr) popup_linked->set_state(ekg::state::invisible);
 }
 
 void ekg::ui::popup::remove(std::string_view component_name) {
@@ -97,7 +98,6 @@ void ekg::ui::popup::set_width(float width) {
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
-        ekg::scissor(this->parent_id);
     }
 }
 
@@ -111,7 +111,6 @@ void ekg::ui::popup::set_scaled_height(int32_t scaled_height_factor) {
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
-        ekg::scissor(this->parent_id);
     }
 }
 
@@ -129,7 +128,6 @@ void ekg::ui::popup::set_font_size(ekg::font f_size) {
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
-        ekg::scissor(this->parent_id);
     }
 }
 
@@ -144,7 +142,6 @@ void ekg::ui::popup::set_pos(float x, float y) {
 
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
-        ekg::scissor(this->parent_id);
     }
 }
 

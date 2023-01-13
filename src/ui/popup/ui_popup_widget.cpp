@@ -84,17 +84,34 @@ void ekg::ui::popup_widget::on_reload() {
 
     /* Extra offset to final rect. */
     this->dimension.h += offset;
+
+    /* Reset scissor height if current state is invisible. */
+    auto *gpu_scissor {ekg::core->get_gpu_allocator().get_scissor_by_id(this->data->get_id())};
+    if (ui->get_state() == ekg::state::invisible && gpu_scissor != nullptr) {
+        gpu_scissor->rect[3] = this->scissor_opened_height = 0;
+    } else if (ui->get_state() == ekg::state::visible && !this->is_high_frequency) {
+        ekg::update_high_frequency(this);
+        this->elapsed_animation_ticks = SDL_GetTicks64();
+    }
 }
 
 void ekg::ui::popup_widget::on_pre_event(SDL_Event &sdl_event) {
+    if (this->data->get_state() == ekg::state::invisible) {
+        return;
+    }
+
     abstract_widget::on_pre_event(sdl_event);
 }
 
 void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
-    bool check_hovered {};
+    if (this->data->get_state() == ekg::state::invisible) {
+        return;
+    }
 
+    bool check_hovered {};
     bool pressed {ekg::input::pressed()};
     bool released {ekg::input::released()};
+
     int32_t hovered {-1};
 
     if (ekg::input::motion() || pressed || released) {
@@ -131,7 +148,17 @@ void ekg::ui::popup_widget::on_post_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::popup_widget::on_update() {
+    auto &rect {this->get_abs_rect()};
+    auto *gpu_scissor {ekg::core->get_gpu_allocator().get_scissor_by_id(this->data->get_id())};
 
+    gpu_scissor->rect[0] = rect.x;
+    gpu_scissor->rect[1] = rect.y;
+    gpu_scissor->rect[2] = rect.w;
+    gpu_scissor->rect[3] = this->scissor_opened_height;
+
+    float animation {ekg::smooth(50, SDL_GetTicks64() - this->elapsed_animation_ticks)};
+    this->scissor_opened_height = this->dimension.h * animation;
+    if (animation == 1.0f) this->is_high_frequency = false;
 }
 
 void ekg::ui::popup_widget::on_draw_refresh() {

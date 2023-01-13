@@ -174,3 +174,8 @@ int32_t ekg::min(int32_t v, int32_t m) {
 int32_t ekg::max(int32_t v, int32_t m) {
     return v > m ? m : v;
 }
+
+float ekg::smooth(float duration, uint64_t ticks) {
+    duration = static_cast<float>(ticks) / duration;
+    return ekg::clamp(6 * powf(duration, 5) - (15 * powf(duration, 4)) + (10 * powf(duration, 3)), 0.0f, 1.0f);
+}

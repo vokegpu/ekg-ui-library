@@ -81,3 +81,11 @@ void ekg::refresh(int32_t id) {
 void ekg::refresh(ekg::ui::abstract_widget *widget) {
     ekg::core->do_task_refresh(widget);
 }
+
+void ekg::update_high_frequency(int32_t id) {
+    ekg::core->set_update_high_frequency(ekg::core->get_fast_widget_by_id(id));
+}
+
+void ekg::update_high_frequency(ekg::ui::abstract_widget *widget) {
+    ekg::core->set_update_high_frequency(widget);
+}

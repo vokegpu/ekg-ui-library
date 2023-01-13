@@ -31,6 +31,7 @@ namespace ekg::ui {
         ekg::rect empty {};
 
         bool is_scissor_refresh {};
+        bool is_high_frequency {};
         int32_t scissor_id {};
 
         [[nodiscard]] ekg::rect &get_abs_rect();

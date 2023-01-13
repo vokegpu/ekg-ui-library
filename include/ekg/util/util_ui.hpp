@@ -49,6 +49,9 @@ namespace ekg {
     void refresh(int32_t);
     void refresh(ekg::ui::abstract_widget*);
 
+    void update_high_frequency(int32_t);
+    void update_high_frequency(ekg::ui::abstract_widget*);
+
     void push_back_stack(ekg::ui::abstract_widget*, ekg::stack&);
     ekg::ui::abstract_widget *find_absolute_parent_master(ekg::ui::abstract_widget*);
 }
