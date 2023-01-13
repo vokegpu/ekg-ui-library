@@ -30,7 +30,7 @@ void ekg::service::handler::dispatch(ekg::cpu::event* event) {
 }
 
 void ekg::service::handler::task(std::size_t task_index) {
-    auto task = this->allocated_task_list.at(task_index);
+    auto *task = this->allocated_task_list.at(task_index);
 
     if (task != nullptr) {
         this->dispatch(task);
@@ -40,6 +40,7 @@ void ekg::service::handler::task(std::size_t task_index) {
 void ekg::service::handler::on_update() {
     while (!this->event_queue.empty()) {
         ekg::cpu::event* &ekg_event {this->event_queue.front()};
+        this->event_queue.pop();
         if (ekg_event == nullptr) continue;
 
         ekg_event->fun(ekg_event->callback);
@@ -49,8 +50,6 @@ void ekg::service::handler::on_update() {
             delete ekg_event;
             ekg_event = {};
         }
-
-        this->event_queue.pop();
     }
 
     this->cool_down_ticks++;

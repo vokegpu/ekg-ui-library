@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #include "ekg/ui/popup/ui_popup.hpp"
@@ -126,6 +126,7 @@ float ekg::ui::popup::get_height() {
 void ekg::ui::popup::set_font_size(ekg::font f_size) {
     if (this->font_size != f_size) {
         this->font_size = f_size;
+
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
         ekg::scissor(this->parent_id);

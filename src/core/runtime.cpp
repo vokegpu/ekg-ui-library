@@ -170,7 +170,11 @@ void ekg::runtime::prepare_tasks() {
 
             if (!widgets->data->is_alive()) {
                 runtime->widget_map.erase(widgets->data->get_id());
+
+                delete widgets->data;
                 delete widgets;
+
+                widgets->data = nullptr;
                 widgets = nullptr;
             }
 
@@ -471,26 +475,26 @@ void ekg::runtime::prepare_ui_env() {
     ekg::log("creating widget binds");
 
     /* start of frame input binds */
-    this->input_service.bind("frame-drag-activy", "mouse-left");
+    this->input_service.bind("frame-drag-activy", "mouse-1");
     this->input_service.bind("frame-drag-activy", "finger-click");
-    this->input_service.bind("frame-resize-activy", "mouse-left");
+    this->input_service.bind("frame-resize-activy", "mouse-1");
     this->input_service.bind("frame-resize-activy", "finger-click");
     /* end of frame input binds */
 
     /* start of button input binds */
-    this->input_service.bind("button-activy", "mouse-left");
+    this->input_service.bind("button-activy", "mouse-1");
     this->input_service.bind("button-activy", "finger-click");
     /* end of button input binds */
 
     /* start of checkbox input binds */
-    this->input_service.bind("checkbox-activy", "mouse-left");
+    this->input_service.bind("checkbox-activy", "mouse-1");
     this->input_service.bind("checkbox-activy", "finger-click");
-    this->input_service.bind("popup-activy", "mouse-right");
+    this->input_service.bind("popup-activy", "mouse-3");
     this->input_service.bind("popup-activy", "finger-hold");
     /* end of checkbox input binds */
     
     /* start of popup input binds */
-    this->input_service.bind("popup-component-activy", "mouse-left");
+    this->input_service.bind("popup-component-activy", "mouse-1");
     this->input_service.bind("popup-component-activy", "finger-click");
     /* end of popup input binds */
 
@@ -498,7 +502,7 @@ void ekg::runtime::prepare_ui_env() {
     this->input_service.bind("textbox-action-delete-left", "backspace");
     this->input_service.bind("textbox-action-select-all", "lctrl+a");
     this->input_service.bind("textbox-action-select-all", "finger-hold");
-    this->input_service.bind("textbox-action-select-all", "mouse-left-double");
+    this->input_service.bind("textbox-action-select-all", "mouse-1-double");
     this->input_service.bind("textbox-action-delete-right", "delete");
     this->input_service.bind("textbox-action-break-line", "return");
     this->input_service.bind("textbox-action-up", "up");
@@ -508,7 +512,7 @@ void ekg::runtime::prepare_ui_env() {
     /* end of textbox input binds */
 
     /* start of slider input binds */
-    this->input_service.bind("slider-activy", "mouse-left");
+    this->input_service.bind("slider-activy", "mouse-1");
     this->input_service.bind("slider-activy", "finger-click");
     this->input_service.bind("slider-bar-increase", "mouse-wheel-up");
     this->input_service.bind("slider-bar-decrease", "mouse-wheel-down");
@@ -521,7 +525,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract* ui) {
     this->swap_widget_id_focused = ui->get_id();
     ekg::ui::abstract_widget *created_widget {nullptr};
 
-    bool is_group {};
+    bool update_scissor {};
     bool append_group {};
 
     switch (ui->get_type()) {
@@ -537,7 +541,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract* ui) {
             widget->is_scissor_refresh = true;
             widget->data = ui;
 
-            is_group = true;
+            update_scissor = true;
             created_widget = widget;
             this->current_bind_group = created_widget;
             ui->reset();
@@ -581,7 +585,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract* ui) {
             auto *widget {new ekg::ui::popup_widget()};
             widget->data = ui;
             created_widget = widget;
-            append_group = false;
+            update_scissor = true;
             break;
         }
 
@@ -598,7 +602,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract* ui) {
         this->current_bind_group->data->add_child(ui->get_id());
     }
 
-    if (is_group) {
+    if (update_scissor) {
         this->do_task_synclayout(created_widget);
         this->do_task_scissor(created_widget);
     }

@@ -53,6 +53,7 @@ namespace ekg {
 
     bool file_to_string(std::string &string_builder, const std::string &path);
     bool set(bool &var_mutable, bool predicate);
+    int32_t &set(int32_t &var_mutable, int32_t predicate);
 
     std::string &set(std::string &var_mutable, const std::string &predicate);
     std::string string_float_precision(float, int32_t);

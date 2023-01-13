@@ -18,8 +18,8 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 
-void ekg::ui::button_widget::destroy() {
-    abstract_widget::destroy();
+void ekg::ui::button_widget::on_destroy() {
+    abstract_widget::on_destroy();
 }
 
 void ekg::ui::button_widget::on_reload() {

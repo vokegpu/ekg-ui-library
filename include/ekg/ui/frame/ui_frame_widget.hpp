@@ -20,11 +20,13 @@
 namespace ekg::ui {
 	class frame_widget : public ekg::ui::abstract_widget {
 	public:
-        uint16_t target_dock_drag {}, target_dock_resize {};
-        ekg::docker docker_activy_drag {}, docker_activy_resize {};
+        uint16_t target_dock_drag {};
+        uint16_t target_dock_resize {};
+        ekg::docker docker_activy_drag {};
+        ekg::docker docker_activy_resize {};
         ekg::rect rect_delta {};
 
-		void destroy() override;
+		void on_destroy() override;
 		void on_reload() override;
 		void on_pre_event(SDL_Event &sdl_event) override;
 		void on_event(SDL_Event &sdl_event) override;

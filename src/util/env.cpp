@@ -102,6 +102,14 @@ std::string &ekg::set(std::string &var_mutable, const std::string &predicate) {
     return (var_mutable = predicate);
 }
 
+int32_t &ekg::set(int32_t &var_mutable, int32_t predicate) {
+    if (var_mutable != predicate) {
+        ekg::dispatch(ekg::env::redraw);
+    }
+
+    return (var_mutable = predicate);
+}
+
 std::string ekg::string_float_precision(float n, int32_t precision) {
     const std::string string {std::to_string(n)};
     return string.substr(0, ekg::max((int32_t) (string.find('.') + precision + (1 * precision)), (int32_t) string.size()));

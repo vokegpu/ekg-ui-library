@@ -18,8 +18,8 @@
 #include "ekg/draw/draw.hpp"
 #include "ekg/util/util_ui.hpp"
 
-void ekg::ui::frame_widget::destroy() {
-    abstract_widget::destroy();
+void ekg::ui::frame_widget::on_destroy() {
+    abstract_widget::on_destroy();
 }
 
 void ekg::ui::frame_widget::on_reload() {

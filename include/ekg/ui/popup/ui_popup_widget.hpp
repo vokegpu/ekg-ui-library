@@ -30,7 +30,7 @@ namespace ekg::ui {
         int32_t focused_element {};
         int32_t hovered_element {};
 
-        void destroy() override;
+        void on_destroy() override;
         void on_reload() override;
         void on_pre_event(SDL_Event&) override;
         void on_event(SDL_Event&) override;

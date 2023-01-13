@@ -23,11 +23,14 @@ namespace ekg::ui {
         void update_bar(float, float);
         void update_bar_axis(ekg::dock);
 	public:
-        ekg::rect rect_target {}, rect_text {}, rect_bar {}, rect_bar_value {};
+        ekg::rect rect_target {};
+        ekg::rect rect_text {};
+        ekg::rect rect_bar {};
+        ekg::rect rect_bar_value {};
         std::string string_value {};
         ekg::font font_render_size {};
 
-        void destroy() override;
+        void on_destroy() override;
         void on_reload() override;
         void on_pre_event(SDL_Event &sdl_event) override;
         void on_event(SDL_Event &sdl_event) override;

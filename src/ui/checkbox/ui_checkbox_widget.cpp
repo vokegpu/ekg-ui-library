@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #include "ekg/ui/checkbox/ui_checkbox_widget.hpp"
@@ -17,8 +17,8 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 
-void ekg::ui::checkbox_widget::destroy() {
-    abstract_widget::destroy();
+void ekg::ui::checkbox_widget::on_destroy() {
+    abstract_widget::on_destroy();
 }
 
 void ekg::ui::checkbox_widget::on_reload() {

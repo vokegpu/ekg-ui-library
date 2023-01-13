@@ -78,54 +78,12 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         case SDL_MOUSEBUTTONDOWN: {
             this->pressed_event = true;
             bool double_click_factor {ekg::reach(this->double_interact, 500)};
+            this->callback("mouse-" + std::to_string(sdl_event.button.button), true);
 
-            switch (sdl_event.button.button) {
-                case SDL_BUTTON_LEFT: {
-                    this->callback("mouse-left", true);
-
-                    if (!double_click_factor) {
-                        const std::string input_tag = "mouse-left-double";
-                        this->callback(input_tag, true);
-                        this->double_click_mouse_buttons_pressed.push_back(input_tag);
-                    }
-                    break;
-                }
-
-                case SDL_BUTTON_RIGHT: {
-                    this->callback("mouse-right", true);
-
-                    if (!double_click_factor) {
-                        const std::string input_tag = "mouse-right-double";
-                        this->callback(input_tag, true);
-                        this->double_click_mouse_buttons_pressed.push_back(input_tag);
-                    }
-
-                    break;
-                }
-
-                case SDL_BUTTON_MIDDLE: {
-                    this->callback("mouse-middle", true);
-
-                    if (!double_click_factor) {
-                        const std::string input_tag = "mouse-middle-double";
-                        this->callback(input_tag, true);
-                        this->double_click_mouse_buttons_pressed.push_back(input_tag);
-                    }
-
-                    break;
-                }
-
-                default: {
-                    this->callback("mouse-" + std::to_string(sdl_event.button.button), true);
-
-                    if (!double_click_factor) {
-                        const std::string input_tag = "mouse-" + std::to_string(sdl_event.button.button) + "-double";
-                        this->callback(input_tag, true);
-                        this->double_click_mouse_buttons_pressed.push_back(input_tag);
-                    }
-
-                    break;
-                }
+            if (!double_click_factor) {
+                const std::string input_tag = "mouse-" + std::to_string(sdl_event.button.button) + "-double";
+                this->callback(input_tag, true);
+                this->double_click_mouse_buttons_pressed.push_back(input_tag);
             }
 
             if (double_click_factor) {
@@ -136,32 +94,8 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
 
         case SDL_MOUSEBUTTONUP: {
             this->released_event = true;
-            
-            switch (sdl_event.button.button) {
-                case SDL_BUTTON_LEFT: {
-                    this->callback("mouse-left", false);
-                    this->callback("mouse-left-double", false);
-                    break;
-                }
-
-                case SDL_BUTTON_RIGHT: {
-                    this->callback("mouse-right", false);
-                    this->callback("mouse-right-double", false);
-                    break;
-                }
-
-                case SDL_BUTTON_MIDDLE: {
-                    this->callback("mouse-middle", false);
-                    this->callback("mouse-middle-double", false);
-                    break;
-                }
-
-                default: {
-                    this->callback("mouse-" + std::to_string(sdl_event.button.button), false);
-                    this->callback("mouse-" + std::to_string(sdl_event.button.button) + "-double", false);
-                    break;
-                }
-            }
+            this->callback("mouse-" + std::to_string(sdl_event.button.button), false);
+            this->callback("mouse-" + std::to_string(sdl_event.button.button) + "-double", false);
         }
 
         case SDL_MOUSEMOTION: {
@@ -306,6 +240,7 @@ void ekg::service::input::unbind(std::string_view input_tag, std::string_view ke
 }
 
 void ekg::service::input::callback(std::string_view key, bool callback) {
+    this->input_map[key.data()] = callback;
     for (std::string &binds : this->input_bind_map[key.data()]) {
         this->input_register_map[binds] = callback;
     }

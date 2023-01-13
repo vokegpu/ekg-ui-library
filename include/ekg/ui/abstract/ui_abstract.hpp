@@ -51,7 +51,7 @@ namespace ekg {
             ~abstract();
 
             void set_tag(std::string_view);
-            std::string_view get_tag();
+            std::string get_tag();
 
             void add_child(int32_t);
             std::vector<int32_t> &get_child_id_list();
@@ -64,6 +64,7 @@ namespace ekg {
 
             void set_alive(bool);
             bool is_alive();
+            void destroy();
 
             void set_state(const ekg::state&);
             ekg::state get_state();

@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
@@ -67,6 +67,11 @@ bool ekg::ui::abstract::is_alive() {
     return this->alive;
 }
 
+void ekg::ui::abstract::destroy() {
+    this->set_alive(false);
+    ekg::dispatch(ekg::env::refresh);
+}
+
 void ekg::ui::abstract::set_state(const ekg::state &enum_state) {
     this->state = enum_state;
 }
@@ -99,7 +104,7 @@ void ekg::ui::abstract::set_tag(std::string_view string) {
     this->tag = string;
 }
 
-std::string_view ekg::ui::abstract::get_tag() {
+std::string ekg::ui::abstract::get_tag() {
     return this->tag;
 }
 

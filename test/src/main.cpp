@@ -106,7 +106,7 @@ int32_t main(int, char**) {
                 default: {
                     ekg::event(sdl_event);
 
-                    if (ekg::input::pressed() && ekg::input::receive("mouse-2")) {
+                    if (ekg::input::pressed() && ekg::input::receive("mouse-3")) {
                         auto popup = ekg::popup("hello", {"Element One", "Element Two", "Element Three", "Element Four"});
                     }
 

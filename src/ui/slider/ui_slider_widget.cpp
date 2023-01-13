@@ -45,8 +45,8 @@ void ekg::ui::slider_widget::update_bar(float x, float y) {
     ui->set_value(factor);
 }
 
-void ekg::ui::slider_widget::destroy() {
-    abstract_widget::destroy();
+void ekg::ui::slider_widget::on_destroy() {
+    abstract_widget::on_destroy();
 }
 
 void ekg::ui::slider_widget::on_reload() {

@@ -17,11 +17,13 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 
-void ekg::ui::popup_widget::destroy() {
+void ekg::ui::popup_widget::on_destroy() {
 
 }
 
 void ekg::ui::popup_widget::on_reload() {
+    ekg::ui::abstract_widget::on_reload();
+
 	auto ui {(ekg::ui::popup*) this->data};
 	auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
     auto &component_list {ui->get_component_list()};
@@ -51,9 +53,10 @@ void ekg::ui::popup_widget::on_reload() {
 
     /* Second phase: compute bounds and layout mask. */
 
-    auto offset {ekg::find_min_offset(max_width, dimension_offset)};
     auto text_dock_flags {ui->get_text_align()};
-    
+    float offset {ekg::find_min_offset(max_width, dimension_offset)};
+    float size {(text_height + dimension_offset) * static_cast<float>(ui->get_scaled_height())};
+
     ekg::vec3 layout_offset {offset, offset, text_height + dimension_offset};
     auto &layout_mask {layout.get_layout_mask()};
 
@@ -65,7 +68,7 @@ void ekg::ui::popup_widget::on_reload() {
         auto &element {this->element_list.at(it)};
 
         element.rect_bound.w = this->dimension.w;
-        element.rect_bound.h = element.rect_text.h + dimension_offset;
+        element.rect_bound.h = size;
         element.rect_bound.x = 0;
         element.rect_bound.y = this->dimension.h;
 
@@ -76,8 +79,11 @@ void ekg::ui::popup_widget::on_reload() {
         layout.process_layout_mask();
 
         // Process the popup height based in layout mask.
-        this->dimension.h += layout_mask.h;
+        this->dimension.h += layout_mask.h + (offset * static_cast<float>(element.separator));
     }
+
+    /* Extra offset to final rect. */
+    this->dimension.h += offset;
 }
 
 void ekg::ui::popup_widget::on_pre_event(SDL_Event &sdl_event) {
@@ -108,12 +114,14 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
             }
         }
 
-        ekg::set(this->flag.hovered, this->hovered_element != hovered);
+        ekg::set(this->hovered_element, hovered);
 
         if (hovered != -1 && pressed) {
             this->focused_element = hovered;
         } else if (hovered != -1 && released) {
             
+        } else if (hovered == -1 && pressed) {
+            this->data->destroy();
         }
     }
 }
@@ -134,13 +142,15 @@ void ekg::ui::popup_widget::on_draw_refresh() {
     auto &component_list {ui->get_component_list()};
 
     ekg::draw::bind_scissor(ui->get_id());
+    ekg::draw::rect(rect, theme.popup_background);
+    ekg::draw::rect(rect, theme.popup_outline, ekg::drawmode::outline);
 
-    for (uint32_t it {}; it < this->element_list.size(); it++) {
+    for (int32_t it {}; it < this->element_list.size(); it++) {
         auto &component {component_list.at(it)};
         auto &element {this->element_list.at(it)};
 
-        ekg::draw::rect(element.rect_bound + rect, theme.popup_background);
-        f_renderer.blit(component.name, rect.x + element.rect_text.x, rect.y + element.rect_text.y, theme.popup_string);
+        if (this->hovered_element == it) ekg::draw::rect(element.rect_bound + rect, theme.popup_highlight);
+        f_renderer.blit(component.name, rect.x + element.rect_bound.x + element.rect_text.x, rect.y + element.rect_bound.y + element.rect_text.y, theme.popup_string);
     }
 
     ekg::draw::bind_off_scissor();

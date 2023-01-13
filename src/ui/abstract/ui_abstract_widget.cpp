@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
@@ -20,10 +20,10 @@ ekg::ui::abstract_widget::abstract_widget() {
 }
 
 ekg::ui::abstract_widget::~abstract_widget() {
-
+    this->on_destroy();
 }
 
-void ekg::ui::abstract_widget::destroy() {
+void ekg::ui::abstract_widget::on_destroy() {
 
 }
 
@@ -55,7 +55,7 @@ void ekg::ui::abstract_widget::on_draw_refresh() {
 
 }
 
-ekg::rect &ekg::ui::abstract_widget::get_abs_rect() const {
+ekg::rect &ekg::ui::abstract_widget::get_abs_rect() {
     auto &rect = (this->data->widget() = this->dimension + *this->parent);
     return rect;
 }

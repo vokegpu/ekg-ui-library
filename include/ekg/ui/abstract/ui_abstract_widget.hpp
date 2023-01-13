@@ -21,18 +21,21 @@
 namespace ekg::ui {
     class abstract_widget : public ekg::feature {
     public:
-        abstract_widget();
+        explicit abstract_widget();
         ~abstract_widget();
 
         ekg::ui::abstract *data {};
         ekg::flag flag {};
-        ekg::rect *parent {}, dimension {}, empty {};
+        ekg::rect *parent {};
+        ekg::rect dimension {};
+        ekg::rect empty {};
+
         bool is_scissor_refresh {};
         int32_t scissor_id {};
 
-        [[nodiscard]] ekg::rect &get_abs_rect() const;
+        [[nodiscard]] ekg::rect &get_abs_rect();
 
-        virtual void destroy();
+        virtual void on_destroy();
         virtual void on_reload();
         virtual void on_pre_event(SDL_Event &sdl_event);
         virtual void on_event(SDL_Event &sdl_event);
