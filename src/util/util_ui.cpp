@@ -73,3 +73,11 @@ ekg::ui::abstract_widget *ekg::find_absolute_parent_master(ekg::ui::abstract_wid
     auto widget {ekg::core->get_fast_widget_by_id(pwidget->data->get_parent_id())};
     return ekg::find_absolute_parent_master(widget);
 }
+
+void ekg::refresh(int32_t id) {
+    ekg::core->do_task_refresh(ekg::core->get_fast_widget_by_id(id));
+}
+
+void ekg::refresh(ekg::ui::abstract_widget *widget) {
+    ekg::core->do_task_refresh(widget);
+}

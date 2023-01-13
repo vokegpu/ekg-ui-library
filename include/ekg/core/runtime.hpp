@@ -37,7 +37,9 @@ namespace ekg {
 
     /* The main runtime for run ekg. */
     class runtime : public ekg::feature {
-    private:
+    protected:
+        void erase(int32_t id);
+    private:;
         SDL_Window* root {};
 
         /* Widget env lists and maps for tasks. */
@@ -96,10 +98,11 @@ namespace ekg {
         ekg::service::layout &get_service_layout();
         ekg::ui::abstract_widget* get_fast_widget_by_id(int32_t id);
 
-        void gen_widget(ekg::ui::abstract* ui);
-        void do_task_reload(ekg::ui::abstract_widget* widget);
-        void do_task_scissor(ekg::ui::abstract_widget* widget);
-        void do_task_synclayout(ekg::ui::abstract_widget* widget);
+        void gen_widget(ekg::ui::abstract *ui);
+        void do_task_reload(ekg::ui::abstract_widget *widget);
+        void do_task_scissor(ekg::ui::abstract_widget *widget);
+        void do_task_synclayout(ekg::ui::abstract_widget *widget);
+        void do_task_refresh(ekg::ui::abstract_widget *widget);
         void end_group_flag();
 
         void init();

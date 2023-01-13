@@ -95,6 +95,7 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
 
     bool pressed {ekg::input::pressed()};
     bool released {ekg::input::released()};
+    int32_t hovered {-1};
 
     if (ekg::input::motion() || pressed || released) {
         check_hovered = this->flag.hovered;
@@ -103,7 +104,6 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
     if (check_hovered) {
         ekg::vec4 &interact {ekg::interact()};
         ekg::rect &rect {this->get_abs_rect()};
-        int32_t hovered {-1};
 
         for (int32_t it {}; it < this->element_list.size(); it++) {
             auto &element {this->element_list.at(it)};
@@ -115,14 +115,14 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
         }
 
         ekg::set(this->hovered_element, hovered);
+    }
 
-        if (hovered != -1 && pressed) {
-            this->focused_element = hovered;
-        } else if (hovered != -1 && released) {
-            
-        } else if (hovered == -1 && pressed) {
-            this->data->destroy();
-        }
+    if (hovered != -1 && pressed) {
+        this->focused_element = hovered;
+    } else if (hovered != -1 && released) {
+
+    } else if (hovered == -1 && pressed) {
+        this->data->destroy();
     }
 }
 

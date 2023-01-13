@@ -164,24 +164,27 @@ void ekg::runtime::prepare_tasks() {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
 
         for (ekg::ui::abstract_widget *&widgets : runtime->loaded_widget_refresh_list) {
-            if (widgets == nullptr) {
+            if (widgets == nullptr || runtime->processed_widget_map[widgets->data->get_id()]) {
                 continue;
             }
 
             if (!widgets->data->is_alive()) {
-                runtime->widget_map.erase(widgets->data->get_id());
+                runtime->erase(widgets->data->get_id());
+                ekg::log("hello!");
 
                 delete widgets->data;
                 delete widgets;
 
-                widgets->data = nullptr;
                 widgets = nullptr;
+                continue;
             }
 
             runtime->loaded_widget_list.push_back(widgets);
+            runtime->processed_widget_map[widgets->data->get_id()] = true;
         }
 
         runtime->loaded_widget_refresh_list.clear();
+        runtime->processed_widget_map.clear();
     }, ekg::event::alloc});
 
     this->handler_service.dispatch(new ekg::cpu::event {"swap", this, [](void *p_data) {
@@ -519,7 +522,7 @@ void ekg::runtime::prepare_ui_env() {
     /* end of slider input binds */
 }
 
-void ekg::runtime::gen_widget(ekg::ui::abstract* ui) {
+void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
     ui->set_id(++this->token_id);
 
     this->swap_widget_id_focused = ui->get_id();
@@ -594,8 +597,8 @@ void ekg::runtime::gen_widget(ekg::ui::abstract* ui) {
         }
     }
 
-    this->loaded_widget_refresh_list.push_back(created_widget);
     this->widget_map[ui->get_id()] = created_widget;
+    this->do_task_refresh(created_widget);
     this->do_task_reload(created_widget);
 
     if (append_group && this->current_bind_group != nullptr) {
@@ -608,7 +611,6 @@ void ekg::runtime::gen_widget(ekg::ui::abstract* ui) {
     }
 
     ekg::log("created widget " + std::to_string(ui->get_id()));
-    ekg::dispatch(ekg::env::refresh);
     ekg::dispatch(ekg::env::swap);
 }
 
@@ -637,6 +639,28 @@ void ekg::runtime::do_task_synclayout(ekg::ui::abstract_widget *widget) {
     }
 }
 
+void ekg::runtime::do_task_refresh(ekg::ui::abstract_widget *widget) {
+    if (widget == nullptr) {
+        return;
+    }
+
+    this->loaded_widget_refresh_list.push_back(widget);
+    ekg::dispatch(ekg::env::refresh);
+    ekg::dispatch(ekg::env::redraw);
+}
+
 void ekg::runtime::end_group_flag() {
     this->current_bind_group = nullptr;
+}
+
+void ekg::runtime::erase(int32_t id) {
+    for (size_t it {}; it < this->loaded_widget_list.size(); it++) {
+        auto &widget {this->loaded_widget_list.at(it)};
+
+        if (widget != nullptr && widget->data->get_id() == id) {
+            this->widget_map.erase(widget->data->get_id());
+            this->loaded_widget_list.erase(this->loaded_widget_list.begin() + it);
+            break;
+        }
+    }
 }

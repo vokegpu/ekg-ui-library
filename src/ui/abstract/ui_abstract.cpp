@@ -69,7 +69,7 @@ bool ekg::ui::abstract::is_alive() {
 
 void ekg::ui::abstract::destroy() {
     this->set_alive(false);
-    ekg::dispatch(ekg::env::refresh);
+    ekg::refresh(this->id);
 }
 
 void ekg::ui::abstract::set_state(const ekg::state &enum_state) {

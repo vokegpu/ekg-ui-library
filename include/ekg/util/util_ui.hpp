@@ -46,6 +46,9 @@ namespace ekg {
     void synclayout(int32_t);
     void synclayout(ekg::ui::abstract_widget*);
 
+    void refresh(int32_t);
+    void refresh(ekg::ui::abstract_widget*);
+
     void push_back_stack(ekg::ui::abstract_widget*, ekg::stack&);
     ekg::ui::abstract_widget *find_absolute_parent_master(ekg::ui::abstract_widget*);
 }
