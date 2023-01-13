@@ -624,7 +624,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
             auto *widget {new ekg::ui::popup_widget()};
             widget->data = ui;
             created_widget = widget;
-            update_scissor = true;
+            update_scissor = false;
             break;
         }
 

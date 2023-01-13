@@ -154,11 +154,16 @@ void ekg::ui::popup_widget::on_update() {
     gpu_scissor->rect[0] = rect.x;
     gpu_scissor->rect[1] = rect.y;
     gpu_scissor->rect[2] = rect.w;
-    gpu_scissor->rect[3] = this->scissor_opened_height;
 
-    float animation {ekg::smooth(50, SDL_GetTicks64() - this->elapsed_animation_ticks)};
-    this->scissor_opened_height = this->dimension.h * animation;
-    if (animation == 1.0f) this->is_high_frequency = false;
+    float animation {ekg::smooth(100, SDL_GetTicks64() - this->elapsed_animation_ticks)};
+    this->scissor_opened_height = animation * this->dimension.h;
+
+    if (EQUALS_FLOAT(this->scissor_opened_height, this->dimension.h)) {
+        scissor_opened_height = this->dimension.h;
+        this->is_high_frequency = false;
+    }
+
+    gpu_scissor->rect[3] = this->scissor_opened_height;
 }
 
 void ekg::ui::popup_widget::on_draw_refresh() {
