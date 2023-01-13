@@ -44,16 +44,8 @@ namespace ekg {
 
         /* Widget env lists and maps for tasks. */
 
-        std::vector<ekg::ui::abstract_widget*> loaded_widget_list {};
-        std::vector<ekg::ui::abstract*> loaded_interface_list {};
-
-        std::vector<ekg::ui::abstract_widget*> loaded_widget_reload_list {};
-        std::vector<ekg::ui::abstract_widget*> loaded_widget_refresh_list {};
-        std::vector<ekg::ui::abstract_widget*> loaded_widget_scissor_list {};
-        std::vector<ekg::ui::abstract_widget*> loaded_widget_sync_layou_list {};
-
+        ekg::feature_manager<ekg::ui::abstract_widget*> widget_manager {};
         std::map<int32_t, ekg::ui::abstract_widget*> widget_map {};
-        std::map<int32_t, ekg::ui::abstract> interface_map {};
         std::map<int32_t, bool> processed_widget_map {};
 
         /* Core services and instances. */
@@ -78,6 +70,8 @@ namespace ekg {
                 swap_widget_id_focused {},
                 widget_id_pressed_focused {},
                 widget_id_released_focused {};
+
+        bool enable_high_priority_frequency {};
         
         /* Security methods of ekg. */
 
@@ -85,7 +79,7 @@ namespace ekg {
         void prepare_ui_env();
     public:
         void set_root(SDL_Window* sdl_win_root);
-        SDL_Window* get_root();
+        SDL_Window *get_root();
 
         ekg::gpu::allocator &get_gpu_allocator();
         ekg::draw::font_renderer &get_f_renderer_small();
@@ -103,6 +97,7 @@ namespace ekg {
         void do_task_scissor(ekg::ui::abstract_widget *widget);
         void do_task_synclayout(ekg::ui::abstract_widget *widget);
         void do_task_refresh(ekg::ui::abstract_widget *widget);
+        void set_high_priority_frequency(ekg::ui::abstract_widget *widget);
         void end_group_flag();
 
         void init();

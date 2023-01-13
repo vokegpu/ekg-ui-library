@@ -15,8 +15,30 @@
 #ifndef EKG_CORE_FEATURE_H
 #define EKG_CORE_FEATURE_H
 
+#include <iostream>
+#include <vector>
+#include <map>
+
 namespace ekg {
 	class feature {};
-};
+
+    template<typename t>
+    class feature_manager {
+    protected:
+        std::map<std::string, std::vector<t>> feature_map {};
+    public:
+        void insert(const std::string &key) {
+            this->feature_map[key] = {};
+        }
+
+        std::vector<t> &at(const std::string &key) {
+            return this->feature_map[key];
+        }
+
+        std::vector<t> &operator[](const std::string &key) {
+            return this->feature_map[key];
+        }
+    };
+}
 
 #endif
