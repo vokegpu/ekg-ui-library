@@ -93,6 +93,28 @@ void ekg::ui::popup_widget::on_reload() {
         ekg::update_high_frequency(this);
         this->elapsed_animation_ticks = SDL_GetTicks64();
     }
+
+    /* Fix screen position at space. */
+    if (!ui->has_parent()) {
+        float display_w {static_cast<float>(ekg::display::width)};
+        float display_h {static_cast<float>(ekg::display::height)};
+
+        if (this->parent->x < 0) {
+            this->parent->x = 0;
+        }
+
+        if (this->parent->y < 0) {
+            this->parent->y = 0;
+        }
+
+        if (this->parent->x + this->dimension.w > display_w) {
+            this->parent->x = display_w - this->dimension.w;
+        }
+
+        if (this->parent->y + this->dimension.h > display_h) {
+            this->parent->y = display_h - this->dimension.h;
+        }
+    }
 }
 
 void ekg::ui::popup_widget::on_pre_event(SDL_Event &sdl_event) {
