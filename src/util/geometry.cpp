@@ -166,3 +166,11 @@ ekg::rect ekg::operator+(const ekg::rect &l, const ekg::rect &r) {
 ekg::vec2 ekg::operator/(const ekg::vec2 &l, float r) {
     return {l.x / r, l.y / r};
 }
+
+int32_t ekg::min(int32_t v, int32_t m) {
+    return v < m ? m : v;
+}
+
+int32_t ekg::max(int32_t v, int32_t m) {
+    return v > m ? m : v;
+}

@@ -9,7 +9,7 @@
  * 5- Malware, rat and others virus. We do not care.
  * 6- Do not modify this license under any instance.
  *
- * @VokeGpu 2022 all rights reserved.
+ * @VokeGpu 2023 all rights reserved.
  */
 
 #include "ekg/service/input.hpp"
@@ -338,4 +338,8 @@ bool ekg::service::input::pressed(std::string_view key) {
 
 bool ekg::service::input::is_special_key(int32_t sdl_key_code) {
     return sdl_key_code == SDLK_LCTRL || sdl_key_code == SDLK_RCTRL || sdl_key_code == SDLK_LSHIFT || sdl_key_code == SDLK_RSHIFT || sdl_key_code == SDLK_LALT || sdl_key_code == SDLK_RALT || sdl_key_code == SDLK_TAB;
+}
+
+bool ekg::service::input::receive(std::string_view key) {
+    return this->input_map[key.data()];
 }

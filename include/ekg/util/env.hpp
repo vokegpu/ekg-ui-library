@@ -65,6 +65,7 @@ namespace ekg {
 
     namespace input {
         bool pressed(std::string_view);
+        bool receive(std::string_view tag);
         void bind(std::string_view, std::string_view);
         bool motion();
         bool released();

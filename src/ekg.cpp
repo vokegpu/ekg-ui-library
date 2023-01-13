@@ -296,7 +296,13 @@ ekg::ui::popup *ekg::popup(std::string_view tag, const std::vector<std::string> 
     ekg::core->gen_widget(ui);
 
     if (interact_position) {
+        auto &interact {ekg::interact()};
+        ui->set_pos(interact.x, interact.y);
     }
+
+    ui->set_width(100);
+    ui->append(component_list);
+    ui->set_tag(tag);
 
     return nullptr;
 }

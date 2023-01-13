@@ -136,10 +136,17 @@ ekg::font ekg::ui::popup::get_font_size() {
     return this->font_size;
 }
 
-void ekg::ui::popup::set_pos(float, float) {
+void ekg::ui::popup::set_pos(float x, float y) {
+    if (this->sync_ui.x != x || this->sync_ui.y != y) {
+        this->sync_ui.x = x;
+        this->sync_ui.y = y;
 
+        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
+        ekg::reload(this->id);
+        ekg::scissor(this->parent_id);
+    }
 }
 
 ekg::vec2 ekg::ui::popup::get_pos() {
-    return ekg::vec2();
+    return {this->rect_widget.x, this->rect_widget.y};
 }

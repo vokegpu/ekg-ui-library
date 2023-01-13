@@ -27,14 +27,19 @@ namespace ekg::service {
             static std::map<std::string, const char*> special_keys_name_map;
 
             std::map<std::string, std::vector<std::string>> input_bind_map {};
-            std::map<std::string, bool> input_register_map {};
+            std::map<std::string, bool> input_register_map {}, input_map {};
             std::map<int32_t, std::string> special_keys_sdl_map {};
 
             std::vector<std::string> special_keys_unit_pressed {};
             std::vector<std::string> special_keys_released {};
             std::vector<std::string> double_click_mouse_buttons_pressed {};
 
-            bool pressed_event {}, released_event {}, motion_event {}, wheel_event {}, finger_hold_event {}, finger_wheel_event {};
+            bool pressed_event {};
+            bool released_event {};
+            bool motion_event {};
+            bool wheel_event {};
+            bool finger_hold_event {};
+            bool finger_wheel_event {};
 
             ekg::vec4 last_finger_interact {};
             ekg::timing double_interact {};
@@ -55,6 +60,7 @@ namespace ekg::service {
             void unbind(std::string_view input_tag, std::string_view key);
             void callback(std::string_view key, bool callback);
             bool pressed(std::string_view key);
+            bool receive(std::string_view key);
 
             void on_event(SDL_Event &sdl_event);
             void on_update();

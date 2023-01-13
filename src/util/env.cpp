@@ -104,7 +104,7 @@ std::string &ekg::set(std::string &var_mutable, const std::string &predicate) {
 
 std::string ekg::string_float_precision(float n, int32_t precision) {
     const std::string string {std::to_string(n)};
-    return string.substr(0, ekg::max(string.find('.') + precision + (1 * precision), string.size()));
+    return string.substr(0, ekg::max((int32_t) (string.find('.') + precision + (1 * precision)), (int32_t) string.size()));
 }
 
 bool ekg::input::pressed(std::string_view key_input) {
@@ -129,4 +129,8 @@ bool ekg::input::pressed() {
 
 bool ekg::input::wheel() {
     return ekg::core->get_service_input().was_wheel();
+}
+
+bool ekg::input::receive(std::string_view tag) {
+    return ekg::core->get_service_input().receive(tag);
 }

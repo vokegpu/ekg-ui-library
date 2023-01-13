@@ -58,6 +58,8 @@ namespace ekg {
                 float y;
             };
         };
+
+        inline vec2() = default;
     } vec2;
 
     ekg::vec2 operator/(const ekg::vec2&, float);
@@ -80,6 +82,8 @@ namespace ekg {
                 float z;
                 float w;
             };
+
+            float data[4];
         };
 
         inline vec4() = default;
@@ -210,6 +214,9 @@ namespace ekg {
     
     int32_t find_collide_dock(ekg::docker&, uint16_t, const ekg::vec4&);
     float find_min_offset(float, float);
+
+    int32_t min(int32_t, int32_t);
+    int32_t max(int32_t, int32_t);
 
     float min(float, float);
     float max(float, float);
