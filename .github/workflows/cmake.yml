@@ -30,7 +30,7 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: cmake -DOGRE_BUILD_DEPENDENCIES=OFF -DOGRE_BUILD_COMPONENT_CSHARP=OFF --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: Test
       working-directory: ${{github.workspace}}/build
