@@ -1,4 +1,4 @@
-The official runtime ekg dimension library source code.
+The official runtime ekg ui library source code.
 
 ---
 
