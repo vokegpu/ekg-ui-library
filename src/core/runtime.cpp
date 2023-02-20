@@ -21,6 +21,7 @@
 #include "ekg/ui/checkbox/ui_checkbox_widget.hpp"
 #include "ekg/ui/slider/ui_slider_widget.hpp"
 #include "ekg/ui/popup/ui_popup_widget.hpp"
+#include "ekg/draw/draw.hpp"
 
 ekg::stack ekg::swap::collect {};
 ekg::stack ekg::swap::back {};
@@ -47,7 +48,7 @@ void ekg::runtime::init() {
     this->theme_service.init();
 
     if (FT_Init_FreeType(&ekg::draw::font_renderer::ft_library)) {
-        ekg::log("could not init FreeType");
+        ekg::log(ekg::log::WARNING) << "Failed to init FreeType library";
     }
 
     this->prepare_tasks();
@@ -172,7 +173,7 @@ ekg::service::handler &ekg::runtime::get_service_handler() {
 }
 
 void ekg::runtime::prepare_tasks() {
-    ekg::log("creating task events");
+    ekg::log() << "Preparing internal EKG core";
 
     /*
       The priority of tasks is organised by compilation code, means that you need
@@ -488,7 +489,8 @@ ekg::service::layout &ekg::runtime::get_service_layout() {
 }
 
 void ekg::runtime::prepare_ui_env() {
-    ekg::log("Registering handler features!");
+    ekg::log() << "Preparing internal user interface environment";
+
     this->widget_list_map["all"] = {};
     this->widget_list_map["refresh"] = {};
     this->widget_list_map["reload"] = {};
@@ -496,8 +498,6 @@ void ekg::runtime::prepare_ui_env() {
     this->widget_list_map["redraw"] = {};
     this->widget_list_map["scissor"] = {};
     this->widget_list_map["update"] = {};
-
-    ekg::log("Creating fonts renderer...");
 
     this->f_renderer_small.font_size = 16;
     this->f_renderer_small.reload();
@@ -511,7 +511,7 @@ void ekg::runtime::prepare_ui_env() {
     this->f_renderer_big.reload();
     this->f_renderer_big.bind_allocator(&this->allocator);
 
-    ekg::log("Registering UI input binds...");
+    ekg::log() << "Registering user interface input bindings";
 
     /* start of frame input binds */
     this->input_service.bind("frame-drag-activy", "mouse-1");
@@ -646,7 +646,6 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
         this->do_task_scissor(created_widget);
     }
 
-    ekg::log("created widget " + std::to_string(ui->get_id()));
     ekg::dispatch(ekg::env::swap);
 }
 

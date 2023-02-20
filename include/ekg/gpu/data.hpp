@@ -43,9 +43,9 @@ namespace ekg {
             ekg::gpu::data *data {nullptr};
         };
 
-        struct scissor {
+        typedef struct scissor {
             float rect[4] {.0f, .0f, .0f, .0f};
-        };
+        } scissor;
     }
 }
 

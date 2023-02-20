@@ -17,7 +17,7 @@
 #include "ekg/gpu/gl.hpp"
 
 ekg::gpu::program ekg::gpu::allocator::program {};
-float ekg::gpu::allocator::orthographicm4[16] {};
+float ekg::gpu::allocator::mat4x4orthographic[16] {};
 float ekg::gpu::allocator::viewport[4] {};
 
 void ekg::gpu::allocator::invoke() {
@@ -138,10 +138,7 @@ void ekg::gpu::allocator::revoke() {
     this->factor_changed = false;
 
     if (should_re_alloc_buffers) {
-        /* bind the vertex array object (list of vbos) */
-
         glBindVertexArray(this->vbo_array);
-
         /* set shader binding location 0 and dispatch mesh of vertices collected by allocator */
 
         glBindBuffer(GL_ARRAY_BUFFER, this->vbo_vertices);
@@ -150,7 +147,6 @@ void ekg::gpu::allocator::revoke() {
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
         /* set shader binding location 1 and dispatch mesh of texture coordinates collected by allocator */
-
         glBindBuffer(GL_ARRAY_BUFFER, this->vbo_uvs);
         glEnableVertexAttribArray(1);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_uvs.size(), &this->cached_uvs[0], GL_STATIC_DRAW);
@@ -181,7 +177,6 @@ void ekg::gpu::allocator::revoke() {
 void ekg::gpu::allocator::on_update() {
     if (!this->animation_update_list.empty()) {
         int32_t animation_progress_count {};
-        ekg::log(std::to_string(this->animation_update_list.size()));
 
         /* interpolate the alpha using interpolation linear (lerp) */
 
@@ -212,9 +207,11 @@ void ekg::gpu::allocator::draw() {
     glBindVertexArray(this->vbo_array);
 
     bool active_texture {}, texture_enabled {};
-    float depth_level {this->depth_testing_preset};
     ekg::gpu::scissor *scissor {};
-    auto &shading_program_id {ekg::gpu::allocator::program.id};
+
+    GLboolean is_depth_test_previous_enable {};
+    glGetBooleanv(GL_DEPTH_TEST, &is_depth_test_previous_enable);
+    glDisable(GL_DEPTH_TEST);
 
     /*
       The batching system of gpu allocator use instanced rendering concept, if there is some simple shape rect
@@ -234,8 +231,6 @@ void ekg::gpu::allocator::draw() {
         if (active_texture) {
             glActiveTexture(GL_TEXTURE0 + static_cast<int32_t>(data.active_tex_slot));
             glBindTexture(GL_TEXTURE_2D, data.material_texture);
-
-            glUniform1i(this->uniform_active_texture_slot, static_cast<int32_t>(data.active_tex_slot));
             glUniform1i(this->uniform_active_texture, true);
             texture_enabled = true;
         }
@@ -251,11 +246,10 @@ void ekg::gpu::allocator::draw() {
         this->current_color_pass[3] = static_cast<float>(data.material_color[4]) / 255;
 
         glUniform4f(this->uniform_color, this->current_color_pass[0], this->current_color_pass[1], this->current_color_pass[2], this->current_color_pass[3]);
-        glUniform4f(this->uniform_rect, data.shape_rect[0], data.shape_rect[1], data.shape_rect[2], data.shape_rect[3]);
+        glUniform4fv(this->uniform_rect, GL_TRUE, data.shape_rect);
         glUniform1i(this->uniform_line_thickness, data.line_thickness);
-        glUniform1f(this->uniform_depth, depth_level);
 
-        /* allocator use 6 vertices to draw, no need for element buffer object */
+        /* allocator use 6 vertices to draw, no need element buffer object */
 
         switch (data.scissor_id) {
             case -1: {
@@ -270,20 +264,20 @@ void ekg::gpu::allocator::draw() {
                 }
 
                 glUniform1i(this->uniform_enable_scissor, true);
-                glUniform4f(this->uniform_scissor, scissor->rect[0], scissor->rect[1], scissor->rect[2], scissor->rect[3]);
+                glUniform4fv(this->uniform_scissor, GL_TRUE, scissor->rect);
                 break;
             }
         }
 
         glDrawArrays(GL_TRIANGLES, data.begin_stride, data.end_stride);
-
-        /* plus: depth testing is needed for layout level */
-
-        depth_level += 0.000001f;
     }
 
     if (texture_enabled) {
         glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    if (is_depth_test_previous_enable) {
+        glEnable(GL_DEPTH_TEST);
     }
 
     glBindVertexArray(0);
@@ -297,16 +291,14 @@ void ekg::gpu::allocator::init() {
 
     /* reduce glGetLocation calls when rendering the batch */
     auto &shading_program_id {ekg::gpu::allocator::program.id};
-    this->uniform_active_texture = glGetUniformLocation(shading_program_id, "ActiveTexture");
-    this->uniform_active_texture_slot = glGetUniformLocation(shading_program_id, "ActiveTextureSlot");
-    this->uniform_color = glGetUniformLocation(shading_program_id, "Color");
-    this->uniform_rect = glGetUniformLocation(shading_program_id, "Rect");
-    this->uniform_line_thickness = glGetUniformLocation(shading_program_id, "LineThickness");
-    this->uniform_depth = glGetUniformLocation(shading_program_id, "Depth");
-    this->uniform_scissor = glGetUniformLocation(shading_program_id, "Scissor");
-    this->uniform_enable_scissor = glGetUniformLocation(shading_program_id, "EnableScissor");
+    this->uniform_active_texture = glGetUniformLocation(shading_program_id, "uActiveTexture");
+    this->uniform_color = glGetUniformLocation(shading_program_id, "uColor");
+    this->uniform_rect = glGetUniformLocation(shading_program_id, "uRect");
+    this->uniform_line_thickness = glGetUniformLocation(shading_program_id, "uLineThickness");
+    this->uniform_scissor = glGetUniformLocation(shading_program_id, "uScissor");
+    this->uniform_enable_scissor = glGetUniformLocation(shading_program_id, "uEnableScissor");
 
-    ekg::log("gpu allocator shading program loaded uniforms successfully!");
+    ekg::log() << "GPU allocator initialised";
 }
 
 void ekg::gpu::allocator::clear_current_data() {

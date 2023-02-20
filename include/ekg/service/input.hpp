@@ -33,6 +33,7 @@ namespace ekg::service {
             std::vector<std::string> special_keys_unit_pressed {};
             std::vector<std::string> special_keys_released {};
             std::vector<std::string> double_click_mouse_buttons_pressed {};
+            std::vector<std::string> input_register_callback {};
 
             bool pressed_event {};
             bool released_event {};

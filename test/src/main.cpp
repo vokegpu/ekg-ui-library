@@ -18,32 +18,32 @@
  * Created by Rina.
  **/
 int32_t main(int, char**) {
-    ekg::log("Initialising demo showcase");
+    ekg::log() << "EKG User interface library demo starting";
 
     int32_t root_width {1280};
     int32_t root_height {768};
 
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window* sdl_win {SDL_CreateWindow("ekg showcase", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
-
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
+    SDL_Window* sdl_win {SDL_CreateWindow("ekg showcase", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
     SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
     bool running {true};
     glewExperimental = GL_TRUE;
 
     if (glewInit() != GLEW_OK) {
-        ekg::log("Failed to initialise GLEW OpenGL context!");
+        ekg::log(ekg::log::ERROR) << "Failed to initialise GLEW";
     } else {
-        ekg::log("GLEW initialised");
+        ekg::log() << "GLEW initialised";
     }
 
     SDL_GL_SetSwapInterval(0); // v-sync on
     ekg::init(sdl_win, "JetBrainsMono-Bold.ttf");
-    ekg::log("OpenGL 4 context created!");
+    ekg::log() << "OpenGL context created";
+    SDL_SetWindowOpacity(sdl_win, 1.0f);
 
     ekg::timing mainloop_timing {};
     ekg::timing fps_timing {};
@@ -65,7 +65,11 @@ int32_t main(int, char**) {
         ekg::label("DeathWishes.com", ekg::dock::left | ekg::dock::top);
         ekg::checkbox("Check box!! uwu", ekg::dock::left | ekg::dock::top)->set_box_align(ekg::dock::center | ekg::dock::right);
         ekg::slider("", 20, 20, 255, ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_text_align(ekg::dock::center | ekg::dock::left);
-        ekg::slider("", 20, 20, 255, ekg::dock::left | ekg::dock::top)->set_bar_align(ekg::dock::top | ekg::dock::left);
+        ekg::slider("", 20, 20, 255, ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_bar_align(ekg::dock::top | ekg::dock::left);
+        ekg::slider("", 20, 20, 255, ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_bar_align(ekg::dock::top | ekg::dock::left);
+        ekg::slider("", 0.43f, 0.0f, 1.0f, ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_bar_align(ekg::dock::top | ekg::dock::left);
+        ekg::slider("", 0.43f, 0.0f, 2.0f, ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_bar_align(ekg::dock::top | ekg::dock::left);
+        ekg::slider("", 0.43f, 0.0f, 2.0f, ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_bar_align(ekg::dock::top | ekg::dock::left);
         ekg::button("Register", ekg::dock::left | ekg::dock::top | ekg::dock::next);
         ekg::button("Login", ekg::dock::left | ekg::dock::top | ekg::dock::next);
         ekg::button("User List", ekg::dock::left | ekg::dock::top | ekg::dock::next);

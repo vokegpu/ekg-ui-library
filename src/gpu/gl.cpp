@@ -15,6 +15,7 @@
 #include "ekg/gpu/gl.hpp"
 #include "ekg/cpu/info.hpp"
 #include "ekg/util/env.hpp"
+#include <vector>
 
 void ekg::gpu::init_opengl_context() {
     switch (ekg::os) {
@@ -29,76 +30,66 @@ void ekg::gpu::init_opengl_context() {
     }
 }
 
-bool ekg::gpu::load_basic_program(ekg::gpu::program &program, const std::string &vsh_path, const std::string &fsh_path) {
-    std::string vsh_src {};
-    std::string fsh_src {};
-
-    return ekg::file_to_string(vsh_src, vsh_path) && ekg::file_to_string(fsh_src, fsh_path) && gpu::create_basic_program(program, vsh_src.c_str(), fsh_src.c_str());
-}
-
-bool ekg::gpu::create_basic_program(ekg::gpu::program &program, const char *vsh_src, const char *fsh_src) {
-    GLuint vsh {};
-    GLuint fsh {};
-
-    bool flag {ekg::gpu::compile_shader(vsh, GL_VERTEX_SHADER, vsh_src) && ekg::gpu::compile_shader(fsh, GL_FRAGMENT_SHADER, fsh_src)};
-
-    if (flag) {
-        program.id = glCreateProgram();
-
-        glAttachShader(program.id, vsh);
-        glAttachShader(program.id, fsh);
-        glLinkProgram(program.id);
-
-        GLint status {GL_FALSE};
-        glGetProgramiv(program.id, GL_LINK_STATUS, &status);
-
-        if (!status) {
-            char log[256];
-            glGetProgramInfoLog(program.id, 256, nullptr, log);
-
-            std::string ln {"\n"};
-            ln += log;
-            ekg::log(ln);
-
-            flag = false;
-        }
-
-        glDeleteShader(vsh);
-        glDeleteShader(fsh);
-    }
-
-    return flag;
-}
-
-bool ekg::gpu::compile_shader(GLuint &shader, GLuint shader_type, const char *src) {
-    shader = glCreateShader(shader_type);
-
-    glShaderSource(shader, 1, &src, NULL);
-    glCompileShader(shader);
-
-    GLint status {GL_FALSE};
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-
-    if (!status) {
-        char log[256];
-        glGetShaderInfoLog(shader, 256, nullptr, log);
-
-        std::string ln {"\n"};
-        ln += log;
-        ekg::log(ln);
-
-        return false;
-    }
-
-    return true;
-}
-
 void ekg::gpu::invoke(ekg::gpu::program &program) {
     glUseProgram(program.id);
 }
 
 void ekg::gpu::revoke() {
     glUseProgram(0);
+}
+
+bool ekg::gpu::create_basic_program(ekg::gpu::program &program, const std::unordered_map<std::string, uint32_t> &resources) {
+    if (resources.empty()) {
+        ekg::log(ekg::log::ERROR) << "Invalid shader, empty resources";
+        return true;
+    }
+
+    std::string shader_src {};
+    std::vector<uint32_t> compiled_shader_list {};
+    int32_t status {};
+    program.id = glCreateProgram();
+
+    for (auto &[value, key] : resources) {
+        uint32_t shader {glCreateShader(key)};
+        const char *p_src {value.c_str()};
+        glShaderSource(shader, 1, &p_src, nullptr);
+        glCompileShader(shader);
+
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+        if (status == GL_FALSE) {
+            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &status);
+            std::string msg {}; msg.resize(status);
+            glGetShaderInfoLog(shader, status, nullptr, msg.data());
+            ekg::log(ekg::log::ERROR) << "Failed to compile shader: \n" << msg;
+            break;
+        }
+
+        compiled_shader_list.push_back(shader);
+    }
+
+    bool keep {compiled_shader_list.size() == resources.size()};
+
+    for (uint32_t &shaders : compiled_shader_list) {
+        if (keep) {
+            glAttachShader(program.id, shaders);
+        }
+
+        glDeleteShader(shaders);
+    }
+
+    if (keep) {
+        glLinkProgram(program.id);
+        glGetProgramiv(program.id, GL_LINK_STATUS, &status);
+
+        if (status == GL_FALSE) {
+            glGetProgramiv(program.id, GL_INFO_LOG_LENGTH, &status);
+            std::string msg {}; msg.resize(status);
+            glGetProgramInfoLog(program.id, status, nullptr, msg.data());
+            ekg::log(ekg::log::ERROR) << "Failed to link program: \n" << msg;
+        }
+    }
+
+    return false;
 }
 
 void ekg::gpu::program::set(const std::string &str, bool value) {

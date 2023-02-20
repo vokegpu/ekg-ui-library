@@ -16,6 +16,7 @@
 #define EKG_UTIL_ENV_H
 
 #include <iostream>
+#include <sstream>
 
 namespace ekg {
     enum class env {
@@ -46,8 +47,50 @@ namespace ekg {
         uint64_t ticks_going_on {};
     };
 
+    struct log {
+    protected:
+        std::ostringstream buffer {};
+    public:
+        static constexpr int32_t WARNING {0};
+        static constexpr int32_t INFO {1};
+        static constexpr int32_t ERROR {2};
+
+        explicit log(int32_t priority = ekg::log::INFO) {
+            switch (priority) {
+                case ekg::log::WARNING: {
+                    this->buffer << "- [EKG-WARNING] ";
+                    break;
+                }
+
+                case ekg::log::INFO: {
+                    this->buffer << "[EKG-INFO] ";
+                    break;
+                }
+
+                case ekg::log::ERROR: {
+                    this->buffer << "[EKG-ERROR] ";
+                    break;
+                }
+
+                default: {
+                    break;
+                }
+            }
+        }
+
+        ~log() {
+            this->buffer << '\n';
+            std::cerr << this->buffer.str();
+        }
+
+        template<typename t>
+        log &operator<<(const t &value) {
+            this->buffer << value;
+            return *this;
+        }
+    };
+
     float lerp(float, float, float);
-    void log(const std::string&);
     bool reach(ekg::timing&, uint64_t);
     bool reset(ekg::timing&);
 
@@ -66,7 +109,7 @@ namespace ekg {
 
     namespace input {
         bool pressed(std::string_view);
-        bool receive(std::string_view tag);
+        bool receive(std::string_view);
         void bind(std::string_view, std::string_view);
         bool motion();
         bool released();

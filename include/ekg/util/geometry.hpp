@@ -131,6 +131,8 @@ namespace ekg {
                 float w;
                 float h;
             };
+
+            float data[4] {};
         };
 
         inline rect() = default;

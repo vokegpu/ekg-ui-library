@@ -17,7 +17,7 @@
 #include <filesystem>
 
 void ekg::service::theme::init() {
-    ekg::log("generating default theme...");
+    ekg::log() << "Initialising default theme";
 
     this->gen_default_theme();
     this->refresh_theme_list();
@@ -51,8 +51,8 @@ void ekg::service::theme::gen_default_theme() {
     this->slider_outline = {202, 207, 222, 150};
     this->slider_highlight = {44, 166, 255, 50};
     this->slider_activy_bar = this->slider_activy;
-    this->slider_bar_thicnkess = 15;
-    this->slider_target_thickness = 30;
+    this->slider_bar_thickness = 16;
+    this->slider_target_thickness = 32;
 
     this->label_string = {202, 207, 222, 255};
 
@@ -63,7 +63,7 @@ void ekg::service::theme::gen_default_theme() {
 }
 
 void ekg::service::theme::refresh_theme_list() {
-    ekg::log("analysing for theme files...");
+    ekg::log() << "Analysing files for themes";
 
     this->loaded_theme_list.clear();
     std::string file_extension {};
@@ -84,7 +84,7 @@ void ekg::service::theme::refresh_theme_list() {
         file_extension = files.path().filename().string();
         this->loaded_theme_list.push_back(file_extension);
 
-        ekg::log("found theme: " + file_extension);
+        ekg::log() << "Found theme: " << file_extension;
     }
 }
 

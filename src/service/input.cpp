@@ -32,7 +32,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         case SDL_KEYDOWN: {
             this->pressed_event = true;
 
-            for (std::string key_name = SDL_GetKeyName(sdl_event.key.keysym.sym); !key_name.empty(); key_name) {
+            for (std::string key_name {SDL_GetKeyName(sdl_event.key.keysym.sym)}; !key_name.empty();) {
                 if (this->is_special_key(sdl_event.key.keysym.sym)) {
                     this->special_keys_sdl_map[sdl_event.key.keysym.sym] = ekg::service::input::special_keys_name_map[key_name];
                     this->special_keys_sdl_map[sdl_event.key.keysym.sym] += "+";
@@ -57,7 +57,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         case SDL_KEYUP: {
             this->pressed_event = true;
 
-            for (std::string key_name = SDL_GetKeyName(sdl_event.key.keysym.sym); !key_name.empty(); key_name) {
+            for (std::string key_name {SDL_GetKeyName(sdl_event.key.keysym.sym)}; !key_name.empty();) {
                 if (this->is_special_key(sdl_event.key.keysym.sym)) {
                     this->special_keys_sdl_map[sdl_event.key.keysym.sym] = "";
                     this->special_keys_released.emplace_back(ekg::service::input::special_keys_name_map[key_name]);
@@ -219,7 +219,7 @@ void ekg::service::input::bind(std::string_view input_tag, std::string_view key)
     }
 
     if (should_bind) {
-        bind_list.push_back(input_tag.data());
+        bind_list.emplace_back(input_tag.data());
     }
 }
 
@@ -240,9 +240,18 @@ void ekg::service::input::unbind(std::string_view input_tag, std::string_view ke
 }
 
 void ekg::service::input::callback(std::string_view key, bool callback) {
+    for (std::string &binds : this->input_register_callback) {
+        this->input_register_map[binds] = false;
+    }
+
+    this->input_register_callback.clear();
     this->input_map[key.data()] = callback;
+
     for (std::string &binds : this->input_bind_map[key.data()]) {
         this->input_register_map[binds] = callback;
+        if (callback) {
+            this->input_register_callback.push_back(binds);
+        }
     }
 }
 

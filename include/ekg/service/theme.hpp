@@ -53,7 +53,7 @@ namespace ekg::service {
                   slider_activy {},
                   slider_activy_bar {},
                   slider_highlight {};
-        int32_t slider_bar_thicnkess {}, slider_target_thickness {};
+        int32_t slider_bar_thickness {}, slider_target_thickness {};
         /* End of slider color scheme.*/
 
         /* Start of label color scheme. */

@@ -72,8 +72,8 @@ void ekg::ui::slider_widget::on_reload() {
     float offset {ekg::find_min_offset(text_width, dimension_offset)};
     float dimension_height {(text_height + dimension_offset) * static_cast<float>(ui->get_scaled_height())};
 
-    float normalised_bar_thickness {static_cast<float>(theme.slider_bar_thicnkess) / 100},
-          normalised_target_thickness {static_cast<float>(theme.slider_target_thickness) / 100};
+    float normalised_bar_thickness {static_cast<float>(theme.slider_bar_thickness) / 100};
+    float normalised_target_thickness {static_cast<float>(theme.slider_target_thickness) / 100};
     auto &layout {ekg::core->get_service_layout()};
     bool centered_text {text_dock_flags == ekg::dock::center};
 

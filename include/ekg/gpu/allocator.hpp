@@ -42,21 +42,21 @@ namespace ekg::gpu {
 
         int32_t begin_stride_count {},
                 end_stride_count {};
-        int32_t uniform_active_texture_slot {}, uniform_active_texture {}, uniform_enable_scissor {},
-                uniform_color {}, uniform_rect {}, uniform_depth {}, uniform_line_thickness {}, uniform_scissor {};
+        int32_t uniform_active_texture {}, uniform_enable_scissor {},
+                uniform_color {}, uniform_rect {},
+                uniform_line_thickness {}, uniform_scissor {};
 
         int32_t scissor_instance_id {-1}, animation_instance_id {};
         float current_color_pass[4] {};
 
         uint32_t vbo_vertices {}, vbo_uvs {}, vbo_array {};
-        float depth_testing_preset {};
 
         bool factor_changed {}, simple_shape {};
         static float viewport[4];
         bool check_convex_shape();
     public:
         static ekg::gpu::program program;
-        static float orthographicm4[16];
+        static float mat4x4orthographic[16];
 
         /*
          * Init gpu allocator.

@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <string>
+#include <unordered_map>
 
 namespace ekg::gpu {
     struct program {
@@ -46,9 +47,7 @@ namespace ekg::gpu {
     void invoke(ekg::gpu::program &program);
     void revoke();
 
-    bool compile_shader(GLuint &shader, GLuint shader_type, const char* src);
-    bool load_basic_program(ekg::gpu::program &program, const std::string &vsh_path, const std::string &fsh_path);
-    bool create_basic_program(ekg::gpu::program &program, const char* vsh_src, const char* fsh_src);
+    bool create_basic_program(ekg::gpu::program &program, const std::unordered_map<std::string, uint32_t> &resources);
 };
 
 #endif
