@@ -20,7 +20,7 @@
 
 namespace ekg {
     enum class env {
-        refresh, swap, reload, synclayout, redraw, scissor
+        refresh, swap, reload, synclayout, redraw, scissor, gc
     };
 
     enum class cursor {
@@ -80,7 +80,7 @@ namespace ekg {
 
         ~log() {
             this->buffer << '\n';
-            std::cerr << this->buffer.str();
+            std::cout << this->buffer.str();
         }
 
         template<typename t>

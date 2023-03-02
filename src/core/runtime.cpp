@@ -22,6 +22,7 @@
 #include "ekg/ui/slider/ui_slider_widget.hpp"
 #include "ekg/ui/popup/ui_popup_widget.hpp"
 #include "ekg/draw/draw.hpp"
+#include "ekg/ekg.hpp"
 
 ekg::stack ekg::swap::collect {};
 ekg::stack ekg::swap::back {};
@@ -88,7 +89,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     bool hovered {};
     bool found_absolute_widget {};
 
-    for (ekg::ui::abstract_widget* &widgets : this->widget_list_map["all"]) {
+    for (ekg::ui::abstract_widget *widgets : this->widget_list_map["all"]) {
         if (widgets == nullptr || !widgets->data->is_alive()) {
             continue;
         }
@@ -134,10 +135,10 @@ void ekg::runtime::process_update() {
     this->input_service.on_update();
 
     if (this->enable_high_priority_frequency) {
-        auto &update {this->widget_list_map["update"]};
+        auto &update = this->widget_list_map["update"];
         size_t counter {};
 
-        for (ekg::ui::abstract_widget *&widgets : update) {
+        for (ekg::ui::abstract_widget *widgets : update) {
             if (widgets == nullptr || !widgets->is_high_frequency) {
                 ++counter;
                 continue;
@@ -182,21 +183,17 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler_service.dispatch(new ekg::cpu::event {"refresh", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
-        auto &all {runtime->widget_list_map["all"]};
-        auto &refresh {runtime->widget_list_map["refresh"]};
+        auto &all = runtime->widget_list_map["all"];
+        auto &refresh = runtime->widget_list_map["refresh"];
+        bool should_call_gc {};
 
         for (ekg::ui::abstract_widget *&widgets : refresh) {
             if (widgets == nullptr || runtime->processed_widget_map[widgets->data->get_id()]) {
                 continue;
             }
 
-            if (!widgets->data->is_alive()) {
-                runtime->erase(widgets->data->get_id());
-
-                delete widgets->data;
-                delete widgets;
-
-                widgets = nullptr;
+            if (widgets == nullptr || !widgets->data->is_alive()) {
+                should_call_gc = true;
                 continue;
             }
 
@@ -206,6 +203,10 @@ void ekg::runtime::prepare_tasks() {
 
         refresh.clear();
         runtime->processed_widget_map.clear();
+
+        if (should_call_gc) {
+            ekg::dispatch(ekg::env::gc);
+        }
     }, ekg::event::alloc});
 
     this->handler_service.dispatch(new ekg::cpu::event {"swap", this, [](void *p_data) {
@@ -258,7 +259,7 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler_service.dispatch(new ekg::cpu::event {"reload", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
-        auto &reload {runtime->widget_list_map["reload"]};
+        auto &reload = runtime->widget_list_map["reload"];
 
         for (ekg::ui::abstract_widget *&widgets : reload) {
             if (widgets == nullptr) {
@@ -336,7 +337,7 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler_service.dispatch(new ekg::cpu::event {"synclayout", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
-        auto &reload {runtime->widget_list_map["synclayout"]};
+        auto &reload = runtime->widget_list_map["synclayout"];
         // todo fix the issue with sync layout offset.
 
         for (ekg::ui::abstract_widget *&widgets : reload) {
@@ -354,7 +355,7 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler_service.dispatch(new ekg::cpu::event {"redraw", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
-        auto &all {runtime->widget_list_map["all"]};
+        auto &all =  runtime->widget_list_map["all"];
 
         runtime->allocator.invoke();
         runtime->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {255, 255, 255, 255});
@@ -462,6 +463,41 @@ void ekg::runtime::prepare_tasks() {
         scissor_list.clear();
         ekg::swap::front.clear();
     }, ekg::event::alloc});
+
+    this->handler_service.dispatch(new ekg::cpu::event {"gc", this, [](void *p_data) {
+        auto *runtime {static_cast<ekg::runtime*>(p_data)};
+        auto &all {runtime->widget_list_map["all"]};
+        auto &high_frequency {runtime->widget_list_map["update"]};
+        auto &redraw {runtime->widget_list_map["redraw"]};
+
+        redraw.clear();
+        high_frequency.clear();
+        std::vector<ekg::ui::abstract_widget*> new_list {};
+
+        for (ekg::ui::abstract_widget *&widgets : all) {
+            if (widgets == nullptr || widgets->data == nullptr) {
+                continue;
+            }
+
+            if (!widgets->data->is_alive()) {
+                delete widgets->data;
+                delete widgets;
+                continue;
+            }
+
+            if (widgets->is_high_frequency) {
+                high_frequency.push_back(widgets);
+            }
+
+            if (widgets->data->get_state() == ekg::state::visible) {
+                redraw.push_back(widgets);
+            }
+
+            new_list.push_back(widgets);
+        }
+
+        all = new_list;
+    }, ekg::event::alloc});
 }
 
 ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(int32_t id) {
@@ -498,6 +534,7 @@ void ekg::runtime::prepare_ui_env() {
     this->widget_list_map["redraw"] = {};
     this->widget_list_map["scissor"] = {};
     this->widget_list_map["update"] = {};
+    this->widget_list_map["gc"] = {};
 
     this->f_renderer_small.font_size = 16;
     this->f_renderer_small.reload();

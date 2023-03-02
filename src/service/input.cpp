@@ -240,14 +240,18 @@ void ekg::service::input::unbind(std::string_view input_tag, std::string_view ke
 }
 
 void ekg::service::input::callback(std::string_view key, bool callback) {
-    for (std::string &binds : this->input_register_callback) {
-        this->input_register_map[binds] = false;
-    }
-
-    this->input_register_callback.clear();
+    auto &bind_map {this->input_bind_map[key.data()]};
     this->input_map[key.data()] = callback;
 
-    for (std::string &binds : this->input_bind_map[key.data()]) {
+    if (!this->input_register_map.empty()) {
+        for (std::string &binds : this->input_register_callback) {
+            //this->input_register_map[binds] = false;
+        }
+
+        this->input_register_callback.clear();
+    }
+
+    for (std::string &binds : bind_map) {
         this->input_register_map[binds] = callback;
         if (callback) {
             this->input_register_callback.push_back(binds);
