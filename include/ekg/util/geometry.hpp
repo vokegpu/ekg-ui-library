@@ -222,7 +222,7 @@ namespace ekg {
 
     float min(float, float);
     float max(float, float);
-    float smooth(float duration, uint64_t ticks);
+    float smooth(float, uint64_t);
 
     ekg::vec4 &interact();
 }

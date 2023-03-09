@@ -18,10 +18,12 @@
 #include "ekg/util/env.hpp"
 #include "ekg/cpu/event.hpp"
 #include <iostream>
+#include <SDL2/SDL.h>
 
 namespace ekg {
     void dispatch(ekg::cpu::event*);
     void dispatch(const ekg::env&);
+    bool listen(ekg::cpu::uievent&, SDL_Event&);
 }
 
 #endif

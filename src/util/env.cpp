@@ -13,12 +13,13 @@
  */
 
 #include "ekg/util/util_event.hpp"
-#include "ekg/cpu/info.hpp"
 #include "ekg/ekg.hpp"
-#include "ekg/util/env.hpp"
 
 #include <SDL2/SDL.h>
 #include <fstream>
+
+int32_t ekg::hovered::id {};
+ekg::type ekg::hovered::type {};
 
 bool ekg::bitwise::contains(uint16_t target, uint16_t flags) {
     return target & (flags);

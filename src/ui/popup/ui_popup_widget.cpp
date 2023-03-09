@@ -159,7 +159,7 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
     if (hovered != -1 && pressed) {
         this->focused_element = hovered;
     } else if (hovered != -1 && released) {
-
+        this->data->destroy();
     } else if (hovered == -1 && pressed) {
         this->data->destroy();
     }

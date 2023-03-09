@@ -107,12 +107,19 @@ int32_t main(int, char**) {
                     break;
                 }
 
+                case SDL_USEREVENT: {
+                    ekg::cpu::uievent event {};
+                    if (ekg::listen(event, sdl_event)) {
+                    }
+                    break;
+                }
+
                 default: {
                     ekg::event(sdl_event);
 
-                    if (ekg::input::pressed() && ekg::input::receive("mouse-3")) {
+                    if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
                         auto popup = ekg::popup("hello", {"Element One", "Element Two", "Element Three", "Element Four"});
-                        popup->set_tag(popup->get_tag() + std::to_string(popup->get_id()));
+                        if (popup != nullptr) popup->set_tag(popup->get_tag() + std::to_string(popup->get_id()));
                     }
 
                     break;

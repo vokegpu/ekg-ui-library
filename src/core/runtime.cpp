@@ -110,11 +110,15 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         }
     }
 
+    ekg::hovered::type = ekg::type::abstract;
+    ekg::hovered::id = this->widget_id_focused;
+
     if (focused_widget != nullptr) {
         focused_widget->on_pre_event(sdl_event);
         focused_widget->on_event(sdl_event);
         focused_widget->flag.hovered = false;
-    }
+        ekg::hovered::type = focused_widget->data->get_type();
+    }    
 
     if (pressed) {
         this->widget_id_pressed_focused = this->widget_id_focused;
@@ -217,7 +221,6 @@ void ekg::runtime::prepare_tasks() {
         }
 
         auto &all {runtime->widget_list_map["all"]};
-
         for (ekg::ui::abstract_widget *&widgets : all) {
             if (widgets == nullptr || ekg::swap::collect.registry[widgets->data->get_id()] || ekg::swap::front.registry[widgets->data->get_id()]) {
                 continue;
@@ -480,6 +483,7 @@ void ekg::runtime::prepare_tasks() {
             }
 
             if (!widgets->data->is_alive()) {
+                ekg::hovered::id = ekg::hovered::id == widgets->data->get_id() ? 0 : ekg::hovered::id;
                 delete widgets->data;
                 delete widgets;
                 continue;
@@ -534,7 +538,6 @@ void ekg::runtime::prepare_ui_env() {
     this->widget_list_map["redraw"] = {};
     this->widget_list_map["scissor"] = {};
     this->widget_list_map["update"] = {};
-    this->widget_list_map["gc"] = {};
 
     this->f_renderer_small.font_size = 16;
     this->f_renderer_small.reload();

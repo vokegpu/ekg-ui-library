@@ -21,3 +21,19 @@ void ekg::dispatch(ekg::cpu::event* event) {
 void ekg::dispatch(const ekg::env &env) {
     ekg::core->get_service_handler().task((uint32_t) env);
 }
+
+bool ekg::listen(ekg::cpu::uievent &ekg_event, SDL_Event &sdl_event) {
+    switch (sdl_event.type) {
+        case SDL_USEREVENT: {
+            if (sdl_event.user.type == ekg::listener) {
+                ekg::log() << "hi event from SDL";
+
+                return true;
+            }
+
+            break;
+        }
+    }
+
+    return false;
+}

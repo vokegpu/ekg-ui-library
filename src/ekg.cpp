@@ -42,6 +42,7 @@ ekg::draw::font_renderer &ekg::f_renderer(ekg::font font_size) {
 void ekg::init(SDL_Window* root, std::string_view font_path) {
     ekg::log() << "Initialising EKG";
     ekg::gpu::init_opengl_context();
+    ekg::registry_event();
 
 #if defined(_WIN)
     ekg::os = {ekg::platform::os_win};
@@ -290,6 +291,10 @@ ekg::ui::slider *ekg::slider(std::string_view tag, float val, float min, float m
 }
 
 ekg::ui::popup *ekg::popup(std::string_view tag, const std::vector<std::string> &component_list, bool interact_position) {
+    if (ekg::hovered::id != 0 && ekg::hovered::type == ekg::type::popup) {
+        return nullptr;
+    }
+
     auto ui {new ekg::ui::popup()};
     ui->set_type(ekg::type::popup);
     ekg::core->gen_widget(ui);

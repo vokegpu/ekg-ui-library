@@ -21,6 +21,11 @@
 namespace ekg {
     extern ekg::rect empty;
 
+    struct hovered {
+        static int32_t id;
+        static ekg::type type;
+    };
+
     struct stack {
         std::map<int32_t, bool> registry {};
         std::vector<ekg::ui::abstract_widget*> ordered_list {};

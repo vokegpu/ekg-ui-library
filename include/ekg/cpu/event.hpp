@@ -17,16 +17,30 @@
 
 #include <iostream>
 #include <functional>
+#include <SDL2/SDL.h>
 
 namespace ekg {
     enum event {
         unique    = 0,
-        alloc     = 2,
+        alloc        = 2,
         allocated = 4,
-        shared    = 8
+        shared     = 8
     };
 
+    enum class uievent {
+        popup, button
+    };
+
+    const static uint32_t listener {SDL_RegisterEvents(1)};
+    void registry_event();
+
     namespace cpu {
+        struct uievent {
+        public:
+            std::string str {};
+            int32_t id {};
+        };
+
         struct event {
             const char *uuid {};
             void* callback {};
