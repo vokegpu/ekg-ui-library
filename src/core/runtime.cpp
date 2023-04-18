@@ -356,24 +356,6 @@ void ekg::runtime::prepare_tasks() {
         runtime->processed_widget_map.clear();
     }, ekg::event::alloc});
 
-    this->handler_service.dispatch(new ekg::cpu::event {"redraw", this, [](void *p_data) {
-        auto *runtime {static_cast<ekg::runtime*>(p_data)};
-        auto &all =  runtime->widget_list_map["all"];
-
-        runtime->allocator.invoke();
-        if (ekg::debug) {
-            runtime->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {255, 255, 255, 255});
-        }
-
-        for (ekg::ui::abstract_widget *&widgets : all) {
-            if (widgets != nullptr && widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {
-                widgets->on_draw_refresh();
-            }
-        }
-
-        runtime->allocator.revoke();
-    }, ekg::event::alloc});
-
     this->handler_service.dispatch(new ekg::cpu::event {"scissor", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
         auto &scissor_list {runtime->widget_list_map["scissor"]};
@@ -439,19 +421,19 @@ void ekg::runtime::prepare_tasks() {
                 scissor[2] = widget_rect.w;
                 scissor[3] = widget_rect.h;
 
-                if (scissor[0] < scissor_parent_master[0]) {
+                if (scissor[0] <= scissor_parent_master[0]) {
                     scissor[0] = scissor_parent_master[0];
                 }
 
-                if (scissor[1] < scissor_parent_master[1]) {
+                if (scissor[1] <= scissor_parent_master[1]) {
                     scissor[1] = scissor_parent_master[1];
                 }
 
-                if (scissor[0] + scissor[2] > scissor_parent_master[0] + scissor_parent_master[2]) {
+                if (scissor[0] + scissor[2] >= scissor_parent_master[0] + scissor_parent_master[2]) {
                     scissor[2] -= (scissor[0] + scissor[2]) - (scissor_parent_master[0] + scissor_parent_master[2]);
                 }
 
-                if (scissor[1] + scissor[3] > scissor_parent_master[1] + scissor_parent_master[3]) {
+                if (scissor[1] + scissor[3] >= scissor_parent_master[1] + scissor_parent_master[3]) {
                     scissor[3] -= (scissor[1] + scissor[3]) - (scissor_parent_master[1] + scissor_parent_master[3]);
                 }
 
@@ -467,6 +449,24 @@ void ekg::runtime::prepare_tasks() {
         runtime->processed_widget_map.clear();
         scissor_list.clear();
         ekg::swap::front.clear();
+    }, ekg::event::alloc});
+
+    this->handler_service.dispatch(new ekg::cpu::event {"redraw", this, [](void *p_data) {
+        auto *runtime {static_cast<ekg::runtime*>(p_data)};
+        auto &all =  runtime->widget_list_map["all"];
+
+        runtime->allocator.invoke();
+        if (ekg::debug) {
+            runtime->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {255, 255, 255, 255});
+        }
+
+        for (ekg::ui::abstract_widget *&widgets : all) {
+            if (widgets != nullptr && widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {
+                widgets->on_draw_refresh();
+            }
+        }
+
+        runtime->allocator.revoke();
     }, ekg::event::alloc});
 
     this->handler_service.dispatch(new ekg::cpu::event {"gc", this, [](void *p_data) {

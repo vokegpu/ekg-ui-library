@@ -40,11 +40,11 @@ namespace ekg {
         struct animation {
             bool finished {};
             bool initial {true};
-            ekg::gpu::data *data {nullptr};
+            ekg::gpu::data *data {};
         };
 
         typedef struct scissor {
-            float rect[4] {.0f, .0f, .0f, .0f};
+            float rect[4] {};
         } scissor;
     }
 }

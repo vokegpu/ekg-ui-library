@@ -22,7 +22,7 @@ namespace ekg {
     extern bool debug;
 
     enum class env {
-        refresh, swap, reload, synclayout, redraw, scissor, gc
+        refresh, swap, reload, synclayout, scissor, redraw, gc
     };
 
     enum class cursor {

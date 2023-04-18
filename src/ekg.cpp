@@ -95,15 +95,13 @@ ekg::gl_version + "\n"
 "uniform vec4 uColor;\n"
 "uniform vec4 uScissor;\n"
 "uniform bool uEnableScissor;\n"
-"uniform vec2 uViewport;\n"
+"uniform float uViewportHeight;\n"
 
 "void main() {"
 "    vFragColor = uColor;\n"
-"    vec2 fragPos = vec2(gl_FragCoord.x, uViewport.y - gl_FragCoord.y);\n"
-"    vec2 ndc = fragPos / uViewport;\n"
-"    vec4 ndcScissor = vec4((uScissor.xy / uViewport) * 2.0f - 1.0f, (uScissor.zw / uViewport) * 2.0f - 1.0f);\n"
-"    vec2 screenCoords = vec2(ndc.x * 2.0f - 1.0f, ndc.y * 2.0f - 1.0f);\n"
-"    bool shouldDiscard = uEnableScissor && (screenCoords.x < ndcScissor.x || screenCoords.x > ndcScissor.x + ndcScissor.z || screenCoords.y < ndcScissor.y || screenCoords.y > ndcScissor.y + ndcScissor.w);"
+"    vec2 fragPos = vec2(gl_FragCoord.x, uViewportHeight - gl_FragCoord.y);\n"
+"    bool shouldDiscard = uEnableScissor && (fragPos.x < uScissor.x || fragPos.y < uScissor.y || fragPos.x > uScissor.x + uScissor.z || fragPos.y > uScissor.y + uScissor.w);\n"
+
 "    if (uLineThickness > 0) {"
 "        vec4 outline = vec4(vRect.x + uLineThickness, vRect.y + uLineThickness, vRect.z - (uLineThickness * 2), vRect.w - (uLineThickness * 2));\n"
 "        shouldDiscard = shouldDiscard || (fragPos.x > outline.x && fragPos.x < outline.x + outline.z && fragPos.y > outline.y && fragPos.y < outline.y + outline.w);\n"
@@ -116,7 +114,7 @@ ekg::gl_version + "\n"
 "    }"
 
 "    if (shouldDiscard) {"
-"        //discard;\n"
+"       discard;\n"
 "    }\n"
 
 "    if (uActiveTexture) {"
@@ -142,16 +140,10 @@ ekg::gl_version + "\n"
     /* First update of orthographic matrix and uniforms. */
 
     SDL_GetWindowSize(root, &ekg::display::width, &ekg::display::height);
-
-    float viewport[2] {
-        static_cast<float>(ekg::display::width),
-        static_cast<float>(ekg::display::height) 
-    };
-
     ekg::gpu::invoke(ekg::gpu::allocator::program);
     ekg::orthographic2d(ekg::gpu::allocator::mat4x4orthographic, 0, static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height), 0);
     ekg::gpu::allocator::program.setm4("uOrthographicMatrix", ekg::gpu::allocator::mat4x4orthographic);
-    ekg::gpu::allocator::program.set2("uViewport", viewport);
+    ekg::gpu::allocator::program.set("uViewportHeight", static_cast<float>(ekg::display::height));
     ekg::gpu::revoke();
 
     /* SDL info. */
@@ -191,15 +183,10 @@ void ekg::event(SDL_Event &sdl_event) {
                     ekg::display::width = sdl_event.window.data1;
                     ekg::display::height = sdl_event.window.data2;
 
-                    float viewport[2] {
-                        static_cast<float>(ekg::display::width),
-                        static_cast<float>(ekg::display::height) 
-                    };
-
                     ekg::gpu::invoke(ekg::gpu::allocator::program);
                     ekg::orthographic2d(ekg::gpu::allocator::mat4x4orthographic, 0, static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height), 0);
                     ekg::gpu::allocator::program.setm4("uOrthographicMatrix", ekg::gpu::allocator::mat4x4orthographic);
-                    ekg::gpu::allocator::program.set2("uViewport", viewport);
+                    ekg::gpu::allocator::program.set("uViewportHeight", static_cast<float>(ekg::display::height));
                     ekg::gpu::revoke();
                     break;
                 }

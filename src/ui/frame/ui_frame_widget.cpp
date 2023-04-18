@@ -99,12 +99,15 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
             this->dimension.w = new_rect.w;
             this->dimension.h = new_rect.h;
 
-            ekg::scissor(this);
-            ekg::reload(this);
-
+            /*
+             * Is very important to use synclaout before scissor.
+             */
             if (this->target_dock_resize != ekg::dock::none) {
                 ekg::synclayout(this);
             }
+
+            ekg::scissor(this);
+            ekg::reload(this);
         }
     }
 
