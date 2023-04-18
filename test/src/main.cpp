@@ -43,6 +43,7 @@ int32_t main(int, char**) {
     SDL_GL_SetSwapInterval(0); // v-sync on
     ekg::init(sdl_win, "JetBrainsMono-Bold.ttf");
     ekg::log() << "OpenGL context created";
+    ekg::debug = true;
     SDL_SetWindowOpacity(sdl_win, 1.0f);
 
     ekg::timing mainloop_timing {};
@@ -57,34 +58,24 @@ int32_t main(int, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    for (int i {}; i < 1; i++) {
-        auto frame {ekg::frame("hello", {80, 80}, {200, 200})};
-        frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
-        frame->set_drag(ekg::dock::top);
+    auto frame {ekg::frame("text sampler", {20, 20}, {200, 200})};
+    frame->set_drag(ekg::dock::top);
+    frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-        ekg::label("DeathWishes.com", ekg::dock::left | ekg::dock::top);
-        ekg::checkbox("Check box!! uwu", ekg::dock::left | ekg::dock::top)->set_box_align(ekg::dock::center | ekg::dock::right);
-        ekg::slider("", 20, 20, 255, ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_text_align(ekg::dock::center | ekg::dock::left);
-        ekg::slider("", 20, 20, 255, ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_bar_align(ekg::dock::top | ekg::dock::left);
-        ekg::slider("", 20, 20, 255, ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_bar_align(ekg::dock::top | ekg::dock::left);
-        ekg::slider("", 0.43f, 0.0f, 1.0f, ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_bar_align(ekg::dock::top | ekg::dock::left);
-        ekg::slider("", 0.43f, 0.0f, 2.0f, ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_bar_align(ekg::dock::top | ekg::dock::left);
-        ekg::slider("", 0.43f, 0.0f, 2.0f, ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_bar_align(ekg::dock::top | ekg::dock::left);
-        ekg::button("Register", ekg::dock::left | ekg::dock::top | ekg::dock::next);
-        ekg::button("Login", ekg::dock::left | ekg::dock::top | ekg::dock::next);
-        ekg::button("User List", ekg::dock::left | ekg::dock::top | ekg::dock::next);
-        ekg::button("Exit", ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_callback(new ekg::cpu::event {"exit-callback", nullptr, [](void *p_data) {
-            SDL_Event custom_sdl_event {};
-            custom_sdl_event.type = SDL_QUIT;
-            SDL_PushEvent(&custom_sdl_event);
-        }});
-    }
+    auto fillnext = ekg::dock::fill | ekg::dock::next;
 
-    ekg::popgroup();
+    ekg::button("Button 1", ekg::dock::fill);
 
-    ekg::frame("fps", {200, 200}, {200, 200});
-    auto fps_element = ekg::label("the fps");
-    uint64_t cpu_now_ticks  {}, cpu_last_ticks {};
+    ekg::button("Button 2", fillnext);
+    ekg::button("Button 3", ekg::dock::fill);
+    
+    ekg::button("Button 4", fillnext);
+    ekg::button("Button 5");
+    ekg::button("Button 6", ekg::dock::next);
+    // ekg::button("Button 7", ekg::dock::right);
+    // ekg::button("Button 8", ekg::dock::fill | ekg::dock::bottom);
+
+    uint64_t cpu_now_ticks {}, cpu_last_ticks {};
 
     /*
      * Mainloop.
@@ -97,7 +88,6 @@ int32_t main(int, char**) {
         if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
             display_fps = ticked_frames;
             ticked_frames = 0;
-            fps_element->set_text(std::to_string(display_fps));
         }
 
         while (SDL_PollEvent(&sdl_event)) {

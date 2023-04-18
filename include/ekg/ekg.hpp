@@ -83,22 +83,22 @@ namespace ekg {
     /*
      * Create button UI.
      */
-    ekg::ui::button *button(std::string_view, uint16_t = ekg::dock::left | ekg::dock::top);
+    ekg::ui::button *button(std::string_view, uint16_t = ekg::dock::none);
 
     /*
      * Create label UI.
      */
-    ekg::ui::label *label(std::string_view, uint16_t = ekg::dock::left | ekg::dock::top);
+    ekg::ui::label *label(std::string_view, uint16_t = ekg::dock::none);
 
     /*
      * Create checkbox UI.
      */
-    ekg::ui::checkbox *checkbox(std::string_view, uint16_t = ekg::dock::left | ekg::dock::top);
+    ekg::ui::checkbox *checkbox(std::string_view, uint16_t = ekg::dock::none);
 
     /*
      * Create slider UI.
      */
-    ekg::ui::slider *slider(std::string_view, float, float, float, uint16_t = ekg::dock::left | ekg::dock::top);
+    ekg::ui::slider *slider(std::string_view, float, float, float, uint16_t = ekg::dock::none);
 
     /*
      * Create popup ID.

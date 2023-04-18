@@ -27,10 +27,10 @@ void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color,
     ekg::gpu::allocator &allocator {ekg::core->get_gpu_allocator()};
     ekg::gpu::data &data {allocator.bind_current_data()};
 
-    data.shape_rect[0] = static_cast<float>(roundf(x));
-    data.shape_rect[1] = static_cast<float>(roundf(y));
-    data.shape_rect[2] = static_cast<float>(roundf(w));
-    data.shape_rect[3] = static_cast<float>(roundf(h));
+    data.shape_rect[0] = static_cast<float>(roundf((x)));
+    data.shape_rect[1] = static_cast<float>(roundf((y)));
+    data.shape_rect[2] = static_cast<float>(roundf((w)));
+    data.shape_rect[3] = static_cast<float>(roundf((h)));
 
     allocator.vertex2f(0, 0);
     allocator.vertex2f(0, 1);

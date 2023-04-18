@@ -361,7 +361,9 @@ void ekg::runtime::prepare_tasks() {
         auto &all =  runtime->widget_list_map["all"];
 
         runtime->allocator.invoke();
-        runtime->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {255, 255, 255, 255});
+        if (ekg::debug) {
+            runtime->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {255, 255, 255, 255});
+        }
 
         for (ekg::ui::abstract_widget *&widgets : all) {
             if (widgets != nullptr && widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {

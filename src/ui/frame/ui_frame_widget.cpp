@@ -101,6 +101,10 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
             ekg::scissor(this);
             ekg::reload(this);
+
+            if (this->target_dock_resize != ekg::dock::none) {
+                ekg::synclayout(this);
+            }
         }
     }
 

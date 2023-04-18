@@ -19,6 +19,8 @@
 #include <sstream>
 
 namespace ekg {
+    extern bool debug;
+
     enum class env {
         refresh, swap, reload, synclayout, redraw, scissor, gc
     };

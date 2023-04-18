@@ -18,6 +18,7 @@
 #include <SDL2/SDL.h>
 #include <fstream>
 
+bool ekg::debug {};
 int32_t ekg::hovered::id {};
 ekg::type ekg::hovered::type {};
 

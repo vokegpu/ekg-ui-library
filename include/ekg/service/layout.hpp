@@ -33,6 +33,7 @@ namespace ekg::service {
         ekg::rect curr_top {}, curr_bottom {}, layout_mask {};
         ekg::grid curr_grid {};
         ekg::docking prev_docking_top {}, curr_docking {}, prev_docking_bottom {};
+        float extent_data[3] {};
     public:
         void init();
         void quit();
@@ -40,10 +41,13 @@ namespace ekg::service {
         void set_preset_mask(const ekg::vec3&, ekg::axis, float = 0.0f);
         void insert_into_mask(const ekg::dockrect&);
         void process_layout_mask();
+
         ekg::rect &get_layout_mask();
+
         float get_respective_mask_size();
         float get_respective_mask_center();
 
+        float get_dimensional_extent(ekg::ui::abstract_widget *widget, uint16_t flag_ok, uint16_t flag_stop, int64_t &begin_and_count, ekg::axis axis);
         void process_scaled(ekg::ui::abstract_widget* widget_parent);
         void process(ekg::ui::abstract_widget* widget);
     };

@@ -40,7 +40,8 @@ namespace ekg {
         left   = 16,
         center = 32,
         full   = 64,
-        next   = 128
+        next   = 128,
+        fill   = 256
     };
 
     /*

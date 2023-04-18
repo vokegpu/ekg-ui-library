@@ -88,12 +88,12 @@ ekg::type ekg::ui::abstract::get_type() {
     return this->type;
 }
 
-ekg::rect &ekg::ui::abstract::widget() {
-    return this->rect_widget;
-}
-
 uint16_t ekg::ui::abstract::get_place_dock() {
     return this->dock_flags;
+}
+
+ekg::rect &ekg::ui::abstract::widget() {
+    return this->rect_widget;
 }
 
 ekg::rect &ekg::ui::abstract::ui() {

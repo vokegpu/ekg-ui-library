@@ -146,7 +146,7 @@ void ekg::gpu::allocator::revoke() {
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 
-        /* set shader binding location 1 and dispatch mesh of texture coordinates collected by allocator */
+        /* set shader binding location 1 and dispatch mesh of texttre coordinates collected by allocator */
         glBindBuffer(GL_ARRAY_BUFFER, this->vbo_uvs);
         glEnableVertexAttribArray(1);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_uvs.size(), &this->cached_uvs[0], GL_STATIC_DRAW);

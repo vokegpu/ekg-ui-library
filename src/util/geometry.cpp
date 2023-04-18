@@ -117,6 +117,14 @@ void ekg::set_rect_clamped(ekg::rect &rect, float min_size) {
     rect.h = ekg::min(rect.h, min_size);
 }
 
+int32_t ekg::min(int32_t v, int32_t m) {
+    return v < m ? m : v;
+}
+
+int32_t ekg::max(int32_t v, int32_t m) {
+    return v > m ? m : v;
+}
+
 float ekg::clamp(float value, float min, float max) {
     return value < min ? min : (value > max ? max : value);
 }
@@ -165,14 +173,6 @@ ekg::rect ekg::operator+(const ekg::rect &l, const ekg::rect &r) {
 
 ekg::vec2 ekg::operator/(const ekg::vec2 &l, float r) {
     return {l.x / r, l.y / r};
-}
-
-int32_t ekg::min(int32_t v, int32_t m) {
-    return v < m ? m : v;
-}
-
-int32_t ekg::max(int32_t v, int32_t m) {
-    return v > m ? m : v;
 }
 
 float ekg::smooth(float duration, uint64_t ticks) {
