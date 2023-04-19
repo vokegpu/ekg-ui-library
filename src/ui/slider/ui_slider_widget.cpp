@@ -129,6 +129,7 @@ void ekg::ui::slider_widget::on_reload() {
 
     auto &layout_mask {layout.get_layout_mask()};
     this->dimension.h = layout_mask.h;
+    this->dimension.h = ekg::min(this->dimension.h, layout_mask.h);
 
     this->rect_bar.h = bar_difference_size;
     this->rect_target.x = this->rect_bar.x + this->rect_bar_value.w - (this->rect_target.w / 2);

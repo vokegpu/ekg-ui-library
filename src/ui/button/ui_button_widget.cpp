@@ -47,8 +47,8 @@ void ekg::ui::button_widget::on_reload() {
     layout.process_layout_mask();
 
     auto &layout_mask {layout.get_layout_mask()};
-    this->dimension.w = layout_mask.w;
-    this->dimension.h = layout_mask.h;
+    this->dimension.w = this->dimension.w <= text_height ? layout_mask.w : this->dimension.w;
+    this->dimension.h = ekg::min(this->dimension.h, layout_mask.h);
 }
 
 void ekg::ui::button_widget::on_pre_event(SDL_Event &sdl_event) {

@@ -79,10 +79,8 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
             this->pressed_event = true;
             bool double_click_factor {ekg::reach(this->double_interact, 500)};
             const std::string buttonstring {std::to_string(sdl_event.button.button)};
-
             this->callback("mouse-" + buttonstring, true);
-            this->callback("mouse-" + buttonstring + "-up", false);
-
+        
             if (!double_click_factor) {
                 const std::string input_tag = "mouse-" + std::to_string(sdl_event.button.button) + "-double";
                 this->callback(input_tag, true);
@@ -97,11 +95,14 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
 
         case SDL_MOUSEBUTTONUP: {
             this->released_event = true;
-            const std::string buttonstring {std::to_string(sdl_event.button.button)};
+            std::string buttonstring {"mouse-"};
+            buttonstring += std::to_string(sdl_event.button.button);
 
-            this->callback("mouse-" + buttonstring, false);
-            this->callback("mouse-" + buttonstring + "-double", false);
-            this->callback("mouse-" + buttonstring + "-up", true);
+            this->callback(buttonstring, false);
+            this->callback(buttonstring + "-double", false);
+            this->callback(buttonstring + "-up", true);
+
+            this->input_released_list.push_back(buttonstring + "-up");
         }
 
         case SDL_MOUSEMOTION: {
@@ -210,6 +211,14 @@ void ekg::service::input::on_update() {
 
         this->special_keys_unit_pressed.clear();
         this->special_keys_released.clear();
+    }
+
+    if (!this->input_released_list.empty()) {
+        for (std::string &inputs : this->input_released_list) {
+            this->callback(inputs, false);
+        }
+
+        this->input_released_list.clear();
     }
 }
 

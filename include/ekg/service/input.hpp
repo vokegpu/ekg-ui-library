@@ -34,6 +34,7 @@ namespace ekg::service {
             std::vector<std::string> special_keys_released {};
             std::vector<std::string> double_click_mouse_buttons_pressed {};
             std::vector<std::string> input_register_callback {};
+            std::vector<std::string> input_released_list {};
 
             bool pressed_event {};
             bool released_event {};
@@ -44,14 +45,14 @@ namespace ekg::service {
 
             ekg::vec4 last_finger_interact {};
             ekg::timing double_interact {};
-
+        protected:
             void complete_with_units(std::string &string_builder, const std::string &key_name);
             bool contains_unit(const std::string &label);
             bool is_special_key(int32_t sdl_key_code);
         public:
             ekg::timing timing_last_interact {};
             ekg::vec4 interact {};
-
+        public:
             bool was_pressed();
             bool was_released();
             bool was_motion();
