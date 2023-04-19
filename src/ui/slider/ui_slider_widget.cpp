@@ -80,6 +80,9 @@ void ekg::ui::slider_widget::on_reload() {
     this->dimension.w = ekg::min(this->dimension.w, text_height);
     this->dimension.h = dimension_height;
 
+    this->min_size.x = ekg::min(this->min_size.x, text_height);
+    this->min_size.y = ekg::min(this->min_size.y, dimension_height);
+
     if (centered_text) {
         auto &f_renderer_small {ekg::f_renderer(this->font_render_size)};
         text_width = f_renderer_small.get_text_width(this->string_value);
@@ -169,7 +172,7 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
     this->flag.hovered = this->flag.hovered && this->flag.highlight;
 
     if (this->flag.hovered && ekg::input::wheel() && ((increase = ekg::input::pressed("slider-bar-increase")) || (descrease = ekg::input::pressed("slider-bar-decrease")))) {
-        ui->set_value(ui->get_value() + (interact.w * static_cast<float>(ekg::pi)));
+        ui->set_value(ui->get_value() + (interact.w));
     } else if (this->flag.hovered && pressed && ekg::input::pressed("slider-activy")) {
         this->flag.activy = true;
         this->update_bar(interact.x, interact.y);

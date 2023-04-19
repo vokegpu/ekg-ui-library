@@ -38,6 +38,11 @@ void ekg::ui::checkbox_widget::on_reload() {
     float dimension_height {(text_height + dimension_offset) * static_cast<float>(scaled_height)};
 
     this->dimension.w = ekg::min(this->dimension.w, text_height);
+    this->dimension.h = dimension_height;
+
+    this->min_size.x = ekg::min(this->min_size.x, text_height);
+    this->min_size.y = ekg::min(this->min_size.y, dimension_height);
+
     this->rect_box.w = box_size;
     this->rect_box.h = box_size;
 

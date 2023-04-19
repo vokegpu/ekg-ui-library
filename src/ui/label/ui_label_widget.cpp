@@ -37,6 +37,9 @@ void ekg::ui::label_widget::on_reload() {
     this->dimension.w = ekg::min(this->dimension.w, text_height);
     this->dimension.h = (text_height + dimension_offset) * static_cast<float>(scaled_height);
 
+    this->min_size.x = ekg::min(this->min_size.x, text_height);
+    this->min_size.y = ekg::min(this->min_size.y, this->dimension.h);
+
     this->rect_text.w = text_width;
     this->rect_text.h = text_height;
 

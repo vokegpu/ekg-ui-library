@@ -115,6 +115,9 @@ void ekg::ui::popup_widget::on_reload() {
             this->parent->y = display_h - this->dimension.h;
         }
     }
+
+    this->min_size.x = ekg::min(this->min_size.x, this->dimension.w);
+    this->min_size.y = ekg::min(this->min_size.y, this->dimension.h);
 }
 
 void ekg::ui::popup_widget::on_pre_event(SDL_Event &sdl_event) {
