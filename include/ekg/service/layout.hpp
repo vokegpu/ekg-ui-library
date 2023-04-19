@@ -21,7 +21,7 @@
 namespace ekg::service {
     class layout {
     protected:
-        float min_offset {}, min_height {}, scaled_width_divided {}, scaled_height_divided {}, respective_mask_all {}, respective_mask_center {};
+        float min_offset {}, min_fill_width {}, min_height {}, scaled_width_divided {}, scaled_height_divided {}, respective_mask_all {}, respective_mask_center {};
         int32_t min_factor_height {};
         uint16_t enum_docks_flag {}, layout_mask_flags {};
         ekg::axis dock_axis_mask {};
@@ -33,7 +33,7 @@ namespace ekg::service {
         ekg::rect curr_top {}, curr_bottom {}, layout_mask {};
         ekg::grid curr_grid {};
         ekg::docking prev_docking_top {}, curr_docking {}, prev_docking_bottom {};
-        float extent_data[3] {};
+        float extent_data[4] {};
     public:
         void init();
         void quit();

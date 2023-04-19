@@ -58,20 +58,46 @@ int32_t main(int, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    auto frame {ekg::frame("text sampler", {20, 20}, {200, 200})};
+    auto frame {ekg::frame("text sampler", {20, 20}, {300, 200})};
     frame->set_drag(ekg::dock::top);
     frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
     auto fillnext = ekg::dock::fill | ekg::dock::next;
 
     ekg::button("Button 1", ekg::dock::fill);
-
-    ekg::button("Button 2", fillnext);
+    ekg::button("Button 2");
     ekg::button("Button 3", ekg::dock::fill);
+    ekg::button("Button 4.1", ekg::dock::next);
+    ekg::button("Button 4.2");
+    ekg::button("Button 4.3", ekg::dock::fill);
+    ekg::button("Button 3", ekg::dock::next);
+    ekg::button("Button 3.2", ekg::dock::next);
+    ekg::button("Button 3.66", ekg::dock::fill);
+    ekg::button("Button .", ekg::dock::next);
     
     ekg::button("Button 4", fillnext);
     ekg::button("Button 5");
     ekg::button("Button 6", ekg::dock::next);
+
+    auto frame2 {ekg::frame("text sampler", {20, 20}, {200, 200})};
+    frame2->set_drag(ekg::dock::top);
+    frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
+
+    ekg::button("Button 1", ekg::dock::fill);
+    ekg::button("Button 2", ekg::dock::fill);
+    ekg::button("Button 2.1", ekg::dock::next);
+    ekg::button("Button 2.2");
+    ekg::button("Button 2.3");
+    ekg::button("Button 3", fillnext);
+    
+    ekg::button("Button 4", fillnext);
+    ekg::button("Button 5");
+    ekg::button("Button 6", ekg::dock::next);
+    ekg::button("Button 8", fillnext);
+    ekg::button("Button 9", fillnext);
+    ekg::button("Button 10", ekg::dock::fill);
+    ekg::button("Button 11", ekg::dock::fill);
+    ekg::button("Button 12", ekg::dock::fill);
     // ekg::button("Button 7", ekg::dock::right);
     // ekg::button("Button 8", ekg::dock::fill | ekg::dock::bottom);
 

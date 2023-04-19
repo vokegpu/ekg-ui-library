@@ -100,7 +100,7 @@ ekg::gl_version + "\n"
 "void main() {"
 "    vFragColor = uColor;\n"
 "    vec2 fragPos = vec2(gl_FragCoord.x, uViewportHeight - gl_FragCoord.y);\n"
-"    bool shouldDiscard = uEnableScissor && (fragPos.x < uScissor.x || fragPos.y < uScissor.y || fragPos.x > uScissor.x + uScissor.z || fragPos.y > uScissor.y + uScissor.w);\n"
+"    bool shouldDiscard = uEnableScissor && (fragPos.x <= uScissor.x || fragPos.y <= uScissor.y || fragPos.x >= uScissor.x + uScissor.z || fragPos.y >= uScissor.y + uScissor.w);\n"
 
 "    if (uLineThickness > 0) {"
 "        vec4 outline = vec4(vRect.x + uLineThickness, vRect.y + uLineThickness, vRect.z - (uLineThickness * 2), vRect.w - (uLineThickness * 2));\n"

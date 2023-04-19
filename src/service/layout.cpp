@@ -193,7 +193,8 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *wid
     int64_t n {};
     int64_t it {begin_and_count};
 
-    if (this->extent_data[0] != this->extent_data[1] && begin_and_count > static_cast<int64_t>(this->extent_data[0]) && begin_and_count < static_cast<int64_t>(this->extent_data[1])) {
+    if (begin_and_count > static_cast<int64_t>(this->extent_data[0]) && begin_and_count < static_cast<int64_t>(this->extent_data[1])) {
+        begin_and_count = static_cast<int64_t>(this->extent_data[3]);
         return this->extent_data[2];
     }
 
@@ -202,7 +203,21 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *wid
     float extent {};
     ekg::ui::abstract_widget *widgets {};
     std::vector<int32_t> &child_id_list {widget->data->get_child_id_list()};
+    uint64_t size {child_id_list.size()};
+    bool is_last_index {};
 
+    /*
+     * The last index does not check if there is some next flag,
+     * because of this, there is a last index checker.
+     *
+     * The extent data store the previous bounding indices,
+     * in simply words, prevent useless iteration.
+     *
+     * The min offset is added for extent, because we need count
+     * the offset position when spliting the fill width, but the
+     * last extent space is not necessary, so we need to subtract.
+     *
+     */
     for (it = it; it < child_id_list.size(); it++) {
         ids = child_id_list.at(it);
         if ((widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr) {
@@ -210,9 +225,15 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *wid
         }
 
         flags = widgets->data->get_place_dock();
-        if (ekg::bitwise::contains(flags, flag_stop) && it != begin_and_count) {
-            this->extent_data[1] = static_cast<float>(it);
-            this->extent_data[2] = extent; 
+        is_last_index = it == size - 1;
+
+        if ((ekg::bitwise::contains(flags, flag_stop) && it != begin_and_count) || is_last_index) {
+            extent -= this->min_offset;
+            n += (ekg::bitwise::contains(flags, flag_ok) && is_last_index);
+
+            this->extent_data[1] = static_cast<float>(it + is_last_index);
+            this->extent_data[2] = extent;
+            this->extent_data[3] = static_cast<float>(n == 0 ? 1 : n);
             break;
         }
 
@@ -222,10 +243,10 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *wid
         }
 
         switch (axis) {
-        case ekg::axis::vertical:
-            extent += widgets->dimension.w;
-            break;
         case ekg::axis::horizontal:
+            extent += widgets->dimension.w + this->min_offset;
+            break;
+        case ekg::axis::vertical:
             extent += widgets->dimension.h;
             break;
         }
@@ -325,38 +346,37 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
 
             count = it;
             dimensional_extent = this->get_dimensional_extent(widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
-            float debug {dimensional_extent};
-            dimensional_extent = ((group_rect.w - dimensional_extent) / static_cast<float>(count));
+            dimensional_extent = ekg::min(((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count), widgets->min_size.x);
 
             top_rect.w += dimensional_extent + this->min_offset;
             layout.w = dimensional_extent;
-
-            ekg::log() << "fill | next " << std::to_string(count) << " " << std::to_string(debug) << " " << std::to_string(dimensional_extent);
         } else if (ekg::bitwise::contains(flags, ekg::dock::fill)) {
             layout.x = top_rect.x + top_rect.w;
             layout.y = top_rect.y + top_rect.h;
 
             count = it;
             dimensional_extent = this->get_dimensional_extent(widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
-            float debug {dimensional_extent};
-            dimensional_extent = (((group_rect.w - dimensional_extent) - this->min_offset * 2.0f) / static_cast<float>(count));
+            dimensional_extent = ekg::min(((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count), widgets->min_size.x);
 
             top_rect.w += dimensional_extent + this->min_offset;
             layout.w = dimensional_extent;
-
-            ekg::log() << "fill only " << std::to_string(debug) << " " << std::to_string(count);
         } else if (ekg::bitwise::contains(flags, ekg::dock::next)) {
-            top_rect.h += prev_widget_layout.h;
+            top_rect.h += prev_widget_layout.h + this->min_offset;
             top_rect.w = 0.0f;
 
             layout.x = top_rect.x;
             layout.y = top_rect.y + top_rect.h;
+            top_rect.w += layout.w + this->min_offset;
 
-            ekg::log() << "next only";
+            count = it;
+            dimensional_extent = this->get_dimensional_extent(widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
         } else if (flags == ekg::dock::none) {
             layout.x = top_rect.x + top_rect.w;
             layout.y = top_rect.y + top_rect.h;
-            ekg::log() << "none only";
+            top_rect.w += layout.w + this->min_offset;
+
+            count = it;
+            dimensional_extent = this->get_dimensional_extent(widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
         }
 
         prev_widget_layout = layout;
@@ -368,6 +388,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
 void ekg::service::layout::init() {
     this->min_factor_height = 1;
     this->min_height = ekg::core->get_f_renderer_normal().get_text_height();
+    this->min_fill_width = this->min_height;
     this->min_offset = this->min_height / 3;
     this->min_height += this->min_offset;
     this->min_offset /= 2;

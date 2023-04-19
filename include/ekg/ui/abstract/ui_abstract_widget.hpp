@@ -29,6 +29,7 @@ namespace ekg::ui {
         ekg::rect *parent {};
         ekg::rect dimension {};
         ekg::rect empty {};
+        ekg::vec2 min_size {};
 
         bool is_scissor_refresh {};
         bool is_high_frequency {};
