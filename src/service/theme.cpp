@@ -58,8 +58,9 @@ void ekg::service::theme::gen_default_theme() {
 
     this->popup_string = {202, 207, 222, 255};
     this->popup_background = {53, 61, 81, 255};
-    this->popup_outline = {202, 207, 222, 150};
+    this->popup_outline = {30, 40, 60, 100};
     this->popup_highlight = {44, 166, 255, 50};
+    this->popup_drop_animation_delay = 120.6666f;
 }
 
 void ekg::service::theme::refresh_theme_list() {

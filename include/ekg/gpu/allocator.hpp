@@ -26,7 +26,7 @@ namespace ekg::gpu {
     protected:
         std::vector<ekg::gpu::data> data_list {};
         std::vector<ekg::gpu::animation*> animation_update_list {};
-        std::map<int32_t, ekg::gpu::scissor> scissor_map {};
+        std::unordered_map<int32_t, ekg::gpu::scissor> scissor_map {};
 
         std::map<uint32_t, std::vector<ekg::gpu::animation>> animation_map {};
         std::vector<ekg::gpu::animation> *active_animation {nullptr};
@@ -92,6 +92,11 @@ namespace ekg::gpu {
          * Find registered scissor in allocator's batch.
          */
         ekg::gpu::scissor *get_scissor_by_id(int32_t id);
+
+        /*
+         * Remove scissor data from memory.
+         */
+        void erase_scissor_by_id(int32_t id);
 
         /*
          * Get current scissor active.

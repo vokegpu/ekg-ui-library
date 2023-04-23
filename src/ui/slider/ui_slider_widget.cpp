@@ -177,6 +177,10 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
         this->flag.activy = true;
         this->update_bar(interact.x, interact.y);
     } else if  (released) {
+        if (this->flag.activy) {
+            ekg::dispatch_ui_event(ui->get_tag().empty() ? std::to_string(ui->get_id()) : ui->get_tag(), std::to_string(ui->get_value()), (uint16_t) ui->get_type());
+        }
+
         this->flag.activy = false;
     } else if (this->flag.activy && motion) {
         this->update_bar(interact.x, interact.y);

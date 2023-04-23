@@ -23,16 +23,11 @@ void ekg::dispatch(const ekg::env &env) {
 }
 
 bool ekg::listen(ekg::cpu::uievent &ekg_event, SDL_Event &sdl_event) {
-    switch (sdl_event.type) {
-        case SDL_USEREVENT: {
-            if (sdl_event.user.type == ekg::listener) {
-                ekg::log() << "hi event from SDL";
-
-                return true;
-            }
-
-            break;
-        }
+    if (sdl_event.type == ekg::listener) {
+        ekg::cpu::uievent *pekgevent {static_cast<ekg::cpu::uievent*>(sdl_event.user.data1)};
+        ekg_event = *pekgevent;
+        delete pekgevent;
+        return true;
     }
 
     return false;

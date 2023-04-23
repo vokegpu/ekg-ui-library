@@ -23,6 +23,7 @@
 #include "ekg/core/feature.hpp"
 #include "ekg/service/layout.hpp"
 #include "ekg/util/util_ui.hpp"
+#include <unordered_map>
 
 namespace ekg {
     /* The swap maps for prevent copies of hashes and vector. */
@@ -44,7 +45,7 @@ namespace ekg {
 
         /* Widget env lists and maps for tasks. */
 
-        std::map<std::string, std::vector<ekg::ui::abstract_widget*>> widget_list_map {};
+        std::unordered_map<std::string, std::vector<ekg::ui::abstract_widget*>> widget_list_map {};
         std::map<int32_t, ekg::ui::abstract_widget*> widget_map {};
         std::map<int32_t, bool> processed_widget_map {};
 

@@ -24,6 +24,10 @@ namespace ekg {
     struct hovered {
         static int32_t id;
         static ekg::type type;
+        static int32_t up;
+        static int32_t down;
+        static ekg::type downtype;
+        static ekg::type uptype;
     };
 
     struct stack {

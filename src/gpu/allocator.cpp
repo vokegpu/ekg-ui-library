@@ -214,15 +214,15 @@ void ekg::gpu::allocator::draw() {
     glDisable(GL_DEPTH_TEST);
 
     /*
-      The batching system of gpu allocator use instanced rendering concept, if there is some simple shape rect
-      (gpu data rect that contains x, y, w & h rectangle), allocator reuse this to every draw call.
-      For text rendering, allocator do draw calls per text, or be, rendering a long text only use one draw call!
-
-      Why there is glUniforms direct calls? I think it can reduce some wrappers runtime calls, but only here.
-      What is the depth level? That is the layer level of current gpu data rendered, processing layer depth testing.
-
-      VokeGpu coded powerfully gpu allocator for drawing UIs, the batching system have animations, scissor & others
-      important draw features for UI context.
+     * The batching system of gpu allocator use instanced rendering concept, if there is some simple shape rect
+     * (gpu data rect that contains x, y, w & h rectangle), allocator reuse this to every draw call.
+     * For text rendering, allocator do draw calls per text, or be, rendering a long text only use one draw call!
+     *
+     * Why there is glUniforms direct calls? I think it can reduce some wrappers runtime calls, but only here.
+     * What is the depth level? That is the layer level of current gpu data rendered, processing layer depth testing.
+     *
+     * VokeGpu coded powerfully gpu allocator for drawing UIs, the batching system have animations, scissor & others
+     * important draw features for UI context.
      */
 
     for (ekg::gpu::data &data : this->data_list) {
@@ -343,6 +343,12 @@ void ekg::gpu::allocator::quit() {
 
 ekg::gpu::scissor *ekg::gpu::allocator::get_scissor_by_id(int32_t id) {
     return &this->scissor_map[id];
+}
+
+void ekg::gpu::allocator::erase_scissor_by_id(int32_t id) {
+    if (this->scissor_map.count(id)) {
+        this->scissor_map.erase(id);
+    }
 }
 
 uint32_t ekg::gpu::allocator::get_instance_scissor_id() {

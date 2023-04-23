@@ -20,25 +20,12 @@
 #include <SDL2/SDL.h>
 
 namespace ekg {
-    enum event {
-        unique    = 0,
-        alloc        = 2,
-        allocated = 4,
-        shared     = 8
-    };
-
-    enum class uievent {
-        popup, button
-    };
-
-    const static uint32_t listener {SDL_RegisterEvents(1)};
-    void registry_event();
-
     namespace cpu {
         struct uievent {
         public:
-            std::string str {};
-            int32_t id {};
+            std::string tag {};
+            std::string value {};
+            uint16_t type {};
         };
 
         struct event {
@@ -48,6 +35,16 @@ namespace ekg {
             uint16_t flags {};
         };
     }
+
+    enum event {
+        unique    = 0,
+        alloc     = 2,
+        allocated = 4,
+        shared    = 8
+    };
+
+    extern uint32_t listener;
+    void dispatch_ui_event(std::string_view tag, std::string_view value, uint16_t type);
 }
 
 #endif

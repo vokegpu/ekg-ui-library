@@ -16,6 +16,10 @@
 #include "ekg/ekg.hpp"
 
 ekg::rect ekg::empty {};
+int32_t ekg::hovered::up {};
+int32_t ekg::hovered::down {};
+ekg::type ekg::hovered::downtype {};
+ekg::type ekg::hovered::uptype {};
 
 void ekg::reload(int32_t id) {
     ekg::core->do_task_reload(ekg::core->get_fast_widget_by_id(id));

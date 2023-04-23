@@ -40,7 +40,10 @@ void ekg::service::layout::process_layout_mask() {
      * V is the the respective size (axis horizontal == width | axis vertical == height)
      */
     bool axis {this->dock_axis_mask == ekg::axis::horizontal}, left_or_right {};
-    float v {this->respective_mask_all}, centered_dimension {this->offset_mask.z / 2}, opposite {}, uniform {}, clamped_offset {};
+    float v {this->respective_mask_all};
+    float centered_dimension {this->offset_mask.z / 2};
+    float opposite {}, uniform {};
+    float clamped_offset {};
 
     /* offset z is the dimension respective (width if height else height) size */
     this->layout_mask.w = axis ? this->offset_mask.x : this->offset_mask.z;
@@ -62,10 +65,9 @@ void ekg::service::layout::process_layout_mask() {
             left_or_right = ekg::bitwise::contains(dockrect.dock, ekg::dock::left) || ekg::bitwise::contains(dockrect.dock, ekg::dock::right);
 
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center) && !left_or_right) {
-                dockrect.rect->x = (this->respective_mask_center / 2) - (dockrect.rect->w / 2);
+                dockrect.rect->x = (v / 2) - (dockrect.rect->w / 2);
                 dockrect.rect->y = centered_dimension - (dockrect.rect->h / 2);
                 this->layout_mask.w += dockrect.rect->w + this->offset_mask.x;
-                ekg::log() << this->respective_mask_center;
             } else if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center)) {
                 dockrect.rect->y = centered_dimension - (dockrect.rect->h / 2);
             }
@@ -162,7 +164,10 @@ float ekg::service::layout::get_respective_mask_size() {
         return 0;
     }
 
-    float respective_size {(this->dock_axis_mask == ekg::axis::horizontal) ? this->offset_mask.x : this->offset_mask.y}, respective_center_size {respective_size}, size {};
+    float respective_size {(this->dock_axis_mask == ekg::axis::horizontal) ? this->offset_mask.x : this->offset_mask.y};
+    float respective_center_size {respective_size};
+    float size {};
+
     int32_t only_center_count {};
 
     for (ekg::dockrect &dockrect : this->dockrect_list) {
@@ -179,9 +184,11 @@ float ekg::service::layout::get_respective_mask_size() {
         respective_size += size;
     }
 
+    ekg::log() << respective_size;
+
     this->respective_mask_center = (only_center_count != 0 ? (respective_center_size / only_center_count) : 0.0f);
     this->respective_mask_all = ekg::min(this->respective_mask_all, respective_size);
-
+    
     return this->respective_mask_all;
 }
 

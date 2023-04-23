@@ -15,8 +15,14 @@
 #include "ekg/ui/popup/ui_popup.hpp"
 #include "ekg/util/util_ui.hpp"
 
-bool ekg::ui::popup::contains(std::string_view component_name) {
-    return this->registered_component_map[component_name.data()];
+int64_t ekg::ui::popup::contains(std::string_view component_name) {
+    for (uint32_t it {}; it < this->component_list.size(); it++) {
+        if (this->component_list.at(it).name == component_name) {
+            return it;
+        }
+    }
+
+    return -1;
 }
 
 void ekg::ui::popup::append(const std::vector<std::string> &component_name_list) {
@@ -34,46 +40,45 @@ void ekg::ui::popup::append(std::string_view component_name) {
         is_separator = true;
     }
 
-    if (this->contains(factored_component_name)) {
+    if (this->contains(factored_component_name) != -1) {
         return;
     }
 
     ekg::component component {};
-    component.id = ++this->token_id;
     component.name = factored_component_name;
     component.boolean = is_separator;
-
-    this->registered_component_map[component_name.data()] = true;
     this->component_list.push_back(component);
 }
 
 void ekg::ui::popup::append_linked(std::string_view component_name, ekg::ui::popup *popup_linked) {
-    int32_t index {this->registered_component_map[component_name.data()]};
+    int64_t index {this->contains(component_name)};
 
-    if (!index) {
+    if (index == -1) {
         this->append(component_name);
-        index = this->registered_component_map[component_name.data()];
     }
 
     auto &component {this->component_list.at(index)};
-    component.linked_id = popup_linked == nullptr ? 0 : popup_linked->get_id();
-    if (popup_linked != nullptr) popup_linked->set_state(ekg::state::invisible);
+    component.linked_id = 0;
+    if (popup_linked != nullptr) {
+        popup_linked->set_state(ekg::state::invisible);
+        component.linked_id = popup_linked->get_id();
+        this->add_child(component.linked_id);
+    }
 }
 
 void ekg::ui::popup::remove(std::string_view component_name) {
     std::vector<ekg::component> new_list {};
-    this->registered_component_map.clear();
-    this->token_id = 0;
-
     for (ekg::component &component : this->component_list) {
         if (component.name == component_name) {
+            this->remove_child(component.linked_id);
             continue;
         }
 
-        component.id = ++this->token_id;
         new_list.push_back(component);
-        this->registered_component_map[component.name] = this->token_id;
     }
+
+    this->component_list.clear();
+    this->component_list.insert(this->component_list.end(), new_list.begin(), new_list.end());
 }
 
 std::vector<ekg::component> &ekg::ui::popup::get_component_list() {

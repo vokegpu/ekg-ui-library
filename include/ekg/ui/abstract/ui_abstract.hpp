@@ -57,6 +57,7 @@ namespace ekg {
 
             void add_child(int32_t);
             std::vector<int32_t> &get_child_id_list();
+            void remove_child(int32_t);
 
             void set_id(int32_t);
             int32_t get_id();

@@ -118,12 +118,16 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         focused_widget->on_event(sdl_event);
         focused_widget->flag.hovered = false;
         ekg::hovered::type = focused_widget->data->get_type();
-    }    
+    } 
 
     if (pressed) {
         this->widget_id_pressed_focused = this->widget_id_focused;
+        ekg::hovered::down = this->widget_id_focused;
+        ekg::hovered::downtype = focused_widget != nullptr ? focused_widget->data->get_type() : ekg::type::abstract;
     } else if (released) {
         this->widget_id_released_focused = this->widget_id_focused;
+        ekg::hovered::up = this->widget_id_focused;
+        ekg::hovered::uptype = focused_widget != nullptr ? focused_widget->data->get_type() : ekg::type::abstract;
     }
 
     if (this->prev_widget_id_focused != this->widget_id_focused && this->widget_id_focused != 0 && (pressed || released)) {
@@ -239,14 +243,18 @@ void ekg::runtime::prepare_tasks() {
         }
 
         runtime->swap_widget_id_focused = 0;
-        all.clear();
 
+        all.clear();
+        all.resize(ekg::swap::back.ordered_list.size() + ekg::swap::front.ordered_list.size());
+
+        uint64_t it {};
         for (ekg::ui::abstract_widget *&widget : ekg::swap::back.ordered_list) {
             if (widget == nullptr) {
                 continue;
             }
 
-            all.push_back(widget);
+            all.at(it) = widget;
+            it++;
         }
 
         for (ekg::ui::abstract_widget *&widget : ekg::swap::front.ordered_list) {
@@ -254,7 +262,8 @@ void ekg::runtime::prepare_tasks() {
                 continue;
             }
 
-            all.push_back(widget);
+            all.at(it) = widget;
+            it++;
         }
 
         ekg::swap::refresh();
@@ -374,18 +383,18 @@ void ekg::runtime::prepare_tasks() {
             ekg::push_back_stack(parent_master, ekg::swap::front);
 
             /*
-             Scissor is a great feature from OpenGL, but it
-             does not stack, means that GL context does not
-             accept scissor inside scissor.
+             * Scissor is a great feature from OpenGL, but it
+             * does not stack, means that GL context does not
+             * accept scissor inside scissor.
 
-             After 1 year studying scissor, I  built one scheme,
-             compute bounds of all parent widgets with the parent
-             master, obvious it takes some ticks but there is no
-             other way (maybe I am wrong).
+             * After 1 year studying scissor, I  built one scheme,
+             * compute bounds of all parent widgets with the parent
+             * master, obvious it takes some ticks but there is no
+             * other way (maybe I am wrong).
 
-             Two things important:
-             1 - This scissors scheme use scissor IDs from widgets.
-             2 - Iteration collect ALL parent families and sub parent of target.
+             * Two things important:
+             * 1 - This scissors scheme use scissor IDs from widgets.
+             * 2 - Iteration collect ALL parent families and sub parent of target.
             */
 
             for (ekg::ui::abstract_widget *&scissor_widget : ekg::swap::front.ordered_list) {
@@ -474,6 +483,7 @@ void ekg::runtime::prepare_tasks() {
         auto &all {runtime->widget_list_map["all"]};
         auto &high_frequency {runtime->widget_list_map["update"]};
         auto &redraw {runtime->widget_list_map["redraw"]};
+        auto &allocator {runtime->get_gpu_allocator()};
 
         redraw.clear();
         high_frequency.clear();
@@ -486,6 +496,9 @@ void ekg::runtime::prepare_tasks() {
 
             if (!widgets->data->is_alive()) {
                 ekg::hovered::id = ekg::hovered::id == widgets->data->get_id() ? 0 : ekg::hovered::id;
+                ekg::hovered::up = ekg::hovered::up == widgets->data->get_id() ? 0 : ekg::hovered::up;
+                ekg::hovered::down = ekg::hovered::down == widgets->data->get_id() ? 0 : ekg::hovered::down;
+                allocator.erase_scissor_by_id(widgets->data->get_id());
                 delete widgets->data;
                 delete widgets;
                 continue;
@@ -495,7 +508,7 @@ void ekg::runtime::prepare_tasks() {
                 high_frequency.push_back(widgets);
             }
 
-            if (widgets->data->get_state() == ekg::state::visible) {
+        if (widgets->data->get_state() == ekg::state::visible) {
                 redraw.push_back(widgets);
             }
 

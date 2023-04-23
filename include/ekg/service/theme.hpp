@@ -65,6 +65,7 @@ namespace ekg::service {
                   popup_background {},
                   popup_outline {},
                   popup_highlight {};
+        int64_t popup_drop_animation_delay {};
         /* End of popup color scheme. */
 
         float min_widget_size {5};

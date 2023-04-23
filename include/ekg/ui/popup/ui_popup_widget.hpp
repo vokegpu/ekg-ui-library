@@ -29,9 +29,16 @@ namespace ekg::ui {
         std::vector<ekg::ui::popup_widget::element> element_list {};
         float scissor_opened_height {};
         uint64_t elapsed_animation_ticks {};
+        bool parent_id_popup_opened {false};
 
         int32_t focused_element {};
         int32_t hovered_element {};
+        int32_t popup_opened {-1};
+        int32_t top_level_popup {};
+    public:
+        bool is_hovering_any_popup(int32_t top_level);
+        void unset_visible_all_sub_popup();
+        void get_popup_path(std::string &path);
 
         void on_destroy() override;
         void on_reload() override;

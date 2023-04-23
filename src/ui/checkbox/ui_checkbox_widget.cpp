@@ -81,6 +81,7 @@ void ekg::ui::checkbox_widget::on_event(SDL_Event &sdl_event) {
         if (this->flag.hovered) {
             auto ui {(ekg::ui::checkbox*) this->data};
             ui->set_value(!ui->get_value());
+            ekg::dispatch_ui_event(ui->get_tag().empty() ? std::to_string(ui->get_id()) : ui->get_tag(), ui->get_value() ? "checked" : "unchecked", (uint16_t) ui->get_type());
         }
 
         ekg::set(this->flag.activy, false);

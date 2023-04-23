@@ -43,6 +43,24 @@ std::vector<int32_t> &ekg::ui::abstract::get_child_id_list() {
     return this->child_id_list;
 }
 
+void ekg::ui::abstract::remove_child(int32_t element_id) {
+    bool contains {};
+    ekg::ui::abstract_widget *widget {nullptr};
+    int64_t  it {};
+
+    for (it = 0; it < this->child_id_list.size(); it++) {
+        if ((contains = this->child_id_list.at(it) == element_id)) {
+            break;
+        }
+    }
+
+    if (contains == false && (widget = ekg::core->get_fast_widget_by_id(element_id)) != nullptr) {
+        this->child_id_list.erase(this->child_id_list.begin() + it);
+        widget->data->set_parent_id(0);
+        widget->parent = &widget->empty;
+    }
+}
+
 void ekg::ui::abstract::set_id(int32_t element_id) {
     this->id = element_id;
 }
@@ -70,6 +88,11 @@ bool ekg::ui::abstract::is_alive() {
 void ekg::ui::abstract::destroy() {
     this->set_alive(false);
     ekg::refresh(this->id);
+
+    for (int32_t &ids : this->child_id_list) {
+        auto widget {ekg::core->get_fast_widget_by_id(ids)};
+        if (widget != nullptr && widget->data != nullptr) widget->data->destroy();
+    }
 }
 
 void ekg::ui::abstract::set_state(const ekg::state &enum_state) {

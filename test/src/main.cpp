@@ -68,13 +68,13 @@ int32_t main(int, char**) {
     slider->set_text_align(ekg::dock::center);
     slider->set_precision(23);
 
-    ekg::checkbox("Button 2", ekg::dock::fill)->set_box_align(ekg::dock::center | ekg::dock::right);
+    ekg::checkbox("", ekg::dock::fill)->set_box_align(ekg::dock::center);
     ekg::slider("Button 3", 34.0f, 0.0f, 200.0f, fillnext)->set_text_align(ekg::dock::center);
     ekg::button("Button 4.1", ekg::dock::next)->set_text_align(ekg::dock::center | ekg::dock::right);
     ekg::button("Button 4.2")->set_text_align(ekg::dock::center);
-    ekg::button("Button 4.3", ekg::dock::fill)->set_text_align(ekg::dock::center | ekg::dock::right);
+    ekg::button("Button 4.3", ekg::dock::fill)->set_text_align(ekg::dock::center);
     ekg::button("Button 3", ekg::dock::next);
-    ekg::button("Button 3.2", ekg::dock::next);
+    ekg::label("Text Cat Sampler", ekg::dock::fill)->set_text_align(ekg::dock::center);
     ekg::button("Button 3.66", ekg::dock::fill);
     ekg::button("Button .", ekg::dock::next);
     
@@ -86,7 +86,7 @@ int32_t main(int, char**) {
     frame2->set_drag(ekg::dock::top);
     frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-    ekg::button("Button 1", ekg::dock::fill);
+    ekg::button("Button 1", ekg::dock::fill)->set_text_align(ekg::dock::center);
     ekg::button("Button 2", fillnext);
     ekg::button("Button 2.1", ekg::dock::fill);
     ekg::button("Button 2.2", fillnext);
@@ -98,6 +98,7 @@ int32_t main(int, char**) {
     // ekg::button("Button 8", ekg::dock::fill | ekg::dock::bottom);
 
     uint64_t cpu_now_ticks {}, cpu_last_ticks {};
+    ekg::cpu::uievent event {};
 
     /*
      * Mainloop.
@@ -119,19 +120,22 @@ int32_t main(int, char**) {
                     break;
                 }
 
-                case SDL_USEREVENT: {
-                    ekg::cpu::uievent event {};
-                    if (ekg::listen(event, sdl_event)) {
-                    }
-                    break;
-                }
-
                 default: {
+                    if (ekg::listen(event, sdl_event)) {
+                        ekg::log() << event.tag + " " + event.value + " " << event.type;
+                    }
+
                     ekg::event(sdl_event);
 
                     if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
-                        auto popup = ekg::popup("hello", {"Element One", "Element Two", "Element Three", "Element Four"});
-                        if (popup != nullptr) popup->set_tag(popup->get_tag() + std::to_string(popup->get_id()));
+                        auto main = ekg::popup("hello", {"Element One", "Element Two", "Element Three", "Element Four"});
+                        auto three = ekg::popup("buu", {"Buu", "AAA", " oi MinecFT"});
+                        auto game = ekg::popup("game", {"cat1", "cat2", "cat3", "--cat43"});
+
+                        if (main != nullptr && three != nullptr) {
+                            main->append_linked("Element Three", three);
+                            three->append_linked("AAA", game);
+                        }
                     }
 
                     break;
