@@ -139,10 +139,9 @@ float ekg::max(float a, float b) {
 
 float ekg::find_min_offset(float text_width, float offset) {
     /* 
-     Use initial offset to get the min possible offset.
-     Initial offset value sometime is font height divided by 2.
-    */
-
+     * Use initial offset to get the min possible offset.
+     * Initial offset value sometime is font height divided by 2.
+     */
     float full_rect {text_width + offset};
     return ((full_rect / 2) - (text_width / 2));
 }

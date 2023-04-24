@@ -98,6 +98,7 @@ void ekg::ui::popup_widget::on_reload() {
         ekg::ui::popup_widget::element element {};
         element.rect_text.w = text_width;
         element.rect_text.h = text_height;
+        element.separator = components.boolean;
 
         if (text_width > max_width) {
             max_width = text_width;
@@ -117,6 +118,7 @@ void ekg::ui::popup_widget::on_reload() {
 
     this->dimension.w = ekg::min(this->dimension.w, max_width + dimension_offset);
     this->dimension.h = offset;
+    this->separator_offset = offset;
 
     for (int32_t it {}; it < this->element_list.size(); it++) {
         auto &component {component_list.at(it)};
@@ -134,7 +136,7 @@ void ekg::ui::popup_widget::on_reload() {
         layout.process_layout_mask();
 
         // Process the popup height based in layout mask.
-        this->dimension.h += layout_mask.h + (offset * static_cast<float>(element.separator));
+        this->dimension.h += layout_mask.h;
     }
 
     /* Extra offset to final rect. */
@@ -152,8 +154,8 @@ void ekg::ui::popup_widget::on_reload() {
 
     /* Fix screen position at space. */
     if (!ui->has_parent()) {
-        float display_w {static_cast<float>(ekg::display::width)};
-        float display_h {static_cast<float>(ekg::display::height)};
+        const float display_w {static_cast<float>(ekg::display::width)};
+        const float display_h {static_cast<float>(ekg::display::height)};
 
         if (this->parent->x < 0) {
             this->parent->x = 0;
@@ -238,14 +240,17 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
                     popup->top_level_popup = this->top_level_popup;
 
                     auto &popup_rect {popup->dimension};
-                    if (rect.x + rect.w + (popup_rect.w - popup_offset) > ekg::display::width) {
+                    const float display_w {static_cast<float>(ekg::display::width)};
+                    const float display_h {static_cast<float>(ekg::display::height)};
+
+                    if (rect.x + rect.w + (popup_rect.w - popup_offset) > display_w) {
                         popup_rect.x = -(popup_rect.w - popup_offset);
                     } else {
                         popup_rect.x = rect.w - popup_offset;
                     }
 
-                    if (rect.y + element.rect_bound.h + ypos + popup_rect.h > ekg::display::height) {
-                        popup_rect.y = popup_rect.h - ((rect.y + element.rect_bound.h + ypos + popup_rect.h) - ekg::display::height);
+                    if (rect.y + ypos + popup_rect.h > display_h) {
+                        popup_rect.y = ypos - (rect.y + ypos + popup_rect.h - display_h);
                     } else {
                         popup_rect.y = ypos;
                     }
@@ -340,11 +345,22 @@ void ekg::ui::popup_widget::on_draw_refresh() {
     ekg::draw::rect(rect, theme.popup_background);
     ekg::draw::rect(rect, theme.popup_outline, ekg::drawmode::outline);
 
-    for (int32_t it {}; it < this->element_list.size(); it++) {
-        auto &component {component_list.at(it)};
-        auto &element {this->element_list.at(it)};
+    ekg::component component {};
+    ekg::ui::popup_widget::element element {};
 
-        if (this->hovered_element == it) ekg::draw::rect(element.rect_bound + rect, theme.popup_highlight);
+    for (int32_t it {}; it < this->element_list.size(); it++) {
+        component = component_list.at(it);
+        element = this->element_list.at(it);
+
+        // Draw separator.
+        if (element.separator) {
+            ekg::draw::rect(rect.x + element.rect_bound.x, rect.y + element.rect_bound.y + element.rect_bound.h - 0.5f, element.rect_bound.w, 1.0f, theme.popup_outline);
+        }
+
+        if (this->hovered_element == it) {
+            ekg::draw::rect(element.rect_bound + rect, theme.popup_highlight);
+        }
+
         f_renderer.blit(component.name, rect.x + element.rect_bound.x + element.rect_text.x, rect.y + element.rect_bound.y + element.rect_text.y, theme.popup_string);
     }
 

@@ -48,8 +48,8 @@ namespace ekg {
      * Enum linked to dock.
      */
     enum axis {
-        vertical   = 256,
-        horizontal = 512
+        vertical   = 512,
+        horizontal = 1024
     };
 
     typedef struct vec2 {

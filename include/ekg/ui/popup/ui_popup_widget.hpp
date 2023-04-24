@@ -28,6 +28,7 @@ namespace ekg::ui {
     public:
         std::vector<ekg::ui::popup_widget::element> element_list {};
         float scissor_opened_height {};
+        float separator_offset {};
         uint64_t elapsed_animation_ticks {};
         bool parent_id_popup_opened {false};
 

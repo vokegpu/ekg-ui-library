@@ -128,9 +128,9 @@ int32_t main(int, char**) {
                     ekg::event(sdl_event);
 
                     if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
-                        auto main = ekg::popup("hello", {"Element One", "Element Two", "Element Three", "Element Four"});
+                        auto main = ekg::popup("hello", {"Element One", "---Element Two", "---Element Three", "Element Four"});
                         auto three = ekg::popup("buu", {"Buu", "AAA", " oi MinecFT"});
-                        auto game = ekg::popup("game", {"cat1", "cat2", "cat3", "--cat43"});
+                        auto game = ekg::popup("game", {"cat1", "---cat2", "cat3", "cat43"});
 
                         if (main != nullptr && three != nullptr) {
                             main->append_linked("Element Three", three);
