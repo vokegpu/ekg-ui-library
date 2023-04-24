@@ -31,7 +31,6 @@ namespace ekg::ui {
         uint64_t elapsed_animation_ticks {};
         bool parent_id_popup_opened {false};
 
-        int32_t focused_element {};
         int32_t hovered_element {};
         int32_t popup_opened {-1};
         int32_t top_level_popup {};

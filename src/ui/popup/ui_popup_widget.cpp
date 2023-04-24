@@ -18,17 +18,19 @@
 #include "ekg/draw/draw.hpp"
 
 void ekg::ui::popup_widget::get_popup_path(std::string &path) {
-    path += this->data->get_tag();
-    path += " | ";
+    if (this->hovered_element == -1) {
+        return;
+    }
 
     auto ui {(ekg::ui::popup*) this->data};
-    ekg::component component {};
+    auto &component {ui->get_component_list().at(this->hovered_element)};
+
     ekg::ui::popup_widget *popup {};
+    path += component.name;
 
     if (this->popup_opened != -1 && (popup = (ekg::ui::popup_widget*) ekg::core->get_fast_widget_by_id(component.linked_id)) != nullptr) {
+        path += " | ";
         popup->get_popup_path(path);
-    } else {
-
     }
 }
 
@@ -292,14 +294,10 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
     if (((pressed || released) && this->popup_opened == -1 && is_hovering_any_popup_flag)) {
         popup = (ekg::ui::popup_widget*) ekg::core->get_fast_widget_by_id(this->top_level_popup);
         popup->data->destroy();
-        std::string value {popup->get_tag()};
 
-        for (int32_t &ids : popup->data->get_child_id_list()) {
-            if ((popup = (ekg::ui::popup_widget*) ekg::core->get_fast_widget_by_id(ids)) != nullptr) {
-                value += "| ";
-                value += popup->get_tag(); 
-            } 
-        }
+        std::string path_result {};
+        popup->get_popup_path(path_result);
+        ekg::dispatch_ui_event(popup->data->get_tag().empty() ? "Unknown Popup UI" : popup->data->get_tag(), path_result, (uint16_t) popup->data->get_type());
         return;
     }
 

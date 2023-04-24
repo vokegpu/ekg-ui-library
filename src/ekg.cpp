@@ -13,9 +13,10 @@
  */
 
 #include "ekg/ekg.hpp"
+#include "ekg/cpu/info.hpp"
 
 ekg::runtime* ekg::core {nullptr};
-std::string ekg::gl_version {"#version 450 core"};
+std::string ekg::gl_version {"#version 450"};
 
 ekg::service::theme &ekg::theme() {
     return ekg::core->get_service_theme();

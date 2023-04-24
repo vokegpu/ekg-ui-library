@@ -79,7 +79,7 @@ void ekg::ui::button_widget::on_event(SDL_Event &sdl_event) {
             ui->set_value(false);
         }
 
-        ekg::dispatch_ui_event(ui->get_tag().empty() ? std::to_string(ui->get_id()) : ui->get_tag(), "callback", (uint16_t) ui->get_type());
+        ekg::dispatch_ui_event(ui->get_tag().empty() ? "Unknown Button UI" : ui->get_tag(), "callback", (uint16_t) ui->get_type());
         ekg::set(this->flag.activy, false);
     }
 }
