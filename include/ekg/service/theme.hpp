@@ -23,53 +23,48 @@ namespace ekg::service {
     protected:
         std::vector<std::string> loaded_theme_list {};
     public:
-        /* Start of frame color scheme. */
-        ekg::vec4 frame_background {},
-                  frame_border {},
-                  frame_outline {};
+        ekg::vec4 frame_background {};
+        ekg::vec4 frame_border {};
+        ekg::vec4 frame_outline {};
         int32_t frame_activy_offset {};
-        /* End of frame color scheme. */
 
-        /* Start of button color scheme. */
-        ekg::vec4 button_background {},
-                  button_string {},
-                  button_outline {},
-                  button_activy {},
-                  button_highlight {};
-        /* End of button color scheme. */
+        ekg::vec4 button_background {};
+        ekg::vec4 button_string {};
+        ekg::vec4 button_outline {};
+        ekg::vec4 button_activy {};
+        ekg::vec4 button_highlight {};
 
-        /* Start of checkbox color scheme. */
-        ekg::vec4 checkbox_background {},
-                  checkbox_string {},
-                  checkbox_outline {},
-                  checkbox_activy {},
-                  checkbox_highlight {};
-        /* End of checkbox color scheme. */
+        ekg::vec4 checkbox_background {};
+        ekg::vec4 checkbox_string {};
+        ekg::vec4 checkbox_outline {};
+        ekg::vec4 checkbox_activy {};
+        ekg::vec4 checkbox_highlight {};
 
-        /* Start of slider color scheme. */
-        ekg::vec4 slider_string {},
-                  slider_background {},
-                  slider_outline {},
-                  slider_activy {},
-                  slider_activy_bar {},
-                  slider_highlight {};
-        int32_t slider_bar_thickness {}, slider_target_thickness {};
-        /* End of slider color scheme.*/
+        ekg::vec4 slider_string {};
+        ekg::vec4 slider_background {};
+        ekg::vec4 slider_outline {};
+        ekg::vec4 slider_activy {};
+        ekg::vec4 slider_activy_bar {};
+        ekg::vec4 slider_highlight {};
+        int32_t slider_bar_thickness {};
+        int32_t slider_target_thickness {};
 
-        /* Start of label color scheme. */
         ekg::vec4 label_string {};
-        /* End of label color scheme. */
 
-        /* Start of popup color scheme. */
-        ekg::vec4 popup_string {},
-                  popup_background {},
-                  popup_outline {},
-                  popup_highlight {};
+        ekg::vec4 popup_string {};
+        ekg::vec4 popup_background {};
+        ekg::vec4 popup_outline {};
+        ekg::vec4 popup_highlight {};
         int64_t popup_drop_animation_delay {};
-        /* End of popup color scheme. */
+
+        ekg::vec4 textbox_string {};
+        ekg::vec4 textbox_background {};
+        ekg::vec4 textbox_outline {};
+        ekg::vec4 textbox_cursor {};
+        ekg::vec4 textbox_select {};
 
         float min_widget_size {5};
-
+      public:
         void init();
         void quit();
 

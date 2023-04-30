@@ -11,11 +11,10 @@
  *
  * @VokeGpu 2023 all rights reserved.
  */
-
-#include "ekg/ui/label/ui_label.hpp"
+#include "ekg/ui/textbox/ui_textbox.hpp"
 #include "ekg/util/util_ui.hpp"
 
-void ekg::ui::label::set_place(uint16_t flags) {
+void ekg::ui::textbox::set_place(uint16_t flags) {
     if (this->dock_flags != flags) {
         this->dock_flags = flags;
 
@@ -23,29 +22,19 @@ void ekg::ui::label::set_place(uint16_t flags) {
     }
 }
 
-void ekg::ui::label::set_text(std::string_view string) {
+void ekg::ui::textbox::set_text(std::string_view string) {
     if (this->text != string) {
         this->text = string;
 
         ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-        ekg::scissor(this->parent_id);
     }
 }
 
-std::string_view ekg::ui::label::get_text() {
+std::string_view ekg::ui::textbox::get_text() {
     return this->text;
 }
 
-void ekg::ui::label::set_text_align(uint16_t flags) {
-    this->dock_text = flags;
-}
-
-uint16_t ekg::ui::label::get_text_align() {
-    return this->dock_text;
-}
-
-void ekg::ui::label::set_width(float width) {
+void ekg::ui::textbox::set_width(float width) {
     if (this->sync_ui.w != width) {
         this->sync_ui.h = width;
 
@@ -55,11 +44,11 @@ void ekg::ui::label::set_width(float width) {
     }
 }
 
-float ekg::ui::label::get_width() {
+float ekg::ui::textbox::get_width() {
     return this->rect_widget.w;
 }
 
-void ekg::ui::label::set_scaled_height(int32_t scaled_factor_height) {
+void ekg::ui::textbox::set_scaled_height(int32_t scaled_factor_height) {
     if (this->scaled_height != scaled_factor_height) {
         this->scaled_height = scaled_factor_height;
 
@@ -69,15 +58,15 @@ void ekg::ui::label::set_scaled_height(int32_t scaled_factor_height) {
     }
 }
 
-float ekg::ui::label::get_height() {
+float ekg::ui::textbox::get_height() {
     return this->rect_widget.h;
 }
 
-int32_t ekg::ui::label::get_scaled_height() {
+int32_t ekg::ui::textbox::get_scaled_height() {
     return this->scaled_height;
 }
 
-void ekg::ui::label::set_font_size(ekg::font font) {
+void ekg::ui::textbox::set_font_size(ekg::font font) {
     if (this->font_size != font) {
         this->font_size = font;
 
@@ -87,6 +76,14 @@ void ekg::ui::label::set_font_size(ekg::font font) {
     }
 }
 
-ekg::font ekg::ui::label::get_font_size() {
+ekg::font ekg::ui::textbox::get_font_size() {
     return this->font_size;
+}
+
+void ekg::ui::textbox::set_max_chars(uint64_t chars_amount) {
+    this->max_chars = chars_amount;
+}
+
+uint64_t ekg::ui::textbox::get_max_chars() {
+    return this->max_chars;
 }

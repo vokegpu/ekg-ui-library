@@ -89,7 +89,7 @@ namespace ekg {
         log &operator<<(const t &value) {
             this->buffer << value;
             return *this;
-        }
+    }
     };
 
     float lerp(float, float, float);

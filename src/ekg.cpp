@@ -318,6 +318,21 @@ ekg::ui::popup *ekg::popup(std::string_view tag, const std::vector<std::string> 
     return ui;
 }
 
+ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint16_t dock) {
+    auto ui {new ekg::ui::textbox()};
+    ui->set_type(ekg::type::textbox);
+    ekg::core->gen_widget(ui);
+
+    ui->set_tag(tag);
+    ui->set_place(dock);
+    ui->set_scaled_height(1);
+    ui->set_font_size(ekg::font::normal);
+    ui->set_width(200);
+    ui->set_text(text);
+
+    return ui;
+}
+
 void ekg::popgroup() {
     ekg::core->end_group_flag();
 }

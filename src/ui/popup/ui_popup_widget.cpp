@@ -193,7 +193,7 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
 
     bool check_hovered {};
     bool should_destroy {};
-    bool pressed {ekg::input::pressed() && ekg::input::pressed("popup-component-activy")};
+    bool pressed {ekg::input::pressed() && ekg::input::pressed("popup-activy")};
     bool released {ekg::input::released()};
 
     auto ui {(ekg::ui::popup*) this->data};

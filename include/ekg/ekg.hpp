@@ -24,6 +24,7 @@
 #include "ekg/ui/checkbox/ui_checkbox.hpp"
 #include "ekg/ui/slider/ui_slider.hpp"
 #include "ekg/ui/popup/ui_popup.hpp"
+#include "ekg/ui/textbox/ui_textbox.hpp"
 
 namespace ekg {
     /*
@@ -101,9 +102,14 @@ namespace ekg {
     ekg::ui::slider *slider(std::string_view, float, float, float, uint16_t = ekg::dock::none);
 
     /*
-     * Create popup ID.
+     * Create popup UI.
      */
     ekg::ui::popup *popup(std::string_view, const std::vector<std::string>&, bool = true);
+
+    /*
+     * Create textbox UI.
+     */
+    ekg::ui::textbox *textbox(std::string_view, std::string_view, uint16_t = ekg::dock::none);
 
     /*
      * Stop collecting UIs to group.

@@ -11,17 +11,23 @@
  *
  * @VokeGpu 2023 all rights reserved.
  */
-
-#ifndef UI_BUTTON_WIDGET_H
-#define UI_BUTTON_WIDGET_H
+#ifndef EKG_UI_TEXTBOX_WIDGET_H
+#define EKG_UI_TEXTBOX_WIDGET_H
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
 namespace ekg::ui {
-    class button_widget : public ekg::ui::abstract_widget {
+    class textbox_widget : public ekg::ui::abstract_widget {
     public:
-        ekg::rect rect_text {};
+        std::vector<std::string> text_chunk_list {};
+        std::string widget_side_text {};
+        uint64_t visible_chunk[2] {};
+        uint64_t cursor[2] {};
+        float scroll[2] {};
+        float text_offset {};
+        bool redraw_cursor {};
     public:
+        void check_cursor_text_bounding();
         void on_destroy() override;
         void on_reload() override;
         void on_pre_event(SDL_Event &sdl_event) override;

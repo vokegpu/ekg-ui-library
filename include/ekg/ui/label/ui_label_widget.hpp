@@ -21,7 +21,7 @@ namespace ekg::ui {
     class label_widget : public ekg::ui::abstract_widget {
     public:
         ekg::rect rect_text {};
-
+    public:
         void on_destroy() override;
         void on_reload() override;
         void on_pre_event(SDL_Event &sdl_event) override;

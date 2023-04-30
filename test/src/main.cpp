@@ -74,7 +74,7 @@ int32_t main(int, char**) {
     ekg::button("Button 4.2")->set_text_align(ekg::dock::center);
     ekg::button("Button 4.3", ekg::dock::fill)->set_text_align(ekg::dock::center);
     ekg::button("Button 3", ekg::dock::next);
-    ekg::label("Text Cat Sampler", ekg::dock::fill)->set_text_align(ekg::dock::center);
+    ekg::label("cAt", ekg::dock::fill)->set_text_align(ekg::dock::center);
     ekg::button("Button 3.66", ekg::dock::fill);
     ekg::button("Button .", ekg::dock::next);
     
@@ -86,7 +86,7 @@ int32_t main(int, char**) {
     frame2->set_drag(ekg::dock::top);
     frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-    ekg::button("Button 1", ekg::dock::fill)->set_text_align(ekg::dock::center);
+    ekg::textbox("Search", "Text Sampler Cat", ekg::dock::fill);
     ekg::button("Button 2", fillnext);
     ekg::button("Button 2.1", ekg::dock::fill);
     ekg::button("Button 2.2", fillnext);
@@ -126,15 +126,16 @@ int32_t main(int, char**) {
                     }
 
                     ekg::event(sdl_event);
-
                     if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
-                        auto main = ekg::popup("hello", {"Element One", "---Element Two", "---Element Three", "Element Four"});
-                        auto three = ekg::popup("buu", {"Buu", "AAA", " oi MinecFT"});
-                        auto game = ekg::popup("game", {"cat1", "---cat2", "cat3", "cat43"});
+                        auto main = ekg::popup("file", {"---Add", "Cut", "Copy", "---Paste", "---Select All", "Actions"});
+                        auto three = ekg::popup("file-add", {"Cube", "Plane", "Sphere", "Hexagon", "Hexagon"});
+                        auto hexagon = ekg::popup("file-add-hexagon", {"Tree D", "Plane", "Double Pairs Daggers"});
+                        auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
 
                         if (main != nullptr && three != nullptr) {
-                            main->append_linked("Element Three", three);
-                            three->append_linked("AAA", game);
+                            main->append_linked("Add", three);
+                            main->append_linked("Actions", game);
+                            three->append_linked("Hexagon", hexagon);
                         }
                     }
 

@@ -21,9 +21,6 @@
 namespace ekg::ui {
     class abstract_widget : public ekg::feature {
     public:
-        explicit abstract_widget();
-        ~abstract_widget();
-
         ekg::ui::abstract *data {};
         ekg::flag flag {};
         ekg::rect *parent {};
@@ -35,6 +32,9 @@ namespace ekg::ui {
         bool is_high_frequency {};
 
         [[nodiscard]] ekg::rect &get_abs_rect();
+    public:
+        explicit abstract_widget();
+        ~abstract_widget();
 
         virtual void on_destroy();
         virtual void on_reload();

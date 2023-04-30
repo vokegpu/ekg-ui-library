@@ -25,7 +25,7 @@ namespace ekg::ui {
         ekg::docker docker_activy_drag {};
         ekg::docker docker_activy_resize {};
         ekg::rect rect_delta {};
-
+    public:
 		void on_destroy() override;
 		void on_reload() override;
 		void on_pre_event(SDL_Event &sdl_event) override;

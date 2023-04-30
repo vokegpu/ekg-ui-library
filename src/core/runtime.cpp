@@ -21,6 +21,7 @@
 #include "ekg/ui/checkbox/ui_checkbox_widget.hpp"
 #include "ekg/ui/slider/ui_slider_widget.hpp"
 #include "ekg/ui/popup/ui_popup_widget.hpp"
+#include "ekg/ui/textbox/ui_textbox_widget.hpp"
 #include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
 
@@ -42,6 +43,10 @@ void ekg::runtime::set_root(SDL_Window *sdl_win_root) {
 
 SDL_Window *ekg::runtime::get_root() {
     return this->root;
+}
+
+ekg::timing &ekg::runtime::get_ui_timing() {
+    return this->ui_timing;
 }
 
 void ekg::runtime::init() {
@@ -141,6 +146,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
 
 void ekg::runtime::process_update() {
     this->input_service.on_update();
+    bool {ekg::reach(this->ui_timing, 1000) && ekg::reset(this->ui_timing)};
 
     if (this->enable_high_priority_frequency) {
         auto &update = this->widget_list_map["update"];
@@ -588,8 +594,8 @@ void ekg::runtime::prepare_ui_env() {
     /* end of checkbox input binds */
     
     /* start of popup input binds */
-    this->input_service.bind("popup-component-activy", "mouse-1");
-    this->input_service.bind("popup-component-activy", "finger-click");
+    this->input_service.bind("popup-activy", "mouse-1");
+    this->input_service.bind("popup-activy", "finger-click");
     /* end of popup input binds */
 
     /* start of text input binds */
@@ -603,6 +609,8 @@ void ekg::runtime::prepare_ui_env() {
     this->input_service.bind("textbox-action-down", "down");
     this->input_service.bind("textbox-action-right", "right");
     this->input_service.bind("textbox-action-left", "left");
+    this->input_service.bind("textbox-activy", "mouse-1");
+    this->input_service.bind("textbox-activy", "finger-click");
     /* end of textbox input binds */
 
     /* start of slider input binds */
@@ -623,69 +631,66 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
     bool append_group {};
 
     switch (ui->get_type()) {
-        case type::abstract: {
-            auto *widget {new ekg::ui::abstract_widget()};
-            widget->data = ui;
-            created_widget = widget;
-            break;
-        }
-
-        case type::frame: {
-            auto *widget {new ekg::ui::frame_widget()};
-            widget->is_scissor_refresh = true;
-            widget->data = ui;
-
-            update_scissor = true;
-            created_widget = widget;
-            this->current_bind_group = created_widget;
-            ui->reset();
-
-            break;
-        }
-
-        case type::button: {
-            auto *widget {new ekg::ui::button_widget()};
-            widget->data = ui;
-            created_widget = widget;
-            append_group = true;
-            break;
-        }
-
-        case type::label: {
-            auto *widget {new ekg::ui::label_widget()};
-            widget->data = ui;
-            created_widget = widget;
-            append_group = true;
-            break;
-        }
-
-        case type::checkbox: {
-            auto *widget {new ekg::ui::checkbox_widget()};
-            widget->data = ui;
-            created_widget = widget;
-            append_group = true;
-            break;
-        }
-
-        case type::slider: {
-            auto *widget {new ekg::ui::slider_widget()};
-            widget->data = ui;
-            created_widget = widget;
-            append_group = true;
-            break;
-        }
-
-        case type::popup: {
-            auto *widget {new ekg::ui::popup_widget()};
-            widget->data = ui;
-            created_widget = widget;
-            update_scissor = false;
-            break;
-        }
-
-        default: {
-            break;
-        }
+    case ekg::type::abstract: {
+        auto *widget {new ekg::ui::abstract_widget()};
+        widget->data = ui;
+        created_widget = widget;
+        break;
+    }
+    case ekg::type::frame: {
+        auto *widget {new ekg::ui::frame_widget()};
+        widget->is_scissor_refresh = true;
+        widget->data = ui;
+        update_scissor = true;
+        created_widget = widget;
+        this->current_bind_group = created_widget;
+        ui->reset();
+        break;
+    }
+    case ekg::type::button: {
+        auto *widget {new ekg::ui::button_widget()};
+        widget->data = ui;
+        created_widget = widget;
+        append_group = true;
+        break;
+    }
+    case ekg::type::label: {
+        auto *widget {new ekg::ui::label_widget()};
+        widget->data = ui;
+        created_widget = widget;
+        append_group = true;
+        break;
+    }
+    case ekg::type::checkbox: {
+        auto *widget {new ekg::ui::checkbox_widget()};
+        widget->data = ui;
+        created_widget = widget;
+        append_group = true;
+        break;
+    }
+    case ekg::type::slider: {
+        auto *widget {new ekg::ui::slider_widget()};
+        widget->data = ui;
+        created_widget = widget;
+        append_group = true;
+        break;
+    }
+    case ekg::type::popup: {
+        auto *widget {new ekg::ui::popup_widget()};
+        widget->data = ui;
+        created_widget = widget;
+        update_scissor = false;
+        break;
+    }
+    case ekg::type::textbox: {
+        auto *widget {new ekg::ui::textbox_widget()};
+        widget->data = ui;
+        created_widget = widget;
+        append_group = true;
+        break;
+    }
+    default:
+        break;
     }
 
     this->widget_map[ui->get_id()] = created_widget;

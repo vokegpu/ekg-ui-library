@@ -42,6 +42,7 @@ namespace ekg {
         void erase(int32_t id);
     private:
         SDL_Window* root {};
+        ekg::timing ui_timing {};
 
         /* Widget env lists and maps for tasks. */
 
@@ -65,12 +66,12 @@ namespace ekg {
 
         /* Tokens for use in creation of elements. */
 
-        int32_t token_id {},
-                widget_id_focused {},
-                prev_widget_id_focused {},
-                swap_widget_id_focused {},
-                widget_id_pressed_focused {},
-                widget_id_released_focused {};
+        int32_t token_id {};
+        int32_t widget_id_focused {};
+        int32_t prev_widget_id_focused {};
+        int32_t swap_widget_id_focused {};
+        int32_t widget_id_pressed_focused {};
+        int32_t widget_id_released_focused {};
 
         bool enable_high_priority_frequency {};
         
@@ -81,6 +82,7 @@ namespace ekg {
     public:
         void set_root(SDL_Window* sdl_win_root);
         SDL_Window *get_root();
+        ekg::timing &get_ui_timing();
 
         ekg::gpu::allocator &get_gpu_allocator();
         ekg::draw::font_renderer &get_f_renderer_small();

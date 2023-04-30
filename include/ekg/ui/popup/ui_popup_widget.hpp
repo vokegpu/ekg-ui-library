@@ -17,6 +17,7 @@
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
+// @TODO State for components/elements disabled
 namespace ekg::ui {
 	class popup_widget : public ekg::ui::abstract_widget {
 	protected:
