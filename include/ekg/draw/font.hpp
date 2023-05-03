@@ -23,7 +23,7 @@
 namespace ekg {
     struct char_data {
         float x {};
-        float texture_x {};
+        float wsize {};
         float w {};
         float h {};
         float top {};

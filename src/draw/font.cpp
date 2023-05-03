@@ -39,7 +39,7 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
         char_data = this->allocated_char_data[chars];
 
         render_x = start_x + char_data.left;
-        start_x += char_data.texture_x;
+        start_x += char_data.wsize;
 
         this->ft_uint_previous = chars;
         text_width = render_x + char_data.w;
@@ -127,7 +127,7 @@ void ekg::draw::font_renderer::reload() {
 
         char_data.left = static_cast<float>(this->ft_glyph_slot->bitmap_left);
         char_data.top = static_cast<float>(this->ft_glyph_slot->bitmap_top);
-        char_data.texture_x = static_cast<float>(this->ft_glyph_slot->advance.x >> 6);
+        char_data.wsize = static_cast<float>(this->ft_glyph_slot->advance.x >> 6);
 
         glTexSubImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(offset), 0, static_cast<GLsizei>(char_data.w), static_cast<GLsizei>(char_data.h), GL_RED, GL_UNSIGNED_BYTE, this->ft_glyph_slot->bitmap.buffer);
         offset += char_data.w;
@@ -210,7 +210,7 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
         this->allocator->coord2f(coordinates.x + coordinates.w, coordinates.y);
         this->allocator->coord2f(coordinates.x, coordinates.y);
 
-        x += char_data.texture_x;
+        x += char_data.wsize;
         this->ft_uint_previous = chars;
         data.factor += static_cast<int32_t>(x + chars);
     }

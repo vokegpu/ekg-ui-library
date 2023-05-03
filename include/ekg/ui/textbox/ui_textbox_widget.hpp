@@ -22,12 +22,13 @@ namespace ekg::ui {
         std::vector<std::string> text_chunk_list {};
         std::string widget_side_text {};
         uint64_t visible_chunk[2] {};
-        uint64_t cursor[2] {};
+        uint64_t cursor[6] {};
         float scroll[2] {};
         float text_offset {};
         bool redraw_cursor {};
     public:
         void check_cursor_text_bounding();
+        std::string &get_cursor_emplace_text();
         void on_destroy() override;
         void on_reload() override;
         void on_pre_event(SDL_Event &sdl_event) override;

@@ -72,6 +72,7 @@ namespace ekg {
         int32_t swap_widget_id_focused {};
         int32_t widget_id_pressed_focused {};
         int32_t widget_id_released_focused {};
+        int32_t top_level_id {};
 
         bool enable_high_priority_frequency {};
         
@@ -83,6 +84,9 @@ namespace ekg {
         void set_root(SDL_Window* sdl_win_root);
         SDL_Window *get_root();
         ekg::timing &get_ui_timing();
+
+        void set_top_level(int32_t);
+        int32_t get_top_level();
 
         ekg::gpu::allocator &get_gpu_allocator();
         ekg::draw::font_renderer &get_f_renderer_small();

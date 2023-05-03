@@ -49,6 +49,14 @@ ekg::timing &ekg::runtime::get_ui_timing() {
     return this->ui_timing;
 }
 
+void ekg::runtime::set_top_level(int32_t id) {
+    this->top_level_id = id;
+}
+
+int32_t ekg::runtime::get_top_level() {
+    return this->top_level_id;
+}
+
 void ekg::runtime::init() {
     this->allocator.init();
     this->theme_service.init();
@@ -94,7 +102,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     bool hovered {};
     bool found_absolute_widget {};
 
-    for (ekg::ui::abstract_widget *widgets : this->widget_list_map["all"]) {
+    for (ekg::ui::abstract_widget *&widgets : this->widget_list_map["all"]) {
         if (widgets == nullptr || !widgets->data->is_alive()) {
             continue;
         }
@@ -110,7 +118,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
 
         widgets->flag.hovered = false;
 
-        if (!hovered || found_absolute_widget) {
+        if (!hovered) {
             widgets->on_event(sdl_event);
         }
     }

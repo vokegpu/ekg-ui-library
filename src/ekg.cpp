@@ -168,7 +168,8 @@ void ekg::event(SDL_Event &sdl_event) {
             sdl_event.type == SDL_FINGERUP        || sdl_event.type == SDL_FINGERDOWN ||
             sdl_event.type == SDL_FINGERMOTION    || sdl_event.type == SDL_MOUSEMOTION ||
             sdl_event.type == SDL_KEYDOWN         || sdl_event.type == SDL_KEYUP ||
-            sdl_event.type == SDL_WINDOWEVENT     || sdl_event.type == SDL_MOUSEWHEEL
+            sdl_event.type == SDL_WINDOWEVENT     || sdl_event.type == SDL_MOUSEWHEEL ||
+            sdl_event.type == SDL_TEXTINPUT
     };
 
     if (!phase_keep_process) {
