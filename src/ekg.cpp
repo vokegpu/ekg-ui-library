@@ -120,7 +120,7 @@ ekg::gl_version + "\n"
 
 "    if (uActiveTexture) {"
 "        vFragColor = texture(uTexture, vTexCoord);\n"
-"        vFragColor = vec4(vFragColor.xyz - ((1.0f - uColor.xyz) - 1.0f), vFragColor.w - (1.0f - uColor.w));"
+"        vFragColor = vec4(vFragColor.xyz - ((1.0f - uColor.xyz) - 1.0f), vFragColor.w - (1.0f - uColor.w));\n"
 "    }\n"
 "}"};
 

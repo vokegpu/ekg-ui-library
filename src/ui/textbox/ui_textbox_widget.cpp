@@ -40,11 +40,13 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
         } else if (this->cursor[3] >= emplace_text_size && (this->cursor[2] + 1 == this->text_chunk_list.size())) {
             this->cursor[0] = base_it + emplace_text_size;
             this->cursor[3] = emplace_text_size;
-        } else if (this->cursor[3] >= emplace_text_size) {
+        } else if (this->cursor[3] > emplace_text_size) {
+            this->cursor[0] = base_it + emplace_text_size;
             this->cursor[2]++;
             this->cursor[3] = 0;
         }
 
+        this->cursor[3] = this->cursor[0] - base_it;
         this->cursor[0] = ekg::min(this->cursor[0], (int64_t) 0);
         this->cursor[1] = this->cursor[0];
         this->cursor[3] = ekg::min(this->cursor[3], (int64_t) 0);
@@ -67,14 +69,23 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
         break;
     }
     case ekg::ui::textbox_widget::action::erasetext: {
+        if (this->cursor[0] == this->cursor[1] && direction < 0 && this->cursor[0] > 0) {
+            std::string &emplace_text {this->get_cursor_emplace_text()};
+            int64_t it {ekg::min(this->cursor[3] - 1, (int64_t) 0)};
+            emplace_text = emplace_text.substr(0, it) + emplace_text.substr(it + 1, emplace_text.size());
 
-                std::string &emplace_text {this->get_cursor_emplace_text()};
-        if (this->cursor[0] == this->cursor[1]) {
-            int64_t it {this->cursor[3]};
-            emplace_text = emplace_text.substr(0, it) + text.data() + emplace_text.substr(it, emplace_text.size());
-            this->move_cursor(1, 0);
+            if (this->cursor[3] - 1 < 0 && this->cursor[2] > 0) {
+                std::string stored_text {emplace_text};
+                this->text_chunk_list.erase(this->text_chunk_list.begin() + this->cursor[2]);
+                this->move_cursor(-1, 0);
+
+                std::string &upper_line_text {this->get_cursor_emplace_text()};
+                upper_line_text += stored_text;
+            } else {
+                this->move_cursor(-1, 0);
+            }
         }
-        
+
         break;
     }
 
@@ -281,7 +292,9 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
             this->flag.absolute = false;
             break;
         case SDLK_BACKSPACE:
-            this->process_text(sdl_event.text.text, ekg::ui::textbox_widget::action::erasetext, -1);
+            this->process_text("backspace", ekg::ui::textbox_widget::action::erasetext, -1);
+        case SDLK_DELETE:
+            this->process_text("delete", ekg::ui::textbox_widget::action::erasetext, 1);
             break;
         case SDLK_LEFT:
             this->move_cursor(-1, 0);
