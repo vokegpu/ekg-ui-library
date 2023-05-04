@@ -16,12 +16,106 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 
+void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
+    if (magic) {
+
+    } else {
+        int64_t base_it {ekg::min(this->cursor[0] - this->cursor[3], (int64_t) 0)};
+        std::string &emplace_text {this->get_cursor_emplace_text()};
+        int64_t emplace_text_size {(int64_t) emplace_text.size()};
+
+        if (x < 0) {
+            x = abs(x);
+            this->cursor[0] -= x;
+            this->cursor[3] -= x;
+        } else if (x > 0) {
+            x = abs(x);
+            this->cursor[0] += x;
+            this->cursor[3] += x;
+        }
+
+        if (this->cursor[3] < 0 && this->cursor[2] > 0) {
+            this->cursor[2]--;
+            this->cursor[0] = base_it;
+        } else if (this->cursor[3] >= emplace_text_size && (this->cursor[2] + 1 == this->text_chunk_list.size())) {
+            this->cursor[0] = base_it + emplace_text_size;
+            this->cursor[3] = emplace_text_size;
+        } else if (this->cursor[3] >= emplace_text_size) {
+            this->cursor[2]++;
+            this->cursor[3] = 0;
+        }
+
+        this->cursor[0] = ekg::min(this->cursor[0], (int64_t) 0);
+        this->cursor[1] = this->cursor[0];
+        this->cursor[3] = ekg::min(this->cursor[3], (int64_t) 0);
+
+        ekg::reset(ekg::core->get_ui_timing());
+        ekg::dispatch(ekg::env::redraw);
+    }
+}
+
+void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction) {
+    switch (action) {
+    case ekg::ui::textbox_widget::action::addtext: {
+        std::string &emplace_text {this->get_cursor_emplace_text()};
+        if (this->cursor[0] == this->cursor[1]) {
+            int64_t it {this->cursor[3]};
+            emplace_text = emplace_text.substr(0, it) + text.data() + emplace_text.substr(it, emplace_text.size());
+            this->move_cursor(1, 0);
+        }
+
+        break;
+    }
+    case ekg::ui::textbox_widget::action::erasetext: {
+
+                std::string &emplace_text {this->get_cursor_emplace_text()};
+        if (this->cursor[0] == this->cursor[1]) {
+            int64_t it {this->cursor[3]};
+            emplace_text = emplace_text.substr(0, it) + text.data() + emplace_text.substr(it, emplace_text.size());
+            this->move_cursor(1, 0);
+        }
+        
+        break;
+    }
+
+    case ekg::ui::textbox_widget::action::breakline: {
+        int64_t it {this->cursor[3]};
+        std::string &emplace_text {this->get_cursor_emplace_text()};
+        std::string previous {emplace_text.substr(it, emplace_text.size())};
+        std::string next {};
+
+        emplace_text = emplace_text.substr(0, it);
+        bool move_text {};
+        this->text_chunk_list.emplace_back();
+
+        for (int64_t it {this->cursor[2]}; it < this->text_chunk_list.size(); it++) {
+            if (move_text) {
+                next = text_chunk_list.at(it);
+                text_chunk_list.at(it) = previous;
+                previous = text_chunk_list.at(it);
+                continue;
+            }
+
+            if (it == this->cursor[2] + 1) {
+                next = text_chunk_list.at(it);
+                this->text_chunk_list.at(it) = previous;
+                move_text = true;
+                continue;
+            }
+        }
+
+        this->move_cursor(1, 0);
+        break;
+    }
+    }
+}
+
 std::string &ekg::ui::textbox_widget::get_cursor_emplace_text() {
-    if (this->cursor[4] >= this->text_chunk_list.size()) {
+    if (this->cursor[2] >= this->text_chunk_list.size()) {
         return this->text_chunk_list.emplace_back();
     }
 
-    return this->text_chunk_list.at(this->cursor[4]);
+    return this->text_chunk_list.at(this->cursor[2]);
 }
 
 void ekg::ui::textbox_widget::check_cursor_text_bounding() {
@@ -41,14 +135,15 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
     ekg::rect char_rect {};
     ekg::char_data char_data {};
 
+    ekg::vec4 &interact {ekg::interact()};
     uint64_t total_it {};
     char chars {};
-    ekg::vec4 &interact {ekg::interact()};
+
     int64_t bounding_it {-1};
     int64_t chunk_it {};
-    float text_width {};
-    uint64_t it {};
     uint64_t text_it {};
+    uint64_t it {};
+    float text_width {};
 
     for (std::string &text : this->text_chunk_list) {
         x = rect.x + this->scroll[0];
@@ -66,16 +161,17 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
             char_rect.y = y;
             char_rect.w = char_data.wsize / 2;
             char_rect.h = text_height;
-            text_it = it;
 
             if (ekg::rect_collide_vec(char_rect, interact)) {
                 bounding_it = total_it;
+                text_it = it;
                 break;
             }
 
             char_rect.w += char_rect.w;
             if (ekg::rect_collide_vec(char_rect, interact)) {
-                bounding_it = ekg::max(total_it++, (int32_t) text.size());
+                bounding_it = total_it + 1;
+                text_it = it + 1;
                 break;
             }
 
@@ -89,11 +185,12 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
         char_rect.h = text_height;
 
         if (ekg::rect_collide_vec(char_rect, interact) && bounding_it == -1) {
-            char_rect.w /= 2;
+            char_rect.w = this->text_offset;
             if (ekg::rect_collide_vec(char_rect, interact)) {
                 bounding_it = total_it - text.size();
             } else {
                 bounding_it = total_it;
+                text_it = text.size();
             }
 
             break;
@@ -107,8 +204,8 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
     if (bounding_it != -1) {
         this->cursor[0] = bounding_it;
         this->cursor[1] = bounding_it;
-        this->cursor[4] = chunk_it;
-        this->cursor[5] = text_it;
+        this->cursor[2] = chunk_it;
+        this->cursor[3] = text_it;
         ekg::dispatch(ekg::env::redraw);
     }
 }
@@ -152,24 +249,19 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     abstract_widget::on_event(sdl_event);
 
     bool pressed {ekg::input::pressed() && ekg::input::pressed("textbox-activy")};
-    bool released {ekg::input::released()};
+    bool released {ekg::input::released() && ekg::input::pressed("textbox-activy")};
     bool motion {ekg::input::motion()};
 
     if (this->flag.hovered && pressed) {
         this->flag.focused = true;
+
         this->check_cursor_text_bounding();
         ekg::reset(ekg::core->get_ui_timing());
+        ekg::dispatch(ekg::env::redraw);
 
         if (!this->is_high_frequency) {
-            this->flag.absolute = true;
             ekg::update_high_frequency(this);
         }
-    }
-
-    if (this->flag.focused && !this->flag.hovered && motion) {
-        this->flag.absolute = false;
-    } else if (this->flag.focused && (sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_TEXTINPUT)) {
-        this->flag.absolute = true;
     }
 
     if (!this->flag.hovered && (released || pressed)) {
@@ -188,22 +280,32 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
             this->flag.focused = false;
             this->flag.absolute = false;
             break;
+        case SDLK_BACKSPACE:
+            this->process_text(sdl_event.text.text, ekg::ui::textbox_widget::action::erasetext, -1);
+            break;
+        case SDLK_LEFT:
+            this->move_cursor(-1, 0);
+            break;
+        case SDLK_RIGHT:
+            this->move_cursor(1, 0);
+            break;
+        case SDLK_UP:
+            this->move_cursor(0, 1);
+            break;
+        case SDLK_DOWN:
+            this->move_cursor(0, -1);
+            break;
         default:
+            if (sdl_event.key.keysym.sym == SDLK_RETURN2 || sdl_event.key.keysym.sym == SDLK_RETURN || sdl_event.key.keysym.sym == SDLK_KP_ENTER) {
+                this->process_text("return", ekg::ui::textbox_widget::action::breakline, 1);
+            }
+
             break;
         }
 
         break;
     case SDL_TEXTINPUT:
-        std::string &emplace_text {this->get_cursor_emplace_text()};
-
-        if (this->cursor[0] == this->cursor[1]) {
-            uint64_t it {this->cursor[5]};
-            emplace_text = emplace_text.substr(0, it) + sdl_event.text.text + emplace_text.substr(it, emplace_text.size());
-            ekg::dispatch(ekg::env::redraw);
-            ekg::reset(ekg::core->get_ui_timing());
-            this->cursor[0] = this->cursor[1]++;
-        }
-
+        this->process_text(sdl_event.text.text, ekg::ui::textbox_widget::action::addtext, 1);
         break;
     }
 }
@@ -262,6 +364,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     data.material_color[1] = static_cast<uint8_t>(color.y);
     data.material_color[2] = static_cast<uint8_t>(color.z);
     data.material_color[3] = static_cast<uint8_t>(color.w);
+    data.factor = 1;
 
     ekg::rect vertices {};
     ekg::rect coordinates {};
@@ -272,18 +375,21 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     uint64_t total_it {};
     bool cursor_out_of_str {};
     uint64_t text_size {};
+    bool render_cursor {};
 
     x = this->text_offset + this->scroll[0];
     y = this->text_offset + this->scroll[1];
 
-    for (uint64_t it_chunk {this->visible_chunk[0]}; it_chunk < this->visible_chunk[1]; it_chunk++) {
+    this->visible_chunk[0] = 0;
+    this->visible_chunk[1] = this->text_chunk_list.size();
+
+    for (int64_t it_chunk {this->visible_chunk[0]}; it_chunk < this->visible_chunk[1]; it_chunk++) {
         if (it_chunk > chunk_size) {
             continue;
         }
 
         text = this->text_chunk_list.at(it_chunk);
         x = this->text_offset + this->scroll[0];
-        data.factor = 1;
         text_size = text.size();
 
         for (uint64_t it {}; it < text_size; it++) {
@@ -294,10 +400,11 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             }
 
             char_data = f_renderer.allocated_char_data[chars];
-            cursor_out_of_str = total_it + 1 == text_size && (this->cursor[0] == total_it + 1 && this->cursor[0] == this->cursor[1]);
-            if ((total_it == this->cursor[0] && total_it == this->cursor[1]) || cursor_out_of_str) {
+            cursor_out_of_str = total_it + 1 == text_size && this->cursor[0] == total_it + 1;
+            if ((cursor_out_of_str || total_it == this->cursor[0]) && this->cursor[0] == this->cursor[1]) {
                 cursor_pos.x = x + (char_data.wsize * cursor_out_of_str);
                 cursor_pos.y = y;
+                render_cursor = true;
             }
 
             vertices.x = x + char_data.left;
@@ -326,7 +433,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
             x += char_data.wsize;
             f_renderer.ft_uint_previous = chars;
-            data.factor += static_cast<int32_t>(x + chars);
+            data.factor += static_cast<int32_t>(x + y + chars);
             total_it++;
         }
 
@@ -336,7 +443,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     allocator.bind_texture(f_renderer.texture);
     allocator.dispatch();
 
-    if (this->flag.focused && !ekg::reach(ekg::core->get_ui_timing(), 500)) {
+    if (render_cursor && this->flag.focused && !ekg::reach(ekg::core->get_ui_timing(), 500)) {
         ekg::draw::rect(rect.x + cursor_pos.x - 2, rect.y + cursor_pos.y, 2, text_height, theme.textbox_cursor);
     }
 

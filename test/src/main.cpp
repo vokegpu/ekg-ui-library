@@ -82,11 +82,11 @@ int32_t main(int, char**) {
     ekg::button("Button 5");
     ekg::button("Button 6", ekg::dock::next);
 
-    auto frame2 {ekg::frame("text sampler", {20, 20}, {200, 200})};
+    auto frame2 {ekg::frame("text sampler", {20, 20}, {400, 400})};
     frame2->set_drag(ekg::dock::top);
     frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-    ekg::textbox("Search", "Text Sampler Cat", ekg::dock::fill);
+    ekg::textbox("Search", "Text Sampler Cat", ekg::dock::fill)->set_scaled_height(6);
     ekg::button("Button 2", fillnext);
     ekg::button("Button 2.1", ekg::dock::fill);
     ekg::button("Button 2.2", fillnext);

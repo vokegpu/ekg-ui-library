@@ -221,6 +221,12 @@ namespace ekg {
     int32_t min(int32_t, int32_t);
     int32_t max(int32_t, int32_t);
 
+    uint64_t min(uint64_t, uint64_t);
+    uint64_t max(uint64_t, uint64_t);
+
+    int64_t min(int64_t, int64_t);
+    int64_t max(int64_t, int64_t);
+
     float min(float, float);
     float max(float, float);
     float smooth(float, uint64_t);

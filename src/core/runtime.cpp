@@ -102,13 +102,20 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     bool hovered {};
     bool found_absolute_widget {};
 
+    // @TODO textbox ui with delay to process stack reorder event.
+
     for (ekg::ui::abstract_widget *&widgets : this->widget_list_map["all"]) {
         if (widgets == nullptr || !widgets->data->is_alive()) {
             continue;
         }
 
         widgets->on_pre_event(sdl_event);
-        hovered = widgets->flag.hovered && widgets->data->get_state() == ekg::state::visible;
+
+        /*
+         * Text input like textbox and keyboard events should not update stack, instead just mouse events.
+         */
+        hovered = !(sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_KEYUP || sdl_event.type == SDL_TEXTINPUT) 
+                    && widgets->flag.hovered && widgets->data->get_state() == ekg::state::visible;
 
         if ((hovered || widgets->flag.absolute) && !found_absolute_widget) {
             this->widget_id_focused = widgets->data->get_id();
@@ -117,8 +124,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         }
 
         widgets->flag.hovered = false;
-
-        if (!hovered) {
+        if (!hovered && !found_absolute_widget) {
             widgets->on_event(sdl_event);
         }
     }
@@ -522,7 +528,7 @@ void ekg::runtime::prepare_tasks() {
                 high_frequency.push_back(widgets);
             }
 
-        if (widgets->data->get_state() == ekg::state::visible) {
+            if (widgets->data->get_state() == ekg::state::visible) {
                 redraw.push_back(widgets);
             }
 

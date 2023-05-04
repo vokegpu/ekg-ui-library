@@ -15,20 +15,30 @@
 #define EKG_UI_TEXTBOX_WIDGET_H
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
+#include <unordered_map>
 
 namespace ekg::ui {
     class textbox_widget : public ekg::ui::abstract_widget {
     public:
+        enum action {addtext, erasetext, breakline};
+    public:
         std::vector<std::string> text_chunk_list {};
         std::string widget_side_text {};
-        uint64_t visible_chunk[2] {};
-        uint64_t cursor[6] {};
+        std::unordered_map<uint64_t, uint64_t> chunk_metadata_map {};
+
+        int64_t visible_chunk[2] {};
+        int64_t cursor_data[6] {};
+        int64_t cursor[6] {};
+
         float scroll[2] {};
         float text_offset {};
         bool redraw_cursor {};
     public:
         void check_cursor_text_bounding();
         std::string &get_cursor_emplace_text();
+        void process_text(std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction);
+        void move_cursor(int64_t, int64_t, bool = false);
+
         void on_destroy() override;
         void on_reload() override;
         void on_pre_event(SDL_Event &sdl_event) override;

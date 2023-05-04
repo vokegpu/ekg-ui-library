@@ -125,6 +125,22 @@ int32_t ekg::max(int32_t v, int32_t m) {
     return v > m ? m : v;
 }
 
+uint64_t ekg::min(uint64_t v, uint64_t m) {
+    return v < m ? m : v;
+}
+
+uint64_t ekg::max(uint64_t v, uint64_t m) {
+    return v > m ? m : v;
+}
+
+int64_t ekg::min(int64_t v, int64_t m) {
+    return v < m ? m : v;
+}
+
+int64_t ekg::max(int64_t v, int64_t m) {
+    return v > m ? m : v;
+}
+
 float ekg::clamp(float value, float min, float max) {
     return value < min ? min : (value > max ? max : value);
 }
