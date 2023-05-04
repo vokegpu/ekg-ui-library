@@ -98,7 +98,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         this->widget_id_focused = 0;
     }
 
-    ekg::ui::abstract_widget* focused_widget {nullptr};
+    ekg::ui::abstract_widget *focused_widget {};
     bool hovered {};
     bool found_absolute_widget {};
 
@@ -115,7 +115,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
          * Text input like textbox and keyboard events should not update stack, instead just mouse events.
          */
         hovered = !(sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_KEYUP || sdl_event.type == SDL_TEXTINPUT) 
-                    && widgets->flag.hovered && widgets->data->get_state() == ekg::state::visible;
+                && widgets->flag.hovered && widgets->data->get_state() == ekg::state::visible;
 
         if ((hovered || widgets->flag.absolute) && !found_absolute_widget) {
             this->widget_id_focused = widgets->data->get_id();
@@ -205,10 +205,9 @@ void ekg::runtime::prepare_tasks() {
     ekg::log() << "Preparing internal EKG core";
 
     /*
-      The priority of tasks is organised by compilation code, means that you need
-      to dispatch tasks in n sequence. This is only a feature for allocated tasks.
+     * The priority of tasks is organised by compilation code, means that you need
+     * to dispatch tasks in n sequence. This is only a feature for allocated tasks.
      */
-
     this->handler_service.dispatch(new ekg::cpu::event {"refresh", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
         auto &all = runtime->widget_list_map["all"];

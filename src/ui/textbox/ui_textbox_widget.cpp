@@ -37,7 +37,10 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
         if (this->cursor[3] < 0 && this->cursor[2] > 0) {
             this->cursor[2]--;
             this->cursor[0] = base_it;
-        } else if (this->cursor[3] >= emplace_text_size && (this->cursor[2] + 1 == this->text_chunk_list.size())) {
+            this->cursor[3] = this->get_cursor_emplace_text().size();
+        }
+
+        if (this->cursor[3] > emplace_text_size && (this->cursor[2] + 1 == this->text_chunk_list.size())) {
             this->cursor[0] = base_it + emplace_text_size;
             this->cursor[3] = emplace_text_size;
         } else if (this->cursor[3] > emplace_text_size) {
@@ -46,7 +49,6 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
             this->cursor[3] = 0;
         }
 
-        this->cursor[3] = this->cursor[0] - base_it;
         this->cursor[0] = ekg::min(this->cursor[0], (int64_t) 0);
         this->cursor[1] = this->cursor[0];
         this->cursor[3] = ekg::min(this->cursor[3], (int64_t) 0);
@@ -70,19 +72,19 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
     }
     case ekg::ui::textbox_widget::action::erasetext: {
         if (this->cursor[0] == this->cursor[1] && direction < 0 && this->cursor[0] > 0) {
+            this->move_cursor(-1, 0);
             std::string &emplace_text {this->get_cursor_emplace_text()};
-            int64_t it {ekg::min(this->cursor[3] - 1, (int64_t) 0)};
+            int64_t it {ekg::min(this->cursor[3], (int64_t) 0)};
             emplace_text = emplace_text.substr(0, it) + emplace_text.substr(it + 1, emplace_text.size());
 
             if (this->cursor[3] - 1 < 0 && this->cursor[2] > 0) {
                 std::string stored_text {emplace_text};
                 this->text_chunk_list.erase(this->text_chunk_list.begin() + this->cursor[2]);
-                this->move_cursor(-1, 0);
+                this->move_cursor(0, 0);
 
                 std::string &upper_line_text {this->get_cursor_emplace_text()};
                 upper_line_text += stored_text;
             } else {
-                this->move_cursor(-1, 0);
             }
         }
 
@@ -141,7 +143,6 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
     float x {rect.x + this->scroll[0]};
     float y {rect.y + this->scroll[1]};
     float text_height {f_renderer.get_text_height()};
-    text_height += text_height * 0.5f;
 
     ekg::rect char_rect {};
     ekg::char_data char_data {};
@@ -247,6 +248,8 @@ void ekg::ui::textbox_widget::on_reload() {
     if (this->widget_side_text != ui->get_text()) {
         this->widget_side_text = ui->get_text();
         this->text_chunk_list.emplace_back() = this->widget_side_text;
+        this->text_chunk_list.emplace_back() = this->widget_side_text + " second line";
+        this->text_chunk_list.emplace_back() = this->widget_side_text + " fom POM POM!!";
         this->visible_chunk[0] = 0;
         this->visible_chunk[1] = this->text_chunk_list.size();
     }
@@ -395,6 +398,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     this->visible_chunk[0] = 0;
     this->visible_chunk[1] = this->text_chunk_list.size();
+    ekg::log() << this->cursor[2];
 
     for (int64_t it_chunk {this->visible_chunk[0]}; it_chunk < this->visible_chunk[1]; it_chunk++) {
         if (it_chunk > chunk_size) {
@@ -413,8 +417,8 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             }
 
             char_data = f_renderer.allocated_char_data[chars];
-            cursor_out_of_str = total_it + 1 == text_size && this->cursor[0] == total_it + 1;
-            if ((cursor_out_of_str || total_it == this->cursor[0]) && this->cursor[0] == this->cursor[1]) {
+            cursor_out_of_str = it + 1 == text_size && this->cursor[0] == total_it + 1;
+            if ((cursor_out_of_str || total_it == this->cursor[0]) && this->cursor[0] == this->cursor[1] && this->cursor[2] == it_chunk) {
                 cursor_pos.x = x + (char_data.wsize * cursor_out_of_str);
                 cursor_pos.y = y;
                 render_cursor = true;

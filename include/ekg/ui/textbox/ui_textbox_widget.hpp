@@ -24,7 +24,6 @@ namespace ekg::ui {
     public:
         std::vector<std::string> text_chunk_list {};
         std::string widget_side_text {};
-        std::unordered_map<uint64_t, uint64_t> chunk_metadata_map {};
 
         int64_t visible_chunk[2] {};
         int64_t cursor_data[6] {};
