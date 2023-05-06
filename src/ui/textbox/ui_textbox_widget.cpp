@@ -23,6 +23,7 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
         int64_t base_it {ekg::min(this->cursor[0] - this->cursor[3], (int64_t) 0)};
         std::string &emplace_text {this->get_cursor_emplace_text()};
         int64_t emplace_text_size {(int64_t) emplace_text.size()};
+        bool text_chunk_it_bounding_size {this->cursor[2] + 1 == this->text_chunk_list.size()};
 
         if (x < 0) {
             x = abs(x);
@@ -34,17 +35,37 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
             this->cursor[3] += x;
         }
 
-        if (this->cursor[3] < 0 && this->cursor[2] > 0) {
+        if (y < 0 && this->cursor[2] > 0) {
+            y = abs(y);
+
+            this->cursor[2]--;
+            emplace_text_size = (int64_t) this->get_cursor_emplace_text().size();
+
+            this->cursor[3] = ekg::max(this->cursor[3], (int64_t) emplace_text_size);
+            this->cursor[0] = base_it - (emplace_text_size - this->cursor[3]);
+        } else if (y > 0 && !text_chunk_it_bounding_size) {
+            y = abs(y);
+
+            this->cursor[0] = (base_it + emplace_text_size);
+            this->cursor[2]++;
+
+            emplace_text_size = (int64_t) this->get_cursor_emplace_text().size();
+            this->cursor[3] = ekg::max(this->cursor[3], (int64_t) emplace_text_size);
+            this->cursor[0] += this->cursor[3];
+        }
+
+        if (this->cursor[0] < base_it && this->cursor[2] > 0 && x != 0) {
             this->cursor[2]--;
             this->cursor[0] = base_it;
             this->cursor[3] = this->get_cursor_emplace_text().size();
         }
 
-        if (this->cursor[3] > emplace_text_size && (this->cursor[2] + 1 == this->text_chunk_list.size())) {
-            this->cursor[0] = base_it + emplace_text_size;
+        int64_t base_it_plus_emplace_text_size {base_it + emplace_text_size};
+        if (this->cursor[0] > base_it_plus_emplace_text_size && text_chunk_it_bounding_size && x != 0) {
+            this->cursor[0] = base_it_plus_emplace_text_size;
             this->cursor[3] = emplace_text_size;
-        } else if (this->cursor[3] > emplace_text_size) {
-            this->cursor[0] = base_it + emplace_text_size;
+        } else if (this->cursor[0] > base_it_plus_emplace_text_size && x != 0) {
+            this->cursor[0] = base_it_plus_emplace_text_size;
             this->cursor[2]++;
             this->cursor[3] = 0;
         }
@@ -52,6 +73,7 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
         this->cursor[0] = ekg::min(this->cursor[0], (int64_t) 0);
         this->cursor[1] = this->cursor[0];
         this->cursor[3] = ekg::min(this->cursor[3], (int64_t) 0);
+        this->cursor[2] = ekg::max(this->cursor[2], (int64_t) this->text_chunk_list.size());
 
         ekg::reset(ekg::core->get_ui_timing());
         ekg::dispatch(ekg::env::redraw);
@@ -70,6 +92,7 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
 
         break;
     }
+
     case ekg::ui::textbox_widget::action::erasetext: {
         if (this->cursor[0] == this->cursor[1] && direction < 0 && this->cursor[0] > 0) {
             this->move_cursor(-1, 0);
@@ -93,28 +116,18 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
 
     case ekg::ui::textbox_widget::action::breakline: {
         int64_t it {this->cursor[3]};
+
         std::string &emplace_text {this->get_cursor_emplace_text()};
-        std::string previous {emplace_text.substr(it, emplace_text.size())};
-        std::string next {};
+        std::string previous {};
+        std::string next {emplace_text.substr(it, emplace_text.size())};
 
         emplace_text = emplace_text.substr(0, it);
-        bool move_text {};
-        this->text_chunk_list.emplace_back();
+        this->text_chunk_list.emplace_back().clear();
 
-        for (int64_t it {this->cursor[2]}; it < this->text_chunk_list.size(); it++) {
-            if (move_text) {
-                next = text_chunk_list.at(it);
-                text_chunk_list.at(it) = previous;
-                previous = text_chunk_list.at(it);
-                continue;
-            }
-
-            if (it == this->cursor[2] + 1) {
-                next = text_chunk_list.at(it);
-                this->text_chunk_list.at(it) = previous;
-                move_text = true;
-                continue;
-            }
+        for (int64_t it {this->cursor[2] + 1}; it < this->text_chunk_list.size(); it++) {
+            previous = this->text_chunk_list.at(it);
+            this->text_chunk_list[it] = next;
+            next = previous;
         }
 
         this->move_cursor(1, 0);
@@ -124,7 +137,7 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
 }
 
 std::string &ekg::ui::textbox_widget::get_cursor_emplace_text() {
-    if (this->cursor[2] >= this->text_chunk_list.size()) {
+    if (this->cursor[2] > this->text_chunk_list.size()) {
         return this->text_chunk_list.emplace_back();
     }
 
@@ -155,13 +168,15 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
     int64_t chunk_it {};
     uint64_t text_it {};
     uint64_t it {};
+    uint64_t text_size {};
     float text_width {};
 
     for (std::string &text : this->text_chunk_list) {
         x = rect.x + this->scroll[0];
         text_width = f_renderer.get_text_width(text);
+        text_size = text.size();
 
-        for (it = 0; it < text.size(); it++) {
+        for (it = 0; it < text_size; it++) {
             chars = text.at(it);
             if (f_renderer.ft_bool_kerning && f_renderer.ft_uint_previous) {
                 FT_Get_Kerning(f_renderer.ft_face, f_renderer.ft_uint_previous, chars, 0, &f_renderer.ft_vector_previous_char);
@@ -199,15 +214,16 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
         if (ekg::rect_collide_vec(char_rect, interact) && bounding_it == -1) {
             char_rect.w = this->text_offset;
             if (ekg::rect_collide_vec(char_rect, interact)) {
-                bounding_it = total_it - text.size();
+                bounding_it = total_it - text_size;
             } else {
                 bounding_it = total_it;
-                text_it = text.size();
+                text_it = text_size;
             }
 
             break;
         }
 
+        if (text_size == 0) total_it++;
         if (bounding_it != -1) break;
         y += text_height;
         chunk_it++;
@@ -247,9 +263,10 @@ void ekg::ui::textbox_widget::on_reload() {
 
     if (this->widget_side_text != ui->get_text()) {
         this->widget_side_text = ui->get_text();
-        this->text_chunk_list.emplace_back() = this->widget_side_text;
-        this->text_chunk_list.emplace_back() = this->widget_side_text + " second line";
-        this->text_chunk_list.emplace_back() = this->widget_side_text + " fom POM POM!!";
+        this->text_chunk_list.emplace_back() = "The quick brown fox jumps over the lazy dog";
+        this->text_chunk_list.emplace_back() = "The quick brown fox jumps over the lazy dog";
+        this->text_chunk_list.emplace_back() = "The quick brown fox jumps over the lazy dog";
+        this->text_chunk_list.emplace_back() = "x * sin(a) - y * cos(a), x * cos(a) + y * sin(a)";
         this->visible_chunk[0] = 0;
         this->visible_chunk[1] = this->text_chunk_list.size();
     }
@@ -306,10 +323,10 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
             this->move_cursor(1, 0);
             break;
         case SDLK_UP:
-            this->move_cursor(0, 1);
+            this->move_cursor(0, -1);
             break;
         case SDLK_DOWN:
-            this->move_cursor(0, -1);
+            this->move_cursor(0, 1);
             break;
         default:
             if (sdl_event.key.keysym.sym == SDLK_RETURN2 || sdl_event.key.keysym.sym == SDLK_RETURN || sdl_event.key.keysym.sym == SDLK_KP_ENTER) {
@@ -398,7 +415,6 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     this->visible_chunk[0] = 0;
     this->visible_chunk[1] = this->text_chunk_list.size();
-    ekg::log() << this->cursor[2];
 
     for (int64_t it_chunk {this->visible_chunk[0]}; it_chunk < this->visible_chunk[1]; it_chunk++) {
         if (it_chunk > chunk_size) {
@@ -408,6 +424,15 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         text = this->text_chunk_list.at(it_chunk);
         x = this->text_offset + this->scroll[0];
         text_size = text.size();
+
+        if (text_size == 0 && this->cursor[0] == total_it && this->cursor[0] == this->cursor[1]) {
+            cursor_pos.x = x;
+            cursor_pos.y = y;
+            render_cursor = true;
+            ekg::log() << this->cursor[0] << " cursor rendering";
+        }
+
+        if (text_size == 0) total_it++;
 
         for (uint64_t it {}; it < text_size; it++) {
             chars = text.at(it);
