@@ -235,7 +235,6 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
             break;
         }
 
-        if (text_size == 0) total_it++;
         if (bounding_it != -1) break;
         y += text_height;
         chunk_it++;
@@ -318,28 +317,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         return;
     }
 
-    if (ekg::input::pressed("textbox-action-up")) {
-        this->move_cursor(0, -1);
-    } else if (ekg::input::pressed("textbox-action-down")) {
-        this->move_cursor(0, 1);
-    }
-
-    if (ekg::input::pressed("textbox-action-left")) {
-        this->move_cursor(-1, 0);
-    } else if (ekg::input::pressed("textbox-action-right")) {
-        this->move_cursor(1, 0);
-    }
-
-    if (ekg::input::pressed("textbox-action-delete-left")) {
-        this->process_text("backspace", ekg::ui::textbox_widget::action::erasetext, -1);
-    } else if (ekg::input::pressed("textbox-action-delete-right")) {
-        this->process_text("delete", ekg::ui::textbox_widget::action::erasetext, 1);
-    }
-
-    if (ekg::input::pressed("textbox-action-break-line")) {
-        this->process_text("return", ekg::ui::textbox_widget::action::breakline, 1);
-    }
-
+    bool priority {};
     switch (sdl_event.type) {
     case SDL_KEYDOWN:
         switch (sdl_event.key.keysym.sym) {
@@ -353,7 +331,28 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         break;
     case SDL_TEXTINPUT:
         this->process_text(sdl_event.text.text, ekg::ui::textbox_widget::action::addtext, 1);
+        priority = true;
         break;
+    }
+
+    if (priority) {
+        return;
+    }
+
+    if (ekg::input::pressed("textbox-action-up")) {
+        this->move_cursor(0, -1);
+    } else if (ekg::input::pressed("textbox-action-down")) {
+        this->move_cursor(0, 1);
+    } else if (ekg::input::pressed("textbox-action-left")) {
+        this->move_cursor(-1, 0);
+    } else if (ekg::input::pressed("textbox-action-right")) {
+        this->move_cursor(1, 0);
+    } else if (ekg::input::pressed("textbox-action-delete-left")) {
+        this->process_text("backspace", ekg::ui::textbox_widget::action::erasetext, -1);
+    } else if (ekg::input::pressed("textbox-action-delete-right")) {
+        this->process_text("delete", ekg::ui::textbox_widget::action::erasetext, 1);
+    } else if (ekg::input::pressed("textbox-action-break-line")) {
+        this->process_text("return", ekg::ui::textbox_widget::action::breakline, 1);
     }
 }
 
