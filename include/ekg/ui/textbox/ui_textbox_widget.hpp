@@ -26,7 +26,6 @@ namespace ekg::ui {
         std::string widget_side_text {};
 
         int64_t visible_chunk[2] {};
-        int64_t cursor_data[6] {};
         int64_t cursor[6] {};
 
         float scroll[2] {};

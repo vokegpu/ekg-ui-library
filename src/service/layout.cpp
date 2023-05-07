@@ -72,7 +72,7 @@ void ekg::service::layout::process_layout_mask() {
                 dockrect.rect->y = centered_dimension - (dockrect.rect->h / 2);
             }
 
-            /* when there is a opposite dock, layout should fix the dock position to actual position */
+            /* when there is a opposite dock, layout should x the dock position to actual position */
             if (ekg::bitwise::contains(dockrect.dock, ekg::dock::left)) {
                 if (static_cast<int32_t>(opposite) != 0) {
                     this->layout_mask.w -= opposite;
@@ -332,6 +332,8 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
     this->extent_data[0] = 0.0f;
     this->extent_data[1] = 0.0f;
     this->extent_data[2] = 0.0f;
+
+    // @TODO Fix fill -> (fill | next) issue with widgets.
 
     /*
      * Rect == absolute position of current widget

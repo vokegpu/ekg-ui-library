@@ -16,9 +16,17 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 
+/*
+ * Cursor data indexes explain:
+ * 0 - The A index.
+ * 1 - The B index. (A == B: cursor position) else (A != B: Select bar)
+ * 2 - The current cursor text chunk index.
+ * 3 - The current cursor text index.
+ * 4 - The last cursor text index.
+ */
 void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
     if (magic) {
-
+        // avadakedabra: im a sexy girl om pom pom
     } else {
         int64_t base_it {ekg::min(this->cursor[0] - this->cursor[3], (int64_t) 0)};
         std::string &emplace_text {this->get_cursor_emplace_text()};
@@ -41,6 +49,7 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
             this->cursor[2]--;
             emplace_text_size = (int64_t) this->get_cursor_emplace_text().size();
 
+            this->cursor[3] = this->cursor[4];
             this->cursor[3] = ekg::max(this->cursor[3], (int64_t) emplace_text_size);
             this->cursor[0] = base_it - (emplace_text_size - this->cursor[3]);
         } else if (y > 0 && !text_chunk_it_bounding_size) {
@@ -50,6 +59,7 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
             this->cursor[2]++;
 
             emplace_text_size = (int64_t) this->get_cursor_emplace_text().size();
+            this->cursor[3] = this->cursor[4];
             this->cursor[3] = ekg::max(this->cursor[3], (int64_t) emplace_text_size);
             this->cursor[0] += this->cursor[3];
         }
@@ -75,6 +85,10 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
         this->cursor[3] = ekg::min(this->cursor[3], (int64_t) 0);
         this->cursor[2] = ekg::max(this->cursor[2], (int64_t) this->text_chunk_list.size());
 
+        if (x != 0) {
+            this->cursor[4] = this->cursor[3];
+        }
+
         ekg::reset(ekg::core->get_ui_timing());
         ekg::dispatch(ekg::env::redraw);
     }
@@ -95,19 +109,17 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
 
     case ekg::ui::textbox_widget::action::erasetext: {
         if (this->cursor[0] == this->cursor[1] && direction < 0 && this->cursor[0] > 0) {
-            this->move_cursor(-1, 0);
-            std::string &emplace_text {this->get_cursor_emplace_text()};
-            int64_t it {ekg::min(this->cursor[3], (int64_t) 0)};
-            emplace_text = emplace_text.substr(0, it) + emplace_text.substr(it + 1, emplace_text.size());
-
             if (this->cursor[3] - 1 < 0 && this->cursor[2] > 0) {
-                std::string stored_text {emplace_text};
-                this->text_chunk_list.erase(this->text_chunk_list.begin() + this->cursor[2]);
-                this->move_cursor(0, 0);
-
+                std::string stored_text {this->get_cursor_emplace_text()};
+                this->move_cursor(-1, 0);
+                this->text_chunk_list.erase(this->text_chunk_list.begin() + this->cursor[2] + 1);
                 std::string &upper_line_text {this->get_cursor_emplace_text()};
                 upper_line_text += stored_text;
             } else {
+                std::string &emplace_text {this->get_cursor_emplace_text()};
+                int64_t it {ekg::min(this->cursor[3] - 1, (int64_t) 0)};
+                emplace_text = emplace_text.substr(0, it) + emplace_text.substr(it + 1, emplace_text.size());
+                this->move_cursor(-1, 0);
             }
         }
 
@@ -234,6 +246,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
         this->cursor[1] = bounding_it;
         this->cursor[2] = chunk_it;
         this->cursor[3] = text_it;
+        this->cursor[4] = this->cursor[3];
         ekg::dispatch(ekg::env::redraw);
     }
 }
@@ -267,6 +280,7 @@ void ekg::ui::textbox_widget::on_reload() {
         this->text_chunk_list.emplace_back() = "The quick brown fox jumps over the lazy dog";
         this->text_chunk_list.emplace_back() = "The quick brown fox jumps over the lazy dog";
         this->text_chunk_list.emplace_back() = "x * sin(a) - y * cos(a), x * cos(a) + y * sin(a)";
+        this->text_chunk_list.emplace_back("a + (b - a) * delta");
         this->visible_chunk[0] = 0;
         this->visible_chunk[1] = this->text_chunk_list.size();
     }
@@ -284,11 +298,12 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     bool motion {ekg::input::motion()};
 
     if (this->flag.hovered && pressed) {
-        this->flag.focused = true;
+        ekg::set(this->flag.focused, this->flag.hovered);
 
         this->check_cursor_text_bounding();
         ekg::reset(ekg::core->get_ui_timing());
         ekg::dispatch(ekg::env::redraw);
+        ekg::dispatch(ekg::env::swap);
 
         if (!this->is_high_frequency) {
             ekg::update_high_frequency(this);
@@ -296,12 +311,33 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     }
 
     if (!this->flag.hovered && (released || pressed)) {
-        this->flag.focused = false;
-        this->flag.absolute = false;
+        ekg::set(this->flag.focused, false);
     }
 
     if (!this->flag.focused) {
         return;
+    }
+
+    if (ekg::input::pressed("textbox-action-up")) {
+        this->move_cursor(0, -1);
+    } else if (ekg::input::pressed("textbox-action-down")) {
+        this->move_cursor(0, 1);
+    }
+
+    if (ekg::input::pressed("textbox-action-left")) {
+        this->move_cursor(-1, 0);
+    } else if (ekg::input::pressed("textbox-action-right")) {
+        this->move_cursor(1, 0);
+    }
+
+    if (ekg::input::pressed("textbox-action-delete-left")) {
+        this->process_text("backspace", ekg::ui::textbox_widget::action::erasetext, -1);
+    } else if (ekg::input::pressed("textbox-action-delete-right")) {
+        this->process_text("delete", ekg::ui::textbox_widget::action::erasetext, 1);
+    }
+
+    if (ekg::input::pressed("textbox-action-break-line")) {
+        this->process_text("return", ekg::ui::textbox_widget::action::breakline, 1);
     }
 
     switch (sdl_event.type) {
@@ -309,30 +345,8 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         switch (sdl_event.key.keysym.sym) {
         case SDLK_ESCAPE:
             this->flag.focused = false;
-            this->flag.absolute = false;
-            break;
-        case SDLK_BACKSPACE:
-            this->process_text("backspace", ekg::ui::textbox_widget::action::erasetext, -1);
-        case SDLK_DELETE:
-            this->process_text("delete", ekg::ui::textbox_widget::action::erasetext, 1);
-            break;
-        case SDLK_LEFT:
-            this->move_cursor(-1, 0);
-            break;
-        case SDLK_RIGHT:
-            this->move_cursor(1, 0);
-            break;
-        case SDLK_UP:
-            this->move_cursor(0, -1);
-            break;
-        case SDLK_DOWN:
-            this->move_cursor(0, 1);
             break;
         default:
-            if (sdl_event.key.keysym.sym == SDLK_RETURN2 || sdl_event.key.keysym.sym == SDLK_RETURN || sdl_event.key.keysym.sym == SDLK_KP_ENTER) {
-                this->process_text("return", ekg::ui::textbox_widget::action::breakline, 1);
-            }
-
             break;
         }
 
@@ -425,14 +439,11 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         x = this->text_offset + this->scroll[0];
         text_size = text.size();
 
-        if (text_size == 0 && this->cursor[0] == total_it && this->cursor[0] == this->cursor[1]) {
+        if (!render_cursor && text_size == 0 && this->cursor[2] == it_chunk && this->cursor[0] == this->cursor[1]) {
             cursor_pos.x = x;
             cursor_pos.y = y;
             render_cursor = true;
-            ekg::log() << this->cursor[0] << " cursor rendering";
         }
-
-        if (text_size == 0) total_it++;
 
         for (uint64_t it {}; it < text_size; it++) {
             chars = text.at(it);
@@ -443,7 +454,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
             char_data = f_renderer.allocated_char_data[chars];
             cursor_out_of_str = it + 1 == text_size && this->cursor[0] == total_it + 1;
-            if ((cursor_out_of_str || total_it == this->cursor[0]) && this->cursor[0] == this->cursor[1] && this->cursor[2] == it_chunk) {
+            if (!render_cursor && (cursor_out_of_str || total_it == this->cursor[0]) && this->cursor[0] == this->cursor[1] && this->cursor[2] == it_chunk) {
                 cursor_pos.x = x + (char_data.wsize * cursor_out_of_str);
                 cursor_pos.y = y;
                 render_cursor = true;

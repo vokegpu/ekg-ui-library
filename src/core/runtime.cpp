@@ -612,12 +612,13 @@ void ekg::runtime::prepare_ui_env() {
     /* end of popup input binds */
 
     /* start of text input binds */
-    this->input_service.bind("textbox-action-delete-left", "backspace");
     this->input_service.bind("textbox-action-select-all", "lctrl+a");
     this->input_service.bind("textbox-action-select-all", "finger-hold");
     this->input_service.bind("textbox-action-select-all", "mouse-1-double");
+    this->input_service.bind("textbox-action-delete-left", "backspace");
     this->input_service.bind("textbox-action-delete-right", "delete");
     this->input_service.bind("textbox-action-break-line", "return");
+    this->input_service.bind("textbox-action-break-line", "keypad enter");
     this->input_service.bind("textbox-action-up", "up");
     this->input_service.bind("textbox-action-down", "down");
     this->input_service.bind("textbox-action-right", "right");

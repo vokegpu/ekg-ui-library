@@ -58,42 +58,44 @@ int32_t main(int, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
+
     for (int32_t it {}; it < 1; it++) {
-        auto frame {ekg::frame("text sampler", {20 + it, 30}, {300, 200})};
-        frame->set_drag(ekg::dock::top);
-        frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
+        //auto frame {ekg::frame("text sampler", {20 + it, 30}, {300, 200})};
+        //frame->set_drag(ekg::dock::top);
+        //frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-        auto fillnext = ekg::dock::fill | ekg::dock::next;
+        //auto fillnext = ekg::dock::fill | ekg::dock::next;
 
-        auto slider = ekg::slider("Button 1", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
-        slider->set_text_align(ekg::dock::center);
-        slider->set_precision(23);
+        //auto slider = ekg::slider("Button 1", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
+        //slider->set_text_align(ekg::dock::center);
+        //slider->set_precision(23);
 
-        ekg::checkbox("", ekg::dock::fill)->set_box_align(ekg::dock::center);
-        ekg::slider("Button 3", 34.0f, 0.0f, 200.0f, fillnext)->set_text_align(ekg::dock::center);
-        ekg::button("Button 4.1", ekg::dock::next)->set_text_align(ekg::dock::center | ekg::dock::right);
-        ekg::button("Button 4.2")->set_text_align(ekg::dock::center);
-        ekg::button("Button 4.3", ekg::dock::fill)->set_text_align(ekg::dock::center);
-        ekg::button("Button 3", ekg::dock::next);
-        ekg::label("cAt", ekg::dock::fill)->set_text_align(ekg::dock::center);
-        ekg::button("Button 3.66", ekg::dock::fill);
-        ekg::button("Button .", ekg::dock::next);
-        
-        ekg::button("Button 4", fillnext);
-        ekg::button("Button 5");
-        ekg::button("Button 6", ekg::dock::next);
+        //ekg::checkbox("", ekg::dock::fill)->set_box_align(ekg::dock::center);
+        //ekg::slider("Button 3", 34.0f, 0.0f, 200.0f, fillnext)->set_text_align(ekg::dock::center);
+        //ekg::button("Button 4.1", ekg::dock::next)->set_text_align(ekg::dock::center | ekg::dock::right);
+        //ekg::button("Button 4.2")->set_text_align(ekg::dock::center);
+        //ekg::button("Button 4.3", ekg::dock::fill)->set_text_align(ekg::dock::center);
+        //ekg::button("Button 3", ekg::dock::next);
+        //ekg::label("cAt", ekg::dock::fill)->set_text_align(ekg::dock::center);
+        //ekg::button("Button 3.66", ekg::dock::fill);
+        //ekg::button("Button .", ekg::dock::next);
+        //
+        //ekg::button("Button 4", fillnext);
+        //ekg::button("Button 5");
+        //ekg::button("Button 6", ekg::dock::next);
+        //ekg::popgroup();
 
         auto frame2 {ekg::frame("text sampler", {20 + it, 30}, {400, 400})};
         frame2->set_drag(ekg::dock::top);
         frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-        ekg::textbox("Search", "Text Sampler Cat", ekg::dock::fill)->set_scaled_height(6);
-        ekg::button("Button 2", fillnext);
-        ekg::button("Button 2.1", ekg::dock::fill);
-        ekg::button("Button 2.2", fillnext);
-        ekg::button("Button 2.3");
-        ekg::button("Button 3", ekg::dock::next);
-        ekg::button("Button 4");
+        ekg::textbox("Search", "Text Sampler Cat", ekg::dock::fill | ekg::dock::next)->set_scaled_height(21);
+        //ekg::button("Button 2", fillnext);
+        //ekg::button("Button 2.1", ekg::dock::fill);
+        //ekg::button("Button 2.2", fillnext);
+        //ekg::button("Button 2.3");
+        //ekg::button("Button 3", ekg::dock::next);
+        //ekg::button("Button 4");
     }
 
     // ekg::button("Button 7", ekg::dock::right);
