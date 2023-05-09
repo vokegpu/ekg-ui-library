@@ -30,18 +30,47 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
     float text_width {};
     ekg::char_data char_data {};
 
-    for (const char &chars : text) {
-        if (this->ft_bool_kerning && this->ft_uint_previous && chars) {
-            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, chars, 0, &ft_vec);
+    char32_t ui32char {};
+    uint8_t ui8char {};
+    std::string utf8string {};
+    size_t stringsize {};
+
+    for (size_t it {}; it < text.size(); it++) {
+        ui8char = static_cast<uint8_t>(text.at(it));
+        ui32char = 0;
+        stringsize = 0;
+
+        if (ui8char <= 0x7F) {
+            stringsize++;
+            ui32char = static_cast<char32_t>(ui8char);
+        } else if ((ui8char & 0xE0) == 0xC0) {
+            stringsize++;
+            utf8string = text.substr(it, it + 1);
+            ui32char = ekg::char32str(utf8string);
+            it++;
+        } else if ((ui8char & 0xF0) == 0xE0) {
+            stringsize++;
+            utf8string = text.substr(it, it + 2);
+            ui32char = ekg::char32str(utf8string);
+            it += 2;
+        } else if ((ui8char & 0xF8) == 0xF0) {
+            stringsize++;
+            utf8string = text.substr(it, it + 3);
+            ui32char = ekg::char32str(utf8string);
+            it += 3;
+        }
+
+        if (this->ft_bool_kerning && this->ft_uint_previous && ui32char) {
+            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32char, 0, &ft_vec);
             start_x += static_cast<float>(ft_vec.x >> 6);
         }
 
-        char_data = this->allocated_char_data[chars];
+        char_data = this->allocated_char_data[ui32char];
 
         render_x = start_x + char_data.left;
         start_x += char_data.wsize;
 
-        this->ft_uint_previous = chars;
+        this->ft_uint_previous = ui32char;
         text_width = render_x + char_data.w;
     }
 
@@ -88,7 +117,7 @@ void ekg::draw::font_renderer::reload() {
     this->ft_bool_kerning = FT_HAS_KERNING(this->ft_face);
     this->ft_glyph_slot = this->ft_face->glyph;
 
-    for (uint8_t char_codes = 0; char_codes < 128; char_codes++) {
+    for (char32_t char_codes {}; char_codes < 512; char_codes++) {
         if (FT_Load_Char(this->ft_face, char_codes, FT_LOAD_RENDER)) {
             continue;
         }
@@ -114,7 +143,7 @@ void ekg::draw::font_renderer::reload() {
 
     float offset {};
 
-    for (uint8_t char_codes = 0; char_codes < 128; char_codes++) {
+    for (char32_t char_codes {}; char_codes < 512; char_codes++) {
         if (FT_Load_Char(this->ft_face, char_codes, FT_LOAD_RENDER)) {
             continue;
         }
@@ -178,13 +207,42 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
 
     data.factor = 1;
 
-    for (const char &chars : text) {
-        if (this->ft_bool_kerning && this->ft_uint_previous && chars) {
-            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, chars, 0, &this->ft_vector_previous_char);
+    char32_t ui32char {};
+    uint8_t ui8char {};
+    std::string utf8string {};
+    size_t stringsize {};
+
+    for (size_t it {}; it < text.size(); it++) {
+        ui8char = static_cast<uint8_t>(text.at(it));
+        ui32char = 0;
+        stringsize = 0;
+
+        if (ui8char <= 0x7F) {
+            stringsize++;
+            ui32char = static_cast<char32_t>(ui8char);
+        } else if ((ui8char & 0xE0) == 0xC0) {
+            stringsize++;
+            utf8string = text.substr(it, it + 1);
+            ui32char = ekg::char32str(utf8string);
+            it++;
+        } else if ((ui8char & 0xF0) == 0xE0) {
+            stringsize++;
+            utf8string = text.substr(it, it + 2);
+            ui32char = ekg::char32str(utf8string);
+            it += 2;
+        } else if ((ui8char & 0xF8) == 0xF0) {
+            stringsize++;
+            utf8string = text.substr(it, it + 3);
+            ui32char = ekg::char32str(utf8string);
+            it += 3;
+        }
+
+        if (this->ft_bool_kerning && this->ft_uint_previous && ui32char) {
+            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32char, 0, &this->ft_vector_previous_char);
             x += static_cast<float>(this->ft_vector_previous_char.x >> 6);
         }
 
-        char_data = this->allocated_char_data[chars];
+        char_data = this->allocated_char_data[ui32char];
 
         vertices.x = x + char_data.left;
         vertices.y = y + this->full_height - char_data.top;
@@ -211,8 +269,8 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
         this->allocator->coord2f(coordinates.x, coordinates.y);
 
         x += char_data.wsize;
-        this->ft_uint_previous = chars;
-        data.factor += static_cast<int32_t>(x + chars);
+        this->ft_uint_previous = ui32char;
+        data.factor += static_cast<int32_t>(x + ui32char);
     }
 
     this->allocator->bind_texture(this->texture);

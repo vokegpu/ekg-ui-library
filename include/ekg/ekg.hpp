@@ -17,6 +17,7 @@
 
 #include "ekg/core/runtime.hpp"
 #include "ekg/util/util_event.hpp"
+#include "ekg/util/env.hpp"
 
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ui/label/ui_label.hpp"

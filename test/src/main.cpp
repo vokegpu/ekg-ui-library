@@ -13,11 +13,21 @@
  */
 
 #include <ekg/ekg.hpp>
+#include <string>
+#include <codecvt>
 
-/**
+struct textchunk {
+    size_t size {};
+    std::string text {};
+};
+
+
+
+/*
  * Created by Rina.
- **/
-int32_t main(int, char**) {
+ */
+int32_t main(int32_t, char**) {
+    std::cout << ekg::utf8length("´´´") << std::endl;
     ekg::log() << "EKG User interface library demo starting";
 
     int32_t root_width {1280};
@@ -85,12 +95,12 @@ int32_t main(int, char**) {
         //ekg::button("Button 6", ekg::dock::next);
         //ekg::popgroup();
 
-        auto frame2 {ekg::frame("text sampler", {20 + it, 30}, {400, 400})};
+        auto frame2 {ekg::frame("text sampler", {20, 30}, {400, 400})};
         frame2->set_drag(ekg::dock::top);
         frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
         ekg::textbox("Search", "Text Sampler Cat", ekg::dock::fill | ekg::dock::next)->set_scaled_height(21);
-        //ekg::button("Button 2", fillnext);
+        //ekg::label("não", ekg::dock::fill | ekg::dock::next);
         //ekg::button("Button 2.1", ekg::dock::fill);
         //ekg::button("Button 2.2", fillnext);
         //ekg::button("Button 2.3");

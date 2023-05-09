@@ -22,6 +22,145 @@ bool ekg::debug {};
 int32_t ekg::hovered::id {};
 ekg::type ekg::hovered::type {};
 
+std::string ekg::utf8char32(char32_t ui32char) {
+    std::string result {};
+
+    if (ui32char < 0x80) {
+        result += static_cast<char>(ui32char);
+    } else if (ui32char < 0x800) {
+        result += static_cast<char>(0xC0 | (ui32char >> 6));
+        result += static_cast<char>(0x80 | (ui32char & 0x3F));
+    } else if (ui32char < 0x10000) {
+        result += static_cast<char>(0xE0 | (ui32char >> 12));
+        result += static_cast<char>(0x80 | ((ui32char >> 6) & 0x3F));
+        result += static_cast<char>(0x80 | (ui32char & 0x3F));
+    } else if (ui32char < 0x110000) {
+        result += static_cast<char>(0xF0 | (ui32char >> 18));
+        result += static_cast<char>(0x80 | ((ui32char >> 12) & 0x3F));
+        result += static_cast<char>(0x80 | ((ui32char >> 6) & 0x3F));
+        result += static_cast<char>(0x80 | (ui32char & 0x3F));
+    }
+
+    return result;
+}
+
+char32_t ekg::char32str(std::string_view string) {
+    char32_t value {};
+    size_t bytesread {};
+    uint8_t ui8char {static_cast<uint8_t>(string.at(0))};
+
+    if (ui8char <= 0x7F) {
+        value = ui8char;
+        bytesread = 1;
+    } else if (ui8char <= 0xDF) {
+        value = ui8char & 0x1F;
+        bytesread = 2;
+    } else if (ui8char <= 0xEF) {
+        value = ui8char & 0x0F;
+        bytesread = 3;
+    } else {
+        value = ui8char & 0x07;
+        bytesread = 4;
+    }
+
+    for (size_t it {1}; it < bytesread; ++it) {
+        ui8char = static_cast<uint8_t>(string.at(it));
+        value = (value << 6) | (ui8char & 0x3F);
+    }
+
+    return value > 512 ? 32 : value;
+}
+
+size_t ekg::utf8length(std::string_view utf8tstring) {
+    if (utf8tstring.empty()) {
+        return 0;
+    }
+
+    size_t stringsize {};
+    uint8_t ui8char {};
+
+    for (size_t it {}; it < utf8tstring.size(); it++) {
+        ui8char = static_cast<uint8_t>(utf8tstring.at(it));
+        if (ui8char <= 0x7F) {
+            stringsize++;
+        } else if ((ui8char & 0xE0) == 0xC0) {
+            stringsize++;
+            it++;
+        } else if ((ui8char & 0xF0) == 0xE0) {
+            stringsize++;
+            it += 2;
+        } else if ((ui8char & 0xF8) == 0xF0) {
+            stringsize++;
+            it += 3;
+        }
+    }
+
+    return stringsize;
+}
+
+std::string ekg::utf8substr(std::string_view string, size_t a, size_t b) {
+    size_t stringsize {ekg::utf8length(string)};
+    std::string substred {};
+
+    if (stringsize == string.size()) {
+        substred = string.substr(a, b);
+    } else {
+        if (b <= a) {
+            b += a;
+        }
+
+        uint8_t ui8char {};
+        bool indexafilled {};
+        bool indexbfilled {};
+
+        size_t index {};
+        size_t sumindex {};
+        size_t indexa {};
+        size_t indexb {};
+
+        std::string astring {};
+        std::string bstring {};
+
+        for (size_t it {}; it < string.size(); it++) {
+            ui8char = static_cast<uint8_t>(string.at(it));
+
+            if (ui8char <= 0x7F) {
+                sumindex = 0;
+            } else if ((ui8char & 0xE0) == 0xC0) {
+                sumindex = 1;
+            } else if ((ui8char & 0xF0) == 0xE0) {
+                sumindex = 2;
+            } else if ((ui8char & 0xF8) == 0xF0) {
+                sumindex = 3;
+            }
+
+            if (!indexafilled && index == a) {
+                indexa = it;
+                indexafilled = true;
+            }
+
+            if (!indexbfilled && index == b) {
+                indexb = it;
+                indexbfilled = true;
+                break;
+            }
+
+            if (indexafilled) {
+                size_t itsub {};
+                while (itsub < (sumindex + 1) || itsub == 0) {
+                    substred += string.at(it + (itsub++));
+                }
+            }
+
+            index++;
+            it += sumindex;
+        }
+
+    }
+
+    return substred;
+}
+
 bool ekg::bitwise::contains(uint16_t target, uint16_t flags) {
     return target & (flags);
 }

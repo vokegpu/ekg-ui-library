@@ -92,6 +92,11 @@ namespace ekg {
     }
     };
 
+    std::string utf8char32(char32_t);
+    std::string utf8substr(std::string_view, size_t, size_t);
+    size_t utf8length(std::string_view);
+    char32_t char32str(std::string_view);
+
     float lerp(float, float, float);
     bool reach(ekg::timing&, uint64_t);
     bool reset(ekg::timing&);
