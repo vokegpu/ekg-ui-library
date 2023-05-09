@@ -121,6 +121,7 @@ std::string ekg::utf8substr(std::string_view string, size_t a, size_t b) {
         size_t sumindex {};
         size_t indexa {};
         size_t indexb {};
+        size_t itsub {};
 
         std::string astring {};
         std::string bstring {};
@@ -150,7 +151,7 @@ std::string ekg::utf8substr(std::string_view string, size_t a, size_t b) {
             }
 
             if (indexafilled) {
-                size_t itsub {};
+                itsub = 0;
                 while ((itsub < (sumindex + 1) || itsub == 0)) {
                     substred += string.at(it + (itsub++));
                 }

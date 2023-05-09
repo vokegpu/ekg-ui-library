@@ -75,7 +75,7 @@ int32_t main(int32_t, char**) {
         //frame->set_drag(ekg::dock::top);
         //frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-        //auto fillnext = ekg::dock::fill | ekg::dock::next;
+        auto fillnext = ekg::dock::fill | ekg::dock::next;
 
         //auto slider = ekg::slider("Button 1", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
         //slider->set_text_align(ekg::dock::center);
@@ -100,13 +100,13 @@ int32_t main(int32_t, char**) {
         frame2->set_drag(ekg::dock::top);
         frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-        ekg::textbox("Search", "Text Sampler Cat", ekg::dock::fill | ekg::dock::next)->set_scaled_height(21);
-        //ekg::label("não", ekg::dock::fill | ekg::dock::next);
-        //ekg::button("Button 2.1", ekg::dock::fill);
-        //ekg::button("Button 2.2", fillnext);
-        //ekg::button("Button 2.3");
-        //ekg::button("Button 3", ekg::dock::next);
-        //ekg::button("Button 4");
+        ekg::textbox("Search", "Text Sampler Cat", ekg::dock::fill | ekg::dock::next)->set_scaled_height(3);
+        ekg::label("não", ekg::dock::fill | ekg::dock::next);
+        ekg::button("Button 2.1", ekg::dock::fill);
+        ekg::button("Button 2.2", fillnext);
+        ekg::button("Button 2.3");
+        ekg::button("Button 3", ekg::dock::next);
+        ekg::button("Button 4");
     }
 
     // ekg::button("Button 7", ekg::dock::right);
@@ -136,11 +136,11 @@ int32_t main(int32_t, char**) {
                 }
 
                 default: {
+                    ekg::event(sdl_event);
                     if (ekg::listen(event, sdl_event)) {
                         ekg::log() << event.tag + " " + event.value + " " << event.type;
                     }
 
-                    ekg::event(sdl_event);
                     if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
                         auto main = ekg::popup("file", {"---Add", "Cut", "Copy", "---Paste", "---Select All", "Actions"});
                         auto three = ekg::popup("file-add", {"Cube", "Plane", "Sphere", "Hexagon", "Hexagon"});

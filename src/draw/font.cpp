@@ -60,7 +60,7 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
             it += 3;
         }
 
-        if (this->ft_bool_kerning && this->ft_uint_previous && ui32char) {
+        if (this->ft_bool_kerning && this->ft_uint_previous) {
             FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32char, 0, &ft_vec);
             start_x += static_cast<float>(ft_vec.x >> 6);
         }
@@ -236,13 +236,12 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
             it += 3;
         }
 
-        if (this->ft_bool_kerning && this->ft_uint_previous && ui32char) {
+        if (this->ft_bool_kerning && this->ft_uint_previous) {
             FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32char, 0, &this->ft_vector_previous_char);
             x += static_cast<float>(this->ft_vector_previous_char.x >> 6);
         }
 
         char_data = this->allocated_char_data[ui32char];
-
         vertices.x = x + char_data.left;
         vertices.y = y + this->full_height - char_data.top;
 

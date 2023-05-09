@@ -4,6 +4,23 @@ The official runtime ekg ui library source code.
 
 The purpose of ekg is being fully customizable, smooth and with many animations. Also perform good in low pc specs. This is the new core version of ekg, rewrite of legacy core. 
 
+![Image Text](https://github.com/vokegpu/ekg-ui-library/blob/version-core/splash/ekg-2-showcase-+textbox+utf8.png?raw=true)
+
+```c++
+auto frame2 = ekg::frame("text sampler", {20, 30}, {400, 400});
+frame2->set_drag(ekg::dock::top);
+frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
+
+auto fillnext = ekg::dock::fill | ekg::dock::next;
+ekg::textbox("Search", "Text Sampler Cat", ekg::dock::fill | ekg::dock::next)->set_scaled_height(3);
+ekg::label("não", ekg::dock::fill | ekg::dock::next);
+ekg::button("Button 2.1", ekg::dock::fill);
+ekg::button("Button 2.2", fillnext);
+ekg::button("Button 2.3");
+ekg::button("Button 3", ekg::dock::next);
+ekg::button("Button 4");
+```
+
 # Running
 
 C++ compiler(s) support: GNU  
@@ -61,26 +78,26 @@ int32_t main(int32_t, char**) {
 }
 ```
 
-```cpp  
-for (int i {}; i < 1; i++) {
-  auto frame {ekg::frame("hello", {80, 80}, {200, 200})};
-  frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
-  frame->set_drag(ekg::dock::top);
+![Image Text](https://github.com/vokegpu/ekg-ui-library/blob/version-core/splash/ekg-2-showcase-popup.png?raw=true)
 
-  ekg::label("DeathWishes.com", ekg::dock::left | ekg::dock::top);
-  ekg::checkbox("", ekg::dock::left | ekg::dock::top)->set_box_align(ekg::dock::center | ekg::dock::left);
-  ekg::button("Register", ekg::dock::left | ekg::dock::top | ekg::dock::next);
-  ekg::button("Login", ekg::dock::left | ekg::dock::top | ekg::dock::next);
-  ekg::button("User List", ekg::dock::left | ekg::dock::top | ekg::dock::next);
-  ekg::button("Exit", ekg::dock::left | ekg::dock::top | ekg::dock::next)->set_callback(new ekg::cpu::event {"exit-callback", nullptr, [](void *pdata) {
-    SDL_Event custom_sdl_event {};
-    custom_sdl_event.type = SDL_QUIT;
-    SDL_PushEvent(&custom_sdl_event);
-  }});
+```cpp
+while (SDL_PollEvent(&sdlevent)) {
+  ekg::event(sdl_event);
+
+  if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
+    auto main = ekg::popup("file", {"---Add", "Cut", "Copy", "---Paste", "---Select All", "Actions"});
+    auto three = ekg::popup("file-add", {"Cube", "Plane", "Sphere", "Hexagon", "Hexagon"});
+    auto hexagon = ekg::popup("file-add-hexagon", {"Tree D", "Plane", "Double Pairs Daggers"});
+    auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
+  
+    if (main != nullptr && three != nullptr) {
+      main->append_linked("Add", three);
+      main->append_linked("Actions", game);
+      three->append_linked("Hexagon", hexagon);
+    }
+  }
 }
 ```
-
-![Image Text](https://github.com/vokegpu/ekg-ui-library/blob/version-core/splash/splash-showcase-4-1.0.0.png?raw=true)
 
 There is more things, theses steps are the official way to setup.
 

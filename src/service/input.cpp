@@ -42,6 +42,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
 
                     this->complete_with_units(string_builder, key_name);
                     this->callback(string_builder, true);
+                    this->input_released_list.push_back(string_builder);
 
                     if (string_builder != key_name && !this->contains_unit(string_builder)) {
                         this->special_keys_unit_pressed.push_back(string_builder);
@@ -62,11 +63,15 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
                     this->special_keys_sdl_map[sdl_event.key.keysym.sym] = "";
                     this->special_keys_released.emplace_back(ekg::service::input::special_keys_name_map[key_name]);
                 } else {
-                    std::string string_builder{};
+                    std::string string_builder {};
                     std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
 
                     this->complete_with_units(string_builder, key_name);
                     this->callback(string_builder, false);
+
+                    string_builder += "-up";
+                    this->callback(string_builder, true);
+                    this->input_released_list.push_back(string_builder);
                 }
 
                 break;

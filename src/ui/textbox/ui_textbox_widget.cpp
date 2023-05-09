@@ -43,25 +43,31 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
             this->cursor[3] += x;
         }
 
-        if (y < 0 && this->cursor[2] > 0) {
-            y = abs(y);
+        if (y < 0) {
+            if (this->cursor[2] == 0) {
+                this->cursor[0] = 0;
+                this->cursor[3] = 0;
+            } else {
+                this->cursor[2]--;
+                emplace_text_size = (int64_t) ekg::utf8length(this->get_cursor_emplace_text());
 
-            this->cursor[2]--;
-            emplace_text_size = (int64_t) ekg::utf8length(this->get_cursor_emplace_text());
+                this->cursor[3] = this->cursor[4];
+                this->cursor[3] = ekg::max(this->cursor[3], (int64_t) emplace_text_size);
+                this->cursor[0] = base_it - (emplace_text_size - this->cursor[3]); 
+            }
+        } else if (y > 0) {
+            if (text_chunk_it_bounding_size) {
+                this->cursor[0] = base_it + emplace_text_size;
+                this->cursor[3] = emplace_text_size;
+            } else {
+                this->cursor[0] = (base_it + emplace_text_size);
+                this->cursor[2]++;
 
-            this->cursor[3] = this->cursor[4];
-            this->cursor[3] = ekg::max(this->cursor[3], (int64_t) emplace_text_size);
-            this->cursor[0] = base_it - (emplace_text_size - this->cursor[3]);
-        } else if (y > 0 && !text_chunk_it_bounding_size) {
-            y = abs(y);
-
-            this->cursor[0] = (base_it + emplace_text_size);
-            this->cursor[2]++;
-
-            emplace_text_size = (int64_t) ekg::utf8length(this->get_cursor_emplace_text());
-            this->cursor[3] = this->cursor[4];
-            this->cursor[3] = ekg::max(this->cursor[3], (int64_t) emplace_text_size);
-            this->cursor[0] += this->cursor[3];
+                emplace_text_size = (int64_t) ekg::utf8length(this->get_cursor_emplace_text());
+                this->cursor[3] = this->cursor[4];
+                this->cursor[3] = ekg::max(this->cursor[3], (int64_t) emplace_text_size);
+                this->cursor[0] += this->cursor[3];        
+            }
         }
 
         if (this->cursor[0] < base_it && this->cursor[2] > 0 && x != 0) {
@@ -121,6 +127,21 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
                 emplace_text = ekg::utf8substr(emplace_text, 0, it) + ekg::utf8substr(emplace_text, it + 1, ekg::utf8length(emplace_text));
                 this->move_cursor(-1, 0);
             }
+        } else if (this->cursor[0] == this->cursor[1] && direction > 0) {
+            std::string &emplace_text {this->get_cursor_emplace_text()};
+            int64_t emplace_text_size {(int64_t) ekg::utf8length(emplace_text)};
+            bool text_chunk_it_bounding_size {this->cursor[2] + 1 == this->text_chunk_list.size()};
+
+            if (this->cursor[3] >= emplace_text_size && !text_chunk_it_bounding_size) {
+                emplace_text += this->text_chunk_list.at(this->cursor[2] + 1);
+                this->text_chunk_list.erase(this->text_chunk_list.begin() + this->cursor[2] + 1);
+            } else if (this->cursor[3] < emplace_text_size) {
+                int64_t it {this->cursor[3]};
+                emplace_text = ekg::utf8substr(emplace_text, 0, it) + ekg::utf8substr(emplace_text, it + 1, ekg::utf8length(emplace_text));
+            }
+
+            ekg::reset(ekg::core->get_ui_timing());
+            ekg::dispatch(ekg::env::redraw);
         }
 
         break;
@@ -344,54 +365,35 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         return;
     }
 
-    bool priority {};
     switch (sdl_event.type) {
+    case SDL_TEXTINPUT:
+        this->process_text(sdl_event.text.text, ekg::ui::textbox_widget::action::addtext, 1);
+        break;
     case SDL_KEYDOWN:
         switch (sdl_event.key.keysym.sym) {
         case SDLK_ESCAPE:
-            this->flag.focused = false;
+            ekg::set(this->flag.focused, false);
             break;
         default:
+            if (ekg::input::pressed("textbox-action-up")) {
+                this->move_cursor(0, -1);
+            } else if (ekg::input::pressed("textbox-action-down")) {
+                this->move_cursor(0, 1);
+            } else if (ekg::input::pressed("textbox-action-left")) {
+                this->move_cursor(-1, 0);
+            } else if (ekg::input::pressed("textbox-action-right")) {
+                this->move_cursor(1, 0);
+            } else if (ekg::input::pressed("textbox-action-delete-left")) {
+                this->process_text("backspace", ekg::ui::textbox_widget::action::erasetext, -1);
+            } else if (ekg::input::pressed("textbox-action-delete-right")) {
+                this->process_text("delete", ekg::ui::textbox_widget::action::erasetext, 1);
+            } else if (ekg::input::pressed("textbox-action-break-line")) {
+                this->process_text("return", ekg::ui::textbox_widget::action::breakline, 1);
+            }
             break;
         }
 
         break;
-    case SDL_TEXTINPUT:
-        this->process_text(sdl_event.text.text, ekg::ui::textbox_widget::action::addtext, 1);
-        priority = true;
-        break;
-    }
-
-    if (priority) {
-        return;
-    }
-
-    if (ekg::input::pressed("textbox-action-up")) {
-        this->move_cursor(0, -1);
-    }
-
-    if (ekg::input::pressed("textbox-action-down")) {
-        this->move_cursor(0, 1);
-    }
-
-    if (ekg::input::pressed("textbox-action-left")) {
-        this->move_cursor(-1, 0);
-    }
-
-    if (ekg::input::pressed("textbox-action-right")) {
-        this->move_cursor(1, 0);
-    }
-
-    if (ekg::input::pressed("textbox-action-delete-left")) {
-        this->process_text("backspace", ekg::ui::textbox_widget::action::erasetext, -1);
-    }
-
-    if (ekg::input::pressed("textbox-action-delete-right")) {
-        this->process_text("delete", ekg::ui::textbox_widget::action::erasetext, 1);
-    }
-
-    if (ekg::input::pressed("textbox-action-break-line")) {
-        this->process_text("return", ekg::ui::textbox_widget::action::breakline, 1);
     }
 }
 
