@@ -99,8 +99,12 @@ size_t ekg::utf8length(std::string_view utf8tstring) {
 }
 
 std::string ekg::utf8substr(std::string_view string, size_t a, size_t b) {
-    size_t stringsize {ekg::utf8length(string)};
     std::string substred {};
+    if (string.empty()) {
+        return substred;
+    }
+
+    size_t stringsize {ekg::utf8length(string)};
 
     if (stringsize == string.size()) {
         substred = string.substr(a, b);
@@ -147,7 +151,7 @@ std::string ekg::utf8substr(std::string_view string, size_t a, size_t b) {
 
             if (indexafilled) {
                 size_t itsub {};
-                while (itsub < (sumindex + 1) || itsub == 0) {
+                while ((itsub < (sumindex + 1) || itsub == 0)) {
                     substred += string.at(it + (itsub++));
                 }
             }

@@ -45,17 +45,17 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
             ui32char = static_cast<char32_t>(ui8char);
         } else if ((ui8char & 0xE0) == 0xC0) {
             stringsize++;
-            utf8string = text.substr(it, it + 1);
+            utf8string = text.substr(it, 2);
             ui32char = ekg::char32str(utf8string);
             it++;
         } else if ((ui8char & 0xF0) == 0xE0) {
             stringsize++;
-            utf8string = text.substr(it, it + 2);
+            utf8string = text.substr(it, 3);
             ui32char = ekg::char32str(utf8string);
             it += 2;
         } else if ((ui8char & 0xF8) == 0xF0) {
             stringsize++;
-            utf8string = text.substr(it, it + 3);
+            utf8string = text.substr(it, 4);
             ui32char = ekg::char32str(utf8string);
             it += 3;
         }
@@ -66,7 +66,6 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
         }
 
         char_data = this->allocated_char_data[ui32char];
-
         render_x = start_x + char_data.left;
         start_x += char_data.wsize;
 
@@ -222,17 +221,17 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
             ui32char = static_cast<char32_t>(ui8char);
         } else if ((ui8char & 0xE0) == 0xC0) {
             stringsize++;
-            utf8string = text.substr(it, it + 1);
+            utf8string = text.substr(it, 2);
             ui32char = ekg::char32str(utf8string);
             it++;
         } else if ((ui8char & 0xF0) == 0xE0) {
             stringsize++;
-            utf8string = text.substr(it, it + 2);
+            utf8string = text.substr(it, 3);
             ui32char = ekg::char32str(utf8string);
             it += 2;
         } else if ((ui8char & 0xF8) == 0xF0) {
             stringsize++;
-            utf8string = text.substr(it, it + 3);
+            utf8string = text.substr(it, 4);
             ui32char = ekg::char32str(utf8string);
             it += 3;
         }

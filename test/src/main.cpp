@@ -27,7 +27,8 @@ struct textchunk {
  * Created by Rina.
  */
 int32_t main(int32_t, char**) {
-    std::cout << ekg::utf8length("´´´") << std::endl;
+    std::string utf8pompom {"𒁑𒁕𒈢𒋟𒈙"};
+    std::cout << U'𒁑' << std::endl;
     ekg::log() << "EKG User interface library demo starting";
 
     int32_t root_width {1280};

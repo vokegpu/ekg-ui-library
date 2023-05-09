@@ -98,7 +98,7 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
     switch (action) {
     case ekg::ui::textbox_widget::action::addtext: {
         std::string &emplace_text {this->get_cursor_emplace_text()};
-        if (this->cursor[0] == this->cursor[1]) {
+        if (this->cursor[0] == this->cursor[1] && !text.empty()) {
             int64_t it {this->cursor[3]};
             emplace_text = ekg::utf8substr(emplace_text, 0, it) + text.data() + ekg::utf8substr(emplace_text, it, ekg::utf8length(emplace_text));
             this->move_cursor(1, 0);
@@ -149,7 +149,7 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
 }
 
 std::string &ekg::ui::textbox_widget::get_cursor_emplace_text() {
-    if (this->cursor[2] > this->text_chunk_list.size()) {
+    if (this->cursor[2] > this->text_chunk_list.size() || this->text_chunk_list.empty()) {
         return this->text_chunk_list.emplace_back();
     }
 
@@ -202,17 +202,17 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
             if (ui8char <= 0x7F) {
                 ui32char = static_cast<char32_t>(ui8char);
             } else if ((ui8char & 0xE0) == 0xC0) {
-                utf8string = text.substr(it, it + 1);
-                ui32char = ekg::char32str(utf8string);
                 indexjump = 1;
+                utf8string = text.substr(it, 2);
+                ui32char = ekg::char32str(utf8string);
             } else if ((ui8char & 0xF0) == 0xE0) {
-                utf8string = text.substr(it, it + 2);
-                ui32char = ekg::char32str(utf8string);
                 indexjump = 2;
-            } else if ((ui8char & 0xF8) == 0xF0) {
-                utf8string = text.substr(it, it + 3);
+                utf8string = text.substr(it, 3);
                 ui32char = ekg::char32str(utf8string);
+            } else if ((ui8char & 0xF8) == 0xF0) {
                 indexjump = 3;
+                utf8string = text.substr(it, 4);
+                ui32char = ekg::char32str(utf8string);
             }
 
             if (f_renderer.ft_bool_kerning && f_renderer.ft_uint_previous) {
@@ -302,7 +302,7 @@ void ekg::ui::textbox_widget::on_reload() {
 
     if (this->widget_side_text != ui->get_text()) {
         this->widget_side_text = ui->get_text();
-        this->text_chunk_list.emplace_back() = "não";
+        this->text_chunk_list.emplace_back("");
         //this->text_chunk_list.emplace_back() = "The quick brown fox jumps over the lazy dog";
         //this->text_chunk_list.emplace_back() = "The quick brown fox jumps over the lazy dog";
         //this->text_chunk_list.emplace_back() = "x * sin(a) - y * cos(a), x * cos(a) + y * sin(a)";
@@ -500,17 +500,17 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             if (ui8char <= 0x7F) {
                 ui32char = static_cast<char32_t>(ui8char);
             } else if ((ui8char & 0xE0) == 0xC0) {
-                utf8string = text.substr(it, it + 1);
-                ui32char = ekg::char32str(utf8string);
                 indexjump = 1;
+                utf8string = text.substr(it, 2);
+                ui32char = ekg::char32str(utf8string);
             } else if ((ui8char & 0xF0) == 0xE0) {
-                utf8string = text.substr(it, it + 2);
-                ui32char = ekg::char32str(utf8string);
                 indexjump = 2;
-            } else if ((ui8char & 0xF8) == 0xF0) {
-                utf8string = text.substr(it, it + 3);
+                utf8string = text.substr(it, 3);
                 ui32char = ekg::char32str(utf8string);
+            } else if ((ui8char & 0xF8) == 0xF0) {
                 indexjump = 3;
+                utf8string = text.substr(it, 4);
+                ui32char = ekg::char32str(utf8string);
             }
 
             if (f_renderer.ft_bool_kerning && f_renderer.ft_uint_previous) {
