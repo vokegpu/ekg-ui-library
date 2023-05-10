@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 namespace ekg {
     extern bool debug;
@@ -96,6 +97,8 @@ namespace ekg {
     std::string utf8substr(std::string_view, size_t, size_t);
     size_t utf8length(std::string_view);
     char32_t char32str(std::string_view);
+
+    void utf8read(std::string_view, std::vector<std::string>&);
 
     float lerp(float, float, float);
     bool reach(ekg::timing&, uint64_t);

@@ -166,6 +166,32 @@ std::string ekg::utf8substr(std::string_view string, size_t a, size_t b) {
     return substred;
 }
 
+/*
+ * This function have a potentially memory leak issue,
+ * and is very dangerous.
+ */
+void ekg::utf8read(std::string_view string, std::vector<std::string> &utf8_read) {
+    if (string.empty()) {
+        return;
+    }
+
+    std::string fragment {};
+    fragment += string;
+
+    uint64_t index {};
+    while ((index = fragment.find('\n')) < fragment.size()) {
+        if (index > 0 && fragment.at(index - 1) == '\r') {
+            utf8_read.emplace_back(fragment.substr(0, index - 1));
+        } else {
+            utf8_read.emplace_back(fragment.substr(0, index));
+        }
+
+        fragment = fragment.substr(index + 1, fragment.size());
+    }
+
+    if (!fragment.empty()) utf8_read.emplace_back(fragment);
+}
+
 bool ekg::bitwise::contains(uint16_t target, uint16_t flags) {
     return target & (flags);
 }

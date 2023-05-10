@@ -36,6 +36,7 @@ namespace ekg::ui {
         std::string &get_cursor_emplace_text();
         void process_text(std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction);
         void move_cursor(int64_t, int64_t, bool = false);
+        void unset_focus();
 
         void on_destroy() override;
         void on_reload() override;

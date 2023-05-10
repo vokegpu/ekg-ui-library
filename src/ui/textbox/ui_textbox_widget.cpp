@@ -298,6 +298,26 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
     }
 }
 
+void ekg::ui::textbox_widget::unset_focus() {
+    if (this->flag.focused) {
+        ekg::set(this->flag.focused, false);
+        auto *ui {(ekg::ui::textbox*) this->data};
+
+        std::string compatibility_text {};
+        if (!this->text_chunk_list.empty()) {
+            for (std::string &text : this->text_chunk_list) {
+                compatibility_text += text;
+                compatibility_text += '\n';
+            }
+
+            compatibility_text = compatibility_text.substr(0, compatibility_text.size() - 1);
+        }
+
+        ui->set_text(compatibility_text);
+        this->widget_side_text = compatibility_text;
+    }
+}
+
 void ekg::ui::textbox_widget::on_destroy() {
     abstract_widget::on_destroy();
 }
@@ -323,13 +343,7 @@ void ekg::ui::textbox_widget::on_reload() {
 
     if (this->widget_side_text != ui->get_text()) {
         this->widget_side_text = ui->get_text();
-        this->text_chunk_list.emplace_back("");
-        //this->text_chunk_list.emplace_back() = "The quick brown fox jumps over the lazy dog";
-        //this->text_chunk_list.emplace_back() = "The quick brown fox jumps over the lazy dog";
-        //this->text_chunk_list.emplace_back() = "x * sin(a) - y * cos(a), x * cos(a) + y * sin(a)";
-        //this->text_chunk_list.emplace_back("a + (b - a) * delta");
-        this->visible_chunk[0] = 0;
-        this->visible_chunk[1] = this->text_chunk_list.size();
+        ekg::utf8read(this->widget_side_text, this->text_chunk_list);
     }
 }
 
@@ -358,7 +372,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     }
 
     if (!this->flag.hovered && (released || pressed)) {
-        ekg::set(this->flag.focused, false);
+        this->unset_focus();
     }
 
     if (!this->flag.focused) {
@@ -372,7 +386,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     case SDL_KEYDOWN:
         switch (sdl_event.key.keysym.sym) {
         case SDLK_ESCAPE:
-            ekg::set(this->flag.focused, false);
+            this->unset_focus();
             break;
         default:
             if (ekg::input::pressed("textbox-action-up")) {

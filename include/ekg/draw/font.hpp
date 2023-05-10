@@ -55,7 +55,7 @@ namespace ekg {
             bool flag_first_time {true};
 
             ekg::gpu::allocator *allocator {};
-            ekg::char_data allocated_char_data[512] {};
+            ekg::char_data allocated_char_data[256] {};
         public:
             float get_text_width(std::string_view);
             float get_text_height();

@@ -28,8 +28,11 @@ struct textchunk {
  */
 int32_t main(int32_t, char**) {
     std::string utf8pompom {"𒁑𒁕𒈢𒋟𒈙"};
-    std::cout << U'𒁑' << std::endl;
+    ekg::log() << utf8pompom << " utf8 size: " << ekg::utf8length(utf8pompom) << " string size: " << utf8pompom.size();
     ekg::log() << "EKG User interface library demo starting";
+
+    std::string breakedlinepompom {"pom\npomn\noo!!"};
+    ekg::log() << breakedlinepompom.find('\n');
 
     int32_t root_width {1280};
     int32_t root_height {768};
@@ -69,7 +72,6 @@ int32_t main(int32_t, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-
     for (int32_t it {}; it < 1; it++) {
         //auto frame {ekg::frame("text sampler", {20 + it, 30}, {300, 200})};
         //frame->set_drag(ekg::dock::top);
@@ -100,7 +102,7 @@ int32_t main(int32_t, char**) {
         frame2->set_drag(ekg::dock::top);
         frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-        ekg::textbox("Search", "Text Sampler Cat", ekg::dock::fill | ekg::dock::next)->set_scaled_height(3);
+        ekg::textbox("Search", "Text Sampler Cat\nText Sampler Cat\n\nText Sampler Cat", ekg::dock::fill | ekg::dock::next)->set_scaled_height(3);
         ekg::label("não", ekg::dock::fill | ekg::dock::next);
         ekg::button("Button 2.1", ekg::dock::fill);
         ekg::button("Button 2.2", fillnext);

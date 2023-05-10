@@ -116,7 +116,7 @@ void ekg::draw::font_renderer::reload() {
     this->ft_bool_kerning = FT_HAS_KERNING(this->ft_face);
     this->ft_glyph_slot = this->ft_face->glyph;
 
-    for (char32_t char_codes {}; char_codes < 512; char_codes++) {
+    for (char32_t char_codes {}; char_codes < 256; char_codes++) {
         if (FT_Load_Char(this->ft_face, char_codes, FT_LOAD_RENDER)) {
             continue;
         }
@@ -142,7 +142,7 @@ void ekg::draw::font_renderer::reload() {
 
     float offset {};
 
-    for (char32_t char_codes {}; char_codes < 512; char_codes++) {
+    for (char32_t char_codes {}; char_codes < 256; char_codes++) {
         if (FT_Load_Char(this->ft_face, char_codes, FT_LOAD_RENDER)) {
             continue;
         }
