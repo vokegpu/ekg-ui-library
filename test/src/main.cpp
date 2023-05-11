@@ -21,12 +21,20 @@ struct textchunk {
     std::string text {};
 };
 
+void somedogfunction() {
+    ekg::log() << "dog doom: ";
+}
 
+void somecatfunction() {
+    return somedogfunction();
+}
 
 /*
  * Created by Rina.
  */
 int32_t main(int32_t, char**) {
+    somecatfunction();
+
     std::string utf8pompom {"𒁑𒁕𒈢𒋟𒈙"};
     ekg::log() << utf8pompom << " utf8 size: " << ekg::utf8length(utf8pompom) << " string size: " << utf8pompom.size();
     ekg::log() << "EKG User interface library demo starting";
@@ -72,16 +80,29 @@ int32_t main(int32_t, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
+    std::string textcatsampler {};
+    textcatsampler += "[EKG-INFO] dog doom: \n"
+                      "[EKG-INFO] utf8 size: 5 string size: 20\n"
+                      "[EKG-INFO] EKG User interface library demo starting\n"
+                      "[EKG-INFO] 3\n"
+                      "[EKG-INFO] GLEW initialised\n"
+                      "[EKG-INFO] Initialising EKG\n"
+                      "[EKG-INFO] GPU allocator initialised\n"
+                      "[EKG-INFO] Initialising default theme\n"
+                      "[EKG-INFO] Analysing files for themes\n"
+                      "[EKG-INFO] Preparing internal EKG core\n"
+                      "[EKG-INFO] Preparing internal user interface environment\n"
+                      "[EKG-INFO] Registering user interface input bindings\n"
+                      "[EKG-INFO] SDL version: 2.26.5\n"
+                      "[EKG-INFO] OpenGL context created\n"
+                      "[EKG-INFO] Shutdown complete - Thank you for using EKG ;) <3\n";
+
     for (int32_t it {}; it < 1; it++) {
         //auto frame {ekg::frame("text sampler", {20 + it, 30}, {300, 200})};
         //frame->set_drag(ekg::dock::top);
         //frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
         auto fillnext = ekg::dock::fill | ekg::dock::next;
-
-        //auto slider = ekg::slider("Button 1", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
-        //slider->set_text_align(ekg::dock::center);
-        //slider->set_precision(23);
 
         //ekg::checkbox("", ekg::dock::fill)->set_box_align(ekg::dock::center);
         //ekg::slider("Button 3", 34.0f, 0.0f, 200.0f, fillnext)->set_text_align(ekg::dock::center);
@@ -102,13 +123,17 @@ int32_t main(int32_t, char**) {
         frame2->set_drag(ekg::dock::top);
         frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-        ekg::textbox("Search", "Text Sampler Cat\nText Sampler Cat\n\nText Sampler Cat", ekg::dock::fill | ekg::dock::next)->set_scaled_height(3);
+        ekg::textbox("Search", textcatsampler, ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
         ekg::label("não", ekg::dock::fill | ekg::dock::next);
         ekg::button("Button 2.1", ekg::dock::fill);
         ekg::button("Button 2.2", fillnext);
         ekg::button("Button 2.3");
         ekg::button("Button 3", ekg::dock::next);
         ekg::button("Button 4");
+
+        auto slider = ekg::slider("Button 1", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
+        slider->set_text_align(ekg::dock::center);
+        slider->set_precision(23);
     }
 
     // ekg::button("Button 7", ekg::dock::right);

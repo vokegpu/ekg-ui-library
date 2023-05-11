@@ -24,12 +24,15 @@ namespace ekg::ui {
     public:
         std::vector<std::string> text_chunk_list {};
         std::string widget_side_text {};
+        ekg::rect rect_text {};
 
         int64_t visible_chunk[2] {};
         int64_t cursor[6] {};
 
-        float scroll[2] {};
+        float scroll[6] {};
         float text_offset {};
+        float text_height {};
+
         bool redraw_cursor {};
     public:
         void check_cursor_text_bounding();

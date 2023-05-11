@@ -21,6 +21,7 @@
 
 namespace ekg {
     extern bool debug;
+    extern float scrollsmooth;
 
     enum class env {
         refresh, swap, reload, synclayout, scissor, redraw, gc
