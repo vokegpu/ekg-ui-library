@@ -486,6 +486,8 @@ void ekg::runtime::prepare_tasks() {
         runtime->allocator.invoke();
         if (ekg::debug) {
             runtime->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {255, 255, 255, 255});
+        } else {
+            runtime->f_renderer_big.blit(" ", 10, 10, {255, 255, 255, 255});
         }
 
         for (ekg::ui::abstract_widget *&widgets : all) {

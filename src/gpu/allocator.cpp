@@ -208,6 +208,7 @@ void ekg::gpu::allocator::draw() {
 
     bool active_texture {}, texture_enabled {};
     ekg::gpu::scissor *scissor {};
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     GLboolean is_depth_test_previous_enable {};
     glGetBooleanv(GL_DEPTH_TEST, &is_depth_test_previous_enable);

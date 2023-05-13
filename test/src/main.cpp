@@ -129,7 +129,9 @@ int32_t main(int32_t, char**) {
         ekg::button("Button 2.2", fillnext);
         ekg::button("Button 2.3");
         ekg::button("Button 3", ekg::dock::next);
-        ekg::button("Button 4");
+        ekg::button("Button 4")->set_callback(new ekg::cpu::event {"pompom4", nullptr, [](void *p_data) {
+
+        }});
 
         auto slider = ekg::slider("Button 1", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
         slider->set_text_align(ekg::dock::center);
