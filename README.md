@@ -112,24 +112,29 @@ ekg::input::bind("custom-tag-a", "mouse-left");
 ekg::input::bind("custom-tag-a", "mouse-left-double");
 ekg::input::bind("custom-tag-b", "r");
 ekg::input::bind("custom-tag-b", "lctrl+a"); // also be sure you are keybinding in correct pattern.
-ekg::input::bind("custom-tag-c", "r");
+ekg::input::bind("custom-tag-c", "r-up");
+ekg::input::bind("custom-tag-d", "lctrl+a-up");
 ekg::input::bind("hii!! :))", "mouse-5-double"); // multiples buttons of mouse.
 
 // ... any place of your code:
 if (ekg::input::pressed("custom-tag-a")) {
-  ekg::log("you pressed a!");
+  ekg::log() << "you pressed a!";
 }
 
 if (ekg::input::pressed("custom-tag-b")) {
-  ekg::log("you pressed b!");
+  ekg::log() << "you pressed b!";
 }
 
 if (ekg::input::pressed("custom-tag-c")) {
-  ekg::log("you pressed a!");
+  ekg::log() << "you pressed c!";
+}
+
+if (ekg::input::pressed("custom-tag-d")) {
+  ekg::log() << "you pressed d!";
 }
 
 if (ekg::input::pressed("hii!! :))")) {
-  ekg::log("hii!");
+  ekg::log() << "hii!";
 }
 ```
 
