@@ -25,7 +25,11 @@ protected:
         uint16_t bar_flags {}, text_flags {};
         ekg::font font_size {};
         ekg::axis bar_axis {};
+        bool dragging {};
     public:
+        void set_dragging(bool);
+        bool is_dragging();
+
         void set_place(uint16_t);
         void set_bar_axis(ekg::axis);
         ekg::axis get_bar_axis();

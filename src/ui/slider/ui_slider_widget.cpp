@@ -175,6 +175,7 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
         ui->set_value(ui->get_value() + (interact.w));
     } else if (this->flag.hovered && pressed && ekg::input::pressed("slider-activy")) {
         this->flag.activy = true;
+        ui->set_dragging(true);
         this->update_bar(interact.x, interact.y);
     } else if  (released) {
         if (this->flag.activy) {
@@ -182,6 +183,7 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
         }
 
         this->flag.activy = false;
+        ui->set_dragging(false);
     } else if (this->flag.activy && motion) {
         this->update_bar(interact.x, interact.y);
     }

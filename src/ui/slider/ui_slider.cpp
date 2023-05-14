@@ -16,6 +16,14 @@
 #include "ekg/util/util_ui.hpp"
 #include "ekg/ui/slider/ui_slider.hpp"
 
+void ekg::ui::slider::set_dragging(bool state) {
+    this->dragging = state;
+}
+
+bool ekg::ui::slider::is_dragging() {
+    return this->dragging;
+}
+
 void ekg::ui::slider::set_bar_axis(ekg::axis axis) {
     if (this->bar_axis != axis) {
         this->bar_axis = axis;
