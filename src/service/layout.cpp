@@ -184,8 +184,6 @@ float ekg::service::layout::get_respective_mask_size() {
         respective_size += size;
     }
 
-    ekg::log() << respective_size;
-
     this->respective_mask_center = (only_center_count != 0 ? (respective_center_size / only_center_count) : 0.0f);
     this->respective_mask_all = ekg::min(this->respective_mask_all, respective_size);
     
@@ -409,4 +407,9 @@ void ekg::service::layout::init() {
 
 void ekg::service::layout::quit() {
 
+}
+
+
+float ekg::service::layout::get_min_offset() {
+    return this->min_offset;
 }

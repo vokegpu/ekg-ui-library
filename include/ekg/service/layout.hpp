@@ -44,6 +44,7 @@ namespace ekg::service {
 
         ekg::rect &get_layout_mask();
 
+        float get_min_offset();
         float get_respective_mask_size();
         float get_respective_mask_center();
 
