@@ -166,7 +166,7 @@ void ekg::runtime::process_update() {
         auto &update = this->widget_list_map["update"];
         size_t counter {};
 
-        for (ekg::ui::abstract_widget *widgets : update) {
+        for (ekg::ui::abstract_widget *&widgets : update) {
             if (widgets == nullptr || !widgets->is_high_frequency) {
                 ++counter;
                 continue;

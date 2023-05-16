@@ -31,7 +31,7 @@ namespace ekg {
     /*
      * The runtime core of ekg.
      */
-    extern ekg::runtime* core;
+    extern ekg::runtime *core;
 
     /*
      * Shaders version should be higher than 300.

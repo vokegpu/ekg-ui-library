@@ -56,6 +56,5 @@ void ekg::ui::abstract_widget::on_draw_refresh() {
 }
 
 ekg::rect &ekg::ui::abstract_widget::get_abs_rect() {
-    auto &rect = (this->data->widget() = this->dimension + *this->parent);
-    return rect;
+    return (this->data->widget() = this->dimension + *this->parent);
 }

@@ -359,10 +359,13 @@ void ekg::ui::textbox_widget::on_reload() {
         this->widget_side_text = ui->get_text();
         ekg::utf8read(this->widget_side_text, this->text_chunk_list);
     }
+
+    this->embedded_scroll.on_reload();
 }
 
 void ekg::ui::textbox_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
+    this->embedded_scroll.on_pre_event(sdl_event);
 }
 
 void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
@@ -385,6 +388,8 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
             ekg::update_high_frequency(this);
         }
     }
+
+    this->embedded_scroll.on_event(sdl_event);
 
     bool abble_to_scroll[2] {
         false,

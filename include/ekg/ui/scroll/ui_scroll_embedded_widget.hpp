@@ -15,15 +15,25 @@
 #ifndef EKG_UI_SCROLL_EMBEDDED_WIDGET_H
 #define EKG_UI_SCROLL_EMBEDDED_WIDGET_H
 
+#include <SDL2/SDL.h>
+#include "ekg/util/geometry.hpp"
+#include "ekg/util/env.hpp"
+
 namespace ekg::ui {
     class scroll_embedded_widget {
     public:
         std::vector<int32_t> child_id_list {};
-        ekg::rect rect_mother {};
+        ekg::rect *rect_mother {};
         ekg::rect rect_child {};
         ekg::vec4 scroll {};
+
+        ekg::flag flag {};
         int32_t mother_id {};
+        bool is_vertical_enabled {};
+        bool is_horizontal_enabled {};
     public:
+        explicit scroll_embedded_widget();
+
         void on_destroy();
         void on_reload();
         void on_pre_event(SDL_Event &sdl_event);
@@ -32,6 +42,6 @@ namespace ekg::ui {
         void on_update();
         void on_draw_refresh();
     };
-};
+}
 
 #endif

@@ -15,6 +15,7 @@
 #define EKG_UI_TEXTBOX_WIDGET_H
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
+#include "ekg/ui/scroll/ui_scroll_embedded_widget.hpp"
 #include <unordered_map>
 
 namespace ekg::ui {
@@ -25,11 +26,12 @@ namespace ekg::ui {
         std::vector<std::string> text_chunk_list {};
         std::string widget_side_text {};
         ekg::rect rect_text {};
+        ekg::ui::scroll_embedded_widget embedded_scroll {};
 
         int64_t visible_chunk[2] {};
         int64_t cursor[6] {};
 
-        float scroll[6] {};
+        float scroll[4] {};
         float text_offset {};
         float text_height {};
 

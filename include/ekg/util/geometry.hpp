@@ -190,18 +190,6 @@ namespace ekg {
                   bottom_right {};
     };
 
-    struct docking {
-        bool top {},
-             bottom {},
-             left {},
-             right {},
-             center {},
-             full {},
-             free {},
-             none {},
-             next {};
-    };
-
     struct dockrect {
         ekg::rect *rect {nullptr};
         uint16_t dock {};        

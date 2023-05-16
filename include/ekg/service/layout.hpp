@@ -30,9 +30,7 @@ namespace ekg::service {
         std::map<uint32_t, ekg::grid> grid_map {};
         std::vector<ekg::dockrect> dockrect_list {};
 
-        ekg::rect curr_top {}, curr_bottom {}, layout_mask {};
-        ekg::grid curr_grid {};
-        ekg::docking prev_docking_top {}, curr_docking {}, prev_docking_bottom {};
+        ekg::rect layout_mask {};
         float extent_data[4] {};
     public:
         void init();
@@ -46,7 +44,6 @@ namespace ekg::service {
 
         float get_min_offset();
         float get_respective_mask_size();
-        float get_respective_mask_center();
 
         float get_dimensional_extent(ekg::ui::abstract_widget *widget, uint16_t flag_ok, uint16_t flag_stop, int64_t &begin_and_count, ekg::axis axis);
         void process_scaled(ekg::ui::abstract_widget* widget_parent);

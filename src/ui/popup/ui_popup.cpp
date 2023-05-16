@@ -13,7 +13,6 @@
  */
 
 #include "ekg/ui/popup/ui_popup.hpp"
-#include "ekg/util/util_ui.hpp"
 
 int64_t ekg::ui::popup::contains(std::string_view component_name) {
     for (uint32_t it {}; it < this->component_list.size(); it++) {
