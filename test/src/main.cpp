@@ -123,7 +123,7 @@ int32_t main(int32_t, char**) {
         frame2->set_drag(ekg::dock::top);
         frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-        ekg::textbox("Search", textcatsampler, ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::textbox("Search", textcatsampler, ekg::dock::fill | ekg::dock::next)->set_scaled_height(16);
         ekg::label("não", ekg::dock::fill | ekg::dock::next);
         ekg::button("Button 2.1", ekg::dock::fill);
         ekg::button("Button 2.2", fillnext);

@@ -67,6 +67,12 @@ void ekg::service::theme::gen_default_theme() {
     this->textbox_outline = {202, 207, 222, 150};
     this->textbox_select = {2, 7, 222, 255};
     this->textbox_cursor = {2, 7, 22, 255};
+
+    this->scrollbar_background = {53, 61, 81, 255};
+    this->scrollbar_outline = {202, 207, 222, 150};
+    this->scrollbar_activy = {44, 166, 255, 200};
+    this->scrollbar_highlight = {44, 166, 255, 50};
+    this->scrollbar_pixel_thickness = 5;
 }
 
 void ekg::service::theme::refresh_theme_list() {

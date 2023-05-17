@@ -63,6 +63,12 @@ namespace ekg::service {
         ekg::vec4 textbox_cursor {};
         ekg::vec4 textbox_select {};
 
+        ekg::vec4 scrollbar_background {};
+        ekg::vec4 scrollbar_highlight {};
+        ekg::vec4 scrollbar_activy {};
+        ekg::vec4 scrollbar_outline {};
+        int32_t scrollbar_pixel_thickness {};
+
         float min_widget_size {5};
       public:
         void init();

@@ -25,14 +25,19 @@ namespace ekg::ui {
         std::vector<int32_t> child_id_list {};
         ekg::rect *rect_mother {};
         ekg::rect rect_child {};
+
         ekg::vec4 scroll {};
+        ekg::rect rect_vertical_scroll_bar {};
+        ekg::rect rect_horizontal_scroll_bar {};
 
         ekg::flag flag {};
         int32_t mother_id {};
         bool is_vertical_enabled {};
         bool is_horizontal_enabled {};
+        ekg::vec2 acceleration {};
     public:
         explicit scroll_embedded_widget();
+        void calculate_rect_bar_sizes();
 
         void on_destroy();
         void on_reload();

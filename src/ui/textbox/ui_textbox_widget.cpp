@@ -193,8 +193,8 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
     auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
 
-    float x {rect.x + this->scroll[0]};
-    float y {rect.y + this->scroll[1]};
+    float x {rect.x + this->embedded_scroll.scroll.x};
+    float y {rect.y + this->embedded_scroll.scroll.y};
 
     ekg::rect char_rect {};
     ekg::char_data char_data {};
@@ -217,7 +217,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
     size_t indexjump {};
 
     for (std::string &text : this->text_chunk_list) {
-        x = rect.x + this->scroll[0];
+        x = rect.x + this->embedded_scroll.scroll.x;
         text_width = f_renderer.get_text_width(text);
         stringsize = 0;
 
@@ -360,12 +360,13 @@ void ekg::ui::textbox_widget::on_reload() {
         ekg::utf8read(this->widget_side_text, this->text_chunk_list);
     }
 
+    this->embedded_scroll.rect_mother = &rect;
+    this->embedded_scroll.acceleration.y = this->text_offset + this->text_height;
     this->embedded_scroll.on_reload();
 }
 
 void ekg::ui::textbox_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
-    this->embedded_scroll.on_pre_event(sdl_event);
 }
 
 void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
@@ -389,21 +390,8 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         }
     }
 
+    this->embedded_scroll.flag = this->flag;
     this->embedded_scroll.on_event(sdl_event);
-
-    bool abble_to_scroll[2] {
-        false,
-        this->rect_text.h > rect.h
-    };
-
-    if (this->flag.focused && this->flag.hovered && ekg::input::wheel() && (abble_to_scroll[0] || abble_to_scroll[1])) {
-        auto &interact {ekg::interact()};
-        float acceleration {(this->text_offset + this->text_height) * 1.0000000000054835f};
-
-        if (abble_to_scroll[1]) {
-            this->scroll[3] = this->scroll[1] + (interact.w * acceleration);
-        }
-    }
 
     if (!this->flag.hovered && (released || pressed)) {
         this->unset_focus();
@@ -460,24 +448,7 @@ void ekg::ui::textbox_widget::on_update() {
         ekg::dispatch(ekg::env::redraw);
     }
 
-    auto &rect {this->get_abs_rect()};
-    ekg::vec2 vertical_scroll_limit {0.0f, this->rect_text.h + this->text_offset - rect.h};
-    ekg::vec2 horizontal_scroll_limit {0.0f, this->rect_text.w - rect.w};
-
-    this->scroll[0] = ekg::lerp(this->scroll[0], this->scroll[2], ekg::display::dt + ekg::scrollsmooth);
-    this->scroll[1] = ekg::lerp(this->scroll[1], this->scroll[3], ekg::display::dt + ekg::scrollsmooth);
-
-    if (this->rect_text.h < rect.h) {
-        this->scroll[1] = 0.0f;
-    } else if (this->scroll[1] < -vertical_scroll_limit.y) {
-        this->scroll[1] = -vertical_scroll_limit.y;
-        this->scroll[3] = this->scroll[1];
-    } else if (this->scroll[1] > vertical_scroll_limit.x) {
-        this->scroll[1] = vertical_scroll_limit.x;
-        this->scroll[3] = this->scroll[1];
-    }
-
-    ekg::dispatch(ekg::env::redraw);
+    this->embedded_scroll.on_update();
     this->is_high_frequency = this->flag.focused;
 }
 
@@ -498,8 +469,8 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     uint64_t chunk_size {this->text_chunk_list.size()};
     std::string text {};
 
-    float x {rect.x + this->scroll[0]};
-    float y {rect.y + this->scroll[1]};
+    float x {rect.x + this->embedded_scroll.scroll.x};
+    float y {rect.y + this->embedded_scroll.scroll.y};
 
     x = static_cast<float>(static_cast<int32_t>(x));
     y = static_cast<float>(static_cast<int32_t>(y - f_renderer.offset_text_height));
@@ -632,14 +603,16 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         y += this->text_height;
     }
 
-    this->rect_text.h = y;
-
     allocator.bind_texture(f_renderer.texture);
     allocator.dispatch();
 
     if (render_cursor && this->flag.focused && !ekg::reach(ekg::core->get_ui_timing(), 500)) {
-        ekg::draw::rect(rect.x + this->scroll[0] + cursor_pos.x - 2, rect.y + this->scroll[1] + cursor_pos.y, 2, this->text_height, theme.textbox_cursor);
+        ekg::draw::rect(rect.x + this->embedded_scroll.scroll.x + cursor_pos.x - 2, rect.y + this->embedded_scroll.scroll.y + cursor_pos.y, 2, this->text_height, theme.textbox_cursor);
     }
+
+    this->rect_text.h = y + this->text_offset;
+    this->embedded_scroll.rect_child = this->rect_text;
+    this->embedded_scroll.on_draw_refresh();
 
     ekg::draw::bind_off_scissor();
 }
