@@ -264,10 +264,6 @@ void ekg::service::input::callback(std::string_view key, bool callback) {
     this->input_map[key.data()] = callback;
 
     if (!this->input_register_map.empty()) {
-        for (std::string &binds : this->input_register_callback) {
-            //this->input_register_map[binds] = false;
-        }
-
         this->input_register_callback.clear();
     }
 
