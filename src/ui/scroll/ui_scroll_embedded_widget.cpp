@@ -104,7 +104,9 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
         scaled_bar.x += this->rect_mother->x;
         this->flag.extra_state = ekg::rect_collide_vec(scaled_bar, interact);
         this->bar_drag.y = interact.x - scaled_bar.x;
-    } else if (ekg::input::motion() && (this->flag.state || this->flag.extra_state)) {
+    }
+
+    if (ekg::input::motion() && (this->flag.state || this->flag.extra_state)) {
         if (this->flag.state) {
             ekg::rect scaled_bar {this->rect_vertical_scroll_bar};
             scaled_bar.y = interact.y - this->bar_drag.x;

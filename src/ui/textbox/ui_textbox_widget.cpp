@@ -381,18 +381,20 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
 
     this->embedded_scroll.flag.hovered = this->flag.hovered;
     this->embedded_scroll.on_event(sdl_event);
+    this->flag.absolute = this->embedded_scroll.is_dragging_bar();
 
-    if (this->flag.hovered && pressed && !this->embedded_scroll.is_dragging_bar()) {
+    if (this->flag.hovered && pressed && !this->flag.absolute) {
         ekg::set(this->flag.focused, this->flag.hovered);
 
         this->check_cursor_text_bounding();
         ekg::reset(ekg::core->get_ui_timing());
         ekg::dispatch(ekg::env::redraw);
         ekg::dispatch(ekg::env::swap);
+    }
 
-        if (!this->is_high_frequency) {
-            ekg::update_high_frequency(this);
-        }
+    this->flag.highlight = this->flag.hovered;
+    if ((this->flag.focused || this->flag.hovered || this->flag.absolute) && !this->is_high_frequency) {
+        ekg::update_high_frequency(this);
     }
 
     if (!this->flag.hovered && (released || pressed)) {
@@ -451,7 +453,7 @@ void ekg::ui::textbox_widget::on_update() {
     }
 
     this->embedded_scroll.on_update();
-    this->is_high_frequency = this->flag.focused;
+    this->is_high_frequency = this->flag.focused || this->flag.highlight || this->flag.absolute;
 }
 
 void ekg::ui::textbox_widget::on_draw_refresh() {
