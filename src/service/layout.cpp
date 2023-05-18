@@ -280,9 +280,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
         return;
     }
 
-    auto &grid {this->grid_map[widget_parent->data->get_id()]};
     float group_top_offset {this->min_offset};
-
     switch (type) {
         case ekg::type::frame: {
             auto widget_group {(ekg::ui::frame_widget*) widget_parent};
@@ -331,6 +329,8 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
     this->extent_data[1] = 0.0f;
     this->extent_data[2] = 0.0f;
 
+    bool should_reload_widget {};
+
     // @TODO Fix fill -> (fill | next) issue with widgets.
 
     /*
@@ -359,7 +359,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
 
             top_rect.w += dimensional_extent + this->min_offset;
             layout.w = dimensional_extent;
-            widgets->on_reload();
+            should_reload_widget = true;
         } else if (ekg::bitwise::contains(flags, ekg::dock::fill)) {
             layout.x = top_rect.x + top_rect.w;
             layout.y = top_rect.y + top_rect.h;
@@ -370,7 +370,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
 
             top_rect.w += dimensional_extent + this->min_offset;
             layout.w = dimensional_extent;
-            widgets->on_reload();
+            should_reload_widget = true;
         } else if (ekg::bitwise::contains(flags, ekg::dock::next)) {
             top_rect.h += prev_widget_layout.h + this->min_offset;
             top_rect.w = 0.0f;
@@ -388,6 +388,10 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
 
             count = it;
             dimensional_extent = this->get_dimensional_extent(widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
+        }
+
+        if (should_reload_widget) {
+            widgets->on_reload();
         }
 
         prev_widget_layout = layout;

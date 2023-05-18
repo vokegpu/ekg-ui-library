@@ -140,6 +140,10 @@ void ekg::ui::abstract::reset() {
     ekg::reload(this->id);
 }
 
+void ekg::ui::abstract::set_scaled_height_layout(int32_t scaled_height_int) {
+    this->scaled_height = scaled_height_int;
+}
+
 bool ekg::ui::abstract::has_parent() {
     return this->parent_id != 0;
 }

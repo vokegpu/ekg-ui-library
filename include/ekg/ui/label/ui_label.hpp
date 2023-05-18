@@ -23,7 +23,6 @@ namespace ekg::ui {
     protected:
         std::string text {};
         uint16_t dock_text {};
-        int32_t scaled_height {};
         ekg:: font font_size {};
     public:
         void set_font_size(ekg::font font);

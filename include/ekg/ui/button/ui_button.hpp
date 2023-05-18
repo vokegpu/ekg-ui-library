@@ -24,7 +24,6 @@ namespace ekg::ui {
 	protected:
 		bool value {};
         uint16_t dock_text {};
-        int32_t scaled_height {};
 
         std::string text {};
         ekg::cpu::event* callback {nullptr};

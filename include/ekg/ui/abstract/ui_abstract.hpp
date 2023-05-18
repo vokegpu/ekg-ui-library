@@ -48,6 +48,8 @@ namespace ekg {
             ekg::type type {ekg::type::abstract};
             ekg::rect rect_widget {};
             ekg::rect sync_ui {};
+        
+            int32_t scaled_height {};
         public:
             abstract();
             ~abstract();
@@ -82,6 +84,7 @@ namespace ekg {
             ekg::rect &widget();
             ekg::rect &ui();
 
+            void set_scaled_height_layout(int32_t);
             bool has_parent();
             bool has_children();
         };

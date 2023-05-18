@@ -21,17 +21,23 @@
 namespace ekg::service {
     class layout {
     protected:
-        float min_offset {}, min_fill_width {}, min_height {}, scaled_width_divided {}, scaled_height_divided {}, respective_mask_all {}, respective_mask_center {};
+        float min_offset {};
+        float min_fill_width {};
+        float min_height {};
+        float scaled_width_divided {};
+        float scaled_height_divided {};
+        float respective_mask_all {};
+        float respective_mask_center {};
+        float extent_data[4] {};
+
         int32_t min_factor_height {};
-        uint16_t enum_docks_flag {}, layout_mask_flags {};
+        uint16_t enum_docks_flag {};
+        uint16_t layout_mask_flags {};
+
         ekg::axis dock_axis_mask {};
         ekg::vec3 offset_mask {};
-
-        std::map<uint32_t, ekg::grid> grid_map {};
         std::vector<ekg::dockrect> dockrect_list {};
-
         ekg::rect layout_mask {};
-        float extent_data[4] {};
     public:
         void init();
         void quit();

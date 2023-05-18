@@ -215,11 +215,12 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
     std::string utf8string {};
     size_t stringsize {};
     size_t indexjump {};
+    float cursor_line_thickness {2.0f};
 
     for (std::string &text : this->text_chunk_list) {
-        x = rect.x + this->embedded_scroll.scroll.x;
-        text_width = f_renderer.get_text_width(text);
+        x = rect.x + cursor_line_thickness ;
         stringsize = 0;
+        f_renderer.ft_uint_previous = 0;
 
         for (size_t it {}; it < text.size(); it++) {
             ui8char = static_cast<uint8_t>(text.at(it));
@@ -259,7 +260,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
                 break;
             }
 
-            char_rect.w += char_rect.w;
+            char_rect.w = char_data.wsize;
             if (ekg::rect_collide_vec(char_rect, interact)) {
                 bounding_it = total_it + 1;
                 text_it = stringsize + 1;
@@ -270,6 +271,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
             x += char_data.wsize;
             it += indexjump;
             stringsize++;
+            f_renderer.ft_uint_previous = ui32char;
         }
 
         char_rect.x = rect.x;
@@ -377,7 +379,10 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     bool motion {ekg::input::motion()};
     auto &rect {this->get_abs_rect()};
 
-    if (this->flag.hovered && pressed) {
+    this->embedded_scroll.flag.hovered = this->flag.hovered;
+    this->embedded_scroll.on_event(sdl_event);
+
+    if (this->flag.hovered && pressed && !this->embedded_scroll.is_dragging_bar()) {
         ekg::set(this->flag.focused, this->flag.hovered);
 
         this->check_cursor_text_bounding();
@@ -389,9 +394,6 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
             ekg::update_high_frequency(this);
         }
     }
-
-    this->embedded_scroll.flag = this->flag;
-    this->embedded_scroll.on_event(sdl_event);
 
     if (!this->flag.hovered && (released || pressed)) {
         this->unset_focus();
@@ -469,6 +471,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     uint64_t chunk_size {this->text_chunk_list.size()};
     std::string text {};
 
+    this->embedded_scroll.clamp_scroll();
     float x {rect.x + this->embedded_scroll.scroll.x};
     float y {rect.y + this->embedded_scroll.scroll.y};
 
@@ -502,7 +505,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     this->rect_text.x = x;
     this->rect_text.y = y;
 
-    x = this->text_offset;
+    x = 0.0f;
     y = this->text_offset;
 
     this->visible_chunk[0] = 0;
@@ -513,6 +516,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     std::string utf8string {};
     size_t stringsize {};
     size_t indexjump {};
+    float cursor_line_thickness {2.0f};
 
     for (int64_t it_chunk {this->visible_chunk[0]}; it_chunk < this->visible_chunk[1]; it_chunk++) {
         if (it_chunk > chunk_size) {
@@ -520,12 +524,13 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         }
 
         text = this->text_chunk_list.at(it_chunk);
-        x = this->text_offset;
+        x = cursor_line_thickness;
         stringsize = 0;
         text_size = 0;
+        f_renderer.ft_uint_previous = 0;
 
         if (!render_cursor && text.empty() && this->cursor[2] == it_chunk && this->cursor[0] == this->cursor[1]) {
-            cursor_pos.x = x;
+            cursor_pos.x = x + cursor_line_thickness;
             cursor_pos.y = y;
             render_cursor = true;
         } else {
@@ -562,7 +567,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
             cursor_out_of_str = stringsize + 1 == text_size && this->cursor[0] == total_it + 1;
             if (!render_cursor && (cursor_out_of_str || total_it == this->cursor[0]) && this->cursor[0] == this->cursor[1] && this->cursor[2] == it_chunk) {
-                cursor_pos.x = x + (char_data.wsize * cursor_out_of_str);
+                cursor_pos.x = x + cursor_line_thickness + (char_data.wsize * cursor_out_of_str);
                 cursor_pos.y = y;
                 render_cursor = true;
             }

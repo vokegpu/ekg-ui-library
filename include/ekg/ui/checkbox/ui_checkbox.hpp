@@ -22,7 +22,6 @@ namespace ekg::ui {
     class checkbox : public ekg::ui::abstract {
     protected:
         bool value {};
-        int32_t scaled_height {};
         uint16_t dock_text {}, dock_box {};
         std::string text {};
         ekg::font font_size {};

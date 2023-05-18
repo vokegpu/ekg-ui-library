@@ -21,7 +21,8 @@ namespace ekg::ui {
     class slider : public ekg::ui::abstract {
 protected:
         float value {}, minimum_value {}, maximum_value {};
-        int32_t scaled_height {}, scaled_size {}, float_precision {};
+        int32_t scaled_size {};
+        int32_t float_precision {};
         uint16_t bar_flags {}, text_flags {};
         ekg::font font_size {};
         ekg::axis bar_axis {};

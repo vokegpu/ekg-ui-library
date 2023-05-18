@@ -41,15 +41,17 @@ namespace ekg {
         center = 32,
         full   = 64,
         next   = 128,
-        fill   = 256
+        fill   = 256,
+        resize = 512
+
     };
 
     /*
      * Enum linked to dock.
      */
     enum axis {
-        vertical   = 512,
-        horizontal = 1024
+        vertical   = 1024,
+        horizontal = 2048
     };
 
     typedef struct vec2 {

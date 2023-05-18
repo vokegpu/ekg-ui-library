@@ -20,7 +20,6 @@ namespace ekg::ui {
     class textbox : public ekg::ui::abstract {
     protected:
         std::string text {};
-        int32_t scaled_height {};
         ekg:: font font_size {};
         uint64_t max_chars {};
     public:
