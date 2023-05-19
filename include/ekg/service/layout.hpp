@@ -27,7 +27,7 @@ namespace ekg::service {
         float scaled_width_divided {};
         float scaled_height_divided {};
         float respective_mask_all {};
-        float respective_mask_center {};
+        float respective_mask_center {}; 
         float extent_data[4] {};
 
         int32_t min_factor_height {};
@@ -53,7 +53,7 @@ namespace ekg::service {
 
         float get_dimensional_extent(ekg::ui::abstract_widget *widget, uint16_t flag_ok, uint16_t flag_stop, int64_t &begin_and_count, ekg::axis axis);
         void process_scaled(ekg::ui::abstract_widget* widget_parent);
-        void process(ekg::ui::abstract_widget* widget);
+        void process(ekg::ui::abstract_widget *pwidget);
     };
 }
 

@@ -81,21 +81,21 @@ int32_t main(int32_t, char**) {
     uint64_t ticked_frames {};
 
     std::string textcatsampler {};
-    textcatsampler += "[EKG-INFO] dog doom: \n"
-                      "[EKG-INFO] utf8 size: 5 string size: 20\n"
-                      "[EKG-INFO] EKG User interface library demo starting\n"
-                      "[EKG-INFO] 3\n"
-                      "[EKG-INFO] GLEW initialised\n"
-                      "[EKG-INFO] Initialising EKG\n"
-                      "[EKG-INFO] GPU allocator initialised\n"
-                      "[EKG-INFO] Initialising default theme\n"
-                      "[EKG-INFO] Analysing files for themes\n"
-                      "[EKG-INFO] Preparing internal EKG core\n"
-                      "[EKG-INFO] Preparing internal user interface environment\n"
-                      "[EKG-INFO] Registering user interface input bindings\n"
-                      "[EKG-INFO] SDL version: 2.26.5\n"
-                      "[EKG-INFO] OpenGL context created\n"
-                      "[EKG-INFO] Shutdown complete - Thank you for using EKG ;) <3\n";
+    textcatsampler += "não§§È1II21II§2121§§2212121212126";
+    //                  "[EKG-INFO] utf8 size: 5 string size: 20\n"
+    //                  "[EKG-INFO] EKG User interface library demo starting\n"
+    //                  "[EKG-INFO] 3\n"
+    //                  "[EKG-INFO] GLEW initialised\n"
+    //                  "[EKG-INFO] Initialising EKG\n"
+    //                  "[EKG-INFO] GPU allocator initialised\n"
+    //                  "[EKG-INFO] Initialising default theme\n"
+    //                  "[EKG-INFO] Analysing files for themes\n"
+    //                  "[EKG-INFO] Preparing internal EKG core\n"
+    //                  "[EKG-INFO] Preparing internal user interface environment\n"
+    //                  "[EKG-INFO] Registering user interface input bindings\n"
+    //                  "[EKG-INFO] SDL version: 2.26.5\n"
+    //                  "[EKG-INFO] OpenGL context created\n"
+    //                  "[EKG-INFO] Shutdown complete - Thank you for using EKG ;) <3\n";
 
     for (int32_t it {}; it < 1; it++) {
         //auto frame {ekg::frame("text sampler", {20 + it, 30}, {300, 200})};
@@ -123,7 +123,7 @@ int32_t main(int32_t, char**) {
         frame2->set_drag(ekg::dock::top);
         frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-        ekg::textbox("Search", textcatsampler, ekg::dock::fill | ekg::dock::next)->set_scaled_height(16);
+        ekg::textbox("Search", textcatsampler, ekg::dock::fill | ekg::dock::next)->set_scaled_height(32);
         ekg::label("não", ekg::dock::fill | ekg::dock::next);
         ekg::button("Button 2.1", ekg::dock::fill);
         ekg::button("Button 2.2", fillnext);

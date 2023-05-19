@@ -25,8 +25,6 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
     FT_Vector ft_vec {};
     this->ft_uint_previous = 0;
 
-    float start_x {};
-    float render_x {};
     float text_width {};
     ekg::char_data char_data {};
 
@@ -62,15 +60,12 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
 
         if (this->ft_bool_kerning && this->ft_uint_previous) {
             FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32char, 0, &ft_vec);
-            start_x += static_cast<float>(ft_vec.x >> 6);
+            text_width += static_cast<float>(ft_vec.x >> 6);
         }
 
         char_data = this->allocated_char_data[ui32char];
-        render_x = start_x + char_data.left;
-        start_x += char_data.wsize;
-
         this->ft_uint_previous = ui32char;
-        text_width = render_x + char_data.w;
+        text_width += char_data.wsize;
     }
 
     return text_width;

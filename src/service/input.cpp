@@ -255,7 +255,7 @@ void ekg::service::input::unbind(std::string_view input_tag, std::string_view ke
     }
 
     if (should_unbind) {
-        bind_list.erase(bind_list.cbegin() + (uint32_t) it);
+        bind_list.erase(bind_list.cbegin() + (uint64_t) it);
     }
 }
 
@@ -275,7 +275,7 @@ void ekg::service::input::callback(std::string_view key, bool callback) {
     }
 }
 
-void ekg::service::input::complete_with_units(std::string &string_builder, const std::string &key_name) {
+void ekg::service::input::complete_with_units(std::string &string_builder, std::string_view key_name) {
     string_builder += this->special_keys_sdl_map[SDLK_LCTRL];
     string_builder += this->special_keys_sdl_map[SDLK_RCTRL];
     string_builder += this->special_keys_sdl_map[SDLK_LSHIFT];
@@ -286,7 +286,7 @@ void ekg::service::input::complete_with_units(std::string &string_builder, const
     string_builder += key_name;
 }
 
-bool ekg::service::input::contains_unit(const std::string &label) {
+bool ekg::service::input::contains_unit(std::string_view label) {
     for (std::string &units : this->special_keys_unit_pressed) {
         if (units == label) {
             return true;

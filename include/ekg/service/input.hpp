@@ -46,8 +46,8 @@ namespace ekg::service {
             ekg::vec4 last_finger_interact {};
             ekg::timing double_interact {};
         protected:
-            void complete_with_units(std::string &string_builder, const std::string &key_name);
-            bool contains_unit(const std::string &label);
+            void complete_with_units(std::string &string_builder, std::string_view key_name);
+            bool contains_unit(std::string_view label);
             bool is_special_key(int32_t sdl_key_code);
         public:
             ekg::timing timing_last_interact {};
