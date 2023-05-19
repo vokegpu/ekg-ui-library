@@ -90,11 +90,11 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
     bool horizontal_hovered {};
     auto &interact {ekg::interact()};
 
-    if (this->flag.hovered && ekg::input::wheel() && this->is_vertical_enabled) {
+    if (this->flag.hovered && ekg::input::pressed("scrollbar-scroll") && this->is_vertical_enabled) {
         this->scroll.w = this->scroll.y + (interact.w * (this->acceleration.y * 1.0000000000054835f));
     }
 
-    if (this->flag.hovered && ekg::input::pressed()) {
+    if (this->flag.hovered && ekg::input::pressed() && ekg::input::pressed("scrollbar-drag")) {
         ekg::rect scaled_bar {this->rect_vertical_scroll_bar};
         scaled_bar.y += this->rect_mother->y;
         this->flag.state = ekg::rect_collide_vec(scaled_bar, interact);

@@ -197,8 +197,6 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
     float y {rect.y + this->embedded_scroll.scroll.y};
 
     ekg::rect char_rect {};
-    ekg::char_data char_data {};
-
     ekg::vec4 &interact {ekg::interact()};
     uint64_t total_it {};
 
@@ -230,11 +228,10 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
             /*
              * Check if interact position collide with char.
              */
-            
-            char_data = f_renderer.allocated_char_data[ui32char];
+
             char_rect.x = x;
             char_rect.y = y;
-            char_rect.w = char_data.wsize / 2;
+            char_rect.w = f_renderer.allocated_char_data[ui32char].wsize / 2;
             char_rect.h = this->text_height;
 
             if (ekg::rect_collide_vec(char_rect, interact)) {
@@ -243,7 +240,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
                 break;
             }
 
-            char_rect.w = char_data.wsize;
+            char_rect.w += char_rect.w;
             if (ekg::rect_collide_vec(char_rect, interact)) {
                 bounding_it = total_it + 1;
                 text_it = utf8_char_index + 1;
@@ -253,7 +250,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
             total_it++;
             utf8_char_index++;
             f_renderer.ft_uint_previous = ui32char;
-            x += char_data.wsize;
+            x += char_rect.w;
         }
 
         /*
@@ -495,9 +492,6 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     x = 0.0f;
     y = this->text_offset;
 
-    this->visible_chunk[0] = 0;
-    this->visible_chunk[1] = this->text_chunk_list.size();
-
     char32_t ui32char {};
     uint8_t ui8char {};
     std::string utf8string {};
@@ -505,16 +499,21 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     size_t utf8_char_index {};
     float cursor_line_thickness {2.0f};
     size_t it {};
+    float y_scroll {};
 
+    this->visible_chunk[0] = 0;
+    this->visible_chunk[1] = this->text_chunk_list.size();
+
+    /*
+     * The texti iterator jump utf8 sequences.
+     * For better performance, textbox does not render texts out of rect.
+     */
     for (int64_t it_chunk {this->visible_chunk[0]}; it_chunk < this->visible_chunk[1]; it_chunk++) {
-        if (it_chunk > chunk_size) {
-            continue;
-        }
-
         text = this->text_chunk_list.at(it_chunk);
         x = cursor_line_thickness;
         text_size = 0;
         f_renderer.ft_uint_previous = 0;
+        utf8_char_index = 0;
 
         if (!render_cursor && text.empty() && this->cursor[2] == it_chunk && this->cursor[0] == this->cursor[1]) {
             cursor_pos.x = x;
@@ -524,7 +523,14 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             text_size = ekg::utf8length(text); 
         }
 
-        for (it = 0; it < text.size(); it++) {
+
+        y_scroll = this->embedded_scroll.scroll.y + y;
+        if (y_scroll > rect.h) {
+            break;
+        }
+
+        y_scroll += this->text_height;
+        for (it = 0; it < text.size() && y_scroll > 0.0f; it++) {
             ui8char = static_cast<uint8_t>(text.at(it));
             it += ekg::utf8checksequence(ui8char, ui32char, utf8string, text, it);
 
@@ -573,6 +579,8 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             x += char_data.wsize;
         }
 
+
+        if (y_scroll < 0.0f) total_it += text_size;
         if (x > this->rect_text.w) this->rect_text.w = x;
         y += this->text_height;
     }
@@ -584,7 +592,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         ekg::draw::rect(rect.x + this->embedded_scroll.scroll.x + cursor_pos.x, rect.y + this->embedded_scroll.scroll.y + cursor_pos.y, cursor_line_thickness, this->text_height, theme.textbox_cursor);
     }
 
-    this->rect_text.h = y + this->text_offset;
+    this->rect_text.h = (this->text_height * this->visible_chunk[1]) + this->text_offset;
     this->embedded_scroll.rect_child = this->rect_text;
     this->embedded_scroll.on_draw_refresh();
 

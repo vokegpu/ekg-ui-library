@@ -171,7 +171,7 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
 
     this->flag.hovered = this->flag.hovered && this->flag.highlight;
 
-    if (this->flag.hovered && ekg::input::wheel() && ((increase = ekg::input::pressed("slider-bar-increase")) || (descrease = ekg::input::pressed("slider-bar-decrease")))) {
+    if (this->flag.hovered && ((increase = ekg::input::pressed("slider-bar-increase")) || (descrease = ekg::input::pressed("slider-bar-decrease")))) {
         ui->set_value(ui->get_value() + (interact.w));
     } else if (this->flag.hovered && pressed && ekg::input::pressed("slider-activy")) {
         this->flag.activy = true;
