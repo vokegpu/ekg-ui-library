@@ -26,46 +26,21 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
     this->ft_uint_previous = 0;
 
     float text_width {};
-    ekg::char_data char_data {};
-
     char32_t ui32char {};
     uint8_t ui8char {};
     std::string utf8string {};
-    size_t stringsize {};
 
     for (size_t it {}; it < text.size(); it++) {
         ui8char = static_cast<uint8_t>(text.at(it));
-        ui32char = 0;
-        stringsize = 0;
-
-        if (ui8char <= 0x7F) {
-            stringsize++;
-            ui32char = static_cast<char32_t>(ui8char);
-        } else if ((ui8char & 0xE0) == 0xC0) {
-            stringsize++;
-            utf8string = text.substr(it, 2);
-            ui32char = ekg::char32str(utf8string);
-            it++;
-        } else if ((ui8char & 0xF0) == 0xE0) {
-            stringsize++;
-            utf8string = text.substr(it, 3);
-            ui32char = ekg::char32str(utf8string);
-            it += 2;
-        } else if ((ui8char & 0xF8) == 0xF0) {
-            stringsize++;
-            utf8string = text.substr(it, 4);
-            ui32char = ekg::char32str(utf8string);
-            it += 3;
-        }
+        it += ekg::utf8checksequence(ui8char, ui32char, utf8string, text, it);
 
         if (this->ft_bool_kerning && this->ft_uint_previous) {
             FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32char, 0, &ft_vec);
             text_width += static_cast<float>(ft_vec.x >> 6);
         }
 
-        char_data = this->allocated_char_data[ui32char];
         this->ft_uint_previous = ui32char;
-        text_width += char_data.wsize;
+        text_width += this->allocated_char_data[ui32char].wsize;
     }
 
     return text_width;
@@ -208,28 +183,7 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
 
     for (size_t it {}; it < text.size(); it++) {
         ui8char = static_cast<uint8_t>(text.at(it));
-        ui32char = 0;
-        stringsize = 0;
-
-        if (ui8char <= 0x7F) {
-            stringsize++;
-            ui32char = static_cast<char32_t>(ui8char);
-        } else if ((ui8char & 0xE0) == 0xC0) {
-            stringsize++;
-            utf8string = text.substr(it, 2);
-            ui32char = ekg::char32str(utf8string);
-            it++;
-        } else if ((ui8char & 0xF0) == 0xE0) {
-            stringsize++;
-            utf8string = text.substr(it, 3);
-            ui32char = ekg::char32str(utf8string);
-            it += 2;
-        } else if ((ui8char & 0xF8) == 0xF0) {
-            stringsize++;
-            utf8string = text.substr(it, 4);
-            ui32char = ekg::char32str(utf8string);
-            it += 3;
-        }
+        it += ekg::utf8checksequence(ui8char, ui32char, utf8string, text, it);
 
         if (this->ft_bool_kerning && this->ft_uint_previous) {
             FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32char, 0, &this->ft_vector_previous_char);

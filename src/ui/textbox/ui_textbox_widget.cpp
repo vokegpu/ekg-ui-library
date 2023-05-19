@@ -201,49 +201,26 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
 
     ekg::vec4 &interact {ekg::interact()};
     uint64_t total_it {};
-    char chars {};
 
     int64_t bounding_it {-1};
     int64_t chunk_it {};
     uint64_t text_it {};
     uint64_t it {};
-    uint64_t text_size {};
-    float text_width {};
 
     char32_t ui32char {};
     uint8_t ui8char {};
     std::string utf8string {};
-    size_t stringsize {};
-    size_t indexjump {};
+    size_t utf8_char_index {};
     float cursor_line_thickness {2.0f};
 
     for (std::string &text : this->text_chunk_list) {
         x = rect.x + cursor_line_thickness + this->embedded_scroll.scroll.x;
-        stringsize = 0;
+        utf8_char_index = 0;
         f_renderer.ft_uint_previous = 0;
-        text_width = cursor_line_thickness;
 
-        for (size_t it {}; it < text.size(); it++) {
+        for (it = 0; it < text.size(); it++) {
             ui8char = static_cast<uint8_t>(text.at(it));
-            ui32char = 0;
-            indexjump = 0;
-
-            if (ui8char <= 0x7F) {
-                ui32char = static_cast<char32_t>(ui8char);
-                utf8string = ui8char;
-            } else if ((ui8char & 0xE0) == 0xC0) {
-                indexjump = 1;
-                utf8string = text.substr(it, 2);
-                ui32char = ekg::char32str(utf8string);
-            } else if ((ui8char & 0xF0) == 0xE0) {
-                indexjump = 2;
-                utf8string = text.substr(it, 3);
-                ui32char = ekg::char32str(utf8string);
-            } else if ((ui8char & 0xF8) == 0xF0) {
-                indexjump = 3;
-                utf8string = text.substr(it, 4);
-                ui32char = ekg::char32str(utf8string);
-            }
+            it += ekg::utf8checksequence(ui8char, ui32char, utf8string, text, it);
 
             if (f_renderer.ft_bool_kerning && f_renderer.ft_uint_previous) {
                 FT_Get_Kerning(f_renderer.ft_face, f_renderer.ft_uint_previous, ui32char, 0, &f_renderer.ft_vector_previous_char);
@@ -262,23 +239,21 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
 
             if (ekg::rect_collide_vec(char_rect, interact)) {
                 bounding_it = total_it;
-                text_it = stringsize;
+                text_it = utf8_char_index;
                 break;
             }
 
             char_rect.w = char_data.wsize;
             if (ekg::rect_collide_vec(char_rect, interact)) {
                 bounding_it = total_it + 1;
-                text_it = stringsize + 1;
+                text_it = utf8_char_index + 1;
                 break;
             }
 
             total_it++;
-            x += char_data.wsize;
-            it += indexjump;
-            text_width += char_data.wsize;
-            stringsize++;
+            utf8_char_index++;
             f_renderer.ft_uint_previous = ui32char;
+            x += char_data.wsize;
         }
 
         /*
@@ -293,10 +268,10 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
         if (ekg::rect_collide_vec(char_rect, interact) && bounding_it == -1) {
             char_rect.w = this->text_offset;
             if (ekg::rect_collide_vec(char_rect, interact)) {
-                bounding_it = total_it - stringsize;
+                bounding_it = total_it - utf8_char_index;
             } else {
                 bounding_it = total_it;
-                text_it = stringsize;
+                text_it = utf8_char_index;
             }
 
             break;
@@ -317,7 +292,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
         this->cursor[0] = total_it;
         this->cursor[1] = total_it;
         this->cursor[2] = chunk_it - (!this->text_chunk_list.empty());
-        this->cursor[3] = stringsize;
+        this->cursor[3] = utf8_char_index;
         this->cursor[4] = this->cursor[3];
     }
 
@@ -512,7 +487,6 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     ekg::vec2 cursor_pos {};
     uint64_t total_it {};
     bool cursor_out_of_str {};
-    uint64_t text_size {};
     bool render_cursor {};
 
     this->rect_text.x = x;
@@ -527,9 +501,10 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     char32_t ui32char {};
     uint8_t ui8char {};
     std::string utf8string {};
-    size_t stringsize {};
-    size_t indexjump {};
+    size_t text_size {};
+    size_t utf8_char_index {};
     float cursor_line_thickness {2.0f};
+    size_t it {};
 
     for (int64_t it_chunk {this->visible_chunk[0]}; it_chunk < this->visible_chunk[1]; it_chunk++) {
         if (it_chunk > chunk_size) {
@@ -538,7 +513,6 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
         text = this->text_chunk_list.at(it_chunk);
         x = cursor_line_thickness;
-        stringsize = 0;
         text_size = 0;
         f_renderer.ft_uint_previous = 0;
 
@@ -550,26 +524,9 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             text_size = ekg::utf8length(text); 
         }
 
-        for (size_t it {}; it < text.size(); it++) {
+        for (it = 0; it < text.size(); it++) {
             ui8char = static_cast<uint8_t>(text.at(it));
-            ui32char = 0;
-            indexjump = 0;
-
-            if (ui8char <= 0x7F) {
-                ui32char = static_cast<char32_t>(ui8char);
-            } else if ((ui8char & 0xE0) == 0xC0) {
-                indexjump = 1;
-                utf8string = text.substr(it, 2);
-                ui32char = ekg::char32str(utf8string);
-            } else if ((ui8char & 0xF0) == 0xE0) {
-                indexjump = 2;
-                utf8string = text.substr(it, 3);
-                ui32char = ekg::char32str(utf8string);
-            } else if ((ui8char & 0xF8) == 0xF0) {
-                indexjump = 3;
-                utf8string = text.substr(it, 4);
-                ui32char = ekg::char32str(utf8string);
-            }
+            it += ekg::utf8checksequence(ui8char, ui32char, utf8string, text, it);
 
             if (f_renderer.ft_bool_kerning && f_renderer.ft_uint_previous) {
                 FT_Get_Kerning(f_renderer.ft_face, f_renderer.ft_uint_previous, ui32char, 0, &f_renderer.ft_vector_previous_char);
@@ -577,8 +534,8 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             }
 
             char_data = f_renderer.allocated_char_data[ui32char];
+            cursor_out_of_str = utf8_char_index + 1 == text_size && this->cursor[0] == total_it + 1;
 
-            cursor_out_of_str = stringsize + 1 == text_size && this->cursor[0] == total_it + 1;
             if (!render_cursor && (cursor_out_of_str || total_it == this->cursor[0]) && this->cursor[0] == this->cursor[1] && this->cursor[2] == it_chunk) {
                 cursor_pos.x = x + (char_data.wsize * cursor_out_of_str);
                 cursor_pos.y = y;
@@ -609,12 +566,11 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             allocator.coord2f(coordinates.x + coordinates.w, coordinates.y);
             allocator.coord2f(coordinates.x, coordinates.y);
 
-            x += char_data.wsize;
             f_renderer.ft_uint_previous = ui32char;
-            data.factor += static_cast<int32_t>(x + y + ui32char);
             total_it++;
-            it += indexjump;
-            stringsize++;
+            utf8_char_index++;
+            data.factor += static_cast<int32_t>(x + y + ui32char);
+            x += char_data.wsize;
         }
 
         if (x > this->rect_text.w) this->rect_text.w = x;

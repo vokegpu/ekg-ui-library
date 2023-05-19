@@ -23,6 +23,27 @@ float ekg::scrollsmooth {0.2f};
 int32_t ekg::hovered::id {};
 ekg::type ekg::hovered::type {};
 
+size_t ekg::utf8checksequence(uint8_t &ui8char, char32_t &ui32char, std::string &utf8string, std::string_view stringtext, size_t it) {
+    if (ui8char <= 0x7F) {
+        ui32char = static_cast<char32_t>(ui8char);
+        utf8string = ui8char;
+    } else if ((ui8char & 0xE0) == 0xC0) {
+        utf8string = stringtext.substr(it, 2);
+        ui32char = ekg::char32str(utf8string);
+        return 1;
+    } else if ((ui8char & 0xF0) == 0xE0) {
+        utf8string = stringtext.substr(it, 3);
+        ui32char = ekg::char32str(utf8string);
+        return 2;
+    } else if ((ui8char & 0xF8) == 0xF0) {
+        utf8string = stringtext.substr(it, 4);
+        ui32char = ekg::char32str(utf8string);
+        return 3;
+    }
+
+    return 0;
+}
+
 std::string ekg::utf8char32(char32_t ui32char) {
     std::string result {};
 

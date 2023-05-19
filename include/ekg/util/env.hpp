@@ -98,8 +98,8 @@ namespace ekg {
     std::string utf8substr(std::string_view, size_t, size_t);
     size_t utf8length(std::string_view);
     char32_t char32str(std::string_view);
-
     void utf8read(std::string_view, std::vector<std::string>&);
+    size_t utf8checksequence(uint8_t&, char32_t&, std::string&, std::string_view, size_t);
 
     float lerp(float, float, float);
     bool reach(ekg::timing&, uint64_t);
