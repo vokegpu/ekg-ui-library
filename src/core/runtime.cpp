@@ -638,8 +638,7 @@ void ekg::runtime::prepare_ui_env() {
 
     this->input_service.bind("scrollbar-drag", "mouse-1");
     this->input_service.bind("scrollbar-drag", "finger-click");
-    this->input_service.bind("scrollbar-scroll", "mouse-wheel-down");
-    this->input_service.bind("scrollbar-scroll", "mouse-wheel-up");
+    this->input_service.bind("scrollbar-scroll", "mouse-wheel");
 }
 
 void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {

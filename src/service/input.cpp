@@ -122,11 +122,9 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
             this->interact.z = sdl_event.wheel.preciseX;
             this->interact.w = sdl_event.wheel.preciseY;
 
+            this->callback("mouse-wheel", true);
             this->callback("mouse-wheel-up", this->interact.w > 0);
             this->callback("mouse-wheel-down", this->interact.w < 0);
-
-            this->input_released_list.emplace_back("mouse-wheel-up");
-            this->input_released_list.emplace_back("mouse-wheel-down");
             break;
         }
 
@@ -196,7 +194,12 @@ bool ekg::service::input::was_wheel() {
 }
 
 void ekg::service::input::on_update() {
-    this->wheel_event = false;
+    if (this->wheel_event) {
+        this->callback("mouse-wheel", false);
+        this->callback("mouse-wheel-up", false);
+        this->callback("mouse-wheel-down", false);
+        this->wheel_event = false;
+    }
 
     if (this->finger_wheel_event) {
         this->interact.z = 0.0f;
