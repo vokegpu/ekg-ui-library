@@ -589,31 +589,20 @@ void ekg::runtime::prepare_ui_env() {
 
     ekg::log() << "Registering user interface input bindings";
 
-    /* start of frame input binds */
     this->input_service.bind("frame-drag-activy", "mouse-1");
     this->input_service.bind("frame-drag-activy", "finger-click");
     this->input_service.bind("frame-resize-activy", "mouse-1");
     this->input_service.bind("frame-resize-activy", "finger-click");
-    /* end of frame input binds */
 
-    /* start of button input binds */
     this->input_service.bind("button-activy", "mouse-1");
     this->input_service.bind("button-activy", "finger-click");
-    /* end of button input binds */
 
-    /* start of checkbox input binds */
     this->input_service.bind("checkbox-activy", "mouse-1");
     this->input_service.bind("checkbox-activy", "finger-click");
-    this->input_service.bind("popup-activy", "mouse-3");
-    this->input_service.bind("popup-activy", "finger-hold");
-    /* end of checkbox input binds */
-    
-    /* start of popup input binds */
+
     this->input_service.bind("popup-activy", "mouse-1");
     this->input_service.bind("popup-activy", "finger-click");
-    /* end of popup input binds */
 
-    /* start of text input binds */
     this->input_service.bind("textbox-action-select-all", "lctrl+a");
     this->input_service.bind("textbox-action-select-all", "finger-hold");
     this->input_service.bind("textbox-action-select-all", "mouse-1-double");
@@ -627,14 +616,11 @@ void ekg::runtime::prepare_ui_env() {
     this->input_service.bind("textbox-action-left", "left");
     this->input_service.bind("textbox-activy", "mouse-1");
     this->input_service.bind("textbox-activy", "finger-click");
-    /* end of textbox input binds */
 
-    /* start of slider input binds */
     this->input_service.bind("slider-activy", "mouse-1");
     this->input_service.bind("slider-activy", "finger-click");
     this->input_service.bind("slider-bar-increase", "mouse-wheel-up");
     this->input_service.bind("slider-bar-decrease", "mouse-wheel-down");
-    /* end of slider input binds */
 
     this->input_service.bind("scrollbar-drag", "mouse-1");
     this->input_service.bind("scrollbar-drag", "finger-click");

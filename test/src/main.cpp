@@ -13,34 +13,14 @@
  */
 
 #include <ekg/ekg.hpp>
-#include <string>
-#include <codecvt>
-
-struct textchunk {
-    size_t size {};
-    std::string text {};
-};
-
-void somedogfunction() {
-    ekg::log() << "dog doom: ";
-}
-
-void somecatfunction() {
-    return somedogfunction();
-}
 
 /*
  * Created by Rina.
  */
 int32_t main(int32_t, char**) {
-    somecatfunction();
-
     std::string utf8pompom {"𒁑𒁕𒈢𒋟𒈙"};
     ekg::log() << utf8pompom << " utf8 size: " << ekg::utf8length(utf8pompom) << " string size: " << utf8pompom.size();
     ekg::log() << "EKG User interface library demo starting";
-
-    std::string breakedlinepompom {"pom\npomn\noo!!"};
-    ekg::log() << breakedlinepompom.find('\n');
 
     int32_t root_width {1280};
     int32_t root_height {768};

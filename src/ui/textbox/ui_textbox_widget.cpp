@@ -501,14 +501,11 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     size_t it {};
     float y_scroll {};
 
-    this->visible_chunk[0] = 0;
-    this->visible_chunk[1] = this->text_chunk_list.size();
-
     /*
      * The texti iterator jump utf8 sequences.
      * For better performance, textbox does not render texts out of rect.
      */
-    for (int64_t it_chunk {this->visible_chunk[0]}; it_chunk < this->visible_chunk[1]; it_chunk++) {
+    for (int64_t it_chunk {}; it_chunk < this->text_chunk_list.size(); it_chunk++) {
         text = this->text_chunk_list.at(it_chunk);
         x = cursor_line_thickness;
         text_size = 0;
@@ -523,9 +520,17 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             text_size = ekg::utf8length(text); 
         }
 
-
         y_scroll = this->embedded_scroll.scroll.y + y;
         if (y_scroll > rect.h) {
+            this->visible_chunk[1] = it_chunk;
+            break;
+        }
+
+        switch (this->visible_chunk[0]) {
+        case -1:
+            if (y_scroll > 0.0f) {
+                this->visible_chunk[0] = it_chunk;
+            }
             break;
         }
 
@@ -577,6 +582,26 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             utf8_char_index++;
             data.factor += static_cast<int32_t>(x + y + ui32char);
             x += char_data.wsize;
+        
+            switch (this->visible_chunk[2]) {
+            case -1:
+                if (x + this->embedded_scroll.scroll.x < 0.0f) {
+                    this->visible_chunk[2] = total_it;
+                }
+                break;
+            }
+
+            if (this->visible_chunk[2] == -1 && x + this->embedded_scroll.scroll.x < 0.0f) {
+                this->visible_chunk[2] = total_it;
+            }
+
+            if (x + this->embedded_scroll.scroll.x > rect.w) {
+                total_it -= utf8_char_index;
+                total_it += text_size;
+                this->visible_chunk[3] = text_size > this->visible_chunk[3] ? text_size : this->visible_chunk[3];
+
+                break;
+            }
         }
 
 
@@ -592,7 +617,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         ekg::draw::rect(rect.x + this->embedded_scroll.scroll.x + cursor_pos.x, rect.y + this->embedded_scroll.scroll.y + cursor_pos.y, cursor_line_thickness, this->text_height, theme.textbox_cursor);
     }
 
-    this->rect_text.h = (this->text_height * this->visible_chunk[1]) + this->text_offset;
+    this->rect_text.h = (this->text_height * this->text_chunk_list.size()) + this->text_offset;
     this->embedded_scroll.rect_child = this->rect_text;
     this->embedded_scroll.on_draw_refresh();
 
