@@ -100,17 +100,21 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
         auto &rect {this->get_abs_rect()};
         ekg::vec4 cursor_outspace_screen {
             rect.x - (this->rect_cursor.x - this->rect_cursor.w - this->cursor_char_wsize[0]),
-            rect.y - (this->rect_cursor.y - text_height),
-            0.0f,
-            0.0f
+            rect.y - (this->rect_cursor.y - this->rect_cursor.h),
+            (this->rect_cursor.x + this->cursor_char_wsize[1] + this->cursor_char_wsize[2]) - (rect.x + rect.w - this->rect_cursor.w),
+            (this->rect_cursor.y + this->rect_cursor.h + this->rect_cursor.h) - (rect.y + rect.h - this->text_offset)
         };
 
-        if (cursor_outspace_screen.x > 0.0f && (x < 0 || cursor_outspace_screen.x > this->cursor_char_wsize[0] + this->cursor_char_wsize[0])) {
+        if (cursor_outspace_screen.x > 0.0f && (x < 0 || cursor_outspace_screen.x > this->cursor_char_wsize[0] + this->rect_cursor.w)) {
             this->embedded_scroll.scroll.z += cursor_outspace_screen.x;
+        } else if (cursor_outspace_screen.z > 0.0f && (x > 0 || cursor_outspace_screen.z > this->cursor_char_wsize[1] + this->cursor_char_wsize[2] + this->rect_cursor.w)) {
+            this->embedded_scroll.scroll.z -= cursor_outspace_screen.z;
         }
 
-        if (cursor_outspace_screen.y > 0.0f && (y < 0 || cursor_outspace_screen.y > this->text_height + this->text_offset)) {
+        if (cursor_outspace_screen.y > 0.0f && (y < 0 || cursor_outspace_screen.y > this->rect_cursor.h + this->text_offset)) {
             this->embedded_scroll.scroll.w += cursor_outspace_screen.y;
+        } else if (cursor_outspace_screen.w > 0.0f && (y > 0 || cursor_outspace_screen.w > this->rect_cursor.h + this->rect_cursor.h + this->text_offset)) {
+            this->embedded_scroll.scroll.w -= cursor_outspace_screen.w;
         }
 
         ekg::reset(ekg::core->get_ui_timing());
@@ -531,9 +535,11 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     /*
      * 0 == previous char wsize
      * 1 == current char wisze
+     * 2 == next char wsize
      */
     this->cursor_char_wsize[0] = 0.0f;
     this->cursor_char_wsize[1] = 0.0f;
+    this->cursor_char_wsize[2] = 0.0f;
 
     /*
      * The texti iterator jump utf8 sequences.
@@ -588,6 +594,8 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
                 render_cursor = true;
             } else if (!render_cursor) {
                 this->cursor_char_wsize[0] = char_data.wsize * (utf8_char_index != 0);
+            } else if (this->cursor_char_wsize[2] == 0.0f) {
+                this->cursor_char_wsize[2] = char_data.wsize;
             }
 
             if (x + char_data.wsize + this->embedded_scroll.scroll.x < -char_data.wsize) {

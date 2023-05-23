@@ -31,7 +31,7 @@ namespace ekg::ui {
 
         int64_t visible_chunk[4] {};
         int64_t cursor[6] {};
-        float cursor_char_wsize[2] {};
+        float cursor_char_wsize[3] {};
 
         float text_offset {};
         float text_height {};
