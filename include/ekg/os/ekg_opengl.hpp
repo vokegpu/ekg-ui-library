@@ -18,7 +18,7 @@
 #if defined(__ANDROID__)
 #include <GLES3/gl3.h>
 #else
-#include <GLEW/glew.h>
+#include <GL/glew.h>
 #endif
 
 #endif
