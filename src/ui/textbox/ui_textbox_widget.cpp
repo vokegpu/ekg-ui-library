@@ -98,11 +98,23 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
         }
 
         auto &rect {this->get_abs_rect()};
+        ekg::vec2 cursor_pos {
+            0.0f,
+            rect.y + this->embedded_scroll.scroll.y + (static_cast<float>(this->cursor[2]) * this->text_height)
+        };
+
+        if (x != 0) {
+            std::string &current_emplace_text {this->get_cursor_emplace_text()};
+            auto ui {(ekg::ui::textbox*) this->data};
+            auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
+            cursor_pos.x = rect.x + this->embedded_scroll.scroll.x + f_renderer.get_text_width(ekg::utf8substr(current_emplace_text, 0, this->cursor[3]));
+        }
+
         ekg::vec4 cursor_outspace_screen {
-            rect.x - (this->rect_cursor.x - this->rect_cursor.w - this->cursor_char_wsize[0]),
-            rect.y - (this->rect_cursor.y - this->rect_cursor.h),
-            (this->rect_cursor.x + this->cursor_char_wsize[1] + this->cursor_char_wsize[2]) - (rect.x + rect.w - this->rect_cursor.w),
-            (this->rect_cursor.y + this->rect_cursor.h + this->rect_cursor.h) - (rect.y + rect.h - this->text_offset)
+            rect.x - cursor_pos.x,
+            rect.y - cursor_pos.y,
+            (cursor_pos.x + this->cursor_char_wsize[1] + this->cursor_char_wsize[2]) - (rect.x + rect.w - this->rect_cursor.w),
+            (cursor_pos.y + this->rect_cursor.h) - (rect.y + rect.h - this->text_offset)
         };
 
         if (cursor_outspace_screen.x > 0.0f && (x < 0 || cursor_outspace_screen.x > this->cursor_char_wsize[0] + this->rect_cursor.w)) {
@@ -111,11 +123,17 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
             this->embedded_scroll.scroll.z -= cursor_outspace_screen.z;
         }
 
+        /*
+         * Instead of targeting the scroll using the render cursor pos, this use the current cursor chunk it.
+         */
+
         if (cursor_outspace_screen.y > 0.0f && (y < 0 || cursor_outspace_screen.y > this->rect_cursor.h + this->text_offset)) {
             this->embedded_scroll.scroll.w += cursor_outspace_screen.y;
         } else if (cursor_outspace_screen.w > 0.0f && (y > 0 || cursor_outspace_screen.w > this->rect_cursor.h + this->rect_cursor.h + this->text_offset)) {
             this->embedded_scroll.scroll.w -= cursor_outspace_screen.w;
         }
+
+        ekg::log() << "pompom vou ser linda um dia e gostosaaaaaaaa, ter uma bundaaa fofaaa e seios lindooooooooos, poder usar short, saia, legging, calças largaaaaaas, ser lindaaaa, usar delineadoooooooooooo aaaaa " << cursor_outspace_screen.x << " " << cursor_outspace_screen.y;
 
         ekg::reset(ekg::core->get_ui_timing());
         ekg::dispatch(ekg::env::redraw);
@@ -600,7 +618,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
             if (x + char_data.wsize + this->embedded_scroll.scroll.x < -char_data.wsize) {
                 this->visible_chunk[2] = this->cursor[2] == it_chunk ? utf8_char_index : this->visible_chunk[2];
-            } else {
+            } else if (x + this->embedded_scroll.scroll.x < rect.w) {
                 vertices.x = x + char_data.left;
                 vertices.y = y + f_renderer.full_height - char_data.top;
 
@@ -632,7 +650,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             utf8_char_index++;
             x += char_data.wsize;
 
-            if (this->embedded_scroll.scroll.x + x > rect.w) {
+            if (this->embedded_scroll.scroll.x + x > rect.w && render_cursor) {
                 total_it -= utf8_char_index;
                 total_it += text_size;
 
