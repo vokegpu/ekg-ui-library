@@ -12,15 +12,6 @@
  * @VokeGpu 2023 all rights reserved.
  */
 
-#ifndef EKG_CPU_INFO_H
-#define EKG_CPU_INFO_H
+#include "ekg/os/info.hpp"
 
-namespace ekg {
-    enum class platform {
-        os_win, os_linux, os_android
-    };
-
-    extern ekg::platform os;
-}
-
-#endif
+ekg::platform ekg::os {};

@@ -15,14 +15,7 @@
 #ifndef EKG_GPU_GL_H
 #define EKG_GPU_GL_H
 
-#if defined(_WIN32)
-#include "GL/glew.h"
-#elif defined(__linux__)
-#include "GL/glew.h"
-#elif defined(__ANDROID__)
-#include "SDL2/SDL_opengles2_gl2.h"
-#endif
-
+#include "ekg/os/ekg_opengl.hpp"
 #include <iostream>
 #include <string>
 #include <unordered_map>

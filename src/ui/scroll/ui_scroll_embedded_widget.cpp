@@ -49,10 +49,15 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
     float service_layout_min_offset {ekg::core->get_service_layout().get_min_offset()};
 
     switch (mother_widget->data->get_type()) {
-    case ekg::type::frame:
-        ekg::ui::frame_widget *frame {(ekg::ui::frame_widget*) mother_widget};
-        this->rect_child.h += frame->docker_activy_drag.top.h;
-        break;
+        case ekg::type::frame: {
+            ekg::ui::frame_widget *frame{(ekg::ui::frame_widget *) mother_widget};
+            this->rect_child.h += frame->docker_activy_drag.top.h;
+            break;
+        }
+
+        default: {
+            break;
+        }
     }
 
     this->acceleration.y = 99999.0f;

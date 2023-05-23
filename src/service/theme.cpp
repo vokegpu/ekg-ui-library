@@ -14,7 +14,6 @@
 
 #include "ekg/service/theme.hpp"
 #include "ekg/util/env.hpp"
-#include <filesystem>
 
 void ekg::service::theme::init() {
     ekg::log() << "Initialising default theme";
@@ -60,7 +59,7 @@ void ekg::service::theme::gen_default_theme() {
     this->popup_background = {53, 61, 81, 255};
     this->popup_outline = {30, 40, 60, 100};
     this->popup_highlight = {44, 166, 255, 50};
-    this->popup_drop_animation_delay = 120.6666f;
+    this->popup_drop_animation_delay = 120;
 
     this->textbox_string = {2, 7, 22, 255};
     this->textbox_background = {202, 207, 222, 255};
@@ -79,26 +78,6 @@ void ekg::service::theme::refresh_theme_list() {
     ekg::log() << "Analysing files for themes";
 
     this->loaded_theme_list.clear();
-    std::string file_extension {};
-
-    for (auto const &files : std::filesystem::directory_iterator {{"./"}}) {
-        file_extension = files.path().filename().string();
-
-        if (file_extension.length() < 4) {
-            continue;
-        }
-
-        file_extension = file_extension.substr(file_extension.size() - 4, file_extension.size());
-
-        if (file_extension != ".ekg") {
-            continue;
-        }
-
-        file_extension = files.path().filename().string();
-        this->loaded_theme_list.push_back(file_extension);
-
-        ekg::log() << "Found theme: " << file_extension;
-    }
 }
 
 void ekg::service::theme::load_theme(const std::string &theme) {

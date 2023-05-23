@@ -13,7 +13,7 @@
  */
 
 #include "ekg/ekg.hpp"
-#include "ekg/cpu/info.hpp"
+#include "ekg/os/info.hpp"
 
 ekg::runtime* ekg::core {nullptr};
 std::string ekg::gl_version {"#version 450"};
@@ -47,10 +47,10 @@ void ekg::init(SDL_Window* root, std::string_view font_path) {
 
 #if defined(_WIN)
     ekg::os = {ekg::platform::os_win};
-#elif defined(__linux__)
-    ekg::os = {ekg::platform::os_linux};
 #elif defined(__ANDROID__)
     ekg::os = {ekg::platform::os_android};
+#elif defined(__linux__)
+    ekg::os = {ekg::platform::os_linux};
 #endif
 
     const std::string vsh_src {
@@ -58,7 +58,7 @@ ekg::gl_version + "\n"
 "layout (location = 0) in vec2 aPos;\n"
 "layout (location = 1) in vec2 aTexCoord;\n"
 
-"#define CONVEX -256\n"
+"#define CONVEX -256.0\n"
 
 "uniform mat4 uOrthographicMatrix;\n"
 "uniform vec4 uRect;\n"
@@ -84,9 +84,8 @@ ekg::gl_version + "\n"
 
     const std::string fsh_src {
 ekg::gl_version + "\n"
-""
 "layout (location = 0) out vec4 vFragColor;\n"
-"layout (binding = 0) uniform sampler2D uTexture;\n"
+"uniform sampler2D uTexture;\n" // @TODO fix binding support in OpenGL high-performance
 
 "in vec2 vTexCoord;\n"
 "in vec4 vRect;\n"
@@ -103,11 +102,12 @@ ekg::gl_version + "\n"
 "    vec2 fragPos = vec2(gl_FragCoord.x, uViewportHeight - gl_FragCoord.y);\n"
 "    bool shouldDiscard = uEnableScissor && (fragPos.x <= uScissor.x || fragPos.y <= uScissor.y || fragPos.x >= uScissor.x + uScissor.z || fragPos.y >= uScissor.y + uScissor.w);\n"
 
+"    float lineThicknessf = float(uLineThickness);\n"
 "    if (uLineThickness > 0) {"
-"        vec4 outline = vec4(vRect.x + uLineThickness, vRect.y + uLineThickness, vRect.z - (uLineThickness * 2), vRect.w - (uLineThickness * 2));\n"
+"        vec4 outline = vec4(vRect.x + lineThicknessf, vRect.y + lineThicknessf, vRect.z - (lineThicknessf * 2.0f), vRect.w - (lineThicknessf * 2.0f));\n"
 "        shouldDiscard = shouldDiscard || (fragPos.x > outline.x && fragPos.x < outline.x + outline.z && fragPos.y > outline.y && fragPos.y < outline.y + outline.w);\n"
 "    } else if (uLineThickness < 0) {\n"
-"       float radius = vRect.z / 2;\n"
+"       float radius = vRect.z / 2.0f;\n"
 "       vec2 diff = vec2((vRect.x + radius) - fragPos.x, (vRect.y + radius) - fragPos.y);\n"
 "       float dist = sqrt(diff.x * diff.x + diff.y * diff.y);\n"
 

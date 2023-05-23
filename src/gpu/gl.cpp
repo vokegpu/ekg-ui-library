@@ -13,7 +13,7 @@
  */
 
 #include "ekg/gpu/gl.hpp"
-#include "ekg/cpu/info.hpp"
+#include "ekg/os/info.hpp"
 #include "ekg/util/env.hpp"
 #include <vector>
 
@@ -60,7 +60,7 @@ bool ekg::gpu::create_basic_program(ekg::gpu::program &program, const std::unord
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &status);
             std::string msg {}; msg.resize(status);
             glGetShaderInfoLog(shader, status, nullptr, msg.data());
-            ekg::log(ekg::log::ERROR) << "Failed to compile shader: \n" << msg;
+            ekg::log(ekg::log::ERROR) << "Failed to compile shader stage: \n" << msg;
             break;
         }
 

@@ -19,7 +19,7 @@
 #include "ekg/util/geometry.hpp"
 #include <map>
 #include <vector>
-#include <SDL2/SDL.h>
+#include "ekg/os/ekg_sdl.hpp"
 
 namespace ekg::service {
         class input {

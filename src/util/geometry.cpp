@@ -15,7 +15,6 @@
 #include "ekg/util/geometry.hpp"
 #include "ekg/ekg.hpp"
 
-
 float ekg::display::dt {};
 int32_t ekg::display::width {};
 int32_t ekg::display::height {};

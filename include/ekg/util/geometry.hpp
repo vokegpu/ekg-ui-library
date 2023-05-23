@@ -63,6 +63,10 @@ namespace ekg {
         };
 
         inline vec2() = default;
+        inline vec2(float _x, float _y) {
+            this->x = _x;
+            this->y = _y;
+        };
     } vec2;
 
     ekg::vec2 operator/(const ekg::vec2&, float);
@@ -75,6 +79,13 @@ namespace ekg {
                 float z;
             };
         };
+
+        inline vec3() = default;
+        inline vec3(float _x, float _y, float _z) {
+            this->x = _x;
+            this->y = _y;
+            this->z = _z;
+        }
     } vec3;
 
     typedef struct vec4 {

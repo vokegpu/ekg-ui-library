@@ -292,6 +292,10 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
 
             break;
         }
+
+        default: {
+            break;
+        }
     }
 
     this->scaled_width_divided = parent_rect.w / 3;

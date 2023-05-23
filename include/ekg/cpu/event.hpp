@@ -17,7 +17,7 @@
 
 #include <iostream>
 #include <functional>
-#include <SDL2/SDL.h>
+#include "ekg/os/ekg_sdl.hpp"
 
 namespace ekg {
     namespace cpu {

@@ -1,5 +1,4 @@
 #include "ekg/cpu/event.hpp"
-#include <SDL2/SDL.h>
 
 uint32_t ekg::listener {};
 

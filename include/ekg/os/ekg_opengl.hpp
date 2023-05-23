@@ -12,18 +12,13 @@
  * @VokeGpu 2023 all rights reserved.
  */
 
-#ifndef EKG_UTIL_EVENT_H
-#define EKG_UTIL_EVENT_H
+#ifndef EKG_OS_OPENGL_H
+#define EKG_OS_OPENGL_H
 
-#include "ekg/util/env.hpp"
-#include "ekg/cpu/event.hpp"
-#include "ekg/os/ekg_sdl.hpp"
-#include <iostream>
-
-namespace ekg {
-    void dispatch(ekg::cpu::event*);
-    void dispatch(const ekg::env&);
-    bool listen(ekg::cpu::uievent&, SDL_Event&);
-}
+#if defined(__ANDROID__)
+#include <GLES3/gl3.h>
+#else
+#include <GLEW/glew.h>
+#endif
 
 #endif

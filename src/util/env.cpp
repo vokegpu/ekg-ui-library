@@ -15,7 +15,7 @@
 #include "ekg/util/util_event.hpp"
 #include "ekg/ekg.hpp"
 
-#include <SDL2/SDL.h>
+#include "ekg/os/ekg_sdl.hpp"
 #include <fstream>
 
 bool ekg::debug {};

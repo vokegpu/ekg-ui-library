@@ -16,7 +16,7 @@
 #define EKG_UI_ABSTRACT_WIDGET_H
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
-#include <SDL2/SDL.h>
+#include "ekg/os/ekg_sdl.hpp"
 
 namespace ekg::ui {
     class abstract_widget : public ekg::feature {

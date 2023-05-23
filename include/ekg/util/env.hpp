@@ -19,6 +19,10 @@
 #include <sstream>
 #include <vector>
 
+#if defined(__ANDROID__)
+#include <android/log.h>
+#endif
+
 namespace ekg {
     extern bool debug;
     extern float scrollsmooth;
@@ -84,7 +88,13 @@ namespace ekg {
 
         ~log() {
             this->buffer << '\n';
+
+#if defined(__ANDROID__)
+            std::string logmsg {this->buffer.str()};
+            __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", logmsg.c_str());
+#else
             std::cout << this->buffer.str();
+#endif
         }
 
         template<typename t>

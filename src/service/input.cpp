@@ -133,8 +133,8 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
             ekg::reset(this->timing_last_interact);
             bool reach_double_interact {ekg::reach(this->double_interact, 500)};
 
-            this->last_finger_interact.x = sdl_event.tfinger.x;
-            this->last_finger_interact.y = sdl_event.tfinger.y;
+            this->last_finger_interact.x = sdl_event.tfinger.x * ekg::display::width;
+            this->last_finger_interact.y = sdl_event.tfinger.y * ekg::display::height;
 
             this->callback("finger-click", true);
             this->callback("finger-click-double", !reach_double_interact);
@@ -156,8 +156,8 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
 
         case SDL_FINGERMOTION: {
             this->motion_event = true;
-            this->interact.x = sdl_event.tfinger.x;
-            this->interact.y = sdl_event.tfinger.y;
+            this->interact.x = sdl_event.tfinger.x * ekg::display::width;
+            this->interact.y = sdl_event.tfinger.y * ekg::display::height;
 
             this->interact.z = this->interact.x - this->interact.z;
             this->interact.w = this->interact.y - this->interact.w;
