@@ -28,13 +28,11 @@ namespace ekg::ui {
         ekg::rect rect_text {};
         ekg::ui::scroll_embedded_widget embedded_scroll {};
 
-        int64_t visible_chunk[2] {};
+        int64_t visible_chunk[4] {};
         int64_t cursor[6] {};
 
-        float scroll[4] {};
         float text_offset {};
         float text_height {};
-
         bool redraw_cursor {};
     public:
         void check_cursor_text_bounding();

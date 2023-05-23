@@ -103,19 +103,17 @@ int32_t main(int32_t, char**) {
         frame2->set_drag(ekg::dock::top);
         frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-        ekg::textbox("Search", textcatsampler, ekg::dock::fill | ekg::dock::next)->set_scaled_height(12);
         ekg::label("não", ekg::dock::fill | ekg::dock::next);
-        ekg::button("Button 2.1", ekg::dock::fill);
-        ekg::button("Button 2.2", fillnext);
-        ekg::button("Button 2.3");
-        ekg::button("Button 3", ekg::dock::next);
-        ekg::button("Button 4")->set_callback(new ekg::cpu::event {"pompom4", nullptr, [](void *p_data) {
+        ekg::textbox("Search", textcatsampler, ekg::dock::fill | ekg::dock::next)->set_scaled_height(12);
+        //ekg::button("Button 2.1", ekg::dock::fill);
+        //ekg::button("Button 2.2", fillnext);
+        //ekg::button("Button 2.3");
+        //ekg::button("Button 3", ekg::dock::next);
+        //ekg::button("Button 4");
 
-        }});
-
-        auto slider = ekg::slider("Button 1", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
-        slider->set_text_align(ekg::dock::center);
-        slider->set_precision(23);
+        //auto slider = ekg::slider("Button 1", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
+        //slider->set_text_align(ekg::dock::center);
+        //slider->set_precision(23);
     }
 
     // ekg::button("Button 7", ekg::dock::right);
