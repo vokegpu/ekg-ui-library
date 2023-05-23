@@ -39,7 +39,7 @@ void ekg::service::theme::gen_default_theme() {
     this->button_highlight = {44, 166, 255, 50};
 
     this->checkbox_string = {141, 141, 141, 255};
-    this->checkbox_background = {204, 204, 204, 255};
+    this->checkbox_background = {204, 204, 204, 0};
     this->checkbox_activy = {44, 166, 255, 200};
     this->checkbox_outline = {202, 207, 222, 0};
     this->checkbox_highlight = {44, 166, 255, 50};

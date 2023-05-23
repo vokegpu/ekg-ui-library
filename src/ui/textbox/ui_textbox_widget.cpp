@@ -31,7 +31,10 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
         int64_t base_it {ekg::min(this->cursor[0] - this->cursor[3], (int64_t) 0)};
         std::string &emplace_text {this->get_cursor_emplace_text()};
         int64_t emplace_text_size {(int64_t) ekg::utf8length(emplace_text)};
+
         bool text_chunk_it_bounding_size {this->cursor[2] + 1 == this->text_chunk_list.size()};
+        bool check_cursor_x {x != 0};
+        bool check_cursor_y {y != 0};
 
         if (x < 0) {
             x = abs(x);
@@ -68,21 +71,21 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
                 emplace_text_size = (int64_t) ekg::utf8length(this->get_cursor_emplace_text());
                 this->cursor[3] = this->cursor[4];
                 this->cursor[3] = ekg::max(this->cursor[3], (int64_t) emplace_text_size);
-                this->cursor[0] += this->cursor[3];        
+                this->cursor[0] += this->cursor[3];
             }
         }
 
-        if (this->cursor[0] < base_it && this->cursor[2] > 0 && x != 0) {
+        if (this->cursor[0] < base_it && this->cursor[2] > 0 && check_cursor_x) {
             this->cursor[2]--;
             this->cursor[0] = base_it;
             this->cursor[3] = ekg::utf8length(this->get_cursor_emplace_text());
         }
 
         int64_t base_it_plus_emplace_text_size {base_it + emplace_text_size};
-        if (this->cursor[0] > base_it_plus_emplace_text_size && text_chunk_it_bounding_size && x != 0) {
+        if (this->cursor[0] > base_it_plus_emplace_text_size && text_chunk_it_bounding_size && check_cursor_x) {
             this->cursor[0] = base_it_plus_emplace_text_size;
             this->cursor[3] = emplace_text_size;
-        } else if (this->cursor[0] > base_it_plus_emplace_text_size && x != 0) {
+        } else if (this->cursor[0] > base_it_plus_emplace_text_size && check_cursor_x) {
             this->cursor[0] = base_it_plus_emplace_text_size;
             this->cursor[2]++;
             this->cursor[3] = 0;
@@ -93,22 +96,19 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
         this->cursor[3] = ekg::min(this->cursor[3], (int64_t) 0);
         this->cursor[2] = ekg::max(this->cursor[2], (int64_t) this->text_chunk_list.size());
 
-        if (x != 0) {
+        if (check_cursor_x) {
             this->cursor[4] = this->cursor[3];
         }
 
+        std::string &current_emplace_text {this->get_cursor_emplace_text()};
+        auto ui {(ekg::ui::textbox*) this->data};
+        auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
         auto &rect {this->get_abs_rect()};
+
         ekg::vec2 cursor_pos {
-            0.0f,
+            rect.x + this->embedded_scroll.scroll.x + f_renderer.get_text_width(ekg::utf8substr(current_emplace_text, 0, this->cursor[3])),
             rect.y + this->embedded_scroll.scroll.y + (static_cast<float>(this->cursor[2]) * this->text_height)
         };
-
-        if (x != 0) {
-            std::string &current_emplace_text {this->get_cursor_emplace_text()};
-            auto ui {(ekg::ui::textbox*) this->data};
-            auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
-            cursor_pos.x = rect.x + this->embedded_scroll.scroll.x + f_renderer.get_text_width(ekg::utf8substr(current_emplace_text, 0, this->cursor[3]));
-        }
 
         ekg::vec4 cursor_outspace_screen {
             rect.x - cursor_pos.x,
@@ -133,9 +133,7 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
             this->embedded_scroll.scroll.w -= cursor_outspace_screen.w;
         }
 
-        ekg::log() << "pompom vou ser linda um dia e gostosaaaaaaaa, ter uma bundaaa fofaaa e seios lindooooooooos, poder usar short, saia, legging, calças largaaaaaas, ser lindaaaa, usar delineadoooooooooooo aaaaa " << cursor_outspace_screen.x << " " << cursor_outspace_screen.y;
-
-        ekg::reset(ekg::core->get_ui_timing());
+    ekg::reset(ekg::core->get_ui_timing());
         ekg::dispatch(ekg::env::redraw);
     }
 }
