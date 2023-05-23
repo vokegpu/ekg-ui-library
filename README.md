@@ -4,7 +4,7 @@ The official runtime ekg ui library source code.
 
 The purpose of ekg is being fully customizable, smooth and with many animations. Also perform good in low pc specs. This is the new core version of ekg, rewrite of legacy core. 
 
-![Image Text](https://github.com/vokegpu/ekg-ui-library/blob/version-core/splash/ekg-2-showcase-+textbox+utf8.png?raw=true)
+![Image Text](/splash/splash-shocase-3.0-light-theme.png?raw=true)
 
 ```c++
 auto frame2 = ekg::frame("text sampler", {20, 30}, {400, 400});
