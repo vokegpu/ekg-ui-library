@@ -27,25 +27,25 @@ void ekg::service::theme::quit() {
 }
 
 void ekg::service::theme::gen_default_theme() {
-    this->frame_background = {70, 81, 109, 255};
+    this->frame_background = {242, 242, 242, 255};
     this->frame_border = {190, 190, 190, 0};
     this->frame_outline = {30, 40, 60, 100};
     this->frame_activy_offset = 18;
 
-    this->button_string = {202, 207, 222, 255};
-    this->button_background = {53, 61, 81, 255};
-    this->button_activy = {44, 166, 255, 200};
-    this->button_outline = {202, 207, 222, 150};
+    this->button_string = {141, 141, 141, 255};
+    this->button_background = {204, 204, 204, 50};
+    this->button_activy = {44, 166, 255, 100};
+    this->button_outline = {202, 207, 222, 0};
     this->button_highlight = {44, 166, 255, 50};
 
-    this->checkbox_string = {202, 207, 222, 255};
-    this->checkbox_background = {53, 61, 81, 255};
+    this->checkbox_string = {141, 141, 141, 255};
+    this->checkbox_background = {204, 204, 204, 255};
     this->checkbox_activy = {44, 166, 255, 200};
-    this->checkbox_outline = {202, 207, 222, 150};
+    this->checkbox_outline = {202, 207, 222, 0};
     this->checkbox_highlight = {44, 166, 255, 50};
 
-    this->slider_string = {202, 207, 222, 255};
-    this->slider_background = {53, 61, 81, 255};
+    this->slider_string = {141, 141, 141, 255};
+    this->slider_background = {204, 204, 204, 255};
     this->slider_activy = {44, 166, 255, 200};
     this->slider_outline = {202, 207, 222, 150};
     this->slider_highlight = {44, 166, 255, 50};
@@ -53,21 +53,21 @@ void ekg::service::theme::gen_default_theme() {
     this->slider_bar_thickness = 16;
     this->slider_target_thickness = 32;
 
-    this->label_string = {202, 207, 222, 255};
+    this->label_string = {141, 141, 141, 255};
 
-    this->popup_string = {202, 207, 222, 255};
-    this->popup_background = {53, 61, 81, 255};
-    this->popup_outline = {30, 40, 60, 100};
-    this->popup_highlight = {44, 166, 255, 50};
+    this->popup_string = {141, 141, 141, 255};
+    this->popup_background = {242, 242, 242, 255};
+    this->popup_outline = {30, 40, 60, 0};
+    this->popup_highlight = {206, 225, 239, 255};
     this->popup_drop_animation_delay = 120;
 
-    this->textbox_string = {2, 7, 22, 255};
-    this->textbox_background = {202, 207, 222, 255};
+    this->textbox_string = {141, 141, 141, 255};
+    this->textbox_background = {242, 242, 242, 255};
     this->textbox_outline = {202, 207, 222, 150};
     this->textbox_select = {2, 7, 222, 255};
-    this->textbox_cursor = {2, 7, 22, 255};
+    this->textbox_cursor = {141, 141, 141, 255};
 
-    this->scrollbar_background = {53, 61, 81, 255};
+    this->scrollbar_background = {202, 202, 202, 255};
     this->scrollbar_outline = {202, 207, 222, 150};
     this->scrollbar_activy = {44, 166, 255, 200};
     this->scrollbar_highlight = {44, 166, 255, 50};
@@ -78,6 +78,10 @@ void ekg::service::theme::refresh_theme_list() {
     ekg::log() << "Analysing files for themes";
 
     this->loaded_theme_list.clear();
+
+    /*
+     * Important: do not use filesystem, it is not compatible with mostly recently version of NDK SDK. 
+     */
 }
 
 void ekg::service::theme::load_theme(const std::string &theme) {

@@ -53,7 +53,7 @@ install(TARGETS ekg LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} PUBLIC_HEADER DE
 install(FILES ${CMAKE_BINARY_DIR}/ekg.pc DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
 
 message("-- Lib successfully created")
-set(ENABLE_TEST FALSE)
+set(ENABLE_TEST WIN32 || LINUX)
 
 if (ENABLE_TEST)
     project(ekg_ui_library)

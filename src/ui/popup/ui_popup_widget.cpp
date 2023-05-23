@@ -139,6 +139,8 @@ void ekg::ui::popup_widget::on_reload() {
         this->dimension.h += layout_mask.h;
     }
 
+    // @TODO fix the final size of popup which is a bit more higher than the initial offset.
+
     /* Extra offset to final rect. */
     this->dimension.h += offset;
 
@@ -232,6 +234,18 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
 
             switch (hover) {
             case -1:
+                if (this->popup_opened == it && (component = component_list.at(it)).linked_id != 0 && (popup = (ekg::ui::popup_widget*) ekg::core->get_fast_widget_by_id(component.linked_id)) != nullptr) {
+                    popup->data->set_state(ekg::state::invisible);
+                    popup->top_level_popup = this->top_level_popup;
+
+                    popup->parent_id_popup_opened = false;
+                    popup->unset_visible_all_sub_popup();
+
+                    ekg::reload(component.linked_id);
+                    ekg::dispatch(ekg::env::redraw);
+                    this->popup_opened = -1;
+                }
+
                 break;
             default:
                 /* When the popup is linked with another some other popup widget, this should showcase the popup linked. */
@@ -354,7 +368,7 @@ void ekg::ui::popup_widget::on_draw_refresh() {
 
         // Draw separator.
         if (element.separator) {
-            ekg::draw::rect(rect.x + element.rect_bound.x, rect.y + element.rect_bound.y + element.rect_bound.h - 0.5f, element.rect_bound.w, 1.0f, theme.popup_outline);
+            ekg::draw::rect(rect.x + element.rect_bound.x, rect.y + element.rect_bound.y + element.rect_bound.h - 0.5f, element.rect_bound.w, 1.0f, theme.popup_string);
         }
 
         if (this->hovered_element == it) {

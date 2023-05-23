@@ -107,6 +107,12 @@ void ekg::draw::font_renderer::reload() {
         glDeleteTextures(1, &this->texture);
     }
 
+
+    /*
+     * Android does not support GL_RED, perharps because of the archtecture of GPU.
+     * For this reason, the internal format and format is GL_ALPHA ans not GL_RED.
+     * Also both of internal format, and format is the same.
+     */
     auto internal_format {GL_RED};
     if (ekg::os == ekg::platform::os_android) {
         internal_format = GL_ALPHA;
@@ -135,6 +141,7 @@ void ekg::draw::font_renderer::reload() {
         offset += char_data.w;
     }
 
+    // GLES 3 does not support swizzle function, the format GL_ALPHA supply this issue.
 #if defined(__ANDROID__)
 #else
     GLint swizzle_format[] {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
@@ -143,8 +150,9 @@ void ekg::draw::font_renderer::reload() {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
 #endif
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
