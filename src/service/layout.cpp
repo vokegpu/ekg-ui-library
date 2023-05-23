@@ -281,22 +281,24 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
     }
 
     float group_top_offset {this->min_offset};
-    switch (type) {
-        case ekg::type::frame: {
-            auto widget_group {(ekg::ui::frame_widget*) widget_parent};
-            auto ui_group {(ekg::ui::frame*) widget_parent->data};
 
-            if (ekg::bitwise::contains(ui_group->get_drag_dock(), ekg::dock::top)) {
-                group_top_offset = widget_group->docker_activy_drag.top.h;
-            }
+    // This feature is currently disabled.
+    // switch (type) {
+    //     case ekg::type::frame: {
+    //         auto widget_group {(ekg::ui::frame_widget*) widget_parent};
+    //         auto ui_group {(ekg::ui::frame*) widget_parent->data};
 
-            break;
-        }
+    //         if (ekg::bitwise::contains(ui_group->get_drag_dock(), ekg::dock::top)) {
+    //             group_top_offset = this->min_offset;
+    //         }
 
-        default: {
-            break;
-        }
-    }
+    //         break;
+    //     }
+
+    //     default: {
+    //         break;
+    //     }
+    // }
 
     this->scaled_width_divided = parent_rect.w / 3;
     this->scaled_width_divided = parent_rect.h / 2;

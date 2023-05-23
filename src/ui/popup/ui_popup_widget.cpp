@@ -368,7 +368,7 @@ void ekg::ui::popup_widget::on_draw_refresh() {
 
         // Draw separator.
         if (element.separator) {
-            ekg::draw::rect(rect.x + element.rect_bound.x, rect.y + element.rect_bound.y + element.rect_bound.h - 0.5f, element.rect_bound.w, 1.0f, theme.popup_string);
+            ekg::draw::rect(rect.x + element.rect_bound.x, rect.y + element.rect_bound.y + element.rect_bound.h - 0.5f, element.rect_bound.w, 1.0f, theme.popup_separator);
         }
 
         if (this->hovered_element == it) {

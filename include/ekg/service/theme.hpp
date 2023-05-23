@@ -55,6 +55,7 @@ namespace ekg::service {
         ekg::vec4 popup_background {};
         ekg::vec4 popup_outline {};
         ekg::vec4 popup_highlight {};
+        ekg::vec4 popup_separator {};
         int64_t popup_drop_animation_delay {};
 
         ekg::vec4 textbox_string {};

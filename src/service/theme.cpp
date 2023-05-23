@@ -47,7 +47,7 @@ void ekg::service::theme::gen_default_theme() {
     this->slider_string = {141, 141, 141, 255};
     this->slider_background = {204, 204, 204, 255};
     this->slider_activy = {44, 166, 255, 200};
-    this->slider_outline = {202, 207, 222, 150};
+    this->slider_outline = {202, 207, 222, 0};
     this->slider_highlight = {44, 166, 255, 50};
     this->slider_activy_bar = this->slider_activy;
     this->slider_bar_thickness = 16;
@@ -59,6 +59,7 @@ void ekg::service::theme::gen_default_theme() {
     this->popup_background = {242, 242, 242, 255};
     this->popup_outline = {30, 40, 60, 0};
     this->popup_highlight = {206, 225, 239, 255};
+    this->popup_separator = {202, 207, 222, 150};
     this->popup_drop_animation_delay = 120;
 
     this->textbox_string = {141, 141, 141, 255};
