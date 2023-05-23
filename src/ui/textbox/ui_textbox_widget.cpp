@@ -37,10 +37,12 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
             x = abs(x);
             this->cursor[0] -= x;
             this->cursor[3] -= x;
+            x = -1;
         } else if (x > 0) {
             x = abs(x);
             this->cursor[0] += x;
             this->cursor[3] += x;
+            x = 1;
         }
 
         if (y < 0) {
@@ -93,6 +95,22 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
 
         if (x != 0) {
             this->cursor[4] = this->cursor[3];
+        }
+
+        auto &rect {this->get_abs_rect()};
+        ekg::vec4 cursor_outspace_screen {
+            rect.x - (this->rect_cursor.x - this->rect_cursor.w - this->cursor_char_wsize[0]),
+            rect.y - (this->rect_cursor.y - text_height),
+            0.0f,
+            0.0f
+        };
+
+        if (cursor_outspace_screen.x > 0.0f && (x < 0 || cursor_outspace_screen.x > this->cursor_char_wsize[0] + this->cursor_char_wsize[0])) {
+            this->embedded_scroll.scroll.z += cursor_outspace_screen.x;
+        }
+
+        if (cursor_outspace_screen.y > 0.0f && (y < 0 || cursor_outspace_screen.y > this->text_height + this->text_offset)) {
+            this->embedded_scroll.scroll.w += cursor_outspace_screen.y;
         }
 
         ekg::reset(ekg::core->get_ui_timing());
@@ -209,10 +227,9 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
     uint8_t ui8char {};
     std::string utf8string {};
     size_t utf8_char_index {};
-    float cursor_line_thickness {2.0f};
 
     for (std::string &text : this->text_chunk_list) {
-        x = rect.x + cursor_line_thickness + this->embedded_scroll.scroll.x;
+        x = rect.x + this->rect_cursor.w + this->embedded_scroll.scroll.x;
         utf8_char_index = 0;
         f_renderer.ft_uint_previous = 0;
 
@@ -481,7 +498,6 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     ekg::rect coordinates {};
     ekg::char_data char_data {};
 
-    ekg::vec2 cursor_pos {};
     uint64_t total_it {};
     bool cursor_out_of_str {};
     bool render_cursor {};
@@ -495,16 +511,29 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     char32_t ui32char {};
     uint8_t ui8char {};
     std::string utf8string {};
-    size_t text_size {};
+    int64_t text_size {};
     size_t utf8_char_index {};
-    float cursor_line_thickness {2.0f};
     size_t it {};
     float y_scroll {};
 
+
+    /*
+     * Visible chunk is used to reduce GPU allocament.
+     */
     this->visible_chunk[0] = -1;
     this->visible_chunk[1] = -1;
     this->visible_chunk[2] = -1;
     this->visible_chunk[3] = -1;
+
+    this->rect_cursor.w = 2.0f;
+    this->rect_cursor.h = this->text_height;
+
+    /*
+     * 0 == previous char wsize
+     * 1 == current char wisze
+     */
+    this->cursor_char_wsize[0] = 0.0f;
+    this->cursor_char_wsize[1] = 0.0f;
 
     /*
      * The texti iterator jump utf8 sequences.
@@ -512,14 +541,14 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
      */
     for (int64_t it_chunk {}; it_chunk < this->text_chunk_list.size(); it_chunk++) {
         text = this->text_chunk_list.at(it_chunk);
-        x = cursor_line_thickness;
+        x = this->rect_cursor.w;
         text_size = 0;
         f_renderer.ft_uint_previous = 0;
         utf8_char_index = 0;
 
         if (!render_cursor && text.empty() && this->cursor[2] == it_chunk && this->cursor[0] == this->cursor[1]) {
-            cursor_pos.x = x;
-            cursor_pos.y = y;
+            this->rect_cursor.x = rect.x + x + this->embedded_scroll.scroll.x;
+            this->rect_cursor.y = rect.y + y + this->embedded_scroll.scroll.y;
             render_cursor = true;
         } else {
             text_size = ekg::utf8length(text); 
@@ -553,58 +582,53 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             cursor_out_of_str = utf8_char_index + 1 == text_size && this->cursor[0] == total_it + 1;
 
             if (!render_cursor && (cursor_out_of_str || total_it == this->cursor[0]) && this->cursor[0] == this->cursor[1] && this->cursor[2] == it_chunk) {
-                cursor_pos.x = x + (char_data.wsize * cursor_out_of_str);
-                cursor_pos.y = y;
+                this->rect_cursor.x = rect.x + x + (char_data.wsize * cursor_out_of_str) + this->embedded_scroll.scroll.x;
+                this->rect_cursor.y = rect.y + y + this->embedded_scroll.scroll.y; 
+                this->cursor_char_wsize[1] = char_data.wsize;
                 render_cursor = true;
+            } else if (!render_cursor) {
+                this->cursor_char_wsize[0] = char_data.wsize * (utf8_char_index != 0);
             }
 
-            vertices.x = x + char_data.left;
-            vertices.y = y + f_renderer.full_height - char_data.top;
+            if (x + char_data.wsize + this->embedded_scroll.scroll.x < -char_data.wsize) {
+                this->visible_chunk[2] = this->cursor[2] == it_chunk ? utf8_char_index : this->visible_chunk[2];
+            } else {
+                vertices.x = x + char_data.left;
+                vertices.y = y + f_renderer.full_height - char_data.top;
 
-            vertices.w = char_data.w;
-            vertices.h = char_data.h;
+                vertices.w = char_data.w;
+                vertices.h = char_data.h;
 
-            coordinates.x = char_data.x;
-            coordinates.w = vertices.w / f_renderer.full_width;
-            coordinates.h = vertices.h / f_renderer.full_height;
+                coordinates.x = char_data.x;
+                coordinates.w = vertices.w / f_renderer.full_width;
+                coordinates.h = vertices.h / f_renderer.full_height;
 
-            allocator.vertex2f(vertices.x, vertices.y);
-            allocator.vertex2f(vertices.x, vertices.y + vertices.h);
-            allocator.vertex2f(vertices.x + vertices.w, vertices.y + vertices.h);
-            allocator.vertex2f(vertices.x + vertices.w, vertices.y + vertices.h);
-            allocator.vertex2f(vertices.x + vertices.w, vertices.y);
-            allocator.vertex2f(vertices.x, vertices.y);
+                allocator.vertex2f(vertices.x, vertices.y);
+                allocator.vertex2f(vertices.x, vertices.y + vertices.h);
+                allocator.vertex2f(vertices.x + vertices.w, vertices.y + vertices.h);
+                allocator.vertex2f(vertices.x + vertices.w, vertices.y + vertices.h);
+                allocator.vertex2f(vertices.x + vertices.w, vertices.y);
+                allocator.vertex2f(vertices.x, vertices.y);
 
-            allocator.coord2f(coordinates.x, coordinates.y);
-            allocator.coord2f(coordinates.x, coordinates.y + coordinates.h);
-            allocator.coord2f(coordinates.x + coordinates.w, coordinates.y + coordinates.h);
-            allocator.coord2f(coordinates.x + coordinates.w, coordinates.y + coordinates.h);
-            allocator.coord2f(coordinates.x + coordinates.w, coordinates.y);
-            allocator.coord2f(coordinates.x, coordinates.y);
+                allocator.coord2f(coordinates.x, coordinates.y);
+                allocator.coord2f(coordinates.x, coordinates.y + coordinates.h);
+                allocator.coord2f(coordinates.x + coordinates.w, coordinates.y + coordinates.h);
+                allocator.coord2f(coordinates.x + coordinates.w, coordinates.y + coordinates.h);
+                allocator.coord2f(coordinates.x + coordinates.w, coordinates.y);
+                allocator.coord2f(coordinates.x, coordinates.y);
+                data.factor += static_cast<int32_t>(x + y + ui32char);
+            }
 
             f_renderer.ft_uint_previous = ui32char;
             total_it++;
             utf8_char_index++;
-            data.factor += static_cast<int32_t>(x + y + ui32char);
             x += char_data.wsize;
-        
-            switch (this->visible_chunk[2]) {
-            case -1:
-                if (x + this->embedded_scroll.scroll.x < 0.0f) {
-                    this->visible_chunk[2] = total_it;
-                }
-                break;
-            }
 
-            if (this->visible_chunk[2] == -1 && x + this->embedded_scroll.scroll.x < 0.0f) {
-                this->visible_chunk[2] = total_it;
-            }
-
-            if (x + this->embedded_scroll.scroll.x > rect.w) {
+            if (this->embedded_scroll.scroll.x + x > rect.w) {
                 total_it -= utf8_char_index;
                 total_it += text_size;
-                this->visible_chunk[3] = text_size > this->visible_chunk[3] ? text_size : this->visible_chunk[3];
 
+                this->visible_chunk[3] = this->cursor[2] == it_chunk ? utf8_char_index : this->visible_chunk[3];
                 break;
             }
         }
@@ -619,7 +643,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     allocator.dispatch();
 
     if (render_cursor && this->flag.focused && !ekg::reach(ekg::core->get_ui_timing(), 500)) {
-        ekg::draw::rect(rect.x + this->embedded_scroll.scroll.x + cursor_pos.x, rect.y + this->embedded_scroll.scroll.y + cursor_pos.y, cursor_line_thickness, this->text_height, theme.textbox_cursor);
+        ekg::draw::rect(this->rect_cursor, theme.textbox_cursor);
     }
 
     this->rect_text.h = (this->text_height * this->text_chunk_list.size()) + this->text_offset;

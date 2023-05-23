@@ -26,10 +26,12 @@ namespace ekg::ui {
         std::vector<std::string> text_chunk_list {};
         std::string widget_side_text {};
         ekg::rect rect_text {};
+        ekg::rect rect_cursor {};
         ekg::ui::scroll_embedded_widget embedded_scroll {};
 
         int64_t visible_chunk[4] {};
         int64_t cursor[6] {};
+        float cursor_char_wsize[2] {};
 
         float text_offset {};
         float text_height {};
