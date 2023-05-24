@@ -4,6 +4,11 @@ The official runtime ekg ui library source code.
 
 The purpose of ekg is being fully customizable, smooth and with many animations. Also perform good in low pc specs. This is the new core version of ekg, rewrite of legacy core. 
 
+Be sure you compile this thee libs:
+![GLEW](https://glew.sourceforge.net/), ![SDL2](https://www.libsdl.org/), and ![Freetype](https://freetype.org/).
+
+If you are on Android NDK, please replace GLEW with GLES3.
+
 ![Image Text](/splash/splash-shocase-3.0-light-theme.png?raw=true)
 
 ```c++
@@ -39,7 +44,7 @@ Note that you need to link all dependencies that come with ekg: ![SDL2](https://
 int32_t main(int32_t, char**) {
   // create SDL2 window and OpenGL context.
   //... init ekg.
-  ekg::init(sdl_window);
+  ekg::init(sdl_window, "./font.ttf");
   
   // create GUI elements here or somewhere in the code, but once tick.
   ekg::frame("fps frame", {20, 20}, {200, 200});
@@ -64,7 +69,7 @@ int32_t main(int32_t, char**) {
     
     // remember to set delta time ticks of ekg.
     // this is very important to UI animations. 
-    ekg::dt = 0.16f; // running 60 fps -> t = 1000 / 60 -> dt = t / 100;
+    ekg::dt = 0.016f; // running 60 fps -> t = 1000 / 60 -> dt = t / 100;
     
     // the update section (it comes before render segment).
     ekg::update();
