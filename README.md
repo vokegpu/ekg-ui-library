@@ -143,12 +143,16 @@ if (ekg::input::pressed("hii!! :))")) {
 }
 ```
 
-# Buffering
+# Widgets
 
-`ekg` library automatically sets the OpenGL API, if your project is running in NDK the ekg sets to OpenGL ES, for high performance applications sets OpenGL 4 or 3.
-
-All buffers into gpu are handled and optimized by `ekg::gpu::allocator`, allocator protects your gpu from multiples buffers dispatch, two buffers based interact with high shading communication making a partial instanced rendering.
-
----
+At total there is 40% of widgets done:
+- Button
+- Checkbox
+- Frame
+- Label
+- Popup
+- Scroll
+- Slider/ProgressBar
+- Textbox/Entryfield
 
 @VokeGpu 2023 All rights reserved.
