@@ -95,7 +95,7 @@ namespace ekg {
     /*
      * Create checkbox UI.
      */
-    ekg::ui::checkbox *checkbox(std::string_view, uint16_t = ekg::dock::none);
+    ekg::ui::checkbox *checkbox(std::string_view, bool, uint16_t = ekg::dock::none);
 
     /*
      * Create slider UI.

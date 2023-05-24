@@ -15,6 +15,21 @@
 #include "ekg/ui/checkbox/ui_checkbox.hpp"
 #include "ekg/util/util_ui.hpp"
 
+void ekg::ui::checkbox::set_callback(ekg::cpu::event *event) {
+    event->flags = ekg::bitwise::add(event->flags, ekg::event::shared);
+
+    if (this->callback != event && this->callback != nullptr) {
+        delete this->callback;
+        this->callback = nullptr;
+    }
+
+    this->callback = event;
+}
+
+ekg::cpu::event *ekg::ui::checkbox::get_callback() {
+    return this->callback;
+}
+
 void ekg::ui::checkbox::set_font_size(ekg::font font) {
     if (this->font_size != font) {
         this->font_size = font;

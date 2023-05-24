@@ -258,7 +258,7 @@ ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
     return ui;
 }
 
-ekg::ui::checkbox *ekg::checkbox(std::string_view text, uint16_t dock) {
+ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, uint16_t dock) {
     auto ui {new ekg::ui::checkbox()};
     ui->set_type(ekg::type::checkbox);
     ekg::core->gen_widget(ui);
@@ -270,6 +270,7 @@ ekg::ui::checkbox *ekg::checkbox(std::string_view text, uint16_t dock) {
     ui->set_text_align(ekg::dock::left | ekg::dock::center);
     ui->set_box_align(ekg::dock::left | ekg::dock::center);
     ui->set_tag(text);
+    ui->set_value(value);
 
     return ui;
 }

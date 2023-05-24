@@ -22,6 +22,7 @@ namespace ekg::service {
     class theme {
     protected:
         std::vector<std::string> loaded_theme_list {};
+        std::string current_theme {};
     public:
         ekg::vec4 frame_background {};
         ekg::vec4 frame_border {};
@@ -75,9 +76,12 @@ namespace ekg::service {
         void init();
         void quit();
 
+        std::string get_current_theme_name();
+
         void refresh_theme_list();
         void load_theme(const std::string &theme);
-        void gen_default_theme();
+        void gen_default_light_theme();
+        void gen_default_dark_theme();
     };
 }
 

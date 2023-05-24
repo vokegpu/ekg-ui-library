@@ -17,6 +17,7 @@
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/util/env.hpp"
+#include "ekg/cpu/event.hpp"
 
 namespace ekg::ui {
     class checkbox : public ekg::ui::abstract {
@@ -25,7 +26,11 @@ namespace ekg::ui {
         uint16_t dock_text {}, dock_box {};
         std::string text {};
         ekg::font font_size {};
+        ekg::cpu::event *callback {};
     public:
+        void set_callback(ekg::cpu::event*);
+        ekg::cpu::event *get_callback();
+
         void set_font_size(ekg::font font);
         ekg::font get_font_size();
         void set_place(uint16_t);

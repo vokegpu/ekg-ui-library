@@ -15,18 +15,73 @@
 #include "ekg/service/theme.hpp"
 #include "ekg/util/env.hpp"
 
+std::string ekg::service::theme::get_current_theme_name() {
+    return this->current_theme;
+}
+
 void ekg::service::theme::init() {
     ekg::log() << "Initialising default theme";
-
-    this->gen_default_theme();
-    this->refresh_theme_list();
+    this->gen_default_light_theme();
 }
 
 void ekg::service::theme::quit() {
 
 }
 
-void ekg::service::theme::gen_default_theme() {
+void ekg::service::theme::gen_default_dark_theme() {
+    this->current_theme = "dark";
+
+    this->frame_background = {43, 43, 43, 255};
+    this->frame_border = {190, 190, 190, 0};
+    this->frame_outline = {30, 40, 60, 100};
+    this->frame_activy_offset = 18;
+
+    this->button_string = {202, 202, 202, 255};
+    this->button_background = {85, 85, 85, 50};
+    this->button_activy = {44, 166, 255, 100};
+    this->button_outline = {202, 207, 222, 0};
+    this->button_highlight = {44, 166, 255, 50};
+
+    this->checkbox_string = {202, 202, 202, 255};
+    this->checkbox_background = {85, 85, 85, 0};
+    this->checkbox_activy = {44, 166, 255, 200};
+    this->checkbox_outline = {202, 207, 222, 0};
+    this->checkbox_highlight = {44, 166, 255, 50};
+
+    this->slider_string = {202, 202, 202, 255};
+    this->slider_background = {43, 43, 43, 255};
+    this->slider_activy = {44, 166, 255, 200};
+    this->slider_outline = {202, 207, 222, 0};
+    this->slider_highlight = {44, 166, 255, 50};
+    this->slider_activy_bar = this->slider_activy;
+    this->slider_bar_thickness = 16;
+    this->slider_target_thickness = 32;
+
+    this->label_string = {141, 141, 141, 255};
+
+    this->popup_string = {202, 202, 202, 255};
+    this->popup_background = {43, 43, 43, 255};
+    this->popup_outline = {30, 40, 60, 0};
+    this->popup_highlight = {44, 166, 255, 50};
+    this->popup_separator = {141, 141, 141, 50};
+    this->popup_drop_animation_delay = 120;
+
+    this->textbox_string = {202, 202, 202, 255};
+    this->textbox_background = {43, 43, 43, 255};
+    this->textbox_outline = {141, 141, 141, 50};
+    this->textbox_select = {2, 7, 222, 255};
+    this->textbox_cursor = {202, 202, 202, 255};
+
+    this->scrollbar_background = {85, 85, 85, 255};
+    this->scrollbar_outline = {202, 207, 222, 150};
+    this->scrollbar_activy = {44, 166, 255, 200};
+    this->scrollbar_highlight = {44, 166, 255, 50};
+    this->scrollbar_pixel_thickness = 5;
+}
+
+void ekg::service::theme::gen_default_light_theme() {
+    this->current_theme = "light";
+
     this->frame_background = {242, 242, 242, 255};
     this->frame_border = {190, 190, 190, 0};
     this->frame_outline = {30, 40, 60, 100};

@@ -55,7 +55,7 @@ uint16_t ekg::ui::button::get_text_align() {
     return this->dock_text;
 }
 
-void ekg::ui::button::set_callback(ekg::cpu::event* event) {
+void ekg::ui::button::set_callback(ekg::cpu::event *event) {
     event->flags = ekg::bitwise::add(event->flags, ekg::event::shared);
 
     if (this->callback != event && this->callback != nullptr) {
@@ -67,7 +67,7 @@ void ekg::ui::button::set_callback(ekg::cpu::event* event) {
 }
 
 ekg::cpu::event *ekg::ui::button::get_callback() {
-    return callback;
+    return this->callback;
 }
 
 void ekg::ui::button::set_width(float width) {

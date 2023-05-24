@@ -74,8 +74,9 @@ void ekg::ui::button_widget::on_event(SDL_Event &sdl_event) {
         auto ui {(ekg::ui::button*) this->data};
         ui->set_value(this->flag.hovered);
 
-        if (ui->get_value() && ui->get_callback() != nullptr) {
-            ekg::dispatch(ui->get_callback());
+        auto callback {ui->get_callback()};
+        if (ui->get_value() && callback != nullptr) {
+            ekg::dispatch(callback);
             ui->set_value(false);
         }
 

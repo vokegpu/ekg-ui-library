@@ -105,12 +105,12 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
         auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
         auto &rect {this->get_abs_rect()};
 
-        ekg::vec2 cursor_pos {
+        const ekg::vec2 cursor_pos {
             rect.x + this->embedded_scroll.scroll.x + f_renderer.get_text_width(ekg::utf8substr(current_emplace_text, 0, this->cursor[3])),
             rect.y + this->embedded_scroll.scroll.y + (static_cast<float>(this->cursor[2]) * this->text_height)
         };
 
-        ekg::vec4 cursor_outspace_screen {
+        const ekg::vec4 cursor_outspace_screen {
             rect.x - cursor_pos.x,
             rect.y - cursor_pos.y,
             (cursor_pos.x + this->cursor_char_wsize[1] + this->cursor_char_wsize[2]) - (rect.x + rect.w - this->rect_cursor.w),
