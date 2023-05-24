@@ -48,7 +48,7 @@ int32_t main(int32_t, char**) {
   
   // create GUI elements here or somewhere in the code, but once tick.
   ekg::frame("fps frame", {20, 20}, {200, 200});
-  auto label_fps = ekg::label("fps", ekg::dock::left | ekg::dock::top);
+  auto label_fps = ekg::label("fps", ekg::dock::fill)->set_text_align(ekg::dock::center);
   
   /*
    * mainloop of your application/game.
