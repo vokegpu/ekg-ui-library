@@ -347,7 +347,6 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
             continue;
         }
 
-        auto &rect {widgets->data->widget()};
         auto &layout {widgets->dimension};
 
         flags = widgets->data->get_place_dock();

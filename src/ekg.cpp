@@ -315,7 +315,6 @@ ekg::ui::popup *ekg::popup(std::string_view tag, const std::vector<std::string> 
     ui->set_tag(tag);
     ui->set_scaled_height(1);
     ui->set_text_align(ekg::dock::center | ekg::dock::left);
-    ui->set_tag(tag);
 
     return ui;
 }
@@ -332,6 +331,14 @@ ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint
     ui->set_width(200);
     ui->set_text(text);
 
+    return ui;
+}
+
+ekg::ui::scroll *ekg::scroll(std::string_view tag) {
+    auto ui {new ekg::ui::scroll()};
+    ui->set_type(ekg::type::scroll);
+    ui->set_tag(tag);
+    ekg::core->gen_widget(ui);
     return ui;
 }
 

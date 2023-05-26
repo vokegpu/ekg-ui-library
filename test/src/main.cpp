@@ -113,7 +113,7 @@ int32_t main(int32_t, char**) {
             }
         }});
 
-        ekg::textbox("Search", textcatsampler, ekg::dock::fill | ekg::dock::next)->set_scaled_height(12);
+        //ekg::textbox("Search", textcatsampler, ekg::dock::fill | ekg::dock::next)->set_scaled_height(12);
         ekg::checkbox("", true, ekg::dock::fill | ekg::dock::next)->set_box_align(ekg::dock::center);
         ekg::slider("Button 3", 34.0f, 0.0f, 200.0f, ekg::dock::fill | ekg::dock::next)->set_text_align(ekg::dock::center);
         ekg::button("Button 4.1", ekg::dock::next)->set_text_align(ekg::dock::center | ekg::dock::right);
@@ -128,6 +128,7 @@ int32_t main(int32_t, char**) {
         ekg::button("Button 2.3");
         ekg::button("Button 3", ekg::dock::next);
         ekg::button("Button 4");
+        ekg::scroll("scrollbar");
 
         //auto slider = ekg::slider("Button 1", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
         //slider->set_text_align(ekg::dock::center);

@@ -16,7 +16,8 @@
 #include "ekg/util/util_event.hpp"
 
 ekg::ui::abstract_widget::abstract_widget() {
-    this->parent = &this->empty;
+    this->parent = &this->empty_parent;
+    this->scroll = &this->empty_scroll;
 }
 
 ekg::ui::abstract_widget::~abstract_widget() {
@@ -55,6 +56,10 @@ void ekg::ui::abstract_widget::on_draw_refresh() {
 
 }
 
+ekg::rect ekg::ui::abstract_widget::get_static_rect() {
+    return this->dimension + *this->parent;
+}
+
 ekg::rect &ekg::ui::abstract_widget::get_abs_rect() {
-    return (this->data->widget() = this->dimension + *this->parent);
+    return (this->data->widget() = this->dimension + *this->parent + *this->scroll);
 }

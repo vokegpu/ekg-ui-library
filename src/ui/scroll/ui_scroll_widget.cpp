@@ -13,6 +13,7 @@
  */
 
 #include "ekg/ui/scroll/ui_scroll_widget.hpp"
+#include "ekg/util/util_ui.hpp"
 
 void ekg::ui::scroll_widget::on_destroy() {
 }
@@ -25,7 +26,7 @@ void ekg::ui::scroll_widget::on_reload() {
 
 void ekg::ui::scroll_widget::on_pre_event(SDL_Event &sdl_event) {
     this->scroll.on_pre_event(sdl_event);
-    this->flag = this->flag;
+    this->flag = this->scroll.flag;
 }
 
 void ekg::ui::scroll_widget::on_event(SDL_Event &sdl_event) {
@@ -33,7 +34,7 @@ void ekg::ui::scroll_widget::on_event(SDL_Event &sdl_event) {
         ekg::update_high_frequency(this);
     }
 
-    this->flag.on_event(sdl_event);
+    this->scroll.on_event(sdl_event);
 }
 
 void ekg::ui::scroll_widget::on_post_event(SDL_Event &sdl_event) {
@@ -42,6 +43,7 @@ void ekg::ui::scroll_widget::on_post_event(SDL_Event &sdl_event) {
 
 void ekg::ui::scroll_widget::on_update() {
     this->scroll.on_update();
+    ekg::scissor(this);
     this->is_high_frequency = this->flag.hovered || this->flag.absolute;
 }
 

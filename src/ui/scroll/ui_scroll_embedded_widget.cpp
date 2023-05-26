@@ -36,20 +36,27 @@ void ekg::ui::scroll_embedded_widget::on_destroy() {
 }
  
 void ekg::ui::scroll_embedded_widget::on_reload() {
-    if (this->mother_id == 0 || this->child_id_list.empty()) {
+    if (this->mother_id == 0 && this->child_id_list.empty()) {
         this->calculate_rect_bar_sizes();
         return;
     }
 
-    this->rect_child.x = 0;
-    this->rect_child.y = 0;
-
+    ekg::ui::abstract_widget *mother_widget {ekg::core->get_fast_widget_by_id(this->mother_id)};
     ekg::ui::abstract_widget *widgets {};
     float service_layout_min_offset {ekg::core->get_service_layout().get_min_offset()};
 
+    if (this->child_id_list.empty()) {
+        this->child_id_list = mother_widget->data->get_child_id_list();
+    }
+
+    this->rect_child.x = 0.0f;
+    this->rect_child.y = 0.0f;
+    this->rect_child.w = 0.0f;
+    this->rect_child.h = service_layout_min_offset;
     this->acceleration.y = 99999.0f;
+
     for (int32_t &ids : this->child_id_list) {
-        if ((widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr) {
+        if ((widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr || widgets->data->get_type() == ekg::type::scroll) {
             continue;
         }
 
@@ -61,7 +68,11 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
         if (widgets->dimension.h < this->acceleration.y) {
             this->acceleration.y = widgets->dimension.h;
         }
+
+        widgets->scroll = &this->scroll; 
     }
+
+    ekg::log() << this->acceleration.y;
 
     this->acceleration.y += service_layout_min_offset;
     this->calculate_rect_bar_sizes();
@@ -70,7 +81,17 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
 void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
     if (ekg::input::pressed() || ekg::input::released() || ekg::input::motion() || ekg::input::wheel()) {
         auto &interact {ekg::interact()};
-        this->flag.hovered = ekg::rect_collide_vec(this->rect_child, interact) && (ekg::rect_collide_vec(*this->rect_mother, interact));
+
+        ekg::rect scaled_bar {this->rect_vertical_scroll_bar};
+        scaled_bar.y += this->rect_mother->y;
+
+        this->flag.hovered = ekg::rect_collide_vec(scaled_bar, interact);
+
+        scaled_bar = this->rect_horizontal_scroll_bar;
+        scaled_bar.x += this->rect_mother->x;
+
+        this->flag.hovered = this->flag.hovered || ekg::rect_collide_vec(scaled_bar, interact);
+        this->flag.hovered = this->flag.hovered || (ekg::rect_collide_vec(*this->rect_mother, interact) && ekg::input::pressed("scrollbar-scroll"));
     }
 }
 

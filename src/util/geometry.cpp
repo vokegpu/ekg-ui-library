@@ -185,6 +185,30 @@ ekg::rect ekg::operator+(const ekg::rect &l, const ekg::rect &r) {
     return {l.x + r.x, l.y + r.y, l.w, l.h};
 }
 
+ekg::rect ekg::operator-(const ekg::rect &l, const ekg::vec4 &r) {
+    return {l.x - r.x, l.y - r.y, l.w, l.h};
+}
+
+ekg::rect ekg::operator+(const ekg::rect &l, const ekg::vec4 &r) {
+    return {l.x + r.x, l.y + r.y, l.w, l.h};
+}
+
+ekg::vec4 ekg::operator-(const ekg::vec4 &l, const ekg::vec4 &r) {
+    return {l.x - r.x, l.y - r.y, l.z, l.w};
+}
+
+ekg::vec4 ekg::operator+(const ekg::vec4 &l, const ekg::vec4 &r) {
+    return {l.x + r.x, l.y + r.y, l.z, l.w};
+}
+
+ekg::vec4 ekg::operator-(const ekg::vec4 &l, const ekg::rect &r) {
+    return {l.x - r.x, l.y - r.y, l.z, l.w};
+}
+
+ekg::vec4 ekg::operator+(const ekg::vec4 &l, const ekg::rect &r) {
+    return {l.x + r.x, l.y + r.y, l.z, l.w};
+}
+
 ekg::vec2 ekg::operator/(const ekg::vec2 &l, float r) {
     return {l.x / r, l.y / r};
 }

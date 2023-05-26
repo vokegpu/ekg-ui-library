@@ -188,6 +188,15 @@ namespace ekg {
     ekg::rect operator-(const ekg::rect &l, const ekg::rect &r);
     ekg::rect operator+(const ekg::rect &l, const ekg::rect &r);
 
+    ekg::rect operator-(const ekg::rect &l, const ekg::vec4 &r);
+    ekg::rect operator+(const ekg::rect &l, const ekg::vec4 &r);
+
+    ekg::vec4 operator-(const ekg::vec4 &l, const ekg::vec4 &r);
+    ekg::vec4 operator+(const ekg::vec4 &l, const ekg::vec4 &r);
+
+    ekg::vec4 operator-(const ekg::vec4 &l, const ekg::rect &r);
+    ekg::vec4 operator+(const ekg::vec4 &l, const ekg::rect &r);
+
     struct docker {
         ekg::rect left {}, right {}, top {}, bottom {}, center {}, rect {};
     };

@@ -32,8 +32,10 @@ namespace ekg::ui {
 
         ekg::flag flag {};
         int32_t mother_id {};
+
         bool is_vertical_enabled {};
         bool is_horizontal_enabled {};
+
         ekg::vec2 acceleration {};
         ekg::vec2 bar_drag {};
     public:

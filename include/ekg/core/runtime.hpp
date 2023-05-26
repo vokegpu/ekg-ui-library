@@ -53,7 +53,6 @@ namespace ekg {
         /* Core services and instances. */
 
         ekg::ui::abstract *current_bind_group {};
-        ekg::ui::scroll *current_bind_scroll {};
         ekg::gpu::allocator allocator {};
 
         ekg::draw::font_renderer f_renderer_small {};

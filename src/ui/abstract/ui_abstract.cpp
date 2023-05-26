@@ -24,7 +24,7 @@ ekg::ui::abstract::~abstract() {
 
 void ekg::ui::abstract::add_child(int32_t element_id) {
     bool contains {};
-    ekg::ui::abstract_widget *widget {nullptr};
+    ekg::ui::abstract_widget *widget {};
 
     for (int32_t &element_ids : this->child_id_list) {
         if ((contains = element_ids == element_id)) {
@@ -46,7 +46,7 @@ std::vector<int32_t> &ekg::ui::abstract::get_child_id_list() {
 void ekg::ui::abstract::remove_child(int32_t element_id) {
     bool contains {};
     ekg::ui::abstract_widget *widget {nullptr};
-    int64_t  it {};
+    uint64_t it {};
 
     for (it = 0; it < this->child_id_list.size(); it++) {
         if ((contains = this->child_id_list.at(it) == element_id)) {
@@ -57,7 +57,7 @@ void ekg::ui::abstract::remove_child(int32_t element_id) {
     if (contains == false && (widget = ekg::core->get_fast_widget_by_id(element_id)) != nullptr) {
         this->child_id_list.erase(this->child_id_list.begin() + it);
         widget->data->set_parent_id(0);
-        widget->parent = &widget->empty;
+        widget->parent = &widget->empty_parent;
     }
 }
 

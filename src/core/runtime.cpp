@@ -22,6 +22,8 @@
 #include "ekg/ui/slider/ui_slider_widget.hpp"
 #include "ekg/ui/popup/ui_popup_widget.hpp"
 #include "ekg/ui/textbox/ui_textbox_widget.hpp"
+#include "ekg/ui/scroll/ui_scroll_widget.hpp"
+#include "ekg/ui/scroll/ui_scroll.hpp"
 #include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
 
@@ -635,7 +637,6 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
 
     bool update_scissor {};
     bool append_group {};
-    bool append_scroll {};
 
     switch (ui->get_type()) {
     case ekg::type::abstract: {

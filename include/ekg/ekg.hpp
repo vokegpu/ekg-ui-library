@@ -26,6 +26,7 @@
 #include "ekg/ui/slider/ui_slider.hpp"
 #include "ekg/ui/popup/ui_popup.hpp"
 #include "ekg/ui/textbox/ui_textbox.hpp"
+#include "ekg/ui/scroll/ui_scroll.hpp"
 
 namespace ekg {
     /*
@@ -111,6 +112,11 @@ namespace ekg {
      * Create textbox UI.
      */
     ekg::ui::textbox *textbox(std::string_view, std::string_view, uint16_t = ekg::dock::none);
+
+    /*
+     * Create scroll UI.
+     */
+    ekg::ui::scroll *scroll(std::string_view);
 
     /*
      * Stop collecting UIs to group.

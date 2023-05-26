@@ -23,14 +23,19 @@ namespace ekg::ui {
     public:
         ekg::ui::abstract *data {};
         ekg::flag flag {};
-        ekg::rect *parent {};
         ekg::rect dimension {};
-        ekg::rect empty {};
         ekg::vec2 min_size {};
+
+        ekg::rect *parent {};
+        ekg::vec4 *scroll {};
+        
+        ekg::rect empty_parent {};
+        ekg::vec4 empty_scroll {};
 
         bool is_scissor_refresh {};
         bool is_high_frequency {};
 
+        ekg::rect get_static_rect();
         [[nodiscard]] ekg::rect &get_abs_rect();
     public:
         explicit abstract_widget();

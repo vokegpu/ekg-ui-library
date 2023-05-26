@@ -19,7 +19,7 @@
 #include "ui_scroll_embedded_widget.hpp"
 
 namespace ekg::ui {
-    class scroll_widget : ekg::ui::abstract_widget {
+    class scroll_widget : public ekg::ui::abstract_widget {
     public:
         ekg::ui::scroll_embedded_widget scroll {};
     public:
