@@ -26,7 +26,7 @@ namespace ekg {
     };
 
     enum class type {
-        abstract, frame, button, label, slider, slider2d, checkbox, textbox, entrybox, combobox, tab, popup
+        abstract, frame, button, label, slider, slider2d, checkbox, textbox, entrybox, combobox, tab, popup, scroll
     };
 
     enum class uisync {

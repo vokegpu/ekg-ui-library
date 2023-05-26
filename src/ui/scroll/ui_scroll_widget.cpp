@@ -18,19 +18,34 @@ void ekg::ui::scroll_widget::on_destroy() {
 }
 
 void ekg::ui::scroll_widget::on_reload() {
+    this->scroll.rect_mother = this->parent;
+    this->scroll.mother_id = this->data->get_parent_id();
+    this->scroll.on_reload();
 }
 
 void ekg::ui::scroll_widget::on_pre_event(SDL_Event &sdl_event) {
+    this->scroll.on_pre_event(sdl_event);
+    this->flag = this->flag;
 }
 
 void ekg::ui::scroll_widget::on_event(SDL_Event &sdl_event) {
+    if ((this->flag.hovered || this->flag.absolute) && !this->is_high_frequency) {
+        ekg::update_high_frequency(this);
+    }
+
+    this->flag.on_event(sdl_event);
 }
 
 void ekg::ui::scroll_widget::on_post_event(SDL_Event &sdl_event) {
+
 }
 
 void ekg::ui::scroll_widget::on_update() {
+    this->scroll.on_update();
+    this->is_high_frequency = this->flag.hovered || this->flag.absolute;
 }
 
 void ekg::ui::scroll_widget::on_draw_refresh() {
+    this->scroll.clamp_scroll();
+    this->scroll.on_draw_refresh();
 }

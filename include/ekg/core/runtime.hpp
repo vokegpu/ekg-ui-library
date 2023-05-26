@@ -52,7 +52,8 @@ namespace ekg {
 
         /* Core services and instances. */
 
-        ekg::ui::abstract_widget* current_bind_group {};
+        ekg::ui::abstract *current_bind_group {};
+        ekg::ui::scroll *current_bind_scroll {};
         ekg::gpu::allocator allocator {};
 
         ekg::draw::font_renderer f_renderer_small {};
@@ -106,6 +107,7 @@ namespace ekg {
         void do_task_refresh(ekg::ui::abstract_widget *widget);
         void set_update_high_frequency(ekg::ui::abstract_widget *widget);
         void end_group_flag();
+        void end_scroll_flag();
 
         void init();
         void quit();

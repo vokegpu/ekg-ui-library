@@ -44,21 +44,8 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
     this->rect_child.x = 0;
     this->rect_child.y = 0;
 
-    ekg::ui::abstract_widget *mother_widget {ekg::core->get_fast_widget_by_id(this->mother_id)};
     ekg::ui::abstract_widget *widgets {};
     float service_layout_min_offset {ekg::core->get_service_layout().get_min_offset()};
-
-    switch (mother_widget->data->get_type()) {
-        case ekg::type::frame: {
-            ekg::ui::frame_widget *frame{(ekg::ui::frame_widget *) mother_widget};
-            this->rect_child.h += frame->docker_activy_drag.top.h;
-            break;
-        }
-
-        default: {
-            break;
-        }
-    }
 
     this->acceleration.y = 99999.0f;
     for (int32_t &ids : this->child_id_list) {

@@ -635,6 +635,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
 
     bool update_scissor {};
     bool append_group {};
+    bool append_scroll {};
 
     switch (ui->get_type()) {
     case ekg::type::abstract: {
@@ -649,7 +650,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
         widget->data = ui;
         update_scissor = true;
         created_widget = widget;
-        this->current_bind_group = created_widget;
+        this->current_bind_group = ui;
         ui->reset();
         break;
     }
@@ -695,6 +696,13 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
         append_group = true;
         break;
     }
+    case ekg::type::scroll: {
+        auto *widget {new ekg::ui::scroll_widget()};
+        widget->data = ui;
+        created_widget = widget;
+        append_group = true;
+        break;
+    }
     default:
         break;
     }
@@ -704,7 +712,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
     this->do_task_reload(created_widget);
 
     if (append_group && this->current_bind_group != nullptr) {
-        this->current_bind_group->data->add_child(ui->get_id());
+        this->current_bind_group->add_child(ui->get_id());
     }
 
     if (update_scissor) {
