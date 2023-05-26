@@ -43,7 +43,7 @@ int32_t main(int32_t, char**) {
     }
 
     SDL_GL_SetSwapInterval(0); // v-sync on
-    ekg::init(sdl_win, "JetBrainsMono-Bold.ttf");
+    ekg::init(sdl_win, "whitneybook.otf");
     ekg::log() << "OpenGL context created";
     ekg::debug = true;
     SDL_SetWindowOpacity(sdl_win, 1.0f);

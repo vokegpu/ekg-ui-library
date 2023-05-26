@@ -11,3 +11,18 @@
  *
  * @VokeGpu 2023 all rights reserved.
  */
+
+#ifndef EKG_UI_SCROLL_H
+#define EKG_UI_SCROLL_EMBEDDED_WIDGET_H
+
+#include "ekg/ui/abstract/ui_abstract.hpp"
+
+namespace ekg::ui {
+    class scroll : public ekg::ui::abstract {
+    protected:
+        
+    public:
+    };
+};
+
+#endif

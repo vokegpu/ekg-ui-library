@@ -17,6 +17,20 @@
 #include "ekg/draw/draw.hpp"
 
 /*
+ * This is not really optmised but I think it is okay.
+ * @TODO write a better text width width largest.
+ */
+void ekg::ui::textbox_widget::check_largest_text_width() {
+    auto ui {(ekg::ui::textbox*) this->data};
+    auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
+    this->rect_text.w = 0.0f;
+
+    for (std::string &text : this->text_chunk_list) {
+        this->rect_text.w = std::max(this->rect_text.w, f_renderer.get_text_width(text));
+    }
+}
+
+/*
  * Cursor data indexes explain:
  * 0 - The A index.
  * 1 - The B index. (A == B: cursor position) else (A != B: Select bar)
@@ -133,12 +147,13 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
             this->embedded_scroll.scroll.w -= cursor_outspace_screen.w;
         }
 
-    ekg::reset(ekg::core->get_ui_timing());
+        ekg::reset(ekg::core->get_ui_timing());
         ekg::dispatch(ekg::env::redraw);
     }
 }
 
 void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction) {
+    std::string changed_text {};
     switch (action) {
     case ekg::ui::textbox_widget::action::addtext: {
         std::string &emplace_text {this->get_cursor_emplace_text()};
@@ -148,6 +163,7 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
             this->move_cursor(1, 0);
         }
 
+        changed_text = emplace_text;
         break;
     }
 
@@ -159,11 +175,13 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
                 this->text_chunk_list.erase(this->text_chunk_list.begin() + this->cursor[2] + 1);
                 std::string &upper_line_text {this->get_cursor_emplace_text()};
                 upper_line_text += stored_text;
+                changed_text = upper_line_text;
             } else {
                 std::string &emplace_text {this->get_cursor_emplace_text()};
                 int64_t it {ekg::min(this->cursor[3] - 1, (int64_t) 0)};
                 emplace_text = ekg::utf8substr(emplace_text, 0, it) + ekg::utf8substr(emplace_text, it + 1, ekg::utf8length(emplace_text));
                 this->move_cursor(-1, 0);
+                changed_text = emplace_text;
             }
         } else if (this->cursor[0] == this->cursor[1] && direction > 0) {
             std::string &emplace_text {this->get_cursor_emplace_text()};
@@ -178,6 +196,7 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
                 emplace_text = ekg::utf8substr(emplace_text, 0, it) + ekg::utf8substr(emplace_text, it + 1, ekg::utf8length(emplace_text));
             }
 
+            changed_text = emplace_text;
             ekg::reset(ekg::core->get_ui_timing());
             ekg::dispatch(ekg::env::redraw);
         }
@@ -208,10 +227,13 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
             next = previous;
         }
 
+        changed_text = emplace_text;
         this->move_cursor(1, 0);
         break;
     }
     }
+
+    this->check_largest_text_width();
 }
 
 std::string &ekg::ui::textbox_widget::get_cursor_emplace_text() {
@@ -380,6 +402,7 @@ void ekg::ui::textbox_widget::on_reload() {
     if (this->widget_side_text != ui->get_text()) {
         this->widget_side_text = ui->get_text();
         ekg::utf8read(this->widget_side_text, this->text_chunk_list);
+        this->check_largest_text_width();
     }
 
     this->embedded_scroll.rect_mother = &rect;
@@ -542,8 +565,6 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
      */
     this->visible_chunk[0] = -1;
     this->visible_chunk[1] = -1;
-    this->visible_chunk[2] = -1;
-    this->visible_chunk[3] = -1;
 
     this->rect_cursor.w = 2.0f;
     this->rect_cursor.h = this->text_height;
@@ -573,7 +594,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             this->rect_cursor.y = rect.y + y + this->embedded_scroll.scroll.y;
             render_cursor = true;
         } else {
-            text_size = ekg::utf8length(text); 
+            text_size = ekg::utf8length(text);
         }
 
         y_scroll = this->embedded_scroll.scroll.y + y;
@@ -648,18 +669,13 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             utf8_char_index++;
             x += char_data.wsize;
 
-            if (this->embedded_scroll.scroll.x + x > rect.w && render_cursor) {
-                total_it -= utf8_char_index;
-                total_it += text_size;
-
-                this->visible_chunk[3] = this->cursor[2] == it_chunk ? utf8_char_index : this->visible_chunk[3];
+            if (x + this->embedded_scroll.scroll.x > rect.w && render_cursor) {
+                total_it += (text_size - utf8_char_index);
                 break;
             }
         }
 
-
         if (y_scroll < 0.0f) total_it += text_size;
-        if (x > this->rect_text.w) this->rect_text.w = x;
         y += this->text_height;
     }
 

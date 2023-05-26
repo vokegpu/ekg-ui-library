@@ -42,6 +42,7 @@ namespace ekg::ui {
         void process_text(std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction);
         void move_cursor(int64_t, int64_t, bool = false);
         void unset_focus();
+        void check_largest_text_width();
 
         void on_destroy() override;
         void on_reload() override;
