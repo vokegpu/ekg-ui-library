@@ -27,7 +27,6 @@ void ekg::gpu::allocator::invoke() {
     this->begin_stride_count = 0;
     this->end_stride_count = 0;
     this->simple_shape_index = -1;
-    this->persistent_animation_ids_map.clear();
 
     /* unique shape data will break if not clear the first index. */
 
@@ -83,34 +82,7 @@ void ekg::gpu::allocator::dispatch() {
 
     data.scissor_id = this->scissor_instance_id;
     data.id = static_cast<int32_t>(this->data_instance_index);
-
-    /* animate this data adding the reference into loaded widget list */
-    // todo: animation
-    if (this->active_animation != nullptr && false) {
-        if (this->animation_index >= this->active_animation->size()) this->active_animation->emplace_back();
-        auto &animation {this->active_animation->at(this->animation_index)};
-        animation.data = &data;
-
-        /* if this animation still exists, independent of states, we keep not remove from list */
-
-        if (this->animation_index == 0) {
-            this->persistent_animation_ids_map[this->animation_instance_id] = true;
-            this->persistent_animation_ids.push_back(this->animation_instance_id);
-        }
-
-        if (animation.finished) {
-            data.material_color[4] = data.material_color[3];
-        } else if (animation.initial) {
-            this->animation_update_list.push_back(&animation);
-            data.material_color[4] = 0;
-            animation.initial = false;
-        }
-
-        this->animation_index++;
-    } else {
-        /* else we do not need to process animation update in this data */
-        data.material_color[4] = data.material_color[3];
-    }
+    data.material_color[4] = data.material_color[3];
 
     /* flag re alloc buffers if factor changed */
 
@@ -154,52 +126,12 @@ void ekg::gpu::allocator::revoke() {
         glBindVertexArray(0);
     }
 
-    if (!this->persistent_animation_ids.empty()) {
-        const std::vector<uint32_t> cached_ids {this->persistent_animation_ids};
-        this->persistent_animation_ids.clear();
-
-        for (const uint32_t &ids : cached_ids) {
-            if (this->persistent_animation_ids_map[ids]) {
-                this->persistent_animation_ids.push_back(ids);
-                continue;
-            }
-
-            this->persistent_animation_ids_map.erase(ids);
-            this->animation_map.erase(ids);
-        }
-    }
-
     this->cached_textures.clear();
     this->cached_vertices.clear();
     this->cached_uvs.clear();
 }
 
 void ekg::gpu::allocator::on_update() {
-    if (!this->animation_update_list.empty()) {
-        int32_t animation_progress_count {};
-
-        /* interpolate the alpha using interpolation linear (lerp) */
-
-        for (ekg::gpu::animation* &animation : this->animation_update_list) {
-                if (animation == NULL || animation->data == NULL) {
-                animation_progress_count++;
-                continue;
-            }
-
-            if ((animation->finished = animation->data->material_color[4] == animation->data->material_color[3])) {
-                animation_progress_count++;
-                continue;
-            }
-
-            animation->data->material_color[4] = static_cast<uint8_t>(ekg::lerp(static_cast<float>(animation->data->material_color[4]), static_cast<float>(animation->data->material_color[3]), ekg::display::dt));
-        }
-
-        /* no problem with segment fault, because this is a reference pointer */
-
-        if (animation_progress_count == this->animation_update_list.size()) {
-            this->animation_update_list.clear();
-        }
-    }
 }
 
 void ekg::gpu::allocator::draw() {
@@ -222,7 +154,7 @@ void ekg::gpu::allocator::draw() {
      * Why there is glUniforms direct calls? I think it can reduce some wrappers runtime calls, but only here.
      * What is the depth level? That is the layer level of current gpu data rendered, processing layer depth testing.
      *
-     * VokeGpu coded powerfully gpu allocator for drawing UIs, the batching system have animations, scissor & others
+     * VokeGpu coded powerfully gpu allocator for drawing UIs, the batching system has scissor & others
      * important draw features for UI context.
      */
 
@@ -387,20 +319,6 @@ void ekg::gpu::allocator::coord2f(float x, float y) {
 
     this->cached_uvs.push_back(x);
     this->cached_uvs.push_back(y);
-}
-
-void ekg::gpu::allocator::bind_animation(int32_t animation_id) {
-    if (animation_id == 0) {
-        this->active_animation = nullptr;
-    } else {
-        this->active_animation = &this->animation_map[animation_id];
-        this->animation_instance_id = static_cast<int32_t>(animation_id);
-    }
-}
-
-void ekg::gpu::allocator::bind_off_animation() {
-    this->active_animation = nullptr;
-    this->animation_index = 0;
 }
 
 bool ekg::gpu::allocator::check_convex_shape() {

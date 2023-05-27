@@ -67,11 +67,3 @@ void ekg::draw::bind_scissor(int32_t id) {
 void ekg::draw::bind_off_scissor() {
     ekg::core->get_gpu_allocator().bind_off_scissor();
 }
-
-void ekg::draw::bind_animation(int32_t id_tag) {
-    ekg::core->get_gpu_allocator().bind_animation(id_tag);
-}
-
-void ekg::draw::bind_off_animation() {
-    ekg::core->get_gpu_allocator().bind_off_animation();
-}

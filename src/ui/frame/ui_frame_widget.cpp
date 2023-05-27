@@ -132,8 +132,12 @@ void ekg::ui::frame_widget::on_update() {
 
 void ekg::ui::frame_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
-    auto &rect = (this->data->widget() = this->dimension + *this->parent);
+    auto &rect = this->get_abs_rect();
     auto &theme {ekg::theme()};
+
+    if (this->p_scroll_embedded != nullptr) {
+        this->p_scroll_embedded->clamp_scroll();
+    }
 
     ekg::draw::bind_scissor(this->data->get_id());
     ekg::draw::sync_scissor_pos(rect.x, rect.y);

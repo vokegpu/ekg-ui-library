@@ -125,7 +125,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
             found_absolute_widget = widgets->flag.absolute;
         }
 
-        widgets->flag.hovered = false;
+        widgets->on_post_event(sdl_event);
         if (!hovered && !found_absolute_widget) {
             widgets->on_event(sdl_event);
         }
@@ -137,7 +137,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     if (focused_widget != nullptr) {
         focused_widget->on_pre_event(sdl_event);
         focused_widget->on_event(sdl_event);
-        focused_widget->flag.hovered = false;
+        focused_widget->on_post_event(sdl_event);
         ekg::hovered::type = focused_widget->data->get_type();
     } 
 
@@ -370,8 +370,7 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler_service.dispatch(new ekg::cpu::event {"synclayout", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
-        auto &reload = runtime->widget_list_map["synclayout"];
-        // todo fix the issue with sync layout offset.
+        auto &reload {runtime->widget_list_map["synclayout"]};
 
         for (ekg::ui::abstract_widget *&widgets : reload) {
             if (widgets == nullptr || runtime->processed_widget_map[widgets->data->get_id()]) {
@@ -451,19 +450,19 @@ void ekg::runtime::prepare_tasks() {
                 scissor[2] = widget_rect.w;
                 scissor[3] = widget_rect.h;
 
-                if (scissor[0] <= scissor_parent_master[0]) {
+                if (scissor[0] < scissor_parent_master[0]) {
                     scissor[0] = scissor_parent_master[0];
                 }
 
-                if (scissor[1] <= scissor_parent_master[1]) {
+                if (scissor[1] < scissor_parent_master[1]) {
                     scissor[1] = scissor_parent_master[1];
                 }
 
-                if (scissor[0] + scissor[2] >= scissor_parent_master[0] + scissor_parent_master[2]) {
+                if (scissor[0] + scissor[2] > scissor_parent_master[0] + scissor_parent_master[2]) {
                     scissor[2] -= (scissor[0] + scissor[2]) - (scissor_parent_master[0] + scissor_parent_master[2]);
                 }
 
-                if (scissor[1] + scissor[3] >= scissor_parent_master[1] + scissor_parent_master[3]) {
+                if (scissor[1] + scissor[3] > scissor_parent_master[1] + scissor_parent_master[3]) {
                     scissor[3] -= (scissor[1] + scissor[3]) - (scissor_parent_master[1] + scissor_parent_master[3]);
                 }
 
@@ -483,7 +482,7 @@ void ekg::runtime::prepare_tasks() {
 
     this->handler_service.dispatch(new ekg::cpu::event {"redraw", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
-        auto &all =  runtime->widget_list_map["all"];
+        auto &all {runtime->widget_list_map["all"]};
 
         runtime->allocator.invoke();
         if (ekg::debug) {

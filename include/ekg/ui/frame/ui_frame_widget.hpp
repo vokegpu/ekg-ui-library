@@ -16,12 +16,15 @@
 #define EKG_UI_FRAME_WIDGET_H
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
+#include "ekg/ui/scroll/ui_scroll_embedded_widget.hpp"
 
 namespace ekg::ui {
 	class frame_widget : public ekg::ui::abstract_widget {
 	public:
         uint16_t target_dock_drag {};
         uint16_t target_dock_resize {};
+        ekg::ui::scroll_embedded_widget *p_scroll_embedded {};
+
         ekg::docker docker_activy_drag {};
         ekg::docker docker_activy_resize {};
         ekg::rect rect_delta {};

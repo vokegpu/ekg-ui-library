@@ -45,9 +45,6 @@ namespace ekg {
         void sync_scissor_pos(float, float);
         void bind_scissor(int32_t);
         void bind_off_scissor();
-
-        void bind_animation(int32_t);
-        void bind_off_animation();
     }
 }
 

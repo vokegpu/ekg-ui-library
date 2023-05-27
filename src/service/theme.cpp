@@ -57,7 +57,7 @@ void ekg::service::theme::gen_default_dark_theme() {
     this->slider_bar_thickness = 16;
     this->slider_target_thickness = 32;
 
-    this->label_string = {141, 141, 141, 255};
+    this->label_string = {202, 202, 202, 255};
 
     this->popup_string = {202, 202, 202, 255};
     this->popup_background = {43, 43, 43, 255};

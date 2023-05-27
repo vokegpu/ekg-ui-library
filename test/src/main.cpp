@@ -43,7 +43,7 @@ int32_t main(int32_t, char**) {
     }
 
     SDL_GL_SetSwapInterval(0); // v-sync on
-    ekg::init(sdl_win, "whitneybook.otf");
+    ekg::init(sdl_win, "JetBrainsMono-Bold.ttf");
     ekg::log() << "OpenGL context created";
     ekg::debug = true;
     SDL_SetWindowOpacity(sdl_win, 1.0f);
@@ -113,9 +113,9 @@ int32_t main(int32_t, char**) {
             }
         }});
 
-        //ekg::textbox("Search", textcatsampler, ekg::dock::fill | ekg::dock::next)->set_scaled_height(12);
+        ekg::textbox("Search", textcatsampler, ekg::dock::fill | ekg::dock::next)->set_scaled_height(1);
         ekg::checkbox("", true, ekg::dock::fill | ekg::dock::next)->set_box_align(ekg::dock::center);
-        ekg::slider("Button 3", 34.0f, 0.0f, 200.0f, ekg::dock::fill | ekg::dock::next)->set_text_align(ekg::dock::center);
+        ekg::slider("Button 3", 34.0f, 0.0f, 200.0f, ekg::dock::fill | ekg::dock::next)->set_text_align(ekg::dock::left);
         ekg::button("Button 4.1", ekg::dock::next)->set_text_align(ekg::dock::center | ekg::dock::right);
         ekg::button("Button 4.2")->set_text_align(ekg::dock::center);
         ekg::button("Button 4.3", ekg::dock::fill)->set_text_align(ekg::dock::center);

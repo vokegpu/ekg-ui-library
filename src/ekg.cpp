@@ -115,10 +115,10 @@ ekg::gl_version + "\n"
 "    }"
 
 "    if (shouldDiscard) {"
-"       discard;\n"
+"       vFragColor.w = 0.0f;\n"
 "    }\n"
 
-"    if (uActiveTexture) {"
+"    if (uActiveTexture && !shouldDiscard) {"
 "        vFragColor = texture(uTexture, vTexCoord);\n"
 "        vFragColor = vec4(vFragColor.xyz - ((1.0f - uColor.xyz) - 1.0f), vFragColor.w - (1.0f - uColor.w));\n"
 "    }\n"

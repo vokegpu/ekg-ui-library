@@ -25,20 +25,14 @@ namespace ekg::gpu {
     class allocator {
     protected:
         std::vector<ekg::gpu::data> data_list {};
-        std::vector<ekg::gpu::animation*> animation_update_list {};
         std::unordered_map<int32_t, ekg::gpu::scissor> scissor_map {};
-
-        std::map<uint32_t, std::vector<ekg::gpu::animation>> animation_map {};
-        std::vector<ekg::gpu::animation> *active_animation {nullptr};
-        std::map<uint32_t, bool> persistent_animation_ids_map {};
-        std::vector<uint32_t> persistent_animation_ids {};
 
         std::vector<float> cached_vertices {};
         std::vector<float> cached_uvs {};
         std::vector<uint32_t> cached_textures {};
 
         uint32_t data_instance_index {}, previous_data_list_size {};
-        int32_t animation_index {}, simple_shape_index {-1}, previous_factor {};
+        int32_t simple_shape_index {-1}, previous_factor {};
 
         int32_t begin_stride_count {},
                 end_stride_count {};
@@ -157,16 +151,6 @@ namespace ekg::gpu {
          * Stop batching rectangle scissor.
          */
         void bind_off_scissor();
-
-        /*
-         * Bind animation index for process in CPU time.
-         */
-        void bind_animation(int32_t);
-
-        /*
-         * Stop indexing animation.
-         */
-        void bind_off_animation();
     };
 }
 
