@@ -290,8 +290,8 @@ uint32_t ekg::gpu::allocator::get_instance_scissor_id() {
 
 void ekg::gpu::allocator::sync_scissor_pos(float x, float y) {
     auto &scissor {this->scissor_map[this->scissor_instance_id]};
-    scissor.rect[0] = x;
-    scissor.rect[1] = y;
+    // scissor.rect[0] = x;
+    // scissor.rect[1] = y;
 }
 
 void ekg::gpu::allocator::bind_scissor(int32_t scissor_id) {

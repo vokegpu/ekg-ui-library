@@ -419,7 +419,7 @@ void ekg::runtime::prepare_tasks() {
 
             for (ekg::ui::abstract_widget *&scissor_widget : ekg::swap::front.ordered_list) {
                 gpu_scissor = runtime->allocator.get_scissor_by_id(scissor_widget->data->get_id());
-                if (gpu_scissor == nullptr) {
+                if (gpu_scissor == nullptr || scissor_widget->data->get_type() == ekg::type::scroll) {
                     continue;
                 }
 
@@ -432,7 +432,10 @@ void ekg::runtime::prepare_tasks() {
                     continue;
                 }
 
-                parent_master = runtime->widget_map[scissor_widget->data->get_parent_id()];
+                if (parent_master == nullptr || (parent_master != nullptr && parent_master->data->get_id() != scissor_widget->data->get_id())) {
+                    parent_master = runtime->widget_map[scissor_widget->data->get_parent_id()];
+                }
+
                 gpu_parent_master_scissor = runtime->get_gpu_allocator().get_scissor_by_id(parent_master->data->get_id());
                 if (gpu_parent_master_scissor == nullptr) {
                     continue;
@@ -451,10 +454,12 @@ void ekg::runtime::prepare_tasks() {
                 scissor[3] = widget_rect.h;
 
                 if (scissor[0] < scissor_parent_master[0]) {
+                    scissor[2] -= scissor_parent_master[0] - scissor[0];
                     scissor[0] = scissor_parent_master[0];
                 }
 
                 if (scissor[1] < scissor_parent_master[1]) {
+                    scissor[3] -= scissor_parent_master[1] - scissor[1];
                     scissor[1] = scissor_parent_master[1];
                 }
 
@@ -466,10 +471,10 @@ void ekg::runtime::prepare_tasks() {
                     scissor[3] -= (scissor[1] + scissor[3]) - (scissor_parent_master[1] + scissor_parent_master[3]);
                 }
 
-                gpu_scissor->rect[0] = scissor[0];
-                gpu_scissor->rect[1] = scissor[1];
-                gpu_scissor->rect[2] = scissor[2];
-                gpu_scissor->rect[3] = scissor[3];
+                gpu_scissor->rect[0] = ekg::min(scissor[0], 0.0f);
+                gpu_scissor->rect[1] = ekg::min(scissor[1], 0.0f);
+                gpu_scissor->rect[2] = ekg::min(scissor[2], 0.0f);
+                gpu_scissor->rect[3] = ekg::min(scissor[3], 0.0f);
             }
 
             runtime->processed_widget_map[widgets->data->get_id()] = true;

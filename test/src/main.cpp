@@ -78,24 +78,24 @@ int32_t main(int32_t, char**) {
                       "[EKG-INFO] Shutdown complete - Thank you for using EKG ;) <3\n";
 
     for (int32_t it {}; it < 1; it++) {
-        //auto frame {ekg::frame("text sampler", {20, 30}, {300, 200})};
-        //frame->set_drag(ekg::dock::top);
-        //frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
+        auto frame {ekg::frame("text sampler", {20, 30}, {300, 200})};
+        frame->set_drag(ekg::dock::top);
+        frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-        //ekg::checkbox("", true, ekg::dock::fill)->set_box_align(ekg::dock::center);
-        //ekg::slider("Button 3", 34.0f, 0.0f, 200.0f, ekg::dock::fill | ekg::dock::next)->set_text_align(ekg::dock::center);
-        //ekg::button("Button 4.1", ekg::dock::next)->set_text_align(ekg::dock::center | ekg::dock::right);
-        //ekg::button("Button 4.2")->set_text_align(ekg::dock::center);
-        //ekg::button("Button 4.3", ekg::dock::fill)->set_text_align(ekg::dock::center);
-        //ekg::button("Button 3", ekg::dock::next);
-        //ekg::label("cAt", ekg::dock::fill)->set_text_align(ekg::dock::center);
-        //ekg::button("Button 3.66", ekg::dock::fill);
-        //ekg::button("Button .", ekg::dock::next);
+        ekg::checkbox("", true, ekg::dock::fill)->set_box_align(ekg::dock::center);
+        ekg::slider("Button 3", 34.0f, 0.0f, 200.0f, ekg::dock::fill | ekg::dock::next)->set_text_align(ekg::dock::center);
+        ekg::button("Button 4.1", ekg::dock::next)->set_text_align(ekg::dock::center | ekg::dock::right);
+        ekg::button("Button 4.2")->set_text_align(ekg::dock::center);
+        ekg::button("Button 4.3", ekg::dock::fill)->set_text_align(ekg::dock::center);
+        ekg::button("Button 3", ekg::dock::next);
+        ekg::label("cAt", ekg::dock::fill)->set_text_align(ekg::dock::center);
+        ekg::button("Button 3.66", ekg::dock::fill);
+        ekg::button("Button .", ekg::dock::next);
         
-        //ekg::button("Button 4", ekg::dock::fill | ekg::dock::next);
-        //ekg::button("Button 5");
-        //ekg::button("Button 6", ekg::dock::next);
-        //ekg::popgroup();
+        ekg::button("Button 4", ekg::dock::fill | ekg::dock::next);
+        ekg::button("Button 5");
+        ekg::button("Button 6", ekg::dock::next);
+        ekg::popgroup();
 
         auto frame2 {ekg::frame("text sampler", {20, 30}, {400, 400})};
         frame2->set_drag(ekg::dock::top);
@@ -127,7 +127,7 @@ int32_t main(int32_t, char**) {
         ekg::button("Button 2.2", ekg::dock::fill | ekg::dock::next);
         ekg::button("Button 2.3");
         ekg::button("Button 3", ekg::dock::next);
-        ekg::button("Button 4");
+        auto button = ekg::button("Button 4");
         ekg::scroll("scrollbar");
 
         //auto slider = ekg::slider("Button 1", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);

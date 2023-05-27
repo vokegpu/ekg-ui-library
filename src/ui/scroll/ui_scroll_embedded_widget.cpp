@@ -59,8 +59,11 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
     this->rect_child.x = 0.0f;
     this->rect_child.y = 0.0f;
     this->rect_child.w = 0.0f;
-    this->rect_child.h = service_layout_min_offset;
-    this->acceleration.y = 99999.0f;
+    this->rect_child.h = 0.0f;
+
+    float text_height {ekg::f_renderer(ekg::font::normal).get_text_height()};
+    this->acceleration.y = text_height + (text_height / 2.0f);
+    float pompom {};
 
     for (int32_t &ids : this->child_id_list) {
         if ((widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr || widgets->data->get_type() == ekg::type::scroll) {
@@ -71,12 +74,15 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
             this->rect_child.w = widgets->dimension.w;
         }
 
-        this->rect_child.h += widgets->dimension.h + service_layout_min_offset;
+        if (widgets->dimension.y > this->rect_child.h) {
+            this->rect_child.h = widgets->dimension.y + widgets->dimension.h;
+        }
+
         if (widgets->dimension.h < this->acceleration.y) {
             this->acceleration.y = widgets->dimension.h;
         }
 
-        widgets->scroll = &this->scroll; 
+        widgets->scroll = &this->scroll;
     }
 
     this->acceleration.y += service_layout_min_offset;
@@ -91,7 +97,6 @@ void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
         scaled_bar.y += this->rect_mother->y;
 
         this->flag.hovered = ekg::rect_collide_vec(scaled_bar, interact);
-
         scaled_bar = this->rect_horizontal_scroll_bar;
         scaled_bar.x += this->rect_mother->x;
 
