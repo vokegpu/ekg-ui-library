@@ -423,16 +423,17 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     auto &rect {this->get_abs_rect()};
 
     this->embedded_scroll.flag.hovered = this->flag.hovered;
+    this->embedded_scroll.flag.activy = this->flag.hovered;
     this->embedded_scroll.on_event(sdl_event);
-    this->flag.absolute = this->embedded_scroll.is_dragging_bar();
+    this->flag.absolute = this->embedded_scroll.is_dragging_bar() || this->flag.hovered || this->flag.focused;
 
-    if (this->flag.hovered && pressed && !this->flag.absolute) {
+    if (this->flag.hovered && pressed) {
         ekg::set(this->flag.focused, this->flag.hovered);
-
-        this->check_cursor_text_bounding();
         ekg::reset(ekg::core->get_ui_timing());
         ekg::dispatch(ekg::env::redraw);
         ekg::dispatch(ekg::env::swap);
+
+        this->check_cursor_text_bounding();
     }
 
     this->flag.highlight = this->flag.hovered;

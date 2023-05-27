@@ -37,7 +37,7 @@ void ekg::ui::scroll_widget::on_event(SDL_Event &sdl_event) {
     }
 
     this->scroll.on_event(sdl_event);
-    this->flag.absolute = this->scroll.is_dragging_bar();
+    this->flag.absolute = this->scroll.is_dragging_bar() || this->scroll.flag.hovered || this->flag.activy;
     this->flag = this->scroll.flag;
 
     if (this->scroll.flag.state || this->scroll.flag.extra_state || this->scroll.flag.absolute) {
