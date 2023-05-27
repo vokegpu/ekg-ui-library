@@ -43,6 +43,7 @@ namespace ekg::ui {
         void calculate_rect_bar_sizes();
         void clamp_scroll();
         bool is_dragging_bar();
+        bool check_activy_state(bool);
 
         void on_destroy();
         void on_reload();

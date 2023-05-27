@@ -23,8 +23,6 @@ void ekg::ui::scroll_widget::on_reload() {
     this->scroll.rect_mother = this->parent;
     this->scroll.mother_id = this->data->get_parent_id();
     this->scroll.on_reload();
-    this->dimension.w = this->parent->w;
-    this->dimension.h = this->parent->h;
 }
 
 void ekg::ui::scroll_widget::on_pre_event(SDL_Event &sdl_event) {
@@ -57,7 +55,7 @@ void ekg::ui::scroll_widget::on_post_event(SDL_Event &sdl_event) {
 void ekg::ui::scroll_widget::on_update() {
     this->scroll.on_update();
     ekg::scissor(this->data->get_parent_id());
-    this->is_high_frequency = this->flag.hovered || this->flag.absolute || this->flag.activy;
+    this->is_high_frequency = this->scroll.check_activy_state(this->flag.hovered || this->flag.absolute || this->flag.activy);
 }
 
 void ekg::ui::scroll_widget::on_draw_refresh() {

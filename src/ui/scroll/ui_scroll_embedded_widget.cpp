@@ -17,6 +17,14 @@
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 #include "ekg/draw/draw.hpp"
 
+bool ekg::ui::scroll_embedded_widget::check_activy_state(bool state) {
+    if (!state) {
+        this->scroll.w = this->scroll.y;   
+    }
+
+    return state;
+}
+
 bool ekg::ui::scroll_embedded_widget::is_dragging_bar() {
     return this->flag.state || this->flag.extra_state;
 }

@@ -127,7 +127,7 @@ int32_t main(int32_t, char**) {
         ekg::button("Button 2.2", ekg::dock::fill | ekg::dock::next);
         ekg::button("Button 2.3");
         ekg::button("Button 3", ekg::dock::next);
-        auto button = ekg::button("Button 4");
+        ekg::button("Button 4", ekg::dock::none);
         ekg::scroll("scrollbar");
 
         //auto slider = ekg::slider("Button 1", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
