@@ -64,8 +64,14 @@ void ekg::ui::slider_widget::on_reload() {
     float text_height {f_renderer.get_text_height()};
     float value {ui->get_value()}, min {ui->get_value_min()}, max {ui->get_value_max()};
 
-    this->string_value = ekg::string_float_precision(max, value_precision);
-    float text_width {f_renderer.get_text_width(this->string_value)}, max_text_width {text_width}; // use max val as width
+    std::string max_string {ekg::string_float_precision(max, value_precision)};
+    std::string min_string {ekg::string_float_precision(min, value_precision)};
+
+    float min_text_width {f_renderer.get_text_width(min_string)};
+    float max_text_width {f_renderer.get_text_width(max_string)};
+    float largest_text_width {max_text_width > min_text_width ? max_text_width : min_text_width};
+
+    float text_width {largest_text_width};
     this->string_value = ekg::string_float_precision(value, value_precision);
 
     float dimension_offset {text_height / 2};
@@ -89,7 +95,7 @@ void ekg::ui::slider_widget::on_reload() {
         text_height = f_renderer_small.get_text_height();
     }
 
-    this->rect_text.w = text_width;
+    this->rect_text.w = largest_text_width;
     this->rect_text.h = text_height;
 
     float bar_difference_size {};

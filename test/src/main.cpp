@@ -62,27 +62,31 @@ int32_t main(int32_t, char**) {
 
     std::string textcatsampler {};
     textcatsampler += "não§§È1II21II§2121§§2212121212126\r\n"
-                      "[EKG-INFO] utf8 size: 5 string size: 20\n"
-                      "[EKG-INFO] EKG User interface library demo starting\n"
-                      "[EKG-INFO] 3\n"
-                      "[EKG-INFO] GLEW initialised\n"
-                      "[EKG-INFO] Initialising EKG\n"
-                      "[EKG-INFO] GPU allocator initialised\n"
-                      "[EKG-INFO] Initialising default theme\n"
-                      "[EKG-INFO] Analysing files for themes\n"
-                      "[EKG-INFO] Preparing internal EKG core\n"
-                      "[EKG-INFO] Preparing internal user interface environment\n"
-                      "[EKG-INFO] Registering user interface input bindings\n"
-                      "[EKG-INFO] SDL version: 2.26.5\n"
-                      "[EKG-INFO] OpenGL context created\n"
-                      "[EKG-INFO] Shutdown complete - Thank you for using EKG ;) <3\n";
+                      "[CAT-DEBUGGER-PIG] utf8 size: 5 string size: 20\n"
+                      "[CAT-DEBUGGER-PIG] EKG User interface library demo starting\n"
+                      "[CAT-DEBUGGER-PIG] 3\n"
+                      "[CAT-DEBUGGER-PIG] GLEW initialised\n"
+                      "[CAT-DEBUGGER-PIG] Initialising EKG\n"
+                      "[CAT-DEBUGGER-PIG] GPU allocator initialised\n"
+                      "[CAT-DEBUGGER-PIG] Initialising default theme\n"
+                      "[CAT-DEBUGGER-PIG] Analysing files for themes\n"
+                      "[CAT-DEBUGGER-PIG] Preparing internal EKG core\n"
+                      "[CAT-DEBUGGER-PIG] Preparing internal user interface environment\n"
+                      "[CAT-DEBUGGER-PIG] Registering user interface input bindings\n"
+                      "[CAT-DEBUGGER-PIG] SDL version: 2.26.5\n"
+                      "[CAT-DEBUGGER-PIG] OpenGL context created\n"
+                      "[CAT-DEBUGGER-PIG] Shutdown complete - Thank you for using EKG ;) <3\n";
+
+    for (uint32_t it {}; it < 3; it++) {
+        textcatsampler += textcatsampler;
+    }
 
     auto framedebug = ekg::frame("frame-debug", {700, 20}, {400, 415});
     framedebug->set_drag(ekg::dock::top);
     framedebug->set_resize(ekg::dock::left | ekg::dock::right);
 
     ekg::label("Debug:", ekg::dock::fill | ekg::dock::next);
-    auto textboxdebug = ekg::textbox("textbox-debug", "cat\ncat\ncat\r\noioi", ekg::dock::fill | ekg::dock::next);
+    auto textboxdebug = ekg::textbox("textbox-debug", textcatsampler, ekg::dock::fill | ekg::dock::next);
     textboxdebug->set_scaled_height(12);
     ekg::popgroup();
 
@@ -111,11 +115,11 @@ int32_t main(int32_t, char**) {
         label->set_scaled_height(4);
         label->set_text_align(ekg::dock::right | ekg::dock::bottom);
         label->set_font_size(ekg::font::big);
+        label->set_tag("calculator-result");
 
         auto buselesstop1 = ekg::button("", ekg::dock::fill | ekg::dock::next);
         buselesstop1->set_scaled_height(2);
         buselesstop1->set_text_align(ekg::dock::center);
-        buselesstop1->set_tag("minecraft");
 
         auto buselesstop2 = ekg::button("", ekg::dock::fill);
         buselesstop2->set_scaled_height(2);
@@ -192,7 +196,7 @@ int32_t main(int32_t, char**) {
         auto bassign = ekg::button("=", ekg::dock::fill);
         bassign->set_scaled_height(2);
         bassign->set_text_align(ekg::dock::center);
-        bassign->set_tag("calculador-assign");
+        bassign->set_tag("calculator-assign");
 
         ekg::scroll("pompom");
 

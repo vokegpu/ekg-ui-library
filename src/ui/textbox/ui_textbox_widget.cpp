@@ -408,7 +408,7 @@ void ekg::ui::textbox_widget::on_reload() {
     }
 
     this->embedded_scroll.rect_mother = &rect;
-    this->embedded_scroll.acceleration.y = this->text_offset + this->text_height;
+    this->embedded_scroll.acceleration.y = this->text_height;
     this->embedded_scroll.on_reload();
 }
 
@@ -434,7 +434,6 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         ekg::reset(ekg::core->get_ui_timing());
         ekg::dispatch(ekg::env::redraw);
         ekg::dispatch(ekg::env::swap);
-
         this->check_cursor_text_bounding();
     }
 
