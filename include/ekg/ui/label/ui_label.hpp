@@ -38,7 +38,7 @@ namespace ekg::ui {
         float get_height();
 
         void set_text(std::string_view);
-        std::string_view get_text();
+        std::string get_text();
 
         void set_text_align(uint16_t);
         uint16_t get_text_align();

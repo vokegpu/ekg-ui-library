@@ -18,8 +18,9 @@
 #include "ekg/draw/draw.hpp"
 
 bool ekg::ui::scroll_embedded_widget::check_activy_state(bool state) {
+    state = state || this->scroll.x != this->scroll.z || this->scroll.y != this->scroll.w;
     if (!state) {
-        this->scroll.w = this->scroll.y;   
+        this->scroll.w = this->scroll.y;
     }
 
     return state;

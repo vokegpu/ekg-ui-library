@@ -33,7 +33,7 @@ void ekg::ui::label::set_text(std::string_view string) {
     }
 }
 
-std::string_view ekg::ui::label::get_text() {
+std::string ekg::ui::label::get_text() {
     return this->text;
 }
 

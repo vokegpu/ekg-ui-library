@@ -14,6 +14,121 @@
 
 #include <ekg/ekg.hpp>
 
+std::string checkcalc(std::string_view text, std::string_view operatortext) {
+    std::string result {};
+    result += text.substr(text.size() - 1, 1);
+    if ((result == "*" || result == "-" || result == "+")) {
+        result.clear();
+        result += text.substr(0, text.size() - 1);
+        result += operatortext;
+    } else {
+        result.clear();
+        result += text;
+        result += operatortext;
+    }
+
+    return result;
+}
+
+std::string resultcalc(std::string_view text) {
+    std::string result {};
+    
+    int64_t lpom {};
+    int64_t rpom {};
+    int64_t cpom {};
+
+    bool firstoperation {true};
+    bool reset {};
+
+    uint64_t find {};
+    uint64_t size {text.size()};
+    
+    std::string textsubstr {text};
+    std::string aliasoperator[3] {
+        "*", "-", "+"
+    };
+
+    uint64_t it {};
+    char prevoperator {};
+    bool docalc {};
+    bool kissme {};
+
+    for (it = 0; it < size; it++) {
+        if (!docalc) {
+            switch (textsubstr.at(it)) {
+            case '*':
+                cpom = std::stoi(result);
+                result.clear();
+                docalc = true;
+                break;
+            case '-':
+                cpom = std::stoi(result);
+                result.clear();
+                docalc = true;
+                break;
+            case '+':
+                cpom = std::stoi(result);
+                result.clear();
+                docalc = true;
+                break;
+            default:
+                result += textsubstr.at(it);
+                break;
+            }
+
+            prevoperator = textsubstr.at(it);
+            continue;
+        }
+
+        kissme = false;
+        switch (textsubstr.at(it)) {
+        case '*':
+            kissme = true;
+            break;
+        case '-':
+            kissme = true;
+            break;
+        case '+':
+            kissme = true;
+            break;
+        default:
+            kissme = it == size - 1;
+            if (kissme) result += textsubstr.at(it);
+
+            break;
+        }
+
+        if (!kissme) {
+            result += textsubstr.at(it);
+            continue;
+        }
+
+        switch (prevoperator) {
+        case '*':
+            cpom = cpom * std::stoi(result);
+            result.clear();
+            prevoperator = textsubstr.at(it);
+            break;
+        case '-':
+            cpom = cpom - std::stoi(result);
+            result.clear();
+            prevoperator = textsubstr.at(it);
+            break;
+        case '+':
+            cpom = cpom + std::stoi(result);
+            result.clear();
+            prevoperator = textsubstr.at(it);
+            break;
+        default:
+            break;
+        }
+    }
+
+
+    result = std::to_string(cpom);
+    return result;
+} 
+
 /*
  * Created by Rina.
  */
@@ -90,6 +205,9 @@ int32_t main(int32_t, char**) {
     textboxdebug->set_scaled_height(12);
     ekg::popgroup();
 
+    ekg::ui::label *labelresult {};
+    std::string previous_operator {};
+
     for (int32_t it {}; it < 1; it++) {
         auto frame2 {ekg::frame("text sampler", {20, 30}, {400, 400})};
         frame2->set_drag(ekg::dock::top);
@@ -111,11 +229,11 @@ int32_t main(int32_t, char**) {
             }
         }});
 
-        auto label = ekg::label("0", ekg::dock::fill | ekg::dock::next);
-        label->set_scaled_height(4);
-        label->set_text_align(ekg::dock::right | ekg::dock::bottom);
-        label->set_font_size(ekg::font::big);
-        label->set_tag("calculator-result");
+        labelresult = ekg::label("0", ekg::dock::fill | ekg::dock::next);
+        labelresult->set_scaled_height(4);
+        labelresult->set_text_align(ekg::dock::right | ekg::dock::bottom);
+        labelresult->set_font_size(ekg::font::big);
+        labelresult->set_tag("calculator-result");
 
         auto buselesstop1 = ekg::button("", ekg::dock::fill | ekg::dock::next);
         buselesstop1->set_scaled_height(2);
@@ -125,13 +243,15 @@ int32_t main(int32_t, char**) {
         buselesstop2->set_scaled_height(2);
         buselesstop2->set_text_align(ekg::dock::center);
 
-        auto buselesstop3 = ekg::button("", ekg::dock::fill);
-        buselesstop3->set_scaled_height(2);
-        buselesstop3->set_text_align(ekg::dock::center);
+        auto bcls = ekg::button("cls", ekg::dock::fill);
+        bcls->set_scaled_height(2);
+        bcls->set_text_align(ekg::dock::center);
+        bcls->set_tag("calculator-cls");
 
         auto berase = ekg::button("<=", ekg::dock::fill);
         berase->set_scaled_height(2);
         berase->set_text_align(ekg::dock::center);
+        berase->set_tag("calculator-erase");
 
         auto b7 = ekg::button("7", ekg::dock::fill | ekg::dock::next);
         b7->set_scaled_height(2);
@@ -148,6 +268,7 @@ int32_t main(int32_t, char**) {
         auto bmultiply = ekg::button("x", ekg::dock::fill);
         bmultiply->set_scaled_height(2);
         bmultiply->set_text_align(ekg::dock::center);
+        bmultiply->set_tag("calculator-multiply");
 
         auto b4 = ekg::button("4", ekg::dock::fill | ekg::dock::next);
         b4->set_scaled_height(2);
@@ -164,6 +285,7 @@ int32_t main(int32_t, char**) {
         auto bsubtract = ekg::button("-", ekg::dock::fill);
         bsubtract->set_scaled_height(2);
         bsubtract->set_text_align(ekg::dock::center);
+        bsubtract->set_tag("calculator-subtract");
 
         auto b1 = ekg::button("1", ekg::dock::fill | ekg::dock::next);
         b1->set_scaled_height(2);
@@ -180,6 +302,7 @@ int32_t main(int32_t, char**) {
         auto baddition = ekg::button("+", ekg::dock::fill);
         baddition->set_scaled_height(2);
         baddition->set_text_align(ekg::dock::center);
+        baddition->set_tag("calculator-addition");
 
         auto buseless1 = ekg::button("", ekg::dock::fill | ekg::dock::next);
         buseless1->set_scaled_height(2);
@@ -237,7 +360,35 @@ int32_t main(int32_t, char**) {
                 default: {
                     ekg::event(sdl_event);
                     if (ekg::listen(event, sdl_event)) {
-                        ekg::log() << event.tag + " " + event.value + " " << event.type;
+                        if (event.tag == "calculator-assign") {
+                            labelresult->set_text(resultcalc(labelresult->get_text()));
+                        } else if (event.tag == "calculator-cls") {
+                            labelresult->set_text("0");
+                        } else if (event.tag == "calculator-addition") {
+                            labelresult->set_text(checkcalc(labelresult->get_text(), "+"));
+                        } else if (event.tag == "calculator-subtract") {
+                            labelresult->set_text(checkcalc(labelresult->get_text(), "-"));
+                        } else if (event.tag == "calculator-multiply") {
+                            labelresult->set_text(checkcalc(labelresult->get_text(), "*"));
+                        } else if (event.tag == "calculator-erase") {
+                            std::string text {labelresult->get_text()};
+                            if (text.size() <= 1) {
+                                text = "0";
+                            } else {
+                                text = text.substr(0, text.size() - 1);
+                            }
+
+                            labelresult->set_text(text);
+                        } else {
+                            std::string number {};
+                            for (uint32_t i {}; i < 10; i++) {
+                                number = std::to_string(i);
+                                if (event.tag == number) {
+                                    labelresult->set_text(labelresult->get_text() == "0" ? number : labelresult->get_text() + number);
+                                    break;
+                                }
+                            }
+                        }
                     }
 
                     if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {

@@ -408,7 +408,7 @@ void ekg::ui::textbox_widget::on_reload() {
     }
 
     this->embedded_scroll.rect_mother = &rect;
-    this->embedded_scroll.acceleration.y = this->text_height;
+    this->embedded_scroll.acceleration.y = this->text_height + (this->text_offset * 2.0f);
     this->embedded_scroll.on_reload();
 }
 
