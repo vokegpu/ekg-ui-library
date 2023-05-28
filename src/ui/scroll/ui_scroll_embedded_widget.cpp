@@ -55,6 +55,17 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
 
     if (this->child_id_list.empty()) {
         this->child_id_list = mother_widget->data->get_child_id_list();
+    } else
+    
+    /*
+     * Useless iterations affect the general performance of resizing widgets.
+     * If some child widget dimension was changed, it should keep the scroll it.
+     *
+     * It is a temp solution.
+     */
+    if (this->child_id_list.size() == mother_widget->data->get_child_id_list().size()) {
+        //this->calculate_rect_bar_sizes();
+        //return;
     }
 
     switch (mother_widget->data->get_type()) {
@@ -71,7 +82,6 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
 
     float text_height {ekg::f_renderer(ekg::font::normal).get_text_height()};
     this->acceleration.y = text_height + (text_height / 2.0f);
-    float pompom {};
 
     for (int32_t &ids : this->child_id_list) {
         if ((widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr || widgets->data->get_type() == ekg::type::scroll) {
@@ -110,7 +120,7 @@ void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
 
         this->flag.activy = (ekg::rect_collide_vec(*this->rect_mother, interact));
         this->flag.hovered = this->flag.hovered || ekg::rect_collide_vec(scaled_bar, interact);
-        this->flag.hovered = this->flag.hovered || (this->flag.activy && ekg::input::pressed("scrollbar-scroll"));
+        this->flag.hovered = this->flag.hovered || (this->flag.activy && this->is_vertical_enabled && ekg::input::pressed("scrollbar-scroll"));
     }
 }
 
@@ -123,7 +133,7 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
     auto &interact {ekg::interact()};
 
     if (this->flag.hovered && ekg::input::pressed("scrollbar-scroll") && this->is_vertical_enabled) {
-        this->scroll.w = this->scroll.y + (interact.w * (this->acceleration.y * 1.0000000000054835f));
+        this->scroll.w = this->scroll.y + (interact.w * this->acceleration.y);
     }
 
     if (this->flag.hovered && ekg::input::pressed() && ekg::input::pressed("scrollbar-drag")) {

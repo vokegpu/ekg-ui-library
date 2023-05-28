@@ -18,7 +18,7 @@
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 
 void ekg::service::layout::set_preset_mask(const ekg::vec3 &offset, ekg::axis axis, float initial_respective_size) {
-    this->dock_axis_mask = axis;    
+    this->dock_axis_mask = axis;
     this->offset_mask = offset;
     this->respective_mask_all = initial_respective_size;
 }
@@ -32,27 +32,30 @@ void ekg::service::layout::insert_into_mask(const ekg::dockrect &dockrect) {
 }
 
 void ekg::service::layout::process_layout_mask() {
-    if (this->dockrect_list.empty()) {
-        return;
-    }
-
     /*
      * V is the the respective size (axis horizontal == width | axis vertical == height)
      */
-    bool axis {this->dock_axis_mask == ekg::axis::horizontal}, left_or_right {};
+    bool axis {this->dock_axis_mask == ekg::axis::horizontal};
+    if (this->dockrect_list.empty()) {
+        this->layout_mask.w = axis ? this->respective_mask_all : this->offset_mask.z;
+        this->layout_mask.h = axis ? this->offset_mask.z : this->respective_mask_all;
+        return;
+    }
+
+    float left_or_right {};
     float v {this->respective_mask_all};
     float centered_dimension {this->offset_mask.z / 2};
     float opposite {}, uniform {};
     float clamped_offset {};
 
-    /* offset z is the dimension respective (width if height else height) size */
-    this->layout_mask.w = axis ? this->offset_mask.x : this->offset_mask.z;
-    this->layout_mask.h = axis ? this->offset_mask.z : this->offset_mask.y;
-
     /* check for opposite dock and get the full size respective for the axis dock */
     if (v == 0) {
         v = this->get_respective_mask_size();
     }
+
+    /* offset z is the dimension respective (width if height else height) size */
+    this->layout_mask.w = axis ? this->offset_mask.x : this->offset_mask.z;
+    this->layout_mask.h = axis ? this->offset_mask.z : this->offset_mask.y;
 
     /* axis false is equals X else is equals Y */
     for (ekg::dockrect &dockrect : this->dockrect_list) {
@@ -336,7 +339,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
 
     bool should_reload_widget {};
 
-    // @TODO Fix fill -> (fill | next) issue with widgets.
+    // @TODO Prevent useless scrolling reload;
 
     /*
      * Rect == absolute position of current widget
@@ -348,8 +351,8 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
         }
 
         auto &layout {widgets->dimension};
-
         flags = widgets->data->get_place_dock();
+
         if (ekg::bitwise::contains(flags, ekg::dock::fill) && ekg::bitwise::contains(flags, ekg::dock::next)) {
             top_rect.h += prev_widget_layout.h + this->min_offset;
             top_rect.w = 0.0f;

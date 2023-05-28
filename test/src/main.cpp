@@ -77,32 +77,26 @@ int32_t main(int32_t, char**) {
                       "[EKG-INFO] OpenGL context created\n"
                       "[EKG-INFO] Shutdown complete - Thank you for using EKG ;) <3\n";
 
+    auto framedebug = ekg::frame("frame-debug", {700, 20}, {400, 415});
+    framedebug->set_drag(ekg::dock::top);
+    framedebug->set_resize(ekg::dock::left | ekg::dock::right);
+
+    ekg::label("Debug:", ekg::dock::fill | ekg::dock::next);
+    auto textboxdebug = ekg::textbox("textbox-debug", "cat\ncat\ncat\r\noioi", ekg::dock::fill | ekg::dock::next);
+    textboxdebug->set_scaled_height(12);
+    ekg::popgroup();
+
     for (int32_t it {}; it < 1; it++) {
-        auto frame {ekg::frame("text sampler", {20, 30}, {300, 200})};
-        frame->set_drag(ekg::dock::top);
-        frame->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
-
-        ekg::checkbox("", true, ekg::dock::fill)->set_box_align(ekg::dock::center);
-        ekg::slider("Button 3", 34.0f, 0.0f, 200.0f, ekg::dock::fill | ekg::dock::next)->set_text_align(ekg::dock::center);
-        ekg::button("Button 4.1", ekg::dock::next)->set_text_align(ekg::dock::center | ekg::dock::right);
-        ekg::button("Button 4.2")->set_text_align(ekg::dock::center);
-        ekg::button("Button 4.3", ekg::dock::fill)->set_text_align(ekg::dock::center);
-        ekg::button("Button 3", ekg::dock::next);
-        ekg::label("cAt", ekg::dock::fill)->set_text_align(ekg::dock::center);
-        ekg::button("Button 3.66", ekg::dock::fill);
-        ekg::button("Button .", ekg::dock::next);
-        
-        ekg::button("Button 4", ekg::dock::fill | ekg::dock::next);
-        ekg::button("Button 5");
-        ekg::button("Button 6", ekg::dock::next);
-        ekg::popgroup();
-
         auto frame2 {ekg::frame("text sampler", {20, 30}, {400, 400})};
         frame2->set_drag(ekg::dock::top);
         frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
         ekg::theme().gen_default_light_theme();
-        ekg::checkbox("Light Theme", true, ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::cpu::event {"theme-switcher", nullptr, [](void*) {
+        ekg::checkbox("Light Theme", true, ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::cpu::event {"theme-switcher", frame2, [](void *pdata) {
+            ekg::ui::frame *frame {static_cast<ekg::ui::frame*>(pdata)};
+            // frame->set_pos(20, 20);
+            // @TODO fix random issue with set positon
+
             auto &theme {ekg::theme()};
             std::string current_theme_name {theme.get_current_theme_name()};
 
@@ -113,22 +107,94 @@ int32_t main(int32_t, char**) {
             }
         }});
 
-        ekg::textbox("Search", textcatsampler, ekg::dock::fill | ekg::dock::next)->set_scaled_height(1);
-        ekg::checkbox("", true, ekg::dock::fill | ekg::dock::next)->set_box_align(ekg::dock::center);
-        ekg::slider("Button 3", 34.0f, 0.0f, 200.0f, ekg::dock::fill | ekg::dock::next)->set_text_align(ekg::dock::left);
-        ekg::button("Button 4.1", ekg::dock::next)->set_text_align(ekg::dock::center | ekg::dock::right);
-        ekg::button("Button 4.2")->set_text_align(ekg::dock::center);
-        ekg::button("Button 4.3", ekg::dock::fill)->set_text_align(ekg::dock::center);
-        ekg::button("Button 3", ekg::dock::next);
-        ekg::label("cAt", ekg::dock::fill)->set_text_align(ekg::dock::center);
-        ekg::button("Button 3.66", ekg::dock::fill);
-        ekg::button("Button .", ekg::dock::next);
-        ekg::button("Button 2.1", ekg::dock::fill);
-        ekg::button("Button 2.2", ekg::dock::fill | ekg::dock::next);
-        ekg::button("Button 2.3");
-        ekg::button("Button 3", ekg::dock::next);
-        ekg::button("Button 4", ekg::dock::none);
-        ekg::scroll("scrollbar");
+        auto label = ekg::label("0", ekg::dock::fill | ekg::dock::next);
+        label->set_scaled_height(4);
+        label->set_text_align(ekg::dock::right | ekg::dock::bottom);
+        label->set_font_size(ekg::font::big);
+
+        auto buselesstop1 = ekg::button("", ekg::dock::fill | ekg::dock::next);
+        buselesstop1->set_scaled_height(2);
+        buselesstop1->set_text_align(ekg::dock::center);
+        buselesstop1->set_tag("minecraft");
+
+        auto buselesstop2 = ekg::button("", ekg::dock::fill);
+        buselesstop2->set_scaled_height(2);
+        buselesstop2->set_text_align(ekg::dock::center);
+
+        auto buselesstop3 = ekg::button("", ekg::dock::fill);
+        buselesstop3->set_scaled_height(2);
+        buselesstop3->set_text_align(ekg::dock::center);
+
+        auto berase = ekg::button("<=", ekg::dock::fill);
+        berase->set_scaled_height(2);
+        berase->set_text_align(ekg::dock::center);
+
+        auto b7 = ekg::button("7", ekg::dock::fill | ekg::dock::next);
+        b7->set_scaled_height(2);
+        b7->set_text_align(ekg::dock::center);
+        
+        auto b8 = ekg::button("8", ekg::dock::fill);
+        b8->set_scaled_height(2);
+        b8->set_text_align(ekg::dock::center);
+        
+        auto b9 = ekg::button("9", ekg::dock::fill);
+        b9->set_scaled_height(2);
+        b9->set_text_align(ekg::dock::center);
+
+        auto bmultiply = ekg::button("x", ekg::dock::fill);
+        bmultiply->set_scaled_height(2);
+        bmultiply->set_text_align(ekg::dock::center);
+
+        auto b4 = ekg::button("4", ekg::dock::fill | ekg::dock::next);
+        b4->set_scaled_height(2);
+        b4->set_text_align(ekg::dock::center);
+        
+        auto b5 = ekg::button("5", ekg::dock::fill);
+        b5->set_scaled_height(2);
+        b5->set_text_align(ekg::dock::center);
+        
+        auto b6 = ekg::button("6", ekg::dock::fill);
+        b6->set_scaled_height(2);
+        b6->set_text_align(ekg::dock::center);
+
+        auto bsubtract = ekg::button("-", ekg::dock::fill);
+        bsubtract->set_scaled_height(2);
+        bsubtract->set_text_align(ekg::dock::center);
+
+        auto b1 = ekg::button("1", ekg::dock::fill | ekg::dock::next);
+        b1->set_scaled_height(2);
+        b1->set_text_align(ekg::dock::center);
+        
+        auto b2 = ekg::button("2", ekg::dock::fill);
+        b2->set_scaled_height(2);
+        b2->set_text_align(ekg::dock::center);
+        
+        auto b3 = ekg::button("3", ekg::dock::fill);
+        b3->set_scaled_height(2);
+        b3->set_text_align(ekg::dock::center);
+
+        auto baddition = ekg::button("+", ekg::dock::fill);
+        baddition->set_scaled_height(2);
+        baddition->set_text_align(ekg::dock::center);
+
+        auto buseless1 = ekg::button("", ekg::dock::fill | ekg::dock::next);
+        buseless1->set_scaled_height(2);
+        buseless1->set_text_align(ekg::dock::center);
+
+        auto b0 = ekg::button("0", ekg::dock::fill);
+        b0->set_scaled_height(2);
+        b0->set_text_align(ekg::dock::center);
+
+        auto buseless2 = ekg::button("", ekg::dock::fill);
+        buseless2->set_scaled_height(2);
+        buseless2->set_text_align(ekg::dock::center);
+
+        auto bassign = ekg::button("=", ekg::dock::fill);
+        bassign->set_scaled_height(2);
+        bassign->set_text_align(ekg::dock::center);
+        bassign->set_tag("calculador-assign");
+
+        ekg::scroll("pompom");
 
         //auto slider = ekg::slider("Button 1", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
         //slider->set_text_align(ekg::dock::center);

@@ -333,12 +333,11 @@ void ekg::runtime::prepare_tasks() {
 
             if (ekg::bitwise::contains(sync_flags, (uint16_t) ekg::uisync::dimension)) {
                 ekg::bitwise::remove(sync_flags, (uint16_t) ekg::uisync::dimension);
+                
                 auto &rect {widgets->data->ui()};
-
                 switch (widgets->data->get_type()) {
                     case ekg::type::popup: {
                         widgets->dimension.w = rect.w;
-
                         widgets->parent->x = rect.x;
                         widgets->parent->y = rect.y;
                         break;

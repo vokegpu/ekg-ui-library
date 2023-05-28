@@ -28,6 +28,8 @@ void ekg::ui::textbox_widget::check_largest_text_width() {
     for (std::string &text : this->text_chunk_list) {
         this->rect_text.w = std::max(this->rect_text.w, f_renderer.get_text_width(text));
     }
+
+    this->rect_text.w += this->text_offset * 2.0f;
 }
 
 /*
@@ -120,7 +122,7 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
         auto &rect {this->get_abs_rect()};
 
         const ekg::vec2 cursor_pos {
-            rect.x + this->embedded_scroll.scroll.x + f_renderer.get_text_width(ekg::utf8substr(current_emplace_text, 0, this->cursor[3])),
+            rect.x + this->embedded_scroll.scroll.x + (f_renderer.get_text_width(ekg::utf8substr(current_emplace_text, 0, this->cursor[3]))),
             rect.y + this->embedded_scroll.scroll.y + (static_cast<float>(this->cursor[2]) * this->text_height)
         };
 
@@ -425,7 +427,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     this->embedded_scroll.flag.hovered = this->flag.hovered;
     this->embedded_scroll.flag.activy = this->flag.hovered;
     this->embedded_scroll.on_event(sdl_event);
-    this->flag.absolute = this->embedded_scroll.is_dragging_bar() || this->flag.hovered || this->flag.focused;
+    this->flag.absolute = this->embedded_scroll.is_dragging_bar() || (this->flag.hovered && this->embedded_scroll.is_vertical_enabled) || this->flag.focused;
 
     if (this->flag.hovered && pressed) {
         ekg::set(this->flag.focused, this->flag.hovered);
@@ -687,7 +689,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         ekg::draw::rect(this->rect_cursor, theme.textbox_cursor);
     }
 
-    this->rect_text.h = (this->text_height * this->text_chunk_list.size()) + this->text_offset;
+    this->rect_text.h = (this->text_height * this->text_chunk_list.size()) + (this->text_offset * 2.0f);
     this->embedded_scroll.rect_child = this->rect_text;
     this->embedded_scroll.on_draw_refresh();
 
