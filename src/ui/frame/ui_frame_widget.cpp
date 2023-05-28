@@ -132,7 +132,7 @@ void ekg::ui::frame_widget::on_update() {
 
 void ekg::ui::frame_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
-    auto &rect = this->get_abs_rect();
+    auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};
 
     if (this->p_scroll_embedded != nullptr) {

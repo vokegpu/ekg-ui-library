@@ -59,6 +59,10 @@ int32_t ekg::runtime::get_top_level() {
     return this->top_level_id;
 }
 
+void ekg::runtime::update_size_changed() {
+
+}
+
 void ekg::runtime::init() {
     this->allocator.init();
     this->theme_service.init();
@@ -333,7 +337,7 @@ void ekg::runtime::prepare_tasks() {
 
             if (ekg::bitwise::contains(sync_flags, (uint16_t) ekg::uisync::dimension)) {
                 ekg::bitwise::remove(sync_flags, (uint16_t) ekg::uisync::dimension);
-                
+
                 auto &rect {widgets->data->ui()};
                 switch (widgets->data->get_type()) {
                     case ekg::type::popup: {
@@ -347,13 +351,14 @@ void ekg::runtime::prepare_tasks() {
                         widgets->dimension.w = rect.w;
                         widgets->dimension.h = rect.h;
 
-                        if (widgets->data->get_parent_id() != 0) {
+                        if (widgets->data->has_parent()) {
                             widgets->dimension.x = rect.x - widgets->parent->x;
                             widgets->dimension.y = rect.y - widgets->parent->y;
                         } else {
                             widgets->parent->x = rect.x;
                             widgets->parent->y = rect.y;
                         }
+
                         break;
                     }
                 }

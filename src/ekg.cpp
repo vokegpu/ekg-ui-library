@@ -190,6 +190,7 @@ void ekg::event(SDL_Event &sdl_event) {
                     ekg::gpu::allocator::program.setm4("uOrthographicMatrix", ekg::gpu::allocator::mat4x4orthographic);
                     ekg::gpu::allocator::program.set("uViewportHeight", static_cast<float>(ekg::display::height));
                     ekg::gpu::revoke();
+                    ekg::core->update_size_changed();
                     break;
                 }
             }

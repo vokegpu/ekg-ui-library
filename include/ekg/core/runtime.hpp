@@ -107,6 +107,7 @@ namespace ekg {
         void set_update_high_frequency(ekg::ui::abstract_widget *widget);
         void end_group_flag();
         void end_scroll_flag();
+        void update_size_changed();
 
         void init();
         void quit();

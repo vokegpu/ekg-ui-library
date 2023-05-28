@@ -138,7 +138,7 @@ int32_t main(int32_t, char**) {
     ekg::log() << "EKG User interface library demo starting";
 
     int32_t root_width {1280};
-    int32_t root_height {768};
+    int32_t root_height {720};
 
     SDL_Init(SDL_INIT_VIDEO);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -146,7 +146,7 @@ int32_t main(int32_t, char**) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-    SDL_Window* sdl_win {SDL_CreateWindow("ekg showcase", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
+    SDL_Window* sdl_win {SDL_CreateWindow("Pompom Calculator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
     SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
     bool running {true};
     glewExperimental = GL_TRUE;
@@ -158,7 +158,7 @@ int32_t main(int32_t, char**) {
     }
 
     SDL_GL_SetSwapInterval(0); // v-sync on
-    ekg::init(sdl_win, "JetBrainsMono-Bold.ttf");
+    ekg::init(sdl_win, "whitneybook.otf");
     ekg::log() << "OpenGL context created";
     ekg::debug = true;
     SDL_SetWindowOpacity(sdl_win, 1.0f);
@@ -207,9 +207,10 @@ int32_t main(int32_t, char**) {
 
     ekg::ui::label *labelresult {};
     std::string previous_operator {};
+    ekg::ui::frame *frame2 {};
 
     for (int32_t it {}; it < 1; it++) {
-        auto frame2 {ekg::frame("text sampler", {20, 30}, {400, 400})};
+        frame2 = ekg::frame("text sampler", {2, 2}, {400, 400});
         frame2->set_drag(ekg::dock::top);
         frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
@@ -359,6 +360,7 @@ int32_t main(int32_t, char**) {
 
                 default: {
                     ekg::event(sdl_event);
+
                     if (ekg::listen(event, sdl_event)) {
                         if (event.tag == "calculator-assign") {
                             labelresult->set_text(resultcalc(labelresult->get_text()));
