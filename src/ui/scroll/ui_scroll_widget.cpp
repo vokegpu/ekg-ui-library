@@ -16,6 +16,7 @@
 #include "ekg/util/util_ui.hpp"
 #include "ekg/util/util_event.hpp"
 #include "ekg/draw/draw.hpp"
+#include "ekg/ekg.hpp"
 
 void ekg::ui::scroll_widget::on_destroy() {
 }
@@ -62,8 +63,6 @@ void ekg::ui::scroll_widget::on_update() {
 void ekg::ui::scroll_widget::on_draw_refresh() {
     this->dimension.w = this->parent->w;
     this->dimension.h = this->parent->h;
-    this->dimension.x = 0.0f;
-    this->dimension.y = 0.0f;
 
     ekg::draw::bind_scissor(this->data->get_id());
     this->scroll.on_draw_refresh();

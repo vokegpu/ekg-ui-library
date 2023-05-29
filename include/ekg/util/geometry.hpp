@@ -57,8 +57,8 @@ namespace ekg {
     typedef struct vec2 {
         union {
             struct {
-                float x;
-                float y;
+                float x {};
+                float y {};
             };
         };
 
@@ -74,9 +74,9 @@ namespace ekg {
     typedef struct vec3 {
         union {
             struct {
-                float x;
-                float y;
-                float z;
+                float x {};
+                float y {};
+                float z {};
             };
         };
 
@@ -91,13 +91,11 @@ namespace ekg {
     typedef struct vec4 {
         union {
             struct {
-                float x;
-                float y;
-                float z;
-                float w;
+                float x {};
+                float y {};
+                float z {};
+                float w {};
             };
-
-            float data[4];
         };
 
         inline vec4() = default;
@@ -140,13 +138,11 @@ namespace ekg {
     typedef struct rect {
         union {
             struct {
-                float x;
-                float y;
-                float w;
-                float h;
+                float x {};
+                float y {};
+                float w {};
+                float h {};
             };
-
-            float data[4] {};
         };
 
         inline rect() = default;

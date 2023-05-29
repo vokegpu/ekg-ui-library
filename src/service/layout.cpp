@@ -338,6 +338,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
     this->extent_data[2] = 0.0f;
 
     bool should_reload_widget {};
+    bool skip_widget {};
 
     // @TODO Prevent useless scrolling reload;
 
@@ -352,6 +353,19 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
         auto &layout {widgets->dimension};
         flags = widgets->data->get_place_dock();
+        skip_widget = false;
+
+        switch (widgets->data->get_type()) {
+        case ekg::type::scroll:
+            skip_widget = true;
+            break;
+        }
+
+        if (skip_widget) {
+            widgets->on_reload();
+            it++;
+            continue;
+        }
 
         if (widgets->data->has_children() && widgets->data->get_type() != ekg::type::scroll) {            
             this->process_scaled(widgets);

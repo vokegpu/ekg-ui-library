@@ -35,7 +35,7 @@ void ekg::ui::abstract::add_child(int32_t element_id) {
     if (contains == false && (widget = ekg::core->get_fast_widget_by_id(element_id)) != nullptr) {        
         this->child_id_list.push_back(element_id);
         widget->data->set_parent_id(this->id);
-        widget->parent = &rect_widget;
+        widget->parent = &this->rect_widget;
     }
 }
 

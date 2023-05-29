@@ -424,7 +424,7 @@ void ekg::runtime::prepare_tasks() {
 
             for (ekg::ui::abstract_widget *&scissor_widget : ekg::swap::front.ordered_list) {
                 gpu_scissor = runtime->allocator.get_scissor_by_id(scissor_widget->data->get_id());
-                if (gpu_scissor == nullptr || scissor_widget->data->get_type() == ekg::type::scroll) {
+                if (gpu_scissor == nullptr) {
                     continue;
                 }
 
