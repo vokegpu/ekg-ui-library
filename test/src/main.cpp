@@ -158,7 +158,7 @@ int32_t main(int32_t, char**) {
     }
 
     SDL_GL_SetSwapInterval(0); // v-sync on
-    ekg::init(sdl_win, "whitneybook.otf");
+    ekg::init(sdl_win, "JetBrainsMono-Light.ttf");
     ekg::log() << "OpenGL context created";
     ekg::debug = true;
     SDL_SetWindowOpacity(sdl_win, 1.0f);
@@ -179,43 +179,43 @@ int32_t main(int32_t, char**) {
     textcatsampler += "não§§È1II21II§2121§§2212121212126\r\n"
                       "[CAT-DEBUGGER-PIG] utf8 size: 5 string size: 20\n"
                       "[CAT-DEBUGGER-PIG] EKG User interface library demo starting\n"
-                      "[CAT-DEBUGGER-PIG] 3\n"
-                      "[CAT-DEBUGGER-PIG] GLEW initialised\n"
-                      "[CAT-DEBUGGER-PIG] Initialising EKG\n"
-                      "[CAT-DEBUGGER-PIG] GPU allocator initialised\n"
-                      "[CAT-DEBUGGER-PIG] Initialising default theme\n"
-                      "[CAT-DEBUGGER-PIG] Analysing files for themes\n"
-                      "[CAT-DEBUGGER-PIG] Preparing internal EKG core\n"
-                      "[CAT-DEBUGGER-PIG] Preparing internal user interface environment\n"
-                      "[CAT-DEBUGGER-PIG] Registering user interface input bindings\n"
-                      "[CAT-DEBUGGER-PIG] SDL version: 2.26.5\n"
-                      "[CAT-DEBUGGER-PIG] OpenGL context created\n"
                       "[CAT-DEBUGGER-PIG] Shutdown complete - Thank you for using EKG ;) <3\n";
 
     for (uint32_t it {}; it < 3; it++) {
         textcatsampler += textcatsampler;
     }
 
-    auto framedebug = ekg::frame("frame-debug", {700, 20}, {400, 415});
-    framedebug->set_drag(ekg::dock::top);
-    framedebug->set_resize(ekg::dock::left | ekg::dock::right);
+    auto framedebug = ekg::frame("frame-debug", {0, 0}, {400, root_height});
+    framedebug->set_resize(ekg::dock::right | ekg::dock::bottom);
 
     ekg::label("Debug:", ekg::dock::fill | ekg::dock::next);
     auto textboxdebug = ekg::textbox("textbox-debug", textcatsampler, ekg::dock::fill | ekg::dock::next);
-    textboxdebug->set_scaled_height(12);
-    ekg::popgroup();
+    textboxdebug->set_scaled_height(4);
+
+    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+
+    auto slider = ekg::slider("Meooooooooow", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
+    slider->set_text_align(ekg::dock::center);
+    slider->set_precision(23);
+
+    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
 
     ekg::ui::label *labelresult {};
     std::string previous_operator {};
     ekg::ui::frame *frame2 {};
 
     for (int32_t it {}; it < 1; it++) {
-        frame2 = ekg::frame("text sampler", {2, 2}, {400, 400});
-        frame2->set_drag(ekg::dock::top);
-        frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
+        frame2 = ekg::frame("text sampler", {400, 400}, ekg::dock::next | ekg::dock::fill);
+        framedebug->add_child(frame2->get_id());
 
-        ekg::theme().gen_default_light_theme();
-        ekg::checkbox("Light Theme", true, ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::cpu::event {"theme-switcher", frame2, [](void *pdata) {
+        ekg::theme().gen_default_dark_theme();
+        ekg::checkbox("Light Theme", false, ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::cpu::event {"theme-switcher", frame2, [](void *pdata) {
             ekg::ui::frame *frame {static_cast<ekg::ui::frame*>(pdata)};
             // frame->set_pos(20, 20);
             // @TODO fix random issue with set positon
@@ -321,13 +321,12 @@ int32_t main(int32_t, char**) {
         bassign->set_scaled_height(2);
         bassign->set_text_align(ekg::dock::center);
         bassign->set_tag("calculator-assign");
-
         ekg::scroll("pompom");
-
-        //auto slider = ekg::slider("Button 1", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
-        //slider->set_text_align(ekg::dock::center);
-        //slider->set_precision(23);
+        ekg::popgroup();
     }
+
+    framedebug->add_child(ekg::scroll("mewoscroll")->get_id());
+
 
     // ekg::button("Button 7", ekg::dock::right);
     // ekg::button("Button 8", ekg::dock::fill | ekg::dock::bottom);
@@ -360,6 +359,7 @@ int32_t main(int32_t, char**) {
 
                 default: {
                     ekg::event(sdl_event);
+                    //framedebug->set_height(ekg::display::height);
 
                     if (ekg::listen(event, sdl_event)) {
                         if (event.tag == "calculator-assign") {

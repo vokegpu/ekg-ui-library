@@ -309,9 +309,10 @@ void ekg::runtime::prepare_tasks() {
 
                 switch (widgets->data->get_type()) {
                     case ekg::type::frame: {
-                        auto ui {(ekg::ui::frame *) widgets->data};
+                        auto ui {(ekg::ui::frame*) widgets->data};
                         auto pos {ui->get_pos_initial()};
                         auto size {ui->get_size_initial()};
+                        auto &rect_ui {ui->ui()};
 
                         if (ui->widget() != ekg::vec4 {pos, size}) {
                             widgets->dimension.w = size.x;

@@ -26,9 +26,8 @@ void ekg::ui::frame_widget::on_reload() {
     abstract_widget::on_reload();
     auto &rect {this->get_abs_rect()};
     auto limit_offset = static_cast<float>(ekg::theme().frame_activy_offset);
-    ekg::vec2 vec_limit_offset = {limit_offset, limit_offset};
 
-    ekg::set_rect_clamped(rect, ekg::theme().min_widget_size);
+    ekg::vec2 vec_limit_offset = {limit_offset, limit_offset};
     ekg::set_dock_scaled(rect, vec_limit_offset, this->docker_activy_drag);
     ekg::set_dock_scaled(rect, vec_limit_offset / 4.0f, this->docker_activy_resize);
 }
@@ -84,8 +83,8 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
             }
         }
 
-        // todo fix the rect reverse axis resize, when is out of window too at min of size.
-        ekg::set_rect_clamped(new_rect, ekg::theme().min_widget_size);
+        // @todo fix the rect reverse axis resize, when is out of window too at min of size.
+        ekg::set_rect_clamped(new_rect, 0.0f);
 
         if (rect != new_rect) {
             if (ui->get_parent_id() != 0) {
@@ -98,6 +97,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
             this->dimension.w = new_rect.w;
             this->dimension.h = new_rect.h;
+            ui->ui() = new_rect;
 
             /*
              * Is very important to use synclaout before scissor.

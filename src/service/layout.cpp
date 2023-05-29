@@ -269,7 +269,7 @@ void ekg::service::layout::process(ekg::ui::abstract_widget *pwidget) {
 
 }
 
-void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_parent) {
+void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_parent) {
     if (widget_parent == nullptr || widget_parent->data == nullptr) {
         return;
     }
@@ -352,6 +352,10 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget* widget_paren
 
         auto &layout {widgets->dimension};
         flags = widgets->data->get_place_dock();
+
+        if (widgets->data->has_children() && widgets->data->get_type() != ekg::type::scroll) {            
+            this->process_scaled(widgets);
+        }
 
         if (ekg::bitwise::contains(flags, ekg::dock::fill) && ekg::bitwise::contains(flags, ekg::dock::next)) {
             top_rect.h += prev_widget_layout.h + this->min_offset;

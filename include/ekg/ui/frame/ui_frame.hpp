@@ -24,12 +24,13 @@ namespace ekg::ui {
     protected:
         uint16_t dock_resize {};
         uint16_t dock_drag {};
-        uint16_t dock_embed {};
 
         ekg::rect rect_initial {};
         std::string tag {};
         ekg::vec2 scale_factor {};
     public:
+        void set_place(uint16_t);
+
         void set_scale_factor(float, float);
         ekg::vec2 get_scale_factor();
 
@@ -50,9 +51,6 @@ namespace ekg::ui {
 
         void set_initial_height(float);
         float get_initial_height();
-
-        void set_embed(uint16_t);
-        uint16_t get_embed_dock();
 
         void set_size(float, float);
         ekg::vec2 get_size();

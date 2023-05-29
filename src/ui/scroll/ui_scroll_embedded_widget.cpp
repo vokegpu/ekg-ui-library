@@ -64,10 +64,7 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
      *
      * It is a temp solution.
      */
-    if (this->child_id_list.size() == mother_widget->data->get_child_id_list().size()) {
-        //this->calculate_rect_bar_sizes();
-        //return;
-    }
+
 
     switch (mother_widget->data->get_type()) {
     case ekg::type::frame:
@@ -134,7 +131,7 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
     auto &interact {ekg::interact()};
 
     if (this->flag.hovered && ekg::input::pressed("scrollbar-scroll") && this->is_vertical_enabled) {
-        this->scroll.w = this->scroll.y + (interact.w * this->acceleration.y);
+        this->scroll.w = ekg::clamp(this->scroll.y + (interact.w * this->acceleration.y), this->rect_mother->h - this->rect_child.h, 0.0f);
     }
 
     if (this->flag.hovered && ekg::input::pressed() && ekg::input::pressed("scrollbar-drag")) {
@@ -188,13 +185,13 @@ void ekg::ui::scroll_embedded_widget::on_update() {
 }
 
 void ekg::ui::scroll_embedded_widget::clamp_scroll() {
-    ekg::vec2 vertical_scroll_limit {0.0f, this->rect_child.h - this->rect_mother->h};
-    ekg::vec2 horizontal_scroll_limit {0.0f, this->rect_child.w - this->rect_mother->w};
+    ekg::vec2 vertical_scroll_limit {0.0f, this->rect_mother->h - this->rect_child.h};
+    ekg::vec2 horizontal_scroll_limit {0.0f, this->rect_mother->w - this->rect_child.w};
 
     if (this->rect_child.h < this->rect_mother->h) {
         this->scroll.y = 0.0f;
-    } else if (this->scroll.y < -vertical_scroll_limit.y) {
-        this->scroll.y = -vertical_scroll_limit.y;
+    } else if (this->scroll.y < vertical_scroll_limit.y) {
+        this->scroll.y = vertical_scroll_limit.y;
         this->scroll.w = this->scroll.y;
     } else if (this->scroll.y > vertical_scroll_limit.x) {
         this->scroll.y = vertical_scroll_limit.x;
@@ -203,8 +200,8 @@ void ekg::ui::scroll_embedded_widget::clamp_scroll() {
 
     if (this->rect_child.w < this->rect_mother->w) {
         this->scroll.x = 0.0f;
-    } else if (this->scroll.x < -horizontal_scroll_limit.y) {
-        this->scroll.x = -horizontal_scroll_limit.y;
+    } else if (this->scroll.x < horizontal_scroll_limit.y) {
+        this->scroll.x = horizontal_scroll_limit.y;
         this->scroll.z = this->scroll.x;
     } else if (this->scroll.x > horizontal_scroll_limit.x) {
         this->scroll.x = horizontal_scroll_limit.x;

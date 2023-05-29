@@ -19,8 +19,7 @@
 
 namespace ekg::ui {
     class scroll : public ekg::ui::abstract {
-    protected:
-        
+    protected:        
     public:
     };
 }

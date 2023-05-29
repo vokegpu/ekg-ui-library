@@ -217,7 +217,7 @@ void ekg::render() {
     glEnable(GL_DEPTH_TEST);
 }
 
-ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_position, ekg::vec2 size) {
+ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_position, const ekg::vec2 &size) {
     auto ui {new ekg::ui::frame()};
     ui->set_tag(tag);
     ui->set_type(ekg::type::frame);
@@ -225,6 +225,21 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_positi
 
     ui->set_pos_initial(initial_position.x, initial_position.y);
     ui->set_size_initial(size.x, size.y);
+    ui->ui() = {initial_position.x, initial_position.y, size.x, size.y};
+    ui->set_place(ekg::dock::none);
+
+    return ui;
+}
+
+ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &size, uint16_t dock) {
+    auto ui {new ekg::ui::frame()};
+    ui->set_tag(tag);
+    ui->set_type(ekg::type::frame);
+    ekg::core->gen_widget(ui);
+
+    ui->set_size_initial(size.x, size.y);
+    ui->ui() = {0.0f, 0.0f, size.x, size.y};
+    ui->set_place(dock);
 
     return ui;
 }
