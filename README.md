@@ -1,6 +1,4 @@
-The official runtime ekg ui library source code.
-
-[![wakatime](https://wakatime.com/badge/user/6ac0ddb9-609d-4f15-9a1f-b614f0b7428b/project/46bfaf87-1317-4dbf-8ed2-7be1d9bad602.svg)](https://wakatime.com/badge/user/6ac0ddb9-609d-4f15-9a1f-b614f0b7428b/project/46bfaf87-1317-4dbf-8ed2-7be1d9bad602)
+The official runtime ekg ui library source code
 
 ---
 
