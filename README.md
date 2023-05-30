@@ -4,7 +4,7 @@ The official runtime ekg ui library source code.
 
 The purpose of ekg is being fully customizable, smooth and with many animations. Also perform good in low pc specs. This is the new core version of ekg, rewrite of legacy core. 
 
-Be sure you compile together all this thee libs:  
+Be sure you compile together all this three libs:  
 ![GLEW](https://glew.sourceforge.net/), ![SDL2](https://www.libsdl.org/), and ![Freetype](https://freetype.org/).
 
 If you are on Android NDK, please replace GLEW with GLES3.
@@ -31,8 +31,9 @@ ekg::button("Button 4");
 
 C++ compiler(s) support: GNU  
 Library output path:   
-`lib/win32/libekg.a` - Windows 32/64bits  
-`lib/linux/libekg.a` - Linux x86_x64
+`lib/win32/libekg.a` - Windows x86_x64  
+`lib/linux/libekg.a` - Linux x86_x64  
+`ANDROID_ABI/libekg.a` - Android armeabi-v7a arm64-v8a x86 x86_64  
 
 # Setup
 
