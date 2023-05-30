@@ -10,6 +10,7 @@ Be sure you compile together all this thee libs:
 If you are on Android NDK, please replace GLEW with GLES3.
 
 ![Image Text](/splash/splash-shocase-3.0-light-theme.png?raw=true)
+![Calc](/splash/splash-calc-showcase.png?raw=true)
 
 ```c++
 auto frame2 = ekg::frame("text sampler", {20, 30}, {400, 400});
