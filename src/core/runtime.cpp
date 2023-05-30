@@ -437,7 +437,7 @@ void ekg::runtime::prepare_tasks() {
                     continue;
                 }
 
-                if (parent_master == nullptr || (parent_master != nullptr && parent_master->data->get_id() != scissor_widget->data->get_id())) {
+                if (parent_master == nullptr || (parent_master != nullptr && parent_master->data->get_id() != scissor_widget->data->get_parent_id())) {
                     parent_master = runtime->widget_map[scissor_widget->data->get_parent_id()];
                 }
 

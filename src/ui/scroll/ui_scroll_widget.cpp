@@ -24,6 +24,7 @@ void ekg::ui::scroll_widget::on_destroy() {
 void ekg::ui::scroll_widget::on_reload() {
     this->scroll.rect_mother = this->parent;
     this->scroll.mother_id = this->data->get_parent_id();
+    this->scroll.widget_id = this->data->get_id();
     this->scroll.on_reload();
 }
 

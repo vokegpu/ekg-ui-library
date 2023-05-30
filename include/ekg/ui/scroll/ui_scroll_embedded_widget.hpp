@@ -32,6 +32,7 @@ namespace ekg::ui {
 
         ekg::flag flag {};
         int32_t mother_id {};
+        int32_t widget_id {};
 
         bool is_vertical_enabled {};
         bool is_horizontal_enabled {};
@@ -40,6 +41,7 @@ namespace ekg::ui {
         ekg::vec2 bar_drag {};
     public:
         explicit scroll_embedded_widget();
+
         void calculate_rect_bar_sizes();
         void clamp_scroll();
         bool is_dragging_bar();

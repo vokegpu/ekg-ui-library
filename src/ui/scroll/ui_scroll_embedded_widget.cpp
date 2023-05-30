@@ -18,9 +18,10 @@
 #include "ekg/draw/draw.hpp"
 
 bool ekg::ui::scroll_embedded_widget::check_activy_state(bool state) {
-    state = state || this->scroll.x != this->scroll.z || this->scroll.y != this->scroll.w;
+    state = state || EQUALS_FLOAT(this->scroll.x, this->scroll.z) || EQUALS_FLOAT(this->scroll.y, this->scroll.w);
     if (!state) {
-        this->scroll.w = this->scroll.y;
+        this->scroll.x = this->scroll.z;
+        this->scroll.y = this->scroll.w;
     }
 
     return state;
@@ -56,15 +57,7 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
 
     if (this->child_id_list.empty()) {
         this->child_id_list = mother_widget->data->get_child_id_list();
-    } else
-    
-    /*
-     * Useless iterations affect the general performance of resizing widgets.
-     * If some child widget dimension was changed, it should keep the scroll it.
-     *
-     * It is a temp solution.
-     */
-
+    }
 
     switch (mother_widget->data->get_type()) {
     case ekg::type::frame:
@@ -107,18 +100,17 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
 
 void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
     if (ekg::input::pressed() || ekg::input::released() || ekg::input::motion() || ekg::input::wheel()) {
-        auto &interact {ekg::interact()};
+        ekg::rect scaled_vertical_bar {this->rect_vertical_scroll_bar};
+        scaled_vertical_bar.y += this->rect_mother->y;
 
-        ekg::rect scaled_bar {this->rect_vertical_scroll_bar};
-        scaled_bar.y += this->rect_mother->y;
+        ekg::rect scaled_horizontal_bar {this->rect_horizontal_scroll_bar};
+        scaled_horizontal_bar.x += this->rect_mother->x;
 
-        this->flag.hovered = ekg::rect_collide_vec(scaled_bar, interact);
-        scaled_bar = this->rect_horizontal_scroll_bar;
-        scaled_bar.x += this->rect_mother->x;
+        ekg::vec4 &interact {ekg::interact()};
+        bool visible {ekg::draw::is_visible(this->widget_id, interact)};
 
-        this->flag.activy = (ekg::rect_collide_vec(*this->rect_mother, interact));
-        this->flag.hovered = this->flag.hovered || ekg::rect_collide_vec(scaled_bar, interact);
-        this->flag.hovered = this->flag.hovered || (this->flag.activy && this->is_vertical_enabled && ekg::input::pressed("scrollbar-scroll"));
+        this->flag.activy = visible && this->is_vertical_enabled && ekg::input::pressed("scrollbar-scroll");
+        this->flag.hovered = this->flag.activy || (visible && (ekg::rect_collide_vec(scaled_vertical_bar, interact) || ekg::rect_collide_vec(scaled_horizontal_bar, interact)));
     }
 }
 
