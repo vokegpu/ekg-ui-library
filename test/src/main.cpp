@@ -192,23 +192,28 @@ int32_t main(int32_t, char**) {
     auto textboxdebug = ekg::textbox("textbox-debug", textcatsampler, ekg::dock::fill | ekg::dock::next);
     textboxdebug->set_scaled_height(4);
 
-    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
-    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
-    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
-    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
-
-    auto slider = ekg::slider("Meooooooooow", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
-    slider->set_text_align(ekg::dock::center);
-    slider->set_precision(23);
-    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
-
     ekg::ui::label *labelresult {};
     std::string previous_operator {};
     ekg::ui::frame *frame2 {};
 
     for (int32_t it {}; it < 1; it++) {
+        auto frame1 = ekg::frame("text sampler", {400, 400}, ekg::dock::fill | ekg::dock::next);
+        frame1->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
+
+        ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+        ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+        ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+        ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+
+        auto slider = ekg::slider("Meooooooooow", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
+        slider->set_text_align(ekg::dock::center);
+        slider->set_precision(23);
+        ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+        ekg::scroll("pompom");
+
+        framedebug->add_child(frame1->get_id());
+
         frame2 = ekg::frame("text sampler", {400, 400}, ekg::dock::fill | ekg::dock::next);
-        frame2->set_drag(ekg::dock::top);
         frame2->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
         framedebug->add_child(frame2->get_id());
 

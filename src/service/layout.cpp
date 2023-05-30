@@ -282,6 +282,13 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
         return;
     }
 
+    if (widget_parent->is_targeting_absolute_parent) {
+        widget_parent->is_targeting_absolute_parent = false;
+        auto absolute_parent_master {ekg::find_absolute_parent_master(widget_parent)};
+        this->process_scaled(absolute_parent_master);
+        return;
+    }
+
     float group_top_offset {this->min_offset};
 
     // This feature is currently disabled.

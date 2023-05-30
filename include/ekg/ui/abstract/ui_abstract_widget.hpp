@@ -34,6 +34,7 @@ namespace ekg::ui {
 
         bool is_scissor_refresh {};
         bool is_high_frequency {};
+        bool is_targeting_absolute_parent {};
     public:
         ekg::rect get_static_rect();
         [[nodiscard]] ekg::rect &get_abs_rect();

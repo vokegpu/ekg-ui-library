@@ -103,6 +103,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
              * Is very important to use synclaout before scissor.
              */
             if (this->target_dock_resize != ekg::dock::none) {
+                this->is_targeting_absolute_parent = true;
                 ekg::synclayout(this);
             }
 
