@@ -1,5 +1,7 @@
 The official runtime ekg ui library source code.
 
+[![wakatime](https://wakatime.com/badge/user/6ac0ddb9-609d-4f15-9a1f-b614f0b7428b/project/46bfaf87-1317-4dbf-8ed2-7be1d9bad602.svg)](https://wakatime.com/badge/user/6ac0ddb9-609d-4f15-9a1f-b614f0b7428b/project/46bfaf87-1317-4dbf-8ed2-7be1d9bad602)
+
 ---
 
 The purpose of ekg is being fully customizable, smooth and with many animations. Also perform good in low pc specs. This is the new core version of ekg, rewrite of legacy core. 
