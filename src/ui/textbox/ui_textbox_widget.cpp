@@ -492,10 +492,8 @@ void ekg::ui::textbox_widget::on_update() {
 
     if (ekg::reach(ekg::core->get_ui_timing(), 500) && !this->redraw_cursor) {
         this->redraw_cursor = true;
-        ekg::dispatch(ekg::env::redraw);
     } else if (!ekg::reach(ekg::core->get_ui_timing(), 500) && this->redraw_cursor) {
         this->redraw_cursor = false;
-        ekg::dispatch(ekg::env::redraw);
     }
 
     this->embedded_scroll.on_update();

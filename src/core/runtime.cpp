@@ -366,7 +366,7 @@ void ekg::runtime::prepare_tasks() {
             }
 
             widgets->on_reload();
-            runtime->processed_widget_map[widgets->data->get_id()] = true;
+            //runtime->processed_widget_map[widgets->data->get_id()] = true;
         }
 
         reload.clear();
@@ -420,7 +420,7 @@ void ekg::runtime::prepare_tasks() {
              * Two things important:
              * 1 - This scissors scheme use scissor IDs from widgets.
              * 2 - Iteration collect ALL parent families and sub parent of target.
-            */
+             */
 
             for (ekg::ui::abstract_widget *&scissor_widget : ekg::swap::front.ordered_list) {
                 gpu_scissor = runtime->allocator.get_scissor_by_id(scissor_widget->data->get_id());
@@ -458,21 +458,21 @@ void ekg::runtime::prepare_tasks() {
                 scissor[2] = widget_rect.w;
                 scissor[3] = widget_rect.h;
 
-                if (scissor[0] < scissor_parent_master[0]) {
+                if (scissor[0] <= scissor_parent_master[0]) {
                     scissor[2] -= scissor_parent_master[0] - scissor[0];
                     scissor[0] = scissor_parent_master[0];
                 }
 
-                if (scissor[1] < scissor_parent_master[1]) {
+                if (scissor[1] <= scissor_parent_master[1]) {
                     scissor[3] -= scissor_parent_master[1] - scissor[1];
                     scissor[1] = scissor_parent_master[1];
                 }
 
-                if (scissor[0] + scissor[2] > scissor_parent_master[0] + scissor_parent_master[2]) {
+                if (scissor[0] + scissor[2] >= scissor_parent_master[0] + scissor_parent_master[2]) {
                     scissor[2] -= (scissor[0] + scissor[2]) - (scissor_parent_master[0] + scissor_parent_master[2]);
                 }
 
-                if (scissor[1] + scissor[3] > scissor_parent_master[1] + scissor_parent_master[3]) {
+                if (scissor[1] + scissor[3] >= scissor_parent_master[1] + scissor_parent_master[3]) {
                     scissor[3] -= (scissor[1] + scissor[3]) - (scissor_parent_master[1] + scissor_parent_master[3]);
                 }
 
@@ -556,7 +556,7 @@ ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(int32_t id) {
     return id ? this->widget_map[id] : nullptr;
 }
 
-void ekg::runtime::do_task_reload(ekg::ui::abstract_widget* widget) {
+void ekg::runtime::do_task_reload(ekg::ui::abstract_widget *widget) {
     if (widget != nullptr) {
         this->widget_list_map["reload"].push_back(widget);
         ekg::dispatch(ekg::env::reload);

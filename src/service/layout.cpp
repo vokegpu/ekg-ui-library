@@ -367,6 +367,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
             continue;
         }
 
+        widgets->on_reload();
         if (widgets->data->has_children() && widgets->data->get_type() != ekg::type::scroll) {            
             this->process_scaled(widgets);
         }
@@ -435,7 +436,7 @@ void ekg::service::layout::init() {
     this->min_fill_width = this->min_height;
     this->min_offset = this->min_height / 3;
     this->min_height += this->min_offset;
-    this->min_offset /= 2;
+    this->min_offset = 2.0f;
 }
 
 void ekg::service::layout::quit() {
