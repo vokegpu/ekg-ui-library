@@ -366,7 +366,7 @@ void ekg::runtime::prepare_tasks() {
             }
 
             widgets->on_reload();
-            //runtime->processed_widget_map[widgets->data->get_id()] = true;
+            runtime->processed_widget_map[widgets->data->get_id()] = true;
         }
 
         reload.clear();
@@ -383,7 +383,8 @@ void ekg::runtime::prepare_tasks() {
             }
 
             runtime->layout_service.process_scaled(widgets);
-            runtime->processed_widget_map[widgets->data->get_id()] = true;
+            //runtime->processed_widget_map[widgets->data->get_id()] = true;
+            break;
         }
 
         reload.clear();
@@ -406,6 +407,11 @@ void ekg::runtime::prepare_tasks() {
 
             ekg::swap::front.clear();
             ekg::push_back_stack(parent_master, ekg::swap::front);
+
+            /* Any frame/container supports scrolling, but we need to clamp it before calculating the scissor. */
+            if (parent_master != nullptr) {
+                parent_master->on_update();
+            }
 
             /*
              * Scissor is a great feature from OpenGL, but it
@@ -439,6 +445,7 @@ void ekg::runtime::prepare_tasks() {
 
                 if (parent_master == nullptr || (parent_master != nullptr && parent_master->data->get_id() != scissor_widget->data->get_parent_id())) {
                     parent_master = runtime->widget_map[scissor_widget->data->get_parent_id()];
+                    parent_master->on_update();
                 }
 
                 gpu_parent_master_scissor = runtime->get_gpu_allocator().get_scissor_by_id(parent_master->data->get_id());

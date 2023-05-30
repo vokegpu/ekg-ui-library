@@ -17,6 +17,11 @@
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 #include "ekg/draw/draw.hpp"
 
+void ekg::ui::scroll_embedded_widget::reset_scroll() {
+    this->scroll.x = this->scroll.z;
+    this->scroll.y = this->scroll.y;
+}
+
 bool ekg::ui::scroll_embedded_widget::check_activy_state(bool state) {
     state = state || (static_cast<int32_t>(this->scroll.x) != static_cast<int32_t>(this->scroll.z)) || (static_cast<int32_t>(this->scroll.y) != static_cast<int32_t>(this->scroll.w));
     if (!state) {
@@ -55,9 +60,7 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
     ekg::ui::abstract_widget *widgets {};
     float service_layout_min_offset {ekg::core->get_service_layout().get_min_offset()};
 
-    if (this->child_id_list.empty()) {
-        this->child_id_list = mother_widget->data->get_child_id_list();
-    }
+    this->child_id_list = mother_widget->data->get_child_id_list();
 
     switch (mother_widget->data->get_type()) {
     case ekg::type::frame:

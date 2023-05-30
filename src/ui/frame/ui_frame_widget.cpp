@@ -128,6 +128,11 @@ void ekg::ui::frame_widget::on_post_event(SDL_Event &sdl_event) {
 
 void ekg::ui::frame_widget::on_update() {
     abstract_widget::on_update();
+
+    if (this->p_scroll_embedded != nullptr) {
+        this->p_scroll_embedded->clamp_scroll();
+        this->p_scroll_embedded->reset_scroll();
+    }
 }
 
 void ekg::ui::frame_widget::on_draw_refresh() {

@@ -200,10 +200,6 @@ int32_t main(int32_t, char**) {
     auto slider = ekg::slider("Meooooooooow", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
     slider->set_text_align(ekg::dock::center);
     slider->set_precision(23);
-
-    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
-    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
-    ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
     ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
 
     ekg::ui::label *labelresult {};
@@ -211,7 +207,9 @@ int32_t main(int32_t, char**) {
     ekg::ui::frame *frame2 {};
 
     for (int32_t it {}; it < 1; it++) {
-        frame2 = ekg::frame("text sampler", {400, 400}, ekg::dock::next | ekg::dock::fill);
+        frame2 = ekg::frame("text sampler", {400, 400}, ekg::dock::fill | ekg::dock::next);
+        frame2->set_drag(ekg::dock::top);
+        frame2->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
         framedebug->add_child(frame2->get_id());
 
         ekg::theme().gen_default_dark_theme();

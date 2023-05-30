@@ -367,11 +367,6 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
             continue;
         }
 
-        widgets->on_reload();
-        if (widgets->data->has_children() && widgets->data->get_type() != ekg::type::scroll) {            
-            this->process_scaled(widgets);
-        }
-
         if (ekg::bitwise::contains(flags, ekg::dock::fill) && ekg::bitwise::contains(flags, ekg::dock::next)) {
             top_rect.h += prev_widget_layout.h + this->min_offset;
             top_rect.w = 0.0f;
@@ -422,6 +417,10 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
         if (should_reload_widget) {
             widgets->on_reload();
+        }
+
+        if (widgets->data->has_children()) {            
+            this->process_scaled(widgets);
         }
 
         prev_widget_layout = layout;

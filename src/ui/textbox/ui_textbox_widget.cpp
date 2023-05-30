@@ -407,7 +407,6 @@ void ekg::ui::textbox_widget::on_reload() {
         this->check_largest_text_width();
     }
 
-    this->embedded_scroll.mother_id = this->data->get_id();
     this->embedded_scroll.rect_mother = &rect;
     this->embedded_scroll.acceleration.y = this->text_height + (this->text_offset * 2.0f);
     this->embedded_scroll.on_reload();
