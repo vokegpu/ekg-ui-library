@@ -47,6 +47,7 @@ namespace ekg::ui {
         bool is_dragging_bar();
         bool check_activy_state(bool);
         void reset_scroll();
+        void check_axis_states();
 
         void on_destroy();
         void on_reload();

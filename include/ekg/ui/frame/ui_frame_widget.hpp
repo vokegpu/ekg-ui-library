@@ -23,8 +23,8 @@ namespace ekg::ui {
 	public:
         uint16_t target_dock_drag {};
         uint16_t target_dock_resize {};
-        ekg::ui::scroll_embedded_widget *p_scroll_embedded {};
 
+        ekg::ui::scroll_embedded_widget *p_scroll_embedded {};
         ekg::docker docker_activy_drag {};
         ekg::docker docker_activy_resize {};
         ekg::rect rect_delta {};

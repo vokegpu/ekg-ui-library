@@ -416,7 +416,7 @@ void ekg::ui::textbox_widget::on_reload() {
 
 void ekg::ui::textbox_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
-    this->flag.absolute = this->embedded_scroll.is_dragging_bar() || (this->flag.hovered && this->embedded_scroll.is_vertical_enabled) || this->flag.focused;
+    this->flag.absolute = this->embedded_scroll.is_dragging_bar() || (this->flag.hovered && this->embedded_scroll.is_vertical_enabled);
 }
 
 void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {

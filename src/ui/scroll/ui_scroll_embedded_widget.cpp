@@ -17,6 +17,11 @@
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 #include "ekg/draw/draw.hpp"
 
+void ekg::ui::scroll_embedded_widget::check_axis_states() {
+    this->is_vertical_enabled = this->rect_child.h > this->rect_mother->h;
+    this->is_horizontal_enabled = this->rect_child.w > this->rect_mother->w;
+}
+
 void ekg::ui::scroll_embedded_widget::reset_scroll() {
     this->scroll.x = this->scroll.z;
     this->scroll.y = this->scroll.y;
@@ -118,8 +123,7 @@ void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
-    this->is_vertical_enabled = this->rect_child.h > this->rect_mother->h;
-    this->is_horizontal_enabled = this->rect_child.w > this->rect_mother->w;
+    this->check_axis_states();
 
     bool vertical_hovered {};
     bool horizontal_hovered {};

@@ -284,30 +284,33 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
     if (widget_parent->is_targeting_absolute_parent) {
         widget_parent->is_targeting_absolute_parent = false;
-        auto absolute_parent_master {ekg::find_absolute_parent_master(widget_parent)};
-        this->process_scaled(absolute_parent_master);
+        this->process_scaled(ekg::find_absolute_parent_master(widget_parent));
         return;
     }
 
     float group_top_offset {this->min_offset};
+    ekg::rect group_rect {widget_parent->dimension};
 
-    // This feature is currently disabled.
-    // switch (type) {
-    //     case ekg::type::frame: {
-    //         auto widget_group {(ekg::ui::frame_widget*) widget_parent};
-    //         auto ui_group {(ekg::ui::frame*) widget_parent->data};
+    switch (type) {
+    case ekg::type::frame:
+        auto frame {(ekg::ui::frame_widget*) widget_parent};
+        float scrollbar_pixel_thickness {static_cast<float>(ekg::theme().scrollbar_pixel_thickness)};
 
-    //         if (ekg::bitwise::contains(ui_group->get_drag_dock(), ekg::dock::top)) {
-    //             group_top_offset = this->min_offset;
-    //         }
+        if (frame->p_scroll_embedded != nullptr) {
+            frame->p_scroll_embedded->check_axis_states();
+            group_rect.w -= scrollbar_pixel_thickness * static_cast<float>(frame->p_scroll_embedded->is_vertical_enabled);
+            group_rect.h -= scrollbar_pixel_thickness * static_cast<float>(frame->p_scroll_embedded->is_horizontal_enabled);
+        }
+        break;
+    }
 
-    //         break;
-    //     }
-
-    //     default: {
-    //         break;
-    //     }
-    // }
+    /*
+     * The dimension of mother/parent group is not scaled by min offsets,
+     * when transforming unuscaled sizes, it can return a wrong position,
+     * in simple words, non-scaled size return non aligned positions.
+     */
+    group_rect.w -= this->min_offset * 2.0f;
+    group_rect.h -= this->min_offset * 2.0f;
 
     this->scaled_width_divided = parent_rect.w / 3;
     this->scaled_width_divided = parent_rect.h / 2;
@@ -318,15 +321,6 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
     int64_t it {};
     float dimensional_extent {};
     int64_t count {};
-
-    /*
-     * The dimension of mother/parent group is not scaled by min offsets,
-     * when transforming unuscaled sizes, it can return a wrong position,
-     * in simple words, non-scaled size return non aligned positions.
-     */
-    ekg::rect group_rect {widget_parent->dimension};
-    group_rect.w -= this->min_offset * 2.0f;
-    group_rect.h -= this->min_offset * 2.0f;
 
     ekg::rect widget_rect {};
     ekg::rect bottom_rect {};
