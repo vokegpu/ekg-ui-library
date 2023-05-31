@@ -209,7 +209,7 @@ int32_t main(int32_t, char**) {
         slider->set_text_align(ekg::dock::center);
         slider->set_precision(23);
         ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
-        ekg::scroll("pompom");
+        ekg::scroll("pompom-meow");
 
         framedebug->add_child(frame1->get_id());
 
@@ -324,7 +324,7 @@ int32_t main(int32_t, char**) {
         bassign->set_scaled_height(2);
         bassign->set_text_align(ekg::dock::center);
         bassign->set_tag("calculator-assign");
-        ekg::scroll("pompom");
+        ekg::scroll("pompom-calc");
         ekg::popgroup();
     }
 

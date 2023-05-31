@@ -50,7 +50,6 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
 
         bool text_chunk_it_bounding_size {this->cursor[2] + 1 == this->text_chunk_list.size()};
         bool check_cursor_x {x != 0};
-        bool check_cursor_y {y != 0};
 
         if (x < 0) {
             x = abs(x);
@@ -95,16 +94,19 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
             this->cursor[2]--;
             this->cursor[0] = base_it;
             this->cursor[3] = ekg::utf8length(this->get_cursor_emplace_text());
+            y = -1;
         }
 
         int64_t base_it_plus_emplace_text_size {base_it + emplace_text_size};
         if (this->cursor[0] > base_it_plus_emplace_text_size && text_chunk_it_bounding_size && check_cursor_x) {
             this->cursor[0] = base_it_plus_emplace_text_size;
             this->cursor[3] = emplace_text_size;
+            y = -1;
         } else if (this->cursor[0] > base_it_plus_emplace_text_size && check_cursor_x) {
             this->cursor[0] = base_it_plus_emplace_text_size;
             this->cursor[2]++;
             this->cursor[3] = 0;
+            y = 1;
         }
 
         this->cursor[0] = ekg::min(this->cursor[0], (int64_t) 0);
@@ -123,7 +125,7 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
 
         const ekg::vec2 cursor_pos {
             rect.x + this->embedded_scroll.scroll.x + (f_renderer.get_text_width(ekg::utf8substr(current_emplace_text, 0, this->cursor[3]))),
-            rect.y + this->embedded_scroll.scroll.y + (static_cast<float>(this->cursor[2]) * this->text_height)
+            rect.y + this->embedded_scroll.scroll.y + this->text_offset + (static_cast<float>(this->cursor[2]) * this->text_height)
         };
 
         const ekg::vec4 cursor_outspace_screen {
@@ -414,6 +416,7 @@ void ekg::ui::textbox_widget::on_reload() {
 
 void ekg::ui::textbox_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
+    this->flag.absolute = this->embedded_scroll.is_dragging_bar() || (this->flag.hovered && this->embedded_scroll.is_vertical_enabled) || this->flag.focused;
 }
 
 void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
@@ -427,7 +430,6 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     this->embedded_scroll.flag.hovered = this->flag.hovered;
     this->embedded_scroll.flag.activy = this->flag.hovered;
     this->embedded_scroll.on_event(sdl_event);
-    this->flag.absolute = this->embedded_scroll.is_dragging_bar() || (this->flag.hovered && this->embedded_scroll.is_vertical_enabled) || this->flag.focused;
 
     if (this->flag.hovered && pressed) {
         ekg::set(this->flag.focused, this->flag.hovered);
