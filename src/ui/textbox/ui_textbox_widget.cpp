@@ -360,10 +360,10 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
 }
 
 void ekg::ui::textbox_widget::unset_focus() {
-    if (this->flag.focused) {
-        ekg::set(this->flag.focused, false);
+    ekg::set(this->flag.focused, false);
+    
+    if (this->flag.focused && this->is_ui_enabled) {
         auto *ui {(ekg::ui::textbox*) this->data};
-
         std::string compatibility_text {};
         if (!this->text_chunk_list.empty()) {
             for (std::string &text : this->text_chunk_list) {
@@ -404,10 +404,29 @@ void ekg::ui::textbox_widget::on_reload() {
     this->min_size.y = ekg::min(this->min_size.y, this->dimension.h);
 
     if (this->widget_side_text != ui->get_text()) {
-        this->widget_side_text = ui->get_text();
+        int64_t previous_size {static_cast<int64_t>(this->text_chunk_list.size())};
+
         this->text_chunk_list.clear();
+        this->widget_side_text = ui->get_text();
         ekg::utf8read(this->widget_side_text, this->text_chunk_list);
+
         this->check_largest_text_width();
+        this->rect_text.h = (this->text_height * this->text_chunk_list.size()) + (this->text_offset * 2.0f);
+        
+        float vertical_scroll_limit {this->rect_text.h - rect.h};
+        float new_text_height_diff {this->text_height * (static_cast<float>(static_cast<int64_t>(this->text_chunk_list.size()) - previous_size) + 1.0f)};
+
+        /*
+         * If the difference between the new and old texts,
+         * is nearest of scrolling y, it should follow the scrolling.
+         */
+        if (vertical_scroll_limit > 0 && this->embedded_scroll.scroll.w < -(vertical_scroll_limit - new_text_height_diff)) {
+            this->embedded_scroll.scroll.w = -vertical_scroll_limit;
+        
+            if (!this->is_high_frequency) {
+                ekg::update_high_frequency(this);
+            }
+        }
     }
 
     this->embedded_scroll.rect_mother = &rect;
@@ -450,7 +469,9 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     }
 
     auto ui {(ekg::ui::textbox*) this->data};
-    if (!this->flag.focused || !ui->is_enabled()) {
+    this->is_ui_enabled = ui->is_enabled();
+
+    if (!this->flag.focused || !this->is_ui_enabled) {
         return;
     }
 

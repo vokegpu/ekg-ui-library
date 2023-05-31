@@ -36,6 +36,7 @@ namespace ekg::ui {
         float text_offset {};
         float text_height {};
         bool redraw_cursor {};
+        bool is_ui_enabled {};
     public:
         void check_cursor_text_bounding();
         std::string &get_cursor_emplace_text();
