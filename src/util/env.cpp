@@ -22,6 +22,7 @@ bool ekg::debug {};
 float ekg::scrollsmooth {0.3f};
 int32_t ekg::hovered::id {};
 ekg::type ekg::hovered::type {};
+std::string ekg::log::cache {};
 
 size_t ekg::utf8checksequence(uint8_t &ui8char, char32_t &ui32char, std::string &utf8string, std::string_view stringtext, size_t it) {
     if (ui8char <= 0x7F) {

@@ -20,9 +20,13 @@ namespace ekg::ui {
     class textbox : public ekg::ui::abstract {
     protected:
         std::string text {};
-        ekg:: font font_size {};
+        ekg::font font_size {};
         uint64_t max_chars {};
+        bool enabled {true};
     public:
+        void set_enabled(bool);
+        bool is_enabled();
+
         void set_font_size(ekg::font font);
         ekg::font get_font_size();
 
@@ -39,7 +43,7 @@ namespace ekg::ui {
         uint64_t get_max_chars();
 
         void set_text(std::string_view);
-        std::string_view get_text();
+        std::string get_text();
     };
 }
 

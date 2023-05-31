@@ -62,6 +62,15 @@ namespace ekg {
         static constexpr int32_t WARNING {0};
         static constexpr int32_t INFO {1};
         static constexpr int32_t ERROR {2};
+        static std::string cache;
+
+        static bool buffering() {
+            return !ekg::log::cache.empty();
+        }
+        
+        static void flush() {
+            ekg::log::cache.clear();
+        }
 
         explicit log(int32_t priority = ekg::log::INFO) {
             switch (priority) {
@@ -84,17 +93,20 @@ namespace ekg {
                     break;
                 }
             }
+
+            if (ekg::log::cache.size() >= 50000) ekg::log::cache.clear();
         }
 
         ~log() {
             this->buffer << '\n';
+            std::string logmsg {this->buffer.str()};
 
 #if defined(__ANDROID__)
-            std::string logmsg {this->buffer.str()};
             __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", logmsg.c_str());
 #else
-            std::cout << this->buffer.str();
+            std::cout << logmsg;
 #endif
+            ekg::log::cache += logmsg;
         }
 
         template<typename t>

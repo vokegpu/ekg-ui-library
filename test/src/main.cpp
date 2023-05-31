@@ -175,22 +175,13 @@ int32_t main(int32_t, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    std::string textcatsampler {};
-    textcatsampler += "não§§È1II21II§2121§§2212121212126\r\n"
-                      "[CAT-DEBUGGER-PIG] utf8 size: 5 string size: 20\n"
-                      "[CAT-DEBUGGER-PIG] EKG User interface library demo starting\n"
-                      "[CAT-DEBUGGER-PIG] Shutdown complete - Thank you for using EKG ;) <3\n";
-
-    for (uint32_t it {}; it < 3; it++) {
-        textcatsampler += textcatsampler;
-    }
-
     auto framedebug = ekg::frame("frame-debug", {0, 0}, {400, root_height});
     framedebug->set_resize(ekg::dock::right | ekg::dock::bottom);
 
     ekg::label("Debug:", ekg::dock::fill | ekg::dock::next);
-    auto textboxdebug = ekg::textbox("textbox-debug", textcatsampler, ekg::dock::fill | ekg::dock::next);
-    textboxdebug->set_scaled_height(4);
+    auto textboxdebug = ekg::textbox("textbox-debug", "", ekg::dock::fill | ekg::dock::next);
+    textboxdebug->set_scaled_height(8);
+    textboxdebug->set_enabled(false);
 
     ekg::ui::label *labelresult {};
     std::string previous_operator {};
@@ -200,10 +191,10 @@ int32_t main(int32_t, char**) {
         auto frame1 = ekg::frame("text sampler", {400, 400}, ekg::dock::fill | ekg::dock::next);
         frame1->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
 
-        ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
-        ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
-        ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
-        ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+        ekg::checkbox("meow enabled", false, ekg::dock::next);
+        ekg::checkbox("meow enabled", false, ekg::dock::next);
+        ekg::checkbox("meow enabled", false);
+        ekg::checkbox("meow enabled", false, ekg::dock::next);
 
         auto slider = ekg::slider("Meooooooooow", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
         slider->set_text_align(ekg::dock::center);
@@ -330,7 +321,6 @@ int32_t main(int32_t, char**) {
 
     framedebug->add_child(ekg::scroll("mewoscroll")->get_id());
 
-
     // ekg::button("Button 7", ekg::dock::right);
     // ekg::button("Button 8", ekg::dock::fill | ekg::dock::bottom);
 
@@ -418,6 +408,12 @@ int32_t main(int32_t, char**) {
             }
         }
 
+        if (ekg::log::buffering()) {
+            std::string oldlog {textboxdebug->get_text()};
+            if (oldlog.size() > 12000) oldlog = "";
+            textboxdebug->set_text(oldlog + ekg::log::cache);
+            ekg::log::flush();
+        }
         ekg::update();
 
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);

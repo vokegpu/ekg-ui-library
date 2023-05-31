@@ -14,6 +14,14 @@
 #include "ekg/ui/textbox/ui_textbox.hpp"
 #include "ekg/util/util_ui.hpp"
 
+void ekg::ui::textbox::set_enabled(bool state) {
+    this->enabled = state;
+}
+
+bool ekg::ui::textbox::is_enabled() {
+    return this->enabled;
+}
+
 void ekg::ui::textbox::set_place(uint16_t flags) {
     if (this->dock_flags != flags) {
         this->dock_flags = flags;
@@ -28,7 +36,7 @@ void ekg::ui::textbox::set_text(std::string_view string) {
     }
 }
 
-std::string_view ekg::ui::textbox::get_text() {
+std::string ekg::ui::textbox::get_text() {
     return this->text;
 }
 

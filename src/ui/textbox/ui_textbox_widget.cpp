@@ -405,6 +405,7 @@ void ekg::ui::textbox_widget::on_reload() {
 
     if (this->widget_side_text != ui->get_text()) {
         this->widget_side_text = ui->get_text();
+        this->text_chunk_list.clear();
         ekg::utf8read(this->widget_side_text, this->text_chunk_list);
         this->check_largest_text_width();
     }
@@ -448,7 +449,8 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         this->unset_focus();
     }
 
-    if (!this->flag.focused) {
+    auto ui {(ekg::ui::textbox*) this->data};
+    if (!this->flag.focused || !ui->is_enabled()) {
         return;
     }
 
