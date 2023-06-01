@@ -37,8 +37,6 @@ void ekg::ui::abstract::add_child(int32_t element_id) {
         widget->data->set_parent_id(this->id);
         widget->parent = &this->rect_widget;
         
-        // Pre-reload the widget for prevent issues with layout.
-        widget->on_reload();
     }
 }
 
