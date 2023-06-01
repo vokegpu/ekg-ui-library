@@ -465,21 +465,21 @@ void ekg::runtime::prepare_tasks() {
                 scissor[2] = widget_rect.w;
                 scissor[3] = widget_rect.h;
 
-                if (scissor[0] <= scissor_parent_master[0]) {
+                if (scissor[0] < scissor_parent_master[0]) {
                     scissor[2] -= scissor_parent_master[0] - scissor[0];
                     scissor[0] = scissor_parent_master[0];
                 }
 
-                if (scissor[1] <= scissor_parent_master[1]) {
+                if (scissor[1] < scissor_parent_master[1]) {
                     scissor[3] -= scissor_parent_master[1] - scissor[1];
                     scissor[1] = scissor_parent_master[1];
                 }
 
-                if (scissor[0] + scissor[2] >= scissor_parent_master[0] + scissor_parent_master[2]) {
+                if (scissor[0] + scissor[2] > scissor_parent_master[0] + scissor_parent_master[2]) {
                     scissor[2] -= (scissor[0] + scissor[2]) - (scissor_parent_master[0] + scissor_parent_master[2]);
                 }
 
-                if (scissor[1] + scissor[3] >= scissor_parent_master[1] + scissor_parent_master[3]) {
+                if (scissor[1] + scissor[3] > scissor_parent_master[1] + scissor_parent_master[3]) {
                     scissor[3] -= (scissor[1] + scissor[3]) - (scissor_parent_master[1] + scissor_parent_master[3]);
                 }
 
@@ -718,6 +718,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
         widget->data = ui;
         created_widget = widget;
         append_group = true;
+        update_scissor = true;
         break;
     }
     default:

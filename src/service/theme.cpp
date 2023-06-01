@@ -84,7 +84,7 @@ void ekg::service::theme::gen_default_light_theme() {
 
     this->frame_background = {242, 242, 242, 255};
     this->frame_border = {190, 190, 190, 0};
-    this->frame_outline = {30, 40, 60, 100};
+    this->frame_outline = {202, 207, 222, 150};
     this->frame_activy_offset = 18;
 
     this->button_string = {141, 141, 141, 255};

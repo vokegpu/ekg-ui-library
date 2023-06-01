@@ -276,7 +276,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
     auto type {widget_parent->data->get_type()};
     auto is_group {type == ekg::type::frame};
-    auto &parent_rect = widget_parent->data->widget();
+    auto &parent_rect = widget_parent->get_abs_rect();
 
     if (!is_group || parent_rect.w == 0 || parent_rect.h == 0) {
         return;

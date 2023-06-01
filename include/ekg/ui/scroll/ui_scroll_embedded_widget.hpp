@@ -25,6 +25,7 @@ namespace ekg::ui {
         std::vector<int32_t> child_id_list {};
         ekg::rect *rect_mother {};
         ekg::rect rect_child {};
+        ekg::rect rect_dimension_sync {};
 
         ekg::vec4 scroll {};
         ekg::rect rect_vertical_scroll_bar {};

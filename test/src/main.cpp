@@ -180,7 +180,7 @@ int32_t main(int32_t, char**) {
 
     ekg::label("Debug:", ekg::dock::fill | ekg::dock::next);
     auto textboxdebug = ekg::textbox("textbox-debug", "", ekg::dock::fill | ekg::dock::next);
-    textboxdebug->set_scaled_height(24);
+    textboxdebug->set_scaled_height(6);
     textboxdebug->set_enabled(false);
 
     ekg::ui::label *labelresult {};
@@ -406,10 +406,6 @@ int32_t main(int32_t, char**) {
                     break;
                 }
             }
-        }
-
-        if (ekg::reach(ekg::core->get_ui_timing(), 750)) {
-            ekg::log() << "sou ultra gostossaa";
         }
 
         if (ekg::log::buffering()) {
