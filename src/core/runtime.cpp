@@ -11,7 +11,6 @@
  *
  * @VokeGpu 2023 all rights reserved.
  */
-
 #include "ekg/core/runtime.hpp"
 #include "ekg/util/util_event.hpp"
 #include "ekg/ui/frame/ui_frame.hpp"
@@ -718,7 +717,6 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
         widget->data = ui;
         created_widget = widget;
         append_group = true;
-        update_scissor = true;
         break;
     }
     default:

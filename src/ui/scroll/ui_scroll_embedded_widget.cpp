@@ -58,6 +58,7 @@ void ekg::ui::scroll_embedded_widget::on_destroy() {
 void ekg::ui::scroll_embedded_widget::on_reload() {
     if (this->mother_id == 0 && this->child_id_list.empty()) {
         this->calculate_rect_bar_sizes();
+        this->check_axis_states();
         return;
     }
 
@@ -104,6 +105,7 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
 
     this->acceleration.y += service_layout_min_offset;
     this->calculate_rect_bar_sizes();
+    this->check_axis_states();
 }
 
 void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
