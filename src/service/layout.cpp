@@ -347,6 +347,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
     bool should_reload_widget {};
     bool skip_widget {};
+    float extent_data_backup[4] {};
 
     // @TODO Prevent useless scrolling reload;
 
@@ -427,9 +428,19 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
             widgets->on_reload();
         }
 
+        extent_data_backup[0] = this->extent_data[0];
+        extent_data_backup[1] = this->extent_data[1];
+        extent_data_backup[2] = this->extent_data[2];
+        extent_data_backup[3] = this->extent_data[3];
+
         if (widgets->data->has_children()) {
             this->process_scaled(widgets);
         }
+
+        this->extent_data[0] = extent_data_backup[0];
+        this->extent_data[1] = extent_data_backup[1];
+        this->extent_data[2] = extent_data_backup[2];
+        this->extent_data[3] = extent_data_backup[3];
 
         prev_widget_layout = layout;
         prev_flags = flags;

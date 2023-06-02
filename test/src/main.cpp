@@ -188,7 +188,7 @@ int32_t main(int32_t, char**) {
     ekg::ui::frame *frame2 {};
 
     for (int32_t it {}; it < 1; it++) {
-        auto frame1 = ekg::frame("text sampler", {400, 400}, ekg::dock::fill | ekg::dock::next);
+        auto frame1 = ekg::frame("cat", {400, 400}, ekg::dock::fill);
         frame1->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
 
         ekg::checkbox("meow enabled", false, ekg::dock::next);
@@ -196,7 +196,7 @@ int32_t main(int32_t, char**) {
         ekg::checkbox("meow enabled", false);
         ekg::checkbox("meow enabled", false, ekg::dock::next);
 
-        auto slider = ekg::slider("Meooooooooow", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
+        auto slider = ekg::slider("gato", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
         slider->set_text_align(ekg::dock::center);
         slider->set_precision(23);
         ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
@@ -204,7 +204,7 @@ int32_t main(int32_t, char**) {
 
         framedebug->add_child(frame1->get_id());
 
-        frame2 = ekg::frame("text sampler", {400, 400}, ekg::dock::fill | ekg::dock::next);
+        frame2 = ekg::frame("cha", {400, 400}, ekg::dock::fill);
         frame2->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
         framedebug->add_child(frame2->get_id());
 
@@ -321,6 +321,11 @@ int32_t main(int32_t, char**) {
 
     framedebug->add_child(ekg::scroll("mewoscroll")->get_id());
 
+    ekg::frame("helko", {400, 20}, {300, 300});
+    ekg::button("hello", ekg::dock::fill);
+    ekg::button("hello vc é lindo", ekg::dock::next);
+    ekg::popgroup();
+
     // ekg::button("Button 7", ekg::dock::right);
     // ekg::button("Button 8", ekg::dock::fill | ekg::dock::bottom);
 
@@ -407,6 +412,8 @@ int32_t main(int32_t, char**) {
                 }
             }
         }
+
+        framedebug->set_width(ekg::display::width);
 
         if (ekg::log::buffering()) {
             std::string oldlog {textboxdebug->get_text()};

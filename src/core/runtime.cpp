@@ -383,7 +383,6 @@ void ekg::runtime::prepare_tasks() {
 
             runtime->layout_service.process_scaled(widgets);
             runtime->processed_widget_map[widgets->data->get_id()] = true;
-            break;
         }
 
         reload.clear();

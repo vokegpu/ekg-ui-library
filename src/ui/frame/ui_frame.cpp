@@ -121,11 +121,11 @@ float ekg::ui::frame::get_initial_height() {
 void ekg::ui::frame::set_width(float width) {
     if (this->sync_ui.w != width) {
         this->sync_ui.w = width;
-        this->sync_ui.h = this->rect_widget.h;
 
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
         ekg::scissor(this->id);
+        ekg::synclayout(this->id);
         ekg::dispatch(ekg::env::redraw);
     }
 }
@@ -137,11 +137,11 @@ float ekg::ui::frame::get_width() {
 void ekg::ui::frame::set_height(float height) {
     if (this->sync_ui.h != height) {
         this->sync_ui.h = height;
-        this->sync_ui.w = this->rect_widget.w;
 
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
         ekg::scissor(this->id);
+        ekg::synclayout(this->id);
         ekg::dispatch(ekg::env::redraw);
     }
 }
