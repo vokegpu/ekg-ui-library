@@ -44,7 +44,7 @@ message("-- Configuring static lib")
 set_target_properties(ekg PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION 1)
 set_target_properties(ekg PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 target_include_directories(ekg PUBLIC include/)
-
+ 
 message("-- Setting configure file")
 configure_file(ekg.pc.in "ekg.pc" @ONLY)
 
