@@ -25,6 +25,7 @@ namespace ekg::ui {
     public:
         std::vector<std::string> text_chunk_list {};
         std::string widget_side_text {};
+        
         ekg::rect rect_text {};
         ekg::rect rect_cursor {};
         ekg::ui::scroll_embedded_widget embedded_scroll {};
@@ -35,6 +36,7 @@ namespace ekg::ui {
 
         float text_offset {};
         float text_height {};
+        
         bool redraw_cursor {};
         bool is_ui_enabled {};
     public:

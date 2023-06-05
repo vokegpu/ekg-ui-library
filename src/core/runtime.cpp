@@ -59,13 +59,6 @@ int32_t ekg::runtime::get_top_level() {
 }
 
 void ekg::runtime::update_size_changed() {
-    for (ekg::ui::abstract_widget *&widgets : this->widget_list_map["all"]) {
-        if (widgets != nullptr && !widgets->data->has_parent() && widgets->data->has_children()) {
-            this->do_task_synclayout(widgets);
-            this->do_task_scissor(widgets);
-        }
-    }
-
     ekg::dispatch(ekg::env::redraw);
 }
 

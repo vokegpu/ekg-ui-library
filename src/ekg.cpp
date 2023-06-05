@@ -15,7 +15,7 @@
 #include "ekg/ekg.hpp"
 #include "ekg/os/info.hpp"
 
-ekg::runtime* ekg::core {nullptr};
+ekg::runtime* ekg::core {};
 std::string ekg::gl_version {"#version 450"};
 
 ekg::service::theme &ekg::theme() {

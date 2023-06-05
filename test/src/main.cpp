@@ -127,7 +127,7 @@ std::string resultcalc(std::string_view text) {
 
     result = std::to_string(cpom);
     return result;
-} 
+}
 
 /*
  * Created by Rina.
@@ -317,14 +317,14 @@ int32_t main(int32_t, char**) {
         bassign->set_tag("calculator-assign");
         ekg::scroll("pompom-calc");
         ekg::popgroup();
+
+        framedebug->add_child(ekg::frame("helko", {300, 300}, ekg::dock::next)->get_id());
+        ekg::button("hello", ekg::dock::fill);
+        ekg::button("hello vc é lindo", ekg::dock::next);
+        ekg::popgroup();
     }
 
     framedebug->add_child(ekg::scroll("mewoscroll")->get_id());
-
-    ekg::frame("helko", {400, 20}, {300, 300});
-    ekg::button("hello", ekg::dock::fill);
-    ekg::button("hello vc é lindo", ekg::dock::next);
-    ekg::popgroup();
 
     // ekg::button("Button 7", ekg::dock::right);
     // ekg::button("Button 8", ekg::dock::fill | ekg::dock::bottom);

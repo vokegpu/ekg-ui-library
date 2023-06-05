@@ -124,8 +124,8 @@ void ekg::ui::frame::set_width(float width) {
 
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
-        ekg::scissor(this->id);
         ekg::synclayout(this->id);
+        ekg::scissor(this->id);
         ekg::dispatch(ekg::env::redraw);
     }
 }
@@ -140,8 +140,8 @@ void ekg::ui::frame::set_height(float height) {
 
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
-        ekg::scissor(this->id);
         ekg::synclayout(this->id);
+        ekg::scissor(this->id);
         ekg::dispatch(ekg::env::redraw);
     }
 }
