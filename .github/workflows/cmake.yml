@@ -28,4 +28,3 @@ jobs:
     - name: Build
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/cmake-build-debug --config ${{env.BUILD_TYPE}}
-
