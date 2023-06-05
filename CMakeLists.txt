@@ -17,7 +17,7 @@ project(ekg VERSION 0.1.0 DESCRIPTION "ui library")
 message("-- Preparing EKG setup")
 
 # Maximum optimization
-add_compile_options(-O2)
+add_compile_options(-O3)
 
 if (WIN32)
     message("-- WIN32 platform detected!")
