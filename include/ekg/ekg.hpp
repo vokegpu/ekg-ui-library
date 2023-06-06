@@ -28,6 +28,9 @@
 #include "ekg/ui/textbox/ui_textbox.hpp"
 #include "ekg/ui/scroll/ui_scroll.hpp"
 
+#define EKG_VERSION_ID "0.0.1"
+#define EKG_VERSION_STATE "ALPHA"
+
 namespace ekg {
     /*
      * The runtime core of ekg.
