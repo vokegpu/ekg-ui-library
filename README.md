@@ -29,7 +29,7 @@ ekg::button("Button 4");
 
 # Running
 
-C++ compiler(s) support: GNU  
+C++ compiler(s) support: GCC  
 Library output path:   
 `lib/win32/libekg.a` - Windows x86_x64  
 `lib/linux/libekg.a` - Linux x86_x64  
