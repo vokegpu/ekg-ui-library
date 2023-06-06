@@ -52,12 +52,11 @@ configure_file(ekg.pc.in "ekg.pc" @ONLY)
 message("-- Ending EKG CMake")
 install(TARGETS ekg LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(FILES ${CMAKE_BINARY_DIR}/ekg.pc DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
-
 message("-- Lib successfully created")
-set(ENABLE_TEST WIN32 || LINUX)
 
-if (ENABLE_TEST)
+if (EKG_ENABLE_TEST)
     project(ekg_ui_library)
+    message("-- Building EKG testing software...")
 
     if (WIN32)
         set(EXECUTABLE_OUTPUT_PATH ../test/build/win32/)
