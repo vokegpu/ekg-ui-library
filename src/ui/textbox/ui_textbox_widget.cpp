@@ -158,6 +158,12 @@ void ekg::ui::textbox_widget::move_cursor(int64_t x, int64_t y, bool magic) {
 
 void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction) {
     std::string changed_text {};
+
+    auto ui {(ekg::ui::textbox*) this->data};
+    if (!(this->is_ui_enabled = ui->is_enabled())) {
+        return;
+    }
+
     switch (action) {
     case ekg::ui::textbox_widget::action::addtext: {
         std::string &emplace_text {this->get_cursor_emplace_text()};
@@ -361,9 +367,9 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
 
 void ekg::ui::textbox_widget::unset_focus() {
     ekg::set(this->flag.focused, false);
-    
-    if (this->flag.focused && this->is_ui_enabled) {
-        auto *ui {(ekg::ui::textbox*) this->data};
+    auto ui {(ekg::ui::textbox*) this->data};
+
+    if (this->flag.focused && (this->is_ui_enabled = ui->is_enabled())) {
         std::string compatibility_text {};
         if (!this->text_chunk_list.empty()) {
             for (std::string &text : this->text_chunk_list) {
@@ -468,10 +474,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         this->unset_focus();
     }
 
-    auto ui {(ekg::ui::textbox*) this->data};
-    this->is_ui_enabled = ui->is_enabled();
-
-    if (!this->flag.focused || !this->is_ui_enabled) {
+    if (!this->flag.focused) {
         return;
     }
 
@@ -593,6 +596,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     this->rect_cursor.w = 2.0f;
     this->rect_cursor.h = this->text_height;
+    this->is_ui_enabled = ui->is_enabled();
 
     /*
      * 0 == previous char wsize

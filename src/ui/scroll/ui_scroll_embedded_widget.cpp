@@ -179,8 +179,8 @@ void ekg::ui::scroll_embedded_widget::on_post_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::scroll_embedded_widget::on_update() {
-    this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::display::dt + ekg::scrollsmooth);
-    this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::display::dt + ekg::scrollsmooth);
+    this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::scrollsmooth);
+    this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::scrollsmooth);
 
     ekg::dispatch(ekg::env::redraw);
 }

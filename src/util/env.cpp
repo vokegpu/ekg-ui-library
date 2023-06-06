@@ -258,7 +258,7 @@ bool ekg::reset(ekg::timing &timing) {
 }
 
 float ekg::lerp(float a, float b, float dt) {
-    if (dt < 0 || dt >= 1) {
+    if (dt < 0.0f || dt >= 1.0f) {
         return b;
     }
 

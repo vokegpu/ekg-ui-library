@@ -10,7 +10,7 @@
  * 6- Do not modify this license under any instance.
  *
  * @VokeGpu 2023 all rights reserved.
- */
+*/
 
 #ifndef EKG_DRAW_H
 #define EKG_DRAW_H

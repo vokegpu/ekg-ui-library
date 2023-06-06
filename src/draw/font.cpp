@@ -97,8 +97,13 @@ void ekg::draw::font_renderer::reload() {
     }
 	
     this->text_height = this->full_height;
-    this->offset_text_height = (this->text_height / 6) / 2;
-    this->text_height += this->offset_text_height;
+    this->offset_text_height = (this->text_height / 6.0f) / 2.0f;
+
+    /*
+     * A common issue with rendering overlay elements is flot32 imprecision, for this reason
+     * the cast float32 to int32 is necessary.
+     */
+    this->text_height += static_cast<int32_t>(this->offset_text_height);
 
     /* Phase of getting chars metric_list. */
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -135,7 +140,7 @@ void ekg::draw::font_renderer::reload() {
 
         char_data.left = static_cast<float>(this->ft_glyph_slot->bitmap_left);
         char_data.top = static_cast<float>(this->ft_glyph_slot->bitmap_top);
-        char_data.wsize = static_cast<float>(this->ft_glyph_slot->advance.x >> 6);
+        char_data.wsize = static_cast<float>(static_cast<int32_t>(this->ft_glyph_slot->advance.x >> 6));
 
         glTexSubImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(offset), 0, static_cast<GLsizei>(char_data.w), static_cast<GLsizei>(char_data.h), internal_format, GL_UNSIGNED_BYTE, this->ft_glyph_slot->bitmap.buffer);
         offset += char_data.w;

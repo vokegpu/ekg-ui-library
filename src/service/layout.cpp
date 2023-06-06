@@ -466,9 +466,14 @@ void ekg::service::layout::init() {
     this->min_factor_height = 1;
     this->min_height = ekg::core->get_f_renderer_normal().get_text_height();
     this->min_fill_width = this->min_height;
-    this->min_offset = this->min_height / 3;
-    this->min_height += this->min_offset;
-    this->min_offset = 2.0f;
+
+    /*
+     * Same as font.cpp:
+     * A common issue with rendering overlay elements is flot32 imprecision, for this reason
+     * the cast float32 to int32 is necessary.
+     */
+    this->min_offset = (this->min_height / 6.0f) / 2.0f;
+    this->min_offset = static_cast<int32_t>(this->min_offset);
 }
 
 void ekg::service::layout::quit() {
