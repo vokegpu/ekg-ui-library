@@ -19,7 +19,7 @@
 #include <fstream>
 
 bool ekg::debug {};
-float ekg::scrollsmooth {0.3f};
+float ekg::scrollsmooth {18.0f};
 int32_t ekg::hovered::id {};
 ekg::type ekg::hovered::type {};
 std::string ekg::log::cache {};

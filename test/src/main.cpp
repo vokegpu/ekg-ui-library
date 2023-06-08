@@ -14,6 +14,8 @@
 
 #include <ekg/ekg.hpp>
 
+#define SOUGOSTOSA
+
 std::string checkcalc(std::string_view text, std::string_view operatortext) {
     std::string result {};
     result += text.substr(text.size() - 1, 1);
@@ -32,7 +34,7 @@ std::string checkcalc(std::string_view text, std::string_view operatortext) {
 
 std::string resultcalc(std::string_view text) {
     std::string result {};
-    
+
     int64_t lpom {};
     int64_t rpom {};
     int64_t cpom {};
@@ -178,7 +180,7 @@ int32_t main(int32_t, char**) {
     auto framedebug = ekg::frame("frame-debug", {0, 0}, {400, root_height});
     framedebug->set_resize(ekg::dock::right | ekg::dock::bottom);
 
-    ekg::label("Debug:", ekg::dock::fill | ekg::dock::next);
+    auto debuglabel = ekg::label("Debug:", ekg::dock::fill | ekg::dock::next);
     auto textboxdebug = ekg::textbox("textbox-debug", "", ekg::dock::fill | ekg::dock::next);
     textboxdebug->set_scaled_height(6);
     textboxdebug->set_enabled(false);
@@ -345,6 +347,7 @@ int32_t main(int32_t, char**) {
 
         if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
             display_fps = ticked_frames;
+            debuglabel->set_text("Debug FPS: " + std::to_string(ticked_frames));
             ticked_frames = 0;
         }
 
@@ -434,7 +437,7 @@ int32_t main(int32_t, char**) {
 
         // Swap buffers.
         SDL_GL_SwapWindow(sdl_win);
-        SDL_Delay(fps_ms_interval);
+        //SDL_Delay(16);
     }
 
     ekg::quit();
