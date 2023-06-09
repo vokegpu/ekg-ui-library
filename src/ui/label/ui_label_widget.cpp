@@ -76,8 +76,8 @@ void ekg::ui::label_widget::on_draw_refresh() {
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
 
     ekg::draw::bind_scissor(this->data->get_id());
-    ekg::draw::sync_scissor_pos(rect.x, rect.y);
-
+    ekg::draw::sync_scissor(rect, ui->get_parent_id());
+    
     f_renderer.blit(ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, ekg::theme().label_string);
     ekg::draw::bind_off_scissor();
 }

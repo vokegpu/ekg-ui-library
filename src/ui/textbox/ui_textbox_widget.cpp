@@ -536,7 +536,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     auto &allocator {ekg::core->get_gpu_allocator()};
 
     ekg::draw::bind_scissor(this->data->get_id());
-    ekg::draw::sync_scissor_pos(rect.x, rect.y);
+    ekg::draw::sync_scissor(rect, ui->get_parent_id());
     ekg::draw::rect(rect, theme.textbox_background);
     
     uint64_t chunk_size {this->text_chunk_list.size()};

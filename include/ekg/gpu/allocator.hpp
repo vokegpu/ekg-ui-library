@@ -17,6 +17,7 @@
 
 #include "ekg/gpu/data.hpp"
 #include "ekg/gpu/gl.hpp"
+#include "ekg/util/geometry.hpp"
 #include <array>
 #include <map>
 #include <vector>
@@ -33,6 +34,9 @@ namespace ekg::gpu {
 
         uint32_t data_instance_index {}, previous_data_list_size {};
         int32_t simple_shape_index {-1}, previous_factor {};
+
+        uint64_t uvs_size {};
+        uint64_t vertexes_size {};
 
         int32_t begin_stride_count {},
                 end_stride_count {};
@@ -75,7 +79,7 @@ namespace ekg::gpu {
         /*
          * Find registered gpu data in allocator's batch.
          */
-        ekg::gpu::data *get_data_by_id(int32_t id);
+        ekg::gpu::data *get_data_by_id(int32_t);
 
         /*
          * Get current gpu data.
@@ -85,12 +89,12 @@ namespace ekg::gpu {
         /*
          * Find registered scissor in allocator's batch.
          */
-        ekg::gpu::scissor *get_scissor_by_id(int32_t id);
+        ekg::gpu::scissor *get_scissor_by_id(int32_t);
 
         /*
          * Remove scissor data from memory.
          */
-        void erase_scissor_by_id(int32_t id);
+        void erase_scissor_by_id(int32_t);
 
         /*
          * Get current scissor active.
@@ -140,7 +144,7 @@ namespace ekg::gpu {
         /*
          * Sync active scissor position.
          */
-        void sync_scissor_pos(float, float);
+        void sync_scissor(ekg::rect&, int32_t);
 
         /*
          * Bind scissor using one ID for send in batch.

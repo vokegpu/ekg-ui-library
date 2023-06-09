@@ -42,7 +42,7 @@ namespace ekg {
         void rect(const ekg::rect&, const ekg::vec4&, int32_t = 0);
         void rect(float, float, float, float, const ekg::vec4&, int32_t = 0);
 
-        void sync_scissor_pos(float, float);
+        void sync_scissor(ekg::rect&, int32_t);
         void bind_scissor(int32_t);
         void bind_off_scissor();
         bool is_visible(int32_t, ekg::vec4&);

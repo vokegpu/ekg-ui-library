@@ -157,9 +157,10 @@ void ekg::gpu::allocator::draw() {
      * important draw features for UI context.
      */
 
-    for (ekg::gpu::data &data : this->data_list) {
+    ekg::gpu::data data {};
+    for (uint64_t it {}; it < this->data_instance_index; it++) {
+        data = this->data_list[it];
         active_texture = data.material_texture != 0;
-
         if (active_texture) {
             glActiveTexture(GL_TEXTURE0 + static_cast<int32_t>(data.active_tex_slot));
             glBindTexture(GL_TEXTURE_2D, data.material_texture);
@@ -253,7 +254,7 @@ uint32_t ekg::gpu::allocator::get_current_data_id() {
     return this->data_instance_index;
 }
 
-ekg::gpu::data* ekg::gpu::allocator::get_data_by_id(int32_t id) {
+ekg::gpu::data *ekg::gpu::allocator::get_data_by_id(int32_t id) {
     if (id < 0 || id > this->data_instance_index) {
         return nullptr;
     }
@@ -282,10 +283,51 @@ uint32_t ekg::gpu::allocator::get_instance_scissor_id() {
     return this->scissor_instance_id;
 }
 
-void ekg::gpu::allocator::sync_scissor_pos(float x, float y) {
+void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_parent_id) {
     auto &scissor {this->scissor_map[this->scissor_instance_id]};
-    // scissor.rect[0] = x;
-    // scissor.rect[1] = y;
+
+    scissor.rect[0] = rect_child.x;
+    scissor.rect[1] = rect_child.y;
+    scissor.rect[2] = rect_child.w;
+    scissor.rect[3] = rect_child.h;
+
+    /*
+     * Scissor is a great feature from OpenGL, but it
+     * does not stack, means that GL context does not
+     * accept scissor inside scissor.
+
+     * After 1 year studying scissor, I  built one scheme,
+     * compute bounds of all parent widgets with the parent
+     * master, obvious it takes some ticks but there is no
+     * other way (maybe I am wrong).
+
+     * Two things important:
+     * 1 - This scissors scheme use scissor IDs from widgets.
+     * 2 - Iteration collect ALL parent families and sub parent of target.
+     */
+    if (mother_parent_id == 0) {
+        return;
+    }
+
+    auto &mother_rect {this->scissor_map[mother_parent_id]};
+
+    if (scissor.rect[0] < mother_rect.rect[0]) {
+        scissor.rect[2] -= mother_rect.rect[0] - scissor.rect[0];
+        scissor.rect[0] = mother_rect.rect[0];
+    }
+
+    if (scissor.rect[1] < mother_rect.rect[1]) {
+        scissor.rect[3] -= mother_rect.rect[1] - scissor.rect[1];
+        scissor.rect[1] = mother_rect.rect[1];
+    }
+
+    if (scissor.rect[0] + scissor.rect[2] > mother_rect.rect[0] + mother_rect.rect[2]) {
+        scissor.rect[2] -= (scissor.rect[0] + scissor.rect[2]) - (mother_rect.rect[0] + mother_rect.rect[2]);
+    }
+
+    if (scissor.rect[1] + scissor.rect[3] > mother_rect.rect[1] + mother_rect.rect[3]) {
+        scissor.rect[3] -= (scissor.rect[1] + scissor.rect[3]) - (mother_rect.rect[1] + mother_rect.rect[3]);
+    }
 }
 
 void ekg::gpu::allocator::bind_scissor(int32_t scissor_id) {
@@ -301,8 +343,8 @@ void ekg::gpu::allocator::vertex2f(float x, float y) {
         return;
     }
 
-    this->cached_vertices.push_back(x);
-    this->cached_vertices.push_back(y);
+    this->cached_vertices.emplace_back(x);
+    this->cached_vertices.emplace_back(y);
     this->end_stride_count++;
 }
 
@@ -311,8 +353,8 @@ void ekg::gpu::allocator::coord2f(float x, float y) {
         return;
     }
 
-    this->cached_uvs.push_back(x);
-    this->cached_uvs.push_back(y);
+    this->cached_uvs.emplace_back(x);
+    this->cached_uvs.emplace_back(y);
 }
 
 bool ekg::gpu::allocator::check_convex_shape() {
