@@ -213,7 +213,15 @@ ekg::vec2 ekg::operator/(const ekg::vec2 &l, float r) {
     return {l.x / r, l.y / r};
 }
 
+ekg::vec4 ekg::operator/(const ekg::vec4 &l, float r) {
+    return {l.x / r, l.y / r, l.z / r, l.w / r};
+}
+
 float ekg::smooth(float duration, uint64_t ticks) {
     duration = static_cast<float>(ticks) / duration;
     return ekg::clamp(6 * powf(duration, 5) - (15 * powf(duration, 4)) + (10 * powf(duration, 3)), 0.0f, 1.0f);
+}
+
+ekg::vec4 ekg::color(int32_t r, int32_t g, int32_t b, int32_t a) {
+    return {static_cast<float>(r) / 255, static_cast<float>(g) / 255, static_cast<float>(b) / 255, static_cast<float>(a) / 255};
 }

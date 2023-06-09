@@ -192,6 +192,7 @@ namespace ekg {
 
     ekg::vec4 operator-(const ekg::vec4 &l, const ekg::rect &r);
     ekg::vec4 operator+(const ekg::vec4 &l, const ekg::rect &r);
+    ekg::vec4 operator/(const ekg::vec4 &l, float r);
 
     struct docker {
         ekg::rect left {}, right {}, top {}, bottom {}, center {}, rect {};
@@ -232,6 +233,7 @@ namespace ekg {
 
     int64_t min(int64_t, int64_t);
     int64_t max(int64_t, int64_t);
+    ekg::vec4 color(int32_t, int32_t, int32_t, int32_t);
 
     float min(float, float);
     float max(float, float);

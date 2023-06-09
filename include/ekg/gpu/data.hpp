@@ -23,7 +23,7 @@ namespace ekg {
     namespace gpu {
         struct data {
             float shape_rect[4] {};
-            uint8_t material_color[5] {};
+            float material_color[4] {};
 
             uint32_t material_texture {};
             uint8_t active_tex_slot {};

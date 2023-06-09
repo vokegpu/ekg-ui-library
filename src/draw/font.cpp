@@ -180,28 +180,37 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     data.shape_rect[2] = static_cast<float>(ekg::concave);
     data.shape_rect[3] = static_cast<float>(ekg::concave);
 
-    data.material_color[0] = static_cast<uint8_t>(color.x);
-    data.material_color[1] = static_cast<uint8_t>(color.y);
-    data.material_color[2] = static_cast<uint8_t>(color.z);
-    data.material_color[3] = static_cast<uint8_t>(color.w);
+    data.material_color[0] = color.x;
+    data.material_color[1] = color.y;
+    data.material_color[2] = color.z;
+    data.material_color[3] = color.w;
 
     ekg::rect vertices {};
     ekg::rect coordinates {};
     ekg::char_data char_data {};
 
-    x = 0;
-    y = 0;
+    x = 0.0f;
+    y = 0.0f;
 
     data.factor = 1;
-
     char32_t ui32char {};
     uint8_t ui8char {};
     std::string utf8string {};
-    size_t stringsize {};
+
+    bool break_text {};
+    bool r_n_break_text {};
 
     for (size_t it {}; it < text.size(); it++) {
         ui8char = static_cast<uint8_t>(text.at(it));
         it += ekg::utf8checksequence(ui8char, ui32char, utf8string, text, it);
+
+        break_text = ui8char == '\n';
+        if (break_text || (r_n_break_text = (ui8char == '\r' && it < text.size() && text.at(it + 1) == '\n'))) {
+            it += static_cast<uint64_t>(r_n_break_text);
+            y += this->text_height;
+            x = 0.0f;
+            continue;
+        }
 
         if (this->ft_bool_kerning && this->ft_uint_previous) {
             FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32char, 0, &this->ft_vector_previous_char);

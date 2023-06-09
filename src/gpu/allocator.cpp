@@ -82,7 +82,6 @@ void ekg::gpu::allocator::dispatch() {
 
     data.scissor_id = this->scissor_instance_id;
     data.id = static_cast<int32_t>(this->data_instance_index);
-    data.material_color[4] = data.material_color[3];
 
     /* flag re alloc buffers if factor changed */
 
@@ -173,12 +172,7 @@ void ekg::gpu::allocator::draw() {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
-        this->current_color_pass[0] = static_cast<float>(data.material_color[0]) / 255;
-        this->current_color_pass[1] = static_cast<float>(data.material_color[1]) / 255;
-        this->current_color_pass[2] = static_cast<float>(data.material_color[2]) / 255;
-        this->current_color_pass[3] = static_cast<float>(data.material_color[4]) / 255;
-
-        glUniform4f(this->uniform_color, this->current_color_pass[0], this->current_color_pass[1], this->current_color_pass[2], this->current_color_pass[3]);
+        glUniform4fv(this->uniform_color, GL_TRUE, data.material_color);
         glUniform4fv(this->uniform_rect, GL_TRUE, data.shape_rect);
         glUniform1i(this->uniform_line_thickness, data.line_thickness);
 

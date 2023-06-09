@@ -537,9 +537,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     ekg::draw::bind_scissor(this->data->get_id());
     ekg::draw::sync_scissor_pos(rect.x, rect.y);
-
     ekg::draw::rect(rect, theme.textbox_background);
-    ekg::draw::rect(rect, theme.textbox_outline, ekg::drawmode::outline);
     
     uint64_t chunk_size {this->text_chunk_list.size()};
     std::string text {};
@@ -559,10 +557,10 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     data.shape_rect[2] = static_cast<float>(ekg::concave);
     data.shape_rect[3] = static_cast<float>(ekg::concave);
 
-    data.material_color[0] = static_cast<uint8_t>(color.x);
-    data.material_color[1] = static_cast<uint8_t>(color.y);
-    data.material_color[2] = static_cast<uint8_t>(color.z);
-    data.material_color[3] = static_cast<uint8_t>(color.w);
+    data.material_color[0] = color.x;
+    data.material_color[1] = color.y;
+    data.material_color[2] = color.z;
+    data.material_color[3] = color.w;
     data.factor = 1;
 
     ekg::rect vertices {};
@@ -719,5 +717,6 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     this->embedded_scroll.rect_child = this->rect_text;
     this->embedded_scroll.on_draw_refresh();
 
+    ekg::draw::rect(rect, theme.textbox_outline, ekg::drawmode::outline);
     ekg::draw::bind_off_scissor();
 }
