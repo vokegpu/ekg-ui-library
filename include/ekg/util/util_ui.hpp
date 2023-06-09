@@ -49,9 +49,6 @@ namespace ekg {
     void reload(int32_t);
     void reload(ekg::ui::abstract_widget*);
 
-    void scissor(int32_t);
-    void scissor(ekg::ui::abstract_widget*);
-
     void synclayout(int32_t);
     void synclayout(ekg::ui::abstract_widget*);
 

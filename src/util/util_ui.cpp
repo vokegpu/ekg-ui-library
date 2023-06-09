@@ -29,14 +29,6 @@ void ekg::reload(ekg::ui::abstract_widget *pwidget) {
     ekg::core->do_task_reload(pwidget);
 }
 
-void ekg::scissor(int32_t id) {
-    ekg::core->do_task_scissor(ekg::core->get_fast_widget_by_id(id));
-}
-
-void ekg::scissor(ekg::ui::abstract_widget *pwidget) {
-    ekg::core->do_task_scissor(pwidget);
-}
-
 void ekg::synclayout(int32_t id) {
     ekg::core->do_task_synclayout(ekg::core->get_fast_widget_by_id(id));
 }

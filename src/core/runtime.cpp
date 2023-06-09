@@ -544,7 +544,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
     this->swap_widget_id_focused = ui->get_id();
     ekg::ui::abstract_widget *created_widget {nullptr};
 
-    bool update_scissor {};
+    bool update_layout {};
     bool append_group {};
 
     switch (ui->get_type()) {
@@ -558,7 +558,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
         auto *widget {new ekg::ui::frame_widget()};
         widget->is_scissor_refresh = true;
         widget->data = ui;
-        update_scissor = true;
+        update_layout = true;
         created_widget = widget;
         this->current_bind_group = ui;
         ui->reset();
@@ -596,7 +596,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
         auto *widget {new ekg::ui::popup_widget()};
         widget->data = ui;
         created_widget = widget;
-        update_scissor = false;
+        update_layout = false;
         break;
     }
     case ekg::type::textbox: {
@@ -625,19 +625,11 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
         this->current_bind_group->add_child(ui->get_id());
     }
 
-    if (update_scissor) {
+    if (update_layout) {
         this->do_task_synclayout(created_widget);
-        this->do_task_scissor(created_widget);
     }
 
     ekg::dispatch(ekg::env::swap);
-}
-
-void ekg::runtime::do_task_scissor(ekg::ui::abstract_widget *widget) {
-    if (widget != nullptr) {
-        this->widget_list_map["scissor"].push_back(widget);
-        ekg::dispatch(ekg::env::scissor);
-    }
 }
 
 void ekg::runtime::do_task_synclayout(ekg::ui::abstract_widget *widget) {

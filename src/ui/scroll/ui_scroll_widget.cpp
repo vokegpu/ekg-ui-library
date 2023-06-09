@@ -45,7 +45,6 @@ void ekg::ui::scroll_widget::on_event(SDL_Event &sdl_event) {
     }
 
     if (this->scroll.flag.state || this->scroll.flag.extra_state || this->flag.absolute) {
-        ekg::scissor(this->data->get_parent_id());
         ekg::dispatch(ekg::env::redraw);
     }
 }
@@ -58,7 +57,6 @@ void ekg::ui::scroll_widget::on_post_event(SDL_Event &sdl_event) {
 
 void ekg::ui::scroll_widget::on_update() {
     this->scroll.on_update();
-    ekg::scissor(this->data->get_parent_id());
     this->is_high_frequency = this->scroll.check_activy_state(this->flag.hovered || this->flag.absolute || this->scroll.flag.activy);
 }
 

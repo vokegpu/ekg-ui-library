@@ -60,7 +60,6 @@ void ekg::ui::textbox::set_scaled_height(int32_t scaled_factor_height) {
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
-        ekg::scissor(this->parent_id);
     }
 }
 
@@ -78,7 +77,6 @@ void ekg::ui::textbox::set_font_size(ekg::font font) {
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
-        ekg::scissor(this->parent_id);
     }
 }
 

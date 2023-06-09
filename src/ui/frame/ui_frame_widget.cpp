@@ -109,7 +109,6 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
                 ekg::synclayout(this);
             }
 
-            ekg::scissor(this);
             ekg::reload(this);
         }
     }

@@ -41,7 +41,6 @@ void ekg::ui::slider::set_place(uint16_t flags) {
     if (this->dock_flags != flags) {
         this->dock_flags = flags;
         ekg::synclayout(this->id);
-        ekg::scissor(this->parent_id);
     }
 }
 
@@ -62,7 +61,6 @@ void ekg::ui::slider::set_font_size(ekg::font font) {
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
-        ekg::scissor(this->parent_id);
     }
 }
 
@@ -90,7 +88,6 @@ void ekg::ui::slider::set_scaled_height(int32_t scaled_factor_height) {
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
-        ekg::scissor(this->parent_id);
     }
 }
 

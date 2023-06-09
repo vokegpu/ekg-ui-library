@@ -29,7 +29,6 @@ void ekg::ui::label::set_text(std::string_view string) {
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
-        ekg::scissor(this->parent_id);
     }
 }
 
@@ -65,7 +64,6 @@ void ekg::ui::label::set_scaled_height(int32_t scaled_factor_height) {
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
-        ekg::scissor(this->parent_id);
     }
 }
 
@@ -83,7 +81,6 @@ void ekg::ui::label::set_font_size(ekg::font font) {
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
-        ekg::scissor(this->parent_id);
     }
 }
 
