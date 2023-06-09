@@ -28,10 +28,10 @@ void ekg::ui::scroll_embedded_widget::reset_scroll() {
 }
 
 bool ekg::ui::scroll_embedded_widget::check_activy_state(bool state) {
-    state = state || (static_cast<int32_t>(this->scroll.y) != static_cast<int32_t>(this->scroll.w));
+    state = state || (static_cast<int32_t>(this->scroll.y) != static_cast<int32_t>(this->scroll.w)) || (static_cast<int32_t>(this->scroll.x) != static_cast<int32_t>(this->scroll.z));
     if (!state) {
-        this->scroll.w = 0.0f;
-        this->scroll.z = 0.0f;
+        this->scroll.z = this->scroll.x;
+        this->scroll.w = this->scroll.y;
     }
 
     return state;

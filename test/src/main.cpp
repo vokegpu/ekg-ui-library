@@ -177,6 +177,12 @@ int32_t main(int32_t, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
+    ekg::frame("sou gostosa", {20, 700}, {200, 200})->set_drag(ekg::dock::top);
+    ekg::button("oi oi oi");
+    ekg::label("oioioioioio", ekg::dock::fill);
+    ekg::textbox("queeeeeeeeeeee", "queee  c é lindoo perfeito me beijaaaaaaa", ekg::dock::fill | ekg::dock::next)->set_scaled_height(12);
+    ekg::scroll("lindooo popom");
+
     auto framedebug = ekg::frame("frame-debug", {0, 0}, {400, root_height});
     framedebug->set_resize(ekg::dock::right | ekg::dock::bottom);
 
