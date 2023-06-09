@@ -43,7 +43,9 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
     auto ui {(ekg::ui::frame*) this->data};
     auto &rect {this->get_abs_rect()};
 
-    if ((ui->get_drag_dock() != ekg::dock::none || ui->get_resize_dock() != ekg::dock::none) && ekg::input::pressed() && this->flag.hovered && !this->flag.activy && (ekg::input::pressed("frame-drag-activy") || ekg::input::pressed("frame-resize-activy"))) {
+    if ((ui->get_drag_dock() != ekg::dock::none || ui->get_resize_dock() != ekg::dock::none) && ekg::input::pressed() && this->flag.hovered && !this->flag.activy && (ekg::input::action(
+            "frame-drag-activy") ||
+            ekg::input::action("frame-resize-activy"))) {
         this->target_dock_drag = ekg::find_collide_dock(this->docker_activy_drag, ui->get_drag_dock(), interact);
         this->target_dock_resize = ekg::find_collide_dock(this->docker_activy_resize, ui->get_resize_dock(), interact);
 

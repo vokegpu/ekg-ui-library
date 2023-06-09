@@ -62,7 +62,7 @@ namespace ekg {
             };
         };
 
-        inline vec2() = default;
+        inline explicit vec2() {};
         inline vec2(float _x, float _y) {
             this->x = _x;
             this->y = _y;
@@ -80,7 +80,7 @@ namespace ekg {
             };
         };
 
-        inline vec3() = default;
+        inline explicit vec3() {};
         inline vec3(float _x, float _y, float _z) {
             this->x = _x;
             this->y = _y;
@@ -98,7 +98,7 @@ namespace ekg {
             };
         };
 
-        inline vec4() = default;
+        inline explicit vec4() {};
         inline vec4(float _x, float _y, float _z, float _w) {
             this->x = _x;
             this->y = _y;
@@ -145,7 +145,7 @@ namespace ekg {
             };
         };
 
-        inline rect() = default;
+        inline explicit rect() {};
         inline rect(float _x, float _y, float _w, float _h) {
             this->x = _x;
             this->y = _y;

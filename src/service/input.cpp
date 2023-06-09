@@ -133,8 +133,11 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
             ekg::reset(this->timing_last_interact);
             bool reach_double_interact {ekg::reach(this->double_interact, 500)};
 
-            this->last_finger_interact.x = sdl_event.tfinger.x * ekg::display::width;
-            this->last_finger_interact.y = sdl_event.tfinger.y * ekg::display::height;
+            this->interact.x = sdl_event.tfinger.x * static_cast<float>(ekg::display::width);
+            this->interact.y = sdl_event.tfinger.y * static_cast<float>(ekg::display::height);
+
+            this->last_finger_interact.x = this->interact.x;
+            this->last_finger_interact.y = this->interact.y;
 
             this->callback("finger-click", true);
             this->callback("finger-click-double", !reach_double_interact);
@@ -151,18 +154,41 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
             this->callback("finger-hold", (this->finger_hold_event = ekg::reach(this->timing_last_interact, 750)));
             this->callback("finger-click", false);
             this->callback("finger-click-double", false);
+
+            /*
+             * Should stop the swipe event when there is no finger touching on screen.
+             */
+            this->callback("finger-swipe", false);
+            this->callback("finger-swipe-up", false);
+            this->callback("finger-swipe-down", false);
+
+            this->interact.x = sdl_event.tfinger.x * static_cast<float>(ekg::display::width);
+            this->interact.y = sdl_event.tfinger.y * static_cast<float>(ekg::display::height);
+
+            this->last_finger_interact.x = this->interact.x;
+            this->last_finger_interact.y = this->interact.y;
+
+            this->interact.z = 0.0f;
+            this->interact.w = 0.0f;
+
             break;
         }
 
         case SDL_FINGERMOTION: {
             this->motion_event = true;
-            this->interact.x = sdl_event.tfinger.x * ekg::display::width;
-            this->interact.y = sdl_event.tfinger.y * ekg::display::height;
+            this->interact.x = sdl_event.tfinger.x * static_cast<float>(ekg::display::width);
+            this->interact.y = sdl_event.tfinger.y * static_cast<float>(ekg::display::height);
 
-            this->interact.z = this->interact.x - this->interact.z;
-            this->interact.w = this->interact.y - this->interact.w;
+            this->interact.z = (sdl_event.tfinger.dx * (static_cast<float>(ekg::display::width) / 9.0f));
+            this->interact.w = (sdl_event.tfinger.dy * static_cast<float>(ekg::display::height) / 9.0f);
 
-            this->finger_wheel_event = true;
+            float swipe_factor = 0.01f;
+
+            this->callback("finger-swipe", (this->interact.w > swipe_factor || this->interact.w < -swipe_factor) || (this->interact.z > swipe_factor || this->interact.z < -swipe_factor));
+            this->callback("finger-swipe-up", this->interact.w > swipe_factor);
+            this->callback("finger-swipe-down", this->interact.w < -swipe_factor);
+
+            this->finger_swipe_event = true;
             ekg::reset(this->timing_last_interact);
             break;
         }
@@ -190,7 +216,7 @@ bool ekg::service::input::was_motion() {
 }
 
 bool ekg::service::input::was_wheel() {
-    return this->wheel_event;
+    return this->wheel_event || this->finger_swipe_event;
 }
 
 void ekg::service::input::on_update() {
@@ -201,15 +227,14 @@ void ekg::service::input::on_update() {
         this->wheel_event = false;
     }
 
-    if (this->finger_wheel_event) {
-        this->interact.z = 0.0f;
-        this->interact.w = 0.0f;
-        this->finger_wheel_event = false;
+    if (this->finger_swipe_event) {
+        this->callback("finger-swipe", false);
+        this->callback("finger-swipe-up", false);
+        this->callback("finger-swipe-down", false);
+        this->finger_swipe_event = false;
     }
 
-    if (this->finger_hold_event) {
-        this->finger_hold_event = false;
-    }
+    this->finger_hold_event = false;
 
     if (!this->special_keys_released.empty()) {
         for (std::string &units : this->special_keys_unit_pressed) {

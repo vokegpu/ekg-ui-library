@@ -15,6 +15,7 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include "ekg/util/util_event.hpp"
 #include "ekg/draw/draw.hpp"
+#include "ekg/os/info.hpp"
 
 ekg::ui::abstract_widget::abstract_widget() {
     this->parent = &this->empty_parent;
@@ -47,6 +48,7 @@ void ekg::ui::abstract_widget::on_event(SDL_Event &sdl_event) {
 
 void ekg::ui::abstract_widget::on_post_event(SDL_Event &sdl_event) {
     this->flag.hovered = false;
+    this->flag.highlight = !(!this->flag.hovered && (ekg::os == ekg::platform::os_android && ekg::input::released())) && this->flag.highlight;
 }
 
 void ekg::ui::abstract_widget::on_update() {

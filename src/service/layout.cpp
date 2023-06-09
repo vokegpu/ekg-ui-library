@@ -295,20 +295,25 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
     bool is_vertical_enabled {};
 
     switch (type) {
-    case ekg::type::frame:
-        auto frame {(ekg::ui::frame_widget*) widget_parent};
-        float scrollbar_pixel_thickness {static_cast<float>(ekg::theme().scrollbar_pixel_thickness)};
-        has_scroll_embedded = frame->p_scroll_embedded != nullptr;
+        case ekg::type::frame: {
+            auto frame{(ekg::ui::frame_widget *) widget_parent};
+            float scrollbar_pixel_thickness {static_cast<float>(ekg::theme().scrollbar_pixel_thickness)};
+            has_scroll_embedded = frame->p_scroll_embedded != nullptr;
 
-        if (has_scroll_embedded) {
-            frame->p_scroll_embedded->check_axis_states();
-            is_vertical_enabled = frame->p_scroll_embedded->is_vertical_enabled;
+            if (has_scroll_embedded) {
+                frame->p_scroll_embedded->check_axis_states();
+                is_vertical_enabled = frame->p_scroll_embedded->is_vertical_enabled;
 
-            group_rect.w -= scrollbar_pixel_thickness * static_cast<float>(frame->p_scroll_embedded->is_vertical_enabled);
-            group_rect.h -= scrollbar_pixel_thickness * static_cast<float>(frame->p_scroll_embedded->is_horizontal_enabled);
+                group_rect.w -= scrollbar_pixel_thickness * static_cast<float>(frame->p_scroll_embedded->is_vertical_enabled);
+                group_rect.h -= scrollbar_pixel_thickness * static_cast<float>(frame->p_scroll_embedded->is_horizontal_enabled);
+            }
+
+            break;
         }
 
-        break;
+        default: {
+            break;
+        }
     }
 
     /*
@@ -365,9 +370,14 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
         skip_widget = false;
 
         switch (widgets->data->get_type()) {
-        case ekg::type::scroll:
-            skip_widget = true;
-            break;
+            case ekg::type::scroll: {
+                skip_widget = true;
+                break;
+            }
+
+            default: {
+                break;
+            }
         }
 
         if (skip_widget) {
@@ -449,15 +459,21 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
     if (has_scroll_embedded && !is_vertical_enabled) {
         switch (type) {
-        case ekg::type::frame:
-            auto frame {(ekg::ui::frame_widget*) widget_parent};
-            has_scroll_embedded = frame->p_scroll_embedded != nullptr;
+            case ekg::type::frame: {
+                auto frame{(ekg::ui::frame_widget *) widget_parent};
+                has_scroll_embedded = frame->p_scroll_embedded != nullptr;
 
-            if (has_scroll_embedded && !is_vertical_enabled && frame->p_scroll_embedded->is_vertical_enabled) {
-                this->process_scaled(widget_parent);
+                if (has_scroll_embedded && !is_vertical_enabled &&
+                    frame->p_scroll_embedded->is_vertical_enabled) {
+                    this->process_scaled(widget_parent);
+                }
+
+                break;
             }
 
-            break;
+            default: {
+                break;
+            }
         }
     }
 }

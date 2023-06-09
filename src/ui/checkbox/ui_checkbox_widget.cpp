@@ -75,7 +75,7 @@ void ekg::ui::checkbox_widget::on_event(SDL_Event &sdl_event) {
         ekg::set(this->flag.focused, this->flag.hovered && ekg::rect_collide_vec(this->rect_box + (this->dimension + *this->parent), ekg::interact()));
     }
 
-    if (pressed && !this->flag.activy && this->flag.hovered && ekg::input::pressed("checkbox-activy")) {
+    if (pressed && !this->flag.activy && this->flag.hovered && ekg::input::action("checkbox-activy")) {
         ekg::set(this->flag.activy, true);
     } else if (released && this->flag.activy) {
         if (this->flag.hovered) {

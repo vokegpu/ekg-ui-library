@@ -28,10 +28,10 @@ void ekg::ui::scroll_embedded_widget::reset_scroll() {
 }
 
 bool ekg::ui::scroll_embedded_widget::check_activy_state(bool state) {
-    state = state || (static_cast<int32_t>(this->scroll.x) != static_cast<int32_t>(this->scroll.z)) || (static_cast<int32_t>(this->scroll.y) != static_cast<int32_t>(this->scroll.w));
+    state = state || (static_cast<int32_t>(this->scroll.y) != static_cast<int32_t>(this->scroll.w));
     if (!state) {
-        this->scroll.x = this->scroll.z;
-        this->scroll.y = this->scroll.w;
+        this->scroll.w = 0.0f;
+        this->scroll.z = 0.0f;
     }
 
     return state;
@@ -69,10 +69,15 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
     this->child_id_list = mother_widget->data->get_child_id_list();
 
     switch (mother_widget->data->get_type()) {
-    case ekg::type::frame:
-        ekg::ui::frame_widget *frame {(ekg::ui::frame_widget*) mother_widget};
-        frame->p_scroll_embedded = this;
-        break;
+        case ekg::type::frame: {
+            ekg::ui::frame_widget *frame {(ekg::ui::frame_widget*) mother_widget};
+            frame->p_scroll_embedded = this;
+            break;
+        }
+
+        default: {
+            break;
+        }
     }
 
     this->rect_child.x = 0.0f;
@@ -119,23 +124,25 @@ void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
         ekg::vec4 &interact {ekg::interact()};
         bool visible {ekg::draw::is_visible(this->widget_id, interact)};
 
-        this->flag.activy = visible && this->is_vertical_enabled && ekg::input::pressed("scrollbar-scroll");
+        this->flag.activy = visible && this->is_vertical_enabled &&
+                ekg::input::action("scrollbar-scroll");
         this->flag.hovered = this->flag.activy || (visible && (ekg::rect_collide_vec(scaled_vertical_bar, interact) || ekg::rect_collide_vec(scaled_horizontal_bar, interact)));
     }
 }
 
 void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
     this->check_axis_states();
-
-    bool vertical_hovered {};
-    bool horizontal_hovered {};
     auto &interact {ekg::interact()};
 
-    if (this->flag.hovered && ekg::input::pressed("scrollbar-scroll") && this->is_vertical_enabled) {
+    if (this->flag.hovered && ekg::input::action("scrollbar-scroll") && this->is_vertical_enabled) {
+#if defined(ANDROID)
         this->scroll.w = ekg::clamp(this->scroll.y + (interact.w * this->acceleration.y), this->rect_mother->h - this->rect_child.h, 0.0f);
+#else
+        this->scroll.w = ekg::clamp(this->scroll.y + (interact.w * this->acceleration.y), this->rect_mother->h - this->rect_child.h, 0.0f);
+#endif
     }
 
-    if (this->flag.hovered && ekg::input::pressed() && ekg::input::pressed("scrollbar-drag")) {
+    if (this->flag.hovered && ekg::input::pressed() && ekg::input::action("scrollbar-drag")) {
         ekg::rect scaled_bar {this->rect_vertical_scroll_bar};
         scaled_bar.y += this->rect_mother->y;
         this->flag.state = ekg::rect_collide_vec(scaled_bar, interact);
@@ -179,8 +186,14 @@ void ekg::ui::scroll_embedded_widget::on_post_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::scroll_embedded_widget::on_update() {
+#if defined(ANDROID)
     this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::scrollsmooth * ekg::display::dt);
     this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::scrollsmooth * ekg::display::dt);
+    this->clamp_scroll();
+#else
+    this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::scrollsmooth * ekg::display::dt);
+    this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::scrollsmooth * ekg::display::dt);
+#endif
 
     ekg::dispatch(ekg::env::redraw);
 }
@@ -193,10 +206,10 @@ void ekg::ui::scroll_embedded_widget::clamp_scroll() {
         this->scroll.y = 0.0f;
     } else if (this->scroll.y < vertical_scroll_limit.y) {
         this->scroll.y = vertical_scroll_limit.y;
-        this->scroll.w = this->scroll.y;
+        this->scroll.w = 0.0f;
     } else if (this->scroll.y > vertical_scroll_limit.x) {
         this->scroll.y = vertical_scroll_limit.x;
-        this->scroll.w = this->scroll.y;
+        this->scroll.w = 0.0f;
     }
 
     if (this->rect_child.w < this->rect_mother->w) {

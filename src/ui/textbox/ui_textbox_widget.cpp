@@ -448,7 +448,7 @@ void ekg::ui::textbox_widget::on_pre_event(SDL_Event &sdl_event) {
 void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     abstract_widget::on_event(sdl_event);
 
-    bool pressed {ekg::input::pressed() && ekg::input::pressed("textbox-activy")};
+    bool pressed {ekg::input::pressed() && ekg::input::action("textbox-activy")};
     bool released {ekg::input::released()};
     bool motion {ekg::input::motion()};
     auto &rect {this->get_abs_rect()};
@@ -488,19 +488,19 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
             this->unset_focus();
             break;
         default:
-            if (ekg::input::pressed("textbox-action-up")) {
+            if (ekg::input::action("textbox-action-up")) {
                 this->move_cursor(0, -1);
-            } else if (ekg::input::pressed("textbox-action-down")) {
+            } else if (ekg::input::action("textbox-action-down")) {
                 this->move_cursor(0, 1);
-            } else if (ekg::input::pressed("textbox-action-left")) {
+            } else if (ekg::input::action("textbox-action-left")) {
                 this->move_cursor(-1, 0);
-            } else if (ekg::input::pressed("textbox-action-right")) {
+            } else if (ekg::input::action("textbox-action-right")) {
                 this->move_cursor(1, 0);
-            } else if (ekg::input::pressed("textbox-action-delete-left")) {
+            } else if (ekg::input::action("textbox-action-delete-left")) {
                 this->process_text("backspace", ekg::ui::textbox_widget::action::erasetext, -1);
-            } else if (ekg::input::pressed("textbox-action-delete-right")) {
+            } else if (ekg::input::action("textbox-action-delete-right")) {
                 this->process_text("delete", ekg::ui::textbox_widget::action::erasetext, 1);
-            } else if (ekg::input::pressed("textbox-action-break-line")) {
+            } else if (ekg::input::action("textbox-action-break-line")) {
                 this->process_text("return", ekg::ui::textbox_widget::action::breakline, 1);
             }
             break;

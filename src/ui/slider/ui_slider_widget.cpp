@@ -177,9 +177,10 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
 
     this->flag.hovered = this->flag.hovered && this->flag.highlight;
 
-    if (this->flag.hovered && ((increase = ekg::input::pressed("slider-bar-increase")) || (descrease = ekg::input::pressed("slider-bar-decrease")))) {
+    if (this->flag.hovered && ((increase = ekg::input::action("slider-bar-increase")) || (descrease = ekg::input::action(
+            "slider-bar-decrease")))) {
         ui->set_value(ui->get_value() + (interact.w));
-    } else if (this->flag.hovered && pressed && ekg::input::pressed("slider-activy")) {
+    } else if (this->flag.hovered && pressed && ekg::input::action("slider-activy")) {
         this->flag.activy = true;
         ui->set_dragging(true);
         this->update_bar(interact.x, interact.y);

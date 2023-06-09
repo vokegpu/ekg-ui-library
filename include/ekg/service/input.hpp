@@ -41,7 +41,7 @@ namespace ekg::service {
             bool motion_event {};
             bool wheel_event {};
             bool finger_hold_event {};
-            bool finger_wheel_event {};
+            bool finger_swipe_event {};
 
             ekg::vec4 last_finger_interact {};
             ekg::timing double_interact {};

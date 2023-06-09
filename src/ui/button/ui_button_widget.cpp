@@ -66,7 +66,7 @@ void ekg::ui::button_widget::on_event(SDL_Event &sdl_event) {
         ekg::set(this->flag.highlight, this->flag.hovered);
     }
 
-    if (pressed && !this->flag.activy && this->flag.hovered && ekg::input::pressed("button-activy")) {
+    if (pressed && !this->flag.activy && this->flag.hovered && ekg::input::action("button-activy")) {
         ekg::set(this->flag.activy, true);
     } else if (released && this->flag.activy) {
         auto ui {(ekg::ui::button*) this->data};
