@@ -407,7 +407,7 @@ int32_t main(int32_t, char**) {
                         }
                     }
 
-                    if (ekg::input::pressed("pompom")) {
+                    if (ekg::input::action("pompom")) {
                         ekg::log() << "sou gostosa";
                     }
 
