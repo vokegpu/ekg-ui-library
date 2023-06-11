@@ -293,19 +293,17 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
     
     bool has_scroll_embedded {};
     bool is_vertical_enabled {};
+    float initial_offset {};
 
     switch (type) {
         case ekg::type::frame: {
             auto frame{(ekg::ui::frame_widget *) widget_parent};
-            float scrollbar_pixel_thickness {static_cast<float>(ekg::theme().scrollbar_pixel_thickness)};
+            initial_offset = static_cast<float>(ekg::theme().scrollbar_pixel_thickness);
             has_scroll_embedded = frame->p_scroll_embedded != nullptr;
 
             if (has_scroll_embedded) {
                 frame->p_scroll_embedded->check_axis_states();
                 is_vertical_enabled = frame->p_scroll_embedded->is_vertical_enabled;
-
-                group_rect.w -= scrollbar_pixel_thickness * static_cast<float>(frame->p_scroll_embedded->is_vertical_enabled);
-                group_rect.h -= scrollbar_pixel_thickness * static_cast<float>(frame->p_scroll_embedded->is_horizontal_enabled);
             }
 
             break;
@@ -321,8 +319,8 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
      * when transforming unuscaled sizes, it can return a wrong position,
      * in simple words, non-scaled size return non aligned positions.
      */
-    group_rect.w -= this->min_offset * 2.0f;
-    group_rect.h -= this->min_offset * 2.0f;
+    group_rect.w -= (initial_offset + this->min_offset) * 2.0f;
+    group_rect.h -= (initial_offset + this->min_offset) * 2.0f;
 
     this->scaled_width_divided = parent_rect.w / 3;
     this->scaled_width_divided = parent_rect.h / 2;
@@ -336,7 +334,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
     ekg::rect widget_rect {};
     ekg::rect bottom_rect {};
-    ekg::rect top_rect {this->min_offset, group_top_offset, 0.0f, 0.0f};
+    ekg::rect top_rect {this->min_offset + initial_offset, this->min_offset + initial_offset, 0.0f, 0.0f};
     ekg::rect prev_widget_layout {};
 
     uint16_t prev_flags {};

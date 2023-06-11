@@ -109,7 +109,8 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
 
     // @TODO textbox ui with delay to process stack reorder event.
 
-    for (ekg::ui::abstract_widget *&widgets : this->widget_list_map["all"]) {
+    auto &all {this->widget_list_map["all"]};
+    for (ekg::ui::abstract_widget *&widgets : all) {
         if (widgets == nullptr || !widgets->data->is_alive()) {
             continue;
         }
@@ -395,9 +396,9 @@ void ekg::runtime::prepare_tasks() {
 
         runtime->allocator.invoke();
         if (ekg::debug) {
-            runtime->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {255, 255, 255, 255});
+            runtime->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {1.0f, 1.0f, 1.0f, 1.0f});
         } else {
-            runtime->f_renderer_big.blit(" ", 10, 10, {255, 255, 255, 255});
+            runtime->f_renderer_big.blit(" ", 10, 10, {1.0f, 1.0f, 1.0f, 1.0f});
         }
 
         for (ekg::ui::abstract_widget *&widgets : all) {

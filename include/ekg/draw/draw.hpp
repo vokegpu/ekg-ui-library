@@ -46,6 +46,7 @@ namespace ekg {
         void bind_scissor(int32_t);
         void bind_off_scissor();
         bool is_visible(int32_t, ekg::vec4&);
+        void get_visible(int32_t, ekg::rect&);
     }
 }
 

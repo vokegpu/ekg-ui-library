@@ -93,8 +93,8 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
             continue;
         }
 
-        if (widgets->dimension.w > this->rect_child.w) {
-            this->rect_child.w = widgets->dimension.w;
+        if (widgets->dimension.x > this->rect_child.w) {
+            this->rect_child.w = widgets->dimension.x + widgets->dimension.w;
         }
 
         if (widgets->dimension.y > this->rect_child.h) {
@@ -124,8 +124,7 @@ void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
         ekg::vec4 &interact {ekg::interact()};
         bool visible {ekg::draw::is_visible(this->widget_id, interact)};
 
-        this->flag.activy = visible && this->is_vertical_enabled &&
-                ekg::input::action("scrollbar-scroll");
+        this->flag.activy = visible && this->is_vertical_enabled && ekg::input::action("scrollbar-scroll");
         this->flag.hovered = this->flag.activy || (visible && (ekg::rect_collide_vec(scaled_vertical_bar, interact) || ekg::rect_collide_vec(scaled_horizontal_bar, interact)));
     }
 }

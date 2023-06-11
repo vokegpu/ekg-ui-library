@@ -160,7 +160,8 @@ void ekg::gpu::allocator::draw() {
     ekg::gpu::data data {};
     for (uint64_t it {}; it < this->data_instance_index; it++) {
         data = this->data_list[it];
-        active_texture = data.material_texture != 0;
+        active_texture = data.material_texture > 0;
+
         if (active_texture) {
             glActiveTexture(GL_TEXTURE0 + static_cast<int32_t>(data.active_tex_slot));
             glBindTexture(GL_TEXTURE_2D, data.material_texture);

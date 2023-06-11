@@ -13,7 +13,7 @@
 #
 
 cmake_minimum_required(VERSION 3.9)
-project(ekg VERSION 0.1.0 DESCRIPTION "ui library")
+project(ekg VERSION 0.1.0.1 DESCRIPTION "graphical user interface")
 message("-- Preparing EKG setup")
 
 # Maximum optimization

@@ -25,11 +25,7 @@ void ekg::ui::frame_widget::on_destroy() {
 void ekg::ui::frame_widget::on_reload() {
     abstract_widget::on_reload();
     auto &rect {this->get_abs_rect()};
-    auto limit_offset = static_cast<float>(ekg::theme().frame_activy_offset);
-
-    ekg::vec2 vec_limit_offset = {limit_offset, limit_offset};
-    ekg::set_dock_scaled(rect, vec_limit_offset, this->docker_activy_drag);
-    ekg::set_dock_scaled(rect, vec_limit_offset / 4.0f, this->docker_activy_resize);
+    this->ui_theme_activy_offset = static_cast<float>(ekg::theme().frame_activy_offset);
 }
 
 void ekg::ui::frame_widget::on_pre_event(SDL_Event &sdl_event) {
@@ -43,9 +39,14 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
     auto ui {(ekg::ui::frame*) this->data};
     auto &rect {this->get_abs_rect()};
 
-    if ((ui->get_drag_dock() != ekg::dock::none || ui->get_resize_dock() != ekg::dock::none) && ekg::input::pressed() && this->flag.hovered && !this->flag.activy && (ekg::input::action(
-            "frame-drag-activy") ||
-            ekg::input::action("frame-resize-activy"))) {
+    if ((ui->get_drag_dock() != ekg::dock::none || ui->get_resize_dock() != ekg::dock::none) && ekg::input::pressed() && this->flag.hovered && !this->flag.activy && (ekg::input::action("frame-drag-activy") || ekg::input::action("frame-resize-activy"))) {
+        ekg::rect rect_visible_scissor {rect};
+        ekg::draw::get_visible(this->data->get_id(), rect_visible_scissor);
+
+        const ekg::vec2 vec_limit_offset {this->ui_theme_activy_offset, this->ui_theme_activy_offset};
+        ekg::set_dock_scaled(rect_visible_scissor, vec_limit_offset, this->docker_activy_drag);
+        ekg::set_dock_scaled(rect_visible_scissor, vec_limit_offset / 4.0f, this->docker_activy_resize);
+
         this->target_dock_drag = ekg::find_collide_dock(this->docker_activy_drag, ui->get_drag_dock(), interact);
         this->target_dock_resize = ekg::find_collide_dock(this->docker_activy_resize, ui->get_resize_dock(), interact);
 

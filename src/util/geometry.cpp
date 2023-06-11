@@ -158,7 +158,7 @@ float ekg::find_min_offset(float text_width, float offset) {
      * Initial offset value sometime is font height divided by 2.
      */
     float full_rect {text_width + offset};
-    return ((full_rect / 2) - (text_width / 2));
+    return static_cast<float>(static_cast<int32_t>((full_rect * 0.5f) - (text_width * 0.5f)));
 }
 
 bool ekg::operator==(const ekg::rect &l, const ekg::rect &r) {

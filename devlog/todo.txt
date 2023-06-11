@@ -1,0 +1,4 @@
+# todos necessary
+
+-- allocator render hardware interface (RHI)
+-- allocator std140 for replace uniforms call

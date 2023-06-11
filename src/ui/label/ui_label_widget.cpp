@@ -34,7 +34,7 @@ void ekg::ui::label_widget::on_reload() {
     float dimension_offset {text_height / 2};
     float offset {ekg::find_min_offset(text_width, dimension_offset)};
 
-    this->dimension.w = ekg::min(this->dimension.w, text_height);
+    this->dimension.w = ekg::min(this->dimension.w, text_width);
     this->dimension.h = (text_height + dimension_offset) * static_cast<float>(scaled_height);
 
     this->min_size.x = ekg::min(this->min_size.x, text_height);
@@ -49,7 +49,7 @@ void ekg::ui::label_widget::on_reload() {
     layout.process_layout_mask();
 
     auto &layout_mask {layout.get_layout_mask()};
-    this->dimension.w = this->dimension.w <= text_height ? layout_mask.w : this->dimension.w;
+    this->dimension.w = this->dimension.w <= text_width ? layout_mask.w : this->dimension.w;
     this->dimension.h = ekg::min(this->dimension.h, layout_mask.h);
 }
 
@@ -77,7 +77,6 @@ void ekg::ui::label_widget::on_draw_refresh() {
 
     ekg::draw::bind_scissor(this->data->get_id());
     ekg::draw::sync_scissor(rect, ui->get_parent_id());
-    
     f_renderer.blit(ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, ekg::theme().label_string);
     ekg::draw::bind_off_scissor();
 }

@@ -159,7 +159,7 @@ int32_t main(int32_t, char**) {
         ekg::log() << "GLEW initialised";
     }
 
-    SDL_GL_SetSwapInterval(0); // v-sync on
+    SDL_GL_SetSwapInterval(1); // v-sync on
     ekg::init(sdl_win, "whitneybook.otf");
     ekg::log() << "OpenGL context created";
     ekg::debug = true;
@@ -186,17 +186,18 @@ int32_t main(int32_t, char**) {
     auto framedebug = ekg::frame("frame-debug", {0, 0}, {400, root_height});
     framedebug->set_resize(ekg::dock::right | ekg::dock::bottom);
 
-    auto debuglabel = ekg::label("Debug:", ekg::dock::fill | ekg::dock::next);
-    auto textboxdebug = ekg::textbox("textbox-debug", "", ekg::dock::fill | ekg::dock::next);
+    auto debuglabel = ekg::label("Debug:", ekg::dock::next);
+    auto textboxdebug = ekg::textbox("textbox-debug", "", ekg::dock::next);
     textboxdebug->set_scaled_height(6);
     textboxdebug->set_enabled(false);
+    textboxdebug->set_width(300.0f);
 
     ekg::ui::label *labelresult {};
     std::string previous_operator {};
     ekg::ui::frame *frame2 {};
 
     for (int32_t it {}; it < 1; it++) {
-        auto frame1 = ekg::frame("cat", {400, 400}, ekg::dock::fill);
+        auto frame1 = ekg::frame("cat", {400, 400}, ekg::dock::none);
         frame1->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
 
         ekg::checkbox("meow enabled", false, ekg::dock::next);
@@ -212,7 +213,7 @@ int32_t main(int32_t, char**) {
 
         framedebug->add_child(frame1->get_id());
 
-        frame2 = ekg::frame("cha", {400, 400}, ekg::dock::fill);
+        frame2 = ekg::frame("cha", {400, 400}, ekg::dock::none);
         frame2->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
         framedebug->add_child(frame2->get_id());
 
@@ -422,7 +423,7 @@ int32_t main(int32_t, char**) {
             }
         }
 
-        framedebug->set_width(ekg::display::width);
+        // framedebug->set_size(ekg::display::width, ekg::display::height);
 
         if (ekg::log::buffering()) {
             std::string oldlog {textboxdebug->get_text()};
@@ -443,7 +444,7 @@ int32_t main(int32_t, char**) {
 
         // Swap buffers.
         SDL_GL_SwapWindow(sdl_win);
-        //SDL_Delay(16);
+        SDL_Delay(16);
     }
 
     ekg::quit();

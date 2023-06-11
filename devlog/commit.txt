@@ -1,0 +1,5 @@
+0.1.0.1
+
+-- Fixed bug on widgets ::set_width() setting incorrect dimension axis.
+-- Fixed bug at frame widget actions (dragging and resizing), now it calculate from visible rect.
+-- Simetric layout processing based in scroll pixels offsets.
