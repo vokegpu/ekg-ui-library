@@ -42,7 +42,7 @@ namespace ekg {
             FT_Vector_ ft_vector_previous_char {};
 
             std::string font_path {};
-            uint8_t font_size {18};
+            uint32_t font_size {18};
             uint32_t texture {};
 
             float full_width {};
@@ -61,7 +61,7 @@ namespace ekg {
             float get_text_height();
 
             void set_font(const std::string&);
-            void set_size(uint8_t);
+            void set_size(uint32_t);
             void reload();
             void bind_allocator(ekg::gpu::allocator*);
             void blit(std::string_view, float, float, const ekg::vec4&);

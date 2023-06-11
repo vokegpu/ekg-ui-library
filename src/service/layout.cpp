@@ -16,6 +16,7 @@
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
+#include "ekg/os/info.hpp"
 
 void ekg::service::layout::set_preset_mask(const ekg::vec3 &offset, ekg::axis axis, float initial_respective_size) {
     this->dock_axis_mask = axis;
@@ -297,15 +298,20 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
     switch (type) {
         case ekg::type::frame: {
-            auto frame{(ekg::ui::frame_widget *) widget_parent};
+            auto frame {(ekg::ui::frame_widget*) widget_parent};
             initial_offset = static_cast<float>(ekg::theme().scrollbar_pixel_thickness);
             has_scroll_embedded = frame->p_scroll_embedded != nullptr;
 
             if (has_scroll_embedded) {
                 frame->p_scroll_embedded->check_axis_states();
                 is_vertical_enabled = frame->p_scroll_embedded->is_vertical_enabled;
+                initial_offset *= static_cast<float>(ekg::theme().symmetric_layout == false);
+
+                group_rect.w -= initial_offset * static_cast<float>(is_vertical_enabled);
+                group_rect.h -= initial_offset * static_cast<float>(frame->p_scroll_embedded->is_horizontal_enabled);
             }
 
+            initial_offset = static_cast<float>(ekg::theme().scrollbar_pixel_thickness) * static_cast<float>(ekg::theme().symmetric_layout);
             break;
         }
 
@@ -350,6 +356,8 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
     bool should_reload_widget {};
     bool skip_widget {};
+
+    float max_previous_height {};
     float extent_data_backup[4] {};
 
     // @TODO Prevent useless scrolling reload;
@@ -385,7 +393,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
         }
 
         if (ekg::bitwise::contains(flags, ekg::dock::fill) && ekg::bitwise::contains(flags, ekg::dock::next)) {
-            top_rect.h += prev_widget_layout.h + this->min_offset;
+            top_rect.h += max_previous_height + this->min_offset;
             top_rect.w = 0.0f;
 
             layout.x = top_rect.x + top_rect.w;
@@ -398,6 +406,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
             top_rect.w += dimensional_extent + this->min_offset;
             layout.w = dimensional_extent;
             should_reload_widget = true;
+            max_previous_height = 0.0f;
         } else if (ekg::bitwise::contains(flags, ekg::dock::fill)) {
             layout.x = top_rect.x + top_rect.w;
             layout.y = top_rect.y + top_rect.h;
@@ -410,7 +419,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
             layout.w = dimensional_extent;
             should_reload_widget = true;
         } else if (ekg::bitwise::contains(flags, ekg::dock::next)) {
-            top_rect.h += prev_widget_layout.h + this->min_offset;
+            top_rect.h += max_previous_height + this->min_offset;
             top_rect.w = 0.0f;
 
             layout.x = top_rect.x;
@@ -419,6 +428,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
             count = it;
             dimensional_extent = this->get_dimensional_extent(widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
+            max_previous_height = 0.0f;
         } else if (flags == ekg::dock::none) {
             layout.x = top_rect.x + top_rect.w;
             layout.y = top_rect.y + top_rect.h;
@@ -432,6 +442,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
             should_reload_widget = true;
         }
 
+        max_previous_height = layout.h > max_previous_height ? layout.h : max_previous_height;
         if (should_reload_widget) {
             widgets->on_reload();
         }
@@ -494,7 +505,26 @@ void ekg::service::layout::quit() {
 
 }
 
-
 float ekg::service::layout::get_min_offset() {
     return this->min_offset;
+}
+
+void ekg::service::layout::update_scale_factor() {
+    if (ekg::autoscale) {
+        ekg::os_get_monitor_resolution(ekg::scalebase.x, ekg::scalebase.y);
+    }
+
+    float base_factor {ekg::scalebase.x * ekg::scalebase.y};
+    this->viewport_scale = {static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height)};
+    this->scale_factor = ekg::min((this->viewport_scale.x * this->viewport_scale.y), 0.000001f) / (base_factor < 0.0f ? 1.0f : base_factor);
+
+    if (this->scale_factor < 0.3f) {
+        this->scale_factor = 0.5;
+    } else {
+        this->scale_factor = 1.0f;
+    }
+}
+
+float ekg::service::layout::get_scale_factor() {
+    return this->scale_factor;
 }

@@ -72,6 +72,7 @@ namespace ekg::service {
         int32_t scrollbar_pixel_thickness {};
 
         float min_widget_size {5};
+        bool symmetric_layout {};
       public:
         void init();
         void quit();

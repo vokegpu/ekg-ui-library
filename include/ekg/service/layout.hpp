@@ -38,6 +38,9 @@ namespace ekg::service {
         ekg::vec3 offset_mask {};
         std::vector<ekg::dockrect> dockrect_list {};
         ekg::rect layout_mask {};
+
+        ekg::vec2 viewport_scale {0.0f, 0.0f};
+        float scale_factor {};
     public:
         void init();
         void quit();
@@ -45,11 +48,12 @@ namespace ekg::service {
         void set_preset_mask(const ekg::vec3&, ekg::axis, float = 0.0f);
         void insert_into_mask(const ekg::dockrect&);
         void process_layout_mask();
-
         ekg::rect &get_layout_mask();
 
         float get_min_offset();
         float get_respective_mask_size();
+        void update_scale_factor();
+        float get_scale_factor();
 
         float get_dimensional_extent(ekg::ui::abstract_widget *widget, uint16_t flag_ok, uint16_t flag_stop, int64_t &begin_and_count, ekg::axis axis);
         void process_scaled(ekg::ui::abstract_widget* widget_parent);

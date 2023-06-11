@@ -58,7 +58,7 @@ void ekg::draw::font_renderer::set_font(const std::string &path) {
     }
 }
 
-void ekg::draw::font_renderer::set_size(uint8_t size) {
+void ekg::draw::font_renderer::set_size(uint32_t size) {
     if (this->font_size != size) {
         this->font_size = size;
         this->reload();

@@ -28,7 +28,7 @@
 #include "ekg/ui/textbox/ui_textbox.hpp"
 #include "ekg/ui/scroll/ui_scroll.hpp"
 
-#define EKG_VERSION_ID "0.0.1"
+#define EKG_VERSION_ID "0.0.1.2"
 #define EKG_VERSION_STATE "ALPHA"
 
 namespace ekg {
@@ -41,6 +41,17 @@ namespace ekg {
      * Shaders version should be higher than 300.
      */
     extern std::string gl_version;
+
+    /*
+     * When enabled, ekg automatically find the base resolution scale by monitor.
+     */
+    extern bool autoscale;
+
+    /*
+     * The resolution scale base, for edit, then you need to disable 'ekg::autoscale'.
+     */
+    extern ekg::vec2 scalebase;
+
 
     /* The setup and handling functions of ekg. */
 

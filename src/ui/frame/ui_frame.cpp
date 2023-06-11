@@ -34,16 +34,18 @@ ekg::vec2 ekg::ui::frame::get_scale_factor() {
     return this->scale_factor;
 }
 
-void ekg::ui::frame::set_drag(uint16_t dock) {
+ekg::ui::frame *ekg::ui::frame::set_drag(uint16_t dock) {
 	this->dock_drag = dock;
+    return this;
 }
 
 uint16_t ekg::ui::frame::get_drag_dock() {
 	return this->dock_drag;
 }
 
-void ekg::ui::frame::set_resize(uint16_t dock) {
+ekg::ui::frame *ekg::ui::frame::set_resize(uint16_t dock) {
 	this->dock_resize = dock;
+    return this;
 }
 
 uint16_t ekg::ui::frame::get_resize_dock() {

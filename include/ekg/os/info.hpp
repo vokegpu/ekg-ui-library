@@ -21,6 +21,8 @@ namespace ekg {
     };
 
     extern ekg::platform os;
+
+    void os_get_monitor_resolution(float&, float&);
 }
 
 #endif

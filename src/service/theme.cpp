@@ -30,6 +30,7 @@ void ekg::service::theme::quit() {
 
 void ekg::service::theme::gen_default_dark_theme() {
     this->current_theme = "dark";
+    this->symmetric_layout = true;
 
     this->frame_background = ekg::color(43, 43, 43, 255);
     this->frame_border = ekg::color(190, 190, 190, 0);
@@ -80,6 +81,7 @@ void ekg::service::theme::gen_default_dark_theme() {
 
 void ekg::service::theme::gen_default_light_theme() {
     this->current_theme = "light";
+    this->symmetric_layout = true;
 
     this->frame_background = ekg::color(242, 242, 242, 255);
     this->frame_border = ekg::color(190, 190, 190, 0);

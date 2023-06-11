@@ -60,6 +60,29 @@ int32_t ekg::runtime::get_top_level() {
 
 void ekg::runtime::update_size_changed() {
     ekg::dispatch(ekg::env::redraw);
+
+    this->layout_service.update_scale_factor();
+    float scale_factor {this->layout_service.get_scale_factor()};
+    uint32_t font_size {static_cast<uint32_t>(ekg::clamp(static_cast<int32_t>(18.0f * scale_factor), 0, 255))};
+
+    this->f_renderer_small.font_size = font_size - 4;
+    this->f_renderer_small.reload();
+
+    this->f_renderer_normal.font_size = font_size;
+    this->f_renderer_normal.reload();
+
+    this->f_renderer_big.font_size = font_size + 6;
+    this->f_renderer_big.reload();
+
+    ekg::log() << "Font scale: " << this->f_renderer_small.font_size << "(small) " << this->f_renderer_normal.font_size << "(normal) " << this->f_renderer_big.font_size << "(big)";
+
+    for (ekg::ui::abstract_widget *&widgets : this->widget_list_map["all"]) {
+        if (!widgets->data->has_parent()) {
+            this->do_task_synclayout(widgets);
+        } else {
+            widgets->on_reload();
+        }
+    }
 }
 
 void ekg::runtime::init() {
@@ -497,6 +520,8 @@ void ekg::runtime::prepare_ui_env() {
     this->f_renderer_big.font_size = 24;
     this->f_renderer_big.reload();
     this->f_renderer_big.bind_allocator(&this->allocator);
+
+    this->layout_service.update_scale_factor();
 
     ekg::log() << "Registering user interface input bindings";
 

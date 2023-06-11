@@ -403,10 +403,10 @@ void ekg::ui::textbox_widget::on_reload() {
     this->text_height = f_renderer.get_text_height();
     this->text_offset = ekg::find_min_offset(text_width, dimension_offset);
 
-    this->dimension.w = ekg::min(this->dimension.w, this->text_height);
+    this->dimension.w = ekg::min(this->dimension.w, text_width);
     this->dimension.h = (this->text_height + dimension_offset) * static_cast<float>(scaled_height);
 
-    this->min_size.x = ekg::min(this->min_size.x, this->text_height);
+    this->min_size.x = ekg::min(this->min_size.x, text_height);
     this->min_size.y = ekg::min(this->min_size.y, this->dimension.h);
 
     if (this->widget_side_text != ui->get_text()) {

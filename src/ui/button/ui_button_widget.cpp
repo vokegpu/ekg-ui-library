@@ -35,8 +35,10 @@ void ekg::ui::button_widget::on_reload() {
     float dimension_offset {static_cast<float>((int32_t) (text_height / 2.0f))};
     float offset {ekg::find_min_offset(text_width, dimension_offset)};
 
-    this->dimension.w = ekg::min(this->dimension.w, text_height);
+    this->dimension.w = ekg::min(this->dimension.w, text_width);
     this->dimension.h = (text_height + dimension_offset) * static_cast<float>(ui->get_scaled_height());
+
+    this->min_size.x = ekg::min(this->min_size.x, text_height);
     this->min_size.y = ekg::min(this->min_size.y, this->dimension.h);
 
     this->rect_text.w = text_width;
@@ -48,7 +50,7 @@ void ekg::ui::button_widget::on_reload() {
     layout.process_layout_mask();
 
     auto &layout_mask {layout.get_layout_mask()};
-    this->dimension.w = (int32_t)(this->dimension.w <= text_height ? layout_mask.w : this->dimension.w);
+    this->dimension.w = (int32_t)(this->dimension.w <= text_width ? layout_mask.w : this->dimension.w);
     this->dimension.h = ekg::min(this->dimension.h, layout_mask.h);
 }
 

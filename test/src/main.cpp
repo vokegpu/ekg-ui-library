@@ -160,8 +160,10 @@ int32_t main(int32_t, char**) {
     }
 
     SDL_GL_SetSwapInterval(1); // v-sync on
-    ekg::init(sdl_win, "whitneybook.otf");
+    ekg::init(sdl_win, "JetBrainsMono-Bold.ttf");
     ekg::log() << "OpenGL context created";
+    ekg::autoscale = false;
+
     ekg::debug = true;
     SDL_SetWindowOpacity(sdl_win, 1.0f);
 
@@ -177,7 +179,7 @@ int32_t main(int32_t, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    ekg::frame("sou gostosa", {20, 700}, {200, 200})->set_drag(ekg::dock::top);
+    ekg::frame("sou gostosa", {20, 700}, {200, 200})->set_drag(ekg::dock::top)->set_resize(ekg::dock::bottom | ekg::dock::left | ekg::dock::right);
     ekg::button("oi oi oi");
     ekg::label("oioioioioio", ekg::dock::fill);
     ekg::textbox("queeeeeeeeeeee", "queee  c é lindoo perfeito me beijaaaaaaa", ekg::dock::fill | ekg::dock::next)->set_scaled_height(12);
@@ -190,7 +192,7 @@ int32_t main(int32_t, char**) {
     auto textboxdebug = ekg::textbox("textbox-debug", "", ekg::dock::next);
     textboxdebug->set_scaled_height(6);
     textboxdebug->set_enabled(false);
-    textboxdebug->set_width(300.0f);
+    textboxdebug->set_width(600.0f);
 
     ekg::ui::label *labelresult {};
     std::string previous_operator {};

@@ -13,5 +13,13 @@
  */
 
 #include "ekg/os/info.hpp"
+#include "ekg/os/ekg_sdl.hpp"
 
 ekg::platform ekg::os {};
+
+void ekg::os_get_monitor_resolution(float &w, float &h) {
+    SDL_DisplayMode sdl_display_mode {};
+    SDL_GetDisplayMode(0, 0, &sdl_display_mode);
+    w = sdl_display_mode.w;
+    h = sdl_display_mode.h;
+}

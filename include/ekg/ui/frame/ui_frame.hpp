@@ -34,10 +34,10 @@ namespace ekg::ui {
         void set_scale_factor(float, float);
         ekg::vec2 get_scale_factor();
 
-        void set_drag(uint16_t);
+        ekg::ui::frame *set_drag(uint16_t);
         uint16_t get_drag_dock();
 
-        void set_resize(uint16_t);
+        ekg::ui::frame *set_resize(uint16_t);
         uint16_t get_resize_dock();
 
         void set_pos_initial(float, float);

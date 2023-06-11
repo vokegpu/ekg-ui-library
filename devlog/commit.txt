@@ -1,5 +1,12 @@
-0.1.0.1
+0.1.0.1 10/06/23
 
 -- Fixed bug on widgets ::set_width() setting incorrect dimension axis.
 -- Fixed bug at frame widget actions (dragging and resizing), now it calculate from visible rect.
 -- Simetric layout processing based in scroll pixels offsets.
+
+0.1.0.2 11/06/23
+
+-- Added theme options to switch between symmetric or non-symmetric layout processing.
+-- Building methods in the frame (soon maybe all widgets should have it).
+-- Fixed next flag height for previous height (now it uses the highest height).
+-- Added auto-scale factor and widgets resolution scaling factor-based.

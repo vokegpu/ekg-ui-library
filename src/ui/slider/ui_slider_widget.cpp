@@ -83,7 +83,7 @@ void ekg::ui::slider_widget::on_reload() {
     auto &layout {ekg::core->get_service_layout()};
     bool centered_text {text_dock_flags == ekg::dock::center};
 
-    this->dimension.w = ekg::min(this->dimension.w, text_height);
+    this->dimension.w = ekg::min(this->dimension.w, text_width);
     this->dimension.h = dimension_height;
 
     this->min_size.x = ekg::min(this->min_size.x, text_height);
