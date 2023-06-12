@@ -19,6 +19,7 @@ ekg::runtime* ekg::core {};
 std::string ekg::gl_version {"#version 450"};
 ekg::vec2 ekg::scalebase {1920.0f, 1080.0f};
 bool ekg::autoscale {true};
+float ekg::scaleinterval {25.0f};
 
 ekg::service::theme &ekg::theme() {
     return ekg::core->get_service_theme();

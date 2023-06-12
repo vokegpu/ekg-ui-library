@@ -62,19 +62,18 @@ void ekg::runtime::update_size_changed() {
     ekg::dispatch(ekg::env::redraw);
 
     this->layout_service.update_scale_factor();
-    float scale_factor {this->layout_service.get_scale_factor()};
-    uint32_t font_size {static_cast<uint32_t>(ekg::clamp(static_cast<int32_t>(18.0f * scale_factor), 0, 255))};
+    uint32_t font_size {static_cast<uint32_t>(ekg::clamp(static_cast<int32_t>(18.0f * this->layout_service.get_scale_factor()), 0, 256))};
 
-    this->f_renderer_small.font_size = font_size - 4;
-    this->f_renderer_small.reload();
+    if (this->f_renderer_normal.font_size != font_size) {
+        this->f_renderer_small.font_size = ekg::min(font_size - 4, 4);
+        this->f_renderer_small.reload();
 
-    this->f_renderer_normal.font_size = font_size;
-    this->f_renderer_normal.reload();
+        this->f_renderer_normal.font_size = ekg::min(font_size, 8);
+        this->f_renderer_normal.reload();
 
-    this->f_renderer_big.font_size = font_size + 6;
-    this->f_renderer_big.reload();
-
-    ekg::log() << "Font scale: " << this->f_renderer_small.font_size << "(small) " << this->f_renderer_normal.font_size << "(normal) " << this->f_renderer_big.font_size << "(big)";
+        this->f_renderer_big.font_size = ekg::min(font_size + 6, 12);
+        this->f_renderer_big.reload();
+    }
 
     for (ekg::ui::abstract_widget *&widgets : this->widget_list_map["all"]) {
         if (!widgets->data->has_parent()) {

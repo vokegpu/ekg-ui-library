@@ -510,19 +510,40 @@ float ekg::service::layout::get_min_offset() {
 }
 
 void ekg::service::layout::update_scale_factor() {
+    ekg::vec2 monitor_resolution {ekg::scalebase};
     if (ekg::autoscale) {
-        ekg::os_get_monitor_resolution(ekg::scalebase.x, ekg::scalebase.y);
+        ekg::os_get_monitor_resolution(monitor_resolution.x, monitor_resolution.y);
     }
 
-    float base_factor {ekg::scalebase.x * ekg::scalebase.y};
+    /*
+     * The scale is step-based, each step change the scale, e.g:
+     * scale percent interval = 25
+     * scale percent = 100 (scale GUI resolution == window size)
+     *
+     * scale percent in:
+     * 0   == 0
+     * 25  == 1
+     * 50  == 2
+     * 75  == 3
+     * 100 == 4
+     *
+     * Then is divided by 4 (becase the maximum scale step is 4)
+     * e.g: 2/4 = 0.5f -- 3/4 = 0.75f
+     */
+
+    float base_scale {ekg::scalebase.x * ekg::scalebase.y};
+    float monitor_scale {monitor_resolution.x * monitor_resolution.y};
+    float monitor_factor {monitor_scale / base_scale};
+    float monitor_scale_percent {monitor_factor * 100.0f};
+
+    monitor_scale_percent /= ekg::scaleinterval;
+    monitor_scale_percent = (monitor_scale_percent / (100.0f / ekg::scaleinterval));
+
     this->viewport_scale = {static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height)};
-    this->scale_factor = ekg::min((this->viewport_scale.x * this->viewport_scale.y), 0.000001f) / (base_factor < 0.0f ? 1.0f : base_factor);
+    float factor {((this->viewport_scale.x * this->viewport_scale.y) / base_scale) * 100.0f};
 
-    if (this->scale_factor < 0.3f) {
-        this->scale_factor = 0.5;
-    } else {
-        this->scale_factor = 1.0f;
-    }
+    factor = (factor / monitor_scale_percent) / ekg::scaleinterval;
+    this->scale_factor = ekg::max(factor, 1.0f);
 }
 
 float ekg::service::layout::get_scale_factor() {

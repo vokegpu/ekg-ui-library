@@ -28,7 +28,7 @@
 #include "ekg/ui/textbox/ui_textbox.hpp"
 #include "ekg/ui/scroll/ui_scroll.hpp"
 
-#define EKG_VERSION_ID "0.0.1.2"
+#define EKG_VERSION_ID "0.0.1.0.1.1"
 #define EKG_VERSION_STATE "ALPHA"
 
 namespace ekg {
@@ -46,6 +46,11 @@ namespace ekg {
      * When enabled, ekg automatically find the base resolution scale by monitor.
      */
     extern bool autoscale;
+
+    /*
+     * The scale interval between the base scaled resolution and root size.
+     */
+    extern float scaleinterval;
 
     /*
      * The resolution scale base, for edit, then you need to disable 'ekg::autoscale'.

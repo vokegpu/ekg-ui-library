@@ -22,18 +22,27 @@ namespace ekg::ui {
     class textbox_widget : public ekg::ui::abstract_widget {
     public:
         enum action {addtext, erasetext, breakline};
+        struct cursor {
+        public:
+            int64_t index {};
+            int64_t chunk_index {};
+            int64_t text_index {};
+            int64_t last_text_index {};
+        public:
+            inline bool operator==(ekg::ui::textbox_widget::cursor &r) {
+                return this->index == r.index && this->chunk_index == r.chunk_index && this->text_index == r.text_index;
+            }
+        };
     public:
         std::vector<std::string> text_chunk_list {};
         std::string widget_side_text {};
+        std::vector<ekg::ui::textbox_widget::cursor> multi_cursor {};
         
         ekg::rect rect_text {};
         ekg::rect rect_cursor {};
         ekg::ui::scroll_embedded_widget embedded_scroll {};
 
-        int64_t visible_chunk[4] {};
-        int64_t cursor[6] {};
         float cursor_char_wsize[3] {};
-
         float text_offset {};
         float text_height {};
         
@@ -41,9 +50,9 @@ namespace ekg::ui {
         bool is_ui_enabled {};
     public:
         void check_cursor_text_bounding();
-        std::string &get_cursor_emplace_text();
+        std::string &get_cursor_emplace_text(ekg::ui::textbox_widget::cursor &cursor);
         void process_text(std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction);
-        void move_cursor(int64_t, int64_t, bool = false);
+        void move_cursor(ekg::ui::textbox_widget::cursor &cursor, int64_t x, int64_t y);
         void unset_focus();
         void check_largest_text_width();
 

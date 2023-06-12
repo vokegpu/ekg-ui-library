@@ -159,10 +159,12 @@ int32_t main(int32_t, char**) {
         ekg::log() << "GLEW initialised";
     }
 
-    SDL_GL_SetSwapInterval(1); // v-sync on
+    SDL_GL_SetSwapInterval(0); // v-sync on
     ekg::init(sdl_win, "JetBrainsMono-Bold.ttf");
     ekg::log() << "OpenGL context created";
-    ekg::autoscale = false;
+
+    ekg::autoscale = true;
+    ekg::scalebase = {1920.0f, 1080.0f};
 
     ekg::debug = true;
     SDL_SetWindowOpacity(sdl_win, 1.0f);
@@ -300,7 +302,7 @@ int32_t main(int32_t, char**) {
         auto b2 = ekg::button("2", ekg::dock::fill);
         b2->set_scaled_height(2);
         b2->set_text_align(ekg::dock::center);
-        
+    
         auto b3 = ekg::button("3", ekg::dock::fill);
         b3->set_scaled_height(2);
         b3->set_text_align(ekg::dock::center);
@@ -446,7 +448,7 @@ int32_t main(int32_t, char**) {
 
         // Swap buffers.
         SDL_GL_SwapWindow(sdl_win);
-        SDL_Delay(16);
+        // SDL_Delay(16);
     }
 
     ekg::quit();
