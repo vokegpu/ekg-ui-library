@@ -130,6 +130,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     bool found_absolute_widget {};
 
     // @TODO textbox ui with delay to process stack reorder event.
+    // @TODO scrolling ui priority and textbox not working scrolling.
 
     auto &all {this->widget_list_map["all"]};
     for (ekg::ui::abstract_widget *&widgets : all) {
