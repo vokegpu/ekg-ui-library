@@ -188,10 +188,10 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
             int64_t emplace_text_size {(int64_t) ekg::utf8length(emplace_text)};
             bool text_chunk_it_bounding_size {main_cursor.chunk_index + 1 == this->text_chunk_list.size()};
 
-            if (main_cursor.chunk_index >= emplace_text_size && !text_chunk_it_bounding_size) {
+            if (main_cursor.text_index >= emplace_text_size && !text_chunk_it_bounding_size) {
                 emplace_text += this->text_chunk_list.at(main_cursor.chunk_index + 1);
                 this->text_chunk_list.erase(this->text_chunk_list.begin() + main_cursor.chunk_index + 1);
-            } else if (main_cursor.chunk_index < emplace_text_size) {
+            } else if (main_cursor.text_index < emplace_text_size) {
                 int64_t it {main_cursor.text_index};
                 emplace_text = ekg::utf8substr(emplace_text, 0, it) + ekg::utf8substr(emplace_text, it + 1, ekg::utf8length(emplace_text));
             }
@@ -221,7 +221,7 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
         emplace_text = ekg::utf8substr(emplace_text, 0, it);
         this->text_chunk_list.emplace_back().clear();
 
-        for (int64_t it {main_cursor.text_index + 1}; it < this->text_chunk_list.size(); it++) {
+        for (int64_t it {main_cursor.chunk_index + 1}; it < this->text_chunk_list.size(); it++) {
             previous = this->text_chunk_list.at(it);
             this->text_chunk_list[it] = next;
             next = previous;
