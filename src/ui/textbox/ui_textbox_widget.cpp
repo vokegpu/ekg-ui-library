@@ -144,15 +144,13 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor &curso
 }
 
 void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction) {
-    std::string changed_text {};
-
     auto ui {(ekg::ui::textbox*) this->data};
     if (!(this->is_ui_enabled = ui->is_enabled())) {
         return;
     }
 
-    auto &main_cursor {this->multi_cursor[0]};
-    auto &second_cursor {this->multi_cursor[1]};
+    auto &main_cursor {this->multi_cursor.at(0)};
+    auto &second_cursor {this->multi_cursor.at(1)};
 
     switch (action) {
     case ekg::ui::textbox_widget::action::addtext: {
@@ -163,25 +161,22 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
             this->move_cursor(main_cursor, 1, 0);
         }
 
-        changed_text = emplace_text;
         break;
     }
 
     case ekg::ui::textbox_widget::action::erasetext: {
-        if (main_cursor == second_cursor && direction < 0 && main_cursor.index > 0) {
-            if (main_cursor.text_index - 1 < 0 && main_cursor.text_index > 0) {
+        if (main_cursor == second_cursor && direction < 0 && (main_cursor.index > 0 || main_cursor.chunk_index > 0)) {
+            if (main_cursor.text_index - 1 < 0 && main_cursor.chunk_index > 0) {
                 std::string stored_text {this->get_cursor_emplace_text(main_cursor)};
                 this->move_cursor(main_cursor, -1, 0);
                 this->text_chunk_list.erase(this->text_chunk_list.begin() + main_cursor.chunk_index + 1);
                 std::string &upper_line_text {this->get_cursor_emplace_text(main_cursor)};
                 upper_line_text += stored_text;
-                changed_text = upper_line_text;
             } else {
                 std::string &emplace_text {this->get_cursor_emplace_text(main_cursor)};
                 int64_t it {ekg::min(main_cursor.text_index - 1, (int64_t) 0)};
                 emplace_text = ekg::utf8substr(emplace_text, 0, it) + ekg::utf8substr(emplace_text, it + 1, ekg::utf8length(emplace_text));
                 this->move_cursor(main_cursor, -1, 0);
-                changed_text = emplace_text;
             }
         } else if (main_cursor == second_cursor && direction > 0) {
             std::string &emplace_text {this->get_cursor_emplace_text(main_cursor)};
@@ -196,7 +191,6 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
                 emplace_text = ekg::utf8substr(emplace_text, 0, it) + ekg::utf8substr(emplace_text, it + 1, ekg::utf8length(emplace_text));
             }
 
-            changed_text = emplace_text;
             ekg::reset(ekg::core->get_ui_timing());
             ekg::dispatch(ekg::env::redraw);
         }
@@ -221,13 +215,12 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
         emplace_text = ekg::utf8substr(emplace_text, 0, it);
         this->text_chunk_list.emplace_back().clear();
 
-        for (int64_t it {main_cursor.chunk_index + 1}; it < this->text_chunk_list.size(); it++) {
+        for (it = main_cursor.chunk_index + 1; it < this->text_chunk_list.size(); it++) {
             previous = this->text_chunk_list.at(it);
             this->text_chunk_list[it] = next;
             next = previous;
         }
 
-        changed_text = emplace_text;
         this->move_cursor(main_cursor, 1, 0);
         break;
     }

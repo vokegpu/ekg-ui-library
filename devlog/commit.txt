@@ -17,3 +17,7 @@
 
 -- Auto-scale step interval based.
 -- Multi-cursor internal system for textbox.
+
+0.0.1.0.1.2 12/06/23
+
+-- Fixed textbox erasing event when lines are empty.
