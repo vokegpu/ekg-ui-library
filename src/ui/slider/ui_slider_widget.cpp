@@ -183,11 +183,13 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
         this->flag.activy = true;
         ui->set_dragging(true);
         this->update_bar(interact.x, interact.y);
+        this->flag.absolute = true;
     } else if  (released) {
         if (this->flag.activy) {
             ekg::dispatch_ui_event(ui->get_tag().empty() ? "Unknown Slider UI" : ui->get_tag(), std::to_string(ui->get_value()), (uint16_t) ui->get_type());
         }
 
+        this->flag.absolute = false;
         this->flag.activy = false;
         ui->set_dragging(false);
     } else if (this->flag.activy && motion) {

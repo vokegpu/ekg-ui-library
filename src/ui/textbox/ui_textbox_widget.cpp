@@ -530,7 +530,7 @@ void ekg::ui::textbox_widget::on_update() {
     }
 
     this->embedded_scroll.on_update();
-    this->is_high_frequency = this->embedded_scroll.check_activy_state(this->flag.focused || this->flag.highlight || this->flag.absolute);
+    this->is_high_frequency = this->embedded_scroll.check_activy_state(this->flag.focused || this->flag.hovered || this->flag.absolute);
 }
 
 void ekg::ui::textbox_widget::on_draw_refresh() {

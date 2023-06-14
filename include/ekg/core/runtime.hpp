@@ -1,3 +1,4 @@
+
 /*
  * VOKEGPU EKG LICENSE
  *
@@ -54,6 +55,7 @@ namespace ekg {
 
         ekg::ui::abstract *current_bind_group {};
         ekg::gpu::allocator allocator {};
+        ekg::ui::abstract_widget *widget_absolute_activy {};
 
         ekg::draw::font_renderer f_renderer_small {};
         ekg::draw::font_renderer f_renderer_normal {};

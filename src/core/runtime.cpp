@@ -129,11 +129,26 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     bool hovered {};
     bool found_absolute_widget {};
 
+    if (this->widget_absolute_activy != nullptr && this->widget_absolute_activy->flag.absolute) {
+        this->widget_absolute_activy->on_pre_event(sdl_event);
+        this->widget_absolute_activy->on_event(sdl_event);
+        this->widget_absolute_activy->on_post_event(sdl_event);
+        return;
+    }
+
+    this->widget_absolute_activy = nullptr;
+    uint64_t it_begin_absolute {};
+
     // @TODO textbox ui with delay to process stack reorder event.
     // @TODO scrolling ui priority and textbox not working scrolling.
 
     auto &all {this->widget_list_map["all"]};
-    for (ekg::ui::abstract_widget *&widgets : all) {
+    ekg::ui::abstract_widget *widgets {};
+    uint64_t size {all.size()};
+    int32_t prev_parent_master {};
+
+    for (uint64_t it {}; it < size; it++) {
+        widgets = all.at(it);
         if (widgets == nullptr || !widgets->data->is_alive()) {
             continue;
         }
@@ -146,15 +161,19 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         hovered = !(sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_KEYUP || sdl_event.type == SDL_TEXTINPUT) 
                 && widgets->flag.hovered && widgets->data->get_state() == ekg::state::visible;
 
-        if ((hovered || widgets->flag.absolute) && !found_absolute_widget) {
+        if ((hovered || widgets->flag.absolute) && (!found_absolute_widget || (widgets->data->get_parent_id() == prev_parent_master && found_absolute_widget))) {
             this->widget_id_focused = widgets->data->get_id();
             focused_widget = widgets;
             found_absolute_widget = widgets->flag.absolute;
         }
 
         widgets->on_post_event(sdl_event);
-        if (!hovered && !found_absolute_widget) {
+        if (!hovered) {
             widgets->on_event(sdl_event);
+        }
+
+        if (widgets->data->has_children()) {
+            prev_parent_master = widgets->data->get_id();
         }
     }
 
@@ -165,6 +184,11 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         focused_widget->on_pre_event(sdl_event);
         focused_widget->on_event(sdl_event);
         focused_widget->on_post_event(sdl_event);
+
+        if (focused_widget->flag.absolute) {
+            this->widget_absolute_activy = focused_widget;
+        }
+
         ekg::hovered::type = focused_widget->data->get_type();
     } 
 
