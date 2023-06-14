@@ -21,3 +21,9 @@
 0.0.1.0.1.2 12/06/23
 
 -- Fixed textbox erasing event when lines are empty.
+
+0.0.1.0.1.3 12/06/23
+
+-- Fixed scrolling priority using parent checks for absolute widgets.
+-- Fixed textbox not scrolling.
+-- Fixed absolute widget firing other widget events (now it is clamped).
