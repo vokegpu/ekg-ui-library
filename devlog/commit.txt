@@ -27,3 +27,9 @@
 -- Fixed scrolling priority using parent checks for absolute widgets.
 -- Fixed textbox not scrolling.
 -- Fixed absolute widget firing other widget events (now it is clamped).
+
+0.0.1.0.1.4 15/06/23
+
+-- Added real-time textbox text changing.
+-- Scroll priority between parents and children.
+-- Performance fixes (reduced draw calls).

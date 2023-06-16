@@ -30,8 +30,8 @@ void ekg::ui::scroll_embedded_widget::reset_scroll() {
 bool ekg::ui::scroll_embedded_widget::check_activy_state(bool state) {
     state = state || (static_cast<int32_t>(this->scroll.y) != static_cast<int32_t>(this->scroll.w)) || (static_cast<int32_t>(this->scroll.x) != static_cast<int32_t>(this->scroll.z));
     if (!state) {
-        this->scroll.z = this->scroll.x;
-        this->scroll.w = this->scroll.y;
+        this->scroll.x = this->scroll.z;
+        this->scroll.y = this->scroll.w;
     }
 
     return state;
@@ -185,13 +185,11 @@ void ekg::ui::scroll_embedded_widget::on_post_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::scroll_embedded_widget::on_update() {
+    this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::scrollsmooth * ekg::display::dt);
+    this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::scrollsmooth * ekg::display::dt);
+
 #if defined(ANDROID)
-    this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::scrollsmooth * ekg::display::dt);
-    this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::scrollsmooth * ekg::display::dt);
     this->clamp_scroll();
-#else
-    this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::scrollsmooth * ekg::display::dt);
-    this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::scrollsmooth * ekg::display::dt);
 #endif
 
     ekg::dispatch(ekg::env::redraw);
@@ -203,12 +201,13 @@ void ekg::ui::scroll_embedded_widget::clamp_scroll() {
 
     if (this->rect_child.h < this->rect_mother->h) {
         this->scroll.y = 0.0f;
+        this->scroll.w = 0.0f;
     } else if (this->scroll.y < vertical_scroll_limit.y) {
         this->scroll.y = vertical_scroll_limit.y;
-        this->scroll.w = 0.0f;
+        this->scroll.w = vertical_scroll_limit.y;
     } else if (this->scroll.y > vertical_scroll_limit.x) {
         this->scroll.y = vertical_scroll_limit.x;
-        this->scroll.w = 0.0f;
+        this->scroll.w = vertical_scroll_limit.x;
     }
 
     if (this->rect_child.w < this->rect_mother->w) {

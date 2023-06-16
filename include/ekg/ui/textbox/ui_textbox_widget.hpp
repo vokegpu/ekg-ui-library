@@ -53,8 +53,7 @@ namespace ekg::ui {
         std::string &get_cursor_emplace_text(ekg::ui::textbox_widget::cursor &cursor);
         void process_text(std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction);
         void move_cursor(ekg::ui::textbox_widget::cursor &cursor, int64_t x, int64_t y);
-        void unset_focus();
-        void check_largest_text_width();
+        void check_largest_text_width(bool update_ui_data_text_together);
 
         void on_destroy() override;
         void on_reload() override;

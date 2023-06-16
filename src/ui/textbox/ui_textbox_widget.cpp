@@ -20,13 +20,31 @@
  * This is not really optmised but I think it is okay.
  * @TODO write a better text width width largest.
  */
-void ekg::ui::textbox_widget::check_largest_text_width() {
+void ekg::ui::textbox_widget::check_largest_text_width(bool update_ui_data_text_together) {
     auto ui {(ekg::ui::textbox*) this->data};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
-    this->rect_text.w = 0.0f;
 
-    for (std::string &text : this->text_chunk_list) {
+    this->rect_text.w = 0.0f;
+    std::string compatibility_text {};
+
+    uint64_t text_chunk_size {this->text_chunk_list.size()};
+    for (uint64_t it {}; it < text_chunk_size; it++) {
+        std::string &text = this->text_chunk_list.at(it);
         this->rect_text.w = std::max(this->rect_text.w, f_renderer.get_text_width(text));
+
+        if (!update_ui_data_text_together) {
+            continue;
+        }
+
+        compatibility_text += text;
+        if (it < text_chunk_size - 1) {
+            compatibility_text += '\n';
+        }
+    }
+
+    if (update_ui_data_text_together) {
+        ui->set_text(compatibility_text);
+        this->widget_side_text = compatibility_text;
     }
 
     this->rect_text.w += this->text_offset * 2.0f;
@@ -222,6 +240,9 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
         }
 
         this->move_cursor(main_cursor, 1, 0);
+        ekg::reset(ekg::core->get_ui_timing());
+        ekg::dispatch(ekg::env::redraw);
+
         break;
     }
     }
@@ -231,7 +252,7 @@ void ekg::ui::textbox_widget::process_text(std::string_view text, ekg::ui::textb
     second_cursor.text_index = main_cursor.text_index;
     second_cursor.last_text_index = main_cursor.last_text_index;
 
-    this->check_largest_text_width();
+    this->check_largest_text_width(true);
 }
 
 std::string &ekg::ui::textbox_widget::get_cursor_emplace_text(ekg::ui::textbox_widget::cursor &cursor) {
@@ -367,26 +388,6 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding() {
     ekg::dispatch(ekg::env::redraw);
 }
 
-void ekg::ui::textbox_widget::unset_focus() {
-    ekg::set(this->flag.focused, false);
-    auto ui {(ekg::ui::textbox*) this->data};
-
-    if (this->flag.focused && (this->is_ui_enabled = ui->is_enabled())) {
-        std::string compatibility_text {};
-        if (!this->text_chunk_list.empty()) {
-            for (std::string &text : this->text_chunk_list) {
-                compatibility_text += text;
-                compatibility_text += '\n';
-            }
-
-            compatibility_text = compatibility_text.substr(0, compatibility_text.size() - 1);
-        }
-
-        ui->set_text(compatibility_text);
-        this->widget_side_text = compatibility_text;
-    }
-}
-
 void ekg::ui::textbox_widget::on_destroy() {
 
 }
@@ -416,7 +417,7 @@ void ekg::ui::textbox_widget::on_reload() {
         this->widget_side_text = ui->get_text();
         ekg::utf8read(this->widget_side_text, this->text_chunk_list);
 
-        this->check_largest_text_width();
+        this->check_largest_text_width(false);
         this->rect_text.h = (this->text_height * this->text_chunk_list.size()) + (this->text_offset * 2.0f);
         
         float vertical_scroll_limit {this->rect_text.h - rect.h};
@@ -428,10 +429,11 @@ void ekg::ui::textbox_widget::on_reload() {
          */
         if (vertical_scroll_limit > 0 && this->embedded_scroll.scroll.w < -(vertical_scroll_limit - new_text_height_diff)) {
             this->embedded_scroll.scroll.w = -vertical_scroll_limit;
-        
-            if (!this->is_high_frequency) {
-                ekg::update_high_frequency(this);
-            }
+        }
+
+
+        if (!this->is_high_frequency) {
+            ekg::update_high_frequency(this);
         }
     }
 
@@ -469,7 +471,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     }
 
     if (!this->flag.hovered && (released || pressed)) {
-        this->unset_focus();
+        ekg::set(this->flag.focused, false);
     }
 
     if (!this->flag.focused) {
@@ -483,7 +485,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     case SDL_KEYDOWN:
         switch (sdl_event.key.keysym.sym) {
         case SDLK_ESCAPE:
-            this->unset_focus();
+            ekg::set(this->flag.focused, false);
             break;
         default:
             int64_t cursor_dir[2] {};
@@ -554,6 +556,11 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     ekg::gpu::data &data {allocator.bind_current_data()};
     ekg::vec4 color {theme.textbox_string};
+
+    if (allocator.is_out_of_scissor_rect()) {
+        ekg::draw::bind_off_scissor();
+        return;
+    }
 
     data.shape_rect[0] = x;
     data.shape_rect[1] = y;

@@ -48,8 +48,8 @@ namespace ekg {
         /* Widget env lists and maps for tasks. */
 
         std::unordered_map<std::string, std::vector<ekg::ui::abstract_widget*>> widget_list_map {};
-        std::map<int32_t, ekg::ui::abstract_widget*> widget_map {};
-        std::map<int32_t, bool> processed_widget_map {};
+        std::unordered_map<int32_t, ekg::ui::abstract_widget*> widget_map {};
+        std::unordered_map<int32_t, bool> processed_widget_map {};
 
         /* Core services and instances. */
 

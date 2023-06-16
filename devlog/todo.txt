@@ -1,4 +1,6 @@
 # todos necessary
 
--- allocator render hardware interface (RHI)
--- allocator std140 for replace uniforms call
+-- Allocator render hardware interface (RHI) + vulkan & opengl rendering.
+-- Allocator std140 for replace uniforms call.
+-- Remove wrapper calls to update widgets (reload, synclayout, etc).
+-- Textbox UI with delay to process stack reorder event.

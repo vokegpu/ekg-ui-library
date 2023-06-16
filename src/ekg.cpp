@@ -45,7 +45,6 @@ ekg::draw::font_renderer &ekg::f_renderer(ekg::font font_size) {
 
 void ekg::init(SDL_Window* root, std::string_view font_path) {
     ekg::log() << "Initialising EKG";
-    ekg::gpu::init_opengl_context();
     ekg::listener = SDL_RegisterEvents(1);
 
 #if defined(_WIN)
@@ -127,6 +126,8 @@ ekg::gl_version + "\n"
 "    }\n"
 "}"};
 
+    ekg::log() << "Loading internal shaders...";
+    
     /* Create main shading program using two basic shaders (vertex & fragment). */
     ekg::gpu::create_basic_program(ekg::gpu::allocator::program, {
         {vsh_src, GL_VERTEX_SHADER},
@@ -140,6 +141,7 @@ ekg::gl_version + "\n"
     ekg::core->get_f_renderer_big().font_path = font_path;
     ekg::core->set_root(root);
     ekg::core->init();
+
 
     /* First update of orthographic matrix and uniforms. */
 

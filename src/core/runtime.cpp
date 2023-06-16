@@ -139,9 +139,6 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     this->widget_absolute_activy = nullptr;
     uint64_t it_begin_absolute {};
 
-    // @TODO textbox ui with delay to process stack reorder event.
-    // @TODO scrolling ui priority and textbox not working scrolling.
-
     auto &all {this->widget_list_map["all"]};
     ekg::ui::abstract_widget *widgets {};
     uint64_t size {all.size()};
@@ -413,11 +410,9 @@ void ekg::runtime::prepare_tasks() {
             }
 
             widgets->on_reload();
-            runtime->processed_widget_map[widgets->data->get_id()] = true;
         }
 
         reload.clear();
-        runtime->processed_widget_map.clear();
     }, ekg::event::alloc});
 
     this->handler_service.dispatch(new ekg::cpu::event {"synclayout", this, [](void *p_data) {
@@ -435,6 +430,7 @@ void ekg::runtime::prepare_tasks() {
 
         reload.clear();
         runtime->processed_widget_map.clear();
+        ekg::dispatch(ekg::env::redraw);
     }, ekg::event::alloc});
 
     this->handler_service.dispatch(new ekg::cpu::event {"redraw", this, [](void *p_data) {
@@ -544,8 +540,6 @@ void ekg::runtime::prepare_ui_env() {
     this->f_renderer_big.font_size = 24;
     this->f_renderer_big.reload();
     this->f_renderer_big.bind_allocator(&this->allocator);
-
-    this->layout_service.update_scale_factor();
 
     ekg::log() << "Registering user interface input bindings";
 

@@ -28,7 +28,7 @@ void ekg::ui::label_widget::on_reload() {
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
     auto scaled_height {ui->get_scaled_height()};
 
-    float text_width {f_renderer.get_text_width(ui->get_text())};
+    float text_width {f_renderer.get_text_width(ui->get_text(), scaled_height)};
     float text_height {f_renderer.get_text_height()};
 
     float dimension_offset {text_height / 2};
@@ -41,7 +41,7 @@ void ekg::ui::label_widget::on_reload() {
     this->min_size.y = ekg::min(this->min_size.y, this->dimension.h);
 
     this->rect_text.w = text_width;
-    this->rect_text.h = text_height;
+    this->rect_text.h = text_height * static_cast<float>(scaled_height);
 
     auto &layout {ekg::core->get_service_layout()};
     layout.set_preset_mask({offset, offset, this->dimension.h}, ekg::axis::horizontal, this->dimension.w);

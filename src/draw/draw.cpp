@@ -27,6 +27,10 @@ void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color,
     ekg::gpu::allocator &allocator {ekg::core->get_gpu_allocator()};
     ekg::gpu::data &data {allocator.bind_current_data()};
 
+    if (allocator.is_out_of_scissor_rect()) {
+        return;
+    }
+
     data.shape_rect[0] = x;
     data.shape_rect[1] = y;
     data.shape_rect[2] = w;

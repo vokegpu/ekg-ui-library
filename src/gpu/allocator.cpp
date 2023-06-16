@@ -292,6 +292,8 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_par
     scissor.rect[2] = rect_child.w;
     scissor.rect[3] = rect_child.h;
 
+    this->out_of_scissor_rect = false;
+
     /*
      * Scissor is a great feature from OpenGL, but it
      * does not stack, means that GL context does not
@@ -329,6 +331,9 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_par
     if (scissor.rect[1] + scissor.rect[3] > mother_rect.rect[1] + mother_rect.rect[3]) {
         scissor.rect[3] -= (scissor.rect[1] + scissor.rect[3]) - (mother_rect.rect[1] + mother_rect.rect[3]);
     }
+
+    this->out_of_scissor_rect = !(scissor.rect[0] < mother_rect.rect[0] + mother_rect.rect[2] && scissor.rect[0] + scissor.rect[2] > mother_rect.rect[0] &&
+                                  scissor.rect[1] < mother_rect.rect[1] + mother_rect.rect[3] && scissor.rect[1] + scissor.rect[3] > mother_rect.rect[1]); 
 }
 
 void ekg::gpu::allocator::bind_scissor(int32_t scissor_id) {
@@ -362,4 +367,8 @@ bool ekg::gpu::allocator::check_convex_shape() {
     auto &data {this->bind_current_data()};
     this->simple_shape = static_cast<int32_t>(data.shape_rect[2]) != ekg::concave && static_cast<int32_t>(data.shape_rect[3]) != ekg::concave;
     return this->simple_shape_index != -1 && this->simple_shape;
+}
+
+bool ekg::gpu::allocator::is_out_of_scissor_rect() {
+    return this->out_of_scissor_rect;
 }

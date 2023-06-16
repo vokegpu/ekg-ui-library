@@ -17,19 +17,6 @@
 #include "ekg/util/env.hpp"
 #include <vector>
 
-void ekg::gpu::init_opengl_context() {
-    switch (ekg::os) {
-        case ekg::platform::os_android: {
-            // Ignore.
-            break;
-        }
-
-        default: {
-            break;
-        }
-    }
-}
-
 void ekg::gpu::invoke(ekg::gpu::program &program) {
     glUseProgram(program.id);
 }

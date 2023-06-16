@@ -50,6 +50,8 @@ namespace ekg::gpu {
         uint32_t vbo_vertices {}, vbo_uvs {}, vbo_array {};
 
         bool factor_changed {}, simple_shape {};
+        bool out_of_scissor_rect {};
+
         static float viewport[4];
         bool check_convex_shape();
     public:
@@ -155,6 +157,11 @@ namespace ekg::gpu {
          * Stop batching rectangle scissor.
          */
         void bind_off_scissor();
+
+        /*
+         * Check if the current shape rect is out of bound scissor.
+         */
+        bool is_out_of_scissor_rect();
     };
 }
 

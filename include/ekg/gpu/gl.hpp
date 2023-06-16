@@ -36,7 +36,6 @@ namespace ekg::gpu {
         void setm4(const std::string &str, float* matrix);
     };
 
-    void init_opengl_context();
     void invoke(ekg::gpu::program &program);
     void revoke();
 

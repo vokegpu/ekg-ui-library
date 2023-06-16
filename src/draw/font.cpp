@@ -18,22 +18,39 @@
 
 FT_Library ekg::draw::font_renderer::ft_library {};
 
-float ekg::draw::font_renderer::get_text_width(std::string_view text) {
+float ekg::draw::font_renderer::get_text_width(std::string_view text, int32_t &lines) {
     if (text.empty()) {
-        return 0;
+        return 0.0f;
     }
+
+    lines = 1;
 
     FT_Vector ft_vec {};
     this->ft_uint_previous = 0;
 
     float text_width {};
+    float largest_text_width {};
+
+    size_t text_size {text.size()};
     char32_t ui32char {};
     uint8_t ui8char {};
     std::string utf8string {};
 
-    for (size_t it {}; it < text.size(); it++) {
+    bool break_text {};
+    bool r_n_break_text {};
+
+    for (size_t it {}; it < text_size; it++) {
         ui8char = static_cast<uint8_t>(text.at(it));
         it += ekg::utf8checksequence(ui8char, ui32char, utf8string, text, it);
+
+        break_text = ui8char == '\n';
+        if (break_text || (r_n_break_text = (ui8char == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
+            it += static_cast<uint64_t>(r_n_break_text);
+            largest_text_width = ekg::min(largest_text_width, text_width);
+            text_width = 0.0f;
+            lines++;
+            continue;
+        }
 
         if (this->ft_bool_kerning && this->ft_uint_previous) {
             FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32char, 0, &ft_vec);
@@ -44,7 +61,52 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
         text_width += this->allocated_char_data[ui32char].wsize;
     }
 
-    return text_width;
+    largest_text_width = ekg::min(largest_text_width, text_width);
+    return largest_text_width;
+}
+
+float ekg::draw::font_renderer::get_text_width(std::string_view text) {
+    if (text.empty()) {
+        return 0.0f;
+    }
+
+    FT_Vector ft_vec {};
+    this->ft_uint_previous = 0;
+
+    float text_width {};
+    float largest_text_width {};
+    char32_t ui32char {};
+
+    size_t text_size {text.size()};
+    uint8_t ui8char {};
+    std::string utf8string {};
+
+    bool break_text {};
+    bool r_n_break_text {};
+
+    for (size_t it {}; it < text_size; it++) {
+        ui8char = static_cast<uint8_t>(text.at(it));
+        it += ekg::utf8checksequence(ui8char, ui32char, utf8string, text, it);
+
+        break_text = ui8char == '\n';
+        if (break_text || (r_n_break_text = (ui8char == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
+            it += static_cast<uint64_t>(r_n_break_text);
+            largest_text_width = ekg::min(largest_text_width, text_width);
+            text_width = 0.0f;
+            continue;
+        }
+
+        if (this->ft_bool_kerning && this->ft_uint_previous) {
+            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32char, 0, &ft_vec);
+            text_width += static_cast<float>(ft_vec.x >> 6);
+        }
+
+        this->ft_uint_previous = ui32char;
+        text_width += this->allocated_char_data[ui32char].wsize;
+    }
+
+    largest_text_width = ekg::min(largest_text_width, text_width);
+    return largest_text_width;
 }
 
 float ekg::draw::font_renderer::get_text_height() {
@@ -144,6 +206,7 @@ void ekg::draw::font_renderer::reload() {
 
         glTexSubImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(offset), 0, static_cast<GLsizei>(char_data.w), static_cast<GLsizei>(char_data.h), internal_format, GL_UNSIGNED_BYTE, this->ft_glyph_slot->bitmap.buffer);
         offset += char_data.w;
+
     }
 
     // GLES 3 does not support swizzle function, the format GL_ALPHA supply this issue.
@@ -174,6 +237,9 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     y = static_cast<float>(static_cast<int32_t>(y - this->offset_text_height));
 
     ekg::gpu::data &data {this->allocator->bind_current_data()};
+    if (this->allocator->is_out_of_scissor_rect()) {
+        return;
+    }
 
     data.shape_rect[0] = x;
     data.shape_rect[1] = y;
@@ -196,16 +262,17 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     char32_t ui32char {};
     uint8_t ui8char {};
     std::string utf8string {};
+    size_t text_size {text.size()};
 
     bool break_text {};
     bool r_n_break_text {};
 
-    for (size_t it {}; it < text.size(); it++) {
+    for (size_t it {}; it < text_size; it++) {
         ui8char = static_cast<uint8_t>(text.at(it));
         it += ekg::utf8checksequence(ui8char, ui32char, utf8string, text, it);
 
         break_text = ui8char == '\n';
-        if (break_text || (r_n_break_text = (ui8char == '\r' && it < text.size() && text.at(it + 1) == '\n'))) {
+        if (break_text || (r_n_break_text = (ui8char == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
             it += static_cast<uint64_t>(r_n_break_text);
             y += this->text_height;
             x = 0.0f;

@@ -126,7 +126,6 @@ std::string resultcalc(std::string_view text) {
         }
     }
 
-
     result = std::to_string(cpom);
     return result;
 }
@@ -184,7 +183,8 @@ int32_t main(int32_t, char**) {
     ekg::frame("sou gostosa", {20, 700}, {200, 200})->set_drag(ekg::dock::top)->set_resize(ekg::dock::bottom | ekg::dock::left | ekg::dock::right);
     ekg::button("oi oi oi");
     ekg::label("oioioioioio", ekg::dock::fill);
-    ekg::textbox("queeeeeeeeeeee", "queee  c é lindoo perfeito me beijaaaaaaa", ekg::dock::fill | ekg::dock::next)->set_scaled_height(12);
+    auto oi = ekg::textbox("queeeeeeeeeeee", "queee  c é lindoo perfeito me beijaaaaaaa", ekg::dock::fill | ekg::dock::next);
+    oi->set_scaled_height(12);
     ekg::scroll("lindooo popom");
 
     auto framedebug = ekg::frame("frame-debug", {0, 0}, {400, root_height});
@@ -356,9 +356,9 @@ int32_t main(int32_t, char**) {
         cpu_now_ticks = SDL_GetPerformanceCounter();
         ekg::display::dt = static_cast<float>(cpu_now_ticks - cpu_last_ticks) / static_cast<float>(SDL_GetPerformanceFrequency());
 
+        debuglabel->set_text("Debug FPS: " + std::to_string(display_fps) + " text: " + oi->get_text());
         if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
             display_fps = ticked_frames;
-            debuglabel->set_text("Debug FPS: " + std::to_string(ticked_frames));
             ticked_frames = 0;
         }
 
@@ -419,7 +419,7 @@ int32_t main(int32_t, char**) {
                     }
 
                     if (ekg::input::action("pompom")) {
-                        ekg::log() << "sou gostosa";
+                        ekg::log() << "VASCO GAMMA";
                     }
 
                     break;
@@ -448,7 +448,7 @@ int32_t main(int32_t, char**) {
 
         // Swap buffers.
         SDL_GL_SwapWindow(sdl_win);
-        // SDL_Delay(16);
+        //SDL_Delay(16);
     }
 
     ekg::quit();
