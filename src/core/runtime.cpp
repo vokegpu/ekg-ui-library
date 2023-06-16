@@ -125,10 +125,6 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         this->widget_id_focused = 0;
     }
 
-    ekg::ui::abstract_widget *focused_widget {};
-    bool hovered {};
-    bool found_absolute_widget {};
-
     if (this->widget_absolute_activy != nullptr && this->widget_absolute_activy->flag.absolute) {
         this->widget_absolute_activy->on_pre_event(sdl_event);
         this->widget_absolute_activy->on_event(sdl_event);
@@ -137,13 +133,16 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     }
 
     this->widget_absolute_activy = nullptr;
-    uint64_t it_begin_absolute {};
 
-    auto &all {this->widget_list_map["all"]};
+    bool hovered {};
+    bool found_absolute_widget {};
+
+    ekg::ui::abstract_widget *focused_widget {};
     ekg::ui::abstract_widget *widgets {};
-    uint64_t size {all.size()};
     int32_t prev_parent_master {};
 
+    auto &all {this->widget_list_map["all"]};
+    uint64_t size {all.size()};
     for (uint64_t it {}; it < size; it++) {
         widgets = all.at(it);
         if (widgets == nullptr || !widgets->data->is_alive()) {

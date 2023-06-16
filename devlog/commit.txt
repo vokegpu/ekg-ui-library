@@ -33,3 +33,7 @@
 -- Added real-time textbox text changing.
 -- Scroll priority between parents and children.
 -- Performance fixes (reduced draw calls).
+
+0.0.1.0.1.5 16/06/23
+
+-- Fixed issue with high-frequency widgets update not stopping.
