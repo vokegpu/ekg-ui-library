@@ -452,7 +452,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     bool motion {ekg::input::motion()};
     auto &rect {this->get_abs_rect()};
 
-    this->flag.absolute = this->embedded_scroll.is_dragging_bar() || (this->flag.hovered && this->embedded_scroll.is_vertical_enabled);
+    this->flag.absolute = this->embedded_scroll.is_dragging_bar();
     this->embedded_scroll.flag.hovered = this->flag.hovered;
     this->embedded_scroll.flag.activy = this->flag.hovered;
     this->embedded_scroll.on_event(sdl_event);
@@ -466,7 +466,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     }
 
     this->flag.highlight = this->flag.hovered;
-    if ((this->flag.focused || this->flag.hovered || this->flag.absolute) && !this->is_high_frequency) {
+    if ((this->flag.focused || this->flag.hovered) && !this->is_high_frequency) {
         ekg::update_high_frequency(this);
     }
 
@@ -532,7 +532,7 @@ void ekg::ui::textbox_widget::on_update() {
     }
 
     this->embedded_scroll.on_update();
-    this->is_high_frequency = this->embedded_scroll.check_activy_state(this->flag.focused || this->flag.hovered || this->flag.absolute);
+    this->is_high_frequency = this->embedded_scroll.check_activy_state(this->flag.focused || this->flag.hovered);
 }
 
 void ekg::ui::textbox_widget::on_draw_refresh() {
