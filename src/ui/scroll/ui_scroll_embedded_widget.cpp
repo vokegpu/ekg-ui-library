@@ -24,14 +24,13 @@ void ekg::ui::scroll_embedded_widget::check_axis_states() {
 
 void ekg::ui::scroll_embedded_widget::reset_scroll() {
     this->scroll.x = this->scroll.z;
-    this->scroll.y = this->scroll.y;
+    this->scroll.y = this->scroll.w;
 }
 
 bool ekg::ui::scroll_embedded_widget::check_activy_state(bool state) {
     state = state || (static_cast<int32_t>(round(this->scroll.x)) != static_cast<int32_t>(round(this->scroll.z))) || (static_cast<int32_t>(round(this->scroll.y)) != static_cast<int32_t>(round(this->scroll.w)));
     if (!state) {
-        this->scroll.x = this->scroll.z;
-        this->scroll.y = this->scroll.w;
+        this->reset_scroll();
     }
 
     return state;
@@ -212,12 +211,13 @@ void ekg::ui::scroll_embedded_widget::clamp_scroll() {
 
     if (this->rect_child.w < this->rect_mother->w) {
         this->scroll.x = 0.0f;
+        this->scroll.z = 0.0f;
     } else if (this->scroll.x < horizontal_scroll_limit.y) {
         this->scroll.x = horizontal_scroll_limit.y;
-        this->scroll.z = this->scroll.x;
+        this->scroll.z = horizontal_scroll_limit.y;
     } else if (this->scroll.x > horizontal_scroll_limit.x) {
         this->scroll.x = horizontal_scroll_limit.x;
-        this->scroll.z = this->scroll.x;
+        this->scroll.z = horizontal_scroll_limit.x;
     }
 }
 

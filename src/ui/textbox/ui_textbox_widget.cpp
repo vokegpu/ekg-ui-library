@@ -431,12 +431,12 @@ void ekg::ui::textbox_widget::on_reload() {
             this->embedded_scroll.scroll.w = -vertical_scroll_limit;
         }
 
-
         if (!this->is_high_frequency) {
             ekg::update_high_frequency(this);
         }
     }
 
+    this->embedded_scroll.rect_child = this->rect_text;
     this->embedded_scroll.rect_mother = &rect;
     this->embedded_scroll.acceleration.y = this->text_height + (this->text_offset * 2.0f);
     this->embedded_scroll.on_reload();
@@ -444,7 +444,6 @@ void ekg::ui::textbox_widget::on_reload() {
 
 void ekg::ui::textbox_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
-    this->flag.absolute = this->embedded_scroll.is_dragging_bar() || (this->flag.hovered && this->embedded_scroll.is_vertical_enabled);
 }
 
 void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
@@ -453,6 +452,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     bool motion {ekg::input::motion()};
     auto &rect {this->get_abs_rect()};
 
+    this->flag.absolute = this->embedded_scroll.is_dragging_bar() || (this->flag.hovered && this->embedded_scroll.is_vertical_enabled);
     this->embedded_scroll.flag.hovered = this->flag.hovered;
     this->embedded_scroll.flag.activy = this->flag.hovered;
     this->embedded_scroll.on_event(sdl_event);

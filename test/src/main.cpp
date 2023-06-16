@@ -191,6 +191,7 @@ int32_t main(int32_t, char**) {
     framedebug->set_resize(ekg::dock::right | ekg::dock::bottom);
 
     auto debuglabel = ekg::label("Debug:", ekg::dock::next);
+    debuglabel->set_text_align(ekg::dock::left | ekg::dock::top);
     auto textboxdebug = ekg::textbox("textbox-debug", "", ekg::dock::next);
     textboxdebug->set_scaled_height(6);
     textboxdebug->set_enabled(false);

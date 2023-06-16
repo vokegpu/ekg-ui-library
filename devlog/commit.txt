@@ -36,4 +36,5 @@
 
 0.0.1.0.1.5 16/06/23
 
--- Fixed issue with high-frequency widgets update not stopping.
+-- Fixed issue with high-frequency scrolling widgets update not stopping.
+-- Fixed scrolling clamp desync when a text is updated by UI data.
