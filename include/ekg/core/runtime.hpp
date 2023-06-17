@@ -33,6 +33,7 @@ namespace ekg {
         static ekg::stack back;
         static ekg::stack front;
         static std::vector<ekg::ui::abstract_widget*> buffer;
+        static std::vector<uint64_t> tooktimeanalyzingtelemtry;
 
         static void refresh();
     };

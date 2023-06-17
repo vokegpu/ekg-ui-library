@@ -38,3 +38,12 @@
 
 -- Fixed issue with high-frequency scrolling widgets update not stopping.
 -- Fixed scrolling clamp desync when a text is updated by UI data.
+
+-- Processing stack swap timing runtime with 14018 widgets! --
+-- Resize: (telemetry size, sum) (average timing): 36, 98494    2735
+-- No resize: (telemetry size, sum) (average timing): 36, 85866    2385
+-- No resze <--- better
+
+
+
+

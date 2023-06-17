@@ -39,7 +39,7 @@ void ekg::service::handler::task(std::size_t task_index) {
 
 void ekg::service::handler::on_update() {
     while (!this->event_queue.empty()) {
-        ekg::cpu::event* &ekg_event {this->event_queue.front()};
+        ekg::cpu::event *&ekg_event {this->event_queue.front()};
         if (ekg_event != nullptr) {
             ekg_event->fun(ekg_event->callback);
             this->events_going_on[ekg_event->uuid] = false;
@@ -47,7 +47,7 @@ void ekg::service::handler::on_update() {
 
         if (ekg_event != nullptr && !ekg::bitwise::contains(ekg_event->flags, ekg::event::alloc) && !ekg::bitwise::contains(ekg_event->flags, ekg::event::shared)) {
             delete ekg_event;
-            ekg_event = {};
+            ekg_event = nullptr;
         }
 
         this->event_queue.pop();

@@ -452,6 +452,15 @@ int32_t main(int32_t, char**) {
         //SDL_Delay(16);
     }
 
+    if (!ekg::swap::tooktimeanalyzingtelemtry.empty()) {
+        uint64_t sum {};
+        for (uint64_t &took_time : ekg::swap::tooktimeanalyzingtelemtry) {
+            sum += took_time;
+        }
+
+        ekg::log() << "(telemetry size, sum) (average timing): " << ekg::swap::tooktimeanalyzingtelemtry.size() << ", " << sum << '\t' << (sum / ekg::swap::tooktimeanalyzingtelemtry.size());
+    }
+
     ekg::quit();
 
     return 0;

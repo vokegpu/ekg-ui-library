@@ -26,10 +26,13 @@
 #include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
 
+#include <chrono>
+
 ekg::stack ekg::swap::collect {};
 ekg::stack ekg::swap::back {};
 ekg::stack ekg::swap::front {};
 std::vector<ekg::ui::abstract_widget*> ekg::swap::buffer {};
+std::vector<uint64_t> ekg::swap::tooktimeanalyzingtelemtry {};
 
 void ekg::swap::refresh() {
     ekg::swap::collect.clear();
@@ -253,10 +256,6 @@ ekg::service::handler &ekg::runtime::get_service_handler() {
 void ekg::runtime::prepare_tasks() {
     ekg::log() << "Preparing internal EKG core";
 
-    /*
-     * The priority of tasks is organised by compilation code, means that you need
-     * to dispatch tasks in n sequence. This is only a feature for allocated tasks.
-     */
     this->handler_service.dispatch(new ekg::cpu::event {"refresh", this, [](void *p_data) {
         auto *runtime {static_cast<ekg::runtime*>(p_data)};
         auto &all = runtime->widget_list_map["all"];
@@ -313,26 +312,8 @@ void ekg::runtime::prepare_tasks() {
         runtime->swap_widget_id_focused = 0;
 
         all.clear();
-        all.resize(ekg::swap::back.ordered_list.size() + ekg::swap::front.ordered_list.size());
-
-        uint64_t it {};
-        for (ekg::ui::abstract_widget *&widget : ekg::swap::back.ordered_list) {
-            if (widget == nullptr) {
-                continue;
-            }
-
-            all.at(it) = widget;
-            it++;
-        }
-
-        for (ekg::ui::abstract_widget *&widget : ekg::swap::front.ordered_list) {
-            if (widget == nullptr) {
-                continue;
-            }
-
-            all.at(it) = widget;
-            it++;
-        }
+        all.insert(all.end(), ekg::swap::back.ordered_list.begin(), ekg::swap::back.ordered_list.end());
+        all.insert(all.end(), ekg::swap::front.ordered_list.begin(), ekg::swap::front.ordered_list.end());
 
         ekg::swap::refresh();
     }, ekg::event::alloc});
