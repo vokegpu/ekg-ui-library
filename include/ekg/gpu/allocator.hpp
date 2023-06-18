@@ -25,6 +25,8 @@
 namespace ekg::gpu {
     class allocator {
     protected:
+        static float viewport[4];
+    protected:
         std::vector<ekg::gpu::data> data_list {};
         std::unordered_map<int32_t, ekg::gpu::scissor> scissor_map {};
 
@@ -32,27 +34,34 @@ namespace ekg::gpu {
         std::vector<float> cached_uvs {};
         std::vector<uint32_t> cached_textures {};
 
-        uint32_t data_instance_index {}, previous_data_list_size {};
-        int32_t simple_shape_index {-1}, previous_factor {};
+        uint64_t data_instance_index {};
+        uint64_t previous_cached_vertices_size {};
+
+        int32_t simple_shape_index {-1};
+        int32_t previous_factor {};
+        int32_t scissor_instance_id {-1};
 
         uint64_t uvs_size {};
         uint64_t vertexes_size {};
 
-        int32_t begin_stride_count {},
-                end_stride_count {};
-        int32_t uniform_active_texture {}, uniform_enable_scissor {},
-                uniform_color {}, uniform_rect {},
-                uniform_line_thickness {}, uniform_scissor {};
+        int32_t begin_stride_count {};
+        int32_t end_stride_count {};
 
-        int32_t scissor_instance_id {-1}, animation_instance_id {};
-        float current_color_pass[4] {};
+        int32_t uniform_active_texture {};
+        int32_t uniform_enable_scissor {};
+        int32_t uniform_color {};
+        int32_t uniform_rect {};
+        int32_t uniform_line_thickness {};
+        int32_t uniform_scissor {};
 
-        uint32_t vbo_vertices {}, vbo_uvs {}, vbo_array {};
+        uint32_t vbo_vertices {};
+        uint32_t vbo_uvs {};
+        uint32_t vbo_array {};
 
-        bool factor_changed {}, simple_shape {};
+        bool factor_changed {};
+        bool simple_shape {};
         bool out_of_scissor_rect {};
-
-        static float viewport[4];
+    protected:
         bool check_convex_shape();
     public:
         static ekg::gpu::program program;

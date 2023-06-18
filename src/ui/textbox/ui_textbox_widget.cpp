@@ -466,7 +466,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     }
 
     this->flag.highlight = this->flag.hovered;
-    if ((this->flag.focused || this->flag.hovered) && !this->is_high_frequency) {
+    if ((this->flag.focused || this->flag.hovered || this->flag.absolute) && !this->is_high_frequency) {
         ekg::update_high_frequency(this);
     }
 

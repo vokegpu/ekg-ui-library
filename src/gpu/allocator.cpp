@@ -97,7 +97,7 @@ void ekg::gpu::allocator::dispatch() {
 }
 
 void ekg::gpu::allocator::revoke() {
-    bool should_re_alloc_buffers {this->previous_data_list_size != this->data_instance_index};
+    bool should_re_alloc_buffers {this->previous_cached_vertices_size != this->cached_vertices.size()};
 
     if (should_re_alloc_buffers) {
         this->data_list.resize(this->data_instance_index);
@@ -105,7 +105,7 @@ void ekg::gpu::allocator::revoke() {
 
     should_re_alloc_buffers = should_re_alloc_buffers || this->factor_changed;
 
-    this->previous_data_list_size = this->data_instance_index;
+    this->previous_cached_vertices_size = this->cached_vertices.size();
     this->factor_changed = false;
 
     if (should_re_alloc_buffers) {

@@ -96,7 +96,6 @@ std::string resultcalc(std::string_view text) {
         default:
             kissme = it == size - 1;
             if (kissme) result += textsubstr.at(it);
-
             break;
         }
 

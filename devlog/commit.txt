@@ -44,6 +44,4 @@
 -- No resize: (telemetry size, sum) (average timing): 36, 85866    2385
 -- No resze <--- better
 
-
-
-
+-- Fixed OpenGL allocator swapping buffer performance.
