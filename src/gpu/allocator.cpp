@@ -103,15 +103,11 @@ void ekg::gpu::allocator::revoke() {
         this->data_list.resize(this->data_instance_index);
     }
 
-    should_re_alloc_buffers = should_re_alloc_buffers || this->factor_changed;
-
     this->previous_cached_vertices_size = this->cached_vertices.size();
-    this->factor_changed = false;
-
-    if (should_re_alloc_buffers) {
+    if (should_re_alloc_buffers || this->factor_changed) {
         glBindVertexArray(this->vbo_array);
-        /* set shader binding location 0 and dispatch mesh of vertices collected by allocator */
 
+        /* set shader binding location 0 and dispatch mesh of vertices collected by allocator */
         glBindBuffer(GL_ARRAY_BUFFER, this->vbo_vertices);
         glEnableVertexAttribArray(0);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
@@ -122,12 +118,14 @@ void ekg::gpu::allocator::revoke() {
         glEnableVertexAttribArray(1);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_uvs.size(), &this->cached_uvs[0], GL_STATIC_DRAW);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+
         glBindVertexArray(0);
     }
 
-    this->cached_textures.clear();
-    this->cached_vertices.clear();
-    this->cached_uvs.clear();
+    this->factor_changed = false;
+    this->cached_textures = {};
+    this->cached_vertices = {};
+    this->cached_uvs = {};
 }
 
 void ekg::gpu::allocator::on_update() {
