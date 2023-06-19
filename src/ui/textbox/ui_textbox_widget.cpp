@@ -637,6 +637,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             text_size = ekg::utf8length(text);
         }
 
+        data.factor += static_cast<int32_t>(x + 32);
         y_scroll = this->embedded_scroll.scroll.y + y;
         if (y_scroll > rect.h) {
             break;
@@ -690,7 +691,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
                 allocator.coord2f(coordinates.x + coordinates.w, coordinates.y + coordinates.h);
                 allocator.coord2f(coordinates.x + coordinates.w, coordinates.y);
                 allocator.coord2f(coordinates.x, coordinates.y);
-                data.factor += static_cast<int32_t>(x + y + ui32char);
+                data.factor += static_cast<int32_t>(x + ui32char);
             }
 
             f_renderer.ft_uint_previous = ui32char;
@@ -704,7 +705,10 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             }
         }
 
-        if (y_scroll < 0.0f) total_it += text_size;
+        if (y_scroll < 0.0f) {
+            total_it += text_size;
+        }
+
         y += this->text_height;
     }
 

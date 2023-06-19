@@ -274,6 +274,7 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
         break_text = ui8char == '\n';
         if (break_text || (r_n_break_text = (ui8char == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
             it += static_cast<uint64_t>(r_n_break_text);
+            data.factor += static_cast<int32_t>(x + ui32char);
             y += this->text_height;
             x = 0.0f;
             continue;

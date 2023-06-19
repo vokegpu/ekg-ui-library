@@ -3,4 +3,6 @@
 -- Allocator render hardware interface (RHI) + vulkan & opengl rendering.
 -- Allocator std140 for replace uniforms call.
 -- Remove wrapper calls to update widgets (reload, synclayout, etc).
--- Textbox UI with delay to process stack reorder event.
+
+# todos fixed
+-- Textbox UI with delay to process stack reorder event - 0.0.1.0.1.5 16/06/23

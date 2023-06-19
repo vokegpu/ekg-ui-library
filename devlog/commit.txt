@@ -45,3 +45,4 @@
 -- No resze <--- better
 
 -- Fixed OpenGL allocator swapping buffer performance.
+-- Fixed issue with font rendering factor & text box UI delay (textbox UI with delay to process stack reorder event).

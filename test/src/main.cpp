@@ -342,7 +342,8 @@ int32_t main(int32_t, char**) {
     // ekg::button("Button 7", ekg::dock::right);
     // ekg::button("Button 8", ekg::dock::fill | ekg::dock::bottom);
 
-    uint64_t cpu_now_ticks {}, cpu_last_ticks {};
+    uint64_t cpu_now_ticks {};
+    uint64_t cpu_last_ticks {};
     ekg::cpu::uievent event {};
 
     ekg::input::bind("pompom", "c-up");
@@ -356,7 +357,7 @@ int32_t main(int32_t, char**) {
         cpu_now_ticks = SDL_GetPerformanceCounter();
         ekg::display::dt = static_cast<float>(cpu_now_ticks - cpu_last_ticks) / static_cast<float>(SDL_GetPerformanceFrequency());
 
-        debuglabel->set_text("Debug FPS: " + std::to_string(display_fps) + " text: " + oi->get_text());
+        debuglabel->set_text("Debug FPS: " + std::to_string(2) + " text: " + oi->get_text());
         if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
             display_fps = ticked_frames;
             ticked_frames = 0;
