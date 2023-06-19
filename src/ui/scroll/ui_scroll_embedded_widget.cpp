@@ -66,6 +66,11 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
     float service_layout_min_offset {ekg::core->get_service_layout().get_min_offset()};
 
     this->child_id_list = mother_widget->data->get_child_id_list();
+    if (this->child_id_list.empty()) {
+        this->calculate_rect_bar_sizes();
+        this->check_axis_states();
+        return;
+    }
 
     switch (mother_widget->data->get_type()) {
         case ekg::type::frame: {

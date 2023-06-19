@@ -158,7 +158,7 @@ int32_t main(int32_t, char**) {
     }
 
     SDL_GL_SetSwapInterval(0); // v-sync on
-    ekg::init(sdl_win, "JetBrainsMono-Bold.ttf");
+    ekg::init(sdl_win, "whitneybook.otf");
     ekg::log() << "OpenGL context created";
 
     ekg::autoscale = true;
@@ -179,12 +179,26 @@ int32_t main(int32_t, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    ekg::frame("sou gostosa", {20, 700}, {200, 200})->set_drag(ekg::dock::top)->set_resize(ekg::dock::bottom | ekg::dock::left | ekg::dock::right);
+    auto f1 = ekg::frame("sou gostosa", {20, 700}, {200, 200})->set_drag(ekg::dock::top)->set_resize(ekg::dock::bottom | ekg::dock::left | ekg::dock::right);
     ekg::button("oi oi oi");
     ekg::label("oioioioioio", ekg::dock::fill);
-    auto oi = ekg::textbox("queeeeeeeeeeee", "queee  c é lindoo perfeito me beijaaaaaaa", ekg::dock::fill | ekg::dock::next);
-    oi->set_scaled_height(12);
-    ekg::scroll("lindooo popom");
+    auto ff = ekg::frame("frame-debug", {200, 200}, ekg::dock::fill | ekg::dock::next);
+    ff->set_resize(ekg::dock::right | ekg::dock::bottom);
+    ff->set_height(300.0f);
+
+    auto ff3 = ekg::textbox("frame-debug", "oi", ekg::dock::fill | ekg::dock::next);
+    ff3->set_scaled_height(4);
+    ekg::button("button", ekg::dock::fill | ekg::dock::next);
+    ekg::button("button", ekg::dock::fill | ekg::dock::next);
+    ekg::button("button", ekg::dock::fill | ekg::dock::next);
+    ekg::button("button", ekg::dock::fill | ekg::dock::next);
+    ekg::button("button", ekg::dock::fill | ekg::dock::next);
+    ekg::button("button", ekg::dock::fill | ekg::dock::next);
+    ekg::button("button 6", ekg::dock::fill | ekg::dock::next);
+    ekg::button("button 7", ekg::dock::fill | ekg::dock::next);
+    ff->add_child(ekg::scroll("hello-sou-gostosa")->get_id());
+    f1->add_child(ff->get_id());
+    f1->add_child(ekg::scroll("hello-sou-gostosa")->get_id());
 
     auto framedebug = ekg::frame("frame-debug", {0, 0}, {400, root_height});
     framedebug->set_resize(ekg::dock::right | ekg::dock::bottom);
@@ -357,7 +371,7 @@ int32_t main(int32_t, char**) {
         cpu_now_ticks = SDL_GetPerformanceCounter();
         ekg::display::dt = static_cast<float>(cpu_now_ticks - cpu_last_ticks) / static_cast<float>(SDL_GetPerformanceFrequency());
 
-        debuglabel->set_text("Debug FPS: " + std::to_string(2) + " text: " + oi->get_text());
+        debuglabel->set_text("Debug FPS: " + std::to_string(display_fps) + " text: ");
         if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
             display_fps = ticked_frames;
             ticked_frames = 0;

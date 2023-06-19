@@ -228,14 +228,14 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *wid
      * the offset position when spliting the fill width, but the
      * last extent space is not necessary, so we need to subtract.
      */
-    for (it = it; it < child_id_list.size(); it++) {
+    for (it = it; it < size; it++) {
         ids = child_id_list.at(it);
         if ((widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr) {
             continue;
         }
 
         flags = widgets->data->get_place_dock();
-        is_last_index = it == size - 1;
+        is_last_index = it >= size - 1;
 
         if ((ekg::bitwise::contains(flags, flag_stop) && it != begin_and_count) || is_last_index) {
             extent -= this->min_offset;
@@ -401,6 +401,11 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
             count = it;
             dimensional_extent = this->get_dimensional_extent(widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
+
+            if (widgets->data->get_tag() == "button 7") {
+                std::cout << dimensional_extent << '\t' << group_rect.w << '\t' << ((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count) << std::endl;
+            }
+
             dimensional_extent = ekg::min(((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count), widgets->min_size.x);
 
             top_rect.w += dimensional_extent + this->min_offset;
