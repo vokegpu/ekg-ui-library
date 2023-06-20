@@ -230,7 +230,7 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *wid
      */
     for (it = it; it < size; it++) {
         ids = child_id_list.at(it);
-        if ((widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr) {
+        if ((widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr || widgets->data->get_type() == ekg::type::scroll) {
             continue;
         }
 
@@ -401,11 +401,6 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
             count = it;
             dimensional_extent = this->get_dimensional_extent(widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
-
-            if (widgets->data->get_tag() == "button 7") {
-                std::cout << dimensional_extent << '\t' << group_rect.w << '\t' << ((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count) << std::endl;
-            }
-
             dimensional_extent = ekg::min(((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count), widgets->min_size.x);
 
             top_rect.w += dimensional_extent + this->min_offset;
@@ -474,7 +469,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
     if (has_scroll_embedded && !is_vertical_enabled) {
         switch (type) {
             case ekg::type::frame: {
-                auto frame{(ekg::ui::frame_widget *) widget_parent};
+                auto frame {(ekg::ui::frame_widget *) widget_parent};
                 has_scroll_embedded = frame->p_scroll_embedded != nullptr;
 
                 if (has_scroll_embedded && !is_vertical_enabled &&
