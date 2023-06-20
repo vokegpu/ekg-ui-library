@@ -51,3 +51,4 @@
 0.0.1.0.1.6 20/06/23
 
 -- Fixed performance using indexing rendering for simple shapes.
+-- Fixed layout processing extent with next | flag interacting with scrolling widget (previous 0.0.1.0.1.5 fix made a new bug).

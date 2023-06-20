@@ -230,12 +230,12 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *wid
      */
     for (it = it; it < size; it++) {
         ids = child_id_list.at(it);
-        if ((widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr || widgets->data->get_type() == ekg::type::scroll) {
+        if ((widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr) {
             continue;
         }
 
         flags = widgets->data->get_place_dock();
-        is_last_index = it >= size - 1;
+        is_last_index = it >= size - 1 || widgets->data->get_type() == ekg::type::scroll;
 
         if ((ekg::bitwise::contains(flags, flag_stop) && it != begin_and_count) || is_last_index) {
             extent -= this->min_offset;
