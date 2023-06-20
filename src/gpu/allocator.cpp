@@ -24,9 +24,33 @@ void ekg::gpu::allocator::invoke() {
     /* reset all "flags", everything is used tick by tick to compare factories */
 
     this->data_instance_index = 0;
-    this->begin_stride_count = 0;
+    this->begin_stride_count = 4;
     this->end_stride_count = 0;
-    this->simple_shape_index = -1;
+    this->simple_shape_index = 0;
+
+    this->cached_vertices.emplace_back(0.0f);
+    this->cached_vertices.emplace_back(0.0f);
+
+    this->cached_vertices.emplace_back(0.0f);
+    this->cached_vertices.emplace_back(1.0f);
+
+    this->cached_vertices.emplace_back(1.0f);
+    this->cached_vertices.emplace_back(0.0f);
+
+    this->cached_vertices.emplace_back(1.0f);
+    this->cached_vertices.emplace_back(1.0f);
+
+    this->cached_uvs.emplace_back(0.0f);
+    this->cached_uvs.emplace_back(0.0f);
+
+    this->cached_uvs.emplace_back(0.0f);
+    this->cached_uvs.emplace_back(1.0f);
+
+    this->cached_uvs.emplace_back(1.0f);
+    this->cached_uvs.emplace_back(0.0f);
+
+    this->cached_uvs.emplace_back(1.0f);
+    this->cached_uvs.emplace_back(1.0f);
 
     /* unique shape data will break if not clear the first index. */
 
@@ -73,7 +97,7 @@ void ekg::gpu::allocator::dispatch() {
 
     if (this->simple_shape) {
         data.begin_stride = this->simple_shape_index;
-        data.end_stride = 6; // simple shape contains 6 vertices.
+        data.end_stride = 4; // simple shape contains 3 vertices.
         this->end_stride_count = 0;
     } else {
         data.begin_stride = this->begin_stride_count;
@@ -196,7 +220,17 @@ void ekg::gpu::allocator::draw() {
             }
         }
 
-        glDrawArrays(GL_TRIANGLES, data.begin_stride, data.end_stride);
+        switch (data.begin_stride) {
+            case 0: {
+                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void*)0);
+                break;
+            }
+
+            default: {
+                glDrawArrays(GL_TRIANGLES, data.begin_stride, data.end_stride);
+                break;
+            }
+        }
     }
 
     if (texture_enabled) {
@@ -215,6 +249,18 @@ void ekg::gpu::allocator::init() {
     glGenVertexArrays(1, &this->vbo_array);
     glGenBuffers(1, &this->vbo_vertices);
     glGenBuffers(1, &this->vbo_uvs);
+    glGenBuffers(1, &this->ebo_simple_shape);
+
+    /* Generate base shape rendering. */
+    uint8_t simple_shape_mesh_indices[6] {
+        0, 1, 3,
+        3, 2, 0
+    };
+
+    glBindVertexArray(this->vbo_array);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebo_simple_shape);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(simple_shape_mesh_indices), simple_shape_mesh_indices, GL_STATIC_DRAW);
+    glBindVertexArray(0);
 
     /* reduce glGetLocation calls when rendering the batch */
     auto &shading_program_id {ekg::gpu::allocator::program.id};

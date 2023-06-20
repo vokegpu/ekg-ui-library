@@ -47,3 +47,7 @@
 -- Fixed OpenGL allocator swapping buffer performance.
 -- Fixed issue with font rendering factor & text box UI delay (textbox UI with delay to process stack reorder event).
 -- Fixed layout extent checks verifying scroll widget.
+
+0.0.1.0.1.6 20/06/23
+
+-- Fixed performance using indexing rendering for simple shapes.

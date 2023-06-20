@@ -57,6 +57,7 @@ namespace ekg::gpu {
         uint32_t vbo_vertices {};
         uint32_t vbo_uvs {};
         uint32_t vbo_array {};
+        uint32_t ebo_simple_shape {};
 
         bool factor_changed {};
         bool simple_shape {};
