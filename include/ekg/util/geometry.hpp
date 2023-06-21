@@ -16,6 +16,7 @@
 #define EKG_UTIL_GEOMETRY_H
 
 #include <iostream>
+#include <cstdint>
 #include <cfloat>
 #include <cmath>
 

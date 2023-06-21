@@ -7,7 +7,7 @@
 # 3- For commercial use, do not sell without give credit to vokegpu ekg.
 # 4- For ekg users and users-programmer, we do not care, free to use in anything (utility, hacking, cheat, game, software).
 # 5- Malware, rat and others virus. We do not care.
-# 6- Do not modify this license under any instance.
+# 6- Do not modify this license under any instance.bb
 #
 # @VokeGpu 2022 all rights reserved.
 #

@@ -16,6 +16,7 @@
 #define EKG_GPU_DATA_H
 
 #include <iostream>
+#include <cstdint>
 
 namespace ekg {
     extern int32_t concave;

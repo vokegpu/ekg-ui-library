@@ -18,6 +18,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <cstdint>
 
 #if defined(__ANDROID__)
 #include <android/log.h>

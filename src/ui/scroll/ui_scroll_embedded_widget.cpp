@@ -128,7 +128,7 @@ void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
         ekg::vec4 &interact {ekg::interact()};
         bool visible {ekg::draw::is_visible(this->widget_id, interact)};
 
-        this->flag.activy = visible && this->is_vertical_enabled && ekg::input::action("scrollbar-scroll");
+        this->flag.activy = visible && (this->is_vertical_enabled || this->is_horizontal_enabled) && ekg::input::action("scrollbar-scroll");
         this->flag.hovered = this->flag.activy || (visible && (ekg::rect_collide_vec(scaled_vertical_bar, interact) || ekg::rect_collide_vec(scaled_horizontal_bar, interact)));
     }
 }
@@ -142,6 +142,14 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
         this->scroll.w = ekg::clamp(this->scroll.y + (interact.w * this->acceleration.y), this->rect_mother->h - this->rect_child.h, 0.0f);
 #else
         this->scroll.w = ekg::clamp(this->scroll.y + (interact.w * this->acceleration.y), this->rect_mother->h - this->rect_child.h, 0.0f);
+#endif
+    }
+
+    if (this->flag.hovered && ekg::input::action("scrollbar-scroll") && this->is_horizontal_enabled) {
+#if defined(ANDROID)
+        this->scroll.w = ekg::clamp(this->scroll.x + (interact.z * this->acceleration.y), this->rect_mother->h - this->rect_child.h, 0.0f);
+#else
+        this->scroll.z = ekg::clamp(this->scroll.x + (interact.z * this->acceleration.y), this->rect_mother->w - this->rect_child.w, 0.0f);
 #endif
     }
 
