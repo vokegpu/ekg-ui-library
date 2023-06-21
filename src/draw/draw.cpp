@@ -36,20 +36,6 @@ void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color,
     data.shape_rect[2] = w;
     data.shape_rect[3] = h;
 
-    allocator.vertex2f(0.0f, 0.0f);
-    allocator.vertex2f(0.0f, 1.0f);
-    allocator.vertex2f(1.0f, 1.0f);
-    allocator.vertex2f(1.0f, 1.0f);
-    allocator.vertex2f(1.0f, 0.0f);
-    allocator.vertex2f(0.0f, 0.0f);
-
-    allocator.coord2f(0.0f, 0.0f);
-    allocator.coord2f(0.0f, 0.0f);
-    allocator.coord2f(1.0f, 1.0f);
-    allocator.coord2f(1.0f, 1.0f);
-    allocator.coord2f(1.0f, 1.0f);
-    allocator.coord2f(0.0f, 0.0f);
-
     data.material_color[0] = color.x;
     data.material_color[1] = color.y;
     data.material_color[2] = color.z;

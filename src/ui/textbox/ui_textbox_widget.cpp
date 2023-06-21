@@ -682,19 +682,12 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
                 coordinates.w = vertices.w / f_renderer.full_width;
                 coordinates.h = vertices.h / f_renderer.full_height;
 
-                allocator.vertex2f(vertices.x, vertices.y);
-                allocator.vertex2f(vertices.x, vertices.y + vertices.h);
-                allocator.vertex2f(vertices.x + vertices.w, vertices.y + vertices.h);
-                allocator.vertex2f(vertices.x + vertices.w, vertices.y + vertices.h);
-                allocator.vertex2f(vertices.x + vertices.w, vertices.y);
-                allocator.vertex2f(vertices.x, vertices.y);
-
-                allocator.coord2f(coordinates.x, coordinates.y);
-                allocator.coord2f(coordinates.x, coordinates.y + coordinates.h);
-                allocator.coord2f(coordinates.x + coordinates.w, coordinates.y + coordinates.h);
-                allocator.coord2f(coordinates.x + coordinates.w, coordinates.y + coordinates.h);
-                allocator.coord2f(coordinates.x + coordinates.w, coordinates.y);
-                allocator.coord2f(coordinates.x, coordinates.y);
+                allocator.push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
+                allocator.push_back_geometry(vertices.x, vertices.y + vertices.h, coordinates.x, coordinates.y + coordinates.h);
+                allocator.push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h, coordinates.x + coordinates.w, coordinates.y + coordinates.h);
+                allocator.push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h, coordinates.x + coordinates.w, coordinates.y + coordinates.h);
+                allocator.push_back_geometry(vertices.x + vertices.w, vertices.y, coordinates.x + coordinates.w, coordinates.y);
+                allocator.push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
                 data.factor += static_cast<int32_t>(x + ui32char);
             }
 

@@ -30,12 +30,11 @@ namespace ekg::gpu {
         std::vector<ekg::gpu::data> data_list {};
         std::unordered_map<int32_t, ekg::gpu::scissor> scissor_map {};
 
-        std::vector<float> cached_vertices {};
-        std::vector<float> cached_uvs {};
+        std::vector<float> cached_geometry_resources {};
         std::vector<uint32_t> cached_textures {};
 
         uint64_t data_instance_index {};
-        uint64_t previous_cached_vertices_size {};
+        uint64_t previous_cached_geometry_resources_size {};
 
         int32_t simple_shape_index {-1};
         int32_t previous_factor {};
@@ -54,16 +53,13 @@ namespace ekg::gpu {
         int32_t uniform_line_thickness {};
         int32_t uniform_scissor {};
 
-        uint32_t vbo_vertices {};
-        uint32_t vbo_uvs {};
+        uint32_t geometry_buffer {};
         uint32_t vbo_array {};
         uint32_t ebo_simple_shape {};
 
         bool factor_changed {};
         bool simple_shape {};
         bool out_of_scissor_rect {};
-    protected:
-        bool check_convex_shape();
     public:
         static ekg::gpu::program program;
         static float mat4x4orthographic[16];
@@ -119,14 +115,10 @@ namespace ekg::gpu {
         void bind_texture(uint32_t&);
 
         /*
-         * Alloc vertices positions for gpu data.
+         * Insert geometry positions here:
+         * vertex x, y and texture coords u, and v.
          */
-        void vertex2f(float, float);
-
-        /*
-         * Alloc texture UV coordinates for gpu data.
-         */
-        void coord2f(float, float);
+        void push_back_geometry(float, float, float, float);
 
         /* 
          * Update animations.

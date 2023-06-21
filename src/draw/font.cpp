@@ -296,19 +296,12 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
         coordinates.w = vertices.w / this->full_width;
         coordinates.h = vertices.h / this->full_height;
 
-        this->allocator->vertex2f(vertices.x, vertices.y);
-        this->allocator->vertex2f(vertices.x, vertices.y + vertices.h);
-        this->allocator->vertex2f(vertices.x + vertices.w, vertices.y + vertices.h);
-        this->allocator->vertex2f(vertices.x + vertices.w, vertices.y + vertices.h);
-        this->allocator->vertex2f(vertices.x + vertices.w, vertices.y);
-        this->allocator->vertex2f(vertices.x, vertices.y);
-
-        this->allocator->coord2f(coordinates.x, coordinates.y);
-        this->allocator->coord2f(coordinates.x, coordinates.y + coordinates.h);
-        this->allocator->coord2f(coordinates.x + coordinates.w, coordinates.y + coordinates.h);
-        this->allocator->coord2f(coordinates.x + coordinates.w, coordinates.y + coordinates.h);
-        this->allocator->coord2f(coordinates.x + coordinates.w, coordinates.y);
-        this->allocator->coord2f(coordinates.x, coordinates.y);
+        this->allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
+        this->allocator->push_back_geometry(vertices.x, vertices.y + vertices.h, coordinates.x, coordinates.y + coordinates.h);
+        this->allocator->push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h, coordinates.x + coordinates.w, coordinates.y + coordinates.h);
+        this->allocator->push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h, coordinates.x + coordinates.w, coordinates.y + coordinates.h);
+        this->allocator->push_back_geometry(vertices.x + vertices.w, vertices.y, coordinates.x + coordinates.w, coordinates.y);
+        this->allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
 
         x += char_data.wsize;
         this->ft_uint_previous = ui32char;

@@ -28,29 +28,10 @@ void ekg::gpu::allocator::invoke() {
     this->end_stride_count = 0;
     this->simple_shape_index = 0;
 
-    this->cached_vertices.emplace_back(0.0f);
-    this->cached_vertices.emplace_back(0.0f);
-
-    this->cached_vertices.emplace_back(0.0f);
-    this->cached_vertices.emplace_back(1.0f);
-
-    this->cached_vertices.emplace_back(1.0f);
-    this->cached_vertices.emplace_back(0.0f);
-
-    this->cached_vertices.emplace_back(1.0f);
-    this->cached_vertices.emplace_back(1.0f);
-
-    this->cached_uvs.emplace_back(0.0f);
-    this->cached_uvs.emplace_back(0.0f);
-
-    this->cached_uvs.emplace_back(0.0f);
-    this->cached_uvs.emplace_back(1.0f);
-
-    this->cached_uvs.emplace_back(1.0f);
-    this->cached_uvs.emplace_back(0.0f);
-
-    this->cached_uvs.emplace_back(1.0f);
-    this->cached_uvs.emplace_back(1.0f);
+    this->push_back_geometry(0.0f, 0.0f, 0.0f, 0.0f);
+    this->push_back_geometry(0.0f, 1.0f, 0.0f, 1.0f);
+    this->push_back_geometry(1.0f, 0.0f, 1.0f, 0.0f);
+    this->push_back_geometry(1.0f, 1.0f, 1.0f, 1.0f);
 
     /* unique shape data will break if not clear the first index. */
 
@@ -121,35 +102,30 @@ void ekg::gpu::allocator::dispatch() {
 }
 
 void ekg::gpu::allocator::revoke() {
-    bool should_re_alloc_buffers {this->previous_cached_vertices_size != this->cached_vertices.size()};
+    bool should_re_alloc_buffers {this->previous_cached_geometry_resources_size != this->cached_geometry_resources.size()};
 
     if (should_re_alloc_buffers) {
         this->data_list.resize(this->data_instance_index);
     }
 
-    this->previous_cached_vertices_size = this->cached_vertices.size();
+    this->previous_cached_geometry_resources_size = this->cached_geometry_resources.size();
     if (should_re_alloc_buffers || this->factor_changed) {
         glBindVertexArray(this->vbo_array);
-
-        /* set shader binding location 0 and dispatch mesh of vertices collected by allocator */
-        glBindBuffer(GL_ARRAY_BUFFER, this->vbo_vertices);
+        glBindBuffer(GL_ARRAY_BUFFER, this->geometry_buffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_geometry_resources.size(), &this->cached_geometry_resources[0], GL_STATIC_DRAW);
+        
         glEnableVertexAttribArray(0);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_vertices.size(), &this->cached_vertices[0], GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*) (sizeof(float) * 0));
 
-        /* set shader binding location 1 and dispatch mesh of texttre coordinates collected by allocator */
-        glBindBuffer(GL_ARRAY_BUFFER, this->vbo_uvs);
         glEnableVertexAttribArray(1);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_uvs.size(), &this->cached_uvs[0], GL_STATIC_DRAW);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*) (sizeof(float) * 2));
 
         glBindVertexArray(0);
     }
 
     this->factor_changed = false;
     this->cached_textures = {};
-    this->cached_vertices = {};
-    this->cached_uvs = {};
+    this->cached_geometry_resources = {};
 }
 
 void ekg::gpu::allocator::on_update() {
@@ -247,8 +223,7 @@ void ekg::gpu::allocator::draw() {
 
 void ekg::gpu::allocator::init() {
     glGenVertexArrays(1, &this->vbo_array);
-    glGenBuffers(1, &this->vbo_vertices);
-    glGenBuffers(1, &this->vbo_uvs);
+    glGenBuffers(1, &this->geometry_buffer);
     glGenBuffers(1, &this->ebo_simple_shape);
 
     /* Generate base shape rendering. */
@@ -310,7 +285,6 @@ ekg::gpu::data *ekg::gpu::allocator::get_data_by_id(int32_t id) {
 void ekg::gpu::allocator::quit() {
     glDeleteTextures((int32_t) this->cached_textures.size(), &this->cached_textures[0]);
     glDeleteBuffers(1, &this->vbo_array);
-    glDeleteBuffers(1, &this->vbo_uvs);
     glDeleteVertexArrays(1, &this->vbo_array);
 }
 
@@ -388,29 +362,13 @@ void ekg::gpu::allocator::bind_off_scissor() {
     this->scissor_instance_id = -1;
 }
 
-void ekg::gpu::allocator::vertex2f(float x, float y) {
-    if (this->check_convex_shape()) {
-        return;
-    }
-
-    this->cached_vertices.emplace_back(x);
-    this->cached_vertices.emplace_back(y);
+void ekg::gpu::allocator::push_back_geometry(float x, float y, float u, float v) {
+    this->cached_geometry_resources.emplace_back(x);
+    this->cached_geometry_resources.emplace_back(y);
     this->end_stride_count++;
-}
 
-void ekg::gpu::allocator::coord2f(float x, float y) {
-    if (this->check_convex_shape()) {
-        return;
-    }
-
-    this->cached_uvs.emplace_back(x);
-    this->cached_uvs.emplace_back(y);
-}
-
-bool ekg::gpu::allocator::check_convex_shape() {
-    auto &data {this->bind_current_data()};
-    this->simple_shape = static_cast<int32_t>(data.shape_rect[2]) != ekg::concave && static_cast<int32_t>(data.shape_rect[3]) != ekg::concave;
-    return this->simple_shape_index != -1 && this->simple_shape;
+    this->cached_geometry_resources.emplace_back(u);
+    this->cached_geometry_resources.emplace_back(v);
 }
 
 bool ekg::gpu::allocator::is_out_of_scissor_rect() {
