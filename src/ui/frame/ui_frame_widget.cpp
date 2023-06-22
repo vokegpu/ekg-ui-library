@@ -68,21 +68,23 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
         if (this->target_dock_resize != ekg::dock::none) {
             if (ekg::bitwise::contains(this->target_dock_resize, ekg::dock::left)) {
-                new_rect.x = interact.x - this->rect_delta.x;
-                new_rect.w = this->rect_delta.w - new_rect.x;
+                float diff {((interact.x - new_rect.x) - this->rect_delta.x)};
+                new_rect.x = (interact.x - this->rect_delta.x);
+                new_rect.w -= diff;
             }
 
             if (ekg::bitwise::contains(this->target_dock_resize, ekg::dock::right)) {
-                new_rect.w = this->rect_delta.w + ((interact.x - rect.x) - this->rect_delta.x);
+                new_rect.w = this->rect_delta.w + ((interact.x - new_rect.x) - this->rect_delta.x);
             }
 
             if (ekg::bitwise::contains(this->target_dock_resize, ekg::dock::top)) {
-                new_rect.y = interact.y - this->rect_delta.y;
-                new_rect.h = this->rect_delta.h - new_rect.y;
+                float diff {((interact.y - new_rect.y) - this->rect_delta.y)};
+                new_rect.y = (interact.y - this->rect_delta.y);
+                new_rect.h -= diff;
             }
 
             if (ekg::bitwise::contains(this->target_dock_resize, ekg::dock::bottom)) {
-                new_rect.h = this->rect_delta.h + ((interact.y - rect.y) - this->rect_delta.y);
+                new_rect.h = this->rect_delta.h + ((interact.y - new_rect.y) - this->rect_delta.y);
             }
         }
 

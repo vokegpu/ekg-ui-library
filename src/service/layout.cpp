@@ -225,7 +225,7 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *wid
      * in simply words, prevent useless iteration.
      *
      * The min offset is added for extent, because we need count
-     * the offset position when spliting the fill width, but the
+     * the offset position when split the fill width, but the
      * last extent space is not necessary, so we need to subtract.
      */
     for (it = it; it < size; it++) {

@@ -32,11 +32,12 @@ void ekg::ui::scroll_widget::on_reload() {
 
 void ekg::ui::scroll_widget::on_pre_event(SDL_Event &sdl_event) {
     this->scroll.on_pre_event(sdl_event);
-    this->flag.hovered = this->scroll.flag.hovered;
+    this->flag.hovered = this->scroll.flag.hovered && !this->scroll.flag.activy;
     this->flag.absolute = this->scroll.is_dragging_bar() || this->scroll.flag.activy;
 }
 
 void ekg::ui::scroll_widget::on_event(SDL_Event &sdl_event) {
+    this->flag.hovered = this->scroll.flag.hovered;
     this->scroll.on_event(sdl_event);
 
     if ((this->flag.absolute || this->scroll.flag.activy) && !this->is_high_frequency) {

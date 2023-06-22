@@ -147,7 +147,7 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
 
     if (this->flag.hovered && ekg::input::action("scrollbar-scroll") && this->is_horizontal_enabled) {
 #if defined(ANDROID)
-        this->scroll.w = ekg::clamp(this->scroll.x + (-interact.z * this->acceleration.y), this->rect_mother->h - this->rect_child.h, 0.0f);
+        this->scroll.z = ekg::clamp(this->scroll.x + (-interact.z * this->acceleration.y), this->rect_mother->w - this->rect_child.w, 0.0f)
 #else
         this->scroll.z = ekg::clamp(this->scroll.x + (-interact.z * this->acceleration.y), this->rect_mother->w - this->rect_child.w, 0.0f);
 #endif

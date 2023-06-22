@@ -57,3 +57,5 @@
 
 -- Fixed horizontal mouse pad scrolling.
 -- Fixed children frame widget resizing.
+-- Fixed children frame docking left & right widget resizing.
+-- Partial-fix scroll priority.

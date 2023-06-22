@@ -144,10 +144,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
     ekg::ui::abstract_widget *widgets {};
     int32_t prev_parent_master {};
 
-    auto &all {this->widget_list_map["all"]};
-    uint64_t size {all.size()};
-    for (uint64_t it {}; it < size; it++) {
-        widgets = all.at(it);
+    for (ekg::ui::abstract_widget *&widgets : this->widget_list_map["all"]) {
         if (widgets == nullptr || !widgets->data->is_alive()) {
             continue;
         }
@@ -160,19 +157,21 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
         hovered = !(sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_KEYUP || sdl_event.type == SDL_TEXTINPUT) 
                 && widgets->flag.hovered && widgets->data->get_state() == ekg::state::visible;
 
-        if ((hovered || widgets->flag.absolute) && (!found_absolute_widget || (widgets->data->get_parent_id() == prev_parent_master && found_absolute_widget))) {
+        if (hovered) {
             this->widget_id_focused = widgets->data->get_id();
             focused_widget = widgets;
-            found_absolute_widget = widgets->flag.absolute;
+            prev_parent_master = !widgets->data->has_parent() ? widgets->data->get_id() : widgets->data->get_parent_id();
+        }
+
+        if (widgets->flag.absolute && prev_parent_master == widgets->data->get_parent_id()) {
+            focused_widget = widgets;
+            break;
         }
 
         widgets->on_post_event(sdl_event);
-        if (!hovered) {
-            widgets->on_event(sdl_event);
-        }
 
-        if (widgets->data->has_children()) {
-            prev_parent_master = widgets->data->get_id();
+        if (!hovered && (focused_widget == nullptr || !focused_widget->flag.absolute)) {
+            widgets->on_event(sdl_event);
         }
     }
 

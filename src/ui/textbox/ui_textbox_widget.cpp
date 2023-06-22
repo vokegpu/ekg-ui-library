@@ -445,10 +445,7 @@ void ekg::ui::textbox_widget::on_reload() {
 
 void ekg::ui::textbox_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
-
     this->embedded_scroll.on_pre_event(sdl_event);
-    this->flag.hovered = this->flag.hovered || this->embedded_scroll.flag.hovered;
-    this->flag.absolute = this->embedded_scroll.is_dragging_bar() || this->embedded_scroll.flag.activy;
 }
 
 void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
@@ -457,6 +454,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     bool motion {ekg::input::motion()};
     auto &rect {this->get_abs_rect()};
 
+    this->flag.absolute = this->embedded_scroll.is_dragging_bar() || this->flag.activy;
     this->embedded_scroll.on_event(sdl_event);
 
     if (this->flag.hovered && pressed) {
