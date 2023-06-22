@@ -24,7 +24,7 @@ void ekg::gpu::allocator::invoke() {
     /* reset all "flags", everything is used tick by tick to compare factories */
 
     this->data_instance_index = 0;
-    this->begin_stride_count = 4;
+    this->begin_stride_count = 0;
     this->end_stride_count = 0;
     this->simple_shape_index = 0;
 
@@ -36,7 +36,9 @@ void ekg::gpu::allocator::invoke() {
     /* unique shape data will break if not clear the first index. */
 
     this->clear_current_data();
-    this->bind_current_data().begin_stride = this->begin_stride_count; // reset to 0
+    this->bind_current_data().begin_stride = this->end_stride_count;
+    this->begin_stride_count += this->end_stride_count;
+    this->end_stride_count = 0;
 }
 
 void ekg::gpu::allocator::bind_texture(uint32_t &texture) {
@@ -71,11 +73,6 @@ void ekg::gpu::allocator::dispatch() {
     /* if this data contains a simple rect shape scheme, save this index and reuse later */
 
     this->simple_shape = static_cast<int32_t>(data.shape_rect[2]) != ekg::concave && static_cast<int32_t>(data.shape_rect[3]) != ekg::concave;
-    if (this->simple_shape_index == -1 && this->simple_shape) {
-        this->simple_shape_index = this->begin_stride_count;
-        this->begin_stride_count += this->end_stride_count;
-    }
-
     if (this->simple_shape) {
         data.begin_stride = this->simple_shape_index;
         data.end_stride = 4; // simple shape contains 3 vertices.
@@ -102,20 +99,21 @@ void ekg::gpu::allocator::dispatch() {
 }
 
 void ekg::gpu::allocator::revoke() {
-    bool should_re_alloc_buffers {this->previous_cached_geometry_resources_size != this->cached_geometry_resources.size()};
+    uint64_t cached_geometry_resources_size {this->cached_geometry_resources.size()};
+    bool should_re_alloc_buffers {this->previous_cached_geometry_resources_size != cached_geometry_resources_size};
 
-    if (should_re_alloc_buffers) {
-        this->data_list.resize(this->data_instance_index);
+    if (this->data_instance_index < this->data_list.size()) {
+        this->data_list.erase(this->data_list.begin() + this->data_instance_index + 1, this->data_list.end());
     }
 
-    this->previous_cached_geometry_resources_size = this->cached_geometry_resources.size();
+    this->previous_cached_geometry_resources_size = cached_geometry_resources_size;
     if (should_re_alloc_buffers || this->factor_changed) {
         glBindVertexArray(this->vbo_array);
         glBindBuffer(GL_ARRAY_BUFFER, this->geometry_buffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->cached_geometry_resources.size(), &this->cached_geometry_resources[0], GL_STATIC_DRAW);
-        
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * cached_geometry_resources_size, &this->cached_geometry_resources[0], GL_STATIC_DRAW);
+
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*) (sizeof(float) * 0));
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*) 0);
 
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*) (sizeof(float) * 2));
@@ -228,8 +226,8 @@ void ekg::gpu::allocator::init() {
 
     /* Generate base shape rendering. */
     uint8_t simple_shape_mesh_indices[6] {
-        0, 1, 3,
-        3, 2, 0
+        0, 2, 3,
+        3, 1, 0
     };
 
     glBindVertexArray(this->vbo_array);

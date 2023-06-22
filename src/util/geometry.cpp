@@ -110,8 +110,8 @@ int32_t ekg::find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::v
 }
 
 void ekg::set_rect_clamped(ekg::rect &rect, float min_size) {
-    rect.x = ekg::min(rect.x, min_size);
-    rect.y = ekg::min(rect.y, min_size);
+    rect.x = ekg::min(rect.x, 0.0f);
+    rect.y = ekg::min(rect.y, 0.0f);
     rect.w = ekg::min(rect.w, min_size);
     rect.h = ekg::min(rect.h, min_size);
 }

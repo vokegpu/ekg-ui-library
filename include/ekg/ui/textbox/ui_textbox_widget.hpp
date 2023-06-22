@@ -25,6 +25,7 @@ namespace ekg::ui {
         struct cursor {
         public:
             int64_t index {};
+            int64_t select_index {};
             int64_t chunk_index {};
             int64_t text_index {};
             int64_t last_text_index {};

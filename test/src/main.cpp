@@ -202,6 +202,7 @@ int32_t main(int32_t, char**) {
 
     auto framedebug = ekg::frame("frame-debug", {0, 0}, {400, root_height});
     framedebug->set_resize(ekg::dock::right | ekg::dock::bottom);
+    framedebug->set_drag(ekg::dock::top);
 
     auto debuglabel = ekg::label("Debug:", ekg::dock::next);
     debuglabel->set_text_align(ekg::dock::left | ekg::dock::top);
@@ -367,15 +368,16 @@ int32_t main(int32_t, char**) {
      * Mainloop.
      */
     while (running) {
-        cpu_last_ticks = cpu_now_ticks;
-        cpu_now_ticks = SDL_GetPerformanceCounter();
-        ekg::display::dt = static_cast<float>(cpu_now_ticks - cpu_last_ticks) / static_cast<float>(SDL_GetPerformanceFrequency());
-
-        debuglabel->set_text("Debug FPS: " + std::to_string(display_fps) + " text: ");
         if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
             display_fps = ticked_frames;
             ticked_frames = 0;
         }
+
+        cpu_last_ticks = cpu_now_ticks;
+        cpu_now_ticks = SDL_GetPerformanceCounter();
+        ekg::display::dt = static_cast<float>(cpu_now_ticks - cpu_last_ticks) / static_cast<float>(SDL_GetPerformanceFrequency());
+
+        debuglabel->set_text("Delta time: " + std::to_string(display_fps) + " text: ");
 
         while (SDL_PollEvent(&sdl_event)) {
             switch (sdl_event.type) {
@@ -463,7 +465,7 @@ int32_t main(int32_t, char**) {
 
         // Swap buffers.
         SDL_GL_SwapWindow(sdl_win);
-        //SDL_Delay(16);
+        // SDL_Delay(16);
     }
 
     if (!ekg::swap::tooktimeanalyzingtelemtry.empty()) {

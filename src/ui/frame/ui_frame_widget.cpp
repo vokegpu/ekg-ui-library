@@ -52,8 +52,8 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
         this->rect_delta.x = interact.x - rect.x;
         this->rect_delta.y = interact.y - rect.y;
-        this->rect_delta.w = rect.x + rect.w;
-        this->rect_delta.h = rect.y + rect.h;
+        this->rect_delta.w = rect.w;
+        this->rect_delta.h = rect.h;
 
         this->flag.activy = this->target_dock_drag != ekg::dock::none || this->target_dock_resize != ekg::dock::none;
         this->flag.absolute = this->flag.activy;
@@ -73,7 +73,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
             }
 
             if (ekg::bitwise::contains(this->target_dock_resize, ekg::dock::right)) {
-                new_rect.w = (interact.x - this->rect_delta.x) - new_rect.x + (this->rect_delta.w - new_rect.x);
+                new_rect.w = this->rect_delta.w + ((interact.x - rect.x) - this->rect_delta.x);
             }
 
             if (ekg::bitwise::contains(this->target_dock_resize, ekg::dock::top)) {
@@ -82,15 +82,14 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
             }
 
             if (ekg::bitwise::contains(this->target_dock_resize, ekg::dock::bottom)) {
-                new_rect.h = (interact.y - this->rect_delta.y) - new_rect.y + (this->rect_delta.h - new_rect.y);
+                new_rect.h = this->rect_delta.h + ((interact.y - rect.y) - this->rect_delta.y);
             }
         }
 
-        // @todo fix the rect reverse axis resize, when is out of window too at min of size.
-        ekg::set_rect_clamped(new_rect, 0.0f);
+        ekg::set_rect_clamped(new_rect, 30.0f);
 
         if (rect != new_rect) {
-            if (ui->get_parent_id() != 0) {
+            if (ui->has_parent()) {
                 this->dimension.x = new_rect.x - this->parent->x;
                 this->dimension.y = new_rect.y - this->parent->y;
             } else {
@@ -100,6 +99,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
             this->dimension.w = new_rect.w;
             this->dimension.h = new_rect.h;
+
             ui->ui() = new_rect;
 
             /*
