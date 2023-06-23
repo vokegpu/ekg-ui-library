@@ -164,6 +164,24 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
             first_absolute = false;
         }
 
+        /*
+         * The absolute/top-level system check for the first absolute fired widget,
+         * everytime a widget is hovered and it reset again the checking.
+         *
+         * The order of scrollable widgets like scroll widget is not sequentially,
+         * e.g, the mouse is hovering some children of frame 2 and absolute widget scroll from frame 2 is fired:
+         * frame 1           // hovered, check for the first absolute
+         *
+         * frame 2 (frame 1) // hovered, then reset and find for the first absolute again
+         * widgets...        // hovering some of children widgets, then reset over again
+         * scroll (frame 2)  // found the first absolute, target it
+         * 
+         * frame 3 (frame 1) // not hovering, then does not check for any absolute widget
+         * ...
+         *
+         * scroll (frame 1)  // do not target this fired absolute widget.
+         * end of e.g.
+         */
         if (widgets->flag.absolute && !first_absolute) {
             focused_widget = widgets;
             first_absolute = true;
