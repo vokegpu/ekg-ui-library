@@ -87,7 +87,7 @@ ekg::gl_version + "\n"
     const std::string fsh_src {
 ekg::gl_version + "\n"
 "layout (location = 0) out vec4 vFragColor;\n"
-"uniform sampler2D uTexture;\n" // @TODO fix binding support in OpenGL high-performance
+"uniform sampler2D uTextureSampler;\n"
 
 "in vec2 vTexCoord;\n"
 "in vec4 vRect;\n"
@@ -111,7 +111,7 @@ ekg::gl_version + "\n"
 "    } else if (uLineThickness < 0) {\n"
 "       float radius = vRect.z / 2.0f;\n"
 "       vec2 diff = vec2((vRect.x + radius) - fragPos.x, (vRect.y + radius) - fragPos.y);\n"
-"       float dist = sqrt(diff.x * diff.x + diff.y * diff.y);\n"
+"       float dist = (diff.x * diff.x + diff.y * diff.y);\n"
 
 "       vFragColor.w = (1.0f - smoothstep(0.0, radius * radius, dot(dist, dist)));\n"
 "    }"
@@ -121,7 +121,7 @@ ekg::gl_version + "\n"
 "    }\n"
 
 "    if (uActiveTexture && !shouldDiscard) {"
-"        vFragColor = texture(uTexture, vTexCoord);\n"
+"        vFragColor = texture(uTextureSampler, vTexCoord);\n"
 "        vFragColor = vec4(vFragColor.xyz - ((1.0f - uColor.xyz) - 1.0f), vFragColor.w - (1.0f - uColor.w));\n"
 "    }\n"
 "}"};

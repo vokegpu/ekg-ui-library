@@ -41,8 +41,8 @@ void ekg::gpu::allocator::invoke() {
     this->end_stride_count = 0;
 }
 
-void ekg::gpu::allocator::bind_texture(uint32_t &texture) {
-    bool should_alloc_new_texture {};
+void ekg::gpu::allocator::bind_texture(uint32_t texture) {
+    bool should_alloc_new_texture {true};
     uint8_t texture_slot {};
 
     /* repeating textures increase the active textures, for this reason allocator prevent "dupes" */
@@ -63,8 +63,7 @@ void ekg::gpu::allocator::bind_texture(uint32_t &texture) {
     }
 
     auto &data {this->bind_current_data()};
-    data.material_texture = texture;
-    data.active_tex_slot = texture_slot;
+    data.active_tex_slot = texture_slot + 1;
 }
 
 void ekg::gpu::allocator::dispatch() {
@@ -122,7 +121,6 @@ void ekg::gpu::allocator::revoke() {
     }
 
     this->factor_changed = false;
-    this->cached_textures = {};
     this->cached_geometry_resources = {};
 }
 
@@ -131,15 +129,22 @@ void ekg::gpu::allocator::on_update() {
 
 void ekg::gpu::allocator::draw() {
     ekg::gpu::invoke(ekg::gpu::allocator::program);
-    glBindVertexArray(this->vbo_array);
 
-    bool active_texture {}, texture_enabled {};
-    ekg::gpu::scissor *scissor {};
+    glBindVertexArray(this->vbo_array);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    GLboolean is_depth_test_previous_enable {};
-    glGetBooleanv(GL_DEPTH_TEST, &is_depth_test_previous_enable);
-    glDisable(GL_DEPTH_TEST);
+    uint8_t prev_texture_bound {};
+    bool texture_enabled {};
+
+    ekg::gpu::scissor *scissor {};
+
+    /*
+     * Before each rendering section, the allocator iterate alls textures and bind it on global context.
+     */
+    for (uint32_t it {}; it < this->cached_textures.size(); it++) {
+        glActiveTexture(GL_TEXTURE0 + static_cast<int32_t>(it));
+        glBindTexture(GL_TEXTURE_2D, this->cached_textures.at(it));
+    }
 
     /*
      * The batching system of gpu allocator use instanced rendering concept, if there is some simple shape rect
@@ -156,18 +161,15 @@ void ekg::gpu::allocator::draw() {
     ekg::gpu::data data {};
     for (uint64_t it {}; it < this->data_instance_index; it++) {
         data = this->data_list[it];
-        active_texture = data.material_texture > 0;
+        texture_enabled = data.active_tex_slot > 0;
 
-        if (active_texture) {
-            glActiveTexture(GL_TEXTURE0 + static_cast<int32_t>(data.active_tex_slot));
-            glBindTexture(GL_TEXTURE_2D, data.material_texture);
+        if (texture_enabled && prev_texture_bound != data.active_tex_slot) {
+            glUniform1i(this->uniform_active_tex_slot, data.active_tex_slot - 1);
             glUniform1i(this->uniform_active_texture, true);
-            texture_enabled = true;
-        }
-
-        if (texture_enabled && !active_texture) {
+            prev_texture_bound = data.active_tex_slot;
+        } else if (!texture_enabled && prev_texture_bound > 0) {
             glUniform1i(this->uniform_active_texture, false);
-            glBindTexture(GL_TEXTURE_2D, 0);
+            prev_texture_bound = 0;
         }
 
         glUniform4fv(this->uniform_color, GL_TRUE, data.material_color);
@@ -207,13 +209,7 @@ void ekg::gpu::allocator::draw() {
         }
     }
 
-    if (texture_enabled) {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
-    if (is_depth_test_previous_enable) {
-        glEnable(GL_DEPTH_TEST);
-    }
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     glBindVertexArray(0);
     glUseProgram(0);
@@ -238,6 +234,7 @@ void ekg::gpu::allocator::init() {
     /* reduce glGetLocation calls when rendering the batch */
     auto &shading_program_id {ekg::gpu::allocator::program.id};
     this->uniform_active_texture = glGetUniformLocation(shading_program_id, "uActiveTexture");
+    this->uniform_active_tex_slot = glGetUniformLocation(shading_program_id, "uTextureSampler");
     this->uniform_color = glGetUniformLocation(shading_program_id, "uColor");
     this->uniform_rect = glGetUniformLocation(shading_program_id, "uRect");
     this->uniform_line_thickness = glGetUniformLocation(shading_program_id, "uLineThickness");
@@ -257,7 +254,6 @@ void ekg::gpu::allocator::clear_current_data() {
     ekg::gpu::data &data {this->bind_current_data()};
 
     data.line_thickness = 0;
-    data.material_texture = 0;
     data.active_tex_slot = 0;
     data.scissor_id = -1;
 

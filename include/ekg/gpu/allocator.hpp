@@ -47,6 +47,7 @@ namespace ekg::gpu {
         int32_t end_stride_count {};
 
         int32_t uniform_active_texture {};
+        int32_t uniform_active_tex_slot {};
         int32_t uniform_enable_scissor {};
         int32_t uniform_color {};
         int32_t uniform_rect {};
@@ -112,7 +113,7 @@ namespace ekg::gpu {
         /*
          * Bind texture for send in data.
          */
-        void bind_texture(uint32_t&);
+        void bind_texture(uint32_t);
 
         /*
          * Insert geometry positions here:

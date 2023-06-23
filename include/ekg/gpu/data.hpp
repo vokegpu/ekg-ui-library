@@ -26,9 +26,7 @@ namespace ekg {
             float shape_rect[4] {};
             float material_color[4] {};
 
-            uint32_t material_texture {};
             uint8_t active_tex_slot {};
-
             int32_t begin_stride {};
             int32_t end_stride {};
             int32_t line_thickness {};
@@ -36,12 +34,6 @@ namespace ekg {
             int32_t factor {};
             int32_t scissor_id {-1};
             int32_t id {};
-        };
-
-        struct animation {
-            bool finished {};
-            bool initial {true};
-            ekg::gpu::data *data {};
         };
 
         typedef struct scissor {
