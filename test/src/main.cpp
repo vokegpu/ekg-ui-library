@@ -179,7 +179,7 @@ int32_t main(int32_t, char**) {
     uint64_t display_fps {};
     uint64_t ticked_frames {};
 
-    auto f1 = ekg::frame("sou gostosa", {20, 700}, {200, 200})->set_drag(ekg::dock::top)->set_resize(ekg::dock::bottom | ekg::dock::left | ekg::dock::right);
+    auto f1 = ekg::frame("sou gostosa", {700, 300}, {200, 200})->set_drag(ekg::dock::top)->set_resize(ekg::dock::bottom | ekg::dock::left | ekg::dock::right);
     ekg::button("oi oi oi");
     ekg::label("oioioioioio", ekg::dock::fill);
     auto ff = ekg::frame("frame-debug", {200, 200}, ekg::dock::fill | ekg::dock::next);

@@ -142,13 +142,18 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
 
     ekg::ui::abstract_widget *focused_widget {};
     ekg::ui::abstract_widget *widgets {};
-    int32_t prev_parent_master {};
+
+    int32_t widgets_id {};
+    int32_t widgets_parent_id {};
+    int32_t prev_mother_parent_master {};
+    int32_t prev_family_parent_master {};
 
     for (ekg::ui::abstract_widget *&widgets : this->widget_list_map["all"]) {
         if (widgets == nullptr || !widgets->data->is_alive()) {
             continue;
         }
 
+        widgets_id = widgets->data->get_id();
         widgets->on_pre_event(sdl_event);
 
         /*
@@ -156,22 +161,29 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
          */
         hovered = !(sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_KEYUP || sdl_event.type == SDL_TEXTINPUT) 
                 && widgets->flag.hovered && widgets->data->get_state() == ekg::state::visible;
-
         if (hovered) {
-            this->widget_id_focused = widgets->data->get_id();
+            this->widget_id_focused = widgets_id;
             focused_widget = widgets;
-            prev_parent_master = !widgets->data->has_parent() ? widgets->data->get_id() : widgets->data->get_parent_id();
         }
 
-        if (widgets->flag.absolute && prev_parent_master == widgets->data->get_parent_id()) {
+        widgets_parent_id = widgets->data->get_parent_id();
+        if (widgets->flag.absolute && (prev_family_parent_master == widgets_parent_id || prev_mother_parent_master == widgets_parent_id)) {
             focused_widget = widgets;
-            break;
         }
 
         widgets->on_post_event(sdl_event);
 
         if (!hovered && (focused_widget == nullptr || !focused_widget->flag.absolute)) {
             widgets->on_event(sdl_event);
+        }
+
+        if (widgets->data->has_parent() == false) {
+            prev_mother_parent_master = widgets_id;
+        }
+
+        prev_family_parent_master = widgets_parent_id;
+        if (widgets->data->has_children()) {
+            prev_family_parent_master = widgets_id;
         }
     }
 

@@ -147,15 +147,9 @@ void ekg::gpu::allocator::draw() {
     }
 
     /*
-     * The batching system of gpu allocator use instanced rendering concept, if there is some simple shape rect
-     * (gpu data rect that contains x, y, w & h rectangle), allocator reuse this to every draw call.
-     * For text rendering, allocator do draw calls per text, or be, rendering a long text only use one draw call!
-     *
-     * Why there is glUniforms direct calls? I think it can reduce some wrappers runtime calls, but only here.
-     * What is the depth level? That is the layer level of current gpu data rendered, processing layer depth testing.
-     *
-     * VokeGpu coded powerfully gpu allocator for drawing UIs, the batching system has scissor & others
-     * important draw features for UI context.
+     * The allocator provides a high-performance dynamic mapped-shapes batching,
+     * each simple rect (not a complex shape) is not batched, but complex shapes
+     * like textured shapes - font rendering - is batched.
      */
 
     ekg::gpu::data data {};
@@ -175,8 +169,6 @@ void ekg::gpu::allocator::draw() {
         glUniform4fv(this->uniform_color, GL_TRUE, data.material_color);
         glUniform4fv(this->uniform_rect, GL_TRUE, data.shape_rect);
         glUniform1i(this->uniform_line_thickness, data.line_thickness);
-
-        /* allocator use 6 vertices to draw, no need element buffer object */
 
         switch (data.scissor_id) {
             case -1: {
@@ -307,18 +299,9 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_par
     this->out_of_scissor_rect = false;
 
     /*
-     * Scissor is a great feature from OpenGL, but it
-     * does not stack, means that GL context does not
-     * accept scissor inside scissor.
-
-     * After 1 year studying scissor, I  built one scheme,
-     * compute bounds of all parent widgets with the parent
-     * master, obvious it takes some ticks but there is no
-     * other way (maybe I am wrong).
-
-     * Two things important:
-     * 1 - This scissors scheme use scissor IDs from widgets.
-     * 2 - Iteration collect ALL parent families and sub parent of target.
+     * The EKG rendering clipping/scissor part solution is actually very simple,
+     * each draws section contains an ID, which map for a scissor data,
+     * when batching is going on, the scissor is automatically fixed together.
      */
     if (mother_parent_id == 0) {
         return;
