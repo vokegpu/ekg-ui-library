@@ -60,3 +60,4 @@
 -- Fixed children frame docking left & right widget resizing.
 -- Partial-fix scroll priority.
 -- Reduced OpenGL overhead rendering calls.
+-- Fixed scroll priority definetly.
