@@ -38,6 +38,10 @@ namespace ekg::ui {
             inline bool operator==(ekg::ui::textboxwidget::cursorpos &r) {
                 return this->index == r.index && this->chunk_index == r.chunk_index && this->text_index == r.text_index;
             }
+
+            inline bool operator!=(ekg::ui::textboxwidget::cursorpos &r) {
+                return !(*this == r);
+            }
         };
 
         struct cursor {
@@ -62,12 +66,12 @@ namespace ekg::ui {
         bool redraw_cursor {};
         bool is_ui_enabled {};
     public:
-        void check_cursor_text_bounding();
+        void check_cursor_text_bounding(ekg::ui::textboxwidget::cursor &cursor, bool reset_second_cursor_pos);
         std::string &get_cursor_emplace_text(ekg::ui::textboxwidget::cursorpos &cursor);
         void process_text(ekg::ui::textboxwidget::cursor &cursor, std::string_view text, ekg::ui::textboxwidget::action action, int64_t direction);
         void move_cursor(ekg::ui::textboxwidget::cursorpos &cursor, int64_t x, int64_t y);
         void check_largest_text_width(bool update_ui_data_text_together);
-        bool find_cursor(ekg::ui::textboxwidget::cursor &target_cursor, int64_t total_it, int64_t it_chunk, bool last_line_utf_char_index);
+        int32_t find_cursor(ekg::ui::textboxwidget::cursor &target_cursor, int64_t total_it, int64_t it_chunk, bool last_line_utf_char_index);
 
         void on_destroy() override;
         void on_reload() override;
