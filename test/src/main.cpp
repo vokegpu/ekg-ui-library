@@ -129,6 +129,38 @@ std::string resultcalc(std::string_view text) {
     return result;
 }
 
+template<typename t>
+struct linkedlist {
+public:
+    template<typename s>
+    struct node {
+    public:
+        node<s> *p_next {};
+        s value {};
+    };
+protected:
+    linkedlist::node<t> *p_node_list {};
+    uint64_t size {};
+public:
+    explicit linkedlist() {
+        this->p_node_list = new linkedlist::node<t>();
+    }
+
+    ~linkedlist() {
+        delete this->p_node_list;
+    }
+
+    void push_back(const t &copy) {
+        this->p_node_list[this->size] = {};
+        this->p_node_list[this->size].value = copy;
+        this->size++;
+    }
+
+    t &operator[](uint64_t it) {
+        return this->p_node_list[this->size].value;
+    }
+};
+
 /*
  * Created by Rina.
  */

@@ -166,7 +166,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
 
         /*
          * The absolute/top-level system check for the first absolute fired widget,
-         * everytime a widget is hovered and it reset again the checking.
+         * everytime a widget is hovered then reset again the checking state.
          *
          * The order of scrollable widgets like scroll widget is not sequentially,
          * e.g, the mouse is hovering some children of frame 2 and absolute widget scroll from frame 2 is fired:
@@ -176,7 +176,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
          * widgets...        // hovering some of children widgets, then reset over again
          * scroll (frame 2)  // found the first absolute, target it
          * 
-         * frame 3 (frame 1) // not hovering, then does not check for any absolute widget
+         * frame 3 (frame 1) // not hovering, then does not reset any absolute checking
          * ...
          *
          * scroll (frame 1)  // do not target this fired absolute widget.
@@ -641,7 +641,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
         break;
     }
     case ekg::type::textbox: {
-        auto *widget {new ekg::ui::textbox_widget()};
+        auto *widget {new ekg::ui::textboxwidget()};
         widget->data = ui;
         created_widget = widget;
         append_group = true;
