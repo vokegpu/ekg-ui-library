@@ -218,8 +218,8 @@ int32_t main(int32_t, char**) {
     ff->set_resize(ekg::dock::right | ekg::dock::bottom);
     ff->set_height(300.0f);
 
-    // auto ff3 = ekg::textbox("frame-debug", "oi", ekg::dock::fill | ekg::dock::next);
-    // ff3->set_scaled_height(4);
+    auto ff3 = ekg::textbox("frame-debug", "oi", ekg::dock::fill | ekg::dock::next);
+    ff3->set_scaled_height(4);
     ekg::button("button", ekg::dock::fill | ekg::dock::next);
     ekg::button("button", ekg::dock::fill | ekg::dock::next);
     ekg::button("button", ekg::dock::fill | ekg::dock::next);

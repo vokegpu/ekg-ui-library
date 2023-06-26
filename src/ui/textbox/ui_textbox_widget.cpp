@@ -477,7 +477,7 @@ void ekg::ui::textboxwidget::on_event(SDL_Event &sdl_event) {
         this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), true);
         this->flag.state = this->flag.hovered;
     } else if (this->flag.state && motion) {
-        this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), false);
+        //this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), false);
     }
 
     if (released) {
