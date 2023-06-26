@@ -576,12 +576,15 @@ void ekg::ui::textboxwidget::on_update() {
 }
 
 int32_t ekg::ui::textboxwidget::find_cursor(ekg::ui::textboxwidget::cursor &target_cursor, int64_t total_it, int64_t it_chunk, bool last_line_utf_char_index) {
-    bool main_index {};
+    bool a_cursor_pos {};
+    bool b_cursor_pos {};
+
     for (ekg::ui::textboxwidget::cursor &cursor : this->loaded_multi_cursor_list) {
-        main_index = ((last_line_utf_char_index && cursor.pos[0].index == total_it + 1) || cursor.pos[0].index == total_it) && cursor.pos[0].chunk_index == it_chunk;
-        if (main_index || (((last_line_utf_char_index && cursor.pos[1].index == total_it + 1) || cursor.pos[1].index == total_it) && cursor.pos[1].chunk_index == it_chunk)) {
+        a_cursor_pos = ((last_line_utf_char_index && cursor.pos[0].index >= total_it + 1) || cursor.pos[0].index >= total_it);
+        b_cursor_pos = ((last_line_utf_char_index && cursor.pos[1].index <= total_it + 1) || cursor.pos[1].index <= total_it);
+        if (a_cursor_pos && b_cursor_pos && cursor.pos[0].chunk_index >= it_chunk && cursor.pos[1].chunk_index <= it_chunk) {
             target_cursor = cursor;
-            return main_index ? 0 : 1;
+            return 0;
         }
     }
 
@@ -711,21 +714,23 @@ void ekg::ui::textboxwidget::on_draw_refresh() {
 
             if (f_renderer.ft_bool_kerning && f_renderer.ft_uint_previous) {
                 FT_Get_Kerning(f_renderer.ft_face, f_renderer.ft_uint_previous, ui32char, 0, &f_renderer.ft_vector_previous_char);
-                x += static_cast<float>(f_renderer.ft_vector_previous_char.x >> 6);
+                //x += static_cast<float>(f_renderer.ft_vector_previous_char.x >> 6);
             }
 
             char_data = f_renderer.allocated_char_data[ui32char];
             utf_char_last_index = utf_char_index + 1 == text_size;
             if ((cursor_pos_index = this->find_cursor(cursor, total_it, it_chunk, utf_char_last_index)) != -1 && (draw_cursor || cursor.pos[0] != cursor.pos[1])) {
-                utf_char_last_index = utf_char_last_index && cursor.pos[cursor_pos_index].index == total_it + 1;
                 optimize_batching = true;
 
-                if (cursor.pos[0] != cursor.pos[1] && cursor_pos_index == 0 && (utf_char_last_index || cursor.pos[cursor_pos_index].index == total_it)) {
-                    current_line_select_rect.x = rect.x + x + (char_data.wsize * utf_char_last_index) + this->embedded_scroll.scroll.x;
-                    current_line_select_rect.y = rect.y + y + this->embedded_scroll.scroll.y;
-                } else if (cursor.pos[0] != cursor.pos[1] && cursor_pos_index == 1 && (utf_char_last_index || cursor.pos[cursor_pos_index].index == total_it)) {
-                    current_line_select_rect.w = (x - current_line_select_rect.x) + (char_data.wsize * utf_char_last_index) + this->embedded_scroll.scroll.x;
+                if (cursor.pos[0] != cursor.pos[1]) {
+                    cursor_draw_data_list.emplace_back(ekg::rect {
+                        rect.x + x + this->embedded_scroll.scroll.x,
+                        rect.y + y + this->embedded_scroll.scroll.y,
+                        char_data.wsize,
+                        text_height
+                    });
                 } else {
+                    utf_char_last_index = utf_char_last_index && cursor.pos[cursor_pos_index].index == total_it + 1;
                     cursor_draw_data_list.emplace_back(ekg::rect {
                         rect.x + x + (char_data.wsize * utf_char_last_index) + this->embedded_scroll.scroll.x,
                         rect.y + y + this->embedded_scroll.scroll.y,
@@ -768,13 +773,11 @@ void ekg::ui::textboxwidget::on_draw_refresh() {
 
         if (it_chunk > cursor.pos[0].chunk_index && it_chunk < cursor.pos[1].chunk_index) {
             cursor_draw_data_list.emplace_back(ekg::rect {
-                rect.x + this->rect_cursor.w + this->embedded_scroll.scroll.x,
+                rect.x + this->embedded_scroll.scroll.x,
                 rect.y + y + this->embedded_scroll.scroll.y + (this->text_offset * 0.5f),
-                x,
+                x + this->text_offset,
                 text_height
             });
-        } else if (current_line_select_rect.w > 0.0f) {
-            cursor_draw_data_list.emplace_back(current_line_select_rect);
         }
 
         if (y_scroll < 0.0f && optimize_batching) {
