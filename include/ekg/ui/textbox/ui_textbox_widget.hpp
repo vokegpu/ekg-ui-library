@@ -46,7 +46,7 @@ namespace ekg::ui {
 
         struct cursor {
         public:
-            ekg::ui::textboxwidget::cursorpos pos[2] {};
+            ekg::ui::textboxwidget::cursorpos pos[3] {};
         };
     public:
         std::vector<std::string> text_chunk_list {};

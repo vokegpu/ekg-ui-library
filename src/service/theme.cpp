@@ -69,7 +69,7 @@ void ekg::service::theme::gen_default_dark_theme() {
     this->textbox_string = ekg::color(202, 202, 202, 255);
     this->textbox_background = ekg::color(43, 43, 43, 255);
     this->textbox_outline = ekg::color(141, 141, 141, 50);
-    this->textbox_select = ekg::color(2, 7, 222, 255);
+    this->textbox_select = ekg::color(44, 166, 255, 50);
     this->textbox_cursor = ekg::color(202, 202, 202, 255);
 
     this->scrollbar_background = ekg::color(85, 85, 85, 255);
@@ -121,7 +121,7 @@ void ekg::service::theme::gen_default_light_theme() {
     this->textbox_string = ekg::color(141, 141, 141, 255);
     this->textbox_background = ekg::color(242, 242, 242, 255);
     this->textbox_outline = ekg::color(202, 207, 222, 150);
-    this->textbox_select = ekg::color(2, 7, 222, 255);
+    this->textbox_select = ekg::color(44, 166, 255, 50);
     this->textbox_cursor = ekg::color(141, 141, 141, 255);
 
     this->scrollbar_background = ekg::color(202, 202, 202, 255);

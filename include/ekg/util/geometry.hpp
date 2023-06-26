@@ -219,6 +219,7 @@ namespace ekg {
     void orthographic2d(float*, float, float, float, float);
     bool rect_collide_rect(const ekg::rect&, const ekg::rect&);
     bool rect_collide_vec(const ekg::rect&, const ekg::vec4&);
+    bool rect_collide_vec_precisely(const ekg::rect&, const ekg::vec4&);
 
     void set_rect_clamped(ekg::rect&, float);
     void set_dock_scaled(const ekg::rect&, const ekg::vec2&, ekg::docker&);
