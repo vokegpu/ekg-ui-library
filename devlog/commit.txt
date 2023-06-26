@@ -60,5 +60,5 @@
 -- Fixed children frame docking left & right widget resizing.
 -- Partial-fix scroll priority.
 -- Reduced OpenGL overhead rendering calls.
--- Fixed scroll priority definetly.
--- Multi-curosed text box based system.
+-- Fixed scroll priority definitely.
+-- Multi-cursor textbox UI-based system (select box disabled temporary).
