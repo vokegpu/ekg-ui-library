@@ -64,3 +64,5 @@
 -- Multi-cursor textbox UI-based system (select box disabled temporary).
 
 0.0.1.0.1.8
+
+-- Multi-cursor selection box rendering.
