@@ -391,6 +391,8 @@ void ekg::ui::textboxwidget::check_cursor_text_bounding(ekg::ui::textboxwidget::
 
         if (it == 1) {
             cursor.pos[0] = cursor.pos[2];
+        } else {
+            cursor.pos[1] = cursor.pos[2];
         }
 
         break;
@@ -477,7 +479,7 @@ void ekg::ui::textboxwidget::on_event(SDL_Event &sdl_event) {
         this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), true);
         this->flag.state = this->flag.hovered;
     } else if (this->flag.state && motion) {
-        //this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), false);
+        this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), false);
     }
 
     if (released) {
@@ -580,9 +582,9 @@ int32_t ekg::ui::textboxwidget::find_cursor(ekg::ui::textboxwidget::cursor &targ
     bool b_cursor_pos {};
 
     for (ekg::ui::textboxwidget::cursor &cursor : this->loaded_multi_cursor_list) {
-        a_cursor_pos = ((last_line_utf_char_index && cursor.pos[0].index >= total_it + 1) || cursor.pos[0].index >= total_it);
-        b_cursor_pos = ((last_line_utf_char_index && cursor.pos[1].index <= total_it + 1) || cursor.pos[1].index <= total_it);
-        if (a_cursor_pos && b_cursor_pos && cursor.pos[0].chunk_index >= it_chunk && cursor.pos[1].chunk_index <= it_chunk) {
+        a_cursor_pos = ((last_line_utf_char_index && total_it + 1 >= cursor.pos[0].index) || total_it >= cursor.pos[0].index);
+        b_cursor_pos = ((last_line_utf_char_index && total_it + 1 <= cursor.pos[1].index) || total_it <= cursor.pos[1].index);
+        if ((a_cursor_pos && b_cursor_pos) && cursor.pos[0].chunk_index >= it_chunk && cursor.pos[1].chunk_index <= it_chunk) {
             target_cursor = cursor;
             return 0;
         }
@@ -660,7 +662,6 @@ void ekg::ui::textboxwidget::on_draw_refresh() {
 
     std::vector<ekg::rect> cursor_draw_data_list {};
     ekg::ui::textboxwidget::cursor cursor {};
-    ekg::rect current_line_select_rect {};
 
     int32_t cursor_pos_index {};
     bool draw_cursor {this->flag.focused && !ekg::reach(ekg::core->get_ui_timing(), 500)};
@@ -686,7 +687,6 @@ void ekg::ui::textboxwidget::on_draw_refresh() {
         text_size = 0;
         f_renderer.ft_uint_previous = 0;
         utf_char_index = 0;
-        current_line_select_rect = {0.0f, 0.0f, 0.0f, text_height};
 
         if (text.empty() && (cursor_pos_index = this->find_cursor(cursor, total_it, it_chunk, false)) != -1 && (draw_cursor || cursor.pos[0] != cursor.pos[1])) {
             cursor_draw_data_list.emplace_back(ekg::rect {
@@ -714,7 +714,7 @@ void ekg::ui::textboxwidget::on_draw_refresh() {
 
             if (f_renderer.ft_bool_kerning && f_renderer.ft_uint_previous) {
                 FT_Get_Kerning(f_renderer.ft_face, f_renderer.ft_uint_previous, ui32char, 0, &f_renderer.ft_vector_previous_char);
-                //x += static_cast<float>(f_renderer.ft_vector_previous_char.x >> 6);
+                x += static_cast<float>(f_renderer.ft_vector_previous_char.x >> 6);
             }
 
             char_data = f_renderer.allocated_char_data[ui32char];

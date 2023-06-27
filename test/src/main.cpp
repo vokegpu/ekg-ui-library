@@ -238,10 +238,10 @@ int32_t main(int32_t, char**) {
 
     auto debuglabel = ekg::label("Debug:", ekg::dock::next);
     debuglabel->set_text_align(ekg::dock::left | ekg::dock::top);
-    auto textboxdebug = ekg::textbox("textbox-debug", "", ekg::dock::next);
-    textboxdebug->set_scaled_height(6);
-    textboxdebug->set_enabled(false);
-    textboxdebug->set_width(600.0f);
+    // auto textboxdebug = ekg::textbox("textbox-debug", "", ekg::dock::next);
+    // textboxdebug->set_scaled_height(6);
+    // textboxdebug->set_enabled(false);
+    // textboxdebug->set_width(600.0f);
 
     ekg::ui::label *labelresult {};
     std::string previous_operator {};
@@ -479,9 +479,9 @@ int32_t main(int32_t, char**) {
         // framedebug->set_size(ekg::display::width, ekg::display::height);
 
         if (ekg::log::buffering()) {
-            std::string oldlog {textboxdebug->get_text()};
+            std::string oldlog {};//textboxdebug->get_text()};
             if (oldlog.size() > 50000) oldlog = "";
-            textboxdebug->set_text(oldlog + ekg::log::cache);
+            //textboxdebug->set_text(oldlog + ekg::log::cache);
             ekg::log::flush();
         }
 

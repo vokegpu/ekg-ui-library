@@ -62,3 +62,5 @@
 -- Reduced OpenGL overhead rendering calls.
 -- Fixed scroll priority definitely.
 -- Multi-cursor textbox UI-based system (select box disabled temporary).
+
+0.0.1.0.1.8
