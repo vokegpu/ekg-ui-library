@@ -584,7 +584,7 @@ int32_t ekg::ui::textboxwidget::find_cursor(ekg::ui::textboxwidget::cursor &targ
     for (ekg::ui::textboxwidget::cursor &cursor : this->loaded_multi_cursor_list) {
         a_cursor_pos = ((last_line_utf_char_index && total_it + 1 >= cursor.pos[0].index) || total_it >= cursor.pos[0].index);
         b_cursor_pos = ((last_line_utf_char_index && total_it + 1 <= cursor.pos[1].index) || total_it <= cursor.pos[1].index);
-        if ((a_cursor_pos && b_cursor_pos) && cursor.pos[0].chunk_index >= it_chunk && cursor.pos[1].chunk_index <= it_chunk) {
+        if ((a_cursor_pos && b_cursor_pos && it_chunk >= cursor.pos[0].chunk_index && it_chunk <= cursor.pos[1].chunk_index) || (it_chunk > cursor.pos[0].chunk_index && it_chunk < cursor.pos[1].chunk_index)) {
             target_cursor = cursor;
             return 0;
         }
@@ -666,6 +666,7 @@ void ekg::ui::textboxwidget::on_draw_refresh() {
     int32_t cursor_pos_index {};
     bool draw_cursor {this->flag.focused && !ekg::reach(ekg::core->get_ui_timing(), 500)};
     bool optimize_batching {};
+    bool filled_line {};
 
 
     /*
@@ -722,14 +723,14 @@ void ekg::ui::textboxwidget::on_draw_refresh() {
             if ((cursor_pos_index = this->find_cursor(cursor, total_it, it_chunk, utf_char_last_index)) != -1 && (draw_cursor || cursor.pos[0] != cursor.pos[1])) {
                 optimize_batching = true;
 
-                if (cursor.pos[0] != cursor.pos[1]) {
+                if (cursor.pos[0] != cursor.pos[1] && (it_chunk == cursor.pos[0].chunk_index || it_chunk == cursor.pos[1].chunk_index)) {
                     cursor_draw_data_list.emplace_back(ekg::rect {
                         rect.x + x + this->embedded_scroll.scroll.x,
                         rect.y + y + this->embedded_scroll.scroll.y,
                         char_data.wsize,
                         text_height
                     });
-                } else {
+                } else if (cursor.pos[0] == cursor.pos[1]) {
                     utf_char_last_index = utf_char_last_index && cursor.pos[cursor_pos_index].index == total_it + 1;
                     cursor_draw_data_list.emplace_back(ekg::rect {
                         rect.x + x + (char_data.wsize * utf_char_last_index) + this->embedded_scroll.scroll.x,
@@ -773,9 +774,9 @@ void ekg::ui::textboxwidget::on_draw_refresh() {
 
         if (it_chunk > cursor.pos[0].chunk_index && it_chunk < cursor.pos[1].chunk_index) {
             cursor_draw_data_list.emplace_back(ekg::rect {
-                rect.x + this->embedded_scroll.scroll.x,
-                rect.y + y + this->embedded_scroll.scroll.y + (this->text_offset * 0.5f),
-                x + this->text_offset,
+                rect.x + this->rect_cursor.w + this->embedded_scroll.scroll.x,
+                rect.y + y + this->embedded_scroll.scroll.y,
+                x,
                 text_height
             });
         }
