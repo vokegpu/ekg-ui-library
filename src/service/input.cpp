@@ -29,6 +29,11 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
     this->motion_event = false;
 
     switch (sdl_event.type) {
+        case SDL_TEXTINPUT: {
+            this->pressed_event = true;
+            break;
+        }
+
         case SDL_KEYDOWN: {
             this->pressed_event = true;
 

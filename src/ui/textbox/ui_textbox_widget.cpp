@@ -15,6 +15,7 @@
 #include "ekg/ui/textbox/ui_textbox.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
+#include "ekg/os/systemcursor.hpp"
 
 /*
  * This is not really optmised but I think it is okay.
@@ -469,6 +470,10 @@ void ekg::ui::textboxwidget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
     this->embedded_scroll.on_pre_event(sdl_event);
     this->flag.absolute = this->embedded_scroll.is_dragging_bar() || this->embedded_scroll.flag.activy || this->flag.state;
+
+    if (this->flag.hovered) {
+        ekg::cursor = ekg::systemcursor::ibeam;
+    }
 }
 
 void ekg::ui::textboxwidget::on_event(SDL_Event &sdl_event) {

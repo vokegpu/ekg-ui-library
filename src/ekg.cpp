@@ -14,6 +14,7 @@
 
 #include "ekg/ekg.hpp"
 #include "ekg/os/info.hpp"
+#include "ekg/os/systemcursor.hpp"
 
 ekg::runtime* ekg::core {};
 std::string ekg::gl_version {"#version 450"};
@@ -152,12 +153,18 @@ ekg::gl_version + "\n"
     ekg::gpu::allocator::program.set("uViewportHeight", static_cast<float>(ekg::display::height));
     ekg::gpu::revoke();
 
-    /* SDL info. */
+    /* Output SDL info. */
 
     SDL_version sdl_version {};
     SDL_GetVersion(&sdl_version);
 
     ekg::log() << "SDL version: " << (int32_t) sdl_version.major << '.' << (int32_t) sdl_version.minor << '.' << (int32_t) (sdl_version.patch);
+
+    /* Init OS cursor and check mouse icons. */
+
+    ekg::init_cursor();
+
+    ekg::log() << "Initialising OS cursor";
 }
 
 void ekg::quit() {
@@ -204,22 +211,20 @@ void ekg::event(SDL_Event &sdl_event) {
         }
     }
 
+    ekg::cursor = ekg::systemcursor::arrow;
     ekg::core->process_event(sdl_event);
 }
 
 void ekg::update() {
     ekg::core->process_update();
+    ekg::set_cursor(ekg::cursor);
 }
 
 void ekg::render() {
-    glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     ekg::core->process_render();
-
     glDisable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
 }
 
 ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_position, const ekg::vec2 &size) {

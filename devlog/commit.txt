@@ -68,3 +68,4 @@
 -- Multi-cursor selection box rendering.
 -- Fixed step scale system.
 -- Temp fix resizing default window scale.
+-- Added system mouse feature.

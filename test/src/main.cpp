@@ -392,6 +392,8 @@ int32_t main(int32_t, char**) {
     ekg::input::bind("pompom", "c-up");
     ekg::input::bind("pompom", "lctrl+b");
 
+    glDisable(GL_DEPTH_TEST);
+
     /*
      * Mainloop.
      */
