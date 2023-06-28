@@ -505,7 +505,7 @@ void ekg::ui::textboxwidget::on_event(SDL_Event &sdl_event) {
         ekg::update_high_frequency(this);
     }
 
-    if (!this->flag.hovered && (released || pressed)) {
+    if (!this->flag.hovered && (released || pressed) && sdl_event.type != SDL_TEXTINPUT) {
         if (pressed) {
             ekg::ui::textboxwidget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
             main_cursor.pos[1] = main_cursor.pos[0];
