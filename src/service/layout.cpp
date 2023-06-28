@@ -266,10 +266,6 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *wid
     return extent;
 }
 
-void ekg::service::layout::process(ekg::ui::abstract_widget *pwidget) {
-
-}
-
 void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_parent) {
     if (widget_parent == nullptr || widget_parent->data == nullptr) {
         return;
@@ -387,8 +383,8 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
         }
 
         if (skip_widget) {
-            widgets->on_reload();
             it++;
+            widgets->on_update();
             continue;
         }
 
@@ -510,9 +506,15 @@ float ekg::service::layout::get_min_offset() {
 }
 
 void ekg::service::layout::update_scale_factor() {
+    this->viewport_scale = {static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height)};
+
     ekg::vec2 monitor_resolution {ekg::scalebase};
+    ekg::vec2 input_resolution {this->viewport_scale};
+
     if (ekg::autoscale) {
+        ekg::scalebase = {1920.0f, 1080.0f};
         ekg::os_get_monitor_resolution(monitor_resolution.x, monitor_resolution.y);
+        input_resolution = monitor_resolution;
     }
 
     /*
@@ -526,7 +528,7 @@ void ekg::service::layout::update_scale_factor() {
      * 50  == 2
      * 75  == 3
      * 100 == 4
-     *
+     *x
      * Then is divided by 4 (becase the maximum scale step is 4)
      * e.g: 2/4 = 0.5f -- 3/4 = 0.75f
      */
@@ -535,15 +537,10 @@ void ekg::service::layout::update_scale_factor() {
     float monitor_scale {monitor_resolution.x * monitor_resolution.y};
     float monitor_factor {monitor_scale / base_scale};
     float monitor_scale_percent {monitor_factor * 100.0f};
+    float factor {((input_resolution.x * input_resolution.y) / base_scale) * 100.0f};
 
-    monitor_scale_percent /= ekg::scaleinterval;
-    monitor_scale_percent = (monitor_scale_percent / (100.0f / ekg::scaleinterval));
-
-    this->viewport_scale = {static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height)};
-    float factor {((this->viewport_scale.x * this->viewport_scale.y) / base_scale) * 100.0f};
-
-    factor = (factor / monitor_scale_percent) / ekg::scaleinterval;
-    this->scale_factor = ekg::max(factor, 1.0f);
+    factor = roundf(factor / ekg::scaleinterval) / (monitor_scale_percent / ekg::scaleinterval);
+    this->scale_factor = ekg::clamp(factor, 0.5f, 2.0f);
 }
 
 float ekg::service::layout::get_scale_factor() {

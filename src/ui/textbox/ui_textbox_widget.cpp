@@ -169,10 +169,19 @@ void ekg::ui::textboxwidget::process_text(ekg::ui::textboxwidget::cursor &cursor
 
     switch (action) {
     case ekg::ui::textboxwidget::action::addtext: {
-        std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
         if (cursor.pos[0] == cursor.pos[1] && !text.empty()) {
+            std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
             int64_t it {cursor.pos[0].text_index};
+
             emplace_text = ekg::utf8substr(emplace_text, 0, it) + text.data() + ekg::utf8substr(emplace_text, it, ekg::utf8length(emplace_text));
+            this->move_cursor(cursor.pos[0], 1, 0);
+        } else if (!text.empty()) {
+            std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
+
+            int64_t b_it {cursor.pos[0].text_index};
+            int64_t a_it {cursor.pos[1].text_index};
+
+            emplace_text = ekg::utf8substr(emplace_text, 0, a_it) + text.data() + ekg::utf8substr(emplace_text, b_it, ekg::utf8length(emplace_text));
             this->move_cursor(cursor.pos[0], 1, 0);
         }
 
@@ -336,7 +345,7 @@ void ekg::ui::textboxwidget::check_cursor_text_bounding(ekg::ui::textboxwidget::
         char_rect.x = rect.x;
         char_rect.y = y;
         char_rect.w = rect.w;
-        char_rect.h = this->text_height;
+        char_rect.h = this->text_height + 1.0f;
 
         if (ekg::rect_collide_vec(char_rect, interact) && bounding_it == -1) {
             char_rect.w = this->text_offset;
@@ -668,7 +677,6 @@ void ekg::ui::textboxwidget::on_draw_refresh() {
     bool optimize_batching {};
     bool filled_line {};
 
-
     /*
      * 0 == previous char wsize
      * 1 == current char wisze
@@ -720,7 +728,7 @@ void ekg::ui::textboxwidget::on_draw_refresh() {
 
             char_data = f_renderer.allocated_char_data[ui32char];
             utf_char_last_index = utf_char_index + 1 == text_size;
-            if ((cursor_pos_index = this->find_cursor(cursor, total_it, it_chunk, utf_char_last_index)) != -1 && (draw_cursor || cursor.pos[0] != cursor.pos[1])) {
+            if ((cursor_pos_index = this->find_cursor(cursor, total_it, it_chunk, utf_char_last_index)) != -1 && (draw_cursor || (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > total_it))) {
                 optimize_batching = true;
 
                 if (cursor.pos[0] != cursor.pos[1] && (it_chunk == cursor.pos[0].chunk_index || it_chunk == cursor.pos[1].chunk_index)) {

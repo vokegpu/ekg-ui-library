@@ -66,3 +66,4 @@
 0.0.1.0.1.8
 
 -- Multi-cursor selection box rendering.
+-- Fixed step scale system.

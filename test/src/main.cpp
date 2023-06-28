@@ -220,14 +220,10 @@ int32_t main(int32_t, char**) {
 
     auto ff3 = ekg::textbox("frame-debug", "oi", ekg::dock::fill | ekg::dock::next);
     ff3->set_scaled_height(4);
-    ekg::button("button", ekg::dock::fill | ekg::dock::next);
-    ekg::button("button", ekg::dock::fill | ekg::dock::next);
-    ekg::button("button", ekg::dock::fill | ekg::dock::next);
-    ekg::button("button", ekg::dock::fill | ekg::dock::next);
-    ekg::button("button", ekg::dock::fill | ekg::dock::next);
-    ekg::button("button", ekg::dock::fill | ekg::dock::next);
-    ekg::button("button 6", ekg::dock::fill | ekg::dock::next);
-    ekg::button("button 7", ekg::dock::fill | ekg::dock::next);
+    ekg::checkbox("Auto-scale", true, ekg::dock::fill | ekg::dock::next)->set_tag("base.resolution.autoscale");
+    ekg::label("Aspect:", ekg::dock::fill | ekg::dock::next);
+    ekg::slider("base.resolution.width", 1920.0f, 800.0f, 2560.0f, ekg::dock::fill);
+    ekg::slider("base.resolution.height", 1080.0f, 600.0f, 1440.0f, ekg::dock::fill);
     ff->add_child(ekg::scroll("hello-sou-gostosa")->get_id());
     f1->add_child(ff->get_id());
     f1->add_child(ekg::scroll("hello-sou-gostosa")->get_id());
@@ -238,10 +234,10 @@ int32_t main(int32_t, char**) {
 
     auto debuglabel = ekg::label("Debug:", ekg::dock::next);
     debuglabel->set_text_align(ekg::dock::left | ekg::dock::top);
-    // auto textboxdebug = ekg::textbox("textbox-debug", "", ekg::dock::next);
-    // textboxdebug->set_scaled_height(6);
-    // textboxdebug->set_enabled(false);
-    // textboxdebug->set_width(600.0f);
+    auto textboxdebug = ekg::textbox("textbox-debug", "", ekg::dock::next);
+    textboxdebug->set_scaled_height(6);
+    textboxdebug->set_enabled(false);
+    textboxdebug->set_width(600.0f);
 
     ekg::ui::label *labelresult {};
     std::string previous_operator {};
@@ -423,6 +419,14 @@ int32_t main(int32_t, char**) {
                     //framedebug->set_height(ekg::display::height);
 
                     if (ekg::listen(event, sdl_event)) {
+                        if (event.tag == "base.resolution.width") {
+                        ekg::scalebase.x = std::stof(event.value);
+                        } else if (event.tag == "base.resolution.height") {
+                            ekg::scalebase.y = std::stof(event.value);
+                        } else if (event.tag == "base.resolution.autoscale") {
+                            ekg::autoscale = event.value == "checked";
+                        }
+
                         if (event.tag == "calculator-assign") {
                             labelresult->set_text(resultcalc(labelresult->get_text()));
                         } else if (event.tag == "calculator-cls") {
@@ -479,9 +483,9 @@ int32_t main(int32_t, char**) {
         // framedebug->set_size(ekg::display::width, ekg::display::height);
 
         if (ekg::log::buffering()) {
-            std::string oldlog {};//textboxdebug->get_text()};
+            std::string oldlog {textboxdebug->get_text()};
             if (oldlog.size() > 50000) oldlog = "";
-            //textboxdebug->set_text(oldlog + ekg::log::cache);
+            textboxdebug->set_text(oldlog + ekg::log::cache);
             ekg::log::flush();
         }
 
