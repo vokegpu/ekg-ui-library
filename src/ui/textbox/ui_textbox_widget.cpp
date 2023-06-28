@@ -733,7 +733,8 @@ void ekg::ui::textboxwidget::on_draw_refresh() {
 
             char_data = f_renderer.allocated_char_data[ui32char];
             utf_char_last_index = utf_char_index + 1 == text_size;
-            if ((cursor_pos_index = this->find_cursor(cursor, total_it, it_chunk, utf_char_last_index)) != -1 && (draw_cursor || (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > total_it))) {
+            if ((cursor_pos_index = this->find_cursor(cursor, total_it, it_chunk, utf_char_last_index)) != -1 && ((draw_cursor && cursor.pos[1].index > total_it) || 
+                                                                                                                  (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > total_it))) {
                 optimize_batching = true;
 
                 if (cursor.pos[0] != cursor.pos[1] && (it_chunk == cursor.pos[0].chunk_index || it_chunk == cursor.pos[1].chunk_index)) {
