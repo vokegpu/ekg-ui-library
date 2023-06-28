@@ -382,9 +382,11 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
             }
         }
 
+
+        // @TODO Okay note, I think I ll remove this.
+        widgets->on_reload();
         if (skip_widget) {
             it++;
-            widgets->on_update();
             continue;
         }
 

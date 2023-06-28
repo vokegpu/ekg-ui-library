@@ -178,8 +178,8 @@ void ekg::ui::textboxwidget::process_text(ekg::ui::textboxwidget::cursor &cursor
         } else if (!text.empty()) {
             std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
 
-            int64_t b_it {cursor.pos[0].text_index};
-            int64_t a_it {cursor.pos[1].text_index};
+            int64_t a_it {cursor.pos[0].text_index};
+            int64_t b_it {cursor.pos[1].text_index};
 
             emplace_text = ekg::utf8substr(emplace_text, 0, a_it) + text.data() + ekg::utf8substr(emplace_text, b_it, ekg::utf8length(emplace_text));
             this->move_cursor(cursor.pos[0], 1, 0);

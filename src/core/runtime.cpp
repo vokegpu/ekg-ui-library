@@ -79,10 +79,9 @@ void ekg::runtime::update_size_changed() {
     }
 
     for (ekg::ui::abstract_widget *&widgets : this->widget_list_map["all"]) {
+        widgets->on_reload();
         if (!widgets->data->has_parent() && widgets->data->has_children()) {
             this->do_task_synclayout(widgets);
-        } else {
-            widgets->on_reload();
         }
     }
 }
