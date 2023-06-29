@@ -7,7 +7,7 @@ The purpose of EKG is to be fully customizable, smooth, and with many animations
 Be sure you compile together all these three libs:  
 ![GLEW](https://glew.sourceforge.net/), ![SDL2](https://www.libsdl.org/), and ![Freetype](https://freetype.org/).
 
-The order of linking is important too, be sure you link EKG first before required libs.
+The order of linker is important too, be sure you link EKG first before required libs.
 
 If you are on Android NDK, please replace GLEW with GLES3.
 
