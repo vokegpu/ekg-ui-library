@@ -18,7 +18,7 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
 namespace ekg::ui {
-    class checkbox_widget : public ekg::ui::abstract_widget {
+    class checkboxwidget : public ekg::ui::abstract_widget {
     public:
         ekg::rect rect_text {};
         ekg::rect rect_box {};

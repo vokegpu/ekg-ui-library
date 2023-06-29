@@ -57,7 +57,7 @@ namespace ekg::ui {
         
         ekg::rect rect_text {};
         ekg::rect rect_cursor {};
-        ekg::ui::scroll_embedded_widget embedded_scroll {};
+        ekg::ui::scrollembeddedwidget embedded_scroll {};
 
         float cursor_char_wsize[3] {};
         float text_offset {};
