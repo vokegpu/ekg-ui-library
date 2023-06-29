@@ -22,7 +22,11 @@ void ekg::ui::slider_widget::update_bar(float x, float y) {
     auto &rect {this->get_abs_rect()};
     auto bar {this->rect_bar + rect};
     auto orientation {ui->get_bar_align()};
-    float factor {}, dimension_factor {}, min {ui->get_value_min()}, max {ui->get_value_max()};
+    
+    float factor {};
+    float dimension_factor {};
+    float min {ui->get_value_min()};
+    float max {ui->get_value_max()};
 
     switch (orientation) {
         case ekg::dock::left: {

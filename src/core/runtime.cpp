@@ -640,7 +640,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
         break;
     }
     case ekg::type::textbox: {
-        auto *widget {new ekg::ui::textboxwidget()};
+        auto *widget {new ekg::ui::textbox_widget()};
         widget->data = ui;
         created_widget = widget;
         append_group = true;

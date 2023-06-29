@@ -13,10 +13,9 @@
  */
 
 #include "ekg/service/layout.hpp"
-#include "ekg/ui/frame/ui_frame.hpp"
+#include "ekg/os/info.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
-#include "ekg/os/info.hpp"
 
 void ekg::service::layout::set_preset_mask(const ekg::vec3 &offset, ekg::axis axis, float initial_respective_size) {
     this->dock_axis_mask = axis;

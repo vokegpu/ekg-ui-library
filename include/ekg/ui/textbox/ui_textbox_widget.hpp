@@ -11,6 +11,7 @@
  *
  * @VokeGpu 2023 all rights reserved.
  */
+
 #ifndef EKG_UI_TEXTBOX_WIDGET_H
 #define EKG_UI_TEXTBOX_WIDGET_H
 
@@ -19,7 +20,7 @@
 #include <unordered_map>
 
 namespace ekg::ui {
-    class textboxwidget : public ekg::ui::abstract_widget {
+    class textbox_widget : public ekg::ui::abstract_widget {
     public:
         enum action {
             addtext,
@@ -27,7 +28,7 @@ namespace ekg::ui {
             breakline
         };
         
-        struct cursorpos {
+        struct cursor_pos {
         public:
             int64_t index {};
             int64_t select_index {};
@@ -35,24 +36,24 @@ namespace ekg::ui {
             int64_t text_index {};
             int64_t last_text_index {};
         public:
-            inline bool operator==(ekg::ui::textboxwidget::cursorpos &r) {
+            inline bool operator==(ekg::ui::textbox_widget::cursor_pos &r) {
                 return this->index == r.index && this->chunk_index == r.chunk_index && this->text_index == r.text_index;
             }
 
-            inline bool operator!=(ekg::ui::textboxwidget::cursorpos &r) {
+            inline bool operator!=(ekg::ui::textbox_widget::cursor_pos &r) {
                 return !(*this == r);
             }
         };
 
         struct cursor {
         public:
-            ekg::ui::textboxwidget::cursorpos pos[3] {};
+            ekg::ui::textbox_widget::cursor_pos pos[3] {};
         };
     public:
         std::vector<std::string> text_chunk_list {};
         std::string widget_side_text {};
-        std::vector<ekg::ui::textboxwidget::cursor> loaded_multi_cursor_list {
-            ekg::ui::textboxwidget::cursor()
+        std::vector<ekg::ui::textbox_widget::cursor> loaded_multi_cursor_list {
+            ekg::ui::textbox_widget::cursor()
         };
         
         ekg::rect rect_text {};
@@ -66,12 +67,12 @@ namespace ekg::ui {
         bool redraw_cursor {};
         bool is_ui_enabled {};
     public:
-        void check_cursor_text_bounding(ekg::ui::textboxwidget::cursor &cursor, bool reset_second_cursor_pos);
-        std::string &get_cursor_emplace_text(ekg::ui::textboxwidget::cursorpos &cursor);
-        void process_text(ekg::ui::textboxwidget::cursor &cursor, std::string_view text, ekg::ui::textboxwidget::action action, int64_t direction);
-        void move_cursor(ekg::ui::textboxwidget::cursorpos &cursor, int64_t x, int64_t y);
+        void check_cursor_text_bounding(ekg::ui::textbox_widget::cursor &cursor, bool reset_second_cursor_pos);
+        std::string &get_cursor_emplace_text(ekg::ui::textbox_widget::cursor_pos &cursor);
+        void process_text(ekg::ui::textbox_widget::cursor &cursor, std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction);
+        void move_cursor(ekg::ui::textbox_widget::cursor_pos &cursor, int64_t x, int64_t y);
         void check_largest_text_width(bool update_ui_data_text_together);
-        int32_t find_cursor(ekg::ui::textboxwidget::cursor &target_cursor, int64_t total_it, int64_t it_chunk, bool last_line_utf_char_index);
+        int32_t find_cursor(ekg::ui::textbox_widget::cursor &target_cursor, int64_t total_it, int64_t it_chunk, bool last_line_utf_char_index);
 
         void on_destroy() override;
         void on_reload() override;
