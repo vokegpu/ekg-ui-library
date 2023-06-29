@@ -16,6 +16,7 @@
 #include "ekg/ekg.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 #include "ekg/draw/draw.hpp"
+#include "ekg/os/system_cursor.hpp"
 
 void ekg::ui::scroll_embedded_widget::check_axis_states() {
     this->is_vertical_enabled = this->rect_child.h > this->rect_mother->h;
@@ -151,6 +152,10 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
 #else
         this->scroll.z = ekg::clamp(this->scroll.x + (-interact.z * this->acceleration.y), this->rect_mother->w - this->rect_child.w, 0.0f);
 #endif
+    }
+
+    if (this->flag.hovered) {
+        ekg::cursor = ekg::systemcursor::arrow;
     }
 
     if (this->flag.hovered && ekg::input::pressed() && ekg::input::action("scrollbar-drag")) {

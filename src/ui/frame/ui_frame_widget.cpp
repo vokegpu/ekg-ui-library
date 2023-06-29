@@ -139,10 +139,12 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
         if ((top && left) || (bottom && right)) {
             ekg::cursor = ekg::systemcursor::sizenwse;
-        }
-
-        if ((top && right) && (bottom && left)) {
+        } else if ((top && right) || (bottom && left)) {
             ekg::cursor = ekg::systemcursor::sizenesw;
+        } else if (top || bottom) {
+            ekg::cursor = ekg::systemcursor::sizens;
+        } else if (left || right) {
+            ekg::cursor = ekg::systemcursor::sizewe;
         }
     }
 
