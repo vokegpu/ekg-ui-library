@@ -9,7 +9,7 @@ Be sure you compile together all these three libs:
 
 The order of linker is important too, be sure you link EKG first before required libs.
 
-If you are on Android NDK, please replace GLEW with GLES3.
+![If you are on Android NDK](https://github.com/vokegpu/pompom), please replace GLEW with GLES3.
 
 ![Image Text](/splash/splash-shocase-3.0-light-theme.png?raw=true)
 ![Calc](/splash/splash-calc-showcase.png?raw=true)
