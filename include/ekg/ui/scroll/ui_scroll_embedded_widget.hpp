@@ -20,7 +20,7 @@
 #include "ekg/util/env.hpp"
 
 namespace ekg::ui {
-    class scrollembeddedwidget {
+    class scroll_embedded_widget {
     public:
         std::vector<int32_t> child_id_list {};
         ekg::rect *rect_mother {};
@@ -41,7 +41,7 @@ namespace ekg::ui {
         ekg::vec2 acceleration {};
         ekg::vec2 bar_drag {};
     public:
-        explicit scrollembeddedwidget();
+        explicit scroll_embedded_widget();
 
         void calculate_rect_bar_sizes();
         void clamp_scroll();

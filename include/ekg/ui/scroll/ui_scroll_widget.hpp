@@ -19,9 +19,9 @@
 #include "ui_scroll_embedded_widget.hpp"
 
 namespace ekg::ui {
-    class scrollwidget : public ekg::ui::abstract_widget {
+    class scroll_widget : public ekg::ui::abstract_widget {
     public:
-        ekg::ui::scrollembeddedwidget scroll {};
+        ekg::ui::scroll_embedded_widget scroll {};
     public:
         void on_destroy() override;
         void on_reload() override;

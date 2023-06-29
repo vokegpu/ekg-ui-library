@@ -18,11 +18,11 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 
-void ekg::ui::buttonwidget::on_destroy() {
+void ekg::ui::button_widget::on_destroy() {
     abstract_widget::on_destroy();
 }
 
-void ekg::ui::buttonwidget::on_reload() {
+void ekg::ui::button_widget::on_reload() {
     abstract_widget::on_reload();
 
     auto ui {(ekg::ui::button*) this->data};
@@ -54,11 +54,11 @@ void ekg::ui::buttonwidget::on_reload() {
     this->dimension.h = ekg::min(this->dimension.h, layout_mask.h);
 }
 
-void ekg::ui::buttonwidget::on_pre_event(SDL_Event &sdl_event) {
+void ekg::ui::button_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
 }
 
-void ekg::ui::buttonwidget::on_event(SDL_Event &sdl_event) {
+void ekg::ui::button_widget::on_event(SDL_Event &sdl_event) {
     abstract_widget::on_event(sdl_event);
 
     bool pressed {ekg::input::pressed()};
@@ -85,15 +85,15 @@ void ekg::ui::buttonwidget::on_event(SDL_Event &sdl_event) {
     }
 }
 
-void ekg::ui::buttonwidget::on_post_event(SDL_Event &sdl_event) {
+void ekg::ui::button_widget::on_post_event(SDL_Event &sdl_event) {
     abstract_widget::on_post_event(sdl_event);
 }
 
-void ekg::ui::buttonwidget::on_update() {
+void ekg::ui::button_widget::on_update() {
     abstract_widget::on_update();
 }
 
-void ekg::ui::buttonwidget::on_draw_refresh() {
+void ekg::ui::button_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
     auto ui {(ekg::ui::button*) this->data};
     auto &rect {this->get_abs_rect()};

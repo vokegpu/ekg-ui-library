@@ -17,17 +17,17 @@
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 #include "ekg/draw/draw.hpp"
 
-void ekg::ui::scrollembeddedwidget::check_axis_states() {
+void ekg::ui::scroll_embedded_widget::check_axis_states() {
     this->is_vertical_enabled = this->rect_child.h > this->rect_mother->h;
     this->is_horizontal_enabled = this->rect_child.w > this->rect_mother->w;
 }
 
-void ekg::ui::scrollembeddedwidget::reset_scroll() {
+void ekg::ui::scroll_embedded_widget::reset_scroll() {
     this->scroll.x = this->scroll.z;
     this->scroll.y = this->scroll.w;
 }
 
-bool ekg::ui::scrollembeddedwidget::check_activy_state(bool state) {
+bool ekg::ui::scroll_embedded_widget::check_activy_state(bool state) {
     state = state || (static_cast<int32_t>(round(this->scroll.x)) != static_cast<int32_t>(round(this->scroll.z))) || (static_cast<int32_t>(round(this->scroll.y)) != static_cast<int32_t>(round(this->scroll.w)));
     if (!state) {
         this->reset_scroll();
@@ -36,25 +36,25 @@ bool ekg::ui::scrollembeddedwidget::check_activy_state(bool state) {
     return state;
 }
 
-bool ekg::ui::scrollembeddedwidget::is_dragging_bar() {
+bool ekg::ui::scroll_embedded_widget::is_dragging_bar() {
     return this->flag.state || this->flag.extra_state;
 }
 
-void ekg::ui::scrollembeddedwidget::calculate_rect_bar_sizes() {
+void ekg::ui::scroll_embedded_widget::calculate_rect_bar_sizes() {
     this->rect_vertical_scroll_bar.h = this->rect_mother->h;
     float offset_vertical {this->rect_child.h - this->rect_mother->h};
     this->rect_vertical_scroll_bar.h = offset_vertical;
 }
 
-ekg::ui::scrollembeddedwidget::scrollembeddedwidget() {
+ekg::ui::scroll_embedded_widget::scroll_embedded_widget() {
     this->rect_mother = &this->rect_child;
 }
 
-void ekg::ui::scrollembeddedwidget::on_destroy() {
+void ekg::ui::scroll_embedded_widget::on_destroy() {
 
 }
  
-void ekg::ui::scrollembeddedwidget::on_reload() {
+void ekg::ui::scroll_embedded_widget::on_reload() {
     if (this->mother_id == 0 && this->child_id_list.empty()) {
         this->calculate_rect_bar_sizes();
         this->check_axis_states();
@@ -74,7 +74,7 @@ void ekg::ui::scrollembeddedwidget::on_reload() {
 
     switch (mother_widget->data->get_type()) {
         case ekg::type::frame: {
-            ekg::ui::framewidget *frame {(ekg::ui::framewidget*) mother_widget};
+            ekg::ui::frame_widget *frame {(ekg::ui::frame_widget*) mother_widget};
             frame->p_scroll_embedded = this;
             break;
         }
@@ -117,7 +117,7 @@ void ekg::ui::scrollembeddedwidget::on_reload() {
     this->check_axis_states();
 }
 
-void ekg::ui::scrollembeddedwidget::on_pre_event(SDL_Event &sdl_event) {
+void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
     if (ekg::input::pressed() || ekg::input::released() || ekg::input::motion() || ekg::input::wheel()) {
         ekg::rect scaled_vertical_bar {this->rect_vertical_scroll_bar};
         scaled_vertical_bar.y += this->rect_mother->y;
@@ -133,7 +133,7 @@ void ekg::ui::scrollembeddedwidget::on_pre_event(SDL_Event &sdl_event) {
     }
 }
 
-void ekg::ui::scrollembeddedwidget::on_event(SDL_Event &sdl_event) {
+void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
     this->check_axis_states();
     auto &interact {ekg::interact()};
 
@@ -192,11 +192,11 @@ void ekg::ui::scrollembeddedwidget::on_event(SDL_Event &sdl_event) {
     }
 }
 
-void ekg::ui::scrollembeddedwidget::on_post_event(SDL_Event &sdl_event) {
+void ekg::ui::scroll_embedded_widget::on_post_event(SDL_Event &sdl_event) {
 
 }
 
-void ekg::ui::scrollembeddedwidget::on_update() {
+void ekg::ui::scroll_embedded_widget::on_update() {
     this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::scrollsmooth * ekg::display::dt);
     this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::scrollsmooth * ekg::display::dt);
 
@@ -207,7 +207,7 @@ void ekg::ui::scrollembeddedwidget::on_update() {
     ekg::dispatch(ekg::env::redraw);
 }
 
-void ekg::ui::scrollembeddedwidget::clamp_scroll() {
+void ekg::ui::scroll_embedded_widget::clamp_scroll() {
     ekg::vec2 vertical_scroll_limit {0.0f, this->rect_mother->h - this->rect_child.h};
     ekg::vec2 horizontal_scroll_limit {0.0f, this->rect_mother->w - this->rect_child.w};
 
@@ -234,7 +234,7 @@ void ekg::ui::scrollembeddedwidget::clamp_scroll() {
     }
 }
 
-void ekg::ui::scrollembeddedwidget::on_draw_refresh() {
+void ekg::ui::scroll_embedded_widget::on_draw_refresh() {
     auto &theme {ekg::theme()};
 
     this->rect_vertical_scroll_bar.x = this->rect_mother->x + this->rect_mother->w - static_cast<float>(theme.scrollbar_pixel_thickness);

@@ -18,21 +18,21 @@
 #include "ekg/draw/draw.hpp"
 #include "ekg/util/util_ui.hpp"
 
-void ekg::ui::framewidget::on_destroy() {
+void ekg::ui::frame_widget::on_destroy() {
     abstract_widget::on_destroy();
 }
 
-void ekg::ui::framewidget::on_reload() {
+void ekg::ui::frame_widget::on_reload() {
     abstract_widget::on_reload();
     auto &rect {this->get_abs_rect()};
     this->ui_theme_activy_offset = static_cast<float>(ekg::theme().frame_activy_offset);
 }
 
-void ekg::ui::framewidget::on_pre_event(SDL_Event &sdl_event) {
+void ekg::ui::frame_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
 }
 
-void ekg::ui::framewidget::on_event(SDL_Event &sdl_event) {
+void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
     abstract_widget::on_event(sdl_event);
 
     auto &interact {ekg::interact()};
@@ -127,11 +127,11 @@ void ekg::ui::framewidget::on_event(SDL_Event &sdl_event) {
     }
 }
 
-void ekg::ui::framewidget::on_post_event(SDL_Event &sdl_event) {
+void ekg::ui::frame_widget::on_post_event(SDL_Event &sdl_event) {
     abstract_widget::on_post_event(sdl_event);
 }
 
-void ekg::ui::framewidget::on_update() {
+void ekg::ui::frame_widget::on_update() {
     abstract_widget::on_update();
 
     if (this->p_scroll_embedded != nullptr) {
@@ -140,7 +140,7 @@ void ekg::ui::framewidget::on_update() {
     }
 }
 
-void ekg::ui::framewidget::on_draw_refresh() {
+void ekg::ui::frame_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
     auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};

@@ -18,7 +18,7 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
 namespace ekg::ui {
-    class buttonwidget : public ekg::ui::abstract_widget {
+    class button_widget : public ekg::ui::abstract_widget {
     public:
         ekg::rect rect_text {};
     public:

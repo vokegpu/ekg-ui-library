@@ -18,7 +18,7 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
 namespace ekg::ui {
-	class sliderwidget : public ekg::ui::abstract_widget {
+	class slider_widget : public ekg::ui::abstract_widget {
     protected:
         void update_bar(float, float);
         void update_bar_axis(ekg::dock);

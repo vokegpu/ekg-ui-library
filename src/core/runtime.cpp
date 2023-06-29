@@ -594,9 +594,8 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
         created_widget = widget;
         break;
     }
-
     case ekg::type::frame: {
-        auto *widget {new ekg::ui::framewidget()};
+        auto *widget {new ekg::ui::frame_widget()};
         widget->is_scissor_refresh = true;
         widget->data = ui;
         update_layout = true;
@@ -605,47 +604,41 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
         ui->reset();
         break;
     }
-
     case ekg::type::button: {
-        auto *widget {new ekg::ui::buttonwidget()};
+        auto *widget {new ekg::ui::button_widget()};
         widget->data = ui;
         created_widget = widget;
         append_group = true;
         break;
     }
-
     case ekg::type::label: {
-        auto *widget {new ekg::ui::labelwidget()};
+        auto *widget {new ekg::ui::label_widget()};
         widget->data = ui;
         created_widget = widget;
         append_group = true;
         break;
     }
-
     case ekg::type::checkbox: {
-        auto *widget {new ekg::ui::checkboxwidget()};
+        auto *widget {new ekg::ui::checkbox_widget()};
         widget->data = ui;
         created_widget = widget;
         append_group = true;
         break;
     }
-
     case ekg::type::slider: {
-        auto *widget {new ekg::ui::sliderwidget()};
+        auto *widget {new ekg::ui::slider_widget()};
         widget->data = ui;
         created_widget = widget;
         append_group = true;
         break;
     }
-
     case ekg::type::popup: {
-        auto *widget {new ekg::ui::popupwidget()};
+        auto *widget {new ekg::ui::popup_widget()};
         widget->data = ui;
         created_widget = widget;
         update_layout = false;
         break;
     }
-
     case ekg::type::textbox: {
         auto *widget {new ekg::ui::textboxwidget()};
         widget->data = ui;
@@ -653,15 +646,13 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *ui) {
         append_group = true;
         break;
     }
-
     case ekg::type::scroll: {
-        auto *widget {new ekg::ui::scrollwidget()};
+        auto *widget {new ekg::ui::scroll_widget()};
         widget->data = ui;
         created_widget = widget;
         append_group = true;
         break;
     }
-
     default:
         break;
     }

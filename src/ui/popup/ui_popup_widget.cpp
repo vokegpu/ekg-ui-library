@@ -17,7 +17,7 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 
-void ekg::ui::popupwidget::get_popup_path(std::string &path) {
+void ekg::ui::popup_widget::get_popup_path(std::string &path) {
     if (this->hovered_element == -1) {
         return;
     }
@@ -25,42 +25,42 @@ void ekg::ui::popupwidget::get_popup_path(std::string &path) {
     auto ui {(ekg::ui::popup*) this->data};
     auto &component {ui->get_component_list().at(this->hovered_element)};
 
-    ekg::ui::popupwidget *popup {};
+    ekg::ui::popup_widget *popup {};
     path += component.name;
 
-    if (this->popup_opened != -1 && (popup = (ekg::ui::popupwidget*) ekg::core->get_fast_widget_by_id(component.linked_id)) != nullptr) {
+    if (this->popup_opened != -1 && (popup = (ekg::ui::popup_widget*) ekg::core->get_fast_widget_by_id(component.linked_id)) != nullptr) {
         path += " | ";
         popup->get_popup_path(path);
     }
 }
 
-bool ekg::ui::popupwidget::is_hovering_any_popup(int32_t top_level) {
+bool ekg::ui::popup_widget::is_hovering_any_popup(int32_t top_level) {
     auto ui {(ekg::ui::popup*) this->data};
     bool is_hovering {ekg::rect_collide_vec(this->get_abs_rect(), ekg::interact())};
 
     ekg::component component {};
-    ekg::ui::popupwidget *popup {};
+    ekg::ui::popup_widget *popup {};
     int32_t component_it {this->popup_opened};
 
-    if (top_level != this->top_level_popup && (popup = (ekg::ui::popupwidget*) ekg::core->get_fast_widget_by_id(top_level)) != nullptr) {
+    if (top_level != this->top_level_popup && (popup = (ekg::ui::popup_widget*) ekg::core->get_fast_widget_by_id(top_level)) != nullptr) {
         component_it = popup->popup_opened;
     }
 
-    if (component_it != -1 && (component = ui->get_component_list().at(component_it)).linked_id != 0 && (popup = (ekg::ui::popupwidget*) ekg::core->get_fast_widget_by_id(component.linked_id)) != nullptr) {
+    if (component_it != -1 && (component = ui->get_component_list().at(component_it)).linked_id != 0 && (popup = (ekg::ui::popup_widget*) ekg::core->get_fast_widget_by_id(component.linked_id)) != nullptr) {
         is_hovering = is_hovering || popup->is_hovering_any_popup(popup->data->get_id());
     }
 
     return is_hovering;
 }
 
-void ekg::ui::popupwidget::unset_visible_all_sub_popup() {
+void ekg::ui::popup_widget::unset_visible_all_sub_popup() {
     if (this->popup_opened == -1) {
         return;
     }
 
     auto ui {(ekg::ui::popup*) this->data};
     auto &component {ui->get_component_list().at(this->popup_opened)};
-    auto popup {(ekg::ui::popupwidget*) ekg::core->get_fast_widget_by_id(component.linked_id)};
+    auto popup {(ekg::ui::popup_widget*) ekg::core->get_fast_widget_by_id(component.linked_id)};
 
     if (popup->data->get_state() == ekg::state::visible) {
         popup->data->set_state(ekg::state::invisible);
@@ -72,11 +72,11 @@ void ekg::ui::popupwidget::unset_visible_all_sub_popup() {
     this->popup_opened = -1;
 }
 
-void ekg::ui::popupwidget::on_destroy() {
+void ekg::ui::popup_widget::on_destroy() {
 
 }
 
-void ekg::ui::popupwidget::on_reload() {
+void ekg::ui::popup_widget::on_reload() {
     ekg::ui::abstract_widget::on_reload();
 
 	auto ui {(ekg::ui::popup*) this->data};
@@ -95,7 +95,7 @@ void ekg::ui::popupwidget::on_reload() {
     for (ekg::component &components : ui->get_component_list()) {
         text_width = f_renderer.get_text_width(components.name);
 
-        ekg::ui::popupwidget::element element {};
+        ekg::ui::popup_widget::element element {};
         element.rect_text.w = text_width;
         element.rect_text.h = text_height;
         element.separator = components.boolean;
@@ -180,7 +180,7 @@ void ekg::ui::popupwidget::on_reload() {
     this->min_size.y = ekg::min(this->min_size.y, this->dimension.h);
 }
 
-void ekg::ui::popupwidget::on_pre_event(SDL_Event &sdl_event) {
+void ekg::ui::popup_widget::on_pre_event(SDL_Event &sdl_event) {
     if (this->data->get_state() == ekg::state::invisible) {
         return;
     }
@@ -188,7 +188,7 @@ void ekg::ui::popupwidget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
 }
 
-void ekg::ui::popupwidget::on_event(SDL_Event &sdl_event) {
+void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
     if (this->data->get_state() == ekg::state::invisible) {
         return;
     }
@@ -202,7 +202,7 @@ void ekg::ui::popupwidget::on_event(SDL_Event &sdl_event) {
     auto &component_list {ui->get_component_list()};
     auto &rect {this->get_abs_rect()};
 
-    ekg::ui::popupwidget *popup {};
+    ekg::ui::popup_widget *popup {};
     ekg::component component {};
 
     /* Auto-check is this popup is the top-level popup. */
@@ -219,7 +219,7 @@ void ekg::ui::popupwidget::on_event(SDL_Event &sdl_event) {
         ekg::rect &rect {this->get_abs_rect()};
         
         float ypos {};
-        ekg::ui::popupwidget::element element {};
+        ekg::ui::popup_widget::element element {};
         int32_t hover {};
         float popup_offset {2.0f};
 
@@ -234,7 +234,7 @@ void ekg::ui::popupwidget::on_event(SDL_Event &sdl_event) {
 
             switch (hover) {
             case -1:
-                if (this->popup_opened == it && (component = component_list.at(it)).linked_id != 0 && (popup = (ekg::ui::popupwidget*) ekg::core->get_fast_widget_by_id(component.linked_id)) != nullptr) {
+                if (this->popup_opened == it && (component = component_list.at(it)).linked_id != 0 && (popup = (ekg::ui::popup_widget*) ekg::core->get_fast_widget_by_id(component.linked_id)) != nullptr) {
                     popup->data->set_state(ekg::state::invisible);
                     popup->top_level_popup = this->top_level_popup;
 
@@ -249,7 +249,7 @@ void ekg::ui::popupwidget::on_event(SDL_Event &sdl_event) {
                 break;
             default:
                 /* When the popup is linked with another some other popup widget, this should showcase the popup linked. */
-                if (this->popup_opened != hover && (component = component_list.at(hover)).linked_id != 0 && (popup = (ekg::ui::popupwidget*) ekg::core->get_fast_widget_by_id(component.linked_id)) != nullptr) {
+                if (this->popup_opened != hover && (component = component_list.at(hover)).linked_id != 0 && (popup = (ekg::ui::popup_widget*) ekg::core->get_fast_widget_by_id(component.linked_id)) != nullptr) {
                     popup->data->set_state(ekg::state::visible);
                     popup->top_level_popup = this->top_level_popup;
 
@@ -278,7 +278,7 @@ void ekg::ui::popupwidget::on_event(SDL_Event &sdl_event) {
 
                 /* And if there hovered is not linked with any and there is a shown popup, must close the shown popup. */
                 if (this->popup_opened != -1 && (component = component_list.at(hover)).linked_id == 0) {
-                    if ((component = component_list.at(this->popup_opened)).linked_id != 0 && (popup = (ekg::ui::popupwidget*) ekg::core->get_fast_widget_by_id(component.linked_id)) != nullptr) {
+                    if ((component = component_list.at(this->popup_opened)).linked_id != 0 && (popup = (ekg::ui::popup_widget*) ekg::core->get_fast_widget_by_id(component.linked_id)) != nullptr) {
                         popup->data->set_state(ekg::state::invisible);
                         popup->top_level_popup = this->top_level_popup;
 
@@ -311,7 +311,7 @@ void ekg::ui::popupwidget::on_event(SDL_Event &sdl_event) {
 
     /* Process the final input. */
     if (((pressed || released) && this->popup_opened == -1 && is_hovering_any_popup_flag)) {
-        popup = (ekg::ui::popupwidget*) ekg::core->get_fast_widget_by_id(this->top_level_popup);
+        popup = (ekg::ui::popup_widget*) ekg::core->get_fast_widget_by_id(this->top_level_popup);
         popup->data->destroy();
 
         std::string path_result {};
@@ -325,11 +325,11 @@ void ekg::ui::popupwidget::on_event(SDL_Event &sdl_event) {
     }
 }
 
-void ekg::ui::popupwidget::on_post_event(SDL_Event &sdl_event) {
+void ekg::ui::popup_widget::on_post_event(SDL_Event &sdl_event) {
     abstract_widget::on_post_event(sdl_event);
 }
 
-void ekg::ui::popupwidget::on_update() {
+void ekg::ui::popup_widget::on_update() {
     auto &rect {this->get_abs_rect()};
     auto *gpu_scissor {ekg::core->get_gpu_allocator().get_scissor_by_id(this->data->get_id())};
 
@@ -348,7 +348,7 @@ void ekg::ui::popupwidget::on_update() {
     gpu_scissor->rect[3] = this->scissor_opened_height;
 }
 
-void ekg::ui::popupwidget::on_draw_refresh() {
+void ekg::ui::popup_widget::on_draw_refresh() {
     auto ui {(ekg::ui::popup*) this->data};
     auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};
@@ -362,7 +362,7 @@ void ekg::ui::popupwidget::on_draw_refresh() {
     ekg::draw::rect(rect, theme.popup_outline, ekg::drawmode::outline);
 
     ekg::component component {};
-    ekg::ui::popupwidget::element element {};
+    ekg::ui::popup_widget::element element {};
 
     for (int32_t it {}; it < this->element_list.size(); it++) {
         component = component_list.at(it);

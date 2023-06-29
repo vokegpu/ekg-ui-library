@@ -17,7 +17,7 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 
-void ekg::ui::sliderwidget::update_bar(float x, float y) {
+void ekg::ui::slider_widget::update_bar(float x, float y) {
     auto ui {(ekg::ui::slider*) this->data};
     auto &rect {this->get_abs_rect()};
     auto bar {this->rect_bar + rect};
@@ -45,11 +45,11 @@ void ekg::ui::sliderwidget::update_bar(float x, float y) {
     ui->set_value(factor);
 }
 
-void ekg::ui::sliderwidget::on_destroy() {
+void ekg::ui::slider_widget::on_destroy() {
     abstract_widget::on_destroy();
 }
 
-void ekg::ui::sliderwidget::on_reload() {
+void ekg::ui::slider_widget::on_reload() {
     abstract_widget::on_reload();
 
     auto ui {(ekg::ui::slider*) this->data};
@@ -159,11 +159,11 @@ void ekg::ui::sliderwidget::on_reload() {
     }
 }
 
-void ekg::ui::sliderwidget::on_pre_event(SDL_Event &sdl_event) {
+void ekg::ui::slider_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
 }
 
-void ekg::ui::sliderwidget::on_event(SDL_Event &sdl_event) {
+void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
     abstract_widget::on_event(sdl_event);
 
     auto ui {(ekg::ui::slider*) this->data};
@@ -197,15 +197,15 @@ void ekg::ui::sliderwidget::on_event(SDL_Event &sdl_event) {
     }
 }
 
-void ekg::ui::sliderwidget::on_post_event(SDL_Event &sdl_event) {
+void ekg::ui::slider_widget::on_post_event(SDL_Event &sdl_event) {
     abstract_widget::on_post_event(sdl_event);
 }
 
-void ekg::ui::sliderwidget::on_update() {
+void ekg::ui::slider_widget::on_update() {
     abstract_widget::on_update();
 }
 
-void ekg::ui::sliderwidget::on_draw_refresh() {
+void ekg::ui::slider_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
     auto ui {(ekg::ui::slider*) this->data};
     auto &rect {this->get_abs_rect()};
