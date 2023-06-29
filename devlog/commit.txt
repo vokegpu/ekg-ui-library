@@ -53,7 +53,7 @@
 -- Fixed performance using indexing rendering for simple shapes.
 -- Fixed layout processing extent with next | flag interacting with scrolling widget (previous 0.0.1.0.1.5 fix made a new bug).
 
-0.0.1.0.1.7
+0.0.1.0.1.7 25/06/23
 
 -- Fixed horizontal mouse pad scrolling.
 -- Fixed children frame widget resizing.
@@ -63,9 +63,10 @@
 -- Fixed scroll priority definitely.
 -- Multi-cursor textbox UI-based system (select box disabled temporary).
 
-0.0.1.0.1.8
+0.0.1.0.1.8 29/06/23
 
 -- Multi-cursor selection box rendering.
 -- Fixed step scale system.
 -- Temp fix resizing default window scale.
 -- Added system mouse feature.
+-- Fixed multi-cursor rendering empty line selection box.
