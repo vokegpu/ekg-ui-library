@@ -14,7 +14,7 @@
 
 #include "ekg/ekg.hpp"
 #include "ekg/os/info.hpp"
-#include "ekg/os/systemcursor.hpp"
+#include "ekg/os/system_cursor.hpp"
 
 ekg::runtime* ekg::core {};
 std::string ekg::gl_version {"#version 450"};

@@ -26,7 +26,7 @@ namespace ekg {
     static SDL_Cursor *loadedsystemcursorlist[12];
 
     void init_cursor();
-    void set_cursor(ekg::systemcursor system_cursor);
+    void set_cursor(ekg::systemcursor);
 };
 
 #endif

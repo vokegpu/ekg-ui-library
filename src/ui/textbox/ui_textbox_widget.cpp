@@ -15,7 +15,7 @@
 #include "ekg/ui/textbox/ui_textbox.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
-#include "ekg/os/systemcursor.hpp"
+#include "ekg/os/system_cursor.hpp"
 
 /*
  * This is not really optmised but I think it is okay.

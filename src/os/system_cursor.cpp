@@ -1,4 +1,4 @@
-#include "ekg/os/systemcursor.hpp"
+#include "ekg/os/system_cursor.hpp"
 #include "ekg/util/env.hpp"
 
 #include <cinttypes>
@@ -22,9 +22,11 @@ void ekg::init_cursor() {
     ekg::loadedsystemcursorlist[static_cast<uint32_t>(ekg::systemcursor::sizeall)]   = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
     ekg::loadedsystemcursorlist[static_cast<uint32_t>(ekg::systemcursor::no)]        = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
     ekg::loadedsystemcursorlist[static_cast<uint32_t>(ekg::systemcursor::hand)]      = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+
     ekg::set_cursor(ekg::systemcursor::arrow);
+    ekg::cursor = ekg::systemcursor::arrow;
 }
 
-void ekg::set_cursor(ekg::systemcursor system_cursor) {
-    SDL_SetCursor(ekg::loadedsystemcursorlist[static_cast<uint32_t>(system_cursor)]);
+void ekg::set_cursor(ekg::systemcursor sys_cursor) {
+    SDL_SetCursor(ekg::loadedsystemcursorlist[static_cast<uint32_t>(sys_cursor)]);
 }
