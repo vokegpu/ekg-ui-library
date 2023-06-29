@@ -1,11 +1,13 @@
-The official runtime ekg ui library source code
+The official runtime EKG ui library source code
 
 ---
 
-The purpose of ekg is being fully customizable, smooth and with many animations. Also perform good in low pc specs. This is the new core version of ekg, rewrite of legacy core. 
+The purpose of EKG is to be fully customizable, smooth, and with many animations. Also, perform well in low pc specs. This is the new core version of EKG, a rewrite of the legacy core. 
 
-Be sure you compile together all this three libs:  
+Be sure you compile together all these three libs:  
 ![GLEW](https://glew.sourceforge.net/), ![SDL2](https://www.libsdl.org/), and ![Freetype](https://freetype.org/).
+
+The order of linking is important too, be sure you link EKG first before required libs.
 
 If you are on Android NDK, please replace GLEW with GLES3.
 
