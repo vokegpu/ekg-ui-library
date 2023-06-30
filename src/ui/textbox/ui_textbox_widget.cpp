@@ -176,13 +176,18 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
             emplace_text = ekg::utf8substr(emplace_text, 0, it) + text.data() + ekg::utf8substr(emplace_text, it, ekg::utf8length(emplace_text));
             this->move_cursor(cursor.pos[0], 1, 0);
-        } else if (!text.empty()) {
+        } else if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index && !text.empty()) {
             std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
 
             int64_t a_it {cursor.pos[0].text_index};
             int64_t b_it {cursor.pos[1].text_index};
 
             emplace_text = ekg::utf8substr(emplace_text, 0, a_it) + text.data() + ekg::utf8substr(emplace_text, b_it, ekg::utf8length(emplace_text));
+            this->move_cursor(cursor.pos[0], 1, 0);
+        } else if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index && !text.empty()) {
+            // remove the lines into text but not the chunks position
+            this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, this->text_chunk_list.begin() + cursor.pos[1].chunk_index);
+
             this->move_cursor(cursor.pos[0], 1, 0);
         }
 
