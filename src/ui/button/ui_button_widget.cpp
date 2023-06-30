@@ -44,7 +44,7 @@ void ekg::ui::button_widget::on_reload() {
     this->rect_text.w = text_width;
     this->rect_text.h = text_height;
 
-    auto &layout {ekg::core->get_service_layout()};
+    auto &layout {ekg::core->service_layout};
     layout.set_preset_mask({offset, offset, this->dimension.h}, ekg::axis::horizontal, this->dimension.w);
     layout.insert_into_mask({&this->rect_text, ui->get_text_align()});
     layout.process_layout_mask();

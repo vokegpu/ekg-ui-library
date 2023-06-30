@@ -82,7 +82,7 @@ void ekg::ui::popup_widget::on_reload() {
 	auto ui {(ekg::ui::popup*) this->data};
 	auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
     auto &component_list {ui->get_component_list()};
-    auto &layout {ekg::core->get_service_layout()};
+    auto &layout {ekg::core->service_layout};
 
     float max_width {};
     float text_width {};
@@ -145,7 +145,7 @@ void ekg::ui::popup_widget::on_reload() {
     this->dimension.h += offset;
 
     /* Reset scissor height if current state is invisible. */
-    auto *gpu_scissor {ekg::core->get_gpu_allocator().get_scissor_by_id(ui->get_id())};
+    auto *gpu_scissor {ekg::core->gpu_allocator.get_scissor_by_id(ui->get_id())};
     if (ui->get_state() == ekg::state::invisible && gpu_scissor != nullptr) {
         gpu_scissor->rect[3] = this->scissor_opened_height = 0;
         this->is_high_frequency = false;
@@ -331,7 +331,7 @@ void ekg::ui::popup_widget::on_post_event(SDL_Event &sdl_event) {
 
 void ekg::ui::popup_widget::on_update() {
     auto &rect {this->get_abs_rect()};
-    auto *gpu_scissor {ekg::core->get_gpu_allocator().get_scissor_by_id(this->data->get_id())};
+    auto *gpu_scissor {ekg::core->gpu_allocator.get_scissor_by_id(this->data->get_id())};
 
     gpu_scissor->rect[0] = rect.x;
     gpu_scissor->rect[1] = rect.y;

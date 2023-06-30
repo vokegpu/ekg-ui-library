@@ -24,10 +24,8 @@ void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color,
         return;
     }
 
-    ekg::gpu::allocator &allocator {ekg::core->get_gpu_allocator()};
-    ekg::gpu::data &data {allocator.bind_current_data()};
-
-    if (allocator.is_out_of_scissor_rect()) {
+    ekg::gpu::data &data {ekg::core->gpu_allocator.bind_current_data()};
+    if (ekg::core->gpu_allocator.is_out_of_scissor_rect()) {
         return;
     }
 
@@ -43,28 +41,28 @@ void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color,
     data.line_thickness = line_thickness;
     data.factor = 1;
 
-    allocator.dispatch();
+    ekg::core->gpu_allocator.dispatch();
 }
 
 void ekg::draw::sync_scissor(ekg::rect &child_rect, int32_t mother_parent_id) {
-    ekg::core->get_gpu_allocator().sync_scissor(child_rect, mother_parent_id);
+    ekg::core->gpu_allocator.sync_scissor(child_rect, mother_parent_id);
 }
 
 void ekg::draw::bind_scissor(int32_t id) {
-    ekg::core->get_gpu_allocator().bind_scissor(id);
+    ekg::core->gpu_allocator.bind_scissor(id);
 }
 
 void ekg::draw::bind_off_scissor() {
-    ekg::core->get_gpu_allocator().bind_off_scissor();
+    ekg::core->gpu_allocator.bind_off_scissor();
 }
 
 bool ekg::draw::is_visible(int32_t scissor_id, ekg::vec4 &interact) {
-    auto scissor {ekg::core->get_gpu_allocator().get_scissor_by_id(scissor_id)};
+    auto scissor {ekg::core->gpu_allocator.get_scissor_by_id(scissor_id)};
     return scissor != nullptr && ekg::rect_collide_vec({scissor->rect[0], scissor->rect[1], scissor->rect[2], scissor->rect[3]}, interact);
 }
 
 void ekg::draw::get_visible(int32_t scissor_id, ekg::rect &rect) {
-    auto scissor {ekg::core->get_gpu_allocator().get_scissor_by_id(scissor_id)};
+    auto scissor {ekg::core->gpu_allocator.get_scissor_by_id(scissor_id)};
     if (scissor != nullptr) {
         rect.x = scissor->rect[0];
         rect.y = scissor->rect[1];

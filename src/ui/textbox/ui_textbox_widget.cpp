@@ -158,7 +158,7 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
         this->embedded_scroll.scroll.w -= cursor_outspace_screen.w;
     }
 
-    ekg::reset(ekg::core->get_ui_timing());
+    ekg::reset(ekg::core->ui_timing);
     ekg::dispatch(ekg::env::redraw);
 }
 
@@ -216,7 +216,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                 emplace_text = ekg::utf8substr(emplace_text, 0, it) + ekg::utf8substr(emplace_text, it + 1, ekg::utf8length(emplace_text));
             }
 
-            ekg::reset(ekg::core->get_ui_timing());
+            ekg::reset(ekg::core->ui_timing);
             ekg::dispatch(ekg::env::redraw);
         }
 
@@ -247,7 +247,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         }
 
         this->move_cursor(cursor.pos[0], 1, 0);
-        ekg::reset(ekg::core->get_ui_timing());
+        ekg::reset(ekg::core->ui_timing);
         ekg::dispatch(ekg::env::redraw);
 
         break;
@@ -477,14 +477,13 @@ void ekg::ui::textbox_widget::on_pre_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
-    bool pressed {ekg::input::pressed() && ekg::input::action("textbox-activy")};
+    bool pressed {ekg::input::pressed() && ekg::input::action("textbox-activy") && !ekg::input::typed()};
     bool released {ekg::input::released()};
     bool motion {ekg::input::motion()};
-    auto &rect {this->get_abs_rect()};
 
     if (this->flag.hovered && pressed) {
         ekg::set(this->flag.focused, this->flag.hovered);
-        ekg::reset(ekg::core->get_ui_timing());
+        ekg::reset(ekg::core->ui_timing);
         ekg::dispatch(ekg::env::redraw);
         ekg::dispatch(ekg::env::swap);
 
@@ -505,14 +504,13 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         ekg::update_high_frequency(this);
     }
 
-    if (!this->flag.hovered && (released || pressed) && sdl_event.type != SDL_TEXTINPUT) {
-        if (pressed) {
-            ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
-            main_cursor.pos[1] = main_cursor.pos[0];
-            this->loaded_multi_cursor_list.clear();
-            this->loaded_multi_cursor_list.push_back(main_cursor);  
-        }
-
+    if (!this->flag.hovered && pressed && !ekg::input::typed()) {
+        ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
+        main_cursor.pos[1] = main_cursor.pos[0];
+     
+        this->loaded_multi_cursor_list.clear();
+        this->loaded_multi_cursor_list.push_back(main_cursor);  
+    
         ekg::set(this->flag.focused, false);
     }
 
@@ -525,51 +523,49 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
             this->process_text(cursor, sdl_event.text.text, ekg::ui::textbox_widget::action::addtext, 1);
         }
+
+        this->flag.state = false;
         break;
     case SDL_KEYDOWN:
-        bool escape_flag {};
-        for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
-            switch (sdl_event.key.keysym.sym) {
-            case SDLK_ESCAPE:
-                escape_flag = true;
+        switch (sdl_event.key.keysym.sym) {
+            case SDLK_ESCAPE: {
+                ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
+                main_cursor.pos[1] = main_cursor.pos[0];
+
+                this->loaded_multi_cursor_list.clear();
+                this->loaded_multi_cursor_list.push_back(main_cursor);
+
+                ekg::set(this->flag.focused, false);
                 break;
-            default:
-                int64_t cursor_dir[2] {};
-                if (ekg::input::action("textbox-action-up")) {
-                    cursor_dir[1] = -1;
-                } else if (ekg::input::action("textbox-action-down")) {
-                    cursor_dir[1] = 1;
-                } else if (ekg::input::action("textbox-action-left")) {
-                    cursor_dir[0] = -1;
-                } else if (ekg::input::action("textbox-action-right")) {
-                    cursor_dir[0] = 1;
-                } else if (ekg::input::action("textbox-action-delete-left")) {
-                    this->process_text(cursor, "backspace", ekg::ui::textbox_widget::action::erasetext, -1);
-                } else if (ekg::input::action("textbox-action-delete-right")) {
-                    this->process_text(cursor, "delete", ekg::ui::textbox_widget::action::erasetext, 1);
-                } else if (ekg::input::action("textbox-action-break-line")) {
-                    this->process_text(cursor, "return", ekg::ui::textbox_widget::action::breakline, 1);
-                }
-    
-                if (cursor_dir[0] != 0 || cursor_dir[1] != 0) {
-                    this->move_cursor(cursor.pos[0], cursor_dir[0], cursor_dir[1]);
-                    cursor.pos[1] = cursor.pos[0];
+            }
+
+            default: {
+                for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
+                    int64_t cursor_dir[2] {};
+                    if (ekg::input::action("textbox-action-up")) {
+                        cursor_dir[1] = -1;
+                    } else if (ekg::input::action("textbox-action-down")) {
+                        cursor_dir[1] = 1;
+                    } else if (ekg::input::action("textbox-action-left")) {
+                        cursor_dir[0] = -1;
+                    } else if (ekg::input::action("textbox-action-right")) {
+                        cursor_dir[0] = 1;
+                    } else if (ekg::input::action("textbox-action-delete-left")) {
+                        this->process_text(cursor, "backspace", ekg::ui::textbox_widget::action::erasetext, -1);
+                    } else if (ekg::input::action("textbox-action-delete-right")) {
+                        this->process_text(cursor, "delete", ekg::ui::textbox_widget::action::erasetext, 1);
+                    } else if (ekg::input::action("textbox-action-break-line")) {
+                        this->process_text(cursor, "return", ekg::ui::textbox_widget::action::breakline, 1);
+                    }
+                    
+                    if (cursor_dir[0] != 0 || cursor_dir[1] != 0) {
+                        this->move_cursor(cursor.pos[0], cursor_dir[0], cursor_dir[1]);
+                        cursor.pos[1] = cursor.pos[0];
+                    }
                 }
 
                 break;
             }
-
-            if (escape_flag) {
-                break;
-            }
-        }
-
-        if (escape_flag) {
-            ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
-            main_cursor.pos[1] = main_cursor.pos[0];
-            this->loaded_multi_cursor_list.clear();
-            this->loaded_multi_cursor_list.push_back(main_cursor);
-            ekg::set(this->flag.focused, false);
         }
     }
 }
@@ -581,9 +577,9 @@ void ekg::ui::textbox_widget::on_post_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::textbox_widget::on_update() {
-    if (ekg::reach(ekg::core->get_ui_timing(), 500) && !this->redraw_cursor) {
+    if (ekg::reach(ekg::core->ui_timing, 500) && !this->redraw_cursor) {
         this->redraw_cursor = true;
-    } else if (!ekg::reach(ekg::core->get_ui_timing(), 500) && this->redraw_cursor) {
+    } else if (!ekg::reach(ekg::core->ui_timing, 500) && this->redraw_cursor) {
         this->redraw_cursor = false;
     }
 
@@ -612,7 +608,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
     auto &theme {ekg::theme()};
-    auto &allocator {ekg::core->get_gpu_allocator()};
+    auto &allocator {ekg::core->gpu_allocator};
 
     ekg::draw::bind_scissor(this->data->get_id());
     ekg::draw::sync_scissor(rect, ui->get_parent_id());
@@ -678,7 +674,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     ekg::ui::textbox_widget::cursor cursor {};
 
     int32_t cursor_pos_index {};
-    bool draw_cursor {this->flag.focused && !ekg::reach(ekg::core->get_ui_timing(), 500)};
+    bool draw_cursor {this->flag.focused && !ekg::reach(ekg::core->ui_timing, 500)};
     bool optimize_batching {};
     bool do_not_fill_line {};
 

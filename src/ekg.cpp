@@ -23,25 +23,25 @@ bool ekg::autoscale {true};
 float ekg::scaleinterval {25.0f};
 
 ekg::service::theme &ekg::theme() {
-    return ekg::core->get_service_theme();
+    return ekg::core->service_theme;
 }
 
 ekg::draw::font_renderer &ekg::f_renderer(ekg::font font_size) {
     switch (font_size) {
         case ekg::font::big: {
-            return ekg::core->get_f_renderer_big();
+            return ekg::core->f_renderer_big;
         }
 
         case ekg::font::normal: {
-            return ekg::core->get_f_renderer_normal();
+            return ekg::core->f_renderer_normal;
         }
 
         case ekg::font::small: {
-            return ekg::core->get_f_renderer_small();
+            return ekg::core->f_renderer_small;
         }
     }
 
-    return ekg::core->get_f_renderer_normal();
+    return ekg::core->f_renderer_normal;
 }
 
 void ekg::init(SDL_Window* root, std::string_view font_path) {
@@ -137,10 +137,10 @@ ekg::gl_version + "\n"
 
     /* The runtime core, everything need to be setup before init. */
     ekg::core = new ekg::runtime();
-    ekg::core->get_f_renderer_small().font_path = font_path;
-    ekg::core->get_f_renderer_normal().font_path = font_path;
-    ekg::core->get_f_renderer_big().font_path = font_path;
-    ekg::core->set_root(root);
+    ekg::core->f_renderer_small.font_path = font_path;
+    ekg::core->f_renderer_normal.font_path = font_path;
+    ekg::core->f_renderer_big.font_path = font_path;
+    ekg::core->root = root;
     ekg::core->init();
 
 

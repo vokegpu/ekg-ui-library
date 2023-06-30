@@ -16,7 +16,7 @@
 #include <string>
 #include <algorithm>
 
-std::map<std::string, const char*> ekg::service::input::special_keys_name_map = {
+std::unordered_map<std::string, const char*> ekg::service::input::special_keys_name_map = {
         {"Left Shift", "lshift"}, {"Right Shift", "rshift"},
         {"Left Ctrl", "lctrl"},   {"Right Ctrl", "rctrl"},
         {"Left Alt", "lalt"},     {"Right Alt", "ralt"},
@@ -24,18 +24,19 @@ std::map<std::string, const char*> ekg::service::input::special_keys_name_map = 
 };
 
 void ekg::service::input::on_event(SDL_Event &sdl_event) {
-    this->pressed_event = false;
-    this->released_event = false;
-    this->motion_event = false;
+    this->was_pressed = false;
+    this->was_released = false;
+    this->has_motion = false;
 
     switch (sdl_event.type) {
         case SDL_TEXTINPUT: {
-            this->pressed_event = true;
+            this->was_pressed = true;
+            this->was_typed = true;
             break;
         }
 
         case SDL_KEYDOWN: {
-            this->pressed_event = true;
+            this->was_pressed = true;
 
             for (std::string key_name {SDL_GetKeyName(sdl_event.key.keysym.sym)}; !key_name.empty();) {
                 if (this->is_special_key(sdl_event.key.keysym.sym)) {
@@ -61,7 +62,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_KEYUP: {
-            this->pressed_event = true;
+            this->was_released = true;
 
             for (std::string key_name {SDL_GetKeyName(sdl_event.key.keysym.sym)}; !key_name.empty();) {
                 if (this->is_special_key(sdl_event.key.keysym.sym)) {
@@ -86,7 +87,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_MOUSEBUTTONDOWN: {
-            this->pressed_event = true;
+            this->was_pressed = true;
             bool double_click_factor {ekg::reach(this->double_interact, 500)};
             const std::string buttonstring {std::to_string(sdl_event.button.button)};
             this->callback("mouse-" + buttonstring, true);
@@ -104,7 +105,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_MOUSEBUTTONUP: {
-            this->released_event = true;
+            this->was_released = true;
             std::string buttonstring {"mouse-"};
             buttonstring += std::to_string(sdl_event.button.button);
 
@@ -116,14 +117,14 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_MOUSEMOTION: {
-            this->motion_event = true;
+            this->has_motion = true;
             this->interact.x = static_cast<float>(sdl_event.motion.x);
             this->interact.y = static_cast<float>(sdl_event.motion.y);
             break;
         }
 
         case SDL_MOUSEWHEEL: {
-            this->wheel_event = true;
+            this->was_wheel = true;
             this->interact.z = sdl_event.wheel.preciseX;
             this->interact.w = sdl_event.wheel.preciseY;
 
@@ -134,7 +135,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_FINGERDOWN: {
-            this->pressed_event = true;
+            this->was_pressed = true;
             ekg::reset(this->timing_last_interact);
             bool reach_double_interact {ekg::reach(this->double_interact, 500)};
 
@@ -155,7 +156,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_FINGERUP: {
-            this->released_event = true;
+            this->was_released = true;
             this->callback("finger-hold", (this->finger_hold_event = ekg::reach(this->timing_last_interact, 750)));
             this->callback("finger-click", false);
             this->callback("finger-click-double", false);
@@ -180,7 +181,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
 
         case SDL_FINGERMOTION: {
-            this->motion_event = true;
+            this->has_motion = true;
             this->interact.x = sdl_event.tfinger.x * static_cast<float>(ekg::display::width);
             this->interact.y = sdl_event.tfinger.y * static_cast<float>(ekg::display::height);
 
@@ -199,7 +200,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         }
     }
 
-    if (this->motion_event && !this->double_click_mouse_buttons_pressed.empty()) {
+    if (this->has_motion && !this->double_click_mouse_buttons_pressed.empty()) {
         for (const std::string &button : this->double_click_mouse_buttons_pressed) {
             this->callback(button, false);
         }
@@ -208,28 +209,12 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
     }
 }
 
-bool ekg::service::input::was_pressed() {
-    return this->pressed_event;
-}
-
-bool ekg::service::input::was_released() {
-    return this->released_event;
-}
-
-bool ekg::service::input::was_motion() {
-    return this->motion_event;
-}
-
-bool ekg::service::input::was_wheel() {
-    return this->wheel_event || this->finger_swipe_event;
-}
-
 void ekg::service::input::on_update() {
-    if (this->wheel_event) {
+    if (this->was_wheel) {
         this->callback("mouse-wheel", false);
         this->callback("mouse-wheel-up", false);
         this->callback("mouse-wheel-down", false);
-        this->wheel_event = false;
+        this->was_wheel = false;
     }
 
     if (this->finger_swipe_event) {

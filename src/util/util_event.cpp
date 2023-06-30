@@ -15,18 +15,18 @@
 #include "ekg/ekg.hpp"
 
 void ekg::dispatch(ekg::cpu::event* event) {
-    ekg::core->get_service_handler().dispatch(event);
+    ekg::core->service_handler.dispatch(event);
 }
 
 void ekg::dispatch(const ekg::env &env) {
-    ekg::core->get_service_handler().task((uint32_t) env);
+    ekg::core->service_handler.task((uint32_t) env);
 }
 
 bool ekg::listen(ekg::cpu::uievent &ekg_event, SDL_Event &sdl_event) {
     if (sdl_event.type == ekg::listener) {
-        ekg::cpu::uievent *pekgevent {static_cast<ekg::cpu::uievent*>(sdl_event.user.data1)};
-        ekg_event = *pekgevent;
-        delete pekgevent;
+        ekg::cpu::uievent *p_ekg_event {static_cast<ekg::cpu::uievent*>(sdl_event.user.data1)};
+        ekg_event = *p_ekg_event;
+        delete p_ekg_event;
         return true;
     }
 

@@ -486,7 +486,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
 void ekg::service::layout::init() {
     this->min_factor_height = 1;
-    this->min_height = ekg::core->get_f_renderer_normal().get_text_height();
+    this->min_height = ekg::core->f_renderer_normal.get_text_height();
     this->min_fill_width = this->min_height;
 
     /*

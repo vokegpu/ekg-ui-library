@@ -12,8 +12,8 @@
  * @VokeGpu 2023 all rights reserved.
  */
 
-#ifndef EKG_UI_TEXTBOX_WIDGET_H
-#define EKG_UI_TEXTBOX_WIDGET_H
+#ifndef EKG_UI_TEXT_BOX_WIDGET_H
+#define EKG_UI_TEXT_BOX_WIDGET_H
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include "ekg/ui/scroll/ui_scroll_embedded_widget.hpp"

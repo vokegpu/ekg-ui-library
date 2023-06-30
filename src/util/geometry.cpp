@@ -62,7 +62,7 @@ bool ekg::rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec) {
 }
 
 ekg::vec4 &ekg::interact() {
-    return ekg::core->get_service_input().interact;
+    return ekg::core->service_input.interact;
 }
 
 void ekg::set_dock_scaled(const ekg::rect &rect, const ekg::vec2 &offset, ekg::docker &docker) {

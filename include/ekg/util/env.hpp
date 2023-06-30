@@ -149,6 +149,7 @@ namespace ekg {
         bool released();
         bool pressed();
         bool wheel();
+        bool typed();
     }
 };
 

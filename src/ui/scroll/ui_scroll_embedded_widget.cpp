@@ -64,7 +64,7 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
 
     ekg::ui::abstract_widget *mother_widget {ekg::core->get_fast_widget_by_id(this->mother_id)};
     ekg::ui::abstract_widget *widgets {};
-    float service_layout_min_offset {ekg::core->get_service_layout().get_min_offset()};
+    float service_layout_min_offset {ekg::core->service_layout.get_min_offset()};
 
     this->child_id_list = mother_widget->data->get_child_id_list();
     if (this->child_id_list.empty()) {

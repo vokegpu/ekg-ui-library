@@ -84,7 +84,7 @@ void ekg::ui::slider_widget::on_reload() {
 
     float normalised_bar_thickness {static_cast<float>(theme.slider_bar_thickness) / 100};
     float normalised_target_thickness {static_cast<float>(theme.slider_target_thickness) / 100};
-    auto &layout {ekg::core->get_service_layout()};
+    auto &layout {ekg::core->service_layout};
     bool centered_text {text_dock_flags == ekg::dock::center};
 
     this->dimension.w = ekg::min(this->dimension.w, text_width);

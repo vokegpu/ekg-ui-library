@@ -293,29 +293,33 @@ std::string ekg::string_float_precision(float n, int32_t precision) {
 }
 
 bool ekg::input::action(std::string_view key_input) {
-    return ekg::core->get_service_input().pressed(key_input);
+    return ekg::core->service_input.pressed(key_input);
 }
 
 void ekg::input::bind(std::string_view key_input, std::string_view value_input) {
-    return ekg::core->get_service_input().bind(key_input, value_input);
+    return ekg::core->service_input.bind(key_input, value_input);
 }
 
 bool ekg::input::motion() {
-    return ekg::core->get_service_input().was_motion();
+    return ekg::core->service_input.has_motion;
 }
 
 bool ekg::input::released() {
-    return ekg::core->get_service_input().was_released();
+    return ekg::core->service_input.was_released;
 }
 
 bool ekg::input::pressed() {
-    return ekg::core->get_service_input().was_pressed();
+    return ekg::core->service_input.was_pressed;
 }
 
 bool ekg::input::wheel() {
-    return ekg::core->get_service_input().was_wheel();
+    return ekg::core->service_input.was_wheel;
 }
 
 bool ekg::input::receive(std::string_view tag) {
-    return ekg::core->get_service_input().receive(tag);
+    return ekg::core->service_input.receive(tag);
+}
+
+bool ekg::input::typed() {
+    return ekg::core->service_input.was_typed;
 }
