@@ -70,3 +70,5 @@
 -- Temp fix resizing default window scale.
 -- Added system mouse feature.
 -- Fixed multi-cursor rendering empty line selection box.
+-- Reduced overhead service & gpu allocator getters calls.
+-- Reduced overhead input calls.

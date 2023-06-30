@@ -507,7 +507,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     if (!this->flag.hovered && pressed && !ekg::input::typed()) {
         ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
         main_cursor.pos[1] = main_cursor.pos[0];
-     
+
         this->loaded_multi_cursor_list.clear();
         this->loaded_multi_cursor_list.push_back(main_cursor);  
     
