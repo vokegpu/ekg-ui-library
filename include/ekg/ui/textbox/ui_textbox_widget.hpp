@@ -66,6 +66,8 @@ namespace ekg::ui {
         
         bool redraw_cursor {};
         bool is_ui_enabled {};
+
+        int64_t total_utf_chars {};        
     public:
         void check_cursor_text_bounding(ekg::ui::textbox_widget::cursor &cursor, bool reset_second_cursor_pos);
         std::string &get_cursor_emplace_text(ekg::ui::textbox_widget::cursor_pos &cursor);

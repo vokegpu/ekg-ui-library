@@ -27,11 +27,13 @@ void ekg::ui::textbox_widget::check_largest_text_width(bool update_ui_data_text_
 
     this->rect_text.w = 0.0f;
     std::string compatibility_text {};
+    this->total_utf_chars = 0;
 
     uint64_t text_chunk_size {this->text_chunk_list.size()};
     for (uint64_t it {}; it < text_chunk_size; it++) {
         std::string &text = this->text_chunk_list.at(it);
         this->rect_text.w = std::max(this->rect_text.w, f_renderer.get_text_width(text));
+        this->total_utf_chars += ekg::utf8length(text);
 
         if (!update_ui_data_text_together) {
             continue;
@@ -179,15 +181,17 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         } else if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index && !text.empty()) {
             std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
 
-            int64_t a_it {cursor.pos[0].text_index};
-            int64_t b_it {cursor.pos[1].text_index};
-
-            emplace_text = ekg::utf8substr(emplace_text, 0, a_it) + text.data() + ekg::utf8substr(emplace_text, b_it, ekg::utf8length(emplace_text));
+            emplace_text = ekg::utf8substr(emplace_text, 0, cursor.pos[0].text_index) + text.data() + ekg::utf8substr(emplace_text, cursor.pos[1].text_index, ekg::utf8length(emplace_text));
             this->move_cursor(cursor.pos[0], 1, 0);
         } else if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index && !text.empty()) {
+            std::string &emplace_text_a {this->get_cursor_emplace_text(cursor.pos[0])};
+            std::string &emplace_text_b {this->get_cursor_emplace_text(cursor.pos[1])};
+
+            emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + text.data() + ekg::utf8substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf8length(emplace_text_b));
+
             // remove the lines into text but not the chunks position
             this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, this->text_chunk_list.begin() + cursor.pos[1].chunk_index);
-
+            this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[1].chunk_index); // then remove the last line
             this->move_cursor(cursor.pos[0], 1, 0);
         }
 
@@ -208,6 +212,20 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                 emplace_text = ekg::utf8substr(emplace_text, 0, it) + ekg::utf8substr(emplace_text, it + 1, ekg::utf8length(emplace_text));
                 this->move_cursor(cursor.pos[0], -1, 0);
             }
+        } else if (cursor.pos[0] != cursor.pos[1] && direction != 0) {
+            if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index) {
+                std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
+                emplace_text = ekg::utf8substr(emplace_text, 0, cursor.pos[0].text_index) + ekg::utf8substr(emplace_text, cursor.pos[1].text_index, ekg::utf8length(emplace_text));
+            } else {
+                std::string &emplace_text_a {this->get_cursor_emplace_text(cursor.pos[0])};
+                std::string &emplace_text_b {this->get_cursor_emplace_text(cursor.pos[1])};
+
+                emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + ekg::utf8substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf8length(emplace_text_b));
+
+                // remove the lines into text but not the chunks position
+                this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, this->text_chunk_list.begin() + cursor.pos[1].chunk_index);
+                this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[1].chunk_index); // then remove the last line
+            }
         } else if (cursor.pos[0] == cursor.pos[1] && direction > 0) {
             std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
             int64_t emplace_text_size {(int64_t) ekg::utf8length(emplace_text)};
@@ -220,9 +238,6 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                 int64_t it {cursor.pos[0].text_index};
                 emplace_text = ekg::utf8substr(emplace_text, 0, it) + ekg::utf8substr(emplace_text, it + 1, ekg::utf8length(emplace_text));
             }
-
-            ekg::reset(ekg::core->ui_timing);
-            ekg::dispatch(ekg::env::redraw);
         }
 
         break;
@@ -261,6 +276,9 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
     cursor.pos[1] = cursor.pos[0];
     this->check_largest_text_width(true);
+
+    ekg::reset(ekg::core->ui_timing);
+    ekg::dispatch(ekg::env::redraw);
 }
 
 std::string &ekg::ui::textbox_widget::get_cursor_emplace_text(ekg::ui::textbox_widget::cursor_pos &cursor) {
@@ -545,6 +563,24 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
             }
 
             default: {
+                if (ekg::input::action("textbox-action-select-all")) {
+                    ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
+                    main_cursor.pos[0].index = 0;
+                    main_cursor.pos[0].chunk_index = 0;
+                    main_cursor.pos[0].text_index = 0;
+                    main_cursor.pos[0].last_text_index = 0;
+
+                    main_cursor.pos[1].index = this->total_utf_chars;
+                    main_cursor.pos[1].chunk_index = ekg::min((int64_t) this->text_chunk_list.size() - 1, (int64_t) 0);
+                    main_cursor.pos[1].text_index = ekg::utf8length(this->get_cursor_emplace_text(main_cursor.pos[1]));
+                    main_cursor.pos[1].last_text_index = main_cursor.pos[1].chunk_index;
+
+                    this->loaded_multi_cursor_list.clear();
+                    this->loaded_multi_cursor_list.push_back(main_cursor);
+
+                    break;
+                }
+
                 for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
                     int64_t cursor_dir[2] {};
                     if (ekg::input::action("textbox-action-up")) {
