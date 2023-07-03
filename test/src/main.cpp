@@ -390,7 +390,7 @@ int32_t main(int32_t, char**) {
     ekg::cpu::uievent event {};
 
     ekg::input::bind("pompom", "c-up");
-    ekg::input::bind("pompom", "lshift");
+    ekg::input::bind("pompom", "rshift");
 
     glDisable(GL_DEPTH_TEST);
 

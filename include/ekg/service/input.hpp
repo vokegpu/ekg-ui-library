@@ -32,13 +32,13 @@ namespace ekg::service {
             std::unordered_map<int32_t, std::string> special_keys_sdl_map {};
 
             std::vector<std::string> special_keys_unit_pressed {};
-            std::vector<std::string> special_keys_released {};
             std::vector<std::string> double_click_mouse_buttons_pressed {};
             std::vector<std::string> input_register_callback {};
             std::vector<std::string> input_released_list {};
 
             bool finger_hold_event {};
             bool finger_swipe_event {};
+            bool is_special_keys_released {};
 
             ekg::vec4 last_finger_interact {};
             ekg::timing double_interact {};

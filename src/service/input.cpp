@@ -47,7 +47,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
                 this->special_keys_sdl_map[sdl_event.key.keysym.sym] += "+";
 
                 this->callback(string_builder, true);
-                this->special_keys_released.emplace_back(string_builder);
+                this->is_special_keys_released = true;
             } else {
                 std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
 
@@ -73,7 +73,7 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
 
                 string_builder += ekg::service::input::special_keys_name_map[key_name];
                 this->callback(string_builder, false);
-                this->special_keys_released.emplace_back(string_builder);
+                this->is_special_keys_released = true;
 
                 string_builder += "-up";
                 this->callback(string_builder, true);
@@ -236,13 +236,13 @@ void ekg::service::input::on_update() {
 
     this->finger_hold_event = false;
 
-    if (!this->special_keys_released.empty()) {
+    if (this->is_special_keys_released) {
         for (std::string &units : this->special_keys_unit_pressed) {
             this->callback(units, false);
         }
 
         this->special_keys_unit_pressed.clear();
-        this->special_keys_released.clear();
+        this->is_special_keys_released = false;
     }
 
     if (!this->input_released_list.empty()) {

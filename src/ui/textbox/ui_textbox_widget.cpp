@@ -173,33 +173,33 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
     switch (action) {
     case ekg::ui::textbox_widget::action::addtext:
         /*
-         * Always the tab is pressed, the process should add the tab,
+         * Always the tab is pressed, the process should add the spaces instead of \t,
          * it is cached to prevent useless iteration.
          */
         if (text == "\t") {
             uint8_t ui_tab_size {ui->get_tab_size()};
 
-            if (this->tab_size.size() != ui_tab_size) {
-                this->tab_size.clear();
+            if (this->cached_tab_size.size() != ui_tab_size) {
+                this->cached_tab_size.clear();
                 for (uint8_t it {}; it < ui_tab_size; it++) {
-                    this->tab_size += " ";
+                    this->cached_tab_size += ' ';
                 }
             }
 
-            text = this->tab_size;
+            text = this->cached_tab_size;
+            direction = static_cast<int64_t>(ui_tab_size);
         }
 
         if (cursor.pos[0] == cursor.pos[1] && !text.empty()) {
             std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
-            int64_t it {cursor.pos[0].text_index};
 
-            emplace_text = ekg::utf8substr(emplace_text, 0, it) + text.data() + ekg::utf8substr(emplace_text, it, ekg::utf8length(emplace_text));
-            this->move_cursor(cursor.pos[0], 1, 0);
+            emplace_text = ekg::utf8substr(emplace_text, 0, cursor.pos[0].text_index) + text.data() + ekg::utf8substr(emplace_text, cursor.pos[0].text_index, ekg::utf8length(emplace_text));
+            this->move_cursor(cursor.pos[0], direction, 0);
         } else if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index && !text.empty()) {
             std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
 
             emplace_text = ekg::utf8substr(emplace_text, 0, cursor.pos[0].text_index) + text.data() + ekg::utf8substr(emplace_text, cursor.pos[1].text_index, ekg::utf8length(emplace_text));
-            this->move_cursor(cursor.pos[0], 1, 0);
+            this->move_cursor(cursor.pos[0], direction, 0);
         } else if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index && !text.empty()) {
             std::string &emplace_text_a {this->get_cursor_emplace_text(cursor.pos[0])};
             std::string &emplace_text_b {this->get_cursor_emplace_text(cursor.pos[1])};
@@ -209,7 +209,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             // remove the lines into text but not the chunks position
             this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, this->text_chunk_list.begin() + cursor.pos[1].chunk_index);
             this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[1].chunk_index); // then remove the last line
-            this->move_cursor(cursor.pos[0], 1, 0);
+            this->move_cursor(cursor.pos[0], direction, 0);
         }
 
         break;
@@ -530,8 +530,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         this->check_cursor_text_bounding(clicked_pos, true);
 
         if (this->is_select_movement_input_enabled && !this->flag.state) {
-            bool reference {clicked_pos.pos[0].index > main_cursor.pos[2].index};
-            if (reference) {
+            if (clicked_pos.pos[0].index > main_cursor.pos[2].index) {
                 main_cursor.pos[2] = main_cursor.pos[0];
                 main_cursor.pos[1] = clicked_pos.pos[0];
             } else {
@@ -614,8 +613,10 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
                     break;
                 }
 
+                int64_t cursor_dir[2] {};
                 for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
-                    int64_t cursor_dir[2] {};
+                    cursor_dir[0] = cursor_dir[1] = 0;
+
                     if (ekg::input::action("textbox-action-up")) {
                         cursor_dir[1] = -1;
                     } else if (ekg::input::action("textbox-action-down")) {
@@ -633,13 +634,10 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
                     } else if (ekg::input::action("textbox-action-tab")) {
                         this->process_text(cursor, "\t", ekg::ui::textbox_widget::action::addtext, 1);
                     }
-                    
+
                     if (cursor_dir[0] != 0 || cursor_dir[1] != 0) {
-                        if (this->is_select_movement_input_enabled) {
-                            ekg::ui::textbox_widget::cursor_pos previous_cursor_pos {cursor.pos[0]};
-                            this->move_cursor(previous_cursor_pos, cursor_dir[0], cursor_dir[1]);
-                        } else {
-                            this->move_cursor(cursor.pos[0], cursor_dir[0], cursor_dir[1]);
+                        this->move_cursor(cursor.pos[0], cursor_dir[0], cursor_dir[1]);
+                        if (!this->is_select_movement_input_enabled) {
                             cursor.pos[1] = cursor.pos[0];
                         }
                     }

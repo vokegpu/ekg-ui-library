@@ -71,7 +71,7 @@ namespace ekg::ui {
         bool is_select_movement_input_enabled {};
 
         int64_t total_utf_chars {};
-        std::string tab_size {};
+        std::string cached_tab_size {};
     public:
         void check_cursor_text_bounding(ekg::ui::textbox_widget::cursor &cursor, bool reset_second_cursor_pos);
         std::string &get_cursor_emplace_text(ekg::ui::textbox_widget::cursor_pos &cursor);
