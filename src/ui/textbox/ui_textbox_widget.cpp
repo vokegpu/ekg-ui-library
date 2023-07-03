@@ -600,9 +600,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
                     if (cursor_dir[0] != 0 || cursor_dir[1] != 0) {
                         if (this->is_select_movement_input_enabled) {
                             ekg::ui::textbox_widget::cursor_pos previous_cursor_pos {cursor.pos[0]};
-                            this->move_cursor(previous_cursor_pos.pos[0], cursor_dir[0], cursor_dir[1]);
-
-                            if (cursor.pos[0].index)
+                            this->move_cursor(previous_cursor_pos, cursor_dir[0], cursor_dir[1]);
                         } else {
                             this->move_cursor(cursor.pos[0], cursor_dir[0], cursor_dir[1]);
                             cursor.pos[1] = cursor.pos[0];
