@@ -35,6 +35,7 @@ namespace ekg::ui {
             int64_t chunk_index {};
             int64_t text_index {};
             int64_t last_text_index {};
+            int64_t nearest_word_index {};
         public:
             inline bool operator==(ekg::ui::textbox_widget::cursor_pos &r) {
                 return this->index == r.index && this->chunk_index == r.chunk_index && this->text_index == r.text_index;
@@ -48,6 +49,7 @@ namespace ekg::ui {
         struct cursor {
         public:
             ekg::ui::textbox_widget::cursor_pos pos[3] {};
+            int64_t target {};
         };
     public:
         std::vector<std::string> text_chunk_list {};
@@ -66,6 +68,7 @@ namespace ekg::ui {
         
         bool redraw_cursor {};
         bool is_ui_enabled {};
+        bool is_select_movement_input_enabled {};
 
         int64_t total_utf_chars {};        
     public:
@@ -75,6 +78,7 @@ namespace ekg::ui {
         void move_cursor(ekg::ui::textbox_widget::cursor_pos &cursor, int64_t x, int64_t y);
         void check_largest_text_width(bool update_ui_data_text_together);
         int32_t find_cursor(ekg::ui::textbox_widget::cursor &target_cursor, int64_t total_it, int64_t it_chunk, bool last_line_utf_char_index);
+        void clamp_cursor();
 
         void on_destroy() override;
         void on_reload() override;

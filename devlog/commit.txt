@@ -72,3 +72,4 @@
 -- Fixed multi-cursor rendering empty line selection box.
 -- Reduced overhead service & gpu allocator getters calls.
 -- Reduced overhead input calls.
+-- Fixed scrolling bug on slider widget (increase/decrease actions).

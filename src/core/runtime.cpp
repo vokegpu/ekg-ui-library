@@ -502,16 +502,25 @@ void ekg::runtime::prepare_ui_env() {
     this->service_input.bind("popup-activy", "finger-click");
 
     this->service_input.bind("textbox-action-select-all", "lctrl+a");
-    this->service_input.bind("textbox-action-select-all", "finger-hold");
-    this->service_input.bind("textbox-action-select-all", "mouse-1-double");
+    this->service_input.bind("textbox-action-select-all", "rctrl+a");
+
+    this->service_input.bind("textbox-action-select-all-inline", "mouse-1");
+    this->service_input.bind("textbox-action-select-movement", "lshift");
+    this->service_input.bind("textbox-action-select-movement", "rshift");
+
+    this->service_input.bind("textbox-action-select-word", "mouse-1-double");
+    this->service_input.bind("textbox-action-select-word", "finger-hold");
+
     this->service_input.bind("textbox-action-delete-left", "backspace");
     this->service_input.bind("textbox-action-delete-right", "delete");
     this->service_input.bind("textbox-action-break-line", "return");
     this->service_input.bind("textbox-action-break-line", "keypad enter");
+
     this->service_input.bind("textbox-action-up", "up");
     this->service_input.bind("textbox-action-down", "down");
     this->service_input.bind("textbox-action-right", "right");
     this->service_input.bind("textbox-action-left", "left");
+
     this->service_input.bind("textbox-activy", "mouse-1");
     this->service_input.bind("textbox-activy", "finger-click");
 

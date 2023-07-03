@@ -165,6 +165,7 @@ void ekg::ui::slider_widget::on_reload() {
 
 void ekg::ui::slider_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
+    this->flag.absolute = this->flag.activy || (this->flag.hovered && (ekg::input::action("slider-bar-increase") || ekg::input::action("slider-bar-decrease")));
 }
 
 void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
@@ -181,7 +182,7 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
 
     this->flag.hovered = this->flag.hovered && this->flag.highlight;
 
-    if (this->flag.hovered && ((increase = ekg::input::action("slider-bar-increase")) || (descrease = ekg::input::action("slider-bar-decrease")))) {
+    if (this->flag.absolute) {
         ui->set_value(ui->get_value() + (interact.w));
     } else if (this->flag.hovered && pressed && ekg::input::action("slider-activy")) {
         this->flag.activy = true;

@@ -171,7 +171,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
     }
 
     switch (action) {
-    case ekg::ui::textbox_widget::action::addtext: {
+    case ekg::ui::textbox_widget::action::addtext:
         if (cursor.pos[0] == cursor.pos[1] && !text.empty()) {
             std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
             int64_t it {cursor.pos[0].text_index};
@@ -196,9 +196,8 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         }
 
         break;
-    }
 
-    case ekg::ui::textbox_widget::action::erasetext: {
+    case ekg::ui::textbox_widget::action::erasetext:
         if (cursor.pos[0] == cursor.pos[1] && direction < 0 && (cursor.pos[0].index > 0 || cursor.pos[0].chunk_index > 0)) {
             if (cursor.pos[0].text_index - 1 < 0 && cursor.pos[0].chunk_index > 0) {
                 std::string stored_text {this->get_cursor_emplace_text(cursor.pos[0])};
@@ -241,16 +240,15 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         }
 
         break;
-    }
 
     /*
      * @TODO Linked text chunk list:
      *
-     * The complexity of this function is horrible,
+     * The complexity performance6 of this function is horrible,
      * for the moment it is okay, but soon should be rewrite,
      * this is not secure for low-performance hardwares. :cat2:
      */
-    case ekg::ui::textbox_widget::action::breakline: {
+    case ekg::ui::textbox_widget::action::breakline:
         int64_t it {cursor.pos[0].text_index};
 
         std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
@@ -271,7 +269,6 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         ekg::dispatch(ekg::env::redraw);
 
         break;
-    }
     }
 
     cursor.pos[1] = cursor.pos[0];
@@ -419,13 +416,14 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
             cursor.pos[it].chunk_index = chunk_it - (!this->text_chunk_list.empty());
             cursor.pos[it].text_index = utf_char_index;
             cursor.pos[it].last_text_index = text_it;
-
         }
 
         if (it == 1) {
             cursor.pos[0] = cursor.pos[2];
+            cursor.target = cursor.pos[1].index;
         } else {
             cursor.pos[1] = cursor.pos[2];
+            cursor.target = cursor.pos[0].index;
         }
 
         break;
@@ -504,13 +502,13 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     bool released {ekg::input::released()};
     bool motion {ekg::input::motion()};
 
+    this->is_select_movement_input_enabled = pressed && this->flag.focused && ekg::input::action("textbox-action-select-movement");
     if (this->flag.hovered && pressed) {
         ekg::set(this->flag.focused, this->flag.hovered);
         ekg::reset(ekg::core->ui_timing);
-        ekg::dispatch(ekg::env::redraw);
-        ekg::dispatch(ekg::env::swap);
 
-        this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), true);
+        auto &main_cursor {this->loaded_multi_cursor_list.at(0)};
+        this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), !this->is_select_movement_input_enabled || (this->is_select_movement_input_enabled && main_cursor.pos[0] == main_cursor.pos[1]));
         this->flag.state = this->flag.hovered;
     } else if (this->flag.state && motion && !this->embedded_scroll.is_dragging_bar()) {
         this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), false);
@@ -600,8 +598,15 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
                     }
                     
                     if (cursor_dir[0] != 0 || cursor_dir[1] != 0) {
-                        this->move_cursor(cursor.pos[0], cursor_dir[0], cursor_dir[1]);
-                        cursor.pos[1] = cursor.pos[0];
+                        if (this->is_select_movement_input_enabled) {
+                            ekg::ui::textbox_widget::cursor_pos previous_cursor_pos {cursor.pos[0]};
+                            this->move_cursor(previous_cursor_pos.pos[0], cursor_dir[0], cursor_dir[1]);
+
+                            if (cursor.pos[0].index)
+                        } else {
+                            this->move_cursor(cursor.pos[0], cursor_dir[0], cursor_dir[1]);
+                            cursor.pos[1] = cursor.pos[0];
+                        }
                     }
                 }
 
