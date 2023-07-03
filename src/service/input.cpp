@@ -39,12 +39,16 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         case SDL_KEYDOWN: {
             this->was_pressed = true;
             std::string key_name {SDL_GetKeyName(sdl_event.key.keysym.sym)};
+            std::string string_builder {};
 
             if (this->is_special_key(sdl_event.key.keysym.sym)) {
-                this->special_keys_sdl_map[sdl_event.key.keysym.sym] = ekg::service::input::special_keys_name_map[key_name];
+                string_builder += ekg::service::input::special_keys_name_map[key_name];
+                this->special_keys_sdl_map[sdl_event.key.keysym.sym] = string_builder;
                 this->special_keys_sdl_map[sdl_event.key.keysym.sym] += "+";
+
+                this->callback(string_builder, true);
+                this->special_keys_released.emplace_back(string_builder);
             } else {
-                std::string string_builder {};
                 std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
 
                 this->complete_with_units(string_builder, key_name);
@@ -62,12 +66,18 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
         case SDL_KEYUP: {
             this->was_released = true;
             std::string key_name {SDL_GetKeyName(sdl_event.key.keysym.sym)};
+            std::string string_builder {};
 
             if (this->is_special_key(sdl_event.key.keysym.sym)) {
                 this->special_keys_sdl_map[sdl_event.key.keysym.sym] = "";
-                this->special_keys_released.emplace_back(ekg::service::input::special_keys_name_map[key_name]);
+
+                string_builder += ekg::service::input::special_keys_name_map[key_name];
+                this->callback(string_builder, false);
+                this->special_keys_released.emplace_back(string_builder);
+
+                string_builder += "-up";
+                this->callback(string_builder, true);
             } else {
-                std::string string_builder {};
                 std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
 
                 this->complete_with_units(string_builder, key_name);

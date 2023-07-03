@@ -390,7 +390,7 @@ int32_t main(int32_t, char**) {
     ekg::cpu::uievent event {};
 
     ekg::input::bind("pompom", "c-up");
-    ekg::input::bind("pompom", "lctrl+b");
+    ekg::input::bind("pompom", "lshift");
 
     glDisable(GL_DEPTH_TEST);
 
@@ -407,7 +407,7 @@ int32_t main(int32_t, char**) {
         cpu_now_ticks = SDL_GetPerformanceCounter();
         ekg::display::dt = static_cast<float>(cpu_now_ticks - cpu_last_ticks) / static_cast<float>(SDL_GetPerformanceFrequency());
 
-        debuglabel->set_text("Delta time: " + std::to_string(display_fps) + " text: ");
+        debuglabel->set_text("Framerate: " + std::to_string(display_fps));
 
         while (SDL_PollEvent(&sdl_event)) {
             switch (sdl_event.type) {

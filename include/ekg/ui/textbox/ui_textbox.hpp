@@ -23,6 +23,7 @@ namespace ekg::ui {
         ekg::font font_size {};
         uint64_t max_chars {};
         bool enabled {true};
+        uint8_t tab_size {1};
     public:
         void set_enabled(bool);
         bool is_enabled();
@@ -44,6 +45,9 @@ namespace ekg::ui {
 
         void set_text(std::string_view);
         std::string get_text();
+
+        void set_tab_size(uint8_t);
+        uint8_t get_tab_size();
     };
 }
 

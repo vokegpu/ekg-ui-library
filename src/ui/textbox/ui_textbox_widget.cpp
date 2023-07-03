@@ -172,6 +172,23 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
     switch (action) {
     case ekg::ui::textbox_widget::action::addtext:
+        /*
+         * Always the tab is pressed, the process should add the tab,
+         * it is cached to prevent useless iteration.
+         */
+        if (text == "\t") {
+            uint8_t ui_tab_size {ui->get_tab_size()};
+
+            if (this->tab_size.size() != ui_tab_size) {
+                this->tab_size.clear();
+                for (uint8_t it {}; it < ui_tab_size; it++) {
+                    this->tab_size += " ";
+                }
+            }
+
+            text = this->tab_size;
+        }
+
         if (cursor.pos[0] == cursor.pos[1] && !text.empty()) {
             std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
             int64_t it {cursor.pos[0].text_index};
@@ -498,17 +515,35 @@ void ekg::ui::textbox_widget::on_pre_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
-    bool pressed {ekg::input::pressed() && ekg::input::action("textbox-activy") && !ekg::input::typed()};
+    bool pressed_input_activy {ekg::input::pressed() && ekg::input::action("textbox-activy")};
+    bool pressed {pressed_input_activy && !ekg::input::typed()};
     bool released {ekg::input::released()};
     bool motion {ekg::input::motion()};
 
-    this->is_select_movement_input_enabled = pressed && this->flag.focused && ekg::input::action("textbox-action-select-movement");
-    if (this->flag.hovered && pressed) {
+    this->is_select_movement_input_enabled = pressed_input_activy && this->flag.focused && ekg::input::action("textbox-action-select-movement");
+    if (this->flag.hovered && pressed_input_activy) {
         ekg::set(this->flag.focused, this->flag.hovered);
         ekg::reset(ekg::core->ui_timing);
 
         auto &main_cursor {this->loaded_multi_cursor_list.at(0)};
-        this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), !this->is_select_movement_input_enabled || (this->is_select_movement_input_enabled && main_cursor.pos[0] == main_cursor.pos[1]));
+        ekg::ui::textbox_widget::cursor clicked_pos {};
+        this->check_cursor_text_bounding(clicked_pos, true);
+
+        if (this->is_select_movement_input_enabled && !this->flag.state) {
+            bool reference {clicked_pos.pos[0].index > main_cursor.pos[2].index};
+            if (reference) {
+                main_cursor.pos[2] = main_cursor.pos[0];
+                main_cursor.pos[1] = clicked_pos.pos[0];
+            } else {
+                main_cursor.pos[2] = main_cursor.pos[1];
+                main_cursor.pos[0] = clicked_pos.pos[0];
+            }
+        } else {
+            main_cursor.pos[0] = clicked_pos.pos[0];
+            main_cursor.pos[1] = clicked_pos.pos[1];
+            main_cursor.pos[2] = clicked_pos.pos[2];
+        }
+
         this->flag.state = this->flag.hovered;
     } else if (this->flag.state && motion && !this->embedded_scroll.is_dragging_bar()) {
         this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), false);
@@ -595,6 +630,8 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
                         this->process_text(cursor, "delete", ekg::ui::textbox_widget::action::erasetext, 1);
                     } else if (ekg::input::action("textbox-action-break-line")) {
                         this->process_text(cursor, "return", ekg::ui::textbox_widget::action::breakline, 1);
+                    } else if (ekg::input::action("textbox-action-tab")) {
+                        this->process_text(cursor, "\t", ekg::ui::textbox_widget::action::addtext, 1);
                     }
                     
                     if (cursor_dir[0] != 0 || cursor_dir[1] != 0) {

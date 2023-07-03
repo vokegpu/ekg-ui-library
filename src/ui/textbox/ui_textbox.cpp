@@ -14,6 +14,14 @@
 #include "ekg/ui/textbox/ui_textbox.hpp"
 #include "ekg/util/util_ui.hpp"
 
+void ekg::ui::textbox::set_tab_size(uint8_t size) {
+    this->tab_size = size < 1 ? 1 : size;
+}
+
+uint8_t ekg::ui::textbox::get_tab_size() {
+    return this->tab_size;
+}
+
 void ekg::ui::textbox::set_enabled(bool state) {
     this->enabled = state;
 }

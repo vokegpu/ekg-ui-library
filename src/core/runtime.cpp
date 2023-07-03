@@ -400,7 +400,7 @@ void ekg::runtime::prepare_tasks() {
             runtime->f_renderer_big.blit(" ", 10, 10, {1.0f, 1.0f, 1.0f, 1.0f});
         }
 
-        for (ekg::ui::abstract_widget *&widgets : all) {
+    for (ekg::ui::abstract_widget *&widgets : all) {
             if (widgets != nullptr && widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {
                 widgets->on_draw_refresh();
             }
@@ -515,6 +515,7 @@ void ekg::runtime::prepare_ui_env() {
     this->service_input.bind("textbox-action-delete-right", "delete");
     this->service_input.bind("textbox-action-break-line", "return");
     this->service_input.bind("textbox-action-break-line", "keypad enter");
+    this->service_input.bind("textbox-action-tab", "tab");
 
     this->service_input.bind("textbox-action-up", "up");
     this->service_input.bind("textbox-action-down", "down");
