@@ -19,7 +19,7 @@ Background song: GUNNM OST
 The EKG supports natively two APIs: OpenGL, and ~~Vulkan~~. Vulkan is not supported yet, but soon.
 
 Be sure you compile together all these three libs:  
-![GLEW](https://glew.sourceforge.net/)/![Vulkan](https://www.vulkan.org/), ![SDL2](https://www.libsdl.org/), and ![Freetype](https://freetype.org/).
+![GLEW](https://glew.sourceforge.net/)/![Vulkan](https://www.vulkan.org/)/GLES3, ![SDL2](https://www.libsdl.org/), and ![Freetype](https://freetype.org/).
 
 The order of the linker is important too, be sure you link EKG first before the required libs.
 ![If you are on Android NDK](https://github.com/vokegpu/pompom), please replace GLEW with GLES3.
