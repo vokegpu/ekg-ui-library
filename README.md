@@ -1,18 +1,26 @@
-The official runtime EKG ui library source code
+# Welcome 🐈
 
 ---
 
-The purpose of EKG is to be fully customizable, smooth, and with many animations. Also, perform well in low pc specs. This is the new core version of EKG, a rewrite of the legacy core. 
-
-Be sure you compile together all these three libs:  
-![GLEW](https://glew.sourceforge.net/), ![SDL2](https://www.libsdl.org/), and ![Freetype](https://freetype.org/).
-
-The order of linker is important too, be sure you link EKG first before required libs.
-
-![If you are on Android NDK](https://github.com/vokegpu/pompom), please replace GLEW with GLES3.
+The purpose of EKG is to be fully customizable, smooth, and with many animations. Also, perform well with low pc specs. This is the new core version of EKG, a rewrite of the legacy core.  
+If you want to know more about the EKG development progress I recommend you peek:
+https://github.com/orgs/gamedevs-do-apocalipse/discussions/5
 
 ![Image Text](/splash/splash-shocase-3.0-light-theme.png?raw=true)
 ![Calc](/splash/splash-calc-showcase.png?raw=true)
+
+https://github.com/gamedevs-do-apocalipse/gamedevs-do-apocalipse/assets/37088203/5f0cd227-e50d-495c-81a7-76e6155305eb
+Background song: GUNNM OST 
+
+# Get Started 🐈‍⬛
+
+The EKG supports natively two APIs: OpenGL, and ~~Vulkan~~. Vulkan is not supported yet, but soon.
+
+Be sure you compile together all these three libs:  
+![GLEW](https://glew.sourceforge.net/)/![Vulkan](https://www.vulkan.org/), ![SDL2](https://www.libsdl.org/), and ![Freetype](https://freetype.org/).
+
+The order of the linker is important too, be sure you link EKG first before the required libs.
+![If you are on Android NDK](https://github.com/vokegpu/pompom), please replace GLEW with GLES3.
 
 ```c++
 auto frame2 = ekg::frame("text sampler", {20, 30}, {400, 400});
@@ -28,8 +36,6 @@ ekg::button("Button 2.3");
 ekg::button("Button 3", ekg::dock::next);
 ekg::button("Button 4");
 ```
-
-# Running
 
 C++ compiler(s) support: GCC  
 Library output path:   
@@ -108,48 +114,11 @@ while (SDL_PollEvent(&sdlevent)) {
 }
 ```
 
-There is more things, theses steps are the official way to setup.
-
-# Services
-
-The theme store the current colors scheme loaded, you can use the default or load one theme file. One of important objectives is make the UI looks pretty and smooth in mobile devices.
-
-Input manager handle all bindings of dimension element, you can tag combinations of different inputs.  
-When pressing units keybinds (special keys + random keyboard key) you need to write in the correct pattern: ctrl -> shift -> tab; E.g "lshift+tab+b"; l (left) r (right).  
-```c++
-ekg::input::bind("custom-tag-a", "mouse-left");
-ekg::input::bind("custom-tag-a", "mouse-left-double");
-ekg::input::bind("custom-tag-b", "r");
-ekg::input::bind("custom-tag-b", "lctrl+a"); // also be sure you are keybinding in correct pattern.
-ekg::input::bind("custom-tag-c", "r-up");
-ekg::input::bind("custom-tag-d", "lctrl+a-up");
-ekg::input::bind("hii!! :))", "mouse-5-double"); // multiples buttons of mouse.
-
-// ... any place of your code:
-if (ekg::input::pressed("custom-tag-a")) {
-  ekg::log() << "you pressed a!";
-}
-
-if (ekg::input::pressed("custom-tag-b")) {
-  ekg::log() << "you pressed b!";
-}
-
-if (ekg::input::pressed("custom-tag-c")) {
-  ekg::log() << "you pressed c!";
-}
-
-if (ekg::input::pressed("custom-tag-d")) {
-  ekg::log() << "you pressed d!";
-}
-
-if (ekg::input::pressed("hii!! :))")) {
-  ekg::log() << "hii!";
-}
-```
+There are more things, these steps are the official way to set up.
 
 # Widgets
 
-At total there is 40% of widgets done:
+At total, there is 40% of the widgets done:
 - Button
 - Checkbox
 - Frame
