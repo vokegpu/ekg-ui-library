@@ -6,6 +6,8 @@ The purpose of EKG is to be fully customizable, smooth, and with many animations
 If you want to know more about the EKG development progress I recommend you peek:
 https://github.com/orgs/gamedevs-do-apocalipse/discussions/5
 
+The official documentation is not done.
+
 ![Image Text](/splash/splash-shocase-3.0-light-theme.png?raw=true)
 ![Calc](/splash/splash-calc-showcase.png?raw=true)
 
