@@ -26,9 +26,7 @@ The order of the linker is important too, be sure you link EKG first before the 
 # cmake example
 add_executable(your-project-name ekg SDL2main SDL2 freetype glew32)
 ```
-
-Makefile
-```
+```makefile
 cxx ... -lekg -lSDL2main -lSDL2 -lfreetype -lglew32
 ```
 
