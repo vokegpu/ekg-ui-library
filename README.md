@@ -22,31 +22,26 @@ Be sure you compile together all these three libs:
 The order of the linker is important too, be sure you link EKG first before the required libs.
 ![If you are on Android NDK](https://github.com/vokegpu/pompom), please replace GLEW with GLES3.
 
-```c++
-auto frame2 = ekg::frame("text sampler", {20, 30}, {400, 400});
-frame2->set_drag(ekg::dock::top);
-frame2->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
-
-auto fillnext = ekg::dock::fill | ekg::dock::next;
-ekg::textbox("Search", "Text Sampler Cat", ekg::dock::fill | ekg::dock::next)->set_scaled_height(3);
-ekg::label("não", ekg::dock::fill | ekg::dock::next);
-ekg::button("Button 2.1", ekg::dock::fill);
-ekg::button("Button 2.2", fillnext);
-ekg::button("Button 2.3");
-ekg::button("Button 3", ekg::dock::next);
-ekg::button("Button 4");
+```cmake
+# cmake example
+add_executable(your-project-name ekg SDL2main SDL2 freetype glew32)
 ```
 
-C++ compiler(s) support: GCC  
+Makefile
+```
+cxx ... -lekg -lSDL2main -lSDL2 -lfreetype -lglew32
+```
+
+C++ compiler(s) support: GCC, MinGW32, MinGW64, Clang  
+C++ std version: 17  
 Library output path:   
 `lib/win32/libekg.a` - Windows x86_x64  
 `lib/linux/libekg.a` - Linux x86_x64  
 `ANDROID_ABI/libekg.a` - Android armeabi-v7a arm64-v8a x86 x86_64  
 
-# Setup
+# Example
 
-First move `include/` to compiler include path or set in cmake/makefile/other project directory, then you need to link the library.  
-Note that you need to link all dependencies that come with ekg: ![SDL2](https://www.libsdl.org/), ![GLEW](https://glew.sourceforge.net/) and ![FreeType](http://freetype.org/).
+EKG source code provides a demo application called Pompom under `test/build/OS` folder.
 
 ```c++
 #include <ekg/ekg.hpp>
