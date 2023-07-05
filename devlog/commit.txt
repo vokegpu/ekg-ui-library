@@ -74,3 +74,4 @@
 -- Reduced overhead input calls.
 -- Fixed scrolling bug on slider widget (increase/decrease actions).
 -- Added tab size ui feature per widget data.
+-- Added feature movement select textbox widget.

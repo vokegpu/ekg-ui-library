@@ -23,7 +23,7 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
 
     ekg::ui::textbox_widget::cursor_pos target_cursor_pos {};
 
-    if ((cursor.pos[0].index == cursor.target && this->is_select_movement_input_enabled) || (cursor.pos[0] != cursor.pos[1] && !this->is_select_movement_input_enabled && (x < 0 || y < 0))) {
+    if ((cursor.pos[0].index == cursor.target && this->is_select_movement_input_enabled) || ((x < 0 || y < 0) && cursor.pos[0] != cursor.pos[1] && !this->is_select_movement_input_enabled)) {
         target_cursor_pos = cursor.pos[0];
     } else {
         target_cursor_pos = cursor.pos[1];
@@ -42,7 +42,7 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
     }
 
     cursor.target = target_cursor_pos.index;
-    if (cursor.target > cursor.pos[0].index) {
+    if (cursor.target > cursor.pos[2].index) {
         cursor.pos[0] = cursor.pos[2];
         cursor.pos[1] = target_cursor_pos;
     } else {
