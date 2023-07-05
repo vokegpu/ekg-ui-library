@@ -38,7 +38,7 @@ namespace ekg::ui {
             int64_t nearest_word_index {};
         public:
             inline bool operator==(ekg::ui::textbox_widget::cursor_pos &r) {
-                return this->index == r.index && this->chunk_index == r.chunk_index && this->text_index == r.text_index;
+                return this->index == r.index;
             }
 
             inline bool operator!=(ekg::ui::textbox_widget::cursor_pos &r) {
@@ -73,13 +73,14 @@ namespace ekg::ui {
         int64_t total_utf_chars {};
         std::string cached_tab_size {};
     public:
-        void check_cursor_text_bounding(ekg::ui::textbox_widget::cursor &cursor, bool reset_second_cursor_pos);
         std::string &get_cursor_emplace_text(ekg::ui::textbox_widget::cursor_pos &cursor);
+        int32_t find_cursor(ekg::ui::textbox_widget::cursor &target_cursor, int64_t total_it, int64_t it_chunk, bool last_line_utf_char_index);
+
+        void check_cursor_text_bounding(ekg::ui::textbox_widget::cursor &cursor, bool reset_second_cursor_pos);
         void process_text(ekg::ui::textbox_widget::cursor &cursor, std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction);
         void move_cursor(ekg::ui::textbox_widget::cursor_pos &cursor, int64_t x, int64_t y);
         void check_largest_text_width(bool update_ui_data_text_together);
-        int32_t find_cursor(ekg::ui::textbox_widget::cursor &target_cursor, int64_t total_it, int64_t it_chunk, bool last_line_utf_char_index);
-        void clamp_cursor();
+        void move_target_cursor(ekg::ui::textbox_widget::cursor &cursor, int64_t x, int64_t y);
 
         void on_destroy() override;
         void on_reload() override;

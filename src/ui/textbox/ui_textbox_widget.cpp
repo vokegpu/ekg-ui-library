@@ -17,6 +17,40 @@
 #include "ekg/draw/draw.hpp"
 #include "ekg/os/system_cursor.hpp"
 
+void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor &cursor, int64_t x, int64_t y) {
+    ekg::reset(ekg::core->ui_timing);
+    ekg::dispatch(ekg::env::redraw);
+
+    ekg::ui::textbox_widget::cursor_pos target_cursor_pos {};
+
+    if ((cursor.pos[0].index == cursor.target && this->is_select_movement_input_enabled) || (cursor.pos[0] != cursor.pos[1] && !this->is_select_movement_input_enabled && (x < 0 || y < 0))) {
+        target_cursor_pos = cursor.pos[0];
+    } else {
+        target_cursor_pos = cursor.pos[1];
+    }
+
+    if (cursor.pos[0] == cursor.pos[1] || this->is_select_movement_input_enabled) {
+        this->move_cursor(target_cursor_pos, x, y);
+    }
+
+    if (!this->is_select_movement_input_enabled) {
+        cursor.pos[0] = target_cursor_pos;
+        cursor.pos[1] = target_cursor_pos;
+        cursor.pos[2] = target_cursor_pos;
+        cursor.target = target_cursor_pos.index;
+        return;
+    }
+
+    cursor.target = target_cursor_pos.index;
+    if (cursor.target > cursor.pos[0].index) {
+        cursor.pos[0] = cursor.pos[2];
+        cursor.pos[1] = target_cursor_pos;
+    } else {
+        cursor.pos[0] = target_cursor_pos;
+        cursor.pos[1] = cursor.pos[2];
+    }
+}
+
 /*
  * This is not really optmised but I think it is okay.
  * @TODO write a better text width width largest.
@@ -164,7 +198,9 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
     ekg::dispatch(ekg::env::redraw);
 }
 
-void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &cursor, std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction) {
+void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &cursor,
+                                           std::string_view text, 
+                                           ekg::ui::textbox_widget::action action, int64_t direction) {
     auto ui {(ekg::ui::textbox*) this->data};
     if (!(this->is_ui_enabled = ui->is_enabled())) {
         return;
@@ -288,7 +324,8 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         break;
     }
 
-    cursor.pos[1] = cursor.pos[0];
+    cursor.pos[2] = cursor.pos[1] = cursor.pos[0];
+    cursor.target = cursor.pos[0].index;
     this->check_largest_text_width(true);
 
     ekg::reset(ekg::core->ui_timing);
@@ -418,6 +455,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
 
         cursor.pos[1] = cursor.pos[0];
         cursor.pos[2] = cursor.pos[0];
+        cursor.target = cursor.pos[0].index;
         break;
     case false:
         uint32_t it {};
@@ -515,13 +553,12 @@ void ekg::ui::textbox_widget::on_pre_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
-    bool pressed_input_activy {ekg::input::pressed() && ekg::input::action("textbox-activy")};
-    bool pressed {pressed_input_activy && !ekg::input::typed()};
+    bool pressed {ekg::input::pressed() && ekg::input::action("textbox-activy")};
     bool released {ekg::input::released()};
     bool motion {ekg::input::motion()};
 
-    this->is_select_movement_input_enabled = pressed_input_activy && this->flag.focused && ekg::input::action("textbox-action-select-movement");
-    if (this->flag.hovered && pressed_input_activy) {
+    this->is_select_movement_input_enabled = ekg::input::action("textbox-action-select-movement");;
+    if (this->flag.hovered && pressed) {
         ekg::set(this->flag.focused, this->flag.hovered);
         ekg::reset(ekg::core->ui_timing);
 
@@ -529,18 +566,22 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         ekg::ui::textbox_widget::cursor clicked_pos {};
         this->check_cursor_text_bounding(clicked_pos, true);
 
-        if (this->is_select_movement_input_enabled && !this->flag.state) {
+        bool movement_input_enabled {this->flag.focused && this->is_select_movement_input_enabled};
+        if (movement_input_enabled && !this->flag.state) {
             if (clicked_pos.pos[0].index > main_cursor.pos[2].index) {
                 main_cursor.pos[2] = main_cursor.pos[0];
                 main_cursor.pos[1] = clicked_pos.pos[0];
+                main_cursor.target = clicked_pos.pos[0].index;
             } else {
                 main_cursor.pos[2] = main_cursor.pos[1];
                 main_cursor.pos[0] = clicked_pos.pos[0];
+                main_cursor.target = clicked_pos.pos[1].index;
             }
         } else {
             main_cursor.pos[0] = clicked_pos.pos[0];
             main_cursor.pos[1] = clicked_pos.pos[1];
             main_cursor.pos[2] = clicked_pos.pos[2];
+            main_cursor.target = clicked_pos.pos[0].index;
         }
 
         this->flag.state = this->flag.hovered;
@@ -636,10 +677,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
                     }
 
                     if (cursor_dir[0] != 0 || cursor_dir[1] != 0) {
-                        this->move_cursor(cursor.pos[0], cursor_dir[0], cursor_dir[1]);
-                        if (!this->is_select_movement_input_enabled) {
-                            cursor.pos[1] = cursor.pos[0];
-                        }
+                        this->move_target_cursor(cursor, cursor_dir[0], cursor_dir[1]);
                     }
                 }
 
@@ -666,7 +704,8 @@ void ekg::ui::textbox_widget::on_update() {
     this->is_high_frequency = this->embedded_scroll.check_activy_state(this->flag.focused || this->flag.hovered);
 }
 
-int32_t ekg::ui::textbox_widget::find_cursor(ekg::ui::textbox_widget::cursor &target_cursor, int64_t total_it, int64_t it_chunk, bool last_line_utf_char_index) {
+int32_t ekg::ui::textbox_widget::find_cursor(ekg::ui::textbox_widget::cursor &target_cursor,
+                                             int64_t total_it, int64_t it_chunk, bool last_line_utf_char_index) {
     bool a_cursor_pos {};
     bool b_cursor_pos {};
 

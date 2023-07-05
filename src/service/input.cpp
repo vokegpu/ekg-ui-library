@@ -50,7 +50,13 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
                 this->is_special_keys_released = true;
             } else {
                 std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
+                string_builder += "abs-";
+                string_builder += key_name;
 
+                this->callback(string_builder, true);
+                this->input_released_list.push_back(string_builder);
+
+                string_builder.clear();
                 this->complete_with_units(string_builder, key_name);
                 this->callback(string_builder, true);
                 this->input_released_list.push_back(string_builder);
@@ -79,7 +85,14 @@ void ekg::service::input::on_event(SDL_Event &sdl_event) {
                 this->callback(string_builder, true);
             } else {
                 std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
+                string_builder += "abs-";
+                string_builder += key_name;
+                string_builder += "-up";
 
+                this->callback(string_builder, true);
+                this->input_released_list.push_back(string_builder);
+
+                string_builder.clear();
                 this->complete_with_units(string_builder, key_name);
                 string_builder += "-up";
 
