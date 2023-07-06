@@ -165,7 +165,9 @@ void ekg::ui::slider_widget::on_reload() {
 
 void ekg::ui::slider_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
-    this->flag.absolute = this->flag.activy || (this->flag.hovered && (ekg::input::action("slider-bar-increase") || ekg::input::action("slider-bar-decrease")));
+
+    this->flag.state = (this->flag.hovered && (ekg::input::action("slider-bar-increase") || ekg::input::action("slider-bar-decrease")));
+    this->flag.absolute = this->flag.state;
 }
 
 void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
@@ -174,15 +176,19 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
     auto ui {(ekg::ui::slider*) this->data};
     auto &rect {this->get_abs_rect()};
     auto &interact {ekg::interact()};
-    bool pressed {ekg::input::pressed()}, released {ekg::input::released()}, motion {ekg::input::motion()}, increase {}, descrease {};
+    
+    bool pressed {ekg::input::pressed()};
+    bool released {ekg::input::released()};
+    bool motion {ekg::input::motion()};
 
     if (motion || pressed || released) {
         ekg::set(this->flag.highlight, this->flag.hovered && ekg::rect_collide_vec(this->rect_bar + rect, interact));
     }
 
+    this->flag.absolute = this->flag.absolute || this->flag.activy;
     this->flag.hovered = this->flag.hovered && this->flag.highlight;
 
-    if (this->flag.absolute) {
+    if (this->flag.state) {
         ui->set_value(ui->get_value() + (interact.w));
     } else if (this->flag.hovered && pressed && ekg::input::action("slider-activy")) {
         this->flag.activy = true;

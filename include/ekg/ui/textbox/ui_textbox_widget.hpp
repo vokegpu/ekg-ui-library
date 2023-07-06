@@ -69,6 +69,7 @@ namespace ekg::ui {
         bool redraw_cursor {};
         bool is_ui_enabled {};
         bool is_select_movement_input_enabled {};
+        bool is_word_movement_input_enabled {};
 
         int64_t total_utf_chars {};
         std::string cached_tab_size {};
@@ -80,6 +81,7 @@ namespace ekg::ui {
         void process_text(ekg::ui::textbox_widget::cursor &cursor, std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction);
         void move_cursor(ekg::ui::textbox_widget::cursor_pos &cursor, int64_t x, int64_t y);
         void check_largest_text_width(bool update_ui_data_text_together);
+        void check_nearest_word(ekg::ui::textbox_widget::cursor &cursor, int64_t &x, int64_t &y);
         void move_target_cursor(ekg::ui::textbox_widget::cursor &cursor, int64_t x, int64_t y);
 
         void on_destroy() override;

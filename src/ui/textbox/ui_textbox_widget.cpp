@@ -17,13 +17,51 @@
 #include "ekg/draw/draw.hpp"
 #include "ekg/os/system_cursor.hpp"
 
+void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor &cursor, int64_t &x, int64_t &y) {
+    if (!this->is_word_movement_input_enabled) {
+        return;
+    }
+
+    ekg::ui::textbox_widget::cursor_pos &target_cursor_pos {cursor.target == cursor.pos[0].index ? cursor.pos[0] : cursor.pos[1]};
+    std::string &emplace_text {this->get_cursor_emplace_text(target_cursor_pos)};
+
+    bool found_uint_value_32 {!emplace_text.empty() && x != 0};
+    int64_t it {target_cursor_pos.text_index};
+    int64_t emplace_text_size {static_cast<int64_t>(emplace_text.size())};
+
+    while (found_uint_value_32) {
+        std::cout << it << std::endl;
+
+        if (it < emplace_text_size && static_cast<uint8_t>(emplace_text.at(it)) == static_cast<uint8_t>(32)) {
+            break;
+        }
+
+        if (x > 0) {
+            it++;
+            x++;
+        } else {
+            it--;
+            x--;
+        }
+
+        if (it == -1 || it == emplace_text_size) {
+            break;
+        }
+    }
+}
+
+/*
+ * If the cursor is not selected, it is target the first cursor,
+ * therefore when the cursor is selected, the code check if moving cursor is
+ * enabled, then set the A & B pos based on direction.
+ */
 void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor &cursor, int64_t x, int64_t y) {
     ekg::reset(ekg::core->ui_timing);
     ekg::dispatch(ekg::env::redraw);
 
     ekg::ui::textbox_widget::cursor_pos target_cursor_pos {};
-
-    if ((cursor.pos[0].index == cursor.target && this->is_select_movement_input_enabled) || ((x < 0 || y < 0) && cursor.pos[0] != cursor.pos[1] && !this->is_select_movement_input_enabled)) {
+    if ((cursor.pos[0].index == cursor.target && this->is_select_movement_input_enabled) ||
+       ((x < 0 || y < 0) && cursor.pos[0] != cursor.pos[1] && !this->is_select_movement_input_enabled)) {
         target_cursor_pos = cursor.pos[0];
     } else {
         target_cursor_pos = cursor.pos[1];
@@ -295,7 +333,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         break;
 
     /*
-     * @TODO Linked text chunk list:
+     * @TODO fast movement 
      *
      * The complexity performance6 of this function is horrible,
      * for the moment it is okay, but soon should be rewrite,
@@ -655,6 +693,8 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
                 }
 
                 int64_t cursor_dir[2] {};
+                this->is_word_movement_input_enabled = ekg::input::action("textbox-action-word-movement");
+
                 for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
                     cursor_dir[0] = cursor_dir[1] = 0;
 
@@ -677,6 +717,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
                     }
 
                     if (cursor_dir[0] != 0 || cursor_dir[1] != 0) {
+                        this->check_nearest_word(cursor, cursor_dir[0], cursor_dir[1]);
                         this->move_target_cursor(cursor, cursor_dir[0], cursor_dir[1]);
                     }
                 }

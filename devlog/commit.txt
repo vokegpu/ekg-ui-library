@@ -75,3 +75,5 @@
 -- Fixed scrolling bug on slider widget (increase/decrease actions).
 -- Added tab size ui feature per widget data.
 -- Added feature movement select textbox widget.
+-- Fixed slider scrolling & dragging abs state.
+-- Fixed rendering issue with scissor.

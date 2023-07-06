@@ -244,7 +244,6 @@ void ekg::gpu::allocator::clear_current_data() {
     }
 
     ekg::gpu::data &data {this->bind_current_data()};
-
     data.line_thickness = 0;
     data.active_tex_slot = 0;
     data.scissor_id = -1;

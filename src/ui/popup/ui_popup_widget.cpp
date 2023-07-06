@@ -356,7 +356,7 @@ void ekg::ui::popup_widget::on_draw_refresh() {
     auto &component_list {ui->get_component_list()};
 
     ekg::draw::bind_scissor(ui->get_id());
-    ekg::draw::sync_scissor(rect, ui->get_parent_id());
+    ekg::draw::sync_scissor(rect, 0);
 
     ekg::draw::rect(rect, theme.popup_background);
     ekg::draw::rect(rect, theme.popup_outline, ekg::drawmode::outline);
