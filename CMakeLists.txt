@@ -59,14 +59,14 @@ if (EKG_ENABLE_TEST)
 
     if (WIN32)
         file(GLOB LIBRARY_PATH "./lib/win32/libekg.a")
-        set(THIRD_PLAY_LIBRARIES mingw32 SDL2main SDL2 opengl32 glew32 freetype)
+        set(THIRD_PARTY_LIBRARIES mingw32 SDL2main SDL2 opengl32 glew32 freetype)
     else()
         file(GLOB LIBRARY_PATH "./lib/linux/libekg.a")
-        set(THIRD_PLAY_LIBRARIES SDL2main SDL2 GL GLEW freetype)
+        set(THIRD_PARTY_LIBRARIES SDL2main SDL2 GL GLEW freetype)
     endif()
 
     target_link_libraries(ekg-tests ${LIBRARY_PATH}
-                                    ${THIRD_PLAY_LIBRARIES}
+                                    ${THIRD_PARTY_LIBRARIES}
     )
 
     message("-- EKG tests building done")

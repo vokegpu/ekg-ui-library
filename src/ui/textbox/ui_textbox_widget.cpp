@@ -25,31 +25,45 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
     ekg::ui::textbox_widget::cursor_pos &target_cursor_pos {cursor.target == cursor.pos[0].index ? cursor.pos[0] : cursor.pos[1]};
     std::string &emplace_text {this->get_cursor_emplace_text(target_cursor_pos)};
 
-    bool found_uint_value_32 {!emplace_text.empty() && x != 0};
+    bool found_uint_value_32 {};
     bool is_dir_right {x > 0};
+    bool is_vertical {x != 0};
 
     int64_t it {target_cursor_pos.text_index};
     int64_t emplace_text_size {static_cast<int64_t>(emplace_text.size())};
+    
+    std::string utf8string {};
+    uint8_t ui8char {};
+    char32_t ui32char {};
 
     x = 0;
-
-    while (found_uint_value_32) {
-        if (it < emplace_text_size && (it != target_cursor_pos.index && (is_dir_right || (it != target_cursor_pos.index-1 && !is_dir_right))) && 
-           (static_cast<uint8_t>(emplace_text.at(it)) == static_cast<uint8_t>(32) ||
-           (!is_dir_right && it > 0 && static_cast<uint8_t>(emplace_text.at(it - 1)) == static_cast<uint8_t>(32)))) {
+    while (!emplace_text.empty() && is_vertical) {
+        if (it > emplace_text_size || it <= -1) {
             break;
         }
 
         if (is_dir_right) {
-            it++;
+            if (it < emplace_text_size && static_cast<uint8_t>(emplace_text.at(it)) == static_cast<uint8_t>(32)) {
+                found_uint_value_32 = true;
+            } else {
+                if (found_uint_value_32) {
+                    break;
+                }
+            }
+
+            it += ekg::utf8checksequence(ui8char, ui32char, utf8string, emplace_text, it);
             x++;
         } else {
+            if (it == 0 || (it > 0 && static_cast<uint8_t>(emplace_text.at(it - 1)) == static_cast<uint8_t>(32))) {
+                if (found_uint_value_32) {
+                    break;
+                }
+            } else {
+                found_uint_value_32 = true;
+            }
+
             it--;
             x--;
-        }
-
-        if (it <= -1 || it >= emplace_text_size) {
-            break;
         }
     }
 }
