@@ -26,17 +26,21 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
     std::string &emplace_text {this->get_cursor_emplace_text(target_cursor_pos)};
 
     bool found_uint_value_32 {!emplace_text.empty() && x != 0};
+    bool is_dir_right {x > 0};
+
     int64_t it {target_cursor_pos.text_index};
     int64_t emplace_text_size {static_cast<int64_t>(emplace_text.size())};
 
-    while (found_uint_value_32) {
-        std::cout << it << std::endl;
+    x = 0;
 
-        if (it < emplace_text_size && static_cast<uint8_t>(emplace_text.at(it)) == static_cast<uint8_t>(32)) {
+    while (found_uint_value_32) {
+        if (it < emplace_text_size && (it != target_cursor_pos.index && (is_dir_right || (it != target_cursor_pos.index-1 && !is_dir_right))) && 
+           (static_cast<uint8_t>(emplace_text.at(it)) == static_cast<uint8_t>(32) ||
+           (!is_dir_right && it > 0 && static_cast<uint8_t>(emplace_text.at(it - 1)) == static_cast<uint8_t>(32)))) {
             break;
         }
 
-        if (x > 0) {
+        if (is_dir_right) {
             it++;
             x++;
         } else {
@@ -44,7 +48,7 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
             x--;
         }
 
-        if (it == -1 || it == emplace_text_size) {
+        if (it <= -1 || it >= emplace_text_size) {
             break;
         }
     }
@@ -584,10 +588,6 @@ void ekg::ui::textbox_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
     this->embedded_scroll.on_pre_event(sdl_event);
     this->flag.absolute = this->embedded_scroll.is_dragging_bar() || this->embedded_scroll.flag.activy || this->flag.state;
-
-    if (this->flag.hovered) {
-        ekg::cursor = ekg::systemcursor::ibeam;
-    }
 }
 
 void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
@@ -595,7 +595,11 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     bool released {ekg::input::released()};
     bool motion {ekg::input::motion()};
 
-    this->is_select_movement_input_enabled = ekg::input::action("textbox-action-select-movement");;
+    if (this->flag.hovered) {
+        ekg::cursor = ekg::systemcursor::ibeam;
+    }
+
+    this->is_select_movement_input_enabled = ekg::input::action("textbox-action-select-movement");
     if (this->flag.hovered && pressed) {
         ekg::set(this->flag.focused, this->flag.hovered);
         ekg::reset(ekg::core->ui_timing);

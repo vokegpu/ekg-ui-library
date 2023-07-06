@@ -77,3 +77,4 @@
 -- Added feature movement select textbox widget.
 -- Fixed slider scrolling & dragging abs state.
 -- Fixed rendering issue with scissor.
+-- Added feature nearest word textbox movement widget.
