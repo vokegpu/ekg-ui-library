@@ -26,7 +26,8 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
     std::string &emplace_text {this->get_cursor_emplace_text(target_cursor_pos)};
     uint64_t emplace_text_size {emplace_text.size()};
 
-    if (emplace_text.empty() || (x == 0 || (x < 0 && target_cursor_pos.text_index == 0) || (x > 0 && target_cursor_pos.text_index == emplace_text_size))) {
+    if (emplace_text.empty() || (x == 0 || (x < 0 && target_cursor_pos.text_index == 0) ||
+                                (x > 0 && target_cursor_pos.text_index == emplace_text_size))) {
         return;
     }
 
@@ -41,6 +42,12 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
     char32_t ui32char {};
 
     x = 0;
+
+    /*
+     * the cursor index text position is utf encoded,
+     * not string coded, so it should start by begin
+     * and not by cursor. 
+     */
 
     while (it < emplace_text_size) {
         ui8char = static_cast<uint8_t>(emplace_text.at(it));
@@ -69,6 +76,10 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
         it += ekg::utf8checksequence(ui8char, ui32char, utf8string, emplace_text, it) + 1;
     }
 
+    /*
+     * when the loop is finished, sometime it does not check any possible index,
+     * so it is important to force at latest one.
+     */
     if (is_dir_right && x == 0) {
         x = utf_it - target_cursor_pos.text_index;
     } else if (!is_dir_right) {
