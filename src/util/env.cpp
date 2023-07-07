@@ -30,6 +30,7 @@ size_t ekg::utf8checksequence(uint8_t &ui8char, char32_t &ui32char, std::string 
     if (ui8char <= 0x7F) {
         ui32char = static_cast<char32_t>(ui8char);
         utf8string = ui8char;
+        return 0;
     } else if ((ui8char & 0xE0) == 0xC0) {
         utf8string = stringtext.substr(it, 2);
         ui32char = ekg::char32str(utf8string);

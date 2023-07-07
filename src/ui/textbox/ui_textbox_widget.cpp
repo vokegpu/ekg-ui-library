@@ -24,47 +24,55 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
 
     ekg::ui::textbox_widget::cursor_pos &target_cursor_pos {cursor.target == cursor.pos[0].index ? cursor.pos[0] : cursor.pos[1]};
     std::string &emplace_text {this->get_cursor_emplace_text(target_cursor_pos)};
+    uint64_t emplace_text_size {emplace_text.size()};
 
-    bool found_uint_value_32 {};
+    if (emplace_text.empty() || (x == 0 || (x < 0 && target_cursor_pos.text_index == 0) || (x > 0 && target_cursor_pos.text_index == emplace_text_size))) {
+        return;
+    }
+
     bool is_dir_right {x > 0};
-    bool is_vertical {x != 0};
+    bool should_update_last_char {};
 
-    int64_t it {target_cursor_pos.text_index};
-    int64_t emplace_text_size {static_cast<int64_t>(emplace_text.size())};
-    
-    std::string utf8string {};
+    uint64_t it {};
+    int64_t utf_it {};
     uint8_t ui8char {};
+
+    std::string utf8string {};
     char32_t ui32char {};
 
     x = 0;
-    while (!emplace_text.empty() && is_vertical) {
-        if (it > emplace_text_size || it <= -1) {
-            break;
-        }
 
-        if (is_dir_right) {
-            if (it < emplace_text_size && static_cast<uint8_t>(emplace_text.at(it)) == static_cast<uint8_t>(32)) {
-                found_uint_value_32 = true;
-            } else {
-                if (found_uint_value_32) {
-                    break;
-                }
+    while (it < emplace_text_size) {
+        ui8char = static_cast<uint8_t>(emplace_text.at(it));
+
+        if (is_dir_right && utf_it >= target_cursor_pos.text_index) {
+            if (ui8char != 32) {
+                should_update_last_char = true;
+            } else if (should_update_last_char) {
+                x = utf_it - target_cursor_pos.text_index;
+                break;
+            }
+        } else if (!is_dir_right) {
+            if (utf_it == target_cursor_pos.text_index) {
+                break;
             }
 
-            it += ekg::utf8checksequence(ui8char, ui32char, utf8string, emplace_text, it);
-            x++;
-        } else {
-            if (it == 0 || (it > 0 && static_cast<uint8_t>(emplace_text.at(it - 1)) == static_cast<uint8_t>(32))) {
-                if (found_uint_value_32) {
-                    break;
-                }
-            } else {
-                found_uint_value_32 = true;
+            if (ui8char == 32) {
+                should_update_last_char = true;
+            } else if (should_update_last_char) {
+                x = utf_it;
+                should_update_last_char = false;
             }
-
-            it--;
-            x--;
         }
+
+        utf_it++;
+        it += ekg::utf8checksequence(ui8char, ui32char, utf8string, emplace_text, it) + 1;
+    }
+
+    if (is_dir_right && x == 0) {
+        x = utf_it - target_cursor_pos.text_index;
+    } else if (!is_dir_right) {
+        x = x - utf_it;
     }
 }
 
