@@ -1,10 +1,10 @@
-# major.minor.patch # # major-commit.minor-commit.patch-commit #
+major.minor.patch major-commit.minor-commit.patch-commit
 
 0.0.1.0.0.1 10/06/23
 
 -- Fixed bug on widgets ::set_width() setting incorrect dimension axis.
--- Fixed bug at frame widget actions (dragging and resizing), now it calculate from visible rect.
--- Simetric layout processing based in scroll pixels offsets.
+-- Fixed bug at frame widget actions (dragging and resizing), now it calculates from visible rect.
+-- Symmetric layout processing based on scroll pixels offsets.
 
 0.0.1.0.1.0 11/06/23
 
@@ -42,7 +42,7 @@
 -- Processing stack swap timing runtime with 14018 widgets! --
 -- Resize: (telemetry size, sum) (average timing): 36, 98494    2735
 -- No resize: (telemetry size, sum) (average timing): 36, 85866    2385
--- No resze <--- better
+-- No resize <--- better
 
 -- Fixed OpenGL allocator swapping buffer performance.
 -- Fixed issue with font rendering factor & text box UI delay (textbox UI with delay to process stack reorder event).
@@ -56,12 +56,12 @@
 0.0.1.0.1.7 25/06/23
 
 -- Fixed horizontal mouse pad scrolling.
--- Fixed children frame widget resizing.
+-- Fixed children's frame widget resizing.
 -- Fixed children frame docking left & right widget resizing.
 -- Partial-fix scroll priority.
 -- Reduced OpenGL overhead rendering calls.
 -- Fixed scroll priority definitely.
--- Multi-cursor textbox UI-based system (select box disabled temporary).
+-- Multi-cursor textbox UI-based system (select box disabled temporarily).
 
 0.0.1.0.1.8 29/06/23
 
@@ -76,5 +76,6 @@
 -- Added tab size ui feature per widget data.
 -- Added feature movement select textbox widget.
 -- Fixed slider scrolling & dragging abs state.
--- Fixed rendering issue with scissor.
--- Added feature nearest word textbox movement widget.
+-- Fixed rendering issue with scissors.
+-- Added feature movements by nearest word from textbox.
+-- Added absolute input statement feature.
