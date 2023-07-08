@@ -6,3 +6,6 @@
 
 # todos fixed
 -- Textbox UI with delay to process stack reorder event - 0.0.1.0.1.5 16/06/23
+
+# add
+semantic alayser using lambda functions

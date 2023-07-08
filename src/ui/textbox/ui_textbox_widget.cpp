@@ -82,6 +82,7 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
      */
     if (is_dir_right && x == 0) {
         x = utf_it - target_cursor_pos.text_index;
+        x = x == 0 ? 1 : x;
     } else if (!is_dir_right) {
         x = x - utf_it;
     }
