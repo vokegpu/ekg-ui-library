@@ -21,7 +21,6 @@
 #include "ekg/draw/font.hpp"
 #include "ekg/service/theme.hpp"
 #include "ekg/service/input.hpp"
-#include "ekg/core/feature.hpp"
 #include "ekg/service/layout.hpp"
 #include "ekg/util/util_ui.hpp"
 #include <unordered_map>

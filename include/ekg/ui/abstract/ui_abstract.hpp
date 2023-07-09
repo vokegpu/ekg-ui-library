@@ -15,7 +15,6 @@
 #ifndef EKG_UI_ABSTRACT_H
 #define EKG_UI_ABSTRACT_H
 
-#include "ekg/core/feature.hpp"
 #include "ekg/util/geometry.hpp"
 #include "ekg/util/env.hpp"
 #include <vector>
@@ -34,7 +33,7 @@ namespace ekg {
     };
 
     namespace ui {
-        class abstract : public ekg::feature {
+        class abstract {
         protected:
             int32_t id {}, parent_id {};
             std::vector<int32_t> child_id_list {};

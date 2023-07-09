@@ -19,7 +19,7 @@
 #include "ekg/os/ekg_sdl.hpp"
 
 namespace ekg::ui {
-    class abstract_widget : public ekg::feature {
+    class abstract_widget {
     public:
         ekg::ui::abstract *data {};
         ekg::flag flag {};
