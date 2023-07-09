@@ -79,3 +79,7 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Fixed rendering issue with scissors.
 -- Added feature movements by nearest word from textbox.
 -- Added absolute input statement feature.
+
+0.0.1.0.2.0 09/07/23
+
+-- Fixed blending state off at on render runtime call.

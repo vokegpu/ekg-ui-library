@@ -146,6 +146,9 @@ void ekg::gpu::allocator::draw() {
         glBindTexture(GL_TEXTURE_2D, this->cached_textures.at(it));
     }
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     /*
      * The allocator provides a high-performance dynamic mapped-shapes batching,
      * each simple rect (not a complex shape) is not batched, but complex shapes
@@ -202,6 +205,7 @@ void ekg::gpu::allocator::draw() {
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_BLEND);
 
     glBindVertexArray(0);
     glUseProgram(0);

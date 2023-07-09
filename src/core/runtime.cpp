@@ -396,8 +396,6 @@ void ekg::runtime::prepare_tasks() {
         runtime->gpu_allocator.invoke();
         if (ekg::debug) {
             runtime->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {1.0f, 1.0f, 1.0f, 1.0f});
-        } else {
-            runtime->f_renderer_big.blit(" ", 10, 10, {1.0f, 1.0f, 1.0f, 1.0f});
         }
 
         for (ekg::ui::abstract_widget *&widgets : all) {

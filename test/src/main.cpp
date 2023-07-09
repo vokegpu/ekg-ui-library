@@ -196,7 +196,7 @@ int32_t main(int32_t, char**) {
     ekg::autoscale = true;
     ekg::scalebase = {1920.0f, 1080.0f};
 
-    ekg::debug = true;
+    ekg::debug = false;
     SDL_SetWindowOpacity(sdl_win, 1.0f);
 
     ekg::timing mainloop_timing {};
