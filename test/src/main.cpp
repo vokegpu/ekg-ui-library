@@ -180,6 +180,7 @@ int32_t main(int32_t, char**) {
 
     SDL_Window* sdl_win {SDL_CreateWindow("Pompom Calculator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
     SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
+
     bool running {true};
     glewExperimental = GL_TRUE;
 
@@ -195,16 +196,11 @@ int32_t main(int32_t, char**) {
 
     ekg::autoscale = true;
     ekg::scalebase = {1920.0f, 1080.0f};
-
     ekg::debug = false;
-    SDL_SetWindowOpacity(sdl_win, 1.0f);
 
     ekg::timing mainloop_timing {};
     ekg::timing fps_timing {};
     SDL_Event sdl_event {};
-
-    // z-depth testing.
-    glEnable(GL_DEPTH_TEST);
 
     uint64_t fps {60};
     uint64_t fps_ms_interval {1000 / fps};
