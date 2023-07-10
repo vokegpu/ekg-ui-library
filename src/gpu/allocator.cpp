@@ -74,7 +74,7 @@ void ekg::gpu::allocator::dispatch() {
     this->simple_shape = static_cast<int32_t>(data.shape_rect[2]) != ekg::concave && static_cast<int32_t>(data.shape_rect[3]) != ekg::concave;
     if (this->simple_shape) {
         data.begin_stride = this->simple_shape_index;
-        data.end_stride = 4; // simple shape contains 3 vertices.
+        data.end_stride = 4; // simple shape contains 4 vertices.
         this->end_stride_count = 0;
     } else {
         data.begin_stride = this->begin_stride_count;
@@ -135,8 +135,7 @@ void ekg::gpu::allocator::draw() {
 
     uint8_t prev_texture_bound {};
     bool texture_enabled {};
-
-    ekg::gpu::scissor *scissor {};
+    ekg::gpu::data data {};
 
     /*
      * Before each rendering section, the allocator iterate alls textures and bind it on global context.
@@ -155,7 +154,6 @@ void ekg::gpu::allocator::draw() {
      * like textured shapes - font rendering - is batched.
      */
 
-    ekg::gpu::data data {};
     for (uint64_t it {}; it < this->data_instance_index; it++) {
         data = this->data_list[it];
         texture_enabled = data.active_tex_slot > 0;
@@ -172,24 +170,7 @@ void ekg::gpu::allocator::draw() {
         glUniform4fv(this->uniform_color, GL_TRUE, data.material_color);
         glUniform4fv(this->uniform_rect, GL_TRUE, data.shape_rect);
         glUniform1i(this->uniform_line_thickness, data.line_thickness);
-
-        switch (data.scissor_id) {
-            case -1: {
-                glUniform1i(this->uniform_enable_scissor, false);
-                break;
-            }
-
-            default: {
-                scissor = this->get_scissor_by_id(data.scissor_id);
-                if (scissor == nullptr) {
-                    break;
-                }
-
-                glUniform1i(this->uniform_enable_scissor, true);
-                glUniform4fv(this->uniform_scissor, GL_TRUE, scissor->rect);
-                break;
-            }
-        }
+        glUniform4fv(this->uniform_scissor, GL_TRUE, this->get_scissor_by_id(data.scissor_id)->rect);
 
         switch (data.begin_stride) {
             case 0: {
@@ -235,7 +216,6 @@ void ekg::gpu::allocator::init() {
     this->uniform_rect = glGetUniformLocation(shading_program_id, "uRect");
     this->uniform_line_thickness = glGetUniformLocation(shading_program_id, "uLineThickness");
     this->uniform_scissor = glGetUniformLocation(shading_program_id, "uScissor");
-    this->uniform_enable_scissor = glGetUniformLocation(shading_program_id, "uEnableScissor");
 
     ekg::log() << "GPU allocator initialised";
 }

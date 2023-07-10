@@ -48,7 +48,6 @@ namespace ekg::gpu {
 
         int32_t uniform_active_texture {};
         int32_t uniform_active_tex_slot {};
-        int32_t uniform_enable_scissor {};
         int32_t uniform_color {};
         int32_t uniform_rect {};
         int32_t uniform_line_thickness {};

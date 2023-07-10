@@ -36,9 +36,9 @@ namespace ekg {
             int32_t id {};
         };
 
-        typedef struct scissor {
+        struct scissor {
             float rect[4] {};
-        } scissor;
+        };
     }
 }
 
