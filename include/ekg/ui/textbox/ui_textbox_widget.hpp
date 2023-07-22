@@ -68,8 +68,8 @@ namespace ekg::ui {
         
         bool redraw_cursor {};
         bool is_ui_enabled {};
-        bool is_wildcard_action_modifier_enable {};
-        bool is_wildcard_action_select_enable {};
+        bool is_action_modifier_enable {};
+        bool is_action_select_enable {};
 
         int64_t total_utf_chars {};
         std::string cached_tab_size {};

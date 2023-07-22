@@ -18,7 +18,7 @@
 #include "ekg/os/system_cursor.hpp"
 
 void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor &cursor, int64_t &x, int64_t &y) {
-    if (!this->is_wildcard_action_modifier_enable) {
+    if (!this->is_action_modifier_enable) {
         return;
     }
 
@@ -98,18 +98,18 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
     ekg::dispatch(ekg::env::redraw);
 
     ekg::ui::textbox_widget::cursor_pos target_cursor_pos {};
-    if ((cursor.pos[0].index == cursor.target && this->is_wildcard_action_select_enable) ||
-       ((x < 0 || y < 0) && cursor.pos[0] != cursor.pos[1] && !this->is_wildcard_action_select_enable)) {
+    if ((cursor.pos[0].index == cursor.target && this->is_action_select_enable) ||
+       ((x < 0 || y < 0) && cursor.pos[0] != cursor.pos[1] && !this->is_action_select_enable)) {
         target_cursor_pos = cursor.pos[0];
     } else {
         target_cursor_pos = cursor.pos[1];
     }
 
-    if (cursor.pos[0] == cursor.pos[1] || this->is_wildcard_action_select_enable) {
+    if (cursor.pos[0] == cursor.pos[1] || this->is_action_select_enable) {
         this->move_cursor(target_cursor_pos, x, y);
     }
 
-    if (!this->is_wildcard_action_select_enable) {
+    if (!this->is_action_select_enable) {
         cursor.pos[0] = target_cursor_pos;
         cursor.pos[1] = target_cursor_pos;
         cursor.pos[2] = target_cursor_pos;
@@ -282,10 +282,12 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         return;
     }
 
-
-
     switch (action) {
     case ekg::ui::textbox_widget::action::addtext:
+        if (this->is_action_modifier_enable) {
+            break;
+        }
+
         /*
          * Always the tab is pressed, the process should add the spaces instead of \t,
          * it is cached to prevent useless iteration.
@@ -384,9 +386,18 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
         std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
         std::string previous {};
-        std::string next {ekg::utf8substr(emplace_text, it, ekg::utf8length(emplace_text))};
+        std::string next {};
 
-        emplace_text = ekg::utf8substr(emplace_text, 0, it);
+        int64_t cursor_dir[2] {0, 1};
+
+        if (!this->is_action_modifier_enable) {
+            next = ekg::utf8substr(emplace_text, it, ekg::utf8length(emplace_text));
+            emplace_text = ekg::utf8substr(emplace_text, 0, it);
+
+            cursor_dir[0] = 1;
+            cursor_dir[1] = 0;
+        }
+
         this->text_chunk_list.emplace_back().clear();
 
         for (it = cursor.pos[0].chunk_index + 1; it < this->text_chunk_list.size(); it++) {
@@ -395,7 +406,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             next = previous;
         }
 
-        this->move_cursor(cursor.pos[0], 1, 0);
+        this->move_cursor(cursor.pos[0], cursor_dir[0], cursor_dir[1]);
         ekg::reset(ekg::core->ui_timing);
         ekg::dispatch(ekg::env::redraw);
 
@@ -635,7 +646,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         ekg::cursor = ekg::systemcursor::ibeam;
     }
 
-    this->is_wildcard_action_select_enable = ekg::input::action("textbox-action-wildcard-select");
+    this->is_action_select_enable = ekg::input::action("textbox-action-select");
     if (this->flag.hovered && pressed) {
         ekg::set(this->flag.focused, this->flag.hovered);
         ekg::reset(ekg::core->ui_timing);
@@ -644,7 +655,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         ekg::ui::textbox_widget::cursor clicked_pos {};
         this->check_cursor_text_bounding(clicked_pos, true);
 
-        bool movement_input_enabled {this->flag.focused && this->is_wildcard_action_select_enable};
+        bool movement_input_enabled {this->flag.focused && this->is_action_select_enable};
         if (movement_input_enabled && !this->flag.state) {
             if (clicked_pos.pos[0].index > main_cursor.pos[2].index) {
                 main_cursor.pos[2] = main_cursor.pos[0];
@@ -733,7 +744,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
                 }
 
                 int64_t cursor_dir[2] {};
-                this->is_wildcard_action_modifier_enable = ekg::input::action("textbox-action-wildcard-modifier");
+                this->is_action_modifier_enable = ekg::input::action("textbox-action-modifier");
 
                 for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
                     cursor_dir[0] = cursor_dir[1] = 0;
@@ -864,6 +875,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     uint64_t chunk_size {this->text_chunk_list.size()};
     uint64_t utf_char_index {};
     uint64_t it {};
+    uint64_t text_chunk_size {this->text_chunk_list.size()};
 
     this->rect_cursor.w = 2.0f;
     this->rect_cursor.h = this->text_height;
@@ -873,6 +885,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     ekg::ui::textbox_widget::cursor cursor {};
 
     int32_t cursor_pos_index {};
+
     bool draw_cursor {this->flag.focused && !ekg::reach(ekg::core->ui_timing, 500)};
     bool optimize_batching {};
     bool do_not_fill_line {};
@@ -886,11 +899,13 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     this->cursor_char_wsize[1] = 0.0f;
     this->cursor_char_wsize[2] = 0.0f;
 
+    // @TODO change cursor batching collector to invoke firing
+
     /*
      * The texti iterator jump utf8 sequences.
      * For better performance, textbox does not render texts out of rect.
      */
-    for (int64_t it_chunk {}; it_chunk < this->text_chunk_list.size(); it_chunk++) {
+    for (int64_t it_chunk {}; it_chunk < text_chunk_size; it_chunk++) {
         text = this->text_chunk_list.at(it_chunk);
         x = this->rect_cursor.w;
         text_size = 0;
@@ -898,8 +913,9 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         utf_char_index = 0;
         do_not_fill_line = false;
 
-        if (text.empty() && (cursor_pos_index = this->find_cursor(cursor, total_it, it_chunk, false)) != -1 && ((draw_cursor && (cursor.pos[0] == cursor.pos[1] || cursor.pos[1].index > total_it)) ||
-                                                                                                                (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > total_it))) {
+        if (text.empty() && (cursor_pos_index = this->find_cursor(cursor, total_it, it_chunk, false)) != -1 && 
+                            ((draw_cursor && (cursor.pos[0] == cursor.pos[1] || cursor.pos[1].index > total_it)) ||
+                            (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > total_it))) {
             optimize_batching = true;
             do_not_fill_line = true;
 
@@ -913,9 +929,10 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             text_size = ekg::utf8length(text);
         }
 
-        data.factor += static_cast<int32_t>(x + 32);
+        data.factor += static_cast<int32_t>(y) + 32;
         y_scroll = this->embedded_scroll.scroll.y + y;
         if (y_scroll > rect.h) {
+            data.factor += static_cast<int32_t>(text_chunk_size) * 32;
             break;
         }
 
