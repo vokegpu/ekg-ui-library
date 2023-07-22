@@ -249,6 +249,8 @@ int32_t main(int32_t, char**) {
         ekg::checkbox("meow enabled", false);
         ekg::checkbox("meow enabled", false, ekg::dock::next);
 
+        // @TODO remove text from UI slider
+
         auto slider = ekg::slider("gato", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
         slider->set_text_align(ekg::dock::center);
         slider->set_precision(23);
@@ -256,7 +258,6 @@ int32_t main(int32_t, char**) {
         ekg::scroll("pompom-meow");
 
         framedebug->add_child(frame1->get_id());
-
         frame2 = ekg::frame("cha", {400, 400}, ekg::dock::none);
         frame2->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
         framedebug->add_child(frame2->get_id());
@@ -471,7 +472,7 @@ int32_t main(int32_t, char**) {
                     }
 
                     if (ekg::input::action("pompom")) {
-                        ekg::log() << "VASCO GAMMA";
+                        ekg::log() << "VASCO GAMMA E JOAO É GOSTOSAA";
                     }
 
                     break;

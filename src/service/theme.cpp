@@ -56,7 +56,7 @@ void ekg::service::theme::gen_default_dark_theme() {
     this->slider_highlight = ekg::color(44, 166, 255, 50);
     this->slider_activy_bar = this->slider_activy;
     this->slider_bar_thickness = 16;
-    this->slider_target_thickness = 32;
+    this->slider_target_thickness = 0;
 
     this->label_string = ekg::color(202, 202, 202, 255);
     this->popup_string = ekg::color(202, 202, 202, 255);
@@ -107,7 +107,7 @@ void ekg::service::theme::gen_default_light_theme() {
     this->slider_highlight = ekg::color(44, 166, 255, 50);
     this->slider_activy_bar = this->slider_activy;
     this->slider_bar_thickness = 16;
-    this->slider_target_thickness = 32;
+    this->slider_target_thickness = 0;
 
     this->label_string = ekg::color(141, 141, 141, 255);
 

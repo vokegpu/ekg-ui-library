@@ -18,7 +18,7 @@
 #include "ekg/os/system_cursor.hpp"
 
 void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor &cursor, int64_t &x, int64_t &y) {
-    if (!this->is_word_movement_input_enabled) {
+    if (!this->is_wildcard_action_modifier_enable) {
         return;
     }
 
@@ -89,7 +89,7 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
 }
 
 /*
- * If the cursor is not selected, it is target the first cursor,
+ * If the cursor is not selected, then target the first cursor,
  * therefore when the cursor is selected, the code check if moving cursor is
  * enabled, then set the A & B pos based on direction.
  */
@@ -98,18 +98,18 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
     ekg::dispatch(ekg::env::redraw);
 
     ekg::ui::textbox_widget::cursor_pos target_cursor_pos {};
-    if ((cursor.pos[0].index == cursor.target && this->is_select_movement_input_enabled) ||
-       ((x < 0 || y < 0) && cursor.pos[0] != cursor.pos[1] && !this->is_select_movement_input_enabled)) {
+    if ((cursor.pos[0].index == cursor.target && this->is_wildcard_action_select_enable) ||
+       ((x < 0 || y < 0) && cursor.pos[0] != cursor.pos[1] && !this->is_wildcard_action_select_enable)) {
         target_cursor_pos = cursor.pos[0];
     } else {
         target_cursor_pos = cursor.pos[1];
     }
 
-    if (cursor.pos[0] == cursor.pos[1] || this->is_select_movement_input_enabled) {
+    if (cursor.pos[0] == cursor.pos[1] || this->is_wildcard_action_select_enable) {
         this->move_cursor(target_cursor_pos, x, y);
     }
 
-    if (!this->is_select_movement_input_enabled) {
+    if (!this->is_wildcard_action_select_enable) {
         cursor.pos[0] = target_cursor_pos;
         cursor.pos[1] = target_cursor_pos;
         cursor.pos[2] = target_cursor_pos;
@@ -275,12 +275,14 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
 }
 
 void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &cursor,
-                                           std::string_view text, 
+                                           std::string_view text,
                                            ekg::ui::textbox_widget::action action, int64_t direction) {
     auto ui {(ekg::ui::textbox*) this->data};
     if (!(this->is_ui_enabled = ui->is_enabled())) {
         return;
     }
+
+
 
     switch (action) {
     case ekg::ui::textbox_widget::action::addtext:
@@ -633,7 +635,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         ekg::cursor = ekg::systemcursor::ibeam;
     }
 
-    this->is_select_movement_input_enabled = ekg::input::action("textbox-action-select-movement");
+    this->is_wildcard_action_select_enable = ekg::input::action("textbox-action-wildcard-select");
     if (this->flag.hovered && pressed) {
         ekg::set(this->flag.focused, this->flag.hovered);
         ekg::reset(ekg::core->ui_timing);
@@ -642,7 +644,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         ekg::ui::textbox_widget::cursor clicked_pos {};
         this->check_cursor_text_bounding(clicked_pos, true);
 
-        bool movement_input_enabled {this->flag.focused && this->is_select_movement_input_enabled};
+        bool movement_input_enabled {this->flag.focused && this->is_wildcard_action_select_enable};
         if (movement_input_enabled && !this->flag.state) {
             if (clicked_pos.pos[0].index > main_cursor.pos[2].index) {
                 main_cursor.pos[2] = main_cursor.pos[0];
@@ -731,7 +733,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
                 }
 
                 int64_t cursor_dir[2] {};
-                this->is_word_movement_input_enabled = ekg::input::action("textbox-action-word-movement");
+                this->is_wildcard_action_modifier_enable = ekg::input::action("textbox-action-wildcard-modifier");
 
                 for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
                     cursor_dir[0] = cursor_dir[1] = 0;

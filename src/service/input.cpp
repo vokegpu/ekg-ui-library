@@ -19,7 +19,7 @@
 std::unordered_map<std::string, const char*> ekg::service::input::special_keys_name_map = {
         {"Left Shift", "lshift"}, {"Right Shift", "rshift"},
         {"Left Ctrl", "lctrl"},   {"Right Ctrl", "rctrl"},
-        {"Left Alt", "lalt"},     {"Right Alt", "ralt"},
+        {"Left Alt", "alt"},     {"Right Alt", "altgr"},
         {"Tab", "tab"}
 };
 

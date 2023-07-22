@@ -503,8 +503,8 @@ void ekg::runtime::prepare_ui_env() {
     this->service_input.bind("textbox-action-select-all", "rctrl+a");
 
     this->service_input.bind("textbox-action-select-all-inline", "mouse-1");
-    this->service_input.bind("textbox-action-select-movement", "lshift");
-    this->service_input.bind("textbox-action-select-movement", "rshift");
+    this->service_input.bind("textbox-action-wildcard-select", "lshift");
+    this->service_input.bind("textbox-action-wildcard-select", "rshift");
 
     this->service_input.bind("textbox-action-select-word", "mouse-1-double");
     this->service_input.bind("textbox-action-select-word", "finger-hold");
@@ -514,8 +514,8 @@ void ekg::runtime::prepare_ui_env() {
     this->service_input.bind("textbox-action-break-line", "abs-return");
     this->service_input.bind("textbox-action-break-line", "abs-keypad enter");
     this->service_input.bind("textbox-action-tab", "tab");
-    this->service_input.bind("textbox-action-word-movement", "lctrl");
-    this->service_input.bind("textbox-action-word-movement", "rctrl");
+    this->service_input.bind("textbox-action-wildcard-modifier", "lctrl");
+    this->service_input.bind("textbox-action-wildcard-modifier", "rctrl");
 
     this->service_input.bind("textbox-action-up", "abs-up");
     this->service_input.bind("textbox-action-down", "abs-down");
