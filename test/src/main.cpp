@@ -192,7 +192,9 @@ int32_t main(int32_t, char**) {
         ekg::log() << "GLEW initialised";
     }
 
-    SDL_GL_SetSwapInterval(0); // v-sync on
+    SDL_GL_SetSwapInterval(1); // v-sync on
+    framerate = 16;
+
     ekg::init(sdl_win, "whitneybook.otf");
     ekg::log() << "OpenGL context created";
 

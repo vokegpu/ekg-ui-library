@@ -282,6 +282,8 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         return;
     }
 
+    bool sync_cursor_set_target_right {}; 
+
     switch (action) {
     case ekg::ui::textbox_widget::action::add_text:
         if (this->is_action_modifier_enable && !(this->is_clipboard_cut || this->is_clipboard_copy || this->is_clipboard_paste)) {
@@ -309,18 +311,20 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                 text = "";
 
                 if (cursor.pos[0] != cursor.pos[1]) {
-                    std::string &emplace_text_a = this->get_cursor_emplace_text(cursor.pos[0]);
-                    std::string &emplace_text_b = this->get_cursor_emplace_text(cursor.pos[1]);
+                    std::string &emplace_text_a {this->get_cursor_emplace_text(cursor.pos[0])};
+                    std::string &emplace_text_b {this->get_cursor_emplace_text(cursor.pos[1])};
 
                     std::string copy_text {};
                     if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index) {
                         copy_text += ekg::utf8substr(emplace_text_a, cursor.pos[0].text_index, cursor.pos[1].text_index);
                     } else {
-                        copy_text += ekg::utf8substr(emplace_text_b, cursor.pos[0].text_index, utf8length(emplace_text_a));
+                        copy_text += ekg::utf8substr(emplace_text_a, cursor.pos[0].text_index, utf8length(emplace_text_a));
+                        copy_text += '\n';
 
                         uint64_t it {static_cast<uint64_t>(cursor.pos[0].chunk_index + 1)};
                         while (it < cursor.pos[1].chunk_index && it < this->text_chunk_list.size()) {
                             copy_text += this->text_chunk_list.at(it);
+                            copy_text += '\n';
                             it++;
                         }
 
@@ -335,19 +339,16 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                 }
             } else {
                 text = SDL_HasClipboardText() ? SDL_GetClipboardText() : "";
+                direction = static_cast<int64_t>(ekg::utf8length(text));
             }
         }
 
         if (cursor.pos[0] == cursor.pos[1]) {
             std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
-
             emplace_text = ekg::utf8substr(emplace_text, 0, cursor.pos[0].text_index) + text.data() + ekg::utf8substr(emplace_text, cursor.pos[0].text_index, ekg::utf8length(emplace_text));
-            this->move_cursor(cursor.pos[0], direction, 0);
         } else if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index) {
             std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
-
             emplace_text = ekg::utf8substr(emplace_text, 0, cursor.pos[0].text_index) + text.data() + ekg::utf8substr(emplace_text, cursor.pos[1].text_index, ekg::utf8length(emplace_text));
-            this->move_cursor(cursor.pos[0], direction, 0);
         } else if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
             std::string &emplace_text_a {this->get_cursor_emplace_text(cursor.pos[0])};
             std::string &emplace_text_b {this->get_cursor_emplace_text(cursor.pos[1])};
@@ -357,9 +358,9 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             // remove the lines into text but not the chunks position
             this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, this->text_chunk_list.begin() + cursor.pos[1].chunk_index);
             this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[1].chunk_index); // then remove the last line
-            this->move_cursor(cursor.pos[0], direction, 0);
         }
 
+        this->move_cursor(cursor.pos[0], direction, 0);
         break;
 
     case ekg::ui::textbox_widget::action::erase_text:
@@ -451,9 +452,11 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         break;
     }
 
-    cursor.pos[2] = cursor.pos[1] = cursor.pos[0];
-    cursor.target = cursor.pos[0].index;
-    this->check_largest_text_width(true);
+    if (!this->is_clipboard_copy) {
+        cursor.pos[2] = cursor.pos[!sync_cursor_set_target_right] = cursor.pos[sync_cursor_set_target_right];
+        cursor.target = cursor.pos[sync_cursor_set_target_right].index;
+        this->check_largest_text_width(true);
+    }
 
     ekg::reset(ekg::core->ui_timing);
     ekg::dispatch(ekg::env::redraw);
