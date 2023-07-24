@@ -331,6 +331,12 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         break;
 
     case ekg::ui::textbox_widget::action::erasetext:
+        if (this->is_action_modifier_enable && cursor.pos[0] == cursor.pos[1]) {
+            int64_t word[2] {direction, 0};
+            this->check_nearest_word(cursor, word[0], word[1]);
+            this->move_cursor(direction < 0 ? cursor.pos[0] : cursor.pos[1], word[0], word[1]);
+        }
+
         if (cursor.pos[0] == cursor.pos[1] && direction < 0 && (cursor.pos[0].index > 0 || cursor.pos[0].chunk_index > 0)) {
             if (cursor.pos[0].text_index - 1 < 0 && cursor.pos[0].chunk_index > 0) {
                 std::string stored_text {this->get_cursor_emplace_text(cursor.pos[0])};
@@ -1031,7 +1037,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         }
     }
 
-    this->rect_text.h = (this->text_height * this->text_chunk_list.size()) + (this->text_offset * 2.0f);
+    this->rect_text.h = (this->text_height * text_chunk_size) + (this->text_offset * 2.0f);
     this->embedded_scroll.rect_child = this->rect_text;
     this->embedded_scroll.on_draw_refresh();
 
