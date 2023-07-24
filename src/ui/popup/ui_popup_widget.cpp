@@ -333,10 +333,6 @@ void ekg::ui::popup_widget::on_update() {
     auto &rect {this->get_abs_rect()};
     auto *gpu_scissor {ekg::core->gpu_allocator.get_scissor_by_id(this->data->get_id())};
 
-    gpu_scissor->rect[0] = rect.x;
-    gpu_scissor->rect[1] = rect.y;
-    gpu_scissor->rect[2] = rect.w;
-
     float animation {ekg::smooth(ekg::theme().popup_drop_animation_delay, SDL_GetTicks64() - this->elapsed_animation_ticks)};
     this->scissor_opened_height = animation * this->dimension.h;
 

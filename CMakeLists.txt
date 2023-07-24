@@ -14,11 +14,11 @@
 
 cmake_minimum_required(VERSION 3.9)
 
-set(EKG_VERSION 0.0.1)
-project(ekg VERSION ${EKG_VERSION} DESCRIPTION "graphical user interface")
+set(CMAKE_CXX_STANDART 17)
+set(EKG_VERSION        0.0.1)
 
 message("-- Building EKG user interface library version ${EKG_VERSION}")
-file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
+project(ekg VERSION ${EKG_VERSION} DESCRIPTION "graphical user interface")
 
 if (WIN32)
     message("-- Building EKG WIN32 native library")
@@ -28,22 +28,24 @@ elseif(ANDROID)
     set(LIBRARY_OUTPUT_PATH "${ANDROID_ABI}/")
 elseif(LINUX)
     if (LINUX_NOT_FOUND_FREETYPE)
-        include_directories(/usr/include/freetype2)
+        include_directories(usr/include/freetype2)
     endif()
 
     message("-- Generating EKG Linux native library")
     set(LIBRARY_OUTPUT_PATH "../lib/linux/")
 endif()
 
-# Maximum optimization
+file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
+include_directories(include/)
+
 add_compile_options(-O3)
 add_library(ekg STATIC ${SOURCE_FILES})
 
 message("-- EKG native library building done")
 
 if (EKG_ENABLE_TEST)
-    project(ekg-tests)
     message("-- EKG tests enabled")
+    project(ekg-tests)
 
     if (WIN32)
         set(EXECUTABLE_OUTPUT_PATH ../test/build/win32/)
@@ -52,9 +54,6 @@ if (EKG_ENABLE_TEST)
     endif()
 
     add_compile_options(-O3)
-    set(CMAKE_CXX_STANDART 20)
-
-    include_directories(./include/)
     add_executable(ekg-tests "test/src/main.cpp")
 
     if (WIN32)
