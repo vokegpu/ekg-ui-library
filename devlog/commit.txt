@@ -84,3 +84,5 @@ major.minor.patch major-commit.minor-commit.patch-commit
 
 -- Fixed blending state off at on render runtime call.
 -- Better alloc/realloc batching performance.
+-- Added modifier entry field features (breakline + modifier, addline + modifier, erasetext + modifier + select, select)
+-- Fixed texture glitch behavior at end of allocator draw calls.
