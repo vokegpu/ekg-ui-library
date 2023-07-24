@@ -84,4 +84,3 @@ major.minor.patch major-commit.minor-commit.patch-commit
 
 -- Fixed blending state off at on render runtime call.
 -- Better alloc/realloc batching performance.
--- Added modifer entry field features (breakline + modifer, addline + modifier, erasetext + modifier + select, select)
