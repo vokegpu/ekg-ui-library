@@ -28,7 +28,7 @@ elseif(ANDROID)
     set(LIBRARY_OUTPUT_PATH "${ANDROID_ABI}/")
 elseif(LINUX)
     if (LINUX_NOT_FOUND_FREETYPE)
-        include_directories(usr/include/freetype2)
+        include_directories(/usr/include/freetype2)
     endif()
 
     message("-- Generating EKG Linux native library")
