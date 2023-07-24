@@ -161,6 +161,8 @@ public:
     }
 };
 
+static uint64_t framerate {};
+
 /*
  * Created by Rina.
  */
@@ -209,7 +211,11 @@ int32_t main(int32_t, char**) {
 
     auto f1 = ekg::frame("sou gostosa", {700, 300}, {200, 200})->set_drag(ekg::dock::top)->set_resize(ekg::dock::bottom | ekg::dock::left | ekg::dock::right);
 
-    ekg::button("oi oi oi");
+    ekg::button("swap locked-framerate")->set_callback(new ekg::cpu::event {"theme-switcher", nullptr, [](void *pdata) {
+        framerate = framerate == 0 ? 16 : 0;
+        SDL_GL_SetSwapInterval(framerate ? 1 : 0);
+    }});
+
     ekg::label("oioioioioio", ekg::dock::fill);
     auto ff = ekg::frame("frame-debug", {200, 200}, ekg::dock::fill | ekg::dock::next);
     ff->set_resize(ekg::dock::right | ekg::dock::bottom);
@@ -500,8 +506,12 @@ int32_t main(int32_t, char**) {
         ticked_frames++;
 
         // Swap buffers.
-        SDL_GL_SwapWindow(sdl_win);
-        // SDL_Delay(16);
+        if (framerate) {
+            SDL_GL_SwapWindow(sdl_win);
+            SDL_Delay(framerate);
+        } else {
+            SDL_GL_SwapWindow(sdl_win);
+        }
     }
 
     if (!ekg::swap::tooktimeanalyzingtelemtry.empty()) {

@@ -283,8 +283,8 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
     }
 
     switch (action) {
-    case ekg::ui::textbox_widget::action::addtext:
-        if (this->is_action_modifier_enable) {
+    case ekg::ui::textbox_widget::action::add_text:
+        if (this->is_action_modifier_enable && !(this->is_clipboard_cut || this->is_clipboard_copy || this->is_clipboard_paste)) {
             break;
         }
 
@@ -304,19 +304,51 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
             text = this->cached_tab_size;
             direction = static_cast<int64_t>(ui_tab_size);
+        } else if (text == "clipboard") {
+            if (this->is_clipboard_cut || this->is_clipboard_copy) {
+                text = "";
+
+                if (cursor.pos[0] != cursor.pos[1]) {
+                    std::string &emplace_text_a = this->get_cursor_emplace_text(cursor.pos[0]);
+                    std::string &emplace_text_b = this->get_cursor_emplace_text(cursor.pos[1]);
+
+                    std::string copy_text {};
+                    if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index) {
+                        copy_text += ekg::utf8substr(emplace_text_a, cursor.pos[0].text_index, cursor.pos[1].text_index);
+                    } else {
+                        copy_text += ekg::utf8substr(emplace_text_b, cursor.pos[0].text_index, utf8length(emplace_text_a));
+
+                        uint64_t it {static_cast<uint64_t>(cursor.pos[0].chunk_index + 1)};
+                        while (it < cursor.pos[1].chunk_index && it < this->text_chunk_list.size()) {
+                            copy_text += this->text_chunk_list.at(it);
+                            it++;
+                        }
+
+                        copy_text += ekg::utf8substr(emplace_text_b, 0, cursor.pos[1].text_index);
+                    }
+
+                    SDL_SetClipboardText(copy_text.c_str());
+                }
+
+                if (this->is_clipboard_copy) {
+                    break;
+                }
+            } else {
+                text = SDL_HasClipboardText() ? SDL_GetClipboardText() : "";
+            }
         }
 
-        if (cursor.pos[0] == cursor.pos[1] && !text.empty()) {
+        if (cursor.pos[0] == cursor.pos[1]) {
             std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
 
             emplace_text = ekg::utf8substr(emplace_text, 0, cursor.pos[0].text_index) + text.data() + ekg::utf8substr(emplace_text, cursor.pos[0].text_index, ekg::utf8length(emplace_text));
             this->move_cursor(cursor.pos[0], direction, 0);
-        } else if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index && !text.empty()) {
+        } else if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index) {
             std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
 
             emplace_text = ekg::utf8substr(emplace_text, 0, cursor.pos[0].text_index) + text.data() + ekg::utf8substr(emplace_text, cursor.pos[1].text_index, ekg::utf8length(emplace_text));
             this->move_cursor(cursor.pos[0], direction, 0);
-        } else if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index && !text.empty()) {
+        } else if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
             std::string &emplace_text_a {this->get_cursor_emplace_text(cursor.pos[0])};
             std::string &emplace_text_b {this->get_cursor_emplace_text(cursor.pos[1])};
 
@@ -330,7 +362,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
         break;
 
-    case ekg::ui::textbox_widget::action::erasetext:
+    case ekg::ui::textbox_widget::action::erase_text:
         if (this->is_action_modifier_enable && cursor.pos[0] == cursor.pos[1]) {
             int64_t word[2] {direction, 0};
             this->check_nearest_word(cursor, word[0], word[1]);
@@ -387,7 +419,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
      * for the moment it is okay, but soon should be rewrite,
      * this is not secure for low-performance hardwares. :cat2:
      */
-    case ekg::ui::textbox_widget::action::breakline:
+    case ekg::ui::textbox_widget::action::break_line:
         int64_t it {cursor.pos[0].text_index};
 
         std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
@@ -709,10 +741,14 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         return;
     }
 
+    this->is_clipboard_cut = ekg::input::action("clipboard-cut");
+    this->is_clipboard_paste = ekg::input::action("clipboard-paste");
+    this->is_clipboard_copy = ekg::input::action("clipboard-copy");
+
     switch (sdl_event.type) {
     case SDL_TEXTINPUT:
         for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
-            this->process_text(cursor, sdl_event.text.text, ekg::ui::textbox_widget::action::addtext, 1);
+            this->process_text(cursor, sdl_event.text.text, ekg::ui::textbox_widget::action::add_text, 1);
         }
 
         this->flag.state = false;
@@ -764,13 +800,15 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
                     } else if (ekg::input::action("textbox-action-right")) {
                         cursor_dir[0] = 1;
                     } else if (ekg::input::action("textbox-action-delete-left")) {
-                        this->process_text(cursor, "backspace", ekg::ui::textbox_widget::action::erasetext, -1);
+                        this->process_text(cursor, "backspace", ekg::ui::textbox_widget::action::erase_text, -1);
                     } else if (ekg::input::action("textbox-action-delete-right")) {
-                        this->process_text(cursor, "delete", ekg::ui::textbox_widget::action::erasetext, 1);
+                        this->process_text(cursor, "delete", ekg::ui::textbox_widget::action::erase_text, 1);
                     } else if (ekg::input::action("textbox-action-break-line")) {
-                        this->process_text(cursor, "return", ekg::ui::textbox_widget::action::breakline, 1);
+                        this->process_text(cursor, "return", ekg::ui::textbox_widget::action::break_line, 1);
                     } else if (ekg::input::action("textbox-action-tab")) {
-                        this->process_text(cursor, "\t", ekg::ui::textbox_widget::action::addtext, 1);
+                        this->process_text(cursor, "\t", ekg::ui::textbox_widget::action::add_text, 1);
+                    } else if (this->is_clipboard_copy || this->is_clipboard_paste || this->is_clipboard_cut) {
+                        this->process_text(cursor, "clipboard", ekg::ui::textbox_widget::action::add_text, 0);
                     }
 
                     if (cursor_dir[0] != 0 || cursor_dir[1] != 0) {

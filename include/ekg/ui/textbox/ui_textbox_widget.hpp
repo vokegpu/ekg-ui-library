@@ -23,9 +23,9 @@ namespace ekg::ui {
     class textbox_widget : public ekg::ui::abstract_widget {
     public:
         enum action {
-            addtext,
-            erasetext,
-            breakline
+            add_text,
+            erase_text,
+            break_line
         };
         
         struct cursor_pos {
@@ -70,6 +70,10 @@ namespace ekg::ui {
         bool is_ui_enabled {};
         bool is_action_modifier_enable {};
         bool is_action_select_enable {};
+
+        bool is_clipboard_copy {};
+        bool is_clipboard_cut {};
+        bool is_clipboard_paste {};
 
         int64_t total_utf_chars {};
         std::string cached_tab_size {};
