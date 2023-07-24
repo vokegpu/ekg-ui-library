@@ -191,6 +191,7 @@ void ekg::gpu::allocator::draw() {
         }
     }
 
+    glUniform1i(this->uniform_active_texture, false);
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_BLEND);
 
