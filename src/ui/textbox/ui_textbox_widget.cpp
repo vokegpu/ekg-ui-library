@@ -353,20 +353,23 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             std::vector<std::string> utf_clipboard_decoded {};
             ekg::utf8read(text, utf_clipboard_decoded);
 
-            std::string &first_clipboard_line {utf_clipboard_decoded.at(0)};
-            std::string &last_clipboard_line {
-                utf_clipboard_decoded.at(ekg::min(static_cast<int64_t>(utf_clipboard_decoded.size()) - 1, (int64_t) 0))
-            };
+            if (utf_clipboard_decoded.size() == 1) {
+                emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + utf_clipboard_decoded.at(0) +
+                                 ekg::utf8substr(emplace_text_a, cursor.pos[0].text_index, ekg::utf8length(emplace_text_a));
+            } else if (utf_clipboard_decoded.size() > 1) {
+                std::string &last_clipboard_line {
+                    utf_clipboard_decoded.at(ekg::min(static_cast<int64_t>(utf_clipboard_decoded.size()) - 1, (int64_t) 0))
+                };
 
-            std::string rest_of_line {ekg::utf8substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf8length(emplace_text_b))};
-            emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + first_clipboard_line;
-            last_clipboard_line = last_clipboard_line + rest_of_line;
+                std::string stored_text = ekg::utf8substr(emplace_text_a, cursor.pos[0].text_index, ekg::utf8length(emplace_text_a));
+                emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + utf_clipboard_decoded.at(0);
 
-            this->text_chunk_list.insert(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, utf_clipboard_decoded.begin() + 1, utf_clipboard_decoded.end());
+                last_clipboard_line = last_clipboard_line + stored_text;
+                this->text_chunk_list.insert(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, utf_clipboard_decoded.begin() + 1, utf_clipboard_decoded.end());
+            }
         }
 
         this->move_cursor(cursor.pos[0], direction, 0);
-        
         break;
 
     case ekg::ui::textbox_widget::action::erase_text:
