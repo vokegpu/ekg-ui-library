@@ -340,16 +340,11 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                 direction = static_cast<int64_t>(ekg::utf8length(text));
             }
         }
+        
+        emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + text.data() +
+                         ekg::utf8substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf8length(emplace_text_b));
 
-        if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index) {
-            emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + text.data() +
-                             ekg::utf8substr(emplace_text_a, cursor.pos[1].text_index, ekg::utf8length(emplace_text_a));    
-        } else if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
-            std::string &emplace_text_b {this->get_cursor_emplace_text(cursor.pos[1])};
-
-            emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + text.data() +
-                             ekg::utf8substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf8length(emplace_text_b));
-
+        if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
             // remove the lines into text but not the chunks position
             this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, this->text_chunk_list.begin() + cursor.pos[1].chunk_index);
             this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[1].chunk_index); // then remove the last line
@@ -360,9 +355,16 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
     case ekg::ui::textbox_widget::action::erase_text:
         if (this->is_action_modifier_enable && cursor.pos[0] == cursor.pos[1] && (cursor.pos[0].text_index > 0 || direction > 0)) {
-            int64_t word[2] {direction, 0};
-            this->check_nearest_word(cursor, word[0], word[1]);
-            this->move_cursor(direction < 0 ? cursor.pos[0] : cursor.pos[1], word[0], word[1]);
+            int64_t cursor_dir[2] {direction, 0};
+
+            if (this->is_action_select_enable) {
+                cursor_dir[0] = direction < 0 ? (-cursor.pos[0].text_index) :
+                                                (static_cast<int64_t>(ekg::utf8length(emplace_text_a)) - cursor.pos[0].text_index);
+            } else {
+                this->check_nearest_word(cursor, cursor_dir[0], cursor_dir[1]);
+            }
+
+            this->move_cursor(direction < 0 ? cursor.pos[0] : cursor.pos[1], cursor_dir[0], cursor_dir[1]);
         }
 
         if (cursor.pos[0] == cursor.pos[1] && direction < 0 && (cursor.pos[0].index > 0 || cursor.pos[0].chunk_index > 0)) {
