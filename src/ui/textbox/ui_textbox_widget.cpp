@@ -308,9 +308,9 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             text = this->cached_tab_size;
             direction = static_cast<int64_t>(ui_tab_size);
         } else if (text == "clipboard") {
-            if (this->is_clipboard_cut || this->is_clipboard_copy) {
-                text = "";
+            text = "";
 
+            if (this->is_clipboard_cut || this->is_clipboard_copy) {
                 if (cursor.pos[0] != cursor.pos[1]) {
                     std::string copy_text {};
                     if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index) {
@@ -335,22 +335,38 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                 if (this->is_clipboard_copy) {
                     break;
                 }
-            } else {
-                text = SDL_HasClipboardText() ? SDL_GetClipboardText() : "";
-                direction = static_cast<int64_t>(ekg::utf8length(text));
             }
         }
-        
+
         emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + text.data() +
                          ekg::utf8substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf8length(emplace_text_b));
 
         if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
-            // remove the lines into text but not the chunks position
             this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, this->text_chunk_list.begin() + cursor.pos[1].chunk_index);
-            this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[1].chunk_index); // then remove the last line
+            this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[1].chunk_index);
+        }
+
+        if (this->is_clipboard_paste && SDL_HasClipboardText()) {
+            text = SDL_GetClipboardText();
+            direction = static_cast<int64_t>(ekg::utf8length(text));
+
+            std::vector<std::string> utf_clipboard_decoded {};
+            ekg::utf8read(text, utf_clipboard_decoded);
+
+            std::string &first_clipboard_line {utf_clipboard_decoded.at(0)};
+            std::string &last_clipboard_line {
+                utf_clipboard_decoded.at(ekg::min(static_cast<int64_t>(utf_clipboard_decoded.size()) - 1, (int64_t) 0))
+            };
+
+            std::string rest_of_line {ekg::utf8substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf8length(emplace_text_b))};
+            emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + first_clipboard_line;
+            last_clipboard_line = last_clipboard_line + rest_of_line;
+
+            this->text_chunk_list.insert(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, utf_clipboard_decoded.begin() + 1, utf_clipboard_decoded.end());
         }
 
         this->move_cursor(cursor.pos[0], direction, 0);
+        
         break;
 
     case ekg::ui::textbox_widget::action::erase_text:
@@ -384,9 +400,8 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                              ekg::utf8substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf8length(emplace_text_b));
 
             if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
-                // remove the lines into text but not the chunks position
                 this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, this->text_chunk_list.begin() + cursor.pos[1].chunk_index);
-                this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[1].chunk_index); // then remove the last line
+                this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[1].chunk_index);
             }
         } else if (cursor.pos[0] == cursor.pos[1] && direction > 0) {
             int64_t emplace_text_size {(int64_t) ekg::utf8length(emplace_text_a)};
@@ -403,38 +418,22 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
         break;
 
-    /*
-     * @TODO fast movement 
-     *
-     * The complexity performance6 of this function is horrible,
-     * for the moment it is okay, but soon should be rewrite,
-     * this is not secure for low-performance hardwares. :cat2:
-     */
     case ekg::ui::textbox_widget::action::break_line:
         int64_t it {cursor.pos[0].text_index};
-
-        std::string previous {};
-        std::string next {};
-
         int64_t cursor_dir[2] {0, 1};
+        std::string line {};
 
         if (!this->is_action_modifier_enable) {
-            next = ekg::utf8substr(emplace_text_a, it, ekg::utf8length(emplace_text_a));
+            line = ekg::utf8substr(emplace_text_a, it, ekg::utf8length(emplace_text_a));
             emplace_text_a = ekg::utf8substr(emplace_text_a, 0, it);
 
             cursor_dir[0] = 1;
             cursor_dir[1] = 0;
         }
 
-        this->text_chunk_list.emplace_back().clear();
-
-        for (it = cursor.pos[0].chunk_index + 1; it < this->text_chunk_list.size(); it++) {
-            previous = this->text_chunk_list.at(it);
-            this->text_chunk_list[it] = next;
-            next = previous;
-        }
-
+        this->text_chunk_list.insert(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, line);
         this->move_cursor(cursor.pos[0], cursor_dir[0], cursor_dir[1]);
+
         ekg::reset(ekg::core->ui_timing);
         ekg::dispatch(ekg::env::redraw);
 
