@@ -163,6 +163,11 @@ public:
 
 static uint64_t framerate {};
 
+template<typename t, typename s>
+t ref(s _ref) {
+    return static_cast<s>(_ref);
+}
+
 /*
  * Created by Rina.
  */

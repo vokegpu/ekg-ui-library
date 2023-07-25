@@ -282,7 +282,8 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         return;
     }
 
-    bool sync_cursor_set_target_right {}; 
+    std::string &emplace_text_a {this->get_cursor_emplace_text(cursor.pos[0])};
+    std::string &emplace_text_b {this->get_cursor_emplace_text(cursor.pos[1])};
 
     switch (action) {
     case ekg::ui::textbox_widget::action::add_text:
@@ -311,9 +312,6 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                 text = "";
 
                 if (cursor.pos[0] != cursor.pos[1]) {
-                    std::string &emplace_text_a {this->get_cursor_emplace_text(cursor.pos[0])};
-                    std::string &emplace_text_b {this->get_cursor_emplace_text(cursor.pos[1])};
-
                     std::string copy_text {};
                     if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index) {
                         copy_text += ekg::utf8substr(emplace_text_a, cursor.pos[0].text_index, cursor.pos[1].text_index);
@@ -343,17 +341,14 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             }
         }
 
-        if (cursor.pos[0] == cursor.pos[1]) {
-            std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
-            emplace_text = ekg::utf8substr(emplace_text, 0, cursor.pos[0].text_index) + text.data() + ekg::utf8substr(emplace_text, cursor.pos[0].text_index, ekg::utf8length(emplace_text));
-        } else if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index) {
-            std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
-            emplace_text = ekg::utf8substr(emplace_text, 0, cursor.pos[0].text_index) + text.data() + ekg::utf8substr(emplace_text, cursor.pos[1].text_index, ekg::utf8length(emplace_text));
+        if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index) {
+            emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + text.data() +
+                             ekg::utf8substr(emplace_text_a, cursor.pos[1].text_index, ekg::utf8length(emplace_text_a));    
         } else if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
-            std::string &emplace_text_a {this->get_cursor_emplace_text(cursor.pos[0])};
             std::string &emplace_text_b {this->get_cursor_emplace_text(cursor.pos[1])};
 
-            emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + text.data() + ekg::utf8substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf8length(emplace_text_b));
+            emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + text.data() +
+                             ekg::utf8substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf8length(emplace_text_b));
 
             // remove the lines into text but not the chunks position
             this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, this->text_chunk_list.begin() + cursor.pos[1].chunk_index);
@@ -364,7 +359,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         break;
 
     case ekg::ui::textbox_widget::action::erase_text:
-        if (this->is_action_modifier_enable && cursor.pos[0] == cursor.pos[1]) {
+        if (this->is_action_modifier_enable && cursor.pos[0] == cursor.pos[1] && (cursor.pos[0].text_index > 0 || direction > 0)) {
             int64_t word[2] {direction, 0};
             this->check_nearest_word(cursor, word[0], word[1]);
             this->move_cursor(direction < 0 ? cursor.pos[0] : cursor.pos[1], word[0], word[1]);
@@ -372,42 +367,35 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
         if (cursor.pos[0] == cursor.pos[1] && direction < 0 && (cursor.pos[0].index > 0 || cursor.pos[0].chunk_index > 0)) {
             if (cursor.pos[0].text_index - 1 < 0 && cursor.pos[0].chunk_index > 0) {
-                std::string stored_text {this->get_cursor_emplace_text(cursor.pos[0])};
+                std::string stored_text {emplace_text_a};
                 this->move_cursor(cursor.pos[0], -1, 0);
                 this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1);
                 std::string &upper_line_text {this->get_cursor_emplace_text(cursor.pos[0])};
                 upper_line_text += stored_text;
             } else {
-                std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
                 int64_t it {ekg::min(cursor.pos[0].text_index - 1, (int64_t) 0)};
-                emplace_text = ekg::utf8substr(emplace_text, 0, it) + ekg::utf8substr(emplace_text, it + 1, ekg::utf8length(emplace_text));
+                emplace_text_a = ekg::utf8substr(emplace_text_a, 0, it) + ekg::utf8substr(emplace_text_a, it + 1, ekg::utf8length(emplace_text_a));
                 this->move_cursor(cursor.pos[0], -1, 0);
             }
         } else if (cursor.pos[0] != cursor.pos[1] && direction != 0) {
-            if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index) {
-                std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
-                emplace_text = ekg::utf8substr(emplace_text, 0, cursor.pos[0].text_index) + ekg::utf8substr(emplace_text, cursor.pos[1].text_index, ekg::utf8length(emplace_text));
-            } else {
-                std::string &emplace_text_a {this->get_cursor_emplace_text(cursor.pos[0])};
-                std::string &emplace_text_b {this->get_cursor_emplace_text(cursor.pos[1])};
+            emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) +
+                             ekg::utf8substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf8length(emplace_text_b));
 
-                emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + ekg::utf8substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf8length(emplace_text_b));
-
+            if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
                 // remove the lines into text but not the chunks position
                 this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, this->text_chunk_list.begin() + cursor.pos[1].chunk_index);
                 this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[1].chunk_index); // then remove the last line
             }
         } else if (cursor.pos[0] == cursor.pos[1] && direction > 0) {
-            std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
-            int64_t emplace_text_size {(int64_t) ekg::utf8length(emplace_text)};
+            int64_t emplace_text_size {(int64_t) ekg::utf8length(emplace_text_a)};
             bool text_chunk_it_bounding_size {cursor.pos[0].chunk_index + 1 == this->text_chunk_list.size()};
 
             if (cursor.pos[0].text_index >= emplace_text_size && !text_chunk_it_bounding_size) {
-                emplace_text += this->text_chunk_list.at(cursor.pos[0].chunk_index + 1);
+                emplace_text_a += this->text_chunk_list.at(cursor.pos[0].chunk_index + 1);
                 this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1);
             } else if (cursor.pos[0].text_index < emplace_text_size) {
                 int64_t it {cursor.pos[0].text_index};
-                emplace_text = ekg::utf8substr(emplace_text, 0, it) + ekg::utf8substr(emplace_text, it + 1, ekg::utf8length(emplace_text));
+                emplace_text_a = ekg::utf8substr(emplace_text_a, 0, it) + ekg::utf8substr(emplace_text_a, it + 1, ekg::utf8length(emplace_text_a));
             }
         }
 
@@ -423,15 +411,14 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
     case ekg::ui::textbox_widget::action::break_line:
         int64_t it {cursor.pos[0].text_index};
 
-        std::string &emplace_text {this->get_cursor_emplace_text(cursor.pos[0])};
         std::string previous {};
         std::string next {};
 
         int64_t cursor_dir[2] {0, 1};
 
         if (!this->is_action_modifier_enable) {
-            next = ekg::utf8substr(emplace_text, it, ekg::utf8length(emplace_text));
-            emplace_text = ekg::utf8substr(emplace_text, 0, it);
+            next = ekg::utf8substr(emplace_text_a, it, ekg::utf8length(emplace_text_a));
+            emplace_text_a = ekg::utf8substr(emplace_text_a, 0, it);
 
             cursor_dir[0] = 1;
             cursor_dir[1] = 0;
@@ -453,8 +440,8 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
     }
 
     if (!this->is_clipboard_copy) {
-        cursor.pos[2] = cursor.pos[!sync_cursor_set_target_right] = cursor.pos[sync_cursor_set_target_right];
-        cursor.target = cursor.pos[sync_cursor_set_target_right].index;
+        cursor.pos[2] = cursor.pos[1] = cursor.pos[0];
+        cursor.target = cursor.pos[0].index;
         this->check_largest_text_width(true);
     }
 
