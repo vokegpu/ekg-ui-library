@@ -278,7 +278,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                                            std::string_view text,
                                            ekg::ui::textbox_widget::action action, int64_t direction) {
     auto ui {(ekg::ui::textbox*) this->data};
-    if (!(this->is_ui_enabled = ui->is_enabled())) {
+    if (!(this->is_ui_enabled = ui->is_enabled()) && !(text == "clipboard" && this->is_clipboard_copy)) {
         return;
     }
 
@@ -348,7 +348,6 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
         if (this->is_clipboard_paste && SDL_HasClipboardText()) {
             text = SDL_GetClipboardText();
-            direction = static_cast<int64_t>(ekg::utf8length(text));
 
             std::vector<std::string> utf_clipboard_decoded {};
             ekg::utf8read(text, utf_clipboard_decoded);
@@ -356,20 +355,29 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             if (utf_clipboard_decoded.size() == 1) {
                 emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + utf_clipboard_decoded.at(0) +
                                  ekg::utf8substr(emplace_text_a, cursor.pos[0].text_index, ekg::utf8length(emplace_text_a));
+                direction = static_cast<int64_t>(ekg::utf8length(text));
+                this->move_cursor(cursor.pos[0], direction, 0);
             } else if (utf_clipboard_decoded.size() > 1) {
-                std::string &last_clipboard_line {
-                    utf_clipboard_decoded.at(ekg::min(static_cast<int64_t>(utf_clipboard_decoded.size()) - 1, (int64_t) 0))
-                };
+                int64_t last_clipboard_list_index {static_cast<int64_t>(utf_clipboard_decoded.size() - 1)};
+                std::string &last_clipboard_line {utf_clipboard_decoded.at(last_clipboard_list_index)};
+
+                cursor.pos[1].text_index = ekg::utf8length(last_clipboard_line);
+                cursor.pos[1].index = cursor.pos[0].index + static_cast<int64_t>(ekg::utf8length(text));
+                cursor.pos[1].chunk_index = cursor.pos[0].chunk_index + last_clipboard_list_index;
+                cursor.pos[1].select_index = cursor.pos[1].text_index;
 
                 std::string stored_text = ekg::utf8substr(emplace_text_a, cursor.pos[0].text_index, ekg::utf8length(emplace_text_a));
                 emplace_text_a = ekg::utf8substr(emplace_text_a, 0, cursor.pos[0].text_index) + utf_clipboard_decoded.at(0);
 
                 last_clipboard_line = last_clipboard_line + stored_text;
                 this->text_chunk_list.insert(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, utf_clipboard_decoded.begin() + 1, utf_clipboard_decoded.end());
+
+                cursor.pos[0] = cursor.pos[1];
             }
+        } else {
+            this->move_cursor(cursor.pos[0], direction, 0);
         }
 
-        this->move_cursor(cursor.pos[0], direction, 0);
         break;
 
     case ekg::ui::textbox_widget::action::erase_text:

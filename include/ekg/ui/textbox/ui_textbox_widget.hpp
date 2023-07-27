@@ -35,7 +35,6 @@ namespace ekg::ui {
             int64_t chunk_index {};
             int64_t text_index {};
             int64_t last_text_index {};
-            int64_t nearest_word_index {};
         public:
             inline bool operator==(ekg::ui::textbox_widget::cursor_pos &r) {
                 return this->index == r.index;
