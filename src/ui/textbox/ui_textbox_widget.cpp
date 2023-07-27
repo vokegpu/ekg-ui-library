@@ -316,13 +316,15 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                     if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index) {
                         copy_text += ekg::utf8substr(emplace_text_a, cursor.pos[0].text_index, cursor.pos[1].text_index);
                     } else {
-                        copy_text += ekg::utf8substr(emplace_text_a, cursor.pos[0].text_index, utf8length(emplace_text_a));
+                        copy_text += ekg::utf8substr(emplace_text_a, cursor.pos[0].text_index, ekg::utf8length(emplace_text_a));
                         copy_text += '\n';
 
                         uint64_t it {static_cast<uint64_t>(cursor.pos[0].chunk_index + 1)};
-                        while (it < cursor.pos[1].chunk_index && it < this->text_chunk_list.size()) {
+                        uint64_t size {this->text_chunk_list.size()};
+
+                        while (it < cursor.pos[1].chunk_index && it < size) {
                             copy_text += this->text_chunk_list.at(it);
-                            copy_text += '\n';
+                            if (!(it + 1 == size)) copy_text += '\n';
                             it++;
                         }
 

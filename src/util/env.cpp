@@ -1,4 +1,5 @@
 
+
 /*
  * VOKEGPU EKG LICENSE
  *
@@ -107,7 +108,10 @@ size_t ekg::utf8length(std::string_view utf8tstring) {
 
     for (size_t it {}; it < utf8tstring.size(); it++) {
         ui8char = static_cast<uint8_t>(utf8tstring.at(it));
-        if (ui8char <= 0x7F) {
+
+        if (ui8char == '\n' || ui8char == '\r') {
+            continue;
+        } else if (ui8char <= 0x7F) {
             stringsize++;
         } else if ((ui8char & 0xE0) == 0xC0) {
             stringsize++;

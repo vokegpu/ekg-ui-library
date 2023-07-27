@@ -229,7 +229,7 @@ int32_t main(int32_t, char**) {
     ff->set_height(300.0f);
 
     auto ff3 = ekg::textbox("frame-debug", "oi", ekg::dock::fill | ekg::dock::next);
-    ff3->set_scaled_height(4);
+    ff3->set_scaled_height(16);
     ekg::checkbox("Auto-scale", true, ekg::dock::fill | ekg::dock::next)->set_tag("base.resolution.autoscale");
     ekg::label("Aspect:", ekg::dock::fill | ekg::dock::next);
     ekg::slider("base.resolution.width", 1920.0f, 800.0f, 2560.0f, ekg::dock::fill);
