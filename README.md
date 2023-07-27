@@ -32,13 +32,13 @@ add_executable(your-project-name ekg SDL2main SDL2 freetype glew32)
 cxx ... -lekg -lSDL2main -lSDL2 -lfreetype -lglew32
 ```
 
-C++ compiler(s) support:  GCC, MinGW32, MinGW64, Clang  
-C++ std version:          17
+C++ compiler(s) support: GCC, MinGW32, MinGW64, Clang  
+C++ std version: 17
   
 Library output path:   
-`lib/win32/libekg.a`    Windows x86_x64  
-`lib/linux/libekg.a`    Linux x86_x64  
-`ANDROID_ABI/libekg.a`  Android armeabi-v7a arm64-v8a x86 x86_64  
+`lib/win32/libekg.a` Windows x86_x64  
+`lib/linux/libekg.a` Linux x86_x64  
+`ANDROID_ABI/libekg.a` Android armeabi-v7a arm64-v8a x86 x86_64  
 
 # Example
 
