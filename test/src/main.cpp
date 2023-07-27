@@ -176,6 +176,10 @@ int32_t main(int32_t, char**) {
     ekg::log() << utf8pompom << " utf8 size: " << ekg::utf8length(utf8pompom) << " string size: " << utf8pompom.size();
     ekg::log() << "EKG User interface library demo starting";
 
+    std::string something_ascii {"qrsergostosaterumbumbumlindo"};
+    std::string something_utf8 {"qrsergostósaterumbumbumlindo"};
+    ekg::log() << '\n' << "(EKG utf8) " << ekg::utf8substr(something_utf8, 2, 40) << "\n substr vs \n(STL ascii) " << something_ascii.substr(2, 40);
+
     int32_t root_width {1280};
     int32_t root_height {720};
 

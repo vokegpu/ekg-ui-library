@@ -129,19 +129,17 @@ size_t ekg::utf8length(std::string_view utf8tstring) {
 }
 
 std::string ekg::utf8substr(std::string_view string, size_t a, size_t b) {
-    std::string substred {};
     if (string.empty()) {
-        return substred;
+        return "";
     }
 
     size_t stringsize {ekg::utf8length(string)};
+    std::string substred {};
 
     if (stringsize == string.size()) {
         substred = string.substr(a, b);
     } else {
-        if (b <= a) {
-            b += a;
-        }
+        b += a;
 
         uint8_t ui8char {};
         bool indexafilled {};
