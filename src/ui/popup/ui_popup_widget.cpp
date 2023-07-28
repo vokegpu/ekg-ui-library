@@ -341,6 +341,9 @@ void ekg::ui::popup_widget::on_update() {
         this->is_high_frequency = false;
     }
 
+    gpu_scissor->rect[0] = rect.x;
+    gpu_scissor->rect[1] = rect.y;
+    gpu_scissor->rect[2] = rect.w;
     gpu_scissor->rect[3] = this->scissor_opened_height;
 }
 
@@ -352,8 +355,6 @@ void ekg::ui::popup_widget::on_draw_refresh() {
     auto &component_list {ui->get_component_list()};
 
     ekg::draw::bind_scissor(ui->get_id());
-    ekg::draw::sync_scissor(rect, 0);
-
     ekg::draw::rect(rect, theme.popup_background);
     ekg::draw::rect(rect, theme.popup_outline, ekg::drawmode::outline);
 

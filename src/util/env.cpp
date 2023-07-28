@@ -303,6 +303,10 @@ void ekg::input::bind(std::string_view key_input, std::string_view value_input) 
     return ekg::core->service_input.bind(key_input, value_input);
 }
 
+void ekg::input::fire(std::string_view key_input) {
+    ekg::core->service_input.fire(key_input);
+}
+
 bool ekg::input::motion() {
     return ekg::core->service_input.has_motion;
 }

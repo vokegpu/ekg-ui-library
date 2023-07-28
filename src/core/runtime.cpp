@@ -517,7 +517,7 @@ void ekg::runtime::prepare_ui_env() {
     this->service_input.bind("textbox-action-modifier", "lctrl");
     this->service_input.bind("textbox-action-modifier", "rctrl");
 
-    this->service_input.bind("clipboard-copy", "lctrl+c");
+this->service_input.bind("clipboard-copy", "lctrl+c");
     this->service_input.bind("clipboard-copy", "rctrl+c");
     this->service_input.bind("clipboard-paste", "lctrl+v");
     this->service_input.bind("clipboard-paste", "rctrl+v");

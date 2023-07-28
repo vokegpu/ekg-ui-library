@@ -432,12 +432,19 @@ int32_t main(int32_t, char**) {
                 }
 
                 default: {
-                    ekg::event(sdl_event);
                     //framedebug->set_height(ekg::display::height);
 
                     if (ekg::listen(event, sdl_event)) {
-                        if (event.tag == "base.resolution.width") {
-                        ekg::scalebase.x = std::stof(event.value);
+                        if (event.tag == "file") {
+                            if (event.value == "Copy") {
+                                ekg::input::fire("clipboard-copy");
+                            } else if (event.value == "Cut") {
+                                ekg::input::fire("clipboard-cut");
+                            } else if (event.value == "Paste") {
+                                ekg::input::fire("clipboard-paste");
+                            }
+                        } else if (event.tag == "base.resolution.width") {
+                            ekg::scalebase.x = std::stof(event.value);
                         } else if (event.tag == "base.resolution.height") {
                             ekg::scalebase.y = std::stof(event.value);
                         } else if (event.tag == "base.resolution.autoscale") {
@@ -474,6 +481,8 @@ int32_t main(int32_t, char**) {
                             }
                         }
                     }
+
+                    ekg::event(sdl_event);
 
                     if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
                         auto main = ekg::popup("file", {"---Add", "Cut", "Copy", "---Paste", "---Select All", "Actions"});

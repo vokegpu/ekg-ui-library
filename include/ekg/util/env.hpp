@@ -144,6 +144,7 @@ namespace ekg {
     namespace input {
         bool action(std::string_view);
         bool receive(std::string_view);
+        void fire(std::string_view);
         void bind(std::string_view, std::string_view);
         bool motion();
         bool released();
