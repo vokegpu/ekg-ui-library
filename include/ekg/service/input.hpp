@@ -35,6 +35,7 @@ namespace ekg::service {
             std::vector<std::string> double_click_mouse_buttons_pressed {};
             std::vector<std::string> input_register_callback {};
             std::vector<std::string> input_released_list {};
+            std::vector<std::string> immediate_register_list {};
 
             bool finger_hold_event {};
             bool finger_swipe_event {};

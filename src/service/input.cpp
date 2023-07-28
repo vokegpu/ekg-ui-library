@@ -335,7 +335,7 @@ void ekg::service::input::complete_with_units(std::string &string_builder, std::
 }
 
 void ekg::service::input::fire(std::string_view key) {
-    this->input_register_map[key.data()] = key;
+    this->input_register_map[key.data()] = true;
     this->immediate_register_list.emplace_back(key);
 }
 
