@@ -59,6 +59,8 @@ namespace ekg::service {
             void bind(std::string_view input_tag, std::string_view key);
             void unbind(std::string_view input_tag, std::string_view key);
             void callback(std::string_view key, bool callback);
+            void fire(std::string_view key);
+
             bool pressed(std::string_view key);
             bool receive(std::string_view key);
 

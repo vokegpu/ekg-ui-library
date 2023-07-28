@@ -265,6 +265,14 @@ void ekg::service::input::on_update() {
 
         this->input_released_list.clear();
     }
+
+    if (!this->immediate_register_list.empty()) {
+        for (std::string &inputs : this->immediate_register_list) {
+            this->input_register_map[inputs] = false;
+        }
+
+        this->immediate_register_list.clear();
+    }
 }
 
 void ekg::service::input::bind(std::string_view input_tag, std::string_view key) {
@@ -324,6 +332,11 @@ void ekg::service::input::complete_with_units(std::string &string_builder, std::
     string_builder += this->special_keys_sdl_map[SDLK_RALT];
     string_builder += this->special_keys_sdl_map[SDLK_TAB];
     string_builder += key_name;
+}
+
+void ekg::service::input::fire(std::string_view key) {
+    this->input_register_map[key.data()] = key;
+    this->immediate_register_list.emplace_back(key);
 }
 
 bool ekg::service::input::contains_unit(std::string_view label) {

@@ -748,89 +748,77 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         ekg::set(this->flag.focused, false);
     }
 
-    if (!this->flag.focused) {
-        return;
-    }
-
     this->is_clipboard_cut = ekg::input::action("clipboard-cut");
     this->is_clipboard_paste = ekg::input::action("clipboard-paste");
     this->is_clipboard_copy = ekg::input::action("clipboard-copy");
 
-    switch (sdl_event.type) {
-    case SDL_TEXTINPUT:
+    bool should_process_textbox {
+        (this->flag.focused && (sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_TEXTINPUT)) ||
+        (this->is_clipboard_copy || this->is_clipboard_cut || this->is_clipboard_paste)
+    };
+
+    if (!should_process_textbox) {
+        return;
+    }
+
+    if (sdl_event.type == SDL_TEXTINPUT) {
         for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
             this->process_text(cursor, sdl_event.text.text, ekg::ui::textbox_widget::action::add_text, 1);
         }
+    } else if (sdl_event.type == SDL_KEYDOWN && sdl_event.key.keysym.sym == SDLK_ESCAPE) {
+        ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
+        main_cursor.pos[1] = main_cursor.pos[0];
 
-        this->flag.state = false;
-        break;
-    case SDL_KEYDOWN:
-        switch (sdl_event.key.keysym.sym) {
-            case SDLK_ESCAPE: {
-                ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
-                main_cursor.pos[1] = main_cursor.pos[0];
+        this->loaded_multi_cursor_list.clear();
+        this->loaded_multi_cursor_list.push_back(main_cursor);
 
-                this->loaded_multi_cursor_list.clear();
-                this->loaded_multi_cursor_list.push_back(main_cursor);
+        ekg::set(this->flag.focused, false);
+    } else if (ekg::input::action("textbox-action-select-all")) {
+        ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
+        main_cursor.pos[0].index = 0;
+        main_cursor.pos[0].chunk_index = 0;
+        main_cursor.pos[0].text_index = 0;
+        main_cursor.pos[0].last_text_index = 0;
 
-                ekg::set(this->flag.focused, false);
-                break;
+        main_cursor.pos[1].index = this->total_utf_chars;
+        main_cursor.pos[1].chunk_index = ekg::min((int64_t) this->text_chunk_list.size() - 1, (int64_t) 0);
+        main_cursor.pos[1].text_index = ekg::utf8length(this->get_cursor_emplace_text(main_cursor.pos[1]));
+        main_cursor.pos[1].last_text_index = main_cursor.pos[1].chunk_index;
+
+        this->loaded_multi_cursor_list.clear();
+        this->loaded_multi_cursor_list.push_back(main_cursor);
+    } else {
+        int64_t cursor_dir[2] {};
+        this->is_action_modifier_enable = ekg::input::action("textbox-action-modifier");
+
+        for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
+            cursor_dir[0] = cursor_dir[1] = 0;
+
+            if (ekg::input::action("textbox-action-up")) {
+                cursor_dir[1] = -1;
+            } else if (ekg::input::action("textbox-action-down")) {
+                cursor_dir[1] = 1;
+            } else if (ekg::input::action("textbox-action-left")) {
+                cursor_dir[0] = -1;
+            } else if (ekg::input::action("textbox-action-right")) {
+                cursor_dir[0] = 1;
+            } else if (ekg::input::action("textbox-action-delete-left")) {
+                this->process_text(cursor, "backspace", ekg::ui::textbox_widget::action::erase_text, -1);
+            } else if (ekg::input::action("textbox-action-delete-right")) {
+                this->process_text(cursor, "delete", ekg::ui::textbox_widget::action::erase_text, 1);
+            } else if (ekg::input::action("textbox-action-break-line")) {
+                this->process_text(cursor, "return", ekg::ui::textbox_widget::action::break_line, 1);
+            } else if (ekg::input::action("textbox-action-tab")) {
+                this->process_text(cursor, "\t", ekg::ui::textbox_widget::action::add_text, 1);
+            } else if (this->is_clipboard_copy || this->is_clipboard_paste || this->is_clipboard_cut) {
+                this->process_text(cursor, "clipboard", ekg::ui::textbox_widget::action::add_text, 0);
             }
 
-            default: {
-                if (ekg::input::action("textbox-action-select-all")) {
-                    ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
-                    main_cursor.pos[0].index = 0;
-                    main_cursor.pos[0].chunk_index = 0;
-                    main_cursor.pos[0].text_index = 0;
-                    main_cursor.pos[0].last_text_index = 0;
-
-                    main_cursor.pos[1].index = this->total_utf_chars;
-                    main_cursor.pos[1].chunk_index = ekg::min((int64_t) this->text_chunk_list.size() - 1, (int64_t) 0);
-                    main_cursor.pos[1].text_index = ekg::utf8length(this->get_cursor_emplace_text(main_cursor.pos[1]));
-                    main_cursor.pos[1].last_text_index = main_cursor.pos[1].chunk_index;
-
-                    this->loaded_multi_cursor_list.clear();
-                    this->loaded_multi_cursor_list.push_back(main_cursor);
-
-                    break;
-                }
-
-                int64_t cursor_dir[2] {};
-                this->is_action_modifier_enable = ekg::input::action("textbox-action-modifier");
-
-                for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
-                    cursor_dir[0] = cursor_dir[1] = 0;
-
-                    if (ekg::input::action("textbox-action-up")) {
-                        cursor_dir[1] = -1;
-                    } else if (ekg::input::action("textbox-action-down")) {
-                        cursor_dir[1] = 1;
-                    } else if (ekg::input::action("textbox-action-left")) {
-                        cursor_dir[0] = -1;
-                    } else if (ekg::input::action("textbox-action-right")) {
-                        cursor_dir[0] = 1;
-                    } else if (ekg::input::action("textbox-action-delete-left")) {
-                        this->process_text(cursor, "backspace", ekg::ui::textbox_widget::action::erase_text, -1);
-                    } else if (ekg::input::action("textbox-action-delete-right")) {
-                        this->process_text(cursor, "delete", ekg::ui::textbox_widget::action::erase_text, 1);
-                    } else if (ekg::input::action("textbox-action-break-line")) {
-                        this->process_text(cursor, "return", ekg::ui::textbox_widget::action::break_line, 1);
-                    } else if (ekg::input::action("textbox-action-tab")) {
-                        this->process_text(cursor, "\t", ekg::ui::textbox_widget::action::add_text, 1);
-                    } else if (this->is_clipboard_copy || this->is_clipboard_paste || this->is_clipboard_cut) {
-                        this->process_text(cursor, "clipboard", ekg::ui::textbox_widget::action::add_text, 0);
-                    }
-
-                    if (cursor_dir[0] != 0 || cursor_dir[1] != 0) {
-                        this->check_nearest_word(cursor, cursor_dir[0], cursor_dir[1]);
-                        this->move_target_cursor(cursor, cursor_dir[0], cursor_dir[1]);
-                    }
-                }
-
-                break;
+            if (cursor_dir[0] != 0 || cursor_dir[1] != 0) {
+                this->check_nearest_word(cursor, cursor_dir[0], cursor_dir[1]);
+                this->move_target_cursor(cursor, cursor_dir[0], cursor_dir[1]);
             }
-        }
+        }   
     }
 }
 
