@@ -15,11 +15,18 @@
 #include "ekg/ekg.hpp"
 
 void ekg::dispatch(ekg::cpu::event* event) {
-    ekg::core->service_handler.dispatch(event);
+    ekg::core->service_handler.generate() = *event;
 }
 
 void ekg::dispatch(const ekg::env &env) {
-    ekg::core->service_handler.task((uint32_t) env);
+    switch (env) {
+    case ekg::env::redraw:
+        ekg::core->redraw_gui();
+        break;
+    default:
+        ekg::core->service_handler.dispatch_pre_allocated_task((uint64_t) env);
+        break;
+    }
 }
 
 bool ekg::listen(ekg::cpu::uievent &ekg_event, SDL_Event &sdl_event) {

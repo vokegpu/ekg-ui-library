@@ -29,10 +29,10 @@ namespace ekg {
         };
 
         struct event {
-            const char *uuid {};
-            void* callback {};
+        public:
+            const char* p_tag {};
+            void* p_callback {};
             std::function<void(void*)> fun {};
-            uint16_t flags {};
         };
     }
 

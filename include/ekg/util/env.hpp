@@ -29,7 +29,7 @@ namespace ekg {
     extern float scrollsmooth;
 
     enum class env {
-        refresh, swap, reload, synclayout, redraw, gc
+        refresh, swap, reload, synclayout, gc, redraw
     };
 
     enum class cursor {

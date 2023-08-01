@@ -25,16 +25,14 @@
 namespace ekg::service {
     class handler {
     protected:
-        std::vector<ekg::cpu::event*> allocated_task_list {};
-        std::queue<ekg::cpu::event*> event_queue {};
-        std::unordered_map<const char*, bool> events_going_on {};
-
-        bool should_poll_queue {};
-        uint8_t cool_down_ticks {};
+        std::queue<ekg::cpu::event> task_queue {};
+        std::unordered_map<const char*, bool> pre_allocated_task_dispatched_map {};
+        std::vector<ekg::cpu::event> pre_allocated_task_list {};
     public:
-        void dispatch(ekg::cpu::event* event);
-        void task(std::size_t task_index);
-        bool should_poll();
+        ekg::cpu::event &allocate();
+        ekg::cpu::event &generate();
+
+        void dispatch_pre_allocated_task(uint64_t index);
         void on_update();
     };
 }
