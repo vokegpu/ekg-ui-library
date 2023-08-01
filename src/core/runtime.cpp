@@ -217,11 +217,9 @@ void ekg::runtime::process_update() {
         }
     }
 
-    if (this->service_handler.should_poll()) {
-        this->service_handler.on_update();
-    }
-
+    this->service_handler.on_update();
     this->gpu_allocator.on_update();
+
     glViewport(0, 0, ekg::display::width, ekg::display::height);
 }
 
@@ -237,7 +235,7 @@ void ekg::runtime::process_render() {
         this->gpu_allocator.invoke();
 
         if (ekg::debug) {
-            runtime->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {1.0f, 1.0f, 1.0f, 1.0f});
+            this->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {1.0f, 1.0f, 1.0f, 1.0f});
         }
 
         for (ekg::ui::abstract_widget *&widgets : all) {
@@ -290,8 +288,8 @@ void ekg::runtime::prepare_tasks() {
     this->service_handler.allocate() = {
         .p_tag      = "swap",
         .p_callback = this,
-        .fun        = [](void *p_data) {
-            auto *runtime {static_cast<ekg::runtime*>(p_data)};
+        .fun        = [](void *p_callback) {
+            auto *runtime {static_cast<ekg::runtime*>(p_callback)};
 
             if (runtime->swap_widget_id_focused == 0) {
                 return;
@@ -329,7 +327,7 @@ void ekg::runtime::prepare_tasks() {
         .p_tag      = "reload",
         .p_callback = this,
         .fun        = [](void *p_callback) {
-            auto *runtime {static_cast<ekg::runtime*>(p_data)};
+            auto *runtime {static_cast<ekg::runtime*>(p_callback)};
             auto &reload = runtime->widget_list_map["reload"];
 
             for (ekg::ui::abstract_widget *&widgets : reload) {
@@ -429,32 +427,10 @@ void ekg::runtime::prepare_tasks() {
     };
 
     this->service_handler.allocate() = {
-        .p_tag      = "redraw",
-        .p_callback = this,
-        .fun        = [](void *p_data) {
-            auto *runtime {static_cast<ekg::runtime*>(p_data)};
-            auto &all {runtime->widget_list_map["all"]};
-
-            runtime->gpu_allocator.invoke();
-            if (ekg::debug) {
-                runtime->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {1.0f, 1.0f, 1.0f, 1.0f});
-            }
-
-            for (ekg::ui::abstract_widget *&widgets : all) {
-                if (widgets != nullptr && widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {
-                    widgets->on_draw_refresh();
-                }
-            }
-
-            runtime->gpu_allocator.revoke();
-        }
-    };
-
-    this->service_handler.allocate() = {
         .p_tag      = "gc",
         .p_callback = this,
-        .fun        = [](void *p_data) {
-            auto *runtime {static_cast<ekg::runtime*>(p_data)};
+        .fun        = [](void *p_callback) {
+            auto *runtime {static_cast<ekg::runtime*>(p_callback)};
             auto &all {runtime->widget_list_map["all"]};
             auto &high_frequency {runtime->widget_list_map["update"]};
             auto &redraw {runtime->widget_list_map["redraw"]};
@@ -473,10 +449,11 @@ void ekg::runtime::prepare_tasks() {
                     ekg::hovered::id = ekg::hovered::id == widgets->data->get_id() ? 0 : ekg::hovered::id;
                     ekg::hovered::up = ekg::hovered::up == widgets->data->get_id() ? 0 : ekg::hovered::up;
                     ekg::hovered::down = ekg::hovered::down == widgets->data->get_id() ? 0 : ekg::hovered::down;
-                    allocator.erase_scissor_by_id(widgets->data->get_id());
 
                     delete widgets->data;
                     delete widgets;
+                    allocator.erase_scissor_by_id(widgets->data->get_id());
+
                     continue;
                 }
 

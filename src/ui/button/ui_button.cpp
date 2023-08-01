@@ -54,8 +54,6 @@ uint16_t ekg::ui::button::get_text_align() {
 }
 
 void ekg::ui::button::set_callback(ekg::cpu::event *event) {
-    event->flags = ekg::bitwise::add(event->flags, ekg::event::shared);
-
     if (this->callback != event && this->callback != nullptr) {
         delete this->callback;
         this->callback = nullptr;

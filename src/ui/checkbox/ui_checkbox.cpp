@@ -16,8 +16,6 @@
 #include "ekg/util/util_ui.hpp"
 
 void ekg::ui::checkbox::set_callback(ekg::cpu::event *event) {
-    event->flags = ekg::bitwise::add(event->flags, ekg::event::shared);
-
     if (this->callback != event && this->callback != nullptr) {
         delete this->callback;
         this->callback = nullptr;
