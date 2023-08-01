@@ -40,6 +40,5 @@ void ekg::service::handler::on_update() {
         this->task_queue.pop();
     }
 
-    std::cout << this->pre_allocated_task_list.size() << std::endl;
     this->pre_allocated_task_dispatched_map.clear();
 }

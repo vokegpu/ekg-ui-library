@@ -409,9 +409,9 @@ void ekg::runtime::prepare_tasks() {
         .p_callback = this,
         .fun        = [](void *p_callback) {
             auto *runtime {static_cast<ekg::runtime*>(p_callback)};
-            auto &reload {runtime->widget_list_map["synclayout"]};
+            auto &synclayout {runtime->widget_list_map["synclayout"]};
 
-            for (ekg::ui::abstract_widget *&widgets : reload) {
+            for (ekg::ui::abstract_widget *&widgets : synclayout) {
                 if (widgets == nullptr || runtime->processed_widget_map[widgets->data->get_id()]) {
                     continue;
                 }
@@ -420,7 +420,7 @@ void ekg::runtime::prepare_tasks() {
                 runtime->processed_widget_map[widgets->data->get_id()] = true;
             }
 
-            reload.clear();
+            synclayout.clear();
             runtime->processed_widget_map.clear();
             ekg::dispatch(ekg::env::redraw);
         }
@@ -449,10 +449,10 @@ void ekg::runtime::prepare_tasks() {
                     ekg::hovered::id = ekg::hovered::id == widgets->data->get_id() ? 0 : ekg::hovered::id;
                     ekg::hovered::up = ekg::hovered::up == widgets->data->get_id() ? 0 : ekg::hovered::up;
                     ekg::hovered::down = ekg::hovered::down == widgets->data->get_id() ? 0 : ekg::hovered::down;
+                    allocator.erase_scissor_by_id(widgets->data->get_id());
 
                     delete widgets->data;
                     delete widgets;
-                    allocator.erase_scissor_by_id(widgets->data->get_id());
 
                     continue;
                 }
@@ -480,7 +480,7 @@ ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(int32_t id) {
 
 void ekg::runtime::do_task_reload(ekg::ui::abstract_widget *widget) {
     if (widget != nullptr) {
-        this->widget_list_map["reload"].push_back(widget);
+        this->widget_list_map["reload"].emplace_back(widget);
         ekg::dispatch(ekg::env::reload);
     }
 }
@@ -675,7 +675,7 @@ void ekg::runtime::do_task_synclayout(ekg::ui::abstract_widget *widget) {
     }
 
     if (widget != nullptr) {
-        this->widget_list_map["synclayout"].push_back(widget);
+        this->widget_list_map["synclayout"].emplace_back(widget);
         ekg::dispatch(ekg::env::synclayout);
     }
 }
@@ -685,7 +685,7 @@ void ekg::runtime::do_task_refresh(ekg::ui::abstract_widget *widget) {
         return;
     }
 
-    this->widget_list_map["refresh"].push_back(widget);
+    this->widget_list_map["refresh"].emplace_back(widget);
     ekg::dispatch(ekg::env::refresh);
     ekg::dispatch(ekg::env::redraw);
 }
