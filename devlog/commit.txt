@@ -94,3 +94,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Better handler performance.
 -- Added descriptors object state-based for tasks handler.
 -- Refactored utility part of code.
+-- Fixed textbox bizzare behavior with cursors (all textbox(s) were working simultaneous).

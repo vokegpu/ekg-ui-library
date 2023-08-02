@@ -753,8 +753,9 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     this->is_clipboard_copy = ekg::input::action("clipboard-copy");
 
     bool should_process_textbox {
-        (this->flag.focused && (sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_TEXTINPUT)) ||
-        (this->is_clipboard_copy || this->is_clipboard_cut || this->is_clipboard_paste)
+        this->flag.focused && (
+        (sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_TEXTINPUT) ||
+        (this->is_clipboard_copy || this->is_clipboard_cut || this->is_clipboard_paste))
     };
 
     if (!should_process_textbox) {

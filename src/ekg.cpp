@@ -44,7 +44,7 @@ ekg::draw::font_renderer &ekg::f_renderer(ekg::font font_size) {
     return ekg::core->f_renderer_normal;
 }
 
-void ekg::init(SDL_Window* root, std::string_view font_path) {
+void ekg::init(ekg::runtime *p_ekg_runtime, SDL_Window *p_root, std::string_view font_path) {
     ekg::log() << "Initialising EKG";
     ekg::listener = SDL_RegisterEvents(1);
 
@@ -55,6 +55,11 @@ void ekg::init(SDL_Window* root, std::string_view font_path) {
 #elif defined(__linux__)
     ekg::os = {ekg::platform::os_linux};
 #endif
+
+    /* Init OS cursor and check mouse icons. */
+
+    ekg::init_cursor();
+    ekg::log() << "Initialising OS cursor";
 
     const std::string vsh_src {
 ekg::gl_version + "\n"
@@ -135,17 +140,16 @@ ekg::gl_version + "\n"
     });
 
     /* The runtime core, everything need to be setup before init. */
-    ekg::core = new ekg::runtime();
+    ekg::core = p_ekg_runtime;
     ekg::core->f_renderer_small.font_path = font_path;
     ekg::core->f_renderer_normal.font_path = font_path;
     ekg::core->f_renderer_big.font_path = font_path;
-    ekg::core->root = root;
+    ekg::core->root = p_root;
     ekg::core->init();
-
 
     /* First update of orthographic matrix and uniforms. */
 
-    SDL_GetWindowSize(root, &ekg::display::width, &ekg::display::height);
+    SDL_GetWindowSize(p_root, &ekg::display::width, &ekg::display::height);
     ekg::gpu::invoke(ekg::gpu::allocator::program);
     ekg::orthographic2d(ekg::gpu::allocator::mat4x4orthographic, 0, static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height), 0);
     ekg::gpu::allocator::program.setm4("uOrthographicMatrix", ekg::gpu::allocator::mat4x4orthographic);
@@ -158,18 +162,10 @@ ekg::gl_version + "\n"
     SDL_GetVersion(&sdl_version);
 
     ekg::log() << "SDL version: " << (int32_t) sdl_version.major << '.' << (int32_t) sdl_version.minor << '.' << (int32_t) (sdl_version.patch);
-
-    /* Init OS cursor and check mouse icons. */
-
-    ekg::init_cursor();
-
-    ekg::log() << "Initialising OS cursor";
 }
 
 void ekg::quit() {
     ekg::core->quit();
-    delete ekg::core;
-
     ekg::log() << "Shutdown complete - Thank you for using EKG ;) <3";
 }
 

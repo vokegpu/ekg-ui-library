@@ -168,6 +168,54 @@ t ref(s _ref) {
     return static_cast<s>(_ref);
 }
 
+int32_t main_example_with_no_ekg() {
+    int32_t root_width {1280};
+    int32_t root_height {720};
+
+    SDL_Init(SDL_INIT_VIDEO);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+
+    SDL_Window* sdl_win {SDL_CreateWindow("Pompom Calculator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
+    SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
+
+    glewExperimental = GL_TRUE;
+
+    if (glewInit() != GLEW_OK) {
+        ekg::log(ekg::log::ERROR) << "Failed to initialise GLEW";
+    } else {
+        ekg::log() << "GLEW initialised";
+    }
+
+    ekg::runtime ekg_runtime {};
+
+    ekg::log() << "OpenGL context created";
+    ekg::debug = true;
+
+    SDL_GL_SetSwapInterval(1);
+    SDL_Event sdl_event {};
+
+    bool running {true};
+    while (running) {
+        while (SDL_PollEvent(&sdl_event)) {
+            if (sdl_event.type == SDL_QUIT) {
+                running = false;
+            }
+        }
+
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        glClearColor(1.0f, 0.69f, 1.0f, 1.0f);
+
+        // Swap buffers.
+        SDL_GL_SwapWindow(sdl_win);
+        SDL_Delay(16);
+    }
+
+    return 0;
+}
+
+
 int32_t main_example() {
     int32_t root_width {1280};
     int32_t root_height {720};
@@ -189,7 +237,9 @@ int32_t main_example() {
         ekg::log() << "GLEW initialised";
     }
 
-    ekg::init(sdl_win, "whitneybook.otf");
+    ekg::runtime ekg_runtime {};
+    ekg::init(&ekg_runtime, sdl_win, "whitneybook.otf");
+
     ekg::log() << "OpenGL context created";
     ekg::debug = true;
 
@@ -211,6 +261,39 @@ int32_t main_example() {
     auto g = ekg::slider("green", 0.69f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
     auto b = ekg::slider("blue", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
 
+    ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+
     ekg::scroll("scroll minecraft");
     ekg::popgroup();
 
@@ -222,6 +305,27 @@ int32_t main_example() {
             }
 
             ekg::event(sdl_event);
+
+            if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
+                auto main = ekg::popup("file", {
+                    "---Add",
+                    "Cut",
+                    "Copy",
+                    "---Paste",
+                    "---Select All",
+                    "Actions"
+                });
+
+                auto three = ekg::popup("file-add", {"Cube", "Plane", "Sphere", "Hexagon", "Hexagon"});
+                auto hexagon = ekg::popup("file-add-hexagon", {"Tree D", "Plane", "Double Pairs Daggers"});
+                auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
+  
+                if (main != nullptr && three != nullptr) {
+                    main->append_linked("Add", three);
+                    main->append_linked("Actions", game);
+                    three->append_linked("Hexagon", hexagon);
+                }
+            }
         }
 
         ekg::display::dt = 0.016f;
@@ -276,7 +380,8 @@ int32_t main_calculator() {
     SDL_GL_SetSwapInterval(1); // v-sync on
     framerate = 16;
 
-    ekg::init(sdl_win, "whitneybook.otf");
+    ekg::runtime ekg_runtime {};
+    ekg::init(&ekg_runtime, sdl_win, "whitneybook.otf");
     ekg::log() << "OpenGL context created";
 
     ekg::autoscale = true;

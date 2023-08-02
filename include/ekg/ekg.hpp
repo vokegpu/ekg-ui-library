@@ -64,7 +64,7 @@ namespace ekg {
     /*
      * Init the runtime core of ekg, set window SDL instance and font renderer path (default but changeable).
      */
-    void init(SDL_Window*, std::string_view);
+    void init(ekg::runtime *p_ekg_runtime, SDL_Window *p_root, std::string_view font_path);
 
     /*
      * Quit from all services and main runtime core.
