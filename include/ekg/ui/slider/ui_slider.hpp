@@ -60,7 +60,7 @@ protected:
         void set_value_max(float);
         float get_value_max();
 
-        void set_precision(int32_t);
+        ekg::ui::slider *set_precision(int32_t);
         int32_t get_precision();
     };
 }

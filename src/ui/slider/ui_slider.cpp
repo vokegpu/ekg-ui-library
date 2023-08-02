@@ -144,11 +144,13 @@ float ekg::ui::slider::get_value_max() {
     return this->maximum_value;
 }
 
-void ekg::ui::slider::set_precision(int32_t precision) {
+ekg::ui::slider *ekg::ui::slider::set_precision(int32_t precision) {
     if (this->float_precision != precision) {
         this->float_precision = precision;
         ekg::reload(this->id);
     }
+
+    return this;
 }
 
 int32_t ekg::ui::slider::get_precision() {

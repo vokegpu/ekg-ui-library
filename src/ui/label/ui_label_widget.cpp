@@ -73,11 +73,9 @@ void ekg::ui::label_widget::on_post_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::label_widget::on_update() {
-    abstract_widget::on_update();
 }
 
 void ekg::ui::label_widget::on_draw_refresh() {
-    abstract_widget::on_draw_refresh();
     auto ui {(ekg::ui::label*) this->data};
     auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};

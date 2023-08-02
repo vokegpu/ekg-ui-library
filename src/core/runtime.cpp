@@ -233,10 +233,6 @@ void ekg::runtime::process_render() {
         auto &all {this->widget_list_map["all"]};
         this->gpu_allocator.invoke();
 
-        if (ekg::debug) {
-            this->f_renderer_big.blit("Widgets count: " + std::to_string(all.size()), 10, 10, {1.0f, 1.0f, 1.0f, 1.0f});
-        }
-
         for (ekg::ui::abstract_widget *&widgets : all) {
             if (widgets != nullptr && widgets->data->is_alive() && widgets->data->get_state() == ekg::state::visible) {
                 widgets->on_draw_refresh();
@@ -244,6 +240,8 @@ void ekg::runtime::process_render() {
         }
 
         this->gpu_allocator.revoke();
+    
+        if (ekg::debug) std::cout << "Widgets list size: " << all.size() << std::endl;
     }
 
     this->gpu_allocator.draw();
@@ -566,6 +564,8 @@ void ekg::runtime::prepare_ui_env() {
     this->service_input.bind("slider-activy", "finger-click");
     this->service_input.bind("slider-bar-increase", "mouse-wheel-up");
     this->service_input.bind("slider-bar-decrease", "mouse-wheel-down");
+    this->service_input.bind("slider-bar-modifier", "lctrl");
+    this->service_input.bind("slider-bar-modifier", "rctrl");
 
     this->service_input.bind("scrollbar-drag", "mouse-1");
     this->service_input.bind("scrollbar-drag", "finger-click");

@@ -110,11 +110,7 @@ void ekg::gpu::allocator::revoke() {
         glBindVertexArray(this->vbo_array);
         glBindBuffer(GL_ARRAY_BUFFER, this->geometry_buffer);
 
-        if (should_re_alloc_buffers) {
-            glBufferData(GL_ARRAY_BUFFER, sizeof(float) * cached_geometry_resources_size, &this->cached_geometry_resources[0], GL_STATIC_DRAW);  
-        } else {
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * cached_geometry_resources_size, &this->cached_geometry_resources[0]);
-        }
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * cached_geometry_resources_size, this->cached_geometry_resources.data(), GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*) 0);

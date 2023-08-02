@@ -89,7 +89,29 @@ int32_t main(int32_t, char**) {
 }
 ```
 
-![Image Text](https://github.com/vokegpu/ekg-ui-library/blob/version-core/splash/ekg-2-showcase-popup.png?raw=true)
+![Image Text](/splash/clean-white-theme-showcase-code-6.png?raw=true)
+
+```cpp
+auto frame = ekg::frame("lê rect", {20, 20}, {400, 400});
+
+frame->set_drag(ekg::dock::top);
+frame->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+
+ekg::button("pompom click!!", ekg::dock::fill);
+ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+
+ekg::label("RGB:", ekg::dock::next);
+
+auto r = ekg::slider("red", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
+auto g = ekg::slider("green", 0.69f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
+auto b = ekg::slider("blue", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
+
+ekg::scroll("scroll minecraft");
+ekg::popgroup();
+```
+
+![Image Text](/splash/ekg-2-showcase-popup.png?raw=true)
 
 ```cpp
 while (SDL_PollEvent(&sdlevent)) {

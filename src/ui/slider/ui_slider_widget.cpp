@@ -166,7 +166,7 @@ void ekg::ui::slider_widget::on_reload() {
 void ekg::ui::slider_widget::on_pre_event(SDL_Event &sdl_event) {
     abstract_widget::on_pre_event(sdl_event);
 
-    this->flag.state = (this->flag.hovered && (ekg::input::action("slider-bar-increase") || ekg::input::action("slider-bar-decrease")));
+    this->flag.state = (this->flag.hovered && ekg::input::action("slider-bar-modifier") && (ekg::input::action("slider-bar-increase") || ekg::input::action("slider-bar-decrease")));
     this->flag.absolute = this->flag.state;
 }
 

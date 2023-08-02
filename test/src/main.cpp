@@ -168,10 +168,82 @@ t ref(s _ref) {
     return static_cast<s>(_ref);
 }
 
+int32_t main_example() {
+    int32_t root_width {1280};
+    int32_t root_height {720};
+
+    SDL_Init(SDL_INIT_VIDEO);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+
+    SDL_Window* sdl_win {SDL_CreateWindow("Pompom Calculator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
+    SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
+
+    glewExperimental = GL_TRUE;
+
+    if (glewInit() != GLEW_OK) {
+        ekg::log(ekg::log::ERROR) << "Failed to initialise GLEW";
+    } else {
+        ekg::log() << "GLEW initialised";
+    }
+
+    ekg::init(sdl_win, "whitneybook.otf");
+    ekg::log() << "OpenGL context created";
+    ekg::debug = true;
+
+    SDL_GL_SetSwapInterval(1);
+    SDL_Event sdl_event {};
+
+    auto frame = ekg::frame("lê rect", {20, 20}, {400, 400});
+
+    frame->set_drag(ekg::dock::top);
+    frame->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+
+    ekg::button("pompom click!!", ekg::dock::fill);
+    ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+
+    ekg::label("RGB:", ekg::dock::next);
+
+    auto r = ekg::slider("red", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
+    auto g = ekg::slider("green", 0.69f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
+    auto b = ekg::slider("blue", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
+
+    ekg::scroll("scroll minecraft");
+    ekg::popgroup();
+
+    bool running {true};
+    while (running) {
+        while (SDL_PollEvent(&sdl_event)) {
+            if (sdl_event.type == SDL_QUIT) {
+                running = false;
+            }
+
+            ekg::event(sdl_event);
+        }
+
+        ekg::display::dt = 0.016f;
+        ekg::update();
+
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        glClearColor(r->get_value(), g->get_value(), b->get_value(), 1.0f);
+
+        ekg::render();
+
+        // Swap buffers.
+        SDL_GL_SwapWindow(sdl_win);
+        SDL_Delay(16);
+    }
+
+    return 0;
+}
+
 /*
  * Created by Rina.
  */
-int32_t main(int32_t, char**) {
+int32_t main_calculator() {
     std::string utf8pompom {"𒁑𒁕𒈢𒋟𒈙"};
     ekg::log() << utf8pompom << " utf8 size: " << ekg::utf8length(utf8pompom) << " string size: " << utf8pompom.size();
     ekg::log() << "EKG User interface library demo starting";
@@ -209,7 +281,7 @@ int32_t main(int32_t, char**) {
 
     ekg::autoscale = true;
     ekg::scalebase = {1920.0f, 1080.0f};
-    ekg::debug = false;
+    ekg::debug = true;
 
     ekg::timing mainloop_timing {};
     ekg::timing fps_timing {};
@@ -546,4 +618,8 @@ int32_t main(int32_t, char**) {
     ekg::quit();
 
     return 0;
+}
+
+int32_t main(int32_t, char**) {
+    return main_example();
 }
