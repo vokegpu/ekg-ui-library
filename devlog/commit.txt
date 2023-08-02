@@ -88,3 +88,9 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Fixed texture glitch behavior at end of allocator draw calls.
 -- Added clipboard functions (paste, copy & cut).
 -- Added erase line by modifier feature (lctrl + shift + delete/backspace).
+
+0.0.1.0.3.0 02/08/23
+
+-- Better handler performance.
+-- Added descriptors object state-based for tasks handler.
+-- Refactored utility part of code.

@@ -15,7 +15,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 set(CMAKE_CXX_STANDART 17)
-set(EKG_VERSION        0.0.1)
+set(EKG_VERSION        0.0.3)
 
 message("-- Building EKG user interface library version ${EKG_VERSION}")
 project(ekg VERSION ${EKG_VERSION} DESCRIPTION "graphical user interface")
