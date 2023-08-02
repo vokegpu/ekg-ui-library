@@ -89,7 +89,7 @@ int32_t main(int32_t, char**) {
 }
 ```
 
-![Image Text](/splash/clean-white-theme-showcase-code-6.png?raw=true)
+A simple example for creating textbox(s), buttons, and more widgets!
 
 ```cpp
 auto frame = ekg::frame("lê rect", {20, 20}, {400, 400});
@@ -111,7 +111,9 @@ ekg::scroll("scroll minecraft");
 ekg::popgroup();
 ```
 
-![Image Text](/splash/ekg-2-showcase-popup.png?raw=true)
+![Image Text](/splash/clean-white-theme-showcase-code-6.png?raw=true)
+
+Here how to create popup(s)!
 
 ```cpp
 while (SDL_PollEvent(&sdlevent)) {
@@ -132,7 +134,9 @@ while (SDL_PollEvent(&sdlevent)) {
 }
 ```
 
-There are more things, these steps are the official way to set up.
+![Image Text](/splash/ekg-2-showcase-popup.png?raw=true)
+
+---
 
 # Widgets
 
