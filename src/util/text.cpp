@@ -21,15 +21,15 @@ size_t ekg::utf8checksequence(uint8_t &ui8_char, char32_t &ui32_char, std::strin
         utf_string = ui8_char;
         return 0;
     } else if ((ui8_char & 0xE0) == 0xC0) {
-        utf_string = utf_string.substr(index, 2);
+        utf_string = string.substr(index, 2);
         ui32_char = ekg::char32str(utf_string);
         return 1;
     } else if ((ui8_char & 0xF0) == 0xE0) {
-        utf_string = utf_string.substr(index, 3);
+        utf_string = string.substr(index, 3);
         ui32_char = ekg::char32str(utf_string);
         return 2;
     } else if ((ui8_char & 0xF8) == 0xF0) {
-        utf_string = utf_string.substr(index, 4);
+        utf_string = string.substr(index, 4);
         ui32_char = ekg::char32str(utf_string);
         return 3;
     }

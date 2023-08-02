@@ -317,7 +317,6 @@ void ekg::runtime::prepare_tasks() {
             all.clear();
             all.insert(all.end(), ekg::swap::back.ordered_list.begin(), ekg::swap::back.ordered_list.end());
             all.insert(all.end(), ekg::swap::front.ordered_list.begin(), ekg::swap::front.ordered_list.end());
-
             ekg::swap::refresh();
         }
     };
@@ -328,6 +327,8 @@ void ekg::runtime::prepare_tasks() {
         .fun        = [](void *p_callback) {
             auto *runtime {static_cast<ekg::runtime*>(p_callback)};
             auto &reload = runtime->widget_list_map["reload"];
+
+            ekg::vec4 rect {};
 
             for (ekg::ui::abstract_widget *&widgets : reload) {
                 if (widgets == nullptr) {
@@ -345,7 +346,12 @@ void ekg::runtime::prepare_tasks() {
                             auto size {ui->get_size_initial()};
                             auto &rect_ui {ui->ui()};
 
-                            if (ui->widget() != ekg::vec4 {pos, size}) {
+                            rect.x = pos.x;
+                            rect.y = pos.y;
+                            rect.z = size.x;
+                            rect.w = size.y;
+
+                            if (ui->widget() != rect) {
                                 widgets->dimension.w = size.x;
                                 widgets->dimension.h = size.y;
 
