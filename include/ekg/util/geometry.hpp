@@ -12,16 +12,15 @@
  * @VokeGpu 2023 all rights reserved.
  */
 
-#ifndef EKG_UTIL_GEOMETRY_H
-#define EKG_UTIL_GEOMETRY_H
+#ifndef EKG_UTIL_MATH_H
+#define EKG_UTIL_MATH_H
 
 #include <iostream>
 #include <cstdint>
 #include <cfloat>
 #include <cmath>
 
-#define EQUALS_FLOAT(x, y) (\
-(fabsf((x) - (y))) <= FLT_EPSILON * fmaxf(1.0f, fmaxf(fabsf(x), fabsf(y))))
+#define EQUALS_FLOAT(x, y) ((fabsf((x) - (y))) <= FLT_EPSILON * fmaxf(1.0f, fmaxf(fabsf(x), fabsf(y))))
 
 namespace ekg {
     extern double pi;
@@ -240,6 +239,7 @@ namespace ekg {
     float min(float, float);
     float max(float, float);
     float smooth(float, uint64_t);
+    float lerp(float, float, float);
 
     ekg::vec4 &interact();
 }

@@ -30,6 +30,7 @@ void ekg::service::handler::dispatch_pre_allocated_task(uint64_t index) {
     if (!is_dispatched) {
         this->generate() = task;
         is_dispatched = true;
+        std::cout << task.p_tag << ' ' << is_dispatched << ' ' << index << std::endl;
     }
 }
 

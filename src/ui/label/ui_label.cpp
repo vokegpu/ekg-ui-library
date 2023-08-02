@@ -19,7 +19,6 @@
 void ekg::ui::label::set_place(uint16_t flags) {
     if (this->dock_flags != flags) {
         this->dock_flags = flags;
-
         ekg::synclayout(this->parent_id);
     }
 }
@@ -27,9 +26,7 @@ void ekg::ui::label::set_place(uint16_t flags) {
 void ekg::ui::label::set_text(std::string_view string) {
     if (this->text != string) {
         this->text = string;
-
         ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
     }
 }
 

@@ -15,9 +15,10 @@
 #include "ekg/util/geometry.hpp"
 #include "ekg/ekg.hpp"
 
-float ekg::display::dt {};
 int32_t ekg::display::width {};
 int32_t ekg::display::height {};
+
+float ekg::display::dt {};
 double ekg::pi {3.141592653589793238462643383279502884};
 
 bool ekg::rect_collide_rect(const ekg::rect &rect_a, const ekg::rect &rect_b) {
@@ -224,6 +225,10 @@ ekg::vec4 ekg::operator/(const ekg::vec4 &l, float r) {
 float ekg::smooth(float duration, uint64_t ticks) {
     duration = static_cast<float>(ticks) / duration;
     return ekg::clamp(6 * powf(duration, 5) - (15 * powf(duration, 4)) + (10 * powf(duration, 3)), 0.0f, 1.0f);
+}
+
+float ekg::lerp(float a, float b, float dt) {
+    return a + (b - a) * dt;
 }
 
 ekg::vec4 ekg::color(int32_t r, int32_t g, int32_t b, int32_t a) {

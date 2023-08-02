@@ -696,7 +696,6 @@ void ekg::runtime::end_group_flag() {
 
 void ekg::runtime::erase(int32_t id) {
     auto &all {this->widget_list_map["all"]};
-
     for (size_t it {}; it < all.size(); it++) {
         auto &widget {all[it]};
 

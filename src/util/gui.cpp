@@ -12,7 +12,7 @@
  * @VokeGpu 2022 all rights reserved.
  */
 
-#include "ekg/util/util_ui.hpp"
+#include "ekg/util/gui.hpp"
 #include "ekg/ekg.hpp"
 
 ekg::rect ekg::empty {};
@@ -84,4 +84,65 @@ void ekg::update_high_frequency(int32_t id) {
 
 void ekg::update_high_frequency(ekg::ui::abstract_widget *widget) {
     ekg::core->set_update_high_frequency(widget);
+}
+
+void ekg::dispatch(ekg::cpu::event* event) {
+    ekg::core->service_handler.generate() = *event;
+}
+
+void ekg::dispatch(const ekg::env &env) {
+    switch (env) {
+    case ekg::env::redraw:
+        ekg::core->redraw_gui();
+        break;
+    default:
+        ekg::core->service_handler.dispatch_pre_allocated_task((uint64_t) env);
+        break;
+    }
+}
+
+bool ekg::listen(ekg::cpu::uievent &ekg_event, SDL_Event &sdl_event) {
+    if (sdl_event.type == ekg::listener) {
+        ekg::cpu::uievent *p_ekg_event {static_cast<ekg::cpu::uievent*>(sdl_event.user.data1)};
+        ekg_event = *p_ekg_event;
+        delete p_ekg_event;
+        return true;
+    }
+
+    return false;
+}
+
+bool ekg::set(bool &var_mutable, bool predicate) {
+    if (var_mutable != predicate) {
+        ekg::dispatch(ekg::env::redraw);
+    }
+
+    return (var_mutable = predicate);
+}
+
+std::string &ekg::set(std::string &var_mutable, const std::string &predicate) {
+    if (var_mutable != predicate) {
+        ekg::dispatch(ekg::env::redraw);
+    }
+
+    return (var_mutable = predicate);
+}
+
+int32_t &ekg::set(int32_t &var_mutable, int32_t predicate) {
+    if (var_mutable != predicate) {
+        ekg::dispatch(ekg::env::redraw);
+    }
+
+    return (var_mutable = predicate);
+}
+
+bool ekg::assert_task_flag {};
+
+float ekg::assert_task(float val, float predicate) {
+    if (EQUALS_FLOAT(val, predicate)) {
+        return val;
+    }
+
+    ekg::assert_task_flag = true;
+    return predicate;
 }

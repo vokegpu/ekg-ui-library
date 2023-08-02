@@ -12,18 +12,20 @@
  * @VokeGpu 2023 all rights reserved.
  */
 
-#ifndef EKG_UTIL_EVENT_H
-#define EKG_UTIL_EVENT_H
-
-#include "ekg/util/env.hpp"
-#include "ekg/cpu/event.hpp"
-#include "ekg/os/ekg_sdl.hpp"
-#include <iostream>
+#ifndef EKG_UTIL_TEXT_H
+#define EKG_UTIL_TEXT_H
 
 namespace ekg {
-    void dispatch(ekg::cpu::event*);
-    void dispatch(const ekg::env&);
-    bool listen(ekg::cpu::uievent&, SDL_Event&);
+    std::string utf8char32(char32_t ui32_char);
+    std::string utf8substr(std::string_view string, size_t a, size_t b);
+
+    size_t utf8length(std::string_view string);
+    size_t utf8checksequence(uint8_t &ui8_char, char32_t &ui32_char, std::string &utf_string, std::string_view string, size_t index);
+
+    char32_t char32str(std::string_view string);
+    void utf8read(std::string_view string, std::vector<std::string> &utf_decoded);
+
+    std::string string_float_precision(float number, int32_t precision);
 }
 
 #endif
