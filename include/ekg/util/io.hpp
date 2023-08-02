@@ -24,6 +24,8 @@
 #include <android/log.h>
 #endif
 
+#include "geometry.hpp"
+
 namespace ekg {
     struct log {
         protected:
@@ -97,6 +99,16 @@ namespace ekg {
     bool reach(ekg::timing&, uint64_t);
     bool reset(ekg::timing&);
 
+    struct flag {
+        bool highlight {};
+        bool hovered {};
+        bool activy {};
+        bool focused {};
+        bool state {};
+        bool extra_state {};
+        bool absolute {};
+    };
+
     namespace bitwise {
         bool contains(uint16_t flags, uint16_t target);
         uint16_t &add(uint16_t &flags, uint16_t target);
@@ -113,6 +125,7 @@ namespace ekg {
         bool pressed();
         bool wheel();
         bool typed();
+        ekg::vec4 &interact();
     }
 }
 

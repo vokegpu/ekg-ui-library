@@ -12,24 +12,25 @@
  * @VokeGpu 2023 all rights reserved.
  */
 
-#include "text.hpp"
+#include "ekg/util/text.hpp"
+#include "ekg/util/geometry.hpp"
 
 size_t ekg::utf8checksequence(uint8_t &ui8_char, char32_t &ui32_char, std::string &utf_string, std::string_view string, size_t index) {
     if (ui8_char <= 0x7F) {
         ui32_char = static_cast<char32_t>(ui8_char);
-        utf8string = ui8_char;
+        utf_string = ui8_char;
         return 0;
     } else if ((ui8_char & 0xE0) == 0xC0) {
-        utf8string = utf_string.substr(index, 2);
-        ui32_char = ekg::char32str(utf8string);
+        utf_string = utf_string.substr(index, 2);
+        ui32_char = ekg::char32str(utf_string);
         return 1;
     } else if ((ui8_char & 0xF0) == 0xE0) {
-        utf8string = utf_string.substr(index, 3);
-        ui32_char = ekg::char32str(utf8string);
+        utf_string = utf_string.substr(index, 3);
+        ui32_char = ekg::char32str(utf_string);
         return 2;
     } else if ((ui8_char & 0xF8) == 0xF0) {
-        utf8string = utf_string.substr(index, 4);
-        ui32_char = ekg::char32str(utf8string);
+        utf_string = utf_string.substr(index, 4);
+        ui32_char = ekg::char32str(utf_string);
         return 3;
     }
 

@@ -14,7 +14,7 @@
 
 #include "ekg/gpu/gl.hpp"
 #include "ekg/os/info.hpp"
-#include "ekg/util/env.hpp"
+#include "ekg/util/io.hpp"
 #include <vector>
 
 void ekg::gpu::invoke(ekg::gpu::program &program) {

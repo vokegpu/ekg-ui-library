@@ -13,8 +13,7 @@
  */
 
 #include "ekg/ui/label/ui_label.hpp"
-#include "ekg/util/util_ui.hpp"
-#include "ekg/util/util_event.hpp"
+#include "ekg/util/gui.hpp"
 
 void ekg::ui::label::set_place(uint16_t flags) {
     if (this->dock_flags != flags) {

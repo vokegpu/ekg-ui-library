@@ -17,7 +17,7 @@
 
 #include "ekg/os/ekg_sdl.hpp"
 #include "ekg/util/geometry.hpp"
-#include "ekg/util/env.hpp"
+#include "ekg/util/io.hpp"
 
 namespace ekg::ui {
     class scroll_embedded_widget {

@@ -36,9 +36,9 @@ void ekg::ui::popup_widget::get_popup_path(std::string &path) {
 
 bool ekg::ui::popup_widget::is_hovering_any_popup(int32_t top_level) {
     auto ui {(ekg::ui::popup*) this->data};
-    bool is_hovering {ekg::rect_collide_vec(this->get_abs_rect(), ekg::interact())};
+    bool is_hovering {ekg::rect_collide_vec(this->get_abs_rect(), ekg::input::interact())};
 
-    ekg::component component {};
+    ekg::ui::popup::component component {};
     ekg::ui::popup_widget *popup {};
     int32_t component_it {this->popup_opened};
 
@@ -92,7 +92,7 @@ void ekg::ui::popup_widget::on_reload() {
     /* First phase: get text metrics and prevent multi-iterations. */
 
     this->element_list.clear();
-    for (ekg::component &components : ui->get_component_list()) {
+    for (ekg::ui::popup::component &components : ui->get_component_list()) {
         text_width = f_renderer.get_text_width(components.name);
 
         ekg::ui::popup_widget::element element {};
@@ -203,7 +203,7 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
     auto &rect {this->get_abs_rect()};
 
     ekg::ui::popup_widget *popup {};
-    ekg::component component {};
+    ekg::ui::popup::component component {};
 
     /* Auto-check is this popup is the top-level popup. */
     this->parent_id_popup_opened = !ui->has_parent() || this->parent_id_popup_opened;
@@ -215,7 +215,7 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
     }
 
     if (check_hovered) {
-        ekg::vec4 &interact {ekg::interact()};
+        ekg::vec4 &interact {ekg::input::interact()};
         ekg::rect &rect {this->get_abs_rect()};
         
         float ypos {};
@@ -358,7 +358,7 @@ void ekg::ui::popup_widget::on_draw_refresh() {
     ekg::draw::rect(rect, theme.popup_background);
     ekg::draw::rect(rect, theme.popup_outline, ekg::drawmode::outline);
 
-    ekg::component component {};
+    ekg::ui::popup::component component {};
     ekg::ui::popup_widget::element element {};
 
     for (int32_t it {}; it < this->element_list.size(); it++) {

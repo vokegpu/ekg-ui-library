@@ -16,7 +16,6 @@
 #define EKG_UI_CHECKBOX_H
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
-#include "ekg/util/env.hpp"
 #include "ekg/cpu/event.hpp"
 
 namespace ekg::ui {

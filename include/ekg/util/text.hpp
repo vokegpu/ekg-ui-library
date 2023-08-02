@@ -15,6 +15,10 @@
 #ifndef EKG_UTIL_TEXT_H
 #define EKG_UTIL_TEXT_H
 
+#include <iostream>
+#include <string>
+#include <vector>
+
 namespace ekg {
     std::string utf8char32(char32_t ui32_char);
     std::string utf8substr(std::string_view string, size_t a, size_t b);

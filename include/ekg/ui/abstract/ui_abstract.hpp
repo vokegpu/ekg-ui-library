@@ -16,14 +16,10 @@
 #define EKG_UI_ABSTRACT_H
 
 #include "ekg/util/geometry.hpp"
-#include "ekg/util/env.hpp"
+#include "ekg/util/aspect.hpp"
 #include <vector>
 
 namespace ekg {
-    enum class state {
-        visible, invisible
-    };
-
     enum class type {
         abstract, frame, button, label, slider, slider2d, checkbox, textbox, entrybox, combobox, tab, popup, scroll
     };
@@ -35,7 +31,8 @@ namespace ekg {
     namespace ui {
         class abstract {
         protected:
-            int32_t id {}, parent_id {};
+            int32_t id {};
+            int32_t parent_id {};
             std::vector<int32_t> child_id_list {};
 
             bool alive {true};

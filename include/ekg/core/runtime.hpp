@@ -22,7 +22,8 @@
 #include "ekg/service/theme.hpp"
 #include "ekg/service/input.hpp"
 #include "ekg/service/layout.hpp"
-#include "ekg/util/util_ui.hpp"
+#include "ekg/util/io.hpp"
+#include "ekg/util/gui.hpp"
 #include <unordered_map>
 
 namespace ekg {

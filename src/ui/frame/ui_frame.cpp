@@ -13,8 +13,7 @@
  */
 
 #include "ekg/ui/frame/ui_frame.hpp"
-#include "ekg/util/util_event.hpp"
-#include "ekg/util/util_ui.hpp"
+#include "ekg/util/gui.hpp"
 
 void ekg::ui::frame::set_place(uint16_t _dock) {
     if (this->dock_flags != _dock) {

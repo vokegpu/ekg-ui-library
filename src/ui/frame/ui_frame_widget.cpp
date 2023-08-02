@@ -16,7 +16,6 @@
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
-#include "ekg/util/util_ui.hpp"
 #include "ekg/os/system_cursor.hpp"
 
 void ekg::ui::frame_widget::on_destroy() {
@@ -36,7 +35,7 @@ void ekg::ui::frame_widget::on_pre_event(SDL_Event &sdl_event) {
 void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
     abstract_widget::on_event(sdl_event);
 
-    auto &interact {ekg::interact()};
+    auto &interact {ekg::input::interact()};
     auto ui {(ekg::ui::frame*) this->data};
     auto &rect {this->get_abs_rect()};
 

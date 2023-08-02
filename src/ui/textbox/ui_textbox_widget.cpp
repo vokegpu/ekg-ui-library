@@ -491,7 +491,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
     float y {rect.y + this->embedded_scroll.scroll.y};
 
     ekg::rect char_rect {};
-    ekg::vec4 interact {ekg::interact()};
+    ekg::vec4 interact {ekg::input::interact()};
 
     interact.x = ekg::clamp(interact.x, rect.x + this->rect_cursor.w, rect.x + rect.w - this->rect_cursor.w);
     interact.y = ekg::clamp(interact.y, rect.y + this->rect_cursor.w, rect.y + rect.h - this->rect_cursor.w);

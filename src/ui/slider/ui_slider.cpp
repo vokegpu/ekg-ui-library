@@ -13,7 +13,7 @@
  */
 
 #include "ekg/ui/slider/ui_slider_widget.hpp"
-#include "ekg/util/util_ui.hpp"
+#include "ekg/util/gui.hpp"
 #include "ekg/ui/slider/ui_slider.hpp"
 
 void ekg::ui::slider::set_dragging(bool state) {

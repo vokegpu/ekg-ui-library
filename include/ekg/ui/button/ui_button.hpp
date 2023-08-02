@@ -17,7 +17,6 @@
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/cpu/event.hpp"
-#include "ekg/util/env.hpp"
 
 namespace ekg::ui {
 	class button : public ekg::ui::abstract {

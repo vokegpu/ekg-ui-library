@@ -13,7 +13,7 @@
  */
 
 #include "ekg/service/theme.hpp"
-#include "ekg/util/env.hpp"
+#include "ekg/util/io.hpp"
 
 std::string ekg::service::theme::get_current_theme_name() {
     return this->current_theme;

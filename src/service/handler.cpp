@@ -13,7 +13,7 @@
  */
 
 #include "ekg/service/handler.hpp"
-#include "ekg/util/env.hpp"
+#include "ekg/util/io.hpp"
 
 ekg::cpu::event &ekg::service::handler::allocate() {
     return this->pre_allocated_task_list.emplace_back();

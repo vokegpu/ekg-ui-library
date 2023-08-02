@@ -331,7 +331,7 @@ ekg::ui::popup *ekg::popup(std::string_view tag, const std::vector<std::string> 
     ekg::core->gen_widget(ui);
 
     if (interact_position) {
-        auto &interact {ekg::interact()};
+        auto &interact {ekg::input::interact()};
         ui->set_pos(interact.x, interact.y);
     }
 

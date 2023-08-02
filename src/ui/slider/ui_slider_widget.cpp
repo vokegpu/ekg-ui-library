@@ -175,7 +175,7 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
 
     auto ui {(ekg::ui::slider*) this->data};
     auto &rect {this->get_abs_rect()};
-    auto &interact {ekg::interact()};
+    auto &interact {ekg::input::interact()};
     
     bool pressed {ekg::input::pressed()};
     bool released {ekg::input::released()};

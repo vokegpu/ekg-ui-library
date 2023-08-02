@@ -12,7 +12,6 @@
  * @VokeGpu 2023 all rights reserved.
  */
 
-#include "ekg/util/geometry.hpp"
 #include "ekg/ekg.hpp"
 
 int32_t ekg::display::width {};
@@ -60,10 +59,6 @@ bool ekg::rect_collide_vec_precisely(const ekg::rect &rect, const ekg::vec4 &vec
 
 bool ekg::rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec) {
     return vec.x > rect.x && vec.x < rect.x + rect.w && vec.y > rect.y && vec.y < rect.y + rect.h;
-}
-
-ekg::vec4 &ekg::interact() {
-    return ekg::core->service_input.interact;
 }
 
 void ekg::set_dock_scaled(const ekg::rect &rect, const ekg::vec2 &offset, ekg::docker &docker) {

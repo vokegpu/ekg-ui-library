@@ -13,7 +13,8 @@
  */
 
 #include "ekg/draw/font.hpp"
-#include "ekg/util/env.hpp"
+#include "ekg/util/text.hpp"
+#include "ekg/util/io.hpp"
 #include "ekg/os/info.hpp"
 
 FT_Library ekg::draw::font_renderer::ft_library {};

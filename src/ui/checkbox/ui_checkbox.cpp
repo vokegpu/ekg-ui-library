@@ -13,7 +13,7 @@
  */
 
 #include "ekg/ui/checkbox/ui_checkbox.hpp"
-#include "ekg/util/util_ui.hpp"
+#include "ekg/util/gui.hpp"
 
 void ekg::ui::checkbox::set_callback(ekg::cpu::event *event) {
     if (this->callback != event && this->callback != nullptr) {

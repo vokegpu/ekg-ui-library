@@ -15,35 +15,13 @@
 #ifndef EKG_UTIL_EVENT_H
 #define EKG_UTIL_EVENT_H
 
-#include "ekg/util/env.hpp"
+#include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include "ekg/cpu/event.hpp"
-#include "ekg/os/ekg_sdl.hpp"
-#include <iostream>
+#include <map>
 
 namespace ekg {
-    extern bool debug;
-    extern float scrollsmooth;
-
     enum class env {
         refresh, swap, reload, synclayout, gc, redraw
-    };
-
-    enum class cursor {
-        normal, arrow_axis_x, arrowleft, arrowp, arrowdown, arrow
-    };
-
-    enum class font {
-        small = 0, normal = 1, big = 2
-    };
-
-    struct flag {
-        bool highlight {};
-        bool hovered {};
-        bool activy {};
-        bool focused {};
-        bool state {};
-        bool extra_state {};
-        bool absolute {};
     };
 
     void dispatch(ekg::cpu::event *p_ekg_event);
@@ -67,16 +45,6 @@ namespace ekg {
         void clear();
     };
 
-    struct component {
-        std::string name {};
-        ekg::flag flag {};
-        ekg::rect rect {};
-        bool boolean {};
-        void *data1 {};
-        int32_t id {};
-        int32_t linked_id {};
-    };
-
     void reload(int32_t id);
     void reload(ekg::ui::abstract_widget *p_widget);
 
@@ -92,7 +60,9 @@ namespace ekg {
     void push_back_stack(ekg::ui::abstract_widget *p_widget, ekg::stack &stack);
     ekg::ui::abstract_widget *find_absolute_parent_master(ekg::ui::abstract_widget *p_widget);
 
-    int32_t &set(int32_t&, int32_t);
+    int32_t &set(int32_t &value, int32_t result);
+    bool &set(bool &value, bool result);
+    std::string &set(std::string &value, std::string_view result);
 
     /*
      * Instead of dispatching lot of useless events like layout processing,

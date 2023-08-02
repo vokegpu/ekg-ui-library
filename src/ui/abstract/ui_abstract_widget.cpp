@@ -13,7 +13,7 @@
  */
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
-#include "ekg/util/util_event.hpp"
+#include "ekg/util/gui.hpp"
 #include "ekg/draw/draw.hpp"
 #include "ekg/os/info.hpp"
 
@@ -36,7 +36,7 @@ void ekg::ui::abstract_widget::on_reload() {
 
 void ekg::ui::abstract_widget::on_pre_event(SDL_Event &sdl_event) {
     if (ekg::input::pressed() || ekg::input::released() || ekg::input::motion() || ekg::input::wheel()) {
-        auto &interact {ekg::interact()};
+        auto &interact {ekg::input::interact()};
         auto &rect {this->get_abs_rect()};
         this->flag.hovered = ekg::rect_collide_vec(rect, interact) && (this->data->get_type() == ekg::type::popup || this->data->get_parent_id() == 0 || ekg::draw::is_visible(this->data->get_id(), interact));
     }

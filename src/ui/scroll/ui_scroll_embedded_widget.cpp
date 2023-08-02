@@ -126,7 +126,7 @@ void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
         ekg::rect scaled_horizontal_bar {this->rect_horizontal_scroll_bar};
         scaled_horizontal_bar.x += this->rect_mother->x;
 
-        ekg::vec4 &interact {ekg::interact()};
+        ekg::vec4 &interact {ekg::input::interact()};
         bool visible {ekg::draw::is_visible(this->widget_id, interact)};
 
         this->flag.activy = visible && (this->is_vertical_enabled || this->is_horizontal_enabled) && ekg::input::action("scrollbar-scroll");
@@ -136,7 +136,7 @@ void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
 
 void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
     this->check_axis_states();
-    auto &interact {ekg::interact()};
+    auto &interact {ekg::input::interact()};
 
     if (this->flag.hovered && ekg::input::action("scrollbar-scroll") && this->is_vertical_enabled) {
 #if defined(ANDROID)

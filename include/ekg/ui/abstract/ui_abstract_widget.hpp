@@ -17,6 +17,7 @@
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/os/ekg_sdl.hpp"
+#include "ekg/util/io.hpp"
 
 namespace ekg::ui {
     class abstract_widget {

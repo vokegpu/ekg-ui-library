@@ -16,14 +16,14 @@
 #define EKG_UI_LABEL_H
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
-#include "ekg/util/env.hpp"
+#include "ekg/util/aspect.hpp"
 
 namespace ekg::ui {
     class label : public ekg::ui::abstract {
     protected:
         std::string text {};
         uint16_t dock_text {};
-        ekg:: font font_size {};
+        ekg::font font_size {};
     public:
         void set_font_size(ekg::font font);
         ekg::font get_font_size();

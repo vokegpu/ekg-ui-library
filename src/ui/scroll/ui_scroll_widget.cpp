@@ -13,8 +13,6 @@
  */
 
 #include "ekg/ui/scroll/ui_scroll_widget.hpp"
-#include "ekg/util/util_ui.hpp"
-#include "ekg/util/util_event.hpp"
 #include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
 

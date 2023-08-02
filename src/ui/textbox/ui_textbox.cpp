@@ -12,7 +12,7 @@
  * @VokeGpu 2023 all rights reserved.
  */
 #include "ekg/ui/textbox/ui_textbox.hpp"
-#include "ekg/util/util_ui.hpp"
+#include "ekg/util/gui.hpp"
 
 void ekg::ui::textbox::set_tab_size(uint8_t size) {
     this->tab_size = size < 1 ? 1 : size;

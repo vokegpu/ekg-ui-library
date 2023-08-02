@@ -12,8 +12,8 @@
  * @VokeGpu 2023 all rights reserved.
  */
 
-#ifndef EKG_UTIL_MATH_H
-#define EKG_UTIL_MATH_H
+#ifndef EKG_UTIL_GEOMETRY_H
+#define EKG_UTIL_GEOMETRY_H
 
 #include <iostream>
 #include <cstdint>
@@ -240,8 +240,6 @@ namespace ekg {
     float max(float, float);
     float smooth(float, uint64_t);
     float lerp(float, float, float);
-
-    ekg::vec4 &interact();
 }
 
 #endif

@@ -13,7 +13,6 @@
  */
 
 #include "ekg/ui/checkbox/ui_checkbox_widget.hpp"
-#include "ekg/util/env.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 
@@ -72,7 +71,7 @@ void ekg::ui::checkbox_widget::on_event(SDL_Event &sdl_event) {
 
     if (ekg::input::motion() || pressed || released) {
         ekg::set(this->flag.highlight, this->flag.hovered);
-        ekg::set(this->flag.focused, this->flag.hovered && ekg::rect_collide_vec(this->rect_box + (this->dimension + *this->parent), ekg::interact()));
+        ekg::set(this->flag.focused, this->flag.hovered && ekg::rect_collide_vec(this->rect_box + (this->dimension + *this->parent), ekg::input::interact()));
     }
 
     if (pressed && !this->flag.activy && this->flag.hovered && ekg::input::action("checkbox-activy")) {

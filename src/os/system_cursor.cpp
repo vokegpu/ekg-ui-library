@@ -1,5 +1,4 @@
 #include "ekg/os/system_cursor.hpp"
-#include "ekg/util/env.hpp"
 
 #include <cinttypes>
 #include <iostream>

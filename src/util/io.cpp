@@ -12,9 +12,10 @@
  * @VokeGpu 2023 all rights reserved.
  */
 
-#include "ekg/util/io.hpp"
 #include "ekg/ekg.hpp"
 #include <fstream>
+
+std::string ekg::log::cache {};
 
 bool ekg::bitwise::contains(uint16_t target, uint16_t flags) {
     return target & (flags);
@@ -42,7 +43,7 @@ bool ekg::reset(ekg::timing &timing) {
 }
 
 bool ekg::file_to_string(std::string &file_content, std::string_view path) {
-    std::ifs ifs {path.c_str()};
+    std::ifstream ifs {path.data()};
     if (ifs.is_open()) {
         std::string line_content {};
         while (std::getline(ifs, line_content)) {
@@ -53,7 +54,7 @@ bool ekg::file_to_string(std::string &file_content, std::string_view path) {
         ifs.close();
         return false;
     } else {
-        ekg::log() << "Failed to read file '" << pat << "\'!";
+        ekg::log() << "Failed to read file '" << path << "\'!";
     }
 
     return true;
@@ -93,4 +94,8 @@ bool ekg::input::receive(std::string_view tag) {
 
 bool ekg::input::typed() {
     return ekg::core->service_input.was_typed;
+}
+
+ekg::vec4 &ekg::input::interact() {
+    return ekg::core->service_input.interact;
 }

@@ -13,6 +13,7 @@
  */
 
 #include "ekg/ui/popup/ui_popup.hpp"
+#include "ekg/util/gui.hpp"
 
 int64_t ekg::ui::popup::contains(std::string_view component_name) {
     for (uint32_t it {}; it < this->component_list.size(); it++) {
@@ -43,7 +44,7 @@ void ekg::ui::popup::append(std::string_view component_name) {
         return;
     }
 
-    ekg::component component {};
+    ekg::ui::popup::component component {};
     component.name = factored_component_name;
     component.boolean = is_separator;
     this->component_list.push_back(component);
@@ -66,8 +67,8 @@ void ekg::ui::popup::append_linked(std::string_view component_name, ekg::ui::pop
 }
 
 void ekg::ui::popup::remove(std::string_view component_name) {
-    std::vector<ekg::component> new_list {};
-    for (ekg::component &component : this->component_list) {
+    std::vector<ekg::ui::popup::component> new_list {};
+    for (ekg::ui::popup::component &component : this->component_list) {
         if (component.name == component_name) {
             this->remove_child(component.linked_id);
             continue;
@@ -80,7 +81,7 @@ void ekg::ui::popup::remove(std::string_view component_name) {
     this->component_list.insert(this->component_list.end(), new_list.begin(), new_list.end());
 }
 
-std::vector<ekg::component> &ekg::ui::popup::get_component_list() {
+std::vector<ekg::ui::popup::component> &ekg::ui::popup::get_component_list() {
     return this->component_list;
 }
 

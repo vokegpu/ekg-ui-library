@@ -12,12 +12,17 @@
  * @VokeGpu 2022 all rights reserved.
  */
 
-#include "ekg/util/gui.hpp"
 #include "ekg/ekg.hpp"
 
 ekg::rect ekg::empty {};
+
+int32_t ekg::hovered::id {};
+ekg::type ekg::hovered::type {};
+
 int32_t ekg::hovered::up {};
 int32_t ekg::hovered::down {};
+
+
 ekg::type ekg::hovered::downtype {};
 ekg::type ekg::hovered::uptype {};
 
@@ -90,7 +95,7 @@ void ekg::dispatch(ekg::cpu::event* event) {
     ekg::core->service_handler.generate() = *event;
 }
 
-void ekg::dispatch(const ekg::env &env) {
+void ekg::dispatch(ekg::env env) {
     switch (env) {
     case ekg::env::redraw:
         ekg::core->redraw_gui();
@@ -112,37 +117,37 @@ bool ekg::listen(ekg::cpu::uievent &ekg_event, SDL_Event &sdl_event) {
     return false;
 }
 
-bool ekg::set(bool &var_mutable, bool predicate) {
-    if (var_mutable != predicate) {
+bool &ekg::set(bool &value, bool result) {
+    if (value != result) {
         ekg::dispatch(ekg::env::redraw);
     }
 
-    return (var_mutable = predicate);
+    return (value = result);
 }
 
-std::string &ekg::set(std::string &var_mutable, const std::string &predicate) {
-    if (var_mutable != predicate) {
+std::string &ekg::set(std::string &value, std::string_view result) {
+    if (value != result) {
         ekg::dispatch(ekg::env::redraw);
     }
 
-    return (var_mutable = predicate);
+    return (value = result);
 }
 
-int32_t &ekg::set(int32_t &var_mutable, int32_t predicate) {
-    if (var_mutable != predicate) {
+int32_t &ekg::set(int32_t &value, int32_t result) {
+    if (value != result) {
         ekg::dispatch(ekg::env::redraw);
     }
 
-    return (var_mutable = predicate);
+    return (value = result);
 }
 
 bool ekg::assert_task_flag {};
 
-float ekg::assert_task(float val, float predicate) {
-    if (EQUALS_FLOAT(val, predicate)) {
+float ekg::assert_task(float val, float result) {
+    if (EQUALS_FLOAT(val, result)) {
         return val;
     }
 
     ekg::assert_task_flag = true;
-    return predicate;
+    return result;
 }
