@@ -33,19 +33,19 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text, int32_t &l
     float largest_text_width {};
 
     size_t text_size {text.size()};
-    char32_t ui32char {};
-    uint8_t ui8char {};
-    std::string utf8string {};
+    char32_t ui32_char {};
+    uint8_t ui8_char {};
+    std::string utf_string {};
 
     bool break_text {};
     bool r_n_break_text {};
 
     for (size_t it {}; it < text_size; it++) {
-        ui8char = static_cast<uint8_t>(text.at(it));
-        it += ekg::utf8checksequence(ui8char, ui32char, utf8string, text, it);
+        ui8_char = static_cast<uint8_t>(text.at(it));
+        it += ekg::utf_check_sequence(ui8_char, ui32_char, utf_string, text, it);
 
-        break_text = ui8char == '\n';
-        if (break_text || (r_n_break_text = (ui8char == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
+        break_text = ui8_char == '\n';
+        if (break_text || (r_n_break_text = (ui8_char == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
             it += static_cast<uint64_t>(r_n_break_text);
             largest_text_width = ekg::min(largest_text_width, text_width);
             text_width = 0.0f;
@@ -54,12 +54,12 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text, int32_t &l
         }
 
         if (this->ft_bool_kerning && this->ft_uint_previous) {
-            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32char, 0, &ft_vec);
+            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32_char, 0, &ft_vec);
             text_width += static_cast<float>(ft_vec.x >> 6);
         }
 
-        this->ft_uint_previous = ui32char;
-        text_width += this->allocated_char_data[ui32char].wsize;
+        this->ft_uint_previous = ui32_char;
+        text_width += this->allocated_char_data[ui32_char].wsize;
     }
 
     largest_text_width = ekg::min(largest_text_width, text_width);
@@ -76,21 +76,21 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
 
     float text_width {};
     float largest_text_width {};
-    char32_t ui32char {};
+    char32_t ui32_char {};
 
     size_t text_size {text.size()};
-    uint8_t ui8char {};
-    std::string utf8string {};
+    uint8_t ui8_char {};
+    std::string utf_string {};
 
     bool break_text {};
     bool r_n_break_text {};
 
     for (size_t it {}; it < text_size; it++) {
-        ui8char = static_cast<uint8_t>(text.at(it));
-        it += ekg::utf8checksequence(ui8char, ui32char, utf8string, text, it);
+        ui8_char = static_cast<uint8_t>(text.at(it));
+        it += ekg::utf_check_sequence(ui8_char, ui32_char, utf_string, text, it);
 
-        break_text = ui8char == '\n';
-        if (break_text || (r_n_break_text = (ui8char == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
+        break_text = ui8_char == '\n';
+        if (break_text || (r_n_break_text = (ui8_char == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
             it += static_cast<uint64_t>(r_n_break_text);
             largest_text_width = ekg::min(largest_text_width, text_width);
             text_width = 0.0f;
@@ -98,12 +98,12 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
         }
 
         if (this->ft_bool_kerning && this->ft_uint_previous) {
-            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32char, 0, &ft_vec);
+            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32_char, 0, &ft_vec);
             text_width += static_cast<float>(ft_vec.x >> 6);
         }
 
-        this->ft_uint_previous = ui32char;
-        text_width += this->allocated_char_data[ui32char].wsize;
+        this->ft_uint_previous = ui32_char;
+        text_width += this->allocated_char_data[ui32_char].wsize;
     }
 
     largest_text_width = ekg::min(largest_text_width, text_width);
@@ -260,33 +260,33 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     y = 0.0f;
 
     data.factor = 1;
-    char32_t ui32char {};
-    uint8_t ui8char {};
-    std::string utf8string {};
+    char32_t ui32_char {};
+    uint8_t ui8_char {};
+    std::string utf_string {};
     size_t text_size {text.size()};
 
     bool break_text {};
     bool r_n_break_text {};
 
     for (size_t it {}; it < text_size; it++) {
-        ui8char = static_cast<uint8_t>(text.at(it));
-        it += ekg::utf8checksequence(ui8char, ui32char, utf8string, text, it);
+        ui8_char = static_cast<uint8_t>(text.at(it));
+        it += ekg::utf_check_sequence(ui8_char, ui32_char, utf_string, text, it);
 
-        break_text = ui8char == '\n';
-        if (break_text || (r_n_break_text = (ui8char == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
+        break_text = ui8_char == '\n';
+        if (break_text || (r_n_break_text = (ui8_char == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
             it += static_cast<uint64_t>(r_n_break_text);
-            data.factor += static_cast<int32_t>(y + ui32char);
+            data.factor += static_cast<int32_t>(y + ui32_char);
             y += this->text_height;
             x = 0.0f;
             continue;
         }
 
         if (this->ft_bool_kerning && this->ft_uint_previous) {
-            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32char, 0, &this->ft_vector_previous_char);
+            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, ui32_char, 0, &this->ft_vector_previous_char);
             x += static_cast<float>(this->ft_vector_previous_char.x >> 6);
         }
 
-        char_data = this->allocated_char_data[ui32char];
+        char_data = this->allocated_char_data[ui32_char];
         vertices.x = x + char_data.left;
         vertices.y = y + this->full_height - char_data.top;
 
@@ -305,8 +305,8 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
         this->allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
 
         x += char_data.wsize;
-        this->ft_uint_previous = ui32char;
-        data.factor += static_cast<int32_t>(x + ui32char);
+        this->ft_uint_previous = ui32_char;
+        data.factor += static_cast<int32_t>(x + ui32_char);
     }
 
     this->allocator->bind_texture(this->texture);

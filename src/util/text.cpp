@@ -15,29 +15,29 @@
 #include "ekg/util/text.hpp"
 #include "ekg/util/geometry.hpp"
 
-size_t ekg::utf8checksequence(uint8_t &ui8_char, char32_t &ui32_char, std::string &utf_string, std::string_view string, size_t index) {
+size_t ekg::utf_check_sequence(uint8_t &ui8_char, char32_t &ui32_char, std::string &utf_string, std::string_view string, size_t index) {
     if (ui8_char <= 0x7F) {
         ui32_char = static_cast<char32_t>(ui8_char);
         utf_string = ui8_char;
         return 0;
     } else if ((ui8_char & 0xE0) == 0xC0) {
         utf_string = string.substr(index, 2);
-        ui32_char = ekg::char32str(utf_string);
+        ui32_char = ekg::utf_string_to_ui32(utf_string);
         return 1;
     } else if ((ui8_char & 0xF0) == 0xE0) {
         utf_string = string.substr(index, 3);
-        ui32_char = ekg::char32str(utf_string);
+        ui32_char = ekg::utf_string_to_ui32(utf_string);
         return 2;
     } else if ((ui8_char & 0xF8) == 0xF0) {
         utf_string = string.substr(index, 4);
-        ui32_char = ekg::char32str(utf_string);
+        ui32_char = ekg::utf_string_to_ui32(utf_string);
         return 3;
     }
 
     return 0;
 }
 
-std::string ekg::utf8char32(char32_t ui32_char) {
+std::string ekg::utf_ui32_to_string(char32_t ui32_char) {
     std::string result {};
 
     if (ui32_char < 0x80) {
@@ -59,7 +59,7 @@ std::string ekg::utf8char32(char32_t ui32_char) {
     return result;
 }
 
-char32_t ekg::char32str(std::string_view string) {
+char32_t ekg::utf_string_to_ui32(std::string_view string) {
     char32_t value {};
     size_t bytesread {};
     uint8_t ui8_char {static_cast<uint8_t>(string.at(0))};
@@ -86,7 +86,7 @@ char32_t ekg::char32str(std::string_view string) {
     return value > 512 ? 32 : value;
 }
 
-size_t ekg::utf8length(std::string_view utf_string) {
+size_t ekg::utf_length(std::string_view utf_string) {
     if (utf_string.empty()) {
         return 0;
     }
@@ -116,12 +116,12 @@ size_t ekg::utf8length(std::string_view utf_string) {
     return stringsize;
 }
 
-std::string ekg::utf8substr(std::string_view string, size_t a, size_t b) {
+std::string ekg::utf_substr(std::string_view string, size_t a, size_t b) {
     if (string.empty()) {
         return "";
     }
 
-    size_t stringsize {ekg::utf8length(string)};
+    size_t stringsize {ekg::utf_length(string)};
     std::string substred {};
 
     if (stringsize == string.size()) {
@@ -186,7 +186,7 @@ std::string ekg::utf8substr(std::string_view string, size_t a, size_t b) {
  * This function have a potentially memory leak issue,
  * and is very dangerous.
  */
-void ekg::utf8read(std::string_view string, std::vector<std::string> &utf8_read) {
+void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_read) {
     if (string.empty()) {
         return;
     }

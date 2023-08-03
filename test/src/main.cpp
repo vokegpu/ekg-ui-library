@@ -261,39 +261,6 @@ int32_t main_example() {
     auto g = ekg::slider("green", 0.69f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
     auto b = ekg::slider("blue", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
 
-    ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-        ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-
     ekg::scroll("scroll minecraft");
     ekg::popgroup();
 
@@ -349,12 +316,14 @@ int32_t main_example() {
  */
 int32_t main_calculator() {
     std::string utf8pompom {"𒁑𒁕𒈢𒋟𒈙"};
-    ekg::log() << utf8pompom << " utf8 size: " << ekg::utf8length(utf8pompom) << " string size: " << utf8pompom.size();
+    std::string le {"宇"};
+
+    ekg::log() << le << " utf8 size: " << ekg::utf_length(le) << " string size: " << le.size();
     ekg::log() << "EKG User interface library demo starting";
 
     std::string something_ascii {"qrsergostosaterumbumbumlindo"};
     std::string something_utf8 {"qrsergostósaterumbumbumlindo"};
-    ekg::log() << '\n' << "(EKG utf8) " << ekg::utf8substr(something_utf8, 2, 40) << "\n substr vs \n(STL ascii) " << something_ascii.substr(2, 40);
+    ekg::log() << '\n' << "(EKG utf8) " << ekg::utf_substr(something_utf8, 2, 40) << "\n substr vs \n(STL ascii) " << something_ascii.substr(2, 40);
 
     int32_t root_width {1280};
     int32_t root_height {720};
