@@ -498,6 +498,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
 
     int64_t chunk_it {};
     int64_t bounding_it {-1};
+    int64_t chunk_size {static_cast<int64_t>(this->text_chunk_list.size())};
 
     uint64_t total_it {};
     uint64_t text_it {};
@@ -508,11 +509,13 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
 
     size_t utf_char_index {};
     std::string utf_string {};
+    bool is_chunk_it_at_end {};
 
     for (std::string &text : this->text_chunk_list) {
         x = rect.x + this->rect_cursor.w + this->embedded_scroll.scroll.x;
         utf_char_index = 0;
         f_renderer.ft_uint_previous = 0;
+        is_chunk_it_at_end = chunk_it == chunk_size - 1;
 
         for (it = 0; it < text.size(); it++) {
             ui8_char = static_cast<uint8_t>(text.at(it));
@@ -530,7 +533,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
             char_rect.x = x;
             char_rect.y = y;
             char_rect.w = (f_renderer.allocated_char_data[ui32_char].wsize) / 2;
-            char_rect.h = rect.h;
+            char_rect.h = is_chunk_it_at_end ? rect.h : this->text_height + 1.0f;
 
             if (ekg::rect_collide_vec_precisely(char_rect, interact)) {
                 bounding_it = total_it;

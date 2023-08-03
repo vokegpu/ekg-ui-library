@@ -95,3 +95,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Added descriptors object state-based for tasks handler.
 -- Refactored utility part of code.
 -- Fixed textbox bizzare behavior with cursors (all textbox(s) were working simultaneous).
+-- Now you can select the text at end of chunk text without hovering the text rect necessary.
