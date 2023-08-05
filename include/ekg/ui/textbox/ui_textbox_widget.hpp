@@ -82,7 +82,7 @@ namespace ekg::ui {
 
         void check_cursor_text_bounding(ekg::ui::textbox_widget::cursor &cursor, bool reset_second_cursor_pos);
         void process_text(ekg::ui::textbox_widget::cursor &cursor, std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction);
-        void move_cursor(ekg::ui::textbox_widget::cursor_pos &cursor, int64_t x, int64_t y, bool is_selecting);
+        void move_cursor(ekg::ui::textbox_widget::cursor_pos &cursor, int64_t x, int64_t y);
         void check_largest_text_width(bool update_ui_data_text_together);
         void check_nearest_word(ekg::ui::textbox_widget::cursor &cursor, int64_t &x, int64_t &y);
         void move_target_cursor(ekg::ui::textbox_widget::cursor &cursor, int64_t x, int64_t y);

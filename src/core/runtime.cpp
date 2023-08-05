@@ -240,8 +240,6 @@ void ekg::runtime::process_render() {
         }
 
         this->gpu_allocator.revoke();
-    
-        if (ekg::debug) std::cout << "Widgets list size: " << all.size() << std::endl;
     }
 
     this->gpu_allocator.draw();
@@ -500,16 +498,14 @@ void ekg::runtime::prepare_ui_env() {
     this->widget_list_map["update"] = {};
 
     this->f_renderer_small.font_size = 16;
-    this->f_renderer_small.reload();
     this->f_renderer_small.bind_allocator(&this->gpu_allocator);
 
-    this->f_renderer_normal.font_size = 18;
-    this->f_renderer_normal.reload();
+    this->f_renderer_normal.font_size = 0;
     this->f_renderer_normal.bind_allocator(&this->gpu_allocator);
 
     this->f_renderer_big.font_size = 24;
-    this->f_renderer_big.reload();
     this->f_renderer_big.bind_allocator(&this->gpu_allocator);
+    this->update_size_changed();
 
     ekg::log() << "Registering user interface input bindings";
 

@@ -237,6 +237,9 @@ int32_t main_example() {
         ekg::log() << "GLEW initialised";
     }
 
+    ekg::autoscale = false;
+    ekg::scalebase = {800, 600};
+
     ekg::runtime ekg_runtime {};
     ekg::init(&ekg_runtime, sdl_win, "whitneybook.otf");
 

@@ -61,6 +61,8 @@ void ekg::init(ekg::runtime *p_ekg_runtime, SDL_Window *p_root, std::string_view
     ekg::init_cursor();
     ekg::log() << "Initialising OS cursor";
 
+    SDL_GetWindowSize(p_root, &ekg::display::width, &ekg::display::height);
+
     const std::string vsh_src {
 ekg::gl_version + "\n"
 "layout (location = 0) in vec2 aPos;\n"
@@ -149,7 +151,6 @@ ekg::gl_version + "\n"
 
     /* First update of orthographic matrix and uniforms. */
 
-    SDL_GetWindowSize(p_root, &ekg::display::width, &ekg::display::height);
     ekg::gpu::invoke(ekg::gpu::allocator::program);
     ekg::orthographic2d(ekg::gpu::allocator::mat4x4orthographic, 0, static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height), 0);
     ekg::gpu::allocator::program.setm4("uOrthographicMatrix", ekg::gpu::allocator::mat4x4orthographic);
