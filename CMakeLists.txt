@@ -14,7 +14,7 @@
 
 cmake_minimum_required(VERSION 3.9)
 
-set(CMAKE_CXX_STANDART 17)
+set(CMAKE_CXX_STANDARD 17)
 set(EKG_VERSION        0.0.3)
 
 message("-- Building EKG user interface library version ${EKG_VERSION}")
@@ -66,6 +66,7 @@ if (EKG_ENABLE_TEST)
 
     target_link_libraries(ekg-tests ${LIBRARY_PATH}
                                     ${THIRD_PARTY_LIBRARIES}
+                                    -static-libgcc -static-libstdc++ pthread winpthread
     )
 
     message("-- EKG tests building done")
