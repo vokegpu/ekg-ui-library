@@ -66,7 +66,7 @@ if (EKG_ENABLE_TEST)
 
     target_link_libraries(ekg-tests ${LIBRARY_PATH}
                                     ${THIRD_PARTY_LIBRARIES}
-                                    -static-libgcc -static-libstdc++ pthread winpthread
+                                    -static-libgcc -static-libstdc++
     )
 
     message("-- EKG tests building done")
