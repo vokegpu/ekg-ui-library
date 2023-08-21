@@ -28,63 +28,63 @@
 
 namespace ekg {
     struct log {
-        protected:
-            std::ostringstream buffer {};
-        public:
-            static constexpr int32_t WARNING {0};
-            static constexpr int32_t INFO {1};
-            static constexpr int32_t ERROR {2};
-            static std::string cache;
-    
-            static bool buffering() {
-                return !ekg::log::cache.empty();
-            }
-            
-            static void flush() {
-                ekg::log::cache.clear();
-            }
-    
-            explicit log(int32_t priority = ekg::log::INFO) {
-                switch (priority) {
-                    case ekg::log::WARNING: {
-                        this->buffer << "- [EKG-WARNING] ";
-                        break;
-                    }
-    
-                    case ekg::log::INFO: {
-                        this->buffer << "[EKG-INFO] ";
-                        break;
-                    }
-    
-                    case ekg::log::ERROR: {
-                        this->buffer << "[EKG-ERROR] ";
-                        break;
-                    }
-    
-                    default: {
-                        break;
-                    }
+    protected:
+        std::ostringstream buffer {};
+    public:
+        static constexpr int32_t WARNING {0};
+        static constexpr int32_t INFO {1};
+        static constexpr int32_t ERROR {2};
+        static std::string cache;
+
+        static bool buffering() {
+            return !ekg::log::cache.empty();
+        }
+        
+        static void flush() {
+            ekg::log::cache.clear();
+        }
+
+        explicit log(int32_t priority = ekg::log::INFO) {
+            switch (priority) {
+                case ekg::log::WARNING: {
+                    this->buffer << "- [EKG-WARNING] ";
+                    break;
                 }
-    
-                if (ekg::log::cache.size() >= 50000) ekg::log::cache.clear();
+
+                case ekg::log::INFO: {
+                    this->buffer << "[EKG-INFO] ";
+                    break;
+                }
+
+                case ekg::log::ERROR: {
+                    this->buffer << "[EKG-ERROR] ";
+                    break;
+                }
+
+                default: {
+                    break;
+                }
             }
-    
-            ~log() {
-                this->buffer << '\n';
-                std::string logmsg {this->buffer.str()};
-    
-    #if defined(__ANDROID__)
-                __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", logmsg.c_str());
-    #else
-                std::cout << logmsg;
-    #endif
-                ekg::log::cache += logmsg;
-            }
-    
-            template<typename t>
-            log &operator<<(const t &value) {
-                this->buffer << value;
-                return *this;
+
+            if (ekg::log::cache.size() >= 50000) ekg::log::cache.clear();
+        }
+
+        ~log() {
+            this->buffer << '\n';
+            std::string logmsg {this->buffer.str()};
+
+#if defined(__ANDROID__)
+            __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", logmsg.c_str());
+#else
+            std::cout << logmsg;
+#endif
+            ekg::log::cache += logmsg;
+        }
+
+        template<typename t>
+        log &operator<<(const t &value) {
+            this->buffer << value;
+            return *this;
         }
     };
 
