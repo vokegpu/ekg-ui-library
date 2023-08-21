@@ -73,11 +73,12 @@ namespace ekg {
             this->buffer << '\n';
             std::string logmsg {this->buffer.str()};
 
-#if defined(__ANDROID__)
+            #if defined(__ANDROID__)
             __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", logmsg.c_str());
-#else
+            #else
             std::cout << logmsg;
-#endif
+            #endif
+
             ekg::log::cache += logmsg;
         }
 
@@ -91,6 +92,7 @@ namespace ekg {
     bool file_to_string(std::string &file_content, std::string_view path);
 
     struct timing {
+    public:
         uint64_t elapsed_ticks {};
         uint64_t current_ticks {};
         uint64_t ticks_going_on {};
@@ -107,6 +109,12 @@ namespace ekg {
         bool state {};
         bool extra_state {};
         bool absolute {};
+    };
+
+    struct value {
+    protected:
+        void *p_value {};
+    public:
     };
 
     namespace bitwise {
