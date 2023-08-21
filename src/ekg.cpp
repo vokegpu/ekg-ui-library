@@ -364,6 +364,6 @@ ekg::ui::scroll *ekg::scroll(std::string_view tag) {
     return ui;
 }
 
-void ekg::popgroup() {
+void ekg::pop_group() {
     ekg::core->end_group_flag();
 }

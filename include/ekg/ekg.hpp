@@ -146,7 +146,7 @@ namespace ekg {
     /*
      * Stop collecting UIs to group.
      */
-    void popgroup();
+    void pop_group();
 }
 
 #endif

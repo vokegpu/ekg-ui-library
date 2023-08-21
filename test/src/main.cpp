@@ -265,7 +265,7 @@ int32_t main_example() {
     auto b = ekg::slider("blue", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
 
     ekg::scroll("scroll minecraft");
-    ekg::popgroup();
+    ekg::pop_group();
 
     bool running {true};
     while (running) {
@@ -536,12 +536,12 @@ int32_t main_calculator() {
         bassign->set_text_align(ekg::dock::center);
         bassign->set_tag("calculator-assign");
         ekg::scroll("pompom-calc");
-        ekg::popgroup();
+        ekg::pop_group();
 
         framedebug->add_child(ekg::frame("helko", {300, 300}, ekg::dock::next)->get_id());
         ekg::button("hello", ekg::dock::fill);
         ekg::button("hello vc é lindo", ekg::dock::next);
-        ekg::popgroup();
+        ekg::pop_group();
     }
 
     framedebug->add_child(ekg::scroll("mewoscroll")->get_id());
