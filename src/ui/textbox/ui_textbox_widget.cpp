@@ -22,7 +22,7 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
         return;
     }
 
-    ekg::ui::textbox_widget::cursor_pos &target_cursor_pos {cursor.target == cursor.pos[0].index ? cursor.pos[0] : cursor.pos[1]};
+    ekg::ui::textbox_widget::cursor_pos &target_cursor_pos {cursor.pos[3] == cursor.pos[0] ? cursor.pos[0] : cursor.pos[1]};
     std::string &emplace_text {this->get_cursor_emplace_text(target_cursor_pos)};
     uint64_t emplace_text_size {emplace_text.size()};
 
@@ -97,8 +97,19 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
     ekg::reset(ekg::core->ui_timing);
     ekg::dispatch(ekg::env::redraw);
 
+    /*
+     * An important note, this is actually very necessary for fix a issue,
+     * when selecting at the end of line string for the next line.
+     *
+     * Suggestion? Who knows how to fix that.
+     */
+    bool first_move_when_selecting_for_right {
+        x > 0 && cursor.pos[0] == cursor.pos[1] && this->is_action_select_enable 
+    };
+
     ekg::ui::textbox_widget::cursor_pos target_cursor_pos {};
-    if ((cursor.pos[0].index == cursor.target && this->is_action_select_enable) ||
+
+    if ((cursor.pos[0] == cursor.pos[3] && this->is_action_select_enable) ||
        ((x < 0 || y < 0) && cursor.pos[0] != cursor.pos[1] && !this->is_action_select_enable)) {
         target_cursor_pos = cursor.pos[0];
     } else {
@@ -113,17 +124,19 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
         cursor.pos[0] = target_cursor_pos;
         cursor.pos[1] = target_cursor_pos;
         cursor.pos[2] = target_cursor_pos;
-        cursor.target = target_cursor_pos.index;
+        cursor.pos[3] = target_cursor_pos;
         return;
     }
 
-    cursor.target = target_cursor_pos.index;
-    if (cursor.target > cursor.pos[2].index) {
+    cursor.pos[3] = target_cursor_pos;
+    if (first_move_when_selecting_for_right || cursor.pos[3] > cursor.pos[2]) {
         cursor.pos[0] = cursor.pos[2];
         cursor.pos[1] = target_cursor_pos;
+        ekg::log() << (first_move_when_selecting_for_right ? "O PROXIMO TEM QUE SER ESSE" : "FINALMENTE");
     } else {
         cursor.pos[0] = target_cursor_pos;
         cursor.pos[1] = cursor.pos[2];
+        ekg::log() << "AI CACHORRO CACHOROO";
     }
 }
 
@@ -337,9 +350,19 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                         uint64_t it {static_cast<uint64_t>(cursor.pos[0].chunk_index + 1)};
                         uint64_t size {this->text_chunk_list.size()};
 
+                        bool not_last_line {};
+                        bool last_line {};
+
                         while (it < cursor.pos[1].chunk_index && it < size) {
                             copy_text += this->text_chunk_list.at(it);
-                            if (!(it + 1 == size)) copy_text += '\n';
+                            
+                            last_line = it + 1 == size;
+                            not_last_line = !last_line;
+
+                            if (not_last_line || (this->text_chunk_list.at(it).empty() && last_line)) {
+                                copy_text += '\n';
+                            }
+
                             it++;
                         }
 
@@ -359,6 +382,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                          ekg::utf_substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf_length(emplace_text_b));
 
         if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
+            ekg::log() << cursor.pos[0].text_index << ' ' << cursor.pos[0].chunk_index << " x " << cursor.pos[1].text_index << ' ' << cursor.pos[1].chunk_index;
             this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1,
                                         this->text_chunk_list.begin() + cursor.pos[1].chunk_index + 1);
         }
@@ -373,7 +397,6 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             if (utf_clipboard_decoded.size() == 1) {
                 emplace_text_a = ekg::utf_substr(emplace_text_a, 0, cursor.pos[0].text_index) + utf_clipboard_decoded.at(0) +
                                  ekg::utf_substr(emplace_text_a, cursor.pos[0].text_index, ekg::utf_length(emplace_text_a));
-
             } else if (utf_clipboard_decoded.size() > 1) {
                 int64_t last_clipboard_list_index {static_cast<int64_t>(utf_clipboard_decoded.size() - 1)};
                 std::string &last_clipboard_line {utf_clipboard_decoded.at(last_clipboard_list_index)};
@@ -470,7 +493,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
     if (!this->is_clipboard_copy) {
         cursor.pos[2] = cursor.pos[1] = cursor.pos[0];
-        cursor.target = cursor.pos[0].index;
+        cursor.pos[3] = cursor.pos[0];
         this->check_largest_text_width(true);
     }
 
@@ -604,7 +627,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
 
         cursor.pos[1] = cursor.pos[0];
         cursor.pos[2] = cursor.pos[0];
-        cursor.target = cursor.pos[0].index;
+        cursor.pos[3] = cursor.pos[0];
         break;
     case false:
         uint32_t it {};
@@ -624,10 +647,10 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
 
         if (it == 1) {
             cursor.pos[0] = cursor.pos[2];
-            cursor.target = cursor.pos[1].index;
+            cursor.pos[3] = cursor.pos[1];
         } else {
             cursor.pos[1] = cursor.pos[2];
-            cursor.target = cursor.pos[0].index;
+            cursor.pos[3] = cursor.pos[0];
         }
 
         break;
@@ -720,17 +743,17 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
             if (clicked_pos.pos[0].index > main_cursor.pos[2].index) {
                 main_cursor.pos[2] = main_cursor.pos[0];
                 main_cursor.pos[1] = clicked_pos.pos[0];
-                main_cursor.target = clicked_pos.pos[0].index;
+                main_cursor.pos[3] = clicked_pos.pos[0];
             } else {
                 main_cursor.pos[2] = main_cursor.pos[1];
                 main_cursor.pos[0] = clicked_pos.pos[0];
-                main_cursor.target = clicked_pos.pos[1].index;
+                main_cursor.pos[3] = clicked_pos.pos[1];
             }
         } else {
             main_cursor.pos[0] = clicked_pos.pos[0];
             main_cursor.pos[1] = clicked_pos.pos[1];
             main_cursor.pos[2] = clicked_pos.pos[2];
-            main_cursor.target = clicked_pos.pos[0].index;
+            main_cursor.pos[3] = clicked_pos.pos[0];
         }
 
         this->flag.state = this->flag.hovered;
@@ -864,7 +887,9 @@ int32_t ekg::ui::textbox_widget::find_cursor(ekg::ui::textbox_widget::cursor &ta
     for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
         a_cursor_pos = ((last_line_utf_char_index && total_it + 1 >= cursor.pos[0].index) || total_it >= cursor.pos[0].index);
         b_cursor_pos = ((last_line_utf_char_index && total_it + 1 <= cursor.pos[1].index) || total_it <= cursor.pos[1].index);
-        if ((a_cursor_pos && b_cursor_pos && it_chunk >= cursor.pos[0].chunk_index && it_chunk <= cursor.pos[1].chunk_index) || (it_chunk > cursor.pos[0].chunk_index && it_chunk < cursor.pos[1].chunk_index)) {
+
+        if ((a_cursor_pos && b_cursor_pos &&it_chunk >= cursor.pos[0].chunk_index && it_chunk <= cursor.pos[1].chunk_index) ||
+            (it_chunk > cursor.pos[0].chunk_index && it_chunk < cursor.pos[1].chunk_index)) {
             target_cursor = cursor;
             return b_cursor_pos;
         }
@@ -961,9 +986,10 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     this->cursor_char_wsize[2] = 0.0f;
 
     // @TODO change cursor batching collector to invoke firing
+    // @TODO add mapped visible chunk.
 
     /*
-     * The texti iterator jump utf 8 - 16 sequences.
+     * The text iterator jump utf 8 - 16 sequences.
      * For better performance, textbox does not render texts out of rect.
      */
     for (int64_t it_chunk {}; it_chunk < text_chunk_size; it_chunk++) {

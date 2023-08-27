@@ -36,6 +36,22 @@ namespace ekg::ui {
             int64_t text_index {};
             int64_t last_text_index {};
         public:
+            inline bool operator>(ekg::ui::textbox_widget::cursor_pos &r) {
+                return this->index > r.index && this->chunk_index > r.chunk_index;
+            }
+
+            inline bool operator<(ekg::ui::textbox_widget::cursor_pos &r) {
+                return this->index < r.index && this->chunk_index < r.chunk_index;
+            }
+
+            inline bool operator>=(ekg::ui::textbox_widget::cursor_pos &r) {
+                return this->index >= r.index && this->chunk_index >= r.chunk_index;
+            }
+
+            inline bool operator<=(ekg::ui::textbox_widget::cursor_pos &r) {
+                return this->index <= r.index && this->chunk_index <= r.chunk_index;
+            }
+
             inline bool operator==(ekg::ui::textbox_widget::cursor_pos &r) {
                 return this->index == r.index && this->chunk_index == r.chunk_index;
             }
@@ -47,8 +63,7 @@ namespace ekg::ui {
 
         struct cursor {
         public:
-            ekg::ui::textbox_widget::cursor_pos pos[3] {};
-            int64_t target {};
+            ekg::ui::textbox_widget::cursor_pos pos[4] {};
         };
     public:
         std::vector<std::string> text_chunk_list {};
