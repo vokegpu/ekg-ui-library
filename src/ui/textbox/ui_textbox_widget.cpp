@@ -17,6 +17,10 @@
 #include "ekg/draw/draw.hpp"
 #include "ekg/os/system_cursor.hpp"
 
+void ekg::ui::textbox_widget::refresh() {
+    
+}
+
 void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor &cursor, int64_t &x, int64_t &y) {
     if (!this->is_action_modifier_enable) {
         return;
@@ -371,7 +375,6 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                          ekg::utf_substr(emplace_text_b, cursor.pos[1].text_index, ekg::utf_length(emplace_text_b));
 
         if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
-            ekg::log() << cursor.pos[0].text_index << ' ' << cursor.pos[0].chunk_index << " x " << cursor.pos[1].text_index << ' ' << cursor.pos[1].chunk_index;
             this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1,
                                         this->text_chunk_list.begin() + cursor.pos[1].chunk_index + 1);
         }

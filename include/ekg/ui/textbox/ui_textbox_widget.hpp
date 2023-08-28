@@ -107,6 +107,7 @@ namespace ekg::ui {
         void check_largest_text_width(bool update_ui_data_text_together);
         void check_nearest_word(ekg::ui::textbox_widget::cursor &cursor, int64_t &x, int64_t &y);
         void move_target_cursor(ekg::ui::textbox_widget::cursor &cursor, int64_t x, int64_t y);
+        void refresh();
 
         void on_destroy() override;
         void on_reload() override;
