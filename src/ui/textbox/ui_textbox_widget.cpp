@@ -97,16 +97,6 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
     ekg::reset(ekg::core->ui_timing);
     ekg::dispatch(ekg::env::redraw);
 
-    /*
-     * An important note, this is actually very necessary for fix a issue,
-     * when selecting at the end of line string for the next line.
-     *
-     * Suggestion? Who knows how to fix that.
-     */
-    bool first_move_when_selecting_for_right {
-        x > 0 && cursor.pos[0] == cursor.pos[1] && this->is_action_select_enable 
-    };
-
     ekg::ui::textbox_widget::cursor_pos target_cursor_pos {};
 
     if ((cursor.pos[0] == cursor.pos[3] && this->is_action_select_enable) ||
@@ -129,14 +119,13 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
     }
 
     cursor.pos[3] = target_cursor_pos;
-    if (first_move_when_selecting_for_right || cursor.pos[3] > cursor.pos[2]) {
+
+    if (cursor.pos[3] >= cursor.pos[2]) {
         cursor.pos[0] = cursor.pos[2];
         cursor.pos[1] = target_cursor_pos;
-        ekg::log() << (first_move_when_selecting_for_right ? "O PROXIMO TEM QUE SER ESSE" : "FINALMENTE");
     } else {
         cursor.pos[0] = target_cursor_pos;
         cursor.pos[1] = cursor.pos[2];
-        ekg::log() << "AI CACHORRO CACHOROO";
     }
 }
 

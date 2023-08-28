@@ -63,6 +63,12 @@ namespace ekg::ui {
 
         struct cursor {
         public:
+            /*
+             * pos[0] is the cursor position A,
+             * pos[1] is the cursor position B,
+             * pos[2] is the initial select position,
+             * pos[3] is the select target side.
+             */
             ekg::ui::textbox_widget::cursor_pos pos[4] {};
         };
     public:
