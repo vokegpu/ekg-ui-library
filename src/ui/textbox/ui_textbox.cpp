@@ -92,10 +92,24 @@ ekg::font ekg::ui::textbox::get_font_size() {
     return this->font_size;
 }
 
-void ekg::ui::textbox::set_max_chars(uint64_t chars_amount) {
-    this->max_chars = chars_amount;
+void ekg::ui::textbox::set_max_lines(uint64_t lines) {
+    if (this->max_lines != lines) {
+        this->max_lines = lines;
+        ekg::reload(this->id);
+    }
 }
 
-uint64_t ekg::ui::textbox::get_max_chars() {
-    return this->max_chars;
+uint64_t ekg::ui::textbox::get_max_lines() {
+    return this->max_lines;
+}
+
+void ekg::ui::textbox::set_max_chars_per_line(uint64_t chars_per_line) {
+    if (this->max_chars_per_line != chars_per_line) {
+        this->max_chars_per_line = chars_per_line;
+        ekg::reload(this->id);
+    }
+}
+
+uint64_t ekg::ui::textbox::get_max_chars_per_line() {
+    return this->max_chars_per_line;
 }

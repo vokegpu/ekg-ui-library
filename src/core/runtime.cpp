@@ -68,7 +68,7 @@ void ekg::runtime::update_size_changed() {
 
 void ekg::runtime::init() {
     if (FT_Init_FreeType(&ekg::draw::font_renderer::ft_library)) {
-        ekg::log(ekg::log::WARNING) << "Failed to init FreeType library";
+        ekg::log() << "Error: Failed to init FreeType library";
     }
 
     this->gpu_allocator.init();

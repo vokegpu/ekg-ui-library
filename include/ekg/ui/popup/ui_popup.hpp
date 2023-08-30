@@ -39,7 +39,7 @@ namespace ekg::ui {
         int32_t scaled_height {}, token_id {};
         ekg::font font_size;
 	public:
-		void append(const std::vector<std::string> &components);
+		void append(const std::vector<std::string> &component_list);
 		void append(std::string_view component);
 		void append_linked(std::string_view component, ekg::ui::popup *p_popup);
 		void remove(std::string_view component);

@@ -27,7 +27,7 @@ void ekg::gpu::revoke() {
 
 bool ekg::gpu::create_basic_program(ekg::gpu::program &program, const std::unordered_map<std::string, uint32_t> &resources) {
     if (resources.empty()) {
-        ekg::log(ekg::log::ERROR) << "Invalid shader, empty resources";
+        ekg::log() << "Error: Invalid shader, empty resources";
         return true;
     }
 
@@ -47,7 +47,7 @@ bool ekg::gpu::create_basic_program(ekg::gpu::program &program, const std::unord
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &status);
             std::string msg {}; msg.resize(status);
             glGetShaderInfoLog(shader, status, nullptr, msg.data());
-            ekg::log(ekg::log::ERROR) << "Failed to compile shader stage: \n" << msg;
+            ekg::log() << "Error: Failed to compile shader stage: \n" << msg;
             break;
         }
 
@@ -72,7 +72,7 @@ bool ekg::gpu::create_basic_program(ekg::gpu::program &program, const std::unord
             glGetProgramiv(program.id, GL_INFO_LOG_LENGTH, &status);
             std::string msg {}; msg.resize(status);
             glGetProgramInfoLog(program.id, status, nullptr, msg.data());
-            ekg::log(ekg::log::ERROR) << "Failed to link program: \n" << msg;
+            ekg::log() << "Error: Failed to link program: \n" << msg;
         }
     }
 

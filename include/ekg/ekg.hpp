@@ -96,52 +96,52 @@ namespace ekg {
     /*
      * Get font renderer based on scaled sizes.
      */
-    ekg::draw::font_renderer &f_renderer(ekg::font);
+    ekg::draw::font_renderer &f_renderer(ekg::font font);
 
     /*
      * Create frame UI.
      */
-    ekg::ui::frame *frame(std::string_view, const ekg::vec2&, const ekg::vec2&);
+    ekg::ui::frame *frame(std::string_view tag, const ekg::vec2 &pos, const ekg::vec2 &size);
 
     /*
      * Create embedded frame UI.
      */
-    ekg::ui::frame *frame(std::string_view, const ekg::vec2&, uint16_t = ekg::dock::none);
+    ekg::ui::frame *frame(std::string_view tag, const ekg::vec2 &size, uint16_t dock = ekg::dock::none);
 
     /*
      * Create button UI.
      */
-    ekg::ui::button *button(std::string_view, uint16_t = ekg::dock::none);
+    ekg::ui::button *button(std::string_view text, uint16_t dock = ekg::dock::none);
 
     /*
      * Create label UI.
      */
-    ekg::ui::label *label(std::string_view, uint16_t = ekg::dock::none);
+    ekg::ui::label *label(std::string_view text, uint16_t dock = ekg::dock::none);
 
     /*
      * Create checkbox UI.
      */
-    ekg::ui::checkbox *checkbox(std::string_view, bool, uint16_t = ekg::dock::none);
+    ekg::ui::checkbox *checkbox(std::string_view text, bool checked, uint16_t dock = ekg::dock::none);
 
     /*
      * Create slider UI.
      */
-    ekg::ui::slider *slider(std::string_view, float, float, float, uint16_t = ekg::dock::none);
+    ekg::ui::slider *slider(std::string_view tag, float val, float min, float max, uint16_t dock = ekg::dock::none);
 
     /*
      * Create popup UI.
      */
-    ekg::ui::popup *popup(std::string_view, const std::vector<std::string>&, bool = true);
+    ekg::ui::popup *popup(std::string_view tag, const std::vector<std::string> &component_list, bool interact_position = true);
 
     /*
      * Create textbox UI.
      */
-    ekg::ui::textbox *textbox(std::string_view, std::string_view, uint16_t = ekg::dock::none);
+    ekg::ui::textbox *textbox(std::string_view tag, std::string_view text, uint16_t dock = ekg::dock::none);
 
     /*
      * Create scroll UI.
      */
-    ekg::ui::scroll *scroll(std::string_view);
+    ekg::ui::scroll *scroll(std::string_view tag);
 
     /*
      * Stop collecting UIs to group.

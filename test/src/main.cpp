@@ -183,7 +183,7 @@ int32_t main_example_with_no_ekg() {
     glewExperimental = GL_TRUE;
 
     if (glewInit() != GLEW_OK) {
-        ekg::log(ekg::log::ERROR) << "Failed to initialise GLEW";
+        ekg::log() << "Error: Failed to initialise GLEW";
     } else {
         ekg::log() << "GLEW initialised";
     }
@@ -232,7 +232,7 @@ int32_t main_example() {
     glewExperimental = GL_TRUE;
 
     if (glewInit() != GLEW_OK) {
-        ekg::log(ekg::log::ERROR) << "Failed to initialise GLEW";
+        ekg::log() << "Error: Failed to initialise GLEW";
     } else {
         ekg::log() << "GLEW initialised";
     }
@@ -344,7 +344,7 @@ int32_t main_calculator() {
     glewExperimental = GL_TRUE;
 
     if (glewInit() != GLEW_OK) {
-        ekg::log(ekg::log::ERROR) << "Failed to initialise GLEW";
+        ekg::log() << "Error: Failed to initialise GLEW";
     } else {
         ekg::log() << "GLEW initialised";
     }

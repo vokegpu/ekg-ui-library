@@ -137,7 +137,7 @@ void ekg::draw::font_renderer::reload() {
     this->flag_first_time = false;
 
     if (this->flag_unloaded) {
-        ekg::log(ekg::log::ERROR) << "Failed to create font face from '" << this->font_path << "'";
+        ekg::log() << "Error: Failed to create font face from '" << this->font_path << '\'';
         return;
     }
 
