@@ -31,9 +31,6 @@ namespace ekg {
     protected:
         std::ostringstream buffer {};
     public:
-        static constexpr int32_t WARNING {0};
-        static constexpr int32_t INFO {1};
-        static constexpr int32_t ERROR {2};
         static std::string cache;
 
         static bool buffering() {
@@ -44,28 +41,8 @@ namespace ekg {
             ekg::log::cache.clear();
         }
 
-        explicit log(int32_t priority = ekg::log::INFO) {
-            switch (priority) {
-                case ekg::log::WARNING: {
-                    this->buffer << "- [EKG-WARNING] ";
-                    break;
-                }
-
-                case ekg::log::INFO: {
-                    this->buffer << "[EKG-INFO] ";
-                    break;
-                }
-
-                case ekg::log::ERROR: {
-                    this->buffer << "[EKG-ERROR] ";
-                    break;
-                }
-
-                default: {
-                    break;
-                }
-            }
-
+        explicit log() {
+            this->buffer << "[EKG-INFO] ";
             if (ekg::log::cache.size() >= 50000) ekg::log::cache.clear();
         }
 
