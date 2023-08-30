@@ -29,7 +29,7 @@ namespace ekg::ui {
         ekg::rect rect_bar_value {};
         std::string string_value {};
         ekg::font font_render_size {};
-
+    public:
         void on_destroy() override;
         void on_reload() override;
         void on_pre_event(SDL_Event &sdl_event) override;

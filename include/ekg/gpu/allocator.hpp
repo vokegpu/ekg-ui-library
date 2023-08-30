@@ -26,6 +26,9 @@ namespace ekg::gpu {
     class allocator {
     protected:
         static float viewport[4];
+    public:
+        static ekg::gpu::program program;
+        static float mat4x4orthographic[16];
     protected:
         std::vector<ekg::gpu::data> data_list {};
         std::unordered_map<int32_t, ekg::gpu::scissor> scissor_map {};
@@ -61,9 +64,6 @@ namespace ekg::gpu {
         bool simple_shape {};
         bool out_of_scissor_rect {};
     public:
-        static ekg::gpu::program program;
-        static float mat4x4orthographic[16];
-
         /*
          * Init gpu allocator.
          */

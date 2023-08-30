@@ -40,7 +40,7 @@ namespace ekg::ui {
         bool is_hovering_any_popup(int32_t top_level);
         void unset_visible_all_sub_popup();
         void get_popup_path(std::string &path);
-
+    public:
         void on_destroy() override;
         void on_reload() override;
         void on_pre_event(SDL_Event&) override;

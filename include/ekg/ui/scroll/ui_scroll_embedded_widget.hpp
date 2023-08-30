@@ -46,10 +46,10 @@ namespace ekg::ui {
         void calculate_rect_bar_sizes();
         void clamp_scroll();
         bool is_dragging_bar();
-        bool check_activy_state(bool);
+        bool check_activy_state(bool state);
         void reset_scroll();
         void check_axis_states();
-
+    public: // virtuals
         void on_destroy();
         void on_reload();
         void on_pre_event(SDL_Event &sdl_event);

@@ -26,6 +26,7 @@ namespace ekg {
     extern double pi;
 
     struct display {
+    public:
         static float dt;
         static int32_t width;
         static int32_t height;
@@ -55,13 +56,14 @@ namespace ekg {
     };
 
     typedef struct vec2 {
+    public:
         union {
             struct {
                 float x {};
                 float y {};
             };
         };
-
+    public:
         inline explicit vec2() {};
         inline vec2(float _x, float _y) {
             this->x = _x;
@@ -72,6 +74,7 @@ namespace ekg {
     ekg::vec2 operator/(const ekg::vec2&, float);
 
     typedef struct vec3 {
+    public:
         union {
             struct {
                 float x {};
@@ -79,7 +82,7 @@ namespace ekg {
                 float z {};
             };
         };
-
+    public:
         inline explicit vec3() {};
         inline vec3(float _x, float _y, float _z) {
             this->x = _x;
@@ -89,6 +92,7 @@ namespace ekg {
     } vec3;
 
     typedef struct vec4 {
+    public:
         union {
             struct {
                 float x {};
@@ -97,7 +101,7 @@ namespace ekg {
                 float w {};
             };
         };
-
+    public:
         inline explicit vec4() {};
         inline vec4(float _x, float _y, float _z, float _w) {
             this->x = _x;
@@ -136,6 +140,7 @@ namespace ekg {
     } vec4;
 
     typedef struct rect {
+    public:
         union {
             struct {
                 float x {};
@@ -144,7 +149,7 @@ namespace ekg {
                 float h {};
             };
         };
-
+    public:
         inline explicit rect() {};
         inline rect(float _x, float _y, float _w, float _h) {
             this->x = _x;
@@ -199,6 +204,7 @@ namespace ekg {
     };
 
     struct grid {
+    public:
         ekg::rect top {},
                   top_left {},
                   top_center {},
@@ -210,6 +216,7 @@ namespace ekg {
     };
 
     struct dockrect {
+    public:
         ekg::rect *rect {nullptr};
         uint16_t dock {};        
     };

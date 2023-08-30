@@ -20,47 +20,52 @@
 namespace ekg::ui {
     class slider : public ekg::ui::abstract {
 protected:
-        float value {}, minimum_value {}, maximum_value {};
+        float value {};
+        float minimum_value {};
+        float maximum_value {};
+
         int32_t scaled_size {};
         int32_t float_precision {};
-        uint16_t bar_flags {}, text_flags {};
+        uint16_t bar_flags {};
+        uint16_t text_flags {};
+
         ekg::font font_size {};
         ekg::axis bar_axis {};
         bool dragging {};
     public:
-        void set_dragging(bool);
+        void set_dragging(bool state);
         bool is_dragging();
 
-        void set_place(uint16_t);
-        void set_bar_axis(ekg::axis);
+        void set_place(uint16_t dock);
+        void set_bar_axis(ekg::axis axis);
         ekg::axis get_bar_axis();
 
-        void set_text_align(uint16_t);
+        void set_text_align(uint16_t dock);
         uint16_t get_text_align();
 
-        void set_bar_align(uint16_t);
+        void set_bar_align(uint16_t dock);
         uint16_t get_bar_align();
 
         void set_font_size(ekg::font font);
         ekg::font get_font_size();
 
-        void set_width(float);
+        void set_width(float w);
         float get_width();
 
-        void set_scaled_height(int32_t);
+        void set_scaled_height(int32_t h);
         int32_t get_scaled_height();
         float get_height();
 
-        void set_value(float);
+        void set_value(float val);
         float get_value();
 
-        void set_value_min(float);
+        void set_value_min(float min);
         float get_value_min();
 
-        void set_value_max(float);
+        void set_value_max(float max);
         float get_value_max();
 
-        ekg::ui::slider *set_precision(int32_t);
+        ekg::ui::slider *set_precision(int32_t precision);
         int32_t get_precision();
     };
 }

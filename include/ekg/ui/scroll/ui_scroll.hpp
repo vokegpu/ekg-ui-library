@@ -19,8 +19,7 @@
 
 namespace ekg::ui {
     class scroll : public ekg::ui::abstract {
-    protected:        
-    public:
+        // I want to be a hot girl, with big boobs and a big but -><- <3
     };
 }
 

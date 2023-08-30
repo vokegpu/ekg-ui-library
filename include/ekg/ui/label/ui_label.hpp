@@ -28,19 +28,19 @@ namespace ekg::ui {
         void set_font_size(ekg::font font);
         ekg::font get_font_size();
 
-        void set_place(uint16_t);
+        void set_place(uint16_t dock);
         int32_t get_scaled_height();
 
-        void set_width(float);
+        void set_width(float w);
         float get_width();
 
-        void set_scaled_height(int32_t);
+        void set_scaled_height(int32_t h);
         float get_height();
 
-        void set_text(std::string_view);
+        void set_text(std::string_view text);
         std::string get_text();
 
-        void set_text_align(uint16_t);
+        void set_text_align(uint16_t dock);
         uint16_t get_text_align();
     };
 }

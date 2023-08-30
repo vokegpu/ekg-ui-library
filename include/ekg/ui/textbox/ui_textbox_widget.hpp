@@ -108,7 +108,7 @@ namespace ekg::ui {
         void check_nearest_word(ekg::ui::textbox_widget::cursor &cursor, int64_t &x, int64_t &y);
         void move_target_cursor(ekg::ui::textbox_widget::cursor &cursor, int64_t x, int64_t y);
         void refresh();
-
+    public:
         void on_destroy() override;
         void on_reload() override;
         void on_pre_event(SDL_Event &sdl_event) override;
