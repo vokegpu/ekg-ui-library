@@ -32,7 +32,7 @@ namespace ekg {
         public:
             const char* p_tag {};
             void* p_callback {};
-            std::function<void(void*)> fun {};
+            std::function<void(void*)> function {};
         };
     }
 

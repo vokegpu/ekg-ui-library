@@ -73,6 +73,7 @@ namespace ekg::ui {
         };
     public:
         std::vector<std::string> text_chunk_list {};
+        std::vector<ekg::rect> cursor_draw_data_list {};
         std::string widget_side_text {};
         std::vector<ekg::ui::textbox_widget::cursor> loaded_multi_cursor_list {
             ekg::ui::textbox_widget::cursor()
@@ -97,6 +98,7 @@ namespace ekg::ui {
 
         int64_t total_utf_chars {};
         std::string cached_tab_size {};
+        uint64_t visible_text[4] {};
     public:
         std::string &get_cursor_emplace_text(ekg::ui::textbox_widget::cursor_pos &cursor);
         int32_t find_cursor(ekg::ui::textbox_widget::cursor &target_cursor, int64_t total_it, int64_t it_chunk, bool last_line_utf_char_index);

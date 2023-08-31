@@ -218,8 +218,6 @@ void ekg::runtime::process_update() {
 
     this->service_handler.on_update();
     this->gpu_allocator.on_update();
-
-    glViewport(0, 0, ekg::display::width, ekg::display::height);
 }
 
 void ekg::runtime::redraw_gui() {
@@ -242,6 +240,7 @@ void ekg::runtime::process_render() {
         this->gpu_allocator.revoke();
     }
 
+    glViewport(0, 0, ekg::display::width, ekg::display::height);
     this->gpu_allocator.draw();
 }
 
@@ -251,7 +250,7 @@ void ekg::runtime::prepare_tasks() {
     this->service_handler.allocate() = {
         .p_tag      = "refresh",
         .p_callback = this,
-        .fun        = [](void *p_callback) {
+        .function   = [](void *p_callback) {
             auto *runtime {static_cast<ekg::runtime*>(p_callback)};
             auto &all = runtime->widget_list_map["all"];
             auto &refresh = runtime->widget_list_map["refresh"];
@@ -283,7 +282,7 @@ void ekg::runtime::prepare_tasks() {
     this->service_handler.allocate() = {
         .p_tag      = "swap",
         .p_callback = this,
-        .fun        = [](void *p_callback) {
+        .function   = [](void *p_callback) {
             auto *runtime {static_cast<ekg::runtime*>(p_callback)};
 
             if (runtime->swap_widget_id_focused == 0) {
@@ -320,7 +319,7 @@ void ekg::runtime::prepare_tasks() {
     this->service_handler.allocate() = {
         .p_tag      = "reload",
         .p_callback = this,
-        .fun        = [](void *p_callback) {
+        .function   = [](void *p_callback) {
             auto *runtime {static_cast<ekg::runtime*>(p_callback)};
             auto &reload = runtime->widget_list_map["reload"];
 
@@ -408,7 +407,7 @@ void ekg::runtime::prepare_tasks() {
     this->service_handler.allocate() = {
         .p_tag      = "synclayout",
         .p_callback = this,
-        .fun        = [](void *p_callback) {
+        .function   = [](void *p_callback) {
             auto *runtime {static_cast<ekg::runtime*>(p_callback)};
             auto &synclayout {runtime->widget_list_map["synclayout"]};
 
@@ -430,7 +429,7 @@ void ekg::runtime::prepare_tasks() {
     this->service_handler.allocate() = {
         .p_tag      = "gc",
         .p_callback = this,
-        .fun        = [](void *p_callback) {
+        .function   = [](void *p_callback) {
             auto *runtime {static_cast<ekg::runtime*>(p_callback)};
             auto &all {runtime->widget_list_map["all"]};
             auto &high_frequency {runtime->widget_list_map["update"]};
