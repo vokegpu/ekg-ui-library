@@ -161,6 +161,7 @@ void ekg::ui::textbox_widget::check_largest_text_width(bool update_ui_data_text_
 
     char32_t ui32_char {};
     uint8_t ui8_char {};
+
     std::string utf_string {};
     std::string text {};
 
@@ -1049,33 +1050,19 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     this->rect_text.x = x;
     this->rect_text.y = y;
+    this->is_ui_enabled = ui->is_enabled();
 
     x = 0.0f;
-    y = this->text_offset + (this->text_height * this->visible_text[1]);
-
-    bool is_utf_char_last_index {};
-    bool render_cursor {};
-
-    int64_t text_size {};
-    uint64_t total_it {this->visible_text[0]};
+    y = this->text_offset;
 
     char32_t ui32_char {};
     uint8_t ui8_char {};
+
     std::string utf_string {};
     std::string text {};
 
-    uint64_t chunk_size {this->text_chunk_list.size()};
-    uint64_t utf_char_index {};
     uint64_t it {};
     uint64_t text_chunk_size {this->text_chunk_list.size()};
-
-    this->rect_cursor.w = 2.0f;
-    this->rect_cursor.h = this->text_height;
-    this->is_ui_enabled = ui->is_enabled();
-
-    ekg::ui::textbox_widget::cursor cursor {};
-
-    int32_t cursor_pos_index {};
 
     /*
      * 0 == previous char wsize
@@ -1091,19 +1078,19 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         this->redraw_cursor = false;
     }
 
-    this->rect_text.h = (this->text_height * text_chunk_size);
-    this->visible_text[1] = static_cast<int32_t>(this->embedded_scroll.scroll.y) == 0 || static_cast<int32_t>(this->embedded_scroll.scroll.y) == -0 ? 0 :
+    this->rect_text.h = (this->text_height * text_chunk_size) + (this->text_offset * 2.0f);
+    this->visible_text[1] = static_cast<int32_t>(this->embedded_scroll.scroll.y) >= -0 ? 0 :
                             static_cast<uint64_t>((roundf(-this->embedded_scroll.scroll.y) / this->rect_text.h) * static_cast<float>(text_chunk_size));
 
-    this->rect_text.h += (this->text_offset * 2.0f);
+    y += (this->text_height * this->visible_text[1]);
+
     /*
      * The text iterator jump utf 8 - 16 sequences.
      * For better performance, textbox does not render texts out of rect.
      */
-    for (int64_t it_chunk {static_cast<int64_t>(this->visible_text[1])}; it_chunk < text_chunk_size; it_chunk++) {
+    for (uint64_t it_chunk {this->visible_text[1]}; it_chunk < text_chunk_size; it_chunk++) {
         text = this->text_chunk_list.at(it_chunk);
         x = this->rect_cursor.w;
-        text_size = 0;
         f_renderer.ft_uint_previous = 0;
 
         data.factor += static_cast<int32_t>(y) + 32;
