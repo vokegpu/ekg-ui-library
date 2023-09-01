@@ -298,8 +298,6 @@ int32_t main_example() {
             }
         }
 
-        ekg::log() << p_textbox->get_text();
-
         ekg::display::dt = 0.016f;
         ekg::update();
 

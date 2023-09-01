@@ -100,3 +100,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Fixed select action when moving at end of a line, now no longer crashes.
 -- Insane performance optmization for textbox (over 60k lines).
 -- Fixed cursor not rendering when the textbox was initially created empty.
+-- Buildable UI(s) data style for all widgets.

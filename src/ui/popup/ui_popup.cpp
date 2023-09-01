@@ -25,13 +25,15 @@ int64_t ekg::ui::popup::contains(std::string_view component_name) {
     return -1;
 }
 
-void ekg::ui::popup::append(const std::vector<std::string> &component_name_list) {
+ekg::ui::popup *ekg::ui::popup::append(const std::vector<std::string> &component_name_list) {
     for (const std::string &component_name : component_name_list) {
         this->append(component_name);
     }
+
+    return this;
 }
 
-void ekg::ui::popup::append(std::string_view component_name) {
+ekg::ui::popup *ekg::ui::popup::append(std::string_view component_name) {
     std::string factored_component_name {component_name};
     bool is_separator {component_name.size() >= 3 && component_name.at(0) == '-' && component_name.at(1) == '-' && component_name.at(2) == '-'};
 
@@ -41,16 +43,17 @@ void ekg::ui::popup::append(std::string_view component_name) {
     }
 
     if (this->contains(factored_component_name) != -1) {
-        return;
+        return this;
     }
 
     ekg::ui::popup::component component {};
     component.name = factored_component_name;
     component.boolean = is_separator;
     this->component_list.push_back(component);
+    return this;
 }
 
-void ekg::ui::popup::append_linked(std::string_view component_name, ekg::ui::popup *popup_linked) {
+ekg::ui::popup *ekg::ui::popup::append_linked(std::string_view component_name, ekg::ui::popup *popup_linked) {
     int64_t index {this->contains(component_name)};
 
     if (index == -1) {
@@ -59,14 +62,17 @@ void ekg::ui::popup::append_linked(std::string_view component_name, ekg::ui::pop
 
     auto &component {this->component_list.at(index)};
     component.linked_id = 0;
+
     if (popup_linked != nullptr) {
         popup_linked->set_state(ekg::state::invisible);
         component.linked_id = popup_linked->get_id();
         this->add_child(component.linked_id);
     }
+
+    return this;
 }
 
-void ekg::ui::popup::remove(std::string_view component_name) {
+ekg::ui::popup *ekg::ui::popup::remove(std::string_view component_name) {
     std::vector<ekg::ui::popup::component> new_list {};
     for (ekg::ui::popup::component &component : this->component_list) {
         if (component.name == component_name) {
@@ -79,24 +85,28 @@ void ekg::ui::popup::remove(std::string_view component_name) {
 
     this->component_list.clear();
     this->component_list.insert(this->component_list.end(), new_list.begin(), new_list.end());
+
+    return this;
 }
 
 std::vector<ekg::ui::popup::component> &ekg::ui::popup::get_component_list() {
     return this->component_list;
 }
 
-void ekg::ui::popup::set_text_align(uint16_t flags) {
+ekg::ui::popup *ekg::ui::popup::set_text_align(uint16_t flags) {
     if (this->dock_flags != flags) {
         this->dock_flags = flags;
         ekg::reload(this->id);
     }
+
+    return this;
 }
 
 uint16_t ekg::ui::popup::get_text_align() {
     return this->dock_flags;
 }
 
-void ekg::ui::popup::set_width(float width) {
+ekg::ui::popup *ekg::ui::popup::set_width(float width) {
     if (this->sync_ui.w != width) {
         this->sync_ui.w = width;
 
@@ -104,19 +114,23 @@ void ekg::ui::popup::set_width(float width) {
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
     }
+
+    return this;
 }
 
 float ekg::ui::popup::get_width() {
     return this->rect_widget.w;
 }
 
-void ekg::ui::popup::set_scaled_height(int32_t scaled_height_factor) {
+ekg::ui::popup *ekg::ui::popup::set_scaled_height(int32_t scaled_height_factor) {
     if (this->scaled_height != scaled_height_factor) {
         this->scaled_height = scaled_height_factor;
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
     }
+
+    return this;
 }
 
 int32_t ekg::ui::popup::get_scaled_height() {
@@ -127,20 +141,22 @@ float ekg::ui::popup::get_height() {
     return this->rect_widget.h;
 }
 
-void ekg::ui::popup::set_font_size(ekg::font f_size) {
+ekg::ui::popup *ekg::ui::popup::set_font_size(ekg::font f_size) {
     if (this->font_size != f_size) {
         this->font_size = f_size;
 
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
     }
+
+    return this;
 }
 
 ekg::font ekg::ui::popup::get_font_size() {
     return this->font_size;
 }
 
-void ekg::ui::popup::set_pos(float x, float y) {
+ekg::ui::popup *ekg::ui::popup::set_pos(float x, float y) {
     if (this->sync_ui.x != x || this->sync_ui.y != y) {
         this->sync_ui.x = x;
         this->sync_ui.y = y;
@@ -148,6 +164,8 @@ void ekg::ui::popup::set_pos(float x, float y) {
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
     }
+
+    return this;
 }
 
 ekg::vec2 ekg::ui::popup::get_pos() {

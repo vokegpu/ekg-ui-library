@@ -29,9 +29,9 @@ namespace ekg::ui {
         std::string tag {};
         ekg::vec2 scale_factor {};
     public:
-        void set_place(uint16_t dock);
+        ekg::ui::frame *set_place(uint16_t dock);
 
-        void set_scale_factor(float x, float y);
+        ekg::ui::frame *set_scale_factor(float x, float y);
         ekg::vec2 get_scale_factor();
 
         ekg::ui::frame *set_drag(uint16_t dock);
@@ -40,28 +40,28 @@ namespace ekg::ui {
         ekg::ui::frame *set_resize(uint16_t dock);
         uint16_t get_resize_dock();
 
-        void set_pos_initial(float x, float y);
+        ekg::ui::frame *set_pos_initial(float x, float y);
         ekg::vec2 get_pos_initial();
 
-        void set_size_initial(float x, float y);
+        ekg::ui::frame *set_size_initial(float x, float y);
         ekg::vec2 get_size_initial();
 
-        void set_initial_width(float w);
+        ekg::ui::frame *set_initial_width(float w);
         float get_initial_width();
 
-        void set_initial_height(float h);
+        ekg::ui::frame *set_initial_height(float h);
         float get_initial_height();
 
-        void set_size(float w, float h);
+        ekg::ui::frame *set_size(float w, float h);
         ekg::vec2 get_size();
 
-        void set_pos(float x, float y);
+        ekg::ui::frame *set_pos(float x, float y);
         ekg::vec2 get_pos();
 
-        void set_width(float w);
+        ekg::ui::frame *set_width(float w);
         float get_width();
 
-        void set_height(float h);
+        ekg::ui::frame *set_height(float h);
         float get_height();
     };
 }
