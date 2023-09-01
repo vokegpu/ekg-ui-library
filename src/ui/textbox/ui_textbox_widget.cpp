@@ -134,16 +134,16 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
 }
 
 /*
- * This is not really optmised but I think it is okay.
- * @TODO write a better text width width largest.
+ * This method is not called all the time, the part of batching rects for rendering after,
+ * works okay, but I will write a fast select rect batching.
  */
-void ekg::ui::textbox_widget::check_largest_text_width(bool update_ui_data_text_together) {
+void ekg::ui::textbox_widget::update_cpu_side_batching_cursor() {
     auto ui {(ekg::ui::textbox*) this->data};
     auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
     auto &rect {this->get_abs_rect()};
 
     this->rect_text.w = 0.0f;
-    std::string compatibility_text {};
+    std::string formated_text {};
     this->total_utf_chars = 0;
 
     this->visible_text[0] = 0;
@@ -230,12 +230,13 @@ void ekg::ui::textbox_widget::check_largest_text_width(bool update_ui_data_text_
 
             char_data = f_renderer.allocated_char_data[ui32_char];
             is_utf_char_last_index = utf_char_index + 1 == text_size;
+
             if ((cursor_pos_index = this->find_cursor(cursor, total_it, it_chunk, is_utf_char_last_index)) != -1 &&
                ((draw_cursor && (cursor.pos[0] == cursor.pos[1] || cursor.pos[1].index > total_it)) || 
                (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > total_it))) {
 
-                draw_next_line_cursor_when_necessary = (cursor.pos[0] != cursor.pos[1] && cursor.pos[cursor_pos_index].text_index == 0 &&
-                                                        cursor.pos[cursor_pos_index].chunk_index > it_chunk);
+                draw_next_line_cursor_when_necessary = cursor.pos[0] != cursor.pos[1] && cursor.pos[cursor_pos_index].text_index == 0 &&
+                                                                                    cursor.pos[cursor_pos_index].chunk_index > it_chunk;
 
                 if (cursor.pos[0] != cursor.pos[1] && (it_chunk == cursor.pos[0].chunk_index || it_chunk == cursor.pos[1].chunk_index)) {
                     this->cursor_draw_data_list.emplace_back(ekg::rect {
@@ -245,7 +246,6 @@ void ekg::ui::textbox_widget::check_largest_text_width(bool update_ui_data_text_
                         text_height
                     });
                 } else if (cursor.pos[0] == cursor.pos[1]) {
-                    is_utf_char_last_index = is_utf_char_last_index && cursor.pos[cursor_pos_index].index == total_it + 1;
                     this->cursor_draw_data_list.emplace_back(ekg::rect {
                         x + (char_data.wsize * is_utf_char_last_index),
                         y,
@@ -261,6 +261,9 @@ void ekg::ui::textbox_widget::check_largest_text_width(bool update_ui_data_text_
             x += char_data.wsize;
         }
 
+        formated_text += text;
+        formated_text += it_chunk + 1 == text_chunk_size ? "" : "\n";
+
         this->rect_text.w = ekg::min(this->rect_text.w, x);
 
         if (!do_not_fill_line && it_chunk > cursor.pos[0].chunk_index && it_chunk < cursor.pos[1].chunk_index) {
@@ -275,10 +278,8 @@ void ekg::ui::textbox_widget::check_largest_text_width(bool update_ui_data_text_
         y += this->text_height;
     }
 
-    if (update_ui_data_text_together) {
-        ui->set_text(compatibility_text);
-        this->widget_side_text = compatibility_text;
-    }
+    ui->unsafe_set_text(formated_text);
+    this->widget_side_text = formated_text;
 
     this->total_utf_chars = total_it;
     this->rect_text.w += this->text_offset * 2.0f;
@@ -798,13 +799,14 @@ void ekg::ui::textbox_widget::on_reload() {
         ekg::utf_decode(this->widget_side_text, this->text_chunk_list);
 
         /*
-         * Generate default empty text for say to the rest of textbox that is empty and not null lines.
+         * Generate default empty text for say to the rest of textbox,
+         * that is empty and not with null lines.
          */
         if (this->text_chunk_list.empty()) {
             this->text_chunk_list.emplace_back();
         }
 
-        this->check_largest_text_width(false);
+        this->redraw_cursor = true;
         this->rect_text.h = (this->text_height * this->text_chunk_list.size()) + (this->text_offset * 2.0f);
         
         float vertical_scroll_limit {this->rect_text.h - rect.h};
@@ -990,7 +992,7 @@ void ekg::ui::textbox_widget::on_update() {
 }
 
 /*
- * The find cursor is a bit bloat,
+ * The find cursor method perform bloat,
  * but how the entire selection system is CPU-batched (it means not called all the render time),
  * the performance is not necessary bad.
  */
@@ -1081,14 +1083,21 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     this->cursor_char_wsize[2] = 0.0f;
 
     if (this->redraw_cursor) {
-        this->check_largest_text_width(false);
+        this->update_cpu_side_batching_cursor();
         this->redraw_cursor = false;
     }
 
     this->rect_text.h = (this->text_height * text_chunk_size) + (this->text_offset * 2.0f);
-    this->visible_text[1] = static_cast<int32_t>(this->embedded_scroll.scroll.y) >= -0 ? 0 :
-                            static_cast<uint64_t>((roundf(-this->embedded_scroll.scroll.y) / this->rect_text.h) * static_cast<float>(text_chunk_size));
 
+    /*
+     * This line of code check the renderable text chunk index value,
+     * dynamically calculating the amount of scroll with the size of
+     * rect text height. 
+     */
+    this->visible_text[1] = static_cast<int32_t>(this->embedded_scroll.scroll.y) >= -0 ? 0 :
+                                       static_cast<uint64_t>((roundf(-this->embedded_scroll.scroll.y) / this->rect_text.h) * static_cast<float>(text_chunk_size));
+
+    // Multiply with the current visible index for get the perfect y position.
     y += (this->text_height * this->visible_text[1]);
 
     /*

@@ -50,27 +50,27 @@ namespace ekg {
             abstract();
             ~abstract();
 
-            void set_tag(std::string_view);
+            ekg::ui::abstract *set_tag(std::string_view);
             std::string get_tag();
 
-            void add_child(int32_t);
+            ekg::ui::abstract *add_child(int32_t);
             std::vector<int32_t> &get_child_id_list();
-            void remove_child(int32_t);
+            ekg::ui::abstract *remove_child(int32_t);
 
-            void set_id(int32_t);
+            ekg::ui::abstract *set_id(int32_t);
             int32_t get_id();
 
-            void set_parent_id(int32_t);
+            ekg::ui::abstract *set_parent_id(int32_t);
             int32_t get_parent_id();
 
-            void set_alive(bool);
+            ekg::ui::abstract *set_alive(bool);
             bool is_alive();
             void destroy();
 
-            void set_state(const ekg::state&);
+            ekg::ui::abstract *set_state(const ekg::state&);
             ekg::state get_state();
 
-            void set_type(const ekg::type&);
+            ekg::ui::abstract *set_type(const ekg::type&);
             ekg::type get_type();
 
             uint16_t get_place_dock();
@@ -80,7 +80,7 @@ namespace ekg {
             ekg::rect &widget();
             ekg::rect &ui();
 
-            void set_scaled_height_layout(int32_t);
+            ekg::ui::abstract *set_scaled_height_layout(int32_t);
             bool has_parent();
             bool has_children();
         };

@@ -256,7 +256,7 @@ int32_t main_example() {
 
     ekg::button("pompom click!!", ekg::dock::fill);
     ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    ekg::textbox("Lê textbox", "", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+    auto p_textbox = ekg::textbox("Lê textbox", "", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
 
     ekg::label("RGB:", ekg::dock::next);
 
@@ -297,6 +297,8 @@ int32_t main_example() {
                 }
             }
         }
+
+        ekg::log() << p_textbox->get_text();
 
         ekg::display::dt = 0.016f;
         ekg::update();

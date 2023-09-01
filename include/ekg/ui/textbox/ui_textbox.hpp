@@ -27,31 +27,36 @@ namespace ekg::ui {
         uint64_t max_lines {UINT32_MAX};
         uint64_t max_chars_per_line {UINT32_MAX};
     public:
-        void set_enabled(bool enabled);
+        /*
+          * As the name says, unsafe set text is not a method for any purpose.
+          */
+        void unsafe_set_text(std::string &ref_text);
+    public:
+        ekg::ui::textbox *set_enabled(bool enabled);
         bool is_enabled();
 
-        void set_font_size(ekg::font font);
+        ekg::ui::textbox *set_font_size(ekg::font font);
         ekg::font get_font_size();
 
-        void set_place(uint16_t dock);
+        ekg::ui::textbox *set_place(uint16_t dock);
         int32_t get_scaled_height();
 
-        void set_width(float w);
+        ekg::ui::textbox *set_width(float w);
         float get_width();
 
-        void set_scaled_height(int32_t h);
+        ekg::ui::textbox *set_scaled_height(int32_t h);
         float get_height();
 
-        void set_text(std::string_view text);
+        ekg::ui::textbox *set_text(std::string_view text);
         std::string get_text();
 
-        void set_tab_size(uint8_t size);
+        ekg::ui::textbox *set_tab_size(uint8_t size);
         uint8_t get_tab_size();
 
-        void set_max_chars_per_line(uint64_t chars_per_line);
+        ekg::ui::textbox *set_max_chars_per_line(uint64_t chars_per_line);
         uint64_t get_max_chars_per_line();
 
-        void set_max_lines(uint64_t lines);
+        ekg::ui::textbox *set_max_lines(uint64_t lines);
         uint64_t get_max_lines();
     };
 }
