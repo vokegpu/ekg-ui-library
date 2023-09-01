@@ -790,12 +790,19 @@ void ekg::ui::textbox_widget::on_reload() {
     this->min_size.x = ekg::min(this->min_size.x, text_height);
     this->min_size.y = ekg::min(this->min_size.y, this->dimension.h);
 
-    if (this->widget_side_text != ui->get_text()) {
+    if (this->widget_side_text != ui->get_text() || this->widget_side_text.empty()) {
         int64_t previous_size {static_cast<int64_t>(this->text_chunk_list.size())};
 
         this->text_chunk_list.clear();
         this->widget_side_text = ui->get_text();
         ekg::utf_decode(this->widget_side_text, this->text_chunk_list);
+
+        /*
+         * Generate default empty text for say to the rest of textbox that is empty and not null lines.
+         */
+        if (this->text_chunk_list.empty()) {
+            this->text_chunk_list.emplace_back();
+        }
 
         this->check_largest_text_width(false);
         this->rect_text.h = (this->text_height * this->text_chunk_list.size()) + (this->text_offset * 2.0f);
@@ -1147,7 +1154,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     bool draw_cursor {this->flag.focused && !ekg::reach(ekg::core->ui_timing, 500)};
     for (ekg::rect &cursor_rect : this->cursor_draw_data_list) {
-        switch (static_cast<int32_t>(rect.w)) {
+        switch (static_cast<int32_t>(cursor_rect.w)) {
         case 2:
             if (draw_cursor) {
                 ekg::draw::rect(cursor_rect + rect + this->embedded_scroll.scroll, theme.textbox_cursor);

@@ -98,4 +98,5 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Now you can select the text at end of chunk text without hovering the text rect necessary.
 -- Fixed not automatically filling and jumping at end of text when cursor is selecting.
 -- Fixed select action when moving at end of a line, now no longer crashes.
--- Insane performance optmization for textbox rendering (over 60k lines).
+-- Insane performance optmization for textbox (over 60k lines).
+-- Fixed cursor not rendering when the textbox was initially created empty.
