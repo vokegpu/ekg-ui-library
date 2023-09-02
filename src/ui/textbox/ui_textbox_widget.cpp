@@ -412,10 +412,14 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
     std::string &emplace_text_a {this->get_cursor_emplace_text(cursor.pos[0])};
     std::string &emplace_text_b {this->get_cursor_emplace_text(cursor.pos[1])};
 
+    bool max_size_reached[2] {
+        emplace_text_a.size() == p_ui->get_max_chars_per_line(),
+        emplace_text_b.size() == p_ui->get_max_chars_per_line()
+    };
+
     switch (action) {
     case ekg::ui::textbox_widget::action::add_text:
-        if (emplace_text_a.size() == p_ui->get_max_chars_per_line() ||
-            (this->is_action_modifier_enable && !(this->is_clipboard_cut || this->is_clipboard_copy || this->is_clipboard_paste))) {
+        if (max_size_reached[0] || (this->is_action_modifier_enable && !(this->is_clipboard_cut || this->is_clipboard_copy || this->is_clipboard_paste))) {
             break;
         }
 
@@ -531,6 +535,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
         ekg_textbox_clamp_text_chunk_size(this->text_chunk_list, p_ui->get_max_lines());
         ekg_textbox_clamp_line(emplace_text_a, p_ui->get_max_chars_per_line());
+        ekg_textbox_clamp_line(emplace_text_b, p_ui->get_max_chars_per_line());
 
         this->move_cursor(cursor.pos[0], direction, 0);
         break;
@@ -552,13 +557,18 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         if (cursor.pos[0] == cursor.pos[1] && direction < 0 && (cursor.pos[0].index > 0 || cursor.pos[0].chunk_index > 0)) {
             if (cursor.pos[0].text_index - 1 < 0 && cursor.pos[0].chunk_index > 0) {
                 std::string stored_text {emplace_text_a};
+
                 this->move_cursor(cursor.pos[0], -1, 0);
                 this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1);
+
                 std::string &upper_line_text {this->get_cursor_emplace_text(cursor.pos[0])};
                 upper_line_text += stored_text;
+
+                ekg_textbox_clamp_line(upper_line_text, p_ui->get_max_chars_per_line());
             } else {
                 int64_t it {ekg::min(cursor.pos[0].text_index - 1, (int64_t) 0)};
                 emplace_text_a = ekg::utf_substr(emplace_text_a, 0, it) + ekg::utf_substr(emplace_text_a, it + 1, ekg::utf_length(emplace_text_a));
+                ekg_textbox_clamp_line(emplace_text_a, p_ui->get_max_chars_per_line());
                 this->move_cursor(cursor.pos[0], -1, 0);
             }
         } else if (cursor.pos[0] != cursor.pos[1] && direction != 0) {
@@ -569,6 +579,8 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                 this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1,
                                                              this->text_chunk_list.begin() + cursor.pos[1].chunk_index + 1);
             }
+
+            ekg_textbox_clamp_line(emplace_text_a, p_ui->get_max_chars_per_line());
         } else if (cursor.pos[0] == cursor.pos[1] && direction > 0) {
             int64_t emplace_text_size {(int64_t) ekg::utf_length(emplace_text_a)};
             bool text_chunk_it_bounding_size {cursor.pos[0].chunk_index + 1 == this->text_chunk_list.size()};
@@ -580,6 +592,8 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                 int64_t it {cursor.pos[0].text_index};
                 emplace_text_a = ekg::utf_substr(emplace_text_a, 0, it) + ekg::utf_substr(emplace_text_a, it + 1, ekg::utf_length(emplace_text_a));
             }
+
+            ekg_textbox_clamp_line(emplace_text_a, p_ui->get_max_chars_per_line());
         }
 
         break;
