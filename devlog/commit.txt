@@ -103,3 +103,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Buildable UI(s) data style for all widgets.
 -- Reduced lines of code from popup widget and the bloat part between compoent x element (as before).
 -- Removed useless bloat code from geometry and layout service (grid etc).
+-- Added maximum lines limit for textbox.

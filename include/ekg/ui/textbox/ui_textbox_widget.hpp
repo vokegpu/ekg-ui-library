@@ -109,7 +109,7 @@ namespace ekg::ui {
         void update_cpu_side_batching_cursor();
         void check_nearest_word(ekg::ui::textbox_widget::cursor &cursor, int64_t &x, int64_t &y);
         void move_target_cursor(ekg::ui::textbox_widget::cursor &cursor, int64_t x, int64_t y);
-        void refresh();
+        void clamp_text_chunk_size();
     public:
         void on_destroy() override;
         void on_reload() override;
