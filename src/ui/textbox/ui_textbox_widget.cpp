@@ -31,7 +31,7 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
     uint64_t emplace_text_size {emplace_text.size()};
 
     if (emplace_text.empty() || (x == 0 || (x < 0 && target_cursor_pos.text_index == 0) ||
-                                (x > 0 && target_cursor_pos.text_index == emplace_text_size))) {
+                                                (x > 0 && target_cursor_pos.text_index == emplace_text_size))) {
         return;
     }
 

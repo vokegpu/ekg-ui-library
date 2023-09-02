@@ -36,7 +36,7 @@ namespace ekg::service {
 
         ekg::axis dock_axis_mask {};
         ekg::vec3 offset_mask {};
-        std::vector<ekg::dockrect> dockrect_list {};
+        std::vector<ekg::dock_rect> dock_rect_list {};
         ekg::rect layout_mask {};
 
         ekg::vec2 viewport_scale {0.0f, 0.0f};
@@ -46,7 +46,7 @@ namespace ekg::service {
         void quit();
 
         void set_preset_mask(const ekg::vec3&, ekg::axis, float = 0.0f);
-        void insert_into_mask(const ekg::dockrect&);
+        void insert_into_mask(const ekg::dock_rect&);
         void process_layout_mask();
         ekg::rect &get_layout_mask();
 

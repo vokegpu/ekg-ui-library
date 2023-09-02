@@ -23,12 +23,12 @@ void ekg::service::layout::set_preset_mask(const ekg::vec3 &offset, ekg::axis ax
     this->respective_mask_all = initial_respective_size;
 }
 
-void ekg::service::layout::insert_into_mask(const ekg::dockrect &dockrect) {
-    if ((static_cast<int32_t>(dockrect.rect->w == 0) || static_cast<int32_t>(dockrect.rect->h) == 0) || ekg::bitwise::contains(dockrect.dock, ekg::dock::none)) {
+void ekg::service::layout::insert_into_mask(const ekg::dock_rect &dock_rect) {
+    if ((static_cast<int32_t>(dock_rect.p_rect->w == 0) || static_cast<int32_t>(dock_rect.p_rect->h) == 0) || ekg::bitwise::contains(dock_rect.dock, ekg::dock::none)) {
         return;
     }
 
-    this->dockrect_list.push_back(dockrect);
+    this->dock_rect_list.push_back(dock_rect);
 }
 
 void ekg::service::layout::process_layout_mask() {
@@ -36,7 +36,7 @@ void ekg::service::layout::process_layout_mask() {
      * V is the the respective size (axis horizontal == width | axis vertical == height)
      */
     bool axis {this->dock_axis_mask == ekg::axis::horizontal};
-    if (this->dockrect_list.empty()) {
+    if (this->dock_rect_list.empty()) {
         this->layout_mask.w = axis ? this->respective_mask_all : this->offset_mask.z;
         this->layout_mask.h = axis ? this->offset_mask.z : this->respective_mask_all;
         return;
@@ -58,93 +58,93 @@ void ekg::service::layout::process_layout_mask() {
     this->layout_mask.h = axis ? this->offset_mask.z : this->offset_mask.y;
 
     /* axis false is equals X else is equals Y */
-    for (ekg::dockrect &dockrect : this->dockrect_list) {
-        if (dockrect.rect == nullptr) {
+    for (ekg::dock_rect &dock_rect : this->dock_rect_list) {
+        if (dock_rect.p_rect == nullptr) {
             continue;
         }
 
         if (axis) {
-            clamped_offset = (dockrect.rect->h + this->offset_mask.y) - this->offset_mask.z > 0 ? 0 : this->offset_mask.y;
-            left_or_right = ekg::bitwise::contains(dockrect.dock, ekg::dock::left) || ekg::bitwise::contains(dockrect.dock, ekg::dock::right);
+            clamped_offset = (dock_rect.p_rect->h + this->offset_mask.y) - this->offset_mask.z > 0 ? 0 : this->offset_mask.y;
+            left_or_right = ekg::bitwise::contains(dock_rect.dock, ekg::dock::left) || ekg::bitwise::contains(dock_rect.dock, ekg::dock::right);
 
-            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center) && !left_or_right) {
-                dockrect.rect->x = (v / 2) - (dockrect.rect->w / 2);
-                dockrect.rect->y = centered_dimension - (dockrect.rect->h / 2);
-                this->layout_mask.w += dockrect.rect->w + this->offset_mask.x;
-            } else if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center)) {
-                dockrect.rect->y = centered_dimension - (dockrect.rect->h / 2);
+            if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::center) && !left_or_right) {
+                dock_rect.p_rect->x = (v / 2) - (dock_rect.p_rect->w / 2);
+                dock_rect.p_rect->y = centered_dimension - (dock_rect.p_rect->h / 2);
+                this->layout_mask.w += dock_rect.p_rect->w + this->offset_mask.x;
+            } else if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::center)) {
+                dock_rect.p_rect->y = centered_dimension - (dock_rect.p_rect->h / 2);
             }
 
             /* when there is a opposite dock, layout should x the dock position to actual position */
-            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::left)) {
+            if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::left)) {
                 if (static_cast<int32_t>(opposite) != 0) {
                     this->layout_mask.w -= opposite;
                 } 
 
-                dockrect.rect->x = this->layout_mask.w;
-                this->layout_mask.w += dockrect.rect->w + this->offset_mask.x + opposite;
+                dock_rect.p_rect->x = this->layout_mask.w;
+                this->layout_mask.w += dock_rect.p_rect->w + this->offset_mask.x + opposite;
                 opposite = 0;
-                uniform = dockrect.rect->w + this->offset_mask.x;
+                uniform = dock_rect.p_rect->w + this->offset_mask.x;
             }
 
-            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::right)) {
+            if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::right)) {
                 if (static_cast<int32_t>(uniform) != 0) {
                     this->layout_mask.w -= uniform;
                 } 
 
-                this->layout_mask.w += dockrect.rect->w;
-                dockrect.rect->x = v - this->layout_mask.w;
+                this->layout_mask.w += dock_rect.p_rect->w;
+                dock_rect.p_rect->x = v - this->layout_mask.w;
                 this->layout_mask.w += uniform + this->offset_mask.x;
-                opposite = dockrect.rect->w + this->offset_mask.x;
+                opposite = dock_rect.p_rect->w + this->offset_mask.x;
                 uniform = 0;
             }
 
-            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::top)) {
-                dockrect.rect->y = clamped_offset;
-            } else if (ekg::bitwise::contains(dockrect.dock, ekg::dock::bottom)) {
-                dockrect.rect->y = this->offset_mask.z - clamped_offset - dockrect.rect->h;
+            if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::top)) {
+                dock_rect.p_rect->y = clamped_offset;
+            } else if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::bottom)) {
+                dock_rect.p_rect->y = this->offset_mask.z - clamped_offset - dock_rect.p_rect->h;
             }
         } else {
-            clamped_offset = ekg::clamp((dockrect.rect->w + this->offset_mask.x) - this->offset_mask.z, 0, this->offset_mask.x);
-            left_or_right = ekg::bitwise::contains(dockrect.dock, ekg::dock::left) || ekg::bitwise::contains(dockrect.dock, ekg::dock::right);
+            clamped_offset = ekg::clamp((dock_rect.p_rect->w + this->offset_mask.x) - this->offset_mask.z, 0, this->offset_mask.x);
+            left_or_right = ekg::bitwise::contains(dock_rect.dock, ekg::dock::left) || ekg::bitwise::contains(dock_rect.dock, ekg::dock::right);
             
-            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center) && !left_or_right) {
-                dockrect.rect->y = (this->respective_mask_center) + (dockrect.rect->h / 2);
-                dockrect.rect->x = centered_dimension - (dockrect.rect->w / 2);
-            } else if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center)) {
-                dockrect.rect->x = centered_dimension - (dockrect.rect->w / 2);
+            if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::center) && !left_or_right) {
+                dock_rect.p_rect->y = (this->respective_mask_center) + (dock_rect.p_rect->h / 2);
+                dock_rect.p_rect->x = centered_dimension - (dock_rect.p_rect->w / 2);
+            } else if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::center)) {
+                dock_rect.p_rect->x = centered_dimension - (dock_rect.p_rect->w / 2);
             }
 
             /* when there is a opposite dock, layout should fix the dock position to actual position */
-            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::top)) {
+            if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::top)) {
                 if (static_cast<int32_t>(opposite) != 0) {
                     this->layout_mask.h -= opposite;
                 } 
 
-                dockrect.rect->y = this->layout_mask.h;
-                this->layout_mask.h += dockrect.rect->h + this->offset_mask.y + opposite;
+                dock_rect.p_rect->y = this->layout_mask.h;
+                this->layout_mask.h += dock_rect.p_rect->h + this->offset_mask.y + opposite;
                 opposite = 0;
-                uniform = dockrect.rect->h + this->offset_mask.y;
+                uniform = dock_rect.p_rect->h + this->offset_mask.y;
             }
 
-            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::bottom)) {
+            if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::bottom)) {
                 if (static_cast<int32_t>(uniform) != 0) {
                     this->layout_mask.h -= uniform;
                 }
 
-                this->layout_mask.h += dockrect.rect->h;
-                dockrect.rect->y = v - this->layout_mask.h;
+                this->layout_mask.h += dock_rect.p_rect->h;
+                dock_rect.p_rect->y = v - this->layout_mask.h;
                 this->layout_mask.h += uniform + this->offset_mask.y;
-                opposite = dockrect.rect->h + this->offset_mask.y;
+                opposite = dock_rect.p_rect->h + this->offset_mask.y;
                 uniform = 0;
             }
 
-            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::left)) {
-                dockrect.rect->x = clamped_offset;
+            if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::left)) {
+                dock_rect.p_rect->x = clamped_offset;
             }
 
-            if (ekg::bitwise::contains(dockrect.dock, ekg::dock::right)) {
-                dockrect.rect->x = this->offset_mask.z - clamped_offset - dockrect.rect->w;
+            if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::right)) {
+                dock_rect.p_rect->x = this->offset_mask.z - clamped_offset - dock_rect.p_rect->w;
             }
         }
     }
@@ -155,7 +155,7 @@ void ekg::service::layout::process_layout_mask() {
         this->layout_mask.h = ekg::min(v, this->layout_mask.h);
     }
 
-    this->dockrect_list.clear();
+    this->dock_rect_list.clear();
 }
 
 ekg::rect &ekg::service::layout::get_layout_mask() {
@@ -163,7 +163,7 @@ ekg::rect &ekg::service::layout::get_layout_mask() {
 }
 
 float ekg::service::layout::get_respective_mask_size() {
-    if (this->dockrect_list.empty()) {
+    if (this->dock_rect_list.empty()) {
         return 0;
     }
 
@@ -173,13 +173,13 @@ float ekg::service::layout::get_respective_mask_size() {
 
     int32_t only_center_count {};
 
-    for (ekg::dockrect &dockrect : this->dockrect_list) {
-        if (dockrect.rect == nullptr) {
+    for (ekg::dock_rect &dock_rect : this->dock_rect_list) {
+        if (dock_rect.p_rect == nullptr) {
             continue;
         }
 
-        size = (this->dock_axis_mask == ekg::axis::horizontal) ? (dockrect.rect->w + this->offset_mask.x) : (dockrect.rect->h + this->offset_mask.y);
-        if (ekg::bitwise::contains(dockrect.dock, ekg::dock::center) && !(ekg::bitwise::contains(dockrect.dock, ekg::dock::left) || ekg::bitwise::contains(dockrect.dock, ekg::dock::right))) {
+        size = (this->dock_axis_mask == ekg::axis::horizontal) ? (dock_rect.p_rect->w + this->offset_mask.x) : (dock_rect.p_rect->h + this->offset_mask.y);
+        if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::center) && !(ekg::bitwise::contains(dock_rect.dock, ekg::dock::left) || ekg::bitwise::contains(dock_rect.dock, ekg::dock::right))) {
             respective_center_size += size;
             only_center_count++;
         }

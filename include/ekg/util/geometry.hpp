@@ -199,24 +199,18 @@ namespace ekg {
     ekg::vec4 operator/(const ekg::vec4 &l, float r);
 
     struct docker {
-        ekg::rect left {}, right {}, top {}, bottom {}, center {}, rect {};
+    public:
+        ekg::rect left {};
+        ekg::rect right {};
+        ekg::rect top {};
+        ekg::rect bottom {};
+        ekg::rect center {};
+        ekg::rect rect {};
     };
 
-    struct grid {
+    struct dock_rect {
     public:
-        ekg::rect top {},
-                  top_left {},
-                  top_center {},
-                  top_right {};
-        ekg::rect bottom {},
-                  bottom_center {},
-                  bottom_left {},
-                  bottom_right {};
-    };
-
-    struct dockrect {
-    public:
-        ekg::rect *rect {nullptr};
+        ekg::rect *p_rect {nullptr};
         uint16_t dock {};        
     };
 
