@@ -17,14 +17,6 @@
 #include "ekg/draw/draw.hpp"
 #include "ekg/os/system_cursor.hpp"
 
-void ekg::ui::textbox_widget::clamp_text_chunk_size() {
-    ekg::ui::textbox *p_ui {(ekg::ui::textbox*) this->data};
-
-    if (this->text_chunk_list.size() > p_p_ui->get_max_lines()) {
-        this->text_chunk_list.erase(this->text_chunk_list.begin() + p_p_ui->get_max_lines(), this->text_chunk_list.end());
-    }
-}
-
 void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor &cursor, int64_t &x, int64_t &y) {
     if (!this->is_action_modifier_enable) {
         return;
@@ -373,7 +365,7 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
     }
 
     std::string &current_emplace_text {this->get_cursor_emplace_text(cursor)};
-    auto ui {(ekg::ui::textbox*) this->data};
+    auto p_ui {(ekg::ui::textbox*) this->data};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
     auto &rect {this->get_abs_rect()};
 
@@ -412,7 +404,7 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
 void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &cursor,
                                            std::string_view text,
                                            ekg::ui::textbox_widget::action action, int64_t direction) {
-    auto ui {(ekg::ui::textbox*) this->data};
+    auto p_ui {(ekg::ui::textbox*) this->data};
     if (!(this->is_ui_enabled = p_ui->is_enabled()) && !(text == "clipboard" && this->is_clipboard_copy)) {
         return;
     }
@@ -422,7 +414,8 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
     switch (action) {
     case ekg::ui::textbox_widget::action::add_text:
-        if (this->is_action_modifier_enable && !(this->is_clipboard_cut || this->is_clipboard_copy || this->is_clipboard_paste)) {
+        if (emplace_text_a.size() == p_ui->get_max_chars_per_line() ||
+            (this->is_action_modifier_enable && !(this->is_clipboard_cut || this->is_clipboard_copy || this->is_clipboard_paste))) {
             break;
         }
 
@@ -536,7 +529,9 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             }
         }
 
-        this->clamp_text_chunk_size();
+        ekg_textbox_clamp_text_chunk_size(this->text_chunk_list, p_ui->get_max_lines());
+        ekg_textbox_clamp_line(emplace_text_a, p_ui->get_max_chars_per_line());
+
         this->move_cursor(cursor.pos[0], direction, 0);
         break;
 
@@ -607,7 +602,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         }
 
         this->text_chunk_list.insert(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, line);
-        this->clamp_text_chunk_size();
+        ekg_textbox_clamp_text_chunk_size(this->text_chunk_list, p_ui->get_max_lines());
         this->move_cursor(cursor.pos[0], cursor_dir[0], cursor_dir[1]);
 
         ekg::reset(ekg::core->ui_timing);
@@ -639,7 +634,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
         return;
     }
 
-    auto ui {(ekg::ui::textbox*) this->data};
+    auto p_ui {(ekg::ui::textbox*) this->data};
     auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
@@ -789,7 +784,7 @@ void ekg::ui::textbox_widget::on_destroy() {
 }
 
 void ekg::ui::textbox_widget::on_reload() {
-    auto ui {(ekg::ui::textbox*) this->data};
+    auto p_ui {(ekg::ui::textbox*) this->data};
     auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
     auto scaled_height {p_ui->get_scaled_height()};
@@ -1031,7 +1026,7 @@ int32_t ekg::ui::textbox_widget::find_cursor(ekg::ui::textbox_widget::cursor &ta
 }
 
 void ekg::ui::textbox_widget::on_draw_refresh() {
-    auto ui {(ekg::ui::textbox*) this->data};
+    auto p_ui {(ekg::ui::textbox*) this->data};
     auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
     auto &theme {ekg::theme()};
