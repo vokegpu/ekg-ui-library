@@ -33,26 +33,25 @@ namespace ekg {
     };
 
     enum dock {
-        none   = 0,
-        free   = 1,
-        top    = 2,
-        bottom = 4,
-        right  = 8,
-        left   = 16,
-        center = 32,
-        full   = 64,
-        next   = 128,
-        fill   = 256,
-        resize = 512
-
+        none     = 0,
+        free     = 2 << 2,
+        top       = 2 << 3,
+        bottom = 2 << 4,
+        right    = 2 << 5,
+        left      = 2 << 6,
+        center  = 2 << 7,
+        full       = 2 << 8,
+        next     = 2 << 9,
+        fill        = 2 << 10,
+        resize   = 2 << 11 
     };
 
     /*
      * Enum linked to dock.
      */
     enum axis {
-        vertical   = 1024,
-        horizontal = 2048
+        vertical     = 12 << 2,
+        horizontal = 13 << 2
     };
 
     typedef struct vec2 {

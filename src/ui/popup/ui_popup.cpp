@@ -35,20 +35,23 @@ ekg::ui::popup *ekg::ui::popup::append(const std::vector<std::string> &component
 
 ekg::ui::popup *ekg::ui::popup::append(std::string_view component_name) {
     std::string factored_component_name {component_name};
-    bool is_separator {component_name.size() >= 3 && component_name.at(0) == '-' && component_name.at(1) == '-' && component_name.at(2) == '-'};
+    bool is_separator {component_name.size() >= 3 &&
+                                 component_name.at(0) == '-' &&
+                                 component_name.at(1) == '-' &&
+                                 component_name.at(2) == '-'
+    };
 
     if (is_separator) {
         factored_component_name = factored_component_name.substr(3, factored_component_name.size());
-        is_separator = true;
     }
 
     if (this->contains(factored_component_name) != -1) {
         return this;
     }
 
-    ekg::ui::popup::component component {};
+    ekg::ui::component component {};
     component.name = factored_component_name;
-    component.boolean = is_separator;
+    component.attributes = is_separator ? ekg::attribute::separator : 0;
     this->component_list.push_back(component);
     return this;
 }
@@ -73,8 +76,8 @@ ekg::ui::popup *ekg::ui::popup::append_linked(std::string_view component_name, e
 }
 
 ekg::ui::popup *ekg::ui::popup::remove(std::string_view component_name) {
-    std::vector<ekg::ui::popup::component> new_list {};
-    for (ekg::ui::popup::component &component : this->component_list) {
+    std::vector<ekg::ui::component> new_list {};
+    for (ekg::ui::component &component : this->component_list) {
         if (component.name == component_name) {
             this->remove_child(component.linked_id);
             continue;
@@ -89,7 +92,11 @@ ekg::ui::popup *ekg::ui::popup::remove(std::string_view component_name) {
     return this;
 }
 
-std::vector<ekg::ui::popup::component> &ekg::ui::popup::get_component_list() {
+ekg::ui::component &ekg::ui::popup::get(uint64_t index) {
+    return this->component_list.at(index);
+}
+
+std::vector<ekg::ui::component> &ekg::ui::popup::get_component_list() {
     return this->component_list;
 }
 

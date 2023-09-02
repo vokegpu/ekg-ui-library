@@ -58,6 +58,8 @@ ekg::ui::label *ekg::ui::label::set_width(float width) {
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
     }
+
+    return this;
 }
 
 float ekg::ui::label::get_width() {

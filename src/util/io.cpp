@@ -18,7 +18,7 @@
 std::string ekg::log::cache {};
 
 bool ekg::bitwise::contains(uint16_t target, uint16_t flags) {
-    return target & (flags);
+    return target & flags;
 }
 
 uint16_t &ekg::bitwise::remove(uint16_t &target, uint16_t flags) {

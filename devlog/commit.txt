@@ -101,3 +101,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Insane performance optmization for textbox (over 60k lines).
 -- Fixed cursor not rendering when the textbox was initially created empty.
 -- Buildable UI(s) data style for all widgets.
+-- Reduced lines of code from popup widget and the bloat part between compoent x element (as before).

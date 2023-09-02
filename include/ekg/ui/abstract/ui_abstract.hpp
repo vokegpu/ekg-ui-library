@@ -28,7 +28,21 @@ namespace ekg {
         reset = 1, dimension = 2
     };
 
+    enum attribute {
+        separator = 1 << 2
+    };
+
     namespace ui {
+        class component {
+        public:
+            std::string name {};
+            ekg::rect rect_dimension {};
+            ekg::rect rect_content {};
+            uint64_t id {};
+            uint64_t linked_id {};
+            uint16_t attributes {};
+        };
+
         class abstract {
         protected:
             int32_t id {};

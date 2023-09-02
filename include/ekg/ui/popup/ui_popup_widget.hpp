@@ -20,14 +20,7 @@
 // @TODO State for components/elements disabled
 namespace ekg::ui {
 	class popup_widget : public ekg::ui::abstract_widget {
-	protected:
-        struct element {
-            ekg::rect rect_text {};
-            ekg::rect rect_bound {};
-            bool separator {};
-        };
     public:
-        std::vector<ekg::ui::popup_widget::element> element_list {};
         float scissor_opened_height {};
         float separator_offset {};
         uint64_t elapsed_animation_ticks {};

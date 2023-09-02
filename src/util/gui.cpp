@@ -22,7 +22,6 @@ ekg::type ekg::hovered::type {};
 int32_t ekg::hovered::up {};
 int32_t ekg::hovered::down {};
 
-
 ekg::type ekg::hovered::downtype {};
 ekg::type ekg::hovered::uptype {};
 

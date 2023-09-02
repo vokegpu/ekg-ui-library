@@ -20,21 +20,8 @@
 
 namespace ekg::ui {
 	class popup : public ekg::ui::abstract {
-    public:
-        struct component {
-        public:
-            std::string name {};
-            ekg::flag flag {};
-            ekg::rect rect {};
-
-            bool boolean {};
-            void *data1 {};
-
-            int32_t id {};
-            int32_t linked_id {};
-        };
 	protected:
-		std::vector<ekg::ui::popup::component> component_list {};
+		std::vector<ekg::ui::component> component_list {};
 		uint16_t text_flags {};
         int32_t scaled_height {}, token_id {};
         ekg::font font_size;
@@ -45,7 +32,8 @@ namespace ekg::ui {
 		ekg::ui::popup *remove(std::string_view component);
 
         int64_t contains(std::string_view component);
-        std::vector<ekg::ui::popup::component> &get_component_list();
+        ekg::ui::component &get(uint64_t index);
+        std::vector<ekg::ui::component> &get_component_list();
 
         ekg::ui::popup *set_pos(float x, float y);
         ekg::vec2 get_pos();
