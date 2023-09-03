@@ -39,7 +39,7 @@
 #include "ekg/ui/textbox/ui_textbox.hpp"
 #include "ekg/ui/scroll/ui_scroll.hpp"
 
-#define EKG_VERSION_ID "0.0.1.0.3.0"
+#define EKG_VERSION_ID "1.0.4.0"
 #define EKG_VERSION_STATE "ALPHA"
 
 namespace ekg {
