@@ -15,143 +15,141 @@
 #include "ekg/util/text.hpp"
 #include "ekg/util/geometry.hpp"
 
-size_t ekg::utf_check_sequence(uint8_t &ui8_char, char32_t &ui32_char, std::string &utf_string, std::string_view string, size_t index) {
-    if (ui8_char <= 0x7F) {
-        ui32_char = static_cast<char32_t>(ui8_char);
-        utf_string = ui8_char;
+uint64_t ekg::utf_check_sequence(const char &char8, char32_t &char32, std::string &utf_string, std::string_view string, uint64_t index) {
+    if (char8 <= 0x7F) {
+        char32 = static_cast<char32_t>(char8);
+        utf_string = char8;
         return 0;
-    } else if ((ui8_char & 0xE0) == 0xC0) {
+    } else if ((char8 & 0xE0) == 0xC0) {
         utf_string = string.substr(index, 2);
-        ui32_char = ekg::utf_string_to_ui32(utf_string);
+        char32 = ekg::utf_string_to_char32(utf_string);
         return 1;
-    } else if ((ui8_char & 0xF0) == 0xE0) {
+    } else if ((char8 & 0xF0) == 0xE0) {
         utf_string = string.substr(index, 3);
-        ui32_char = ekg::utf_string_to_ui32(utf_string);
+        char32 = ekg::utf_string_to_char32(utf_string);
         return 2;
-    } else if ((ui8_char & 0xF8) == 0xF0) {
+    } else if ((char8 & 0xF8) == 0xF0) {
         utf_string = string.substr(index, 4);
-        ui32_char = ekg::utf_string_to_ui32(utf_string);
+        char32 = ekg::utf_string_to_char32(utf_string);
         return 3;
     }
 
     return 0;
 }
 
-std::string ekg::utf_ui32_to_string(char32_t ui32_char) {
+std::string ekg::utf_char32_to_string(char32_t char32) {
     std::string result {};
 
-    if (ui32_char < 0x80) {
-        result += static_cast<char>(ui32_char);
-    } else if (ui32_char < 0x800) {
-        result += static_cast<char>(0xC0 | (ui32_char >> 6));
-        result += static_cast<char>(0x80 | (ui32_char & 0x3F));
-    } else if (ui32_char < 0x10000) {
-        result += static_cast<char>(0xE0 | (ui32_char >> 12));
-        result += static_cast<char>(0x80 | ((ui32_char >> 6) & 0x3F));
-        result += static_cast<char>(0x80 | (ui32_char & 0x3F));
-    } else if (ui32_char < 0x110000) {
-        result += static_cast<char>(0xF0 | (ui32_char >> 18));
-        result += static_cast<char>(0x80 | ((ui32_char >> 12) & 0x3F));
-        result += static_cast<char>(0x80 | ((ui32_char >> 6) & 0x3F));
-        result += static_cast<char>(0x80 | (ui32_char & 0x3F));
+    if (char32 < 0x80) {
+        result += static_cast<char>(char32);
+    } else if (char32 < 0x800) {
+        result += static_cast<char>(0xC0 | (char32 >> 6));
+        result += static_cast<char>(0x80 | (char32 & 0x3F));
+    } else if (char32 < 0x10000) {
+        result += static_cast<char>(0xE0 | (char32 >> 12));
+        result += static_cast<char>(0x80 | ((char32 >> 6) & 0x3F));
+        result += static_cast<char>(0x80 | (char32 & 0x3F));
+    } else if (char32 < 0x110000) {
+        result += static_cast<char>(0xF0 | (char32 >> 18));
+        result += static_cast<char>(0x80 | ((char32 >> 12) & 0x3F));
+        result += static_cast<char>(0x80 | ((char32 >> 6) & 0x3F));
+        result += static_cast<char>(0x80 | (char32 & 0x3F));
     }
 
     return result;
 }
 
-char32_t ekg::utf_string_to_ui32(std::string_view string) {
-    char32_t value {};
-    size_t bytesread {};
-    uint8_t ui8_char {static_cast<uint8_t>(string.at(0))};
+char32_t ekg::utf_string_to_char32(std::string_view string) {
+    char32_t char32 {};
+    uint64_t bytes_read {};
+    const char &char8 {string.at(0)};
 
-    if (ui8_char <= 0x7F) {
-        value = ui8_char;
-        bytesread = 1;
-    } else if (ui8_char <= 0xDF) {
-        value = ui8_char & 0x1F;
-        bytesread = 2;
-    } else if (ui8_char <= 0xEF) {
-        value = ui8_char & 0x0F;
-        bytesread = 3;
+    if (char8 <= 0x7F) {
+        char32 = char8;
+        bytes_read = 1;
+    } else if (char8 <= 0xDF) {
+        char32 = char8 & 0x1F;
+        bytes_read = 2;
+    } else if (char8 <= 0xEF) {
+        char32 = char8 & 0x0F;
+        bytes_read = 3;
     } else {
-        value = ui8_char & 0x07;
-        bytesread = 4;
+        char32 = char8 & 0x07;
+        bytes_read = 4;
     }
 
-    for (size_t it {1}; it < bytesread; ++it) {
-        ui8_char = static_cast<uint8_t>(string.at(it));
-        value = (value << 6) | (ui8_char & 0x3F);
+    for (uint64_t it {1}; it < bytes_read; ++it) {
+        const char &char8 = string.at(it);
+        char32 = (char32 << 6) | (char8 & 0x3F);
     }
 
-    return value > 512 ? 32 : value;
+    return char32 > 512 ? 32 : char32;
 }
 
-size_t ekg::utf_length(std::string_view utf_string) {
+uint64_t ekg::utf_length(std::string_view utf_string) {
     if (utf_string.empty()) {
         return 0;
     }
 
-    size_t stringsize {};
-    uint8_t ui8_char {};
+    uint64_t string_size {};
 
-    for (size_t it {}; it < utf_string.size(); it++) {
-        ui8_char = static_cast<uint8_t>(utf_string.at(it));
+    for (uint64_t it {}; it < utf_string.size(); it++) {
+        const char &char8 {utf_string.at(it)};
 
-        if (ui8_char == '\n' || ui8_char == '\r') {
+        if (char8 == '\n' || char8 == '\r') {
             continue;
-        } else if (ui8_char <= 0x7F) {
-            stringsize++;
-        } else if ((ui8_char & 0xE0) == 0xC0) {
-            stringsize++;
+        } else if (char8 <= 0x7F) {
+            string_size++;
+        } else if ((char8 & 0xE0) == 0xC0) {
+            string_size++;
             it++;
-        } else if ((ui8_char & 0xF0) == 0xE0) {
-            stringsize++;
+        } else if ((char8 & 0xF0) == 0xE0) {
+            string_size++;
             it += 2;
-        } else if ((ui8_char & 0xF8) == 0xF0) {
-            stringsize++;
+        } else if ((char8 & 0xF8) == 0xF0) {
+            string_size++;
             it += 3;
         }
     }
 
-    return stringsize;
+    return string_size;
 }
 
-std::string ekg::utf_substr(std::string_view string, size_t a, size_t b) {
+std::string ekg::utf_substr(std::string_view string, uint64_t a, uint64_t b) {
     if (string.empty()) {
         return "";
     }
 
-    size_t stringsize {ekg::utf_length(string)};
+    uint64_t string_size {ekg::utf_length(string)};
     std::string substred {};
 
-    if (stringsize == string.size()) {
+    if (string_size == string.size()) {
         substred = string.substr(a, b);
     } else {
         b += a;
 
-        uint8_t ui8_char {};
         bool indexafilled {};
         bool indexbfilled {};
 
-        size_t index {};
-        size_t sumindex {};
-        size_t indexa {};
-        size_t indexb {};
-        size_t itsub {};
+        uint64_t index {};
+        uint64_t sumindex {};
+        uint64_t indexa {};
+        uint64_t indexb {};
+        uint64_t itsub {};
 
         std::string astring {};
         std::string bstring {};
 
-        for (size_t it {}; it < string.size(); it++) {
-            ui8_char = static_cast<uint8_t>(string.at(it));
+        for (uint64_t it {}; it < string.size(); it++) {
+            const char &char8 {string.at(it)};
 
-            if (ui8_char <= 0x7F) {
+            if (char8 <= 0x7F) {
                 sumindex = 0;
-            } else if ((ui8_char & 0xE0) == 0xC0) {
+            } else if ((char8 & 0xE0) == 0xC0) {
                 sumindex = 1;
-            } else if ((ui8_char & 0xF0) == 0xE0) {
+            } else if ((char8 & 0xF0) == 0xE0) {
                 sumindex = 2;
-            } else if ((ui8_char & 0xF8) == 0xF0) {
+            } else if ((char8 & 0xF8) == 0xF0) {
                 sumindex = 3;
             }
 

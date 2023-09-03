@@ -137,7 +137,6 @@ void ekg::gpu::allocator::draw() {
 
     uint8_t prev_texture_bound {};
     bool texture_enabled {};
-    ekg::gpu::data data {};
 
     /*
      * Before each rendering section, the allocator iterate alls textures and bind it on global context.
@@ -157,7 +156,7 @@ void ekg::gpu::allocator::draw() {
      */
 
     for (uint64_t it {}; it < this->data_instance_index; it++) {
-        data = this->data_list[it];
+        ekg::gpu::data &data {this->data_list.at(it)};
         texture_enabled = data.active_tex_slot > 0;
 
         if (texture_enabled && prev_texture_bound != data.active_tex_slot) {
@@ -314,7 +313,7 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_par
     }
 
     this->out_of_scissor_rect = !(scissor.rect[0] < mother_rect.rect[0] + mother_rect.rect[2] && scissor.rect[0] + scissor.rect[2] > mother_rect.rect[0] &&
-                                  scissor.rect[1] < mother_rect.rect[1] + mother_rect.rect[3] && scissor.rect[1] + scissor.rect[3] > mother_rect.rect[1]); 
+                                                   scissor.rect[1] < mother_rect.rect[1] + mother_rect.rect[3] && scissor.rect[1] + scissor.rect[3] > mother_rect.rect[1]); 
 }
 
 void ekg::gpu::allocator::bind_scissor(int32_t scissor_id) {

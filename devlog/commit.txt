@@ -105,3 +105,7 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Removed useless bloat code from geometry and layout service (grid etc).
 -- Added maximum lines limit for textbox.
 -- Added maximum chars per line for textbox.
+
+0.0.1.0.4.0 03/09/23
+
+-- New open-souce license MIT for EKG distribution, please read 'vokegpu-ekg-license.txt' for more details.
