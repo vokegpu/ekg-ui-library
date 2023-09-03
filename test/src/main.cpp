@@ -16,6 +16,21 @@
 
 #define SOUGOSTOSA
 
+ekg::rect window_size {0, 0, 1280, 720};
+bool running {true};
+
+void create_exit_button() {
+    ekg::frame("oi wuria ser linda", {window_size.w / 2, window_size.h - 50}, {100, 40});
+    ekg::button("Exit", ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::cpu::event {"exit-callback", &running, [](void *p_data) {
+        bool *p_running {static_cast<bool*>(p_data)};
+        *p_running = false;
+    }});;
+
+    ekg::pop_group();
+
+    ekg::log() << window_size.w / 2 << window_size.h - 50 + 20;
+}
+
 std::string checkcalc(std::string_view text, std::string_view operatortext) {
     std::string result {};
     result += text.substr(text.size() - 1, 1);
@@ -196,7 +211,6 @@ int32_t main_example_with_no_ekg() {
     SDL_GL_SetSwapInterval(1);
     SDL_Event sdl_event {};
 
-    bool running {true};
     while (running) {
         while (SDL_PollEvent(&sdl_event)) {
             if (sdl_event.type == SDL_QUIT) {
@@ -267,7 +281,8 @@ int32_t main_example() {
     ekg::scroll("scroll minecraft");
     ekg::pop_group();
 
-    bool running {true};
+    create_exit_button();
+
     while (running) {
         while (SDL_PollEvent(&sdl_event)) {
             if (sdl_event.type == SDL_QUIT) {
@@ -340,7 +355,6 @@ int32_t main_calculator() {
     SDL_Window* sdl_win {SDL_CreateWindow("Pompom Calculator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
     SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
 
-    bool running {true};
     glewExperimental = GL_TRUE;
 
     if (glewInit() != GLEW_OK) {

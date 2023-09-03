@@ -419,7 +419,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
     switch (action) {
     case ekg::ui::textbox_widget::action::add_text:
-        if (max_size_reached[0] || (this->is_action_modifier_enable && !(this->is_clipboard_cut || this->is_clipboard_copy || this->is_clipboard_paste))) {
+        if ((this->is_action_modifier_enable && !(this->is_clipboard_cut || this->is_clipboard_copy || this->is_clipboard_paste))) {
             break;
         }
 
@@ -486,6 +486,10 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                     break;
                 }
             }
+        }
+
+        if (max_size_reached[0]) {
+            break;
         }
 
         emplace_text_a = ekg::utf_substr(emplace_text_a, 0, cursor.pos[0].text_index) + text.data() +
