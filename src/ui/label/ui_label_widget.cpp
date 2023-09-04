@@ -33,12 +33,12 @@ void ekg::ui::label_widget::on_destroy() {
 void ekg::ui::label_widget::on_reload() {
     abstract_widget::on_reload();
 
-    auto ui {(ekg::ui::label*) this->data};
+    auto p_ui {(ekg::ui::label*) this->data};
     auto &rect {this->get_abs_rect()};
-    auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
-    auto scaled_height {ui->get_scaled_height()};
+    auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+    auto scaled_height {p_ui->get_scaled_height()};
 
-    float text_width {f_renderer.get_text_width(ui->get_text(), scaled_height)};
+    float text_width {f_renderer.get_text_width(p_ui->get_text(), scaled_height)};
     float text_height {f_renderer.get_text_height()};
 
     float dimension_offset {text_height / 2};
@@ -55,7 +55,7 @@ void ekg::ui::label_widget::on_reload() {
 
     auto &layout {ekg::core->service_layout};
     layout.set_preset_mask({offset, offset, this->dimension.h}, ekg::axis::horizontal, this->dimension.w);
-    layout.insert_into_mask({&this->rect_text, ui->get_text_align()});
+    layout.insert_into_mask({&this->rect_text, p_ui->get_text_align()});
     layout.process_layout_mask();
 
     auto &layout_mask {layout.get_layout_mask()};
@@ -64,7 +64,7 @@ void ekg::ui::label_widget::on_reload() {
     this->dimension.w = ekg::assert_task(this->dimension.w, this->dimension.w <= text_width ? layout_mask.w : this->dimension.w);
     this->dimension.h = ekg::assert_task(this->dimension.h, ekg::min(this->dimension.h, layout_mask.h));
 
-    if (ekg::assert_task_flag && ui->has_parent()) {
+    if (ekg::assert_task_flag && p_ui->has_parent()) {
         ekg::synclayout(this);
         this->is_targeting_absolute_parent = true;
     }
@@ -86,12 +86,12 @@ void ekg::ui::label_widget::on_update() {
 }
 
 void ekg::ui::label_widget::on_draw_refresh() {
-    auto ui {(ekg::ui::label*) this->data};
+    auto p_ui {(ekg::ui::label*) this->data};
     auto &rect {this->get_abs_rect()};
-    auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
+    auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
     ekg::draw::bind_scissor(this->data->get_id());
-    ekg::draw::sync_scissor(rect, ui->get_parent_id());
-    f_renderer.blit(ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, ekg::theme().label_string);
+    ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
+    f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, ekg::theme().label_string);
     ekg::draw::bind_off_scissor();
 }

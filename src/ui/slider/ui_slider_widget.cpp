@@ -28,15 +28,15 @@
 #include "ekg/draw/draw.hpp"
 
 void ekg::ui::slider_widget::update_bar(float x, float y) {
-    auto ui {(ekg::ui::slider*) this->data};
+    auto p_ui {(ekg::ui::slider*) this->data};
     auto &rect {this->get_abs_rect()};
     auto bar {this->rect_bar + rect};
-    auto orientation {ui->get_bar_align()};
+    auto orientation {p_ui->get_bar_align()};
     
     float factor {};
     float dimension_factor {};
-    float min {ui->get_value_min()};
-    float max {ui->get_value_max()};
+    float min {p_ui->get_value_min()};
+    float max {p_ui->get_value_max()};
 
     switch (orientation) {
         case ekg::dock::left: {
@@ -51,12 +51,12 @@ void ekg::ui::slider_widget::update_bar(float x, float y) {
     }
 
     if (factor == 0) {
-        factor = ui->get_value_min();
+        factor = p_ui->get_value_min();
     } else {
         factor = (factor / dimension_factor) * (max - min) + min;
     }
 
-    ui->set_value(factor);
+    p_ui->set_value(factor);
 }
 
 void ekg::ui::slider_widget::on_destroy() {
@@ -66,17 +66,17 @@ void ekg::ui::slider_widget::on_destroy() {
 void ekg::ui::slider_widget::on_reload() {
     abstract_widget::on_reload();
 
-    auto ui {(ekg::ui::slider*) this->data};
+    auto p_ui {(ekg::ui::slider*) this->data};
     auto &rect {this->get_abs_rect()};
-    auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
-    auto text_dock_flags {ui->get_text_align()};
-    auto bar_dock_flags {ui->get_bar_align()};
-    auto bar_axis {ui->get_bar_axis()};
+    auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+    auto text_dock_flags {p_ui->get_text_align()};
+    auto bar_dock_flags {p_ui->get_bar_align()};
+    auto bar_axis {p_ui->get_bar_axis()};
     auto &theme {ekg::theme()};
-    auto value_precision {ui->get_precision()};
+    auto value_precision {p_ui->get_precision()};
 
     float text_height {f_renderer.get_text_height()};
-    float value {ui->get_value()}, min {ui->get_value_min()}, max {ui->get_value_max()};
+    float value {p_ui->get_value()}, min {p_ui->get_value_min()}, max {p_ui->get_value_max()};
 
     std::string max_string {ekg::string_float_precision(max, value_precision)};
     std::string min_string {ekg::string_float_precision(min, value_precision)};
@@ -90,7 +90,7 @@ void ekg::ui::slider_widget::on_reload() {
 
     float dimension_offset {text_height / 2};
     float offset {ekg::find_min_offset(text_width, dimension_offset)};
-    float dimension_height {(text_height + dimension_offset) * static_cast<float>(ui->get_scaled_height())};
+    float dimension_height {(text_height + dimension_offset) * static_cast<float>(p_ui->get_scaled_height())};
 
     float normalised_bar_thickness {static_cast<float>(theme.slider_bar_thickness) / 100};
     float normalised_target_thickness {static_cast<float>(theme.slider_target_thickness) / 100};
@@ -183,7 +183,7 @@ void ekg::ui::slider_widget::on_pre_event(SDL_Event &sdl_event) {
 void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
     abstract_widget::on_event(sdl_event);
 
-    auto ui {(ekg::ui::slider*) this->data};
+    auto p_ui {(ekg::ui::slider*) this->data};
     auto &rect {this->get_abs_rect()};
     auto &interact {ekg::input::interact()};
     
@@ -199,20 +199,20 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
     this->flag.hovered = this->flag.hovered && this->flag.highlight;
 
     if (this->flag.state) {
-        ui->set_value(ui->get_value() + (interact.w));
+        p_ui->set_value(p_ui->get_value() + (interact.w));
     } else if (this->flag.hovered && pressed && ekg::input::action("slider-activy")) {
         this->flag.activy = true;
-        ui->set_dragging(true);
+        p_ui->set_dragging(true);
         this->update_bar(interact.x, interact.y);
         this->flag.absolute = true;
     } else if  (released) {
         if (this->flag.activy) {
-            ekg::dispatch_ui_event(ui->get_tag().empty() ? "Unknown Slider UI" : ui->get_tag(), std::to_string(ui->get_value()), (uint16_t) ui->get_type());
+            ekg::dispatch_ui_event(p_ui->get_tag().empty() ? "Unknown Slider UI" : p_ui->get_tag(), std::to_string(p_ui->get_value()), (uint16_t) p_ui->get_type());
         }
 
         this->flag.absolute = false;
         this->flag.activy = false;
-        ui->set_dragging(false);
+        p_ui->set_dragging(false);
     } else if (this->flag.activy && motion) {
         this->update_bar(interact.x, interact.y);
     }
@@ -228,14 +228,14 @@ void ekg::ui::slider_widget::on_update() {
 
 void ekg::ui::slider_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
-    auto ui {(ekg::ui::slider*) this->data};
+    auto p_ui {(ekg::ui::slider*) this->data};
     auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};
     auto &f_renderer {ekg::f_renderer(this->font_render_size)};
     auto bar {this->rect_bar + rect}, bar_value {this->rect_bar_value + rect};;
 
-    ekg::draw::bind_scissor(ui->get_id());
-    ekg::draw::sync_scissor(rect, ui->get_parent_id());
+    ekg::draw::bind_scissor(p_ui->get_id());
+    ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
     ekg::draw::rect(bar, theme.slider_background);
 
     if (this->flag.highlight) {

@@ -264,6 +264,8 @@ int32_t main_example() {
     ekg::autoscale = false;
     ekg::scalebase = {800, 600};
 
+    ekg::log() << "oi queria ser MUIUTO gostosa\t" << ((uint64_t) 0 - (uint64_t) 0);
+
     ekg::runtime ekg_runtime {};
     ekg::init(&ekg_runtime, sdl_win, "whitneybook.otf");
 
@@ -278,9 +280,9 @@ int32_t main_example() {
     frame->set_drag(ekg::dock::top);
     frame->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
 
-    ekg::button("pompom click!!", ekg::dock::fill);
-    ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    auto p_textbox = ekg::textbox("Lê textbox", "", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6)->set_max_lines(200)->set_max_chars_per_line(UINT16_MAX);
+    ekg::button("pom pom clcik click!!", ekg::dock::fill);
+    ekg::slider("pompo number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+    auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6)->set_max_lines(200)->set_max_chars_per_line(UINT16_MAX);
 
     ekg::label("RGB:", ekg::dock::next);
 

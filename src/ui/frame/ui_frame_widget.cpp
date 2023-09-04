@@ -46,11 +46,11 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
     abstract_widget::on_event(sdl_event);
 
     auto &interact {ekg::input::interact()};
-    auto ui {(ekg::ui::frame*) this->data};
+    auto p_ui {(ekg::ui::frame*) this->data};
     auto &rect {this->get_abs_rect()};
 
-    uint16_t drag_dock_flags {ui->get_drag_dock()};
-    uint16_t resize_dock_flags {ui->get_resize_dock()};
+    uint16_t drag_dock_flags {p_ui->get_drag_dock()};
+    uint16_t resize_dock_flags {p_ui->get_resize_dock()};
     uint16_t shown_cursor_dock_flags {};
 
     if ((drag_dock_flags != ekg::dock::none || resize_dock_flags != ekg::dock::none) && ekg::input::pressed() && this->flag.hovered && !this->flag.activy && (ekg::input::action("frame-drag-activy") || ekg::input::action("frame-resize-activy"))) {
@@ -108,7 +108,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
         ekg::set_rect_clamped(new_rect, 30.0f);
 
         if (rect != new_rect) {
-            if (ui->has_parent()) {
+            if (p_ui->has_parent()) {
                 this->dimension.x = new_rect.x - this->parent->x;
                 this->dimension.y = new_rect.y - this->parent->y;
             } else {
@@ -119,7 +119,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
             this->dimension.w = new_rect.w;
             this->dimension.h = new_rect.h;
 
-            ui->ui() = new_rect;
+            p_ui->ui() = new_rect;
 
             /*
              * Is very important to use synclaout before scissor.

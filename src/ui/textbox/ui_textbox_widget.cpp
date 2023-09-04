@@ -50,6 +50,7 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
 
     std::string utf_string {};
     char32_t char32 {};
+    uint8_t char8 {};
 
     x = 0;
 
@@ -60,7 +61,7 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
      */
 
     while (it < emplace_text_size) {
-        char &char8 {emplace_text.at(it)};
+        char8 = static_cast<uint8_t>(emplace_text.at(it));
 
         if (is_dir_right && utf_it >= target_cursor_pos.text_index) {
             if (char8 != 32) {
@@ -166,6 +167,7 @@ void ekg::ui::textbox_widget::update_cpu_side_batching_cursor() {
 
     char32_t char32 {};
     std::string utf_string {};
+    uint8_t char8 {};
 
     uint64_t chunk_size {this->text_chunk_list.size()};
     uint64_t utf_char_index {};
@@ -184,7 +186,7 @@ void ekg::ui::textbox_widget::update_cpu_side_batching_cursor() {
     bool draw_additional_selected_last_char {};
 
     this->cursor_draw_data_list.clear();
-    
+
     if (this->text_utf_char_index_list.size() != text_chunk_size) {
         this->text_utf_char_index_list.resize(text_chunk_size);
     }
@@ -217,7 +219,7 @@ void ekg::ui::textbox_widget::update_cpu_side_batching_cursor() {
         }
 
         for (it = 0; it < text.size(); it++) {
-            char &char8 {text.at(it)};
+            char8 = static_cast<uint8_t>(text.at(it));
             it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
 
             if (f_renderer.ft_bool_kerning && f_renderer.ft_uint_previous) {
@@ -675,23 +677,21 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
     int64_t chunk_size {static_cast<int64_t>(this->text_chunk_list.size())};
 
     char32_t char32 {};
+    uint8_t char8 {};
 
     size_t utf_char_index {};
     std::string utf_string {};
     bool is_it_chunk_at_end {};
 
-    uint64_t visible_chunk_index {
-        this->visible_text[1]
-    };
+    ekg::log() << this->visible_text[1] << "\t" << "gatinhos: " << this->text_utf_char_index_list.at(this->visible_text[1]) << " cachorrinhos: " << this->text_chunk_list.at(this->visible_text[1]).size();
 
-    uint64_t text_utf_char_index {this->text_utf_char_index_list.at(visible_chunk_index) - this->text_chunk_list.at(visible_chunk_index).size()};
+    uint64_t text_utf_char_index {this->text_utf_char_index_list.at(this->visible_text[1]) - this->text_chunk_list.at(this->visible_text[1]).size()};
     uint64_t text_it {};
     uint64_t it_chunk {};
     uint64_t it {};
 
     y += (this->text_height * this->visible_text[1]);
-
-    for (it_chunk = visible_chunk_index; it_chunk < this->text_chunk_list.size(); it_chunk++) {
+    for (it_chunk = this->visible_text[1]; it_chunk < this->text_chunk_list.size(); it_chunk++) {
         std::string &text {this->text_chunk_list.at(it_chunk)};
 
         x = rect.x + this->rect_cursor.w + this->embedded_scroll.scroll.x;
@@ -700,7 +700,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
         is_it_chunk_at_end = it_chunk == chunk_size - 1;
 
         for (it = 0; it < text.size(); it++) {
-            char &char8 {text.at(it)};
+            char8 = static_cast<uint8_t>(text.at(it));
             it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
 
             if (f_renderer.ft_bool_kerning && f_renderer.ft_uint_previous) {
@@ -1105,8 +1105,8 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     y = this->text_offset;
 
     char32_t char32 {};
-
     std::string utf_string {};
+    uint8_t char8 {};
 
     uint64_t it {};
     uint64_t text_chunk_size {this->text_chunk_list.size()};
@@ -1157,7 +1157,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         }
 
         for (it = 0; it < text.size(); it++) {
-            char &char8 {text.at(it)};
+            char8 = static_cast<uint8_t>(text.at(it));
             it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
 
             if (f_renderer.ft_bool_kerning && f_renderer.ft_uint_previous) {

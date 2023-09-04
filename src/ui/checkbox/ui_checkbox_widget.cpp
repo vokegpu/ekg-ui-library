@@ -33,12 +33,12 @@ void ekg::ui::checkbox_widget::on_destroy() {
 void ekg::ui::checkbox_widget::on_reload() {
     abstract_widget::on_reload();
 
-    auto ui {(ekg::ui::checkbox*) this->data};
+    auto p_ui {(ekg::ui::checkbox*) this->data};
     auto &rect {this->get_abs_rect()};
-    auto scaled_height {ui->get_scaled_height()};
-    auto f_renderer {ekg::f_renderer(ui->get_font_size())};
+    auto scaled_height {p_ui->get_scaled_height()};
+    auto f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
-    float text_width {f_renderer.get_text_width(ui->get_text())};
+    float text_width {f_renderer.get_text_width(p_ui->get_text())};
     float text_height {f_renderer.get_text_height()};
     float box_size {text_height};
 
@@ -60,8 +60,8 @@ void ekg::ui::checkbox_widget::on_reload() {
 
     auto &layout {ekg::core->service_layout};
     ekg::core->service_layout.set_preset_mask({offset, offset, dimension_height}, ekg::axis::horizontal, this->dimension.w);
-    layout.insert_into_mask({&this->rect_box, ui->get_box_align()});
-    layout.insert_into_mask({&this->rect_text, ui->get_text_align()});
+    layout.insert_into_mask({&this->rect_box, p_ui->get_box_align()});
+    layout.insert_into_mask({&this->rect_text, p_ui->get_text_align()});
     layout.process_layout_mask();
 
     auto &layout_mask {layout.get_layout_mask()};
@@ -88,15 +88,15 @@ void ekg::ui::checkbox_widget::on_event(SDL_Event &sdl_event) {
         ekg::set(this->flag.activy, true);
     } else if (released && this->flag.activy) {
         if (this->flag.hovered) {
-            auto ui {(ekg::ui::checkbox*) this->data};
-            ui->set_value(!ui->get_value());
+            auto p_ui {(ekg::ui::checkbox*) this->data};
+            p_ui->set_value(!p_ui->get_value());
 
-            auto callback {ui->get_callback()};
+            auto callback {p_ui->get_callback()};
             if (callback != nullptr) {
                 ekg::dispatch(callback);
             }
 
-            ekg::dispatch_ui_event(ui->get_tag().empty() ? "Unknown Checkbox UI" : ui->get_tag(), ui->get_value() ? "checked" : "unchecked", (uint16_t) ui->get_type());
+            ekg::dispatch_ui_event(p_ui->get_tag().empty() ? "Unknown Checkbox UI" : p_ui->get_tag(), p_ui->get_value() ? "checked" : "unchecked", (uint16_t) p_ui->get_type());
         }
 
         ekg::set(this->flag.activy, false);
@@ -113,14 +113,14 @@ void ekg::ui::checkbox_widget::on_update() {
 
 void ekg::ui::checkbox_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
-    auto ui {(ekg::ui::checkbox*) this->data};
+    auto p_ui {(ekg::ui::checkbox*) this->data};
     auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};
-    auto &f_renderer {ekg::f_renderer(ui->get_font_size())};
+    auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
     auto box {this->rect_box + rect};
 
-    ekg::draw::bind_scissor(ui->get_id());
-    ekg::draw::sync_scissor(rect, ui->get_parent_id());
+    ekg::draw::bind_scissor(p_ui->get_id());
+    ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
 
     ekg::draw::rect(rect, theme.checkbox_background);
     ekg::draw::rect(rect, theme.checkbox_outline, ekg::drawmode::outline);
@@ -129,7 +129,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
         ekg::draw::rect(rect, theme.checkbox_highlight);
     }
 
-    if (this->flag.focused && !ui->get_value()) {
+    if (this->flag.focused && !p_ui->get_value()) {
         ekg::draw::rect(box, theme.checkbox_highlight);
     }
 
@@ -139,15 +139,15 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
         ekg::draw::rect(this->flag.focused ? box : rect, theme.checkbox_activy);
     }
 
-    if (ui->get_value()) {
+    if (p_ui->get_value()) {
         ekg::draw::rect(box, theme.checkbox_activy);
     }
 
-    if (ui->get_value() && this->flag.highlight) {
+    if (p_ui->get_value() && this->flag.highlight) {
         ekg::draw::rect(box, {theme.checkbox_activy, theme.checkbox_outline.w}, ekg::drawmode::outline);
     }
 
-    f_renderer.blit(ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.checkbox_string);
+    f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.checkbox_string);
 
     ekg::draw::bind_off_scissor();
 }

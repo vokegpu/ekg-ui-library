@@ -44,13 +44,14 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text, int32_t &l
 
     uint64_t text_size {text.size()};
     char32_t char32 {};
+    uint8_t char8 {};
     std::string utf_string {};
 
     bool break_text {};
     bool r_n_break_text {};
 
     for (uint64_t it {}; it < text_size; it++) {
-        const char &char8 {text.at(it)};
+        char8 = static_cast<uint8_t>(text.at(it));
         it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
 
         break_text = char8 == '\n';
@@ -89,12 +90,13 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
 
     uint64_t text_size {text.size()};
     std::string utf_string {};
+    uint8_t char8 {};
 
     bool break_text {};
     bool r_n_break_text {};
 
     for (uint64_t it {}; it < text_size; it++) {
-        const char &char8 {text.at(it)};
+        char8 = static_cast<uint8_t>(text.at(it));
         it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
 
         break_text = char8 == '\n';
@@ -215,7 +217,6 @@ void ekg::draw::font_renderer::reload() {
 
         glTexSubImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(offset), 0, static_cast<GLsizei>(char_data.w), static_cast<GLsizei>(char_data.h), internal_format, GL_UNSIGNED_BYTE, this->ft_glyph_slot->bitmap.buffer);
         offset += char_data.w;
-
     }
 
     // GLES 3 does not support swizzle function, the format GL_ALPHA supply this issue.
@@ -262,13 +263,14 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
 
     ekg::rect vertices {};
     ekg::rect coordinates {};
-    ekg::char_data char_data {};
 
     x = 0.0f;
     y = 0.0f;
 
     data.factor = 1;
     char32_t char32 {};
+    uint8_t char8 {};
+
     std::string utf_string {};
     uint64_t text_size {text.size()};
 
@@ -276,7 +278,7 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     bool r_n_break_text {};
 
     for (uint64_t it {}; it < text_size; it++) {
-        const char &char8 {text.at(it)};
+        char8 = static_cast<uint8_t>(text.at(it));
         it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
 
         break_text = char8 == '\n';
@@ -293,7 +295,7 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
             x += static_cast<float>(this->ft_vector_previous_char.x >> 6);
         }
 
-        char_data = this->allocated_char_data[char32];
+        ekg::char_data &char_data {this->allocated_char_data[char32]};
         vertices.x = x + char_data.left;
         vertices.y = y + this->full_height - char_data.top;
 

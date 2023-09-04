@@ -185,7 +185,7 @@ void ekg::gpu::allocator::draw() {
 
         switch (data.begin_stride) {
             case 0: {
-                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void*)0);
+                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, nullptr);
                 break;
             }
 

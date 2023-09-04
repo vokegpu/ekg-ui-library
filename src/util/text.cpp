@@ -24,11 +24,12 @@
 
 #include "ekg/util/text.hpp"
 #include "ekg/util/geometry.hpp"
+#include "ekg/util/io.hpp"
 
-uint64_t ekg::utf_check_sequence(const char &char8, char32_t &char32, std::string &utf_string, std::string_view string, uint64_t index) {
+uint64_t ekg::utf_check_sequence(uint8_t &char8, char32_t &char32, std::string &utf_string, std::string_view string, uint64_t index) {
     if (char8 <= 0x7F) {
-        char32 = static_cast<char32_t>(char8);
         utf_string = char8;
+        char32 = static_cast<char32_t>(char8);
         return 0;
     } else if ((char8 & 0xE0) == 0xC0) {
         utf_string = string.substr(index, 2);
@@ -71,8 +72,8 @@ std::string ekg::utf_char32_to_string(char32_t char32) {
 
 char32_t ekg::utf_string_to_char32(std::string_view string) {
     char32_t char32 {};
-    uint64_t bytes_read {};
-    const char &char8 {string.at(0)};
+    uint8_t bytes_read {};
+    uint8_t char8 {static_cast<uint8_t>(string.at(0))};
 
     if (char8 <= 0x7F) {
         char32 = char8;
@@ -88,8 +89,8 @@ char32_t ekg::utf_string_to_char32(std::string_view string) {
         bytes_read = 4;
     }
 
-    for (uint64_t it {1}; it < bytes_read; ++it) {
-        const char &char8 = string.at(it);
+    for (uint8_t it {1}; it < bytes_read; ++it) {
+        char8 = static_cast<uint8_t>(string.at(it));
         char32 = (char32 << 6) | (char8 & 0x3F);
     }
 
@@ -104,7 +105,7 @@ uint64_t ekg::utf_length(std::string_view utf_string) {
     uint64_t string_size {};
 
     for (uint64_t it {}; it < utf_string.size(); it++) {
-        const char &char8 {utf_string.at(it)};
+        uint8_t char8 {static_cast<uint8_t>(utf_string.at(it))};
 
         if (char8 == '\n' || char8 == '\r') {
             continue;
@@ -138,51 +139,48 @@ std::string ekg::utf_substr(std::string_view string, uint64_t a, uint64_t b) {
     } else {
         b += a;
 
-        bool indexafilled {};
-        bool indexbfilled {};
+        bool index_a_filled {};
+        bool index_b_filled {};
 
         uint64_t index {};
-        uint64_t sumindex {};
-        uint64_t indexa {};
-        uint64_t indexb {};
-        uint64_t itsub {};
-
-        std::string astring {};
-        std::string bstring {};
+        uint64_t sum_index {};
+        uint64_t index_a {};
+        uint64_t index_b {};
+        uint64_t it_sub {};
 
         for (uint64_t it {}; it < string.size(); it++) {
-            const char &char8 {string.at(it)};
+            uint8_t char8 {static_cast<uint8_t>(string.at(it))};
 
             if (char8 <= 0x7F) {
-                sumindex = 0;
+                sum_index = 0;
             } else if ((char8 & 0xE0) == 0xC0) {
-                sumindex = 1;
+                sum_index = 1;
             } else if ((char8 & 0xF0) == 0xE0) {
-                sumindex = 2;
+                sum_index = 2;
             } else if ((char8 & 0xF8) == 0xF0) {
-                sumindex = 3;
+                sum_index = 3;
             }
 
-            if (!indexafilled && index == a) {
-                indexa = it;
-                indexafilled = true;
+            if (!index_a_filled && index == a) {
+                index_a = it;
+                index_a_filled = true;
             }
 
-            if (!indexbfilled && index == b) {
-                indexb = it;
-                indexbfilled = true;
+            if (!index_b_filled && index == b) {
+                index_b = it;
+                index_b_filled = true;
                 break;
             }
 
-            if (indexafilled) {
-                itsub = 0;
-                while ((itsub < (sumindex + 1) || itsub == 0)) {
-                    substred += string.at(it + (itsub++));
+            if (index_a_filled) {
+                it_sub = 0;
+                while ((it_sub < (sum_index + 1) || it_sub == 0)) {
+                    substred += string.at(it + (it_sub++));
                 }
             }
 
             index++;
-            it += sumindex;
+            it += sum_index;
         }
 
     }
