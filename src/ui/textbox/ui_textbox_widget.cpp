@@ -214,10 +214,6 @@ void ekg::ui::textbox_widget::update_cpu_side_batching_cursor() {
         }
 
         text_size = ekg::utf_length(text);
-        if (text_size == 0) {
-            text_utf_char_index++;
-        }
-
         for (it = 0; it < text.size(); it++) {
             char8 = static_cast<uint8_t>(text.at(it));
             it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
@@ -683,8 +679,6 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
     std::string utf_string {};
     bool is_it_chunk_at_end {};
 
-    ekg::log() << this->visible_text[1] << "\t" << "gatinhos: " << this->text_utf_char_index_list.at(this->visible_text[1]) << " cachorrinhos: " << this->text_chunk_list.at(this->visible_text[1]).size();
-
     uint64_t text_utf_char_index {this->text_utf_char_index_list.at(this->visible_text[1]) - this->text_chunk_list.at(this->visible_text[1]).size()};
     uint64_t text_it {};
     uint64_t it_chunk {};
@@ -845,6 +839,7 @@ void ekg::ui::textbox_widget::on_reload() {
          */
         if (this->text_chunk_list.empty()) {
             this->text_chunk_list.emplace_back();
+            this->text_utf_char_index_list.emplace_back();
         }
 
         this->redraw_cursor = true;
@@ -1038,7 +1033,7 @@ void ekg::ui::textbox_widget::on_update() {
  * the performance is not necessary bad.
  */
 int32_t ekg::ui::textbox_widget::find_cursor(ekg::ui::textbox_widget::cursor &target_cursor,
-                                             int64_t text_utf_char_index, int64_t it_chunk, bool last_line_utf_char_index) {
+                                                                        int64_t text_utf_char_index, int64_t it_chunk, bool last_line_utf_char_index) {
     bool a_cursor_pos {};
     bool b_cursor_pos {};
 
