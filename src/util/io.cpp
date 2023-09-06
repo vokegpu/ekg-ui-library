@@ -25,6 +25,7 @@
 #include "ekg/ekg.hpp"
 #include <fstream>
 
+std::ostringstream ekg::log::buffer {};
 std::string ekg::log::cache {};
 
 bool ekg::bitwise::contains(uint16_t target, uint16_t flags) {

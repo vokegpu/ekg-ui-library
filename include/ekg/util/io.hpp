@@ -39,7 +39,7 @@
 namespace ekg {
     struct log {
     protected:
-        std::ostringstream buffer {};
+        static std::ostringstream buffer;
     public:
         static std::string cache;
 
@@ -52,13 +52,14 @@ namespace ekg {
         }
 
         explicit log() {
-            this->buffer << "[EKG-INFO] ";
+            ekg::log::buffer = {};
+            ekg::log::buffer << "[EKG-INFO] ";
             if (ekg::log::cache.size() >= 50000) ekg::log::cache.clear();
         }
 
         ~log() {
-            this->buffer << '\n';
-            std::string logmsg {this->buffer.str()};
+            ekg::log::buffer << '\n';
+            std::string logmsg {ekg::log::buffer.str()};
 
             #if defined(__ANDROID__)
             __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", logmsg.c_str());
@@ -71,7 +72,7 @@ namespace ekg {
 
         template<typename t>
         log &operator<<(const t &value) {
-            this->buffer << value;
+            ekg::log::buffer << value;
             return *this;
         }
     };

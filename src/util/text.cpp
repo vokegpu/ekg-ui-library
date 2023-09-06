@@ -103,7 +103,6 @@ uint64_t ekg::utf_length(std::string_view utf_string) {
     }
 
     uint64_t string_size {};
-
     for (uint64_t it {}; it < utf_string.size(); it++) {
         uint8_t char8 {static_cast<uint8_t>(utf_string.at(it))};
 
