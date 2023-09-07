@@ -1,6 +1,6 @@
 # Welcome 🐈
 
-![powered by JetBrains](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_square.png?raw=true = 50x50)
+![powered by JetBrains](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_square.png =50x50)
 
 ---
 
