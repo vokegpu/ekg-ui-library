@@ -734,9 +734,9 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
         char_rect.x = rect.x;
         char_rect.y = y;
         char_rect.w = rect.w;
-        char_rect.h = this->text_height + 1.0f;
+        char_rect.h = this->text_height + (rect.h * is_it_chunk_at_end);
 
-        if (ekg::rect_collide_vec(char_rect, interact) && it_bounding == -1) {
+        if (ekg::rect_collide_vec(char_rect, interact) && (it_bounding == -1 || text.empty())) {
             char_rect.w = this->text_offset;
             if (ekg::rect_collide_vec(char_rect, interact)) {
                 it_bounding = text_utf_char_index - utf_char_index;

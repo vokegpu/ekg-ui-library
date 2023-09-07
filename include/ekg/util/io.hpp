@@ -38,36 +38,28 @@
 
 namespace ekg {
     struct log {
-    protected:
-        static std::ostringstream buffer;
     public:
-        static std::string cache;
-
-        static bool buffering() {
-            return !ekg::log::cache.empty();
-        }
-        
+        static std::ostringstream buffer;
+        static bool buffered;
+    public:        
         static void flush() {
-            ekg::log::cache.clear();
+            if (ekg::log::buffered) {
+                std::string p_log {ekg::log::buffer.str()};
+
+                #if defined(__ANDROID__)
+                __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", p_log);
+                #else
+                std::cout << p_log;
+                #endif
+
+                ekg::log::buffer = {};
+                ekg::log::buffered = false;
+            }
         }
 
         explicit log() {
-            ekg::log::buffer = {};
-            ekg::log::buffer << "[EKG-INFO] ";
-            if (ekg::log::cache.size() >= 50000) ekg::log::cache.clear();
-        }
-
-        ~log() {
-            ekg::log::buffer << '\n';
-            std::string logmsg {ekg::log::buffer.str()};
-
-            #if defined(__ANDROID__)
-            __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", logmsg.c_str());
-            #else
-            std::cout << logmsg;
-            #endif
-
-            ekg::log::cache += logmsg;
+            ekg::log::buffered = true;
+            ekg::log::buffer << "\n[EKG-INFO] ";
         }
 
         template<typename t>

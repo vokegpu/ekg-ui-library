@@ -229,6 +229,8 @@ void ekg::runtime::process_update() {
 
     this->service_handler.on_update();
     this->gpu_allocator.on_update();
+
+    ekg::log::flush();
 }
 
 void ekg::runtime::redraw_gui() {

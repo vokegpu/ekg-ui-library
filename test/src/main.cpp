@@ -683,11 +683,11 @@ int32_t main_calculator() {
 
         // framedebug->set_size(ekg::display::width, ekg::display::height);
 
-        if (ekg::log::buffering()) {
-            std::string oldlog {textboxdebug->get_text()};
-            if (oldlog.size() > 50000) oldlog = "";
-            textboxdebug->set_text(oldlog + ekg::log::cache);
-            ekg::log::flush();
+        if (ekg::log::buffered) {
+            std::string old_log {textboxdebug->get_text()};
+            if (old_log.size() > 50000) old_log = '\n';
+            old_log += ekg::log::buffer.str();
+            textboxdebug->set_text(old_log);
         }
 
         ekg::update();
@@ -724,5 +724,5 @@ int32_t main_calculator() {
 }
 
 int32_t main(int32_t, char**) {
-    return main_example();
+    return main_calculator();
 }
