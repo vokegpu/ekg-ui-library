@@ -8,7 +8,7 @@ EKG is exclusive for SDL for now.
 ![Image Text](/splash/splash-shocase-3.0-light-theme.png?raw=true)
 ![Calc](/splash/splash-calc-showcase.png?raw=true)
 
-https://github.com/gamedevs-do-apocalipse/gamedevs-do-apocalipse/assets/37088203/5f0cd227-e50d-495c-81a7-76e6155305eb
+![showcase clip](https://github.com/gamedevs-do-apocalipse/gamedevs-do-apocalipse/assets/37088203/5f0cd227-e50d-495c-81a7-76e6155305eb)
 Background song: GUNNM OST 
 
 Check the [development updates here](https://github.com/orgs/gamedevs-do-apocalipse/discussions/5).  
