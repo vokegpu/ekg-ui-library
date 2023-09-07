@@ -1,5 +1,7 @@
 # Welcome 🐈
 
+![powered by JetBrains](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_square.png?raw=true)
+
 ---
 
 The purpose of EKG is to be fully customizable, smooth, and with many animations. Also, perform well with low pc specs. This is the new core version of EKG, a rewrite of the legacy core.  
