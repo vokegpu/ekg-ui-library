@@ -1,6 +1,6 @@
 # Welcome 🐈
 
-<img src="[https://user-images.githubusercontent.com/link-to-your-image.png](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_square.png)" width="50" height="50" />
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_square.png" width="50" height="50"/>
 
 ---
 
