@@ -7,7 +7,7 @@ The purpose of EKG is to be fully customizable, smooth, and with many animations
 If you want to know more about the EKG development progress I recommend you peek:  
 https://github.com/orgs/gamedevs-do-apocalipse/discussions/5
 
-EKG is recognised as an open-source project by [JetBrains](https://www.jetbrains.com/)
+EKG is recognised as an open-source project by [JetBrains](https://www.jetbrains.com/)  
 <a href="https://www.jetbrains.com"> <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_square.png" width="75" height="75" alt="JetBrains Black Box Logo logo."> <a/>
 
 ---
