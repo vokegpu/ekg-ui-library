@@ -1,18 +1,19 @@
 # Welcome 🐈
 
+EKG purpose is simplicity way to create fency reitaned high-performance GUIs, always looking for low-specs.  
+EKG is exclusive for SDL for now.  
+
 ---
-
-The purpose of EKG is to be fully customizable, smooth, and with many animations. Also, perform well with low pc specs. This is the new core version of EKG, a rewrite of the legacy core.  
-If you want to know more about the EKG development progress I recommend you peek:
-https://github.com/orgs/gamedevs-do-apocalipse/discussions/5
-
-The official documentation is not done.
 
 ![Image Text](/splash/splash-shocase-3.0-light-theme.png?raw=true)
 ![Calc](/splash/splash-calc-showcase.png?raw=true)
 
-https://github.com/gamedevs-do-apocalipse/gamedevs-do-apocalipse/assets/37088203/5f0cd227-e50d-495c-81a7-76e6155305eb
+[showcase clip](https://github.com/gamedevs-do-apocalipse/gamedevs-do-apocalipse/assets/37088203/5f0cd227-e50d-495c-81a7-76e6155305eb)  
 Background song: GUNNM OST 
+
+Check the [development updates here](https://github.com/orgs/gamedevs-do-apocalipse/discussions/5).  
+EKG is recognised as an open-source project by [JetBrains](https://www.jetbrains.com/) 🖤  
+<a href="https://www.jetbrains.com"> <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_square.png" width="100" height="100" alt="JetBrains Black Box Logo logo."> <a/>
 
 # Get Started 🐈‍⬛
 
