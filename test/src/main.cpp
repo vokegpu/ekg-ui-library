@@ -724,5 +724,5 @@ int32_t main_calculator() {
 }
 
 int32_t main(int32_t, char**) {
-    return main_calculator();
+    return main_example();
 }

@@ -1,4 +1,5 @@
 cmake-build-debug/
 .idea/
-/.vscode/
-/.sublimetext/
+.vscode/
+.sublimetext/
+.obsidian/
