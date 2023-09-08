@@ -30,7 +30,7 @@
 #include <unordered_map>
 
 #define ekg_textbox_clamp_text_chunk_size(text_chunk_list, max_size) if (text_chunk_list.size() > max_size) text_chunk_list.erase(text_chunk_list.begin() + max_size, text_chunk_list.end())
-#define ekg_textbox_clamp_line(line, max_size) if (line.size() > max_size) line = line.substr(0, max_size)
+#define ekg_textbox_clamp_line(line, max_size) if (line.size() > max_size) line.erase(line.begin() + max_size, line.end())
 
 namespace ekg::ui {
     class textbox_widget : public ekg::ui::abstract_widget {

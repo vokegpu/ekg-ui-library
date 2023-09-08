@@ -261,7 +261,7 @@ int32_t main_example() {
         ekg::log() << "GLEW initialised";
     }
 
-    ekg::autoscale = false;
+    ekg::autoscale = true;
     ekg::scalebase = {800, 600};
 
     ekg::log() << "oi queria ser MUIUTO gostosa\t" << ((uint64_t) 0 - (uint64_t) 0);
@@ -282,7 +282,7 @@ int32_t main_example() {
 
     ekg::button("pom pom clcik click!!", ekg::dock::fill);
     ekg::slider("pompo number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-    auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6)->set_max_lines(200)->set_max_chars_per_line(UINT16_MAX);
+    auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
 
     ekg::label("RGB:", ekg::dock::next);
 

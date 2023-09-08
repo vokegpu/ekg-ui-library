@@ -111,4 +111,5 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- New open-souce license MIT for EKG distribution, please read 'vokegpu-ekg-license.txt' for more details.
 -- Fixed cursor skipping the last two chars at end of line.
 -- Increase speed performance of log, now it is batched.
--- Fixed cursor clicking after optmization.
+-- Fixed cursor clicking after optimization.
+-- Fixed crash when pasting a large text that is less than the textbox chars per line limit.
