@@ -572,7 +572,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
     interact.y = ekg::clamp(interact.y, rect.y + this->text_offset, rect.y + rect.h - this->text_offset);
 
     uint64_t bounding_index {UINT64_MAX};
-    uint64_t chunk_size {this->text_chunk_list.size()};
+    uint64_t text_chunk_size {this->text_chunk_list.size()};
 
     char32_t char32 {};
     uint8_t char8 {};
@@ -587,13 +587,13 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
     uint64_t it {};
 
     y += (this->text_height * this->visible_text[1]);
-    for (chunk_index = this->visible_text[1]; chunk_index < this->text_chunk_list.size(); chunk_index++) {
+    for (chunk_index = this->visible_text[1]; chunk_index < text_chunk_size; chunk_index++) {
         std::string &text {this->text_chunk_list.at(chunk_index)};
 
         x = rect.x + this->rect_cursor.w + this->embedded_scroll.scroll.x;
         utf_char_index = 0;
         f_renderer.ft_uint_previous = 0;
-        is_index_chunk_at_end = chunk_index == chunk_size - 1;
+        is_index_chunk_at_end = chunk_index == text_chunk_size - 1;
 
         for (it = 0; it < text.size(); it++) {
             char8 = static_cast<uint8_t>(text.at(it));
@@ -999,23 +999,20 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     std::string utf_string {};
     uint8_t char8 {};
 
-    bool is_utf_char_last_index {};
-    bool render_cursor {};
+    ekg::ui::textbox_widget::cursor cursor {};
+    int32_t cursor_pos_index {};
 
     uint64_t text_size {};
-    uint64_t chunk_size {this->text_chunk_list.size()};
     uint64_t utf_char_index {};
-    uint64_t text_utf_char_index {this->text_utf_char_index_list.at(this->visible_text[1]) - this->text_chunk_list.at(this->visible_text[1]).size()};
 
     uint64_t it {};
     uint64_t text_chunk_size {this->text_chunk_list.size()};
 
-    ekg::ui::textbox_widget::cursor cursor {};
-    int32_t cursor_pos_index {};
-
     bool optimize_batching {};
     bool do_not_fill_line {};
     bool draw_additional_selected_last_char {};
+    bool is_utf_char_last_index {};
+    bool render_cursor {};
 
     /*
      * 0 == previous char wsize
@@ -1044,6 +1041,8 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     // Multiply with the current visible index for get the perfect y position.
     y += (this->text_height * this->visible_text[1]);
+
+    uint64_t text_utf_char_index {this->text_utf_char_index_list.at(this->visible_text[1]) - this->text_chunk_list.at(this->visible_text[1]).size()};
 
     /*
      * The text iterator jump utf 8 - 16 sequences.
