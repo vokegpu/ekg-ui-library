@@ -24,6 +24,22 @@
 
 #include "ekg/service/handler.hpp"
 #include "ekg/util/io.hpp"
+#include "ekg/os/stl_thread.hpp"
+
+void ekg::multi_thread_task_thread_update(ekg::service::handler *p_service_handler) {
+    std::mutex mutex {};
+    while (p_service_handler->is_running_multi_thread_task()) {
+        mutex.lock();
+    }
+}
+
+void ekg::service::handler::set_running_multi_thread_task(bool state) {
+    this->running_multi_thread_task = state;
+}
+
+bool ekg::service::handler::is_running_multi_thread_task() {
+    return this->running_multi_thread_task;
+}
 
 ekg::cpu::event &ekg::service::handler::allocate() {
     return this->pre_allocated_task_list.emplace_back();
@@ -31,6 +47,9 @@ ekg::cpu::event &ekg::service::handler::allocate() {
 
 ekg::cpu::event &ekg::service::handler::generate() {
     return this->task_queue.emplace();
+}
+
+void ekg::service::handler::init_multi_thread_task_thread() {
 }
 
 void ekg::service::handler::dispatch_pre_allocated_task(uint64_t index) {

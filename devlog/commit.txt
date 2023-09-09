@@ -95,7 +95,7 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Added descriptors object state-based for tasks handler.
 -- Refactored utility part of code.
 -- Fixed textbox bizzare behavior with cursors (all textbox(s) were working simultaneous).
--- Now you can select the text at end of chunk text without hovering the text rect necessary.
+-- Now you can select the text at end of chunk text without hovering the text rect necessary.e
 -- Fixed not automatically filling and jumping at end of text when cursor is selecting.
 -- Fixed select action when moving at end of a line, now no longer crashes.
 -- Insane performance optmization for textbox (over 60k lines).
@@ -113,3 +113,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Increase speed performance of log, now it is batched.
 -- Fixed cursor clicking after optimization.
 -- Fixed crash when pasting a large text that is less than the textbox chars per line limit.
+-- Textbox UI selecting performance insanely increased.

@@ -723,6 +723,92 @@ int32_t main_calculator() {
     return 0;
 }
 
+#include <thread>
+#include <mutex>
+
+uint64_t ticking_sleep {};
+std::vector<std::string> task_list {};
+
+void parallel_runtime() {
+    while (running) {    
+        for (std::string &tasks : task_list) {
+            std::cout << tasks << std::endl;
+        }
+
+        task_list.clear();
+        ticking_sleep = 100;
+        std::this_thread::sleep_for(std::chrono::milliseconds(ticking_sleep));
+    }
+}
+
+int32_t main_thread_system() {
+    for (uint32_t it {}; it < 256; it++) {
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    }
+
+    ticking_sleep = 600;
+    std::thread thread_fofa(parallel_runtime);
+
+    while (running) {
+        ticking_sleep = 0;
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        running = false;
+    }
+
+    std::flush(std::cout);
+    ticking_sleep = 0;
+    thread_fofa.join();
+    return 0;
+}
+
 int32_t main(int32_t, char**) {
     return main_example();
 }

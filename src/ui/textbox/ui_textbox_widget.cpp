@@ -143,7 +143,7 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
  * This method is not called all the time, the part of batching rects for rendering after,
  * works okay, but I will write a fast select rect batching.
  */
-void ekg::ui::textbox_widget::update_cpu_side_batching_cursor() {
+void ekg::ui::textbox_widget::update_ui_text_data() {
     auto p_ui {(ekg::ui::textbox*) this->data};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
     auto &rect {this->get_abs_rect()};
@@ -152,126 +152,28 @@ void ekg::ui::textbox_widget::update_cpu_side_batching_cursor() {
     this->total_utf_chars = 0;
     std::string formated_text {};
 
-    this->visible_text[0] = 0;
-    this->visible_text[1] = 0;
-
     float x {};
     float y {this->text_offset};
 
-    bool is_utf_char_last_index {};
-    bool render_cursor {};
-
-    int64_t text_size {};
-    uint64_t text_utf_char_index {};
-
-    char32_t char32 {};
-    std::string utf_string {};
-    uint8_t char8 {};
-
-    uint64_t chunk_size {this->text_chunk_list.size()};
-    uint64_t utf_char_index {};
-    uint64_t it {};
     uint64_t text_chunk_size {this->text_chunk_list.size()};
-
-    this->rect_cursor.w = 2.0f;
-    this->rect_cursor.h = this->text_height;
-    this->is_ui_enabled = p_ui->is_enabled();
-
-    ekg::ui::textbox_widget::cursor cursor {};
-    int32_t cursor_pos_index {};
-
-    bool optimize_batching {};
-    bool do_not_fill_line {};
-    bool draw_additional_selected_last_char {};
-
-    this->cursor_draw_data_list.clear();
+    uint64_t text_utf_char_index {};
 
     if (this->text_utf_char_index_list.size() != text_chunk_size) {
         this->text_utf_char_index_list.resize(text_chunk_size);
     }
 
+    this->rect_cursor.w = 2.0f;
+    this->rect_cursor.h = this->text_height;
+    this->is_ui_enabled = p_ui->is_enabled();
+
     for (int64_t chunk_index {}; chunk_index < text_chunk_size; chunk_index++) {
         std::string &text {this->text_chunk_list.at(chunk_index)};
-
-        x = this->rect_cursor.w;
-        f_renderer.ft_uint_previous = 0;
-        utf_char_index = 0;
-        do_not_fill_line = false;
-
-        if ((text.empty() && (cursor_pos_index = this->find_cursor(cursor, text_utf_char_index, chunk_index, false)) != -1 && 
-             ((cursor.pos[0] == cursor.pos[1] || cursor.pos[1].index > text_utf_char_index) ||
-             (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > text_utf_char_index)))) {
-            do_not_fill_line = true;
-
-            this->cursor_draw_data_list.emplace_back(ekg::rect {
-                x,
-                y,
-                this->rect_cursor.w + ((this->rect_cursor.w) * (cursor.pos[0] != cursor.pos[1])),
-                text_height
-            });
-        }
-
-        text_size = ekg::utf_length(text);
-        for (it = 0; it < text.size(); it++) {
-            char8 = static_cast<uint8_t>(text.at(it));
-            it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
-
-            if (f_renderer.ft_bool_kerning && f_renderer.ft_uint_previous) {
-                FT_Get_Kerning(f_renderer.ft_face, f_renderer.ft_uint_previous, char32, 0, &f_renderer.ft_vector_previous_char);
-                x += static_cast<float>(f_renderer.ft_vector_previous_char.x >> 6);
-            }
-
-            ekg::char_data &char_data {f_renderer.allocated_char_data[char32]};
-            is_utf_char_last_index = utf_char_index + 1 == text_size;
-
-            if ((cursor_pos_index = this->find_cursor(cursor, text_utf_char_index, chunk_index, is_utf_char_last_index)) != -1 &&
-                ((cursor.pos[0] == cursor.pos[1] || cursor.pos[0].index > text_utf_char_index) || (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > text_utf_char_index))) {
-
-                draw_additional_selected_last_char = {
-                    (is_utf_char_last_index &&
-                    cursor.pos[0] != cursor.pos[1] &&
-                    cursor.pos[1].index > text_utf_char_index &&
-                    cursor.pos[0].chunk_index != cursor.pos[1].chunk_index)
-                };
-
-                if (cursor.pos[0] != cursor.pos[1] && (chunk_index == cursor.pos[0].chunk_index || chunk_index == cursor.pos[1].chunk_index)) {
-                    this->cursor_draw_data_list.emplace_back(ekg::rect {
-                        x,
-                        y,
-                        char_data.wsize + (is_utf_char_last_index * this->rect_cursor.w) + (draw_additional_selected_last_char * (this->rect_cursor.w + this->rect_cursor.w)),
-                        text_height
-                    });
-                } else if (cursor.pos[0] == cursor.pos[1]) {
-                    is_utf_char_last_index = is_utf_char_last_index && cursor.pos[cursor_pos_index].index == text_utf_char_index + 1;
-                    this->cursor_draw_data_list.emplace_back(ekg::rect {
-                        x + (char_data.wsize * is_utf_char_last_index),
-                        y,
-                        this->rect_cursor.w,
-                        text_height
-                    });
-                }
-            }
-
-            f_renderer.ft_uint_previous = char32;
-            text_utf_char_index++;
-            utf_char_index++;
-            x += char_data.wsize;
-        }
+        text_utf_char_index += ekg::utf_length(text);
 
         formated_text += text;
         formated_text += chunk_index + 1 == text_chunk_size ? 0 : '\n';
 
-        this->rect_text.w = ekg::min(this->rect_text.w, x);
-        if (!do_not_fill_line && chunk_index > cursor.pos[0].chunk_index && chunk_index < cursor.pos[1].chunk_index) {
-            this->cursor_draw_data_list.emplace_back(ekg::rect {
-                this->rect_cursor.w,
-                y,
-                x + this->rect_cursor.w + this->rect_cursor.w,
-                text_height
-            });
-        }
-
-        y += this->text_height;
+        this->rect_text.w = ekg::min(this->rect_text.w, f_renderer.get_text_width(text));
         this->text_utf_char_index_list.at(chunk_index) = text_utf_char_index;
     }
 
@@ -636,7 +538,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
     if (!this->is_clipboard_copy) {
         cursor.pos[2] = cursor.pos[1] = cursor.pos[0];
         cursor.pos[3] = cursor.pos[0];
-        this->redraw_cursor = true;
+        this->update_ui_text = true;
     }
 
     ekg::reset(ekg::core->ui_timing);
@@ -841,7 +743,7 @@ void ekg::ui::textbox_widget::on_reload() {
             this->text_utf_char_index_list.emplace_back();
         }
 
-        this->redraw_cursor = true;
+        this->update_ui_text = true;
         this->rect_text.h = (this->text_height * this->text_chunk_list.size()) + (this->text_offset * 2.0f);
         
         float vertical_scroll_limit {this->rect_text.h - rect.h};
@@ -910,10 +812,8 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         }
 
         this->flag.state = this->flag.hovered;
-        this->redraw_cursor = true;
     } else if (this->flag.state && motion && !this->embedded_scroll.is_dragging_bar()) {
         this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), false);
-        this->redraw_cursor = true;
     }
 
     if (released) {
@@ -963,7 +863,6 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         this->loaded_multi_cursor_list.push_back(main_cursor);
 
         ekg::set(this->flag.focused, false);
-        this->redraw_cursor = true;
     } else if (ekg::input::action("textbox-action-select-all")) {
         ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
         main_cursor.pos[0].index = 0;
@@ -978,7 +877,6 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
 
         this->loaded_multi_cursor_list.clear();
         this->loaded_multi_cursor_list.push_back(main_cursor);
-        this->redraw_cursor = true;
     } else {
         int64_t cursor_dir[2] {};
         this->is_action_modifier_enable = ekg::input::action("textbox-action-modifier");
@@ -1009,7 +907,6 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
             if (cursor_dir[0] != 0 || cursor_dir[1] != 0) {
                 this->check_nearest_word(cursor, cursor_dir[0], cursor_dir[1]);
                 this->move_target_cursor(cursor, cursor_dir[0], cursor_dir[1]);
-                this->redraw_cursor = true;
             }
         }
     }
@@ -1102,8 +999,23 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     std::string utf_string {};
     uint8_t char8 {};
 
+    bool is_utf_char_last_index {};
+    bool render_cursor {};
+
+    uint64_t text_size {};
+    uint64_t chunk_size {this->text_chunk_list.size()};
+    uint64_t utf_char_index {};
+    uint64_t text_utf_char_index {this->text_utf_char_index_list.at(this->visible_text[1]) - this->text_chunk_list.at(this->visible_text[1]).size()};
+
     uint64_t it {};
     uint64_t text_chunk_size {this->text_chunk_list.size()};
+
+    ekg::ui::textbox_widget::cursor cursor {};
+    int32_t cursor_pos_index {};
+
+    bool optimize_batching {};
+    bool do_not_fill_line {};
+    bool draw_additional_selected_last_char {};
 
     /*
      * 0 == previous char wsize
@@ -1114,11 +1026,12 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     this->cursor_char_wsize[1] = 0.0f;
     this->cursor_char_wsize[2] = 0.0f;
 
-    if (this->redraw_cursor) {
-        this->update_cpu_side_batching_cursor();
-        this->redraw_cursor = false;
+    if (this->update_ui_text) {
+        this->update_ui_text_data();
+        this->update_ui_text = false;
     }
 
+    this->cursor_draw_data_list.clear();
     this->rect_text.h = (this->text_height * text_chunk_size) + (this->text_offset * 2.0f);
 
     /*
@@ -1141,6 +1054,8 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
         x = this->rect_cursor.w;
         f_renderer.ft_uint_previous = 0;
+        utf_char_index = 0;
+        do_not_fill_line = false;
 
         data.factor += static_cast<int32_t>(y) + 32;
         y_scroll = this->embedded_scroll.scroll.y + y;
@@ -1150,6 +1065,20 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             break;
         }
 
+        if ((text.empty() && (cursor_pos_index = this->find_cursor(cursor, text_utf_char_index, chunk_index, false)) != -1 && 
+             ((cursor.pos[0] == cursor.pos[1] || cursor.pos[1].index > text_utf_char_index) ||
+             (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > text_utf_char_index)))) {
+            do_not_fill_line = true;
+
+            this->cursor_draw_data_list.emplace_back(ekg::rect {
+                x,
+                y,
+                this->rect_cursor.w + ((this->rect_cursor.w) * (cursor.pos[0] != cursor.pos[1])),
+                text_height
+            });
+        }
+
+        text_size = ekg::utf_length(text);
         for (it = 0; it < text.size(); it++) {
             char8 = static_cast<uint8_t>(text.at(it));
             it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
@@ -1160,6 +1089,36 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             }
 
             ekg::char_data &char_data {f_renderer.allocated_char_data[char32]};
+            is_utf_char_last_index = utf_char_index + 1 == text_size;
+
+            if ((cursor_pos_index = this->find_cursor(cursor, text_utf_char_index, chunk_index, is_utf_char_last_index)) != -1 &&
+                ((cursor.pos[0] == cursor.pos[1] || cursor.pos[0].index > text_utf_char_index) || (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > text_utf_char_index))) {
+
+                draw_additional_selected_last_char = {
+                    (is_utf_char_last_index &&
+                    cursor.pos[0] != cursor.pos[1] &&
+                    cursor.pos[1].index > text_utf_char_index &&
+                    cursor.pos[0].chunk_index != cursor.pos[1].chunk_index)
+                };
+
+                if (cursor.pos[0] != cursor.pos[1] && (chunk_index == cursor.pos[0].chunk_index || chunk_index == cursor.pos[1].chunk_index)) {
+                    this->cursor_draw_data_list.emplace_back(ekg::rect {
+                        x,
+                        y,
+                        char_data.wsize + (is_utf_char_last_index * this->rect_cursor.w) + (draw_additional_selected_last_char * (this->rect_cursor.w + this->rect_cursor.w)),
+                        text_height
+                    });
+                } else if (cursor.pos[0] == cursor.pos[1]) {
+                    is_utf_char_last_index = is_utf_char_last_index && cursor.pos[cursor_pos_index].index == text_utf_char_index + 1;
+                    this->cursor_draw_data_list.emplace_back(ekg::rect {
+                        x + (char_data.wsize * is_utf_char_last_index),
+                        y,
+                        this->rect_cursor.w,
+                        text_height
+                    });
+                }
+            }
+
             if (x + this->embedded_scroll.scroll.x < rect.w) {
                 vertices.x = x + char_data.left;
                 vertices.y = y + f_renderer.full_height - char_data.top;
@@ -1183,9 +1142,22 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             f_renderer.ft_uint_previous = char32;
             x += char_data.wsize;
 
+            text_utf_char_index++;
+            utf_char_index++;
+
             if (x + this->embedded_scroll.scroll.x > rect.w) {
+                text_utf_char_index += text_size - utf_char_index;
                 break;
             }
+        }
+
+        if (!do_not_fill_line && chunk_index > cursor.pos[0].chunk_index && chunk_index < cursor.pos[1].chunk_index) {
+            this->cursor_draw_data_list.emplace_back(ekg::rect {
+                this->rect_cursor.w,
+                y,
+                x + this->rect_cursor.w + this->rect_cursor.w,
+                text_height
+            });
         }
 
         y += this->text_height;
