@@ -114,3 +114,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Fixed cursor clicking after optimization.
 -- Fixed crash when pasting a large text that is less than the textbox chars per line limit.
 -- Textbox UI selecting performance insanely increased.
+-- Fixed flicking rendering when deleting text at end of textbox lines.
