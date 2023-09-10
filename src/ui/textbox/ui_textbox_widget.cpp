@@ -1,26 +1,26 @@
 /*
-* MIT License
-* 
-* Copyright (c) 2022-2023 Rina Wilk / vokegpu@gmail.com
-* 
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in all
-* copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
-*/
+ * MIT License
+ * 
+ * Copyright (c) 2022-2023 Rina Wilk / vokegpu@gmail.com
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 #include "ekg/ui/textbox/ui_textbox_widget.hpp"
 #include "ekg/ui/textbox/ui_textbox.hpp"
@@ -317,6 +317,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
     uint64_t ui_max_chars_per_line {p_ui->get_max_chars_per_line()};
     uint64_t ui_max_lines {p_ui->get_max_lines()};
+    uint64_t previous_text_chunk_size {this->text_chunk_list.size()};
 
     bool max_size_reached[2] {
         emplace_text_a.size() == ui_max_chars_per_line,
@@ -443,9 +444,9 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             }
         }
 
-        ekg_textbox_clamp_text_chunk_size(this->text_chunk_list, ui_max_lines);
-        ekg_textbox_clamp_line(emplace_text_a, ui_max_chars_per_line);
-        ekg_textbox_clamp_line(emplace_text_b, ui_max_chars_per_line);
+        //ekg_textbox_clamp_text_chunk_size(this->text_chunk_list, ui_max_lines);
+        //ekg_textbox_clamp_line(emplace_text_a, ui_max_chars_per_line);
+        //ekg_textbox_clamp_line(emplace_text_b, ui_max_chars_per_line);
 
         this->move_cursor(cursor.pos[0], direction, 0);
         break;
@@ -539,6 +540,12 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         cursor.pos[2] = cursor.pos[1] = cursor.pos[0];
         cursor.pos[3] = cursor.pos[0];
         this->update_ui_text = true;
+    }
+
+    if (previous_text_chunk_size != this->text_chunk_list.size()) {
+        this->rect_text.h = (this->text_height * this->text_chunk_list.size()) + (this->text_offset * 2.0f);
+        this->embedded_scroll.rect_child.h = this->rect_text.h;
+        this->embedded_scroll.clamp_scroll();
     }
 
     ekg::reset(ekg::core->ui_timing);
@@ -1069,12 +1076,11 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
              (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > text_utf_char_index)))) {
             do_not_fill_line = true;
 
-            this->cursor_draw_data_list.emplace_back(ekg::rect {
-                x,
-                y,
-                this->rect_cursor.w + ((this->rect_cursor.w) * (cursor.pos[0] != cursor.pos[1])),
-                text_height
-            });
+            ekg::rect &select_rect {this->cursor_draw_data_list.emplace_back()};
+            select_rect.x = x;
+            select_rect.y = y;
+            select_rect.w = this->rect_cursor.w + ((this->rect_cursor.w) * (cursor.pos[0] != cursor.pos[1]));
+            select_rect.h = text_height;
         }
 
         text_size = ekg::utf_length(text);
@@ -1100,21 +1106,18 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
                     cursor.pos[0].chunk_index != cursor.pos[1].chunk_index)
                 };
 
+                ekg::rect &select_rect {this->cursor_draw_data_list.emplace_back()};
                 if (cursor.pos[0] != cursor.pos[1] && (chunk_index == cursor.pos[0].chunk_index || chunk_index == cursor.pos[1].chunk_index)) {
-                    this->cursor_draw_data_list.emplace_back(ekg::rect {
-                        x,
-                        y,
-                        char_data.wsize + (is_utf_char_last_index * this->rect_cursor.w) + (draw_additional_selected_last_char * (this->rect_cursor.w + this->rect_cursor.w)),
-                        text_height
-                    });
+                    select_rect.x = x;
+                    select_rect.y = y;
+                    select_rect.w = char_data.wsize + (is_utf_char_last_index * this->rect_cursor.w) + (draw_additional_selected_last_char * (this->rect_cursor.w + this->rect_cursor.w));
+                    select_rect.h = text_height;
                 } else if (cursor.pos[0] == cursor.pos[1]) {
                     is_utf_char_last_index = is_utf_char_last_index && cursor.pos[cursor_pos_index].index == text_utf_char_index + 1;
-                    this->cursor_draw_data_list.emplace_back(ekg::rect {
-                        x + (char_data.wsize * is_utf_char_last_index),
-                        y,
-                        this->rect_cursor.w,
-                        text_height
-                    });
+                    select_rect.x = x + (char_data.wsize * is_utf_char_last_index);
+                    select_rect.y = y;
+                    select_rect.w = this->rect_cursor.w;
+                    select_rect.h = text_height;
                 }
             }
 
@@ -1151,12 +1154,11 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         }
 
         if (!do_not_fill_line && chunk_index > cursor.pos[0].chunk_index && chunk_index < cursor.pos[1].chunk_index) {
-            this->cursor_draw_data_list.emplace_back(ekg::rect {
-                this->rect_cursor.w,
-                y,
-                x + this->rect_cursor.w + this->rect_cursor.w,
-                text_height
-            });
+            ekg::rect &select_rect {this->cursor_draw_data_list.emplace_back()};
+            select_rect.x = this->rect_cursor.w;
+            select_rect.y = y;
+            select_rect.w = x + this->rect_cursor.w + this->rect_cursor.w;
+            select_rect.h = text_height;
         }
 
         y += this->text_height;

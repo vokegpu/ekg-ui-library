@@ -39,7 +39,10 @@ void ekg::ui::scroll_embedded_widget::reset_scroll() {
 }
 
 bool ekg::ui::scroll_embedded_widget::check_activy_state(bool state) {
-    state = state || (static_cast<int32_t>(round(this->scroll.x)) != static_cast<int32_t>(round(this->scroll.z))) || (static_cast<int32_t>(round(this->scroll.y)) != static_cast<int32_t>(round(this->scroll.w)));
+    state = (state ||
+                (static_cast<int32_t>(round(this->scroll.x)) != static_cast<int32_t>(round(this->scroll.z))) ||
+                (static_cast<int32_t>(round(this->scroll.y)) != static_cast<int32_t>(round(this->scroll.w))));
+
     if (!state) {
         this->reset_scroll();
     }
@@ -208,16 +211,15 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::scroll_embedded_widget::on_post_event(SDL_Event &sdl_event) {
-
 }
 
 void ekg::ui::scroll_embedded_widget::on_update() {
     this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::scrollsmooth * ekg::display::dt);
     this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::scrollsmooth * ekg::display::dt);
 
-#if defined(ANDROID)
+    #if defined(ANDROID)
     this->clamp_scroll();
-#endif
+    #endif
 
     ekg::dispatch(ekg::env::redraw);
 }

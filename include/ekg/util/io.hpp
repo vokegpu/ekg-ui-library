@@ -35,13 +35,14 @@
 #endif
 
 #include "geometry.hpp"
+#include "ekg/os/stl_thread.hpp"
 
 namespace ekg {
     struct log {
     public:
         static std::ostringstream buffer;
         static bool buffered;
-    public:        
+    public:
         static void flush() {
             if (ekg::log::buffered) {
                 std::string p_log {ekg::log::buffer.str()};
@@ -54,6 +55,18 @@ namespace ekg {
 
                 ekg::log::buffer = {};
                 ekg::log::buffered = false;
+            }
+        }
+
+        template<typename t>
+        static void trace(bool should, t trace, bool interrupt_runtime = false) {
+            if (!should) {
+                return;
+            }
+
+            std::cout << "\n[EKG-TRACE] " << trace << std::endl;
+            if (interrupt_runtime) {
+                std::terminate();
             }
         }
 
