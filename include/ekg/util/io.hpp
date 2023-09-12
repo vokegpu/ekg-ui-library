@@ -42,6 +42,7 @@ namespace ekg {
     public:
         static std::ostringstream buffer;
         static bool buffered;
+        static bool tracked;
     public:
         static void flush() {
             if (ekg::log::buffered) {

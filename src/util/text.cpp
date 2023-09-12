@@ -103,8 +103,10 @@ uint64_t ekg::utf_length(std::string_view utf_string) {
     }
 
     uint64_t string_size {};
+    uint8_t char8 {};
+
     for (uint64_t it {}; it < utf_string.size(); it++) {
-        uint8_t char8 {static_cast<uint8_t>(utf_string.at(it))};
+        char8 = static_cast<uint8_t>(utf_string.at(it));
 
         if (char8 == '\n' || char8 == '\r') {
             continue;
@@ -133,18 +135,19 @@ std::string ekg::utf_substr(std::string_view string, uint64_t a, uint64_t b) {
     uint64_t string_size {ekg::utf_length(string)};
     std::string substred {};
 
+    if (ekg::log::tracked) {
+        std::cout << "\ttracked: " << a << '\t' << b << std::endl;
+    }
+
     if (string_size == string.size()) {
         substred = string.substr(a, b);
     } else {
         b += a;
 
         bool index_a_filled {};
-        bool index_b_filled {};
 
         uint64_t index {};
         uint64_t sum_index {};
-        uint64_t index_a {};
-        uint64_t index_b {};
         uint64_t it_sub {};
 
         for (uint64_t it {}; it < string.size(); it++) {
@@ -161,13 +164,10 @@ std::string ekg::utf_substr(std::string_view string, uint64_t a, uint64_t b) {
             }
 
             if (!index_a_filled && index == a) {
-                index_a = it;
                 index_a_filled = true;
             }
 
-            if (!index_b_filled && index == b) {
-                index_b = it;
-                index_b_filled = true;
+            if (index == b) {
                 break;
             }
 
@@ -188,7 +188,7 @@ std::string ekg::utf_substr(std::string_view string, uint64_t a, uint64_t b) {
 }
 
 /*
- * This function have a potentially memory leak issue,
+ * This function have a potential memory leak issue,
  * and is very dangerous.
  */
 void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_read) {

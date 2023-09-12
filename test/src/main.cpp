@@ -809,6 +809,20 @@ int32_t main_thread_system() {
     return 0;
 }
 
+void utf_test() {
+    std::string utf_text {
+        "ççç ççç"
+    };
+
+    for (uint64_t it {}; it < utf_text.size(); it++) {
+        uint8_t char8 {static_cast<uint8_t>(utf_text.at(it))};
+        char32_t char32 {};
+        std::string utf_char {};
+        it += ekg::utf_check_sequence(char8, char32, utf_char, utf_text, it);
+        std::cout << it << " joao(s)" << utf_char  << "\t" << std::endl;
+    }
+}
+
 int32_t main(int32_t, char**) {
     return main_example();
 }

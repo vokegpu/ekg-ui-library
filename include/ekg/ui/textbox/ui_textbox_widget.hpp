@@ -31,6 +31,7 @@
 
 #define ekg_textbox_clamp_text_chunk_size(text_chunk_list, max_size) if (text_chunk_list.size() > max_size) text_chunk_list.erase(text_chunk_list.begin() + max_size, text_chunk_list.end())
 #define ekg_textbox_clamp_line(line, max_size) if (line.size() > max_size) line.erase(line.begin() + max_size, line.end())
+#define ekg_textbox_get_cursor_text(cursor) this->text_chunk_list.at(cursor.chunk_index)
 
 namespace ekg::ui {
     class textbox_widget : public ekg::ui::abstract_widget {
@@ -101,6 +102,7 @@ namespace ekg::ui {
         float cursor_char_wsize[3] {};
         float text_offset {};
         float text_height {};
+        ekg::vec2 cursor_delta {};
         
         bool update_ui_text {};
         bool is_ui_enabled {};
@@ -115,9 +117,7 @@ namespace ekg::ui {
         std::string cached_tab_size {};
         uint64_t visible_text[4] {};
     public:
-        std::string &get_cursor_emplace_text(ekg::ui::textbox_widget::cursor_pos &cursor);
-        int32_t find_cursor(ekg::ui::textbox_widget::cursor &target_cursor, int64_t total_it, int64_t it_chunk, bool last_line_utf_char_index);
-
+        bool find_cursor(ekg::ui::textbox_widget::cursor &target_cursor, int64_t total_it, int64_t it_chunk, bool last_line_utf_char_index);
         void check_cursor_text_bounding(ekg::ui::textbox_widget::cursor &cursor, bool reset_second_cursor_pos);
         void process_text(ekg::ui::textbox_widget::cursor &cursor, std::string_view text, ekg::ui::textbox_widget::action action, int64_t direction);
         void move_cursor(ekg::ui::textbox_widget::cursor_pos &cursor, int64_t x, int64_t y);
