@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <chrono>
+
 #include "ekg/core/runtime.hpp"
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
@@ -35,8 +37,7 @@
 #include "ekg/ui/scroll/ui_scroll.hpp"
 #include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
-
-#include <chrono>
+#include "ekg/os/ekg_opengl.hpp"
 
 ekg::stack ekg::swap::collect {};
 ekg::stack ekg::swap::back {};

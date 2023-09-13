@@ -22,33 +22,31 @@
 * SOFTWARE.
 */
 
-#ifndef EKG_GPU_GL_H
-#define EKG_GPU_GL_H
+#ifndef EKG_GPU__H
+#define EKG_GPU__H
 
-#include "ekg/os/ekg_opengl.hpp"
 #include <iostream>
 #include <string>
 #include <unordered_map>
 
 namespace ekg::gpu {
     struct program {
-        GLuint id {};
+        uint32_t id {};
 
         void set(const std::string &str, bool value);
-        void set(const std::string &str, GLuint value);
-        void set(const std::string &str, GLint value);
-        void set(const std::string &str, GLfloat value);
-        void set2(const std::string &str, GLfloat* value);
-        void set3(const std::string &str, GLfloat* value);
-        void set4(const std::string &str, GLfloat* value);
-        void setm2(const std::string &str, GLfloat* matrix);
-        void setm3(const std::string &str, GLfloat* matrix);
+        void set(const std::string &str, uint32_t value);
+        void set(const std::string &str, int32_t value);
+        void set(const std::string &str, float value);
+        void set2(const std::string &str, float* value);
+        void set3(const std::string &str, float* value);
+        void set4(const std::string &str, float* value);
+        void setm2(const std::string &str, float* matrix);
+        void setm3(const std::string &str, float* matrix);
         void setm4(const std::string &str, float* matrix);
     };
 
     void invoke(ekg::gpu::program &program);
     void revoke();
-
     bool create_basic_program(ekg::gpu::program &program, const std::unordered_map<std::string, uint32_t> &resources);
 };
 

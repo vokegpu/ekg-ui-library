@@ -26,7 +26,7 @@
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
-#include "ekg/os/system_cursor.hpp"
+#include "ekg/os/platform.hpp"
 
 void ekg::ui::frame_widget::on_destroy() {
     abstract_widget::on_destroy();
@@ -147,13 +147,13 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
         bool right {ekg::bitwise::contains(shown_cursor_dock_flags, ekg::dock::right)};
 
         if ((top && left) || (bottom && right)) {
-            ekg::cursor = ekg::systemcursor::sizenwse;
+            ekg::cursor = ekg::system_cursor::size_nwse;
         } else if ((top && right) || (bottom && left)) {
-            ekg::cursor = ekg::systemcursor::sizenesw;
+            ekg::cursor = ekg::system_cursor::size_nesw;
         } else if (top || bottom) {
-            ekg::cursor = ekg::systemcursor::sizens;
+            ekg::cursor = ekg::system_cursor::size_ns;
         } else if (left || right) {
-            ekg::cursor = ekg::systemcursor::sizewe;
+            ekg::cursor = ekg::system_cursor::size_we;
         }
     }
 

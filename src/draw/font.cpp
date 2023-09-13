@@ -25,7 +25,7 @@
 #include "ekg/draw/font.hpp"
 #include "ekg/util/text.hpp"
 #include "ekg/util/io.hpp"
-#include "ekg/os/info.hpp"
+#include "ekg/os/ekg_opengl.hpp"
 
 FT_Library ekg::draw::font_renderer::ft_library {};
 
@@ -185,16 +185,15 @@ void ekg::draw::font_renderer::reload() {
         glDeleteTextures(1, &this->texture);
     }
 
-
+    auto internal_format {GL_RED};
+    #if defined(__ANDROID__)
     /*
-     * Android does not support GL_RED, perharps because of the archtecture of GPU.
-     * For this reason, the internal format and format is GL_ALPHA ans not GL_RED.
+     * Android does not support GL_RED, perharps because of the GL ES version.
+     * For this reason, the format is GL_ALPHA and not GL_RED.
      * Also both of internal format, and format is the same.
      */
-    auto internal_format {GL_RED};
-    if (ekg::os == ekg::platform::os_android) {
-        internal_format = GL_ALPHA;
-    }
+    internal_format = GL_ALPHA;
+    #endif
 
     glGenTextures(1, &this->texture);
     glBindTexture(GL_TEXTURE_2D, this->texture);
@@ -219,15 +218,15 @@ void ekg::draw::font_renderer::reload() {
         offset += char_data.w;
     }
 
+    #if defined(__ANDROID__)
     // GLES 3 does not support swizzle function, the format GL_ALPHA supply this issue.
-#if defined(__ANDROID__)
-#else
+    #else
     GLint swizzle_format[] {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
 
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
-#endif
+    #endif
 
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

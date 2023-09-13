@@ -1,36 +1,38 @@
 /*
-* MIT License
-* 
-* Copyright (c) 2022-2023 Rina Wilk / vokegpu@gmail.com
-* 
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in all
-* copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
-*/
+ * MIT License
+ * 
+ * Copyright (c) 2022-2023 Rina Wilk / vokegpu@gmail.com
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 #include "ekg/ekg.hpp"
-#include "ekg/os/info.hpp"
-#include "ekg/os/system_cursor.hpp"
+#include "ekg/os/platform.hpp"
+#include "ekg/os/ekg_opengl.hpp"
 
-ekg::runtime* ekg::core {};
-std::string ekg::gl_version {"#version 450"};
+ekg::runtime *ekg::core {};
+std::string ekg::glsl_version {"#version 450"};
 ekg::vec2 ekg::scalebase {1920.0f, 1080.0f};
+
 bool ekg::autoscale {true};
 float ekg::scaleinterval {25.0f};
+bool ekg::pre_decode_clipboard {};
 
 ekg::service::theme &ekg::theme() {
     return ekg::core->service_theme;
@@ -58,14 +60,6 @@ void ekg::init(ekg::runtime *p_ekg_runtime, SDL_Window *p_root, std::string_view
     ekg::log() << "Initialising EKG";
     ekg::listener = SDL_RegisterEvents(1);
 
-#if defined(_WIN)
-    ekg::os = {ekg::platform::os_win};
-#elif defined(__ANDROID__)
-    ekg::os = {ekg::platform::os_android};
-#elif defined(__linux__)
-    ekg::os = {ekg::platform::os_linux};
-#endif
-
     /* Init OS cursor and check mouse icons. */
 
     ekg::init_cursor();
@@ -74,7 +68,7 @@ void ekg::init(ekg::runtime *p_ekg_runtime, SDL_Window *p_root, std::string_view
     SDL_GetWindowSize(p_root, &ekg::display::width, &ekg::display::height);
 
     const std::string vsh_src {
-ekg::gl_version + "\n"
+ekg::glsl_version + "\n"
 "layout (location = 0) in vec2 aPos;\n"
 "layout (location = 1) in vec2 aTexCoord;\n"
 
@@ -103,7 +97,7 @@ ekg::gl_version + "\n"
 "}"};
 
     const std::string fsh_src {
-ekg::gl_version + "\n"
+ekg::glsl_version + "\n"
 "layout (location = 0) out vec4 vFragColor;\n"
 "uniform sampler2D uTextureSampler;\n"
 
@@ -183,10 +177,10 @@ void ekg::quit() {
 void ekg::event(SDL_Event &sdl_event) {
     bool phase_keep_process {
             sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
-            sdl_event.type == SDL_FINGERUP        || sdl_event.type == SDL_FINGERDOWN ||
-            sdl_event.type == SDL_FINGERMOTION    || sdl_event.type == SDL_MOUSEMOTION ||
-            sdl_event.type == SDL_KEYDOWN         || sdl_event.type == SDL_KEYUP ||
-            sdl_event.type == SDL_WINDOWEVENT     || sdl_event.type == SDL_MOUSEWHEEL ||
+            sdl_event.type == SDL_FINGERUP                      || sdl_event.type == SDL_FINGERDOWN ||
+            sdl_event.type == SDL_FINGERMOTION           || sdl_event.type == SDL_MOUSEMOTION ||
+            sdl_event.type == SDL_KEYDOWN                      || sdl_event.type == SDL_KEYUP ||
+            sdl_event.type == SDL_WINDOWEVENT            || sdl_event.type == SDL_MOUSEWHEEL ||
             sdl_event.type == SDL_TEXTINPUT
     };
 
@@ -217,7 +211,7 @@ void ekg::event(SDL_Event &sdl_event) {
         }
     }
 
-    ekg::cursor = ekg::systemcursor::arrow;
+    ekg::cursor = ekg::system_cursor::arrow;
     ekg::core->process_event(sdl_event);
 }
 
@@ -229,6 +223,7 @@ void ekg::update() {
 void ekg::render() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     ekg::core->process_render();
     glDisable(GL_BLEND);
 }

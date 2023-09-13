@@ -26,7 +26,7 @@
 #include "ekg/ui/textbox/ui_textbox.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
-#include "ekg/os/system_cursor.hpp"
+#include "ekg/os/platform.hpp"
 
 void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor &cursor, int64_t &x, int64_t &y) {
     if (!this->is_action_modifier_enable) {
@@ -783,7 +783,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     bool motion {ekg::input::motion()};
 
     if (this->flag.hovered) {
-        ekg::cursor = ekg::systemcursor::ibeam;
+        ekg::cursor = ekg::system_cursor::ibeam;
     }
 
     this->is_action_select_enable = ekg::input::action("textbox-action-select");

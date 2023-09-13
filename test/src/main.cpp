@@ -263,6 +263,7 @@ int32_t main_example() {
 
     ekg::autoscale = true;
     ekg::scalebase = {800, 600};
+    ekg::pre_decode_clipboard = true;
 
     ekg::log() << "oi queria ser MUIUTO gostosa\t" << ((uint64_t) 0 - (uint64_t) 0);
 

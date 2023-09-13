@@ -137,11 +137,11 @@ std::string ekg::utf_substr(std::string_view string, uint64_t offset, uint64_t s
     offset = offset > string_size ? string_size : offset;
     size += offset;
 
+    std::string result {};
     uint64_t insert_size {};
     uint64_t index {};
     uint8_t utf_sequence_size {};
     uint8_t char8 {};
-    std::string result {};
 
     while (index < string_size) {
         char8 = static_cast<uint8_t>(string.at(index));

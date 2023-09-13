@@ -25,6 +25,7 @@
 #include "ekg/gpu/allocator.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/gpu/gl.hpp"
+#include "ekg/os/ekg_opengl.hpp"
 
 ekg::gpu::program ekg::gpu::allocator::program {};
 float ekg::gpu::allocator::mat4x4orthographic[16] {};

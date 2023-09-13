@@ -23,7 +23,7 @@
 */
 
 #include "ekg/service/layout.hpp"
-#include "ekg/os/info.hpp"
+#include "ekg/os/platform.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 

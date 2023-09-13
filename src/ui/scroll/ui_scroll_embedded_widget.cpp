@@ -26,7 +26,7 @@
 #include "ekg/ekg.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 #include "ekg/draw/draw.hpp"
-#include "ekg/os/system_cursor.hpp"
+#include "ekg/os/platform.hpp"
 
 void ekg::ui::scroll_embedded_widget::check_axis_states() {
     this->is_vertical_enabled = this->rect_child.h > this->rect_mother->h;
@@ -40,8 +40,8 @@ void ekg::ui::scroll_embedded_widget::reset_scroll() {
 
 bool ekg::ui::scroll_embedded_widget::check_activy_state(bool state) {
     state = (state ||
-                (static_cast<int32_t>(round(this->scroll.x)) != static_cast<int32_t>(round(this->scroll.z))) ||
-                (static_cast<int32_t>(round(this->scroll.y)) != static_cast<int32_t>(round(this->scroll.w))));
+            (static_cast<int32_t>(round(this->scroll.x)) != static_cast<int32_t>(round(this->scroll.z))) ||
+            (static_cast<int32_t>(round(this->scroll.y)) != static_cast<int32_t>(round(this->scroll.w))));
 
     if (!state) {
         this->reset_scroll();
@@ -168,7 +168,7 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
     }
 
     if (this->flag.hovered) {
-        ekg::cursor = ekg::systemcursor::arrow;
+        ekg::cursor = ekg::system_cursor::arrow;
     }
 
     if (this->flag.hovered && ekg::input::pressed() && ekg::input::action("scrollbar-drag")) {

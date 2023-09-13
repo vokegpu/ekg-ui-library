@@ -35,7 +35,6 @@
 #endif
 
 #include "geometry.hpp"
-#include "ekg/os/stl_thread.hpp"
 
 namespace ekg {
     struct log {

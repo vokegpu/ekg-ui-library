@@ -24,7 +24,7 @@
 
 #include "ekg/service/handler.hpp"
 #include "ekg/util/io.hpp"
-#include "ekg/os/stl_thread.hpp"
+#include "ekg/os/ekg_stl_thread.hpp"
 
 void ekg::multi_thread_task_thread_update(ekg::service::handler *p_service_handler) {
     std::mutex mutex {};
