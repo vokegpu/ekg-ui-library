@@ -51,7 +51,8 @@ EKG source code provides a demo application called Pompom under `test/build/OS` 
 int32_t main(int32_t, char**) {
   // create SDL2 window and OpenGL context.
   //... init ekg.
-  ekg::init(sdl_window, "./font.ttf");
+  ekg::runtime ekg_runtime {};
+  ekg::init(&ekg_runtime, sdl_window, "./font.ttf");
   
   // create GUI elements here or somewhere in the code, but once tick.
   ekg::frame("fps frame", {20, 20}, {200, 200});
