@@ -107,7 +107,6 @@ uint64_t ekg::utf_length(std::string_view utf_string) {
 
     for (uint64_t it {}; it < utf_string.size(); it++) {
         char8 = static_cast<uint8_t>(utf_string.at(it));
-
         if (char8 == '\n' || char8 == '\r') {
             continue;
         } else if (char8 <= 0x7F) {
@@ -127,64 +126,48 @@ uint64_t ekg::utf_length(std::string_view utf_string) {
     return string_size;
 }
 
-std::string ekg::utf_substr(std::string_view string, uint64_t a, uint64_t b) {
+std::string ekg::utf_substr(std::string_view string, uint64_t offset, uint64_t size) {
     if (string.empty()) {
         return "";
     }
 
-    uint64_t string_size {ekg::utf_length(string)};
-    std::string substred {};
+    uint64_t string_size {string.size()};
+    uint64_t utf_text_size {};
 
-    if (ekg::log::tracked) {
-        std::cout << "\ttracked: " << a << '\t' << b << std::endl;
-    }
+    offset = offset > string_size ? string_size : offset;
+    size += offset;
 
-    if (string_size == string.size()) {
-        substred = string.substr(a, b);
-    } else {
-        b += a;
+    uint64_t insert_size {};
+    uint64_t index {};
+    uint8_t utf_sequence_size {};
+    uint8_t char8 {};
+    std::string result {};
 
-        bool index_a_filled {};
-
-        uint64_t index {};
-        uint64_t sum_index {};
-        uint64_t it_sub {};
-
-        for (uint64_t it {}; it < string.size(); it++) {
-            uint8_t char8 {static_cast<uint8_t>(string.at(it))};
-
-            if (char8 <= 0x7F) {
-                sum_index = 0;
-            } else if ((char8 & 0xE0) == 0xC0) {
-                sum_index = 1;
-            } else if ((char8 & 0xF0) == 0xE0) {
-                sum_index = 2;
-            } else if ((char8 & 0xF8) == 0xF0) {
-                sum_index = 3;
-            }
-
-            if (!index_a_filled && index == a) {
-                index_a_filled = true;
-            }
-
-            if (index == b) {
-                break;
-            }
-
-            if (index_a_filled) {
-                it_sub = 0;
-                while ((it_sub < (sum_index + 1) || it_sub == 0)) {
-                    substred += string.at(it + (it_sub++));
-                }
-            }
-
-            index++;
-            it += sum_index;
+    while (index < string_size) {
+        char8 = static_cast<uint8_t>(string.at(index));
+        if (char8 <= 0x7F) {
+            utf_sequence_size = 1;
+        } else if ((char8 & 0xE0) == 0xC0) {
+            utf_sequence_size = 2;
+        } else if ((char8 & 0xF0) == 0xE0) {
+            utf_sequence_size = 3;
+        } else if ((char8 & 0xF8) == 0xF0) {
+            utf_sequence_size = 4;
         }
 
+        if (utf_text_size >= offset && utf_text_size < size) {
+            insert_size = result.size();
+            result.resize(insert_size + utf_sequence_size);
+            memcpy(&result.at(insert_size), &string.at(index), utf_sequence_size);
+        } else if (utf_text_size > size) {
+            break;
+        }
+
+        index += utf_sequence_size;
+        utf_text_size++;
     }
 
-    return substred;
+    return result;
 }
 
 /*

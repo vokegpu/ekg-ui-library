@@ -314,7 +314,6 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
     std::string &cursor_text_a {ekg_textbox_get_cursor_text(cursor.pos[0])};
     std::string &cursor_text_b {ekg_textbox_get_cursor_text(cursor.pos[1])};
-    std::string a {}, b {};
 
     uint64_t ui_max_chars_per_line {p_ui->get_max_chars_per_line()};
     uint64_t ui_max_lines {p_ui->get_max_lines()};
@@ -362,7 +361,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
                          */
                         copy_text += ekg::utf_substr(cursor_text_a, cursor.pos[0].text_index, (cursor.pos[1].text_index - cursor.pos[0].text_index));
                     } else {
-                        copy_text += ekg::utf_substr(cursor_text_a, cursor.pos[0].text_index, ekg::utf_length(cursor_text_b));
+                        copy_text += ekg::utf_substr(cursor_text_a, cursor.pos[0].text_index, ekg::utf_length(cursor_text_a));
                         copy_text += '\n';
 
                         uint64_t it {static_cast<uint64_t>(cursor.pos[0].chunk_index + 1)};
@@ -396,22 +395,12 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             }
         }
 
-        if (cursor_text_a.size() > ui_max_chars_per_line) {
+        if (max_size_reached[0]) {
             break;
         }
 
-        ekg::log::tracked = this->is_clipboard_paste;
-        ekg::log::trace(this->is_clipboard_paste, "fofuras tracked 1");
-        a = ekg::utf_substr(cursor_text_a, 0, cursor.pos[0].text_index);
-        ekg::log::trace(this->is_clipboard_paste, "fofuras tracked 2");
-        b = ekg::utf_substr(cursor_text_b, cursor.pos[1].text_index, ekg::utf_length(cursor_text_b));
-        ekg::log::trace(this->is_clipboard_paste, "fofuras tracked 3");
-        ekg::log::tracked = false;
-
-        cursor_text_a = a + text.data() + b;
-        ekg::log::trace(this->is_clipboard_paste, "fofuras tracked 4");
-
-        //ekg_textbox_clamp_line(cursor_text_a, ui_max_chars_per_line);
+        cursor_text_a = ekg::utf_substr(cursor_text_a, 0, cursor.pos[0].text_index) + text.data() + ekg::utf_substr(cursor_text_b, cursor.pos[1].text_index, ekg::utf_length(cursor_text_b));
+        ekg_textbox_clamp_line(cursor_text_a, ui_max_chars_per_line);
 
         if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
             this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1,
@@ -444,6 +433,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
                 std::string stored_text = ekg::utf_substr(cursor_text_a, cursor.pos[0].text_index, ekg::utf_length(cursor_text_a));
                 cursor_text_a = ekg::utf_substr(cursor_text_a, 0, cursor.pos[0].text_index) + utf_clipboard_decoded.at(0);
+                ekg_textbox_clamp_line(cursor_text_a, ui_max_chars_per_line);
 
                 last_clipboard_line = last_clipboard_line + stored_text;
                 this->text_chunk_list.insert(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1,
@@ -455,7 +445,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             }
         }
 
-        //ekg_textbox_clamp_text_chunk_size(this->text_chunk_list, ui_max_lines);
+        ekg_textbox_clamp_text_chunk_size(this->text_chunk_list, ui_max_lines);
         this->move_cursor(cursor.pos[0], direction, 0);
         break;
 
@@ -492,7 +482,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             }
         } else if (cursor.pos[0] != cursor.pos[1] && direction != 0) {
             cursor_text_a = ekg::utf_substr(cursor_text_a, 0, cursor.pos[0].text_index) +
-                                         ekg::utf_substr(cursor_text_b, cursor.pos[1].text_index, ekg::utf_length(cursor_text_b));
+                                      ekg::utf_substr(cursor_text_b, cursor.pos[1].text_index, ekg::utf_length(cursor_text_b));
 
             if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
                 this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1,
@@ -589,7 +579,6 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
     bool is_index_chunk_at_end {};
 
     uint64_t text_utf_char_index {this->text_utf_char_index_list.at(this->visible_text[1]) - ekg::utf_length(this->text_chunk_list.at(this->visible_text[1]))};
-    uint64_t previous_text_utf_char_index {text_utf_char_index};
     uint64_t text_index {};
     uint64_t chunk_index {};
     uint64_t it {};
@@ -687,7 +676,6 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
         cursor.pos[2] = cursor.pos[0];
         cursor.pos[3] = cursor.pos[0];
 
-        ekg::log() << "oi queria ser gostosa " <<cursor.pos[0].index << '\t' << cursor.pos[0].text_index << '\t' << cursor.pos[0].chunk_index << '\t' << index << '\t' << text_index;
         break;
     case false:
         it = 0;
@@ -1064,6 +1052,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     y += (this->text_height * static_cast<float>(this->visible_text[1]));
 
     uint64_t text_utf_char_index {this->text_utf_char_index_list.at(this->visible_text[1]) - ekg::utf_length(this->text_chunk_list.at(this->visible_text[1]))};
+    uint64_t previous_text_utf_char_index {text_utf_char_index};
 
     /*
      * The text iterator jump utf 8 - 16 sequences.
@@ -1097,7 +1086,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             select_rect.h = text_height;
         }
 
-        text_size = ekg::utf_length(text);
+        text_size = this->text_utf_char_index_list.at(chunk_index) - previous_text_utf_char_index;
         for (it = 0; it < text.size(); it++) {
             char8 = static_cast<uint8_t>(text.at(it));
             it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
@@ -1174,6 +1163,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             select_rect.h = text_height;
         }
 
+        previous_text_utf_char_index = text_utf_char_index;
         y += this->text_height;
     }
 

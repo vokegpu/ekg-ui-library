@@ -31,7 +31,7 @@
 
 namespace ekg {
     std::string utf_char32_to_string(char32_t char32);
-    std::string utf_substr(std::string_view string, size_t a, size_t b);
+    std::string utf_substr(std::string_view string, size_t offset, size_t size);
 
     size_t utf_length(std::string_view string);
     size_t utf_check_sequence(uint8_t &char8, char32_t &char32, std::string &utf_string, std::string_view string, size_t index);

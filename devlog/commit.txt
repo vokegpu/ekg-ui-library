@@ -115,4 +115,5 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Fixed crash when pasting a large text that is less than the textbox chars per line limit.
 -- Textbox UI selecting performance insanely increased.
 -- Fixed flicking rendering when deleting text at end of textbox lines.
--- Fixed UTF-8 cursor decoding - logic of cursor selecting.
+-- Fixed UTF cursor decoding - logic of cursor selecting.
+-- UTF substring performance optimized.
