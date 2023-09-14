@@ -234,7 +234,7 @@ void ekg::runtime::process_update() {
     ekg::log::flush();
 }
 
-void ekg::runtime::redraw_gui() {
+void ekg::runtime::request_redraw_gui() {
     this->should_re_batch_gui = true;
 }
 

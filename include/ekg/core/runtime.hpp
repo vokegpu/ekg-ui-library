@@ -1,3 +1,4 @@
+
 /*
 * MIT License
 * 
@@ -96,7 +97,7 @@ namespace ekg {
         void do_task_synclayout(ekg::ui::abstract_widget *widget);
         void do_task_refresh(ekg::ui::abstract_widget *widget);
         void set_update_high_frequency(ekg::ui::abstract_widget *widget);
-        void redraw_gui();
+        void request_redraw_gui();
 
         void end_group_flag();
         void end_scroll_flag();

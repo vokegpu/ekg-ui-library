@@ -38,7 +38,7 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
     uint64_t cursor_text_size {cursor_text.size()};
 
     if (cursor_text.empty() || (x == 0 || (x < 0 && target_cursor_pos.text_index == 0) ||
-                                              (x > 0 && target_cursor_pos.text_index == cursor_text_size))) {
+                               (x > 0 && target_cursor_pos.text_index == cursor_text_size))) {
         return;
     }
 
@@ -305,8 +305,8 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
 }
 
 void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &cursor,
-                                                                     std::string_view text,
-                                                                     ekg::ui::textbox_widget::action action, int64_t direction) {
+                                           std::string_view text,
+                                           ekg::ui::textbox_widget::action action, int64_t direction) {
     auto p_ui {(ekg::ui::textbox*) this->data};
     if (!(this->is_ui_enabled = p_ui->is_enabled()) && !(text == "clipboard" && this->is_clipboard_copy)) {
         return;
@@ -399,12 +399,15 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             break;
         }
 
-        cursor_text_a = ekg::utf_substr(cursor_text_a, 0, cursor.pos[0].text_index) + text.data() + ekg::utf_substr(cursor_text_b, cursor.pos[1].text_index, ekg::utf_length(cursor_text_b));
+        cursor_text_a = ekg::utf_substr(cursor_text_a, 0, cursor.pos[0].text_index) +
+                        text.data() +
+                        ekg::utf_substr(cursor_text_b, cursor.pos[1].text_index, ekg::utf_length(cursor_text_b));
+
         ekg_textbox_clamp_line(cursor_text_a, ui_max_chars_per_line);
 
         if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
             this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1,
-                                                         this->text_chunk_list.begin() + cursor.pos[1].chunk_index + 1);
+                                        this->text_chunk_list.begin() + cursor.pos[1].chunk_index + 1);
         }
 
         if (this->is_clipboard_paste && SDL_HasClipboardText() && !(text = SDL_GetClipboardText()).empty()) {
@@ -437,8 +440,8 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
                 last_clipboard_line = last_clipboard_line + stored_text;
                 this->text_chunk_list.insert(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1,
-                                                             utf_clipboard_decoded.begin() + 1, 
-                                                             utf_clipboard_decoded.end());
+                                             utf_clipboard_decoded.begin() + 1, 
+                                             utf_clipboard_decoded.end());
 
                 cursor.pos[0] = cursor.pos[1];
                 direction = 0;
@@ -455,7 +458,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
             if (this->is_action_select_enable) {
                 cursor_dir[0] = direction < 0 ? (-cursor.pos[0].text_index) :
-                                                                (static_cast<int64_t>(ekg::utf_length(cursor_text_a)) - cursor.pos[0].text_index);
+                                                (static_cast<int64_t>(ekg::utf_length(cursor_text_a)) - cursor.pos[0].text_index);
             } else {
                 this->check_nearest_word(cursor, cursor_dir[0], cursor_dir[1]);
             }
@@ -482,11 +485,11 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             }
         } else if (cursor.pos[0] != cursor.pos[1] && direction != 0) {
             cursor_text_a = ekg::utf_substr(cursor_text_a, 0, cursor.pos[0].text_index) +
-                                      ekg::utf_substr(cursor_text_b, cursor.pos[1].text_index, ekg::utf_length(cursor_text_b));
+                            ekg::utf_substr(cursor_text_b, cursor.pos[1].text_index, ekg::utf_length(cursor_text_b));
 
             if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
                 this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1,
-                                                             this->text_chunk_list.begin() + cursor.pos[1].chunk_index + 1);
+                                            this->text_chunk_list.begin() + cursor.pos[1].chunk_index + 1);
             }
 
             ekg_textbox_clamp_line(cursor_text_a, ui_max_chars_per_line);
@@ -566,7 +569,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
     ekg::vec4 &interact {ekg::input::interact()};
 
     interact.x = ekg::clamp(interact.x, rect.x + this->rect_cursor.w, rect.x + rect.w - this->rect_cursor.w);
-    interact.y = ekg::clamp(interact.y, rect.y + this->text_offset, rect.y + rect.h - this->text_offset);
+    interact.y = ekg::clamp(interact.y, rect.y + this->text_offset * 2.0f, rect.y + rect.h - this->text_offset * 2.0f);
 
     uint64_t index {UINT64_MAX};
     uint64_t text_chunk_size {this->text_chunk_list.size()};
@@ -605,14 +608,10 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
                 x += static_cast<float>(f_renderer.ft_vector_previous_char.x >> 6);
             }
 
-            /*
-              * Check if interact position collide with char.
-              */
-
             char_rect.x = x;
             char_rect.y = y;
             char_rect.w = (f_renderer.allocated_char_data[char32].wsize) / 2;
-            char_rect.h = this->text_height + 1.0f + (rect.h * static_cast<float>(is_index_chunk_at_end));
+            char_rect.h = this->text_height + 1.0f;
 
             if (ekg::rect_collide_vec_precisely(char_rect, interact)) {
                 index = text_utf_char_index;
@@ -634,13 +633,12 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
         }
 
         /*
-          * If interact position is not colliding with any char in this line, then set index to the end or begin of line.
-          */
-
+         * If interact position is not colliding with any char in this line, then set index to the end or begin of line.
+         */
         char_rect.x = rect.x;
         char_rect.y = y;
         char_rect.w = rect.w;
-        char_rect.h = this->text_height + (rect.h * static_cast<float>(is_index_chunk_at_end));
+        char_rect.h = this->text_height + 1.0f + (rect.h * static_cast<float>(is_index_chunk_at_end));
 
         if (ekg::rect_collide_vec(char_rect, interact) && (index == UINT64_MAX || text.empty())) {
             char_rect.w = this->text_offset;
@@ -678,7 +676,6 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
 
         break;
     case false:
-        it = 0;
         if (index != UINT64_MAX) {
             it = index < cursor.pos[2].index ? 0 : 1;
             cursor.pos[it].index = static_cast<int64_t>(index);
@@ -821,9 +818,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     } else if (this->flag.state && motion && !this->embedded_scroll.is_dragging_bar()) {
         auto &interact {ekg::input::interact()};
         ekg::vec2 diff {interact.x - this->cursor_delta.x, interact.y - this->cursor_delta.y};
-        float magnitude_no_sq {diff.x * diff.x + diff.y * diff.y};
-
-        this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), !(magnitude_no_sq > 10.0f));
+        this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0), !(static_cast<int32_t>(diff.x * diff.x + diff.y * diff.y) > 5));
     }
 
     if (released) {
@@ -1046,7 +1041,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
      * rect text height. 
      */
     this->visible_text[1] = static_cast<int32_t>(this->embedded_scroll.scroll.y) >= -0 ? 0 :
-                                       static_cast<uint64_t>((roundf(-this->embedded_scroll.scroll.y) / this->rect_text.h) * static_cast<float>(text_chunk_size));
+                            static_cast<uint64_t>((roundf(-this->embedded_scroll.scroll.y) / this->rect_text.h) * static_cast<float>(text_chunk_size));
 
     // Multiply with the current visible index for get the perfect y position.
     y += (this->text_height * static_cast<float>(this->visible_text[1]));
@@ -1075,8 +1070,8 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         }
 
         if ((text.empty() && this->find_cursor(cursor, static_cast<int64_t>(text_utf_char_index), static_cast<int64_t>(chunk_index), false) &&
-             ((cursor.pos[0] == cursor.pos[1] || cursor.pos[1].index > text_utf_char_index) ||
-             (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > text_utf_char_index)))) {
+           ((cursor.pos[0] == cursor.pos[1] || cursor.pos[1].index > text_utf_char_index) ||
+           (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > text_utf_char_index)))) {
             do_not_fill_line = true;
 
             ekg::rect &select_rect {this->cursor_draw_data_list.emplace_back()};
@@ -1100,7 +1095,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
             is_utf_char_last_index = utf_char_index + 1 == text_size;
 
             if (this->find_cursor(cursor, static_cast<int64_t>(text_utf_char_index), static_cast<int64_t>(chunk_index), is_utf_char_last_index) &&
-                ((cursor.pos[0] == cursor.pos[1] || cursor.pos[0].index > text_utf_char_index) || (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > text_utf_char_index))) {
+               ((cursor.pos[0] == cursor.pos[1] || cursor.pos[0].index > text_utf_char_index) || (cursor.pos[0] != cursor.pos[1] && cursor.pos[1].index > text_utf_char_index))) {
 
                 ekg::rect &select_rect {this->cursor_draw_data_list.emplace_back()};
                 if (cursor.pos[0] != cursor.pos[1] && (chunk_index == cursor.pos[0].chunk_index || chunk_index == cursor.pos[1].chunk_index)) {

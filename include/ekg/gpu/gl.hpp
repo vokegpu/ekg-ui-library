@@ -22,8 +22,8 @@
 * SOFTWARE.
 */
 
-#ifndef EKG_GPU__H
-#define EKG_GPU__H
+#ifndef EKG_GPU_GL_H
+#define EKG_GPU_GL_H
 
 #include <iostream>
 #include <string>
@@ -31,8 +31,9 @@
 
 namespace ekg::gpu {
     struct program {
+    public:
         uint32_t id {};
-
+    public:
         void set(const std::string &str, bool value);
         void set(const std::string &str, uint32_t value);
         void set(const std::string &str, int32_t value);

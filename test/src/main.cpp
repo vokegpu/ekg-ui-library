@@ -296,6 +296,9 @@ int32_t main_example() {
 
     create_exit_button();
 
+    std::string oi_cachorroo = "oi cachorror";
+    p_textbox->set_text(oi_cachorroo);
+
     while (running) {
         while (SDL_PollEvent(&sdl_event)) {
             if (sdl_event.type == SDL_QUIT) {

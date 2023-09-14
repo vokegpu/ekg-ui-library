@@ -1,26 +1,26 @@
 /*
-* MIT License
-* 
-* Copyright (c) 2022-2023 Rina Wilk / vokegpu@gmail.com
-* 
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in all
-* copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
-*/
+ * MIT License
+ * 
+ * Copyright (c) 2022-2023 Rina Wilk / vokegpu@gmail.com
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 #include "ekg/ekg.hpp"
 
@@ -107,7 +107,7 @@ void ekg::dispatch(ekg::cpu::event* event) {
 void ekg::dispatch(ekg::env env) {
     switch (env) {
     case ekg::env::redraw:
-        ekg::core->redraw_gui();
+        ekg::core->request_redraw_gui();
         break;
     default:
         ekg::core->service_handler.dispatch_pre_allocated_task((uint64_t) env);
@@ -128,7 +128,7 @@ bool ekg::listen(ekg::cpu::uievent &ekg_event, SDL_Event &sdl_event) {
 
 bool &ekg::set(bool &value, bool result) {
     if (value != result) {
-        ekg::dispatch(ekg::env::redraw);
+        ekg::core->request_redraw_gui();
     }
 
     return (value = result);
@@ -136,7 +136,7 @@ bool &ekg::set(bool &value, bool result) {
 
 std::string &ekg::set(std::string &value, std::string_view result) {
     if (value != result) {
-        ekg::dispatch(ekg::env::redraw);
+        ekg::core->request_redraw_gui();
     }
 
     return (value = result);

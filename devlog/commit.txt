@@ -117,3 +117,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Fixed flicking rendering when deleting text at end of textbox lines.
 -- Fixed UTF cursor decoding - logic of cursor selecting.
 -- UTF substring performance optimized.
+-- Fixed text selecting.
