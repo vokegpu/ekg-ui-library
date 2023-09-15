@@ -1045,7 +1045,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     // Multiply with the current visible index for get the perfect y position.
     y += (this->text_height * static_cast<float>(this->visible_text[1]));
-    data.shape_rect[1] = static_cast<int32_t>(this->embedded_scroll.scroll.y) >= -0 ? (rect.y + this->text_offset) : (rect.y + this->text_offset) - (rect.y + this->embedded_scroll.scroll.y + y);
+    data.shape_rect[1] = static_cast<int32_t>(this->embedded_scroll.scroll.y) >= -0 ? (rect.y + this->text_offset) : rect.y - ekg::min(rect.y - (rect.y + this->embedded_scroll.scroll.y + y), 0.0f);
     y = 0.0f;
 
     uint64_t text_utf_char_index {this->visible_text[1] > 0 ? this->text_utf_char_index_list.at(this->visible_text[1] - 1) : 0};

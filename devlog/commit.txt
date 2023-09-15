@@ -118,3 +118,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Fixed UTF cursor decoding - logic of cursor selecting.
 -- UTF substring performance optimized.
 -- Fixed text selecting.
+-- Fixed textbox rendering artefacts because of size of floating point.
