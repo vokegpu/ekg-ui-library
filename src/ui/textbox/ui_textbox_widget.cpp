@@ -581,7 +581,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
     std::string utf_string {};
     bool is_index_chunk_at_end {};
 
-    uint64_t text_utf_char_index {this->text_utf_char_index_list.at(this->visible_text[1]) - ekg::utf_length(this->text_chunk_list.at(this->visible_text[1]))};
+    uint64_t text_utf_char_index {this->visible_text[1] > 0 ? this->text_utf_char_index_list.at(this->visible_text[1] - 1) : 0};
     uint64_t text_index {};
     uint64_t chunk_index {};
     uint64_t it {};
@@ -965,7 +965,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     this->embedded_scroll.clamp_scroll();
     float x {rect.x + this->embedded_scroll.scroll.x};
-    float y {rect.y + this->embedded_scroll.scroll.y};
+    float y {rect.y + this->text_offset};
     float y_scroll {};
 
     x = static_cast<float>(static_cast<int32_t>(x));
@@ -998,7 +998,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     this->is_ui_enabled = p_ui->is_enabled();
 
     x = 0.0f;
-    y = this->text_offset;
+    y = 0.0f;
 
     char32_t char32 {};
     std::string utf_string {};
@@ -1045,12 +1045,14 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     // Multiply with the current visible index for get the perfect y position.
     y += (this->text_height * static_cast<float>(this->visible_text[1]));
+    data.shape_rect[1] = static_cast<int32_t>(this->embedded_scroll.scroll.y) >= -0 ? (rect.y + this->text_offset) : (rect.y + this->text_offset) - (rect.y + this->embedded_scroll.scroll.y + y);
+    y = 0.0f;
 
-    uint64_t text_utf_char_index {this->text_utf_char_index_list.at(this->visible_text[1]) - ekg::utf_length(this->text_chunk_list.at(this->visible_text[1]))};
+    uint64_t text_utf_char_index {this->visible_text[1] > 0 ? this->text_utf_char_index_list.at(this->visible_text[1] - 1) : 0};
     uint64_t previous_text_utf_char_index {text_utf_char_index};
 
     /*
-     * The text iterator jump utf 8 - 16 sequences.
+     * The text iterator jump utf 8 - 16 - 32 sequences.
      * For better performance, textbox does not render texts out of rect.
      */
     for (uint64_t chunk_index {this->visible_text[1]}; chunk_index < text_chunk_size; chunk_index++) {
@@ -1062,7 +1064,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         do_not_fill_line = false;
 
         data.factor += static_cast<int32_t>(y) + 32;
-        y_scroll = this->embedded_scroll.scroll.y + y;
+        y_scroll = y;
 
         if (y_scroll > rect.h) {
             data.factor += static_cast<int32_t>(text_chunk_size) * 32;
