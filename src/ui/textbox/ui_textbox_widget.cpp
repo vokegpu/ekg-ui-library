@@ -1045,6 +1045,9 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     // Multiply with the current visible index for get the perfect y position.
     y += (this->text_height * static_cast<float>(this->visible_text[1]));
+
+    // Get the diff. between the visible text position and subtract with rect position for performn the scrolling effect.
+    // It prevent from floating point loss when not rendering with this way.
     data.shape_rect[1] = static_cast<int32_t>(this->embedded_scroll.scroll.y) >= -0 ? (rect.y + this->text_offset) : rect.y - ekg::min(rect.y - (rect.y + this->embedded_scroll.scroll.y + y), 0.0f);
     y = 0.0f;
 
