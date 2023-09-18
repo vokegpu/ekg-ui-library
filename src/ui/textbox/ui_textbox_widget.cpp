@@ -544,7 +544,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
     }
 
     if (previous_text_chunk_size != this->text_chunk_list.size()) {
-        this->rect_text.h = (this->text_height * static_cast<float>(this->text_chunk_list.size())) + (this->text_offset * 2.0f);
+        this->rect_text.h = (this->text_height * static_cast<float>(this->text_chunk_list.size()));
         this->embedded_scroll.rect_child.h = this->rect_text.h;
         this->embedded_scroll.clamp_scroll();
     }
@@ -743,7 +743,7 @@ void ekg::ui::textbox_widget::on_reload() {
         }
 
         this->update_ui_text = true;
-        this->rect_text.h = (this->text_height * static_cast<float>(this->text_chunk_list.size())) + (this->text_offset * 2.0f);
+        this->rect_text.h = (this->text_height * static_cast<float>(this->text_chunk_list.size()));
 
         float vertical_scroll_limit {this->rect_text.h - rect.h};
         float new_text_height_diff {this->text_height * (static_cast<float>(static_cast<int64_t>(this->text_chunk_list.size()) - previous_size) + 1.0f)};
@@ -965,11 +965,11 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     this->embedded_scroll.clamp_scroll();
     float x {rect.x + this->embedded_scroll.scroll.x};
-    float y {rect.y + this->text_offset};
+    float y {};
     float y_scroll {};
 
     x = static_cast<float>(static_cast<int32_t>(x));
-    y = static_cast<float>(static_cast<int32_t>(y - f_renderer.offset_text_height));
+    y = static_cast<float>(static_cast<int32_t>(y));
 
     ekg::gpu::data &data {allocator.bind_current_data()};
     ekg::vec4 color {theme.textbox_string};
@@ -993,12 +993,9 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     ekg::rect vertices {};
     ekg::rect coordinates {};
 
-    this->rect_text.x = x;
-    this->rect_text.y = y;
+    this->rect_text.x = 0.0f;
+    this->rect_text.y = 0.0f;
     this->is_ui_enabled = p_ui->is_enabled();
-
-    x = 0.0f;
-    y = 0.0f;
 
     char32_t char32 {};
     std::string utf_string {};
@@ -1033,22 +1030,28 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     }
 
     this->cursor_draw_data_list.clear();
-    this->rect_text.h = (this->text_height * static_cast<float>(text_chunk_size)) + (this->text_offset * 2.0f);
+    this->rect_text.h = (this->text_height * static_cast<float>(text_chunk_size));
 
     /*
      * This line of code check the renderable text chunk index value,
      * dynamically calculating the amount of scroll with the size of
      * rect text height. 
      */
-    this->visible_text[1] = static_cast<int32_t>(this->embedded_scroll.scroll.y) >= -0 ? 0 :
-                            static_cast<uint64_t>((roundf(-this->embedded_scroll.scroll.y) / this->rect_text.h) * static_cast<float>(text_chunk_size));
+    this->visible_text[1] = static_cast<int32_t>(this->embedded_scroll.scroll.y) > 0.0f ? 0 :
+                            static_cast<uint64_t>((floorf(-this->embedded_scroll.scroll.y) / this->rect_text.h) * static_cast<int32_t>(text_chunk_size));
+
+    std::cout << this->visible_text[1] << std::endl;
 
     // Multiply with the current visible index for get the perfect y position.
-    y += (this->text_height * static_cast<float>(this->visible_text[1]));
+    y = (this->text_height * static_cast<float>(this->visible_text[1]));
 
-    // Get the diff. between the visible text position and subtract with rect position for performn the scrolling effect.
+    float rendering_text_scroller_diff {ekg::min(rect.y - (rect.y + this->embedded_scroll.scroll.y + y), 0.0f)};
+    float rendering_text_offset {((this->text_height / 2) - ((this->text_height - f_renderer.offset_text_height) / 2))};
+
+     // Get the diff. between the visible text position and subtract with rect position for performn the scrolling effect.    
+    data.shape_rect[1] = static_cast<float>((rect.y - rendering_text_scroller_diff));
+
     // It prevent from floating point loss when not rendering with this way.
-    data.shape_rect[1] = static_cast<int32_t>(this->embedded_scroll.scroll.y) >= -0 ? (rect.y + this->text_offset) : rect.y - ekg::min(rect.y - (rect.y + this->embedded_scroll.scroll.y + y), 0.0f);
     y = 0.0f;
 
     uint64_t text_utf_char_index {this->visible_text[1] > 0 ? this->text_utf_char_index_list.at(this->visible_text[1] - 1) : 0};
@@ -1172,15 +1175,18 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     bool draw_cursor {this->flag.focused && !ekg::reach(ekg::core->ui_timing, 500)};
     for (ekg::rect &cursor_rect : this->cursor_draw_data_list) {
+        cursor_rect.x = cursor_rect.x + rect.x + this->embedded_scroll.scroll.x;
+        cursor_rect.y = cursor_rect.y + f_renderer.offset_text_height + f_renderer.offset_text_height + rect.y - rendering_text_scroller_diff;
+
         switch (static_cast<int32_t>(cursor_rect.w)) {
         case 2:
             if (draw_cursor) {
-                ekg::draw::rect(cursor_rect + rect + this->embedded_scroll.scroll, theme.textbox_cursor);
+                ekg::draw::rect(cursor_rect, theme.textbox_cursor);
             }
 
             break;
         default:
-            ekg::draw::rect(cursor_rect + rect + this->embedded_scroll.scroll, theme.textbox_select);
+            ekg::draw::rect(cursor_rect, theme.textbox_select);
             break;
         }
     }
