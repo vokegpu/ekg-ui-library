@@ -129,6 +129,7 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
     this->acceleration.y += service_layout_min_offset;
     this->calculate_rect_bar_sizes();
     this->check_axis_states();
+    this->clamp_scroll();
 }
 
 void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
