@@ -1,26 +1,26 @@
 /*
-* MIT License
-* 
-* Copyright (c) 2022-2023 Rina Wilk / vokegpu@gmail.com
-* 
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in all
-* copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
-*/
+ * MIT License
+ * 
+ * Copyright (c) 2022-2023 Rina Wilk / vokegpu@gmail.com
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 #include "ekg/ui/scroll/ui_scroll_embedded_widget.hpp"
 #include "ekg/ekg.hpp"
@@ -150,15 +150,29 @@ void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
 
 void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
     this->check_axis_states();
-    auto &interact {ekg::input::interact()};
 
-    if (this->flag.hovered && ekg::input::action("scrollbar-scroll") && this->is_vertical_enabled) {
+    auto &interact {ekg::input::interact()};
+    bool hovered_and_action_scroll_fired {this->flag.hovered && ekg::input::action("scrollbar-scroll")};
+
+    #if defined(ANDROID)
+    if (hovered_and_action_scroll_fired && this->is_vertical_enabled) {
         this->scroll.w = ekg::clamp(this->scroll.y + (interact.w * this->acceleration.y), this->rect_mother->h - this->rect_child.h, 0.0f);
     }
 
-    if (this->flag.hovered && ekg::input::action("scrollbar-scroll") && this->is_horizontal_enabled) {
+    if (hovered_and_action_scroll_fired && this->is_horizontal_enabled) {
         this->scroll.z = ekg::clamp(this->scroll.x + (-interact.z * this->acceleration.y), this->rect_mother->w - this->rect_child.w, 0.0f);
     }
+    #else
+    if (hovered_and_action_scroll_fired && this->is_vertical_enabled) {
+        bool over_max_motion {static_cast<int32_t>(interact.w) > 1 || static_cast<int32_t>(interact.w) < -1};
+        this->scroll.w = ekg::clamp(this->scroll.y + (interact.w * (over_max_motion ? this->acceleration.y + this->acceleration.y : this->acceleration.y)), this->rect_mother->h - this->rect_child.h, 0.0f);
+    }
+
+    if (hovered_and_action_scroll_fired && this->is_horizontal_enabled) {
+        bool over_max_motion {static_cast<int32_t>(interact.z) >= 2 || static_cast<int32_t>(interact.z) <= -2};
+        this->scroll.z = ekg::clamp(this->scroll.x + (-interact.z * (over_max_motion ? this->acceleration.x + this->acceleration.x : this->acceleration.x)), this->rect_mother->w - this->rect_child.w, 0.0f);
+    }
+    #endif
 
     if (this->flag.hovered) {
         ekg::cursor = ekg::system_cursor::arrow;

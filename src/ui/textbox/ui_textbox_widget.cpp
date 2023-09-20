@@ -177,6 +177,8 @@ void ekg::ui::textbox_widget::update_ui_text_data() {
         this->text_utf_char_index_list.at(chunk_index) = text_utf_char_index;
     }
 
+    this->embedded_scroll.acceleration.y = (this->text_height * 3.0f) + (this->text_offset * 2.0f);
+
     p_ui->unsafe_set_text(formated_text);
     this->widget_side_text = formated_text;
 
@@ -763,7 +765,6 @@ void ekg::ui::textbox_widget::on_reload() {
 
     this->embedded_scroll.rect_child = this->rect_text;
     this->embedded_scroll.rect_mother = &rect;
-    this->embedded_scroll.acceleration.y = this->text_height + (this->text_offset * 2.0f);
     this->embedded_scroll.widget_id = this->data->get_id();
     this->embedded_scroll.on_reload();
 }
@@ -1046,10 +1047,10 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     float rendering_text_offset {((this->text_height / 2) - ((this->text_height - f_renderer.offset_text_height) / 2))};
 
     // Get the diff. between the visible text position and subtract with rect position for performn the scrolling effect.
-    data.shape_rect[1] = rect.y;
+    data.shape_rect[1] = floorf(rect.y);
 
     // It prevent from floating point loss in GPU.
-    y = -rendering_text_scroller_diff;
+    y = static_cast<float>(static_cast<int32_t>(floorf(-rendering_text_scroller_diff)));
 
     uint64_t text_utf_char_index {this->visible_text[1] > 0 ? this->text_utf_char_index_list.at(this->visible_text[1] - 1) : 0};
     uint64_t previous_text_utf_char_index {text_utf_char_index};
@@ -1079,7 +1080,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
             ekg::rect &select_rect {this->cursor_draw_data_list.emplace_back()};
             select_rect.x = x;
-            select_rect.y = y + visible_text_height;
+            select_rect.y = y;
             select_rect.w = this->rect_cursor.w + ((this->rect_cursor.w) * static_cast<float>(cursor.pos[0] != cursor.pos[1]));
             select_rect.h = this->text_height;
         }
@@ -1109,13 +1110,13 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
                     };
 
                     select_rect.x = x;
-                    select_rect.y = y + visible_text_height;
+                    select_rect.y = y;
                     select_rect.w = char_data.wsize + (static_cast<float>(is_utf_char_last_index) * this->rect_cursor.w) + (static_cast<float>(draw_additional_selected_last_char) * (this->rect_cursor.w + this->rect_cursor.w));
                     select_rect.h = this->text_height;
                 } else if (cursor.pos[0] == cursor.pos[1]) {
                     is_utf_char_last_index = is_utf_char_last_index && cursor.pos[0].index == text_utf_char_index + 1;
                     select_rect.x = x + (char_data.wsize * static_cast<float>(is_utf_char_last_index));
-                    select_rect.y = y + visible_text_height;
+                    select_rect.y = y;
                     select_rect.w = this->rect_cursor.w;
                     select_rect.h = this->text_height;
                 }
@@ -1156,7 +1157,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         if (!do_not_fill_line && chunk_index > cursor.pos[0].chunk_index && chunk_index < cursor.pos[1].chunk_index) {
             ekg::rect &select_rect {this->cursor_draw_data_list.emplace_back()};
             select_rect.x = this->rect_cursor.w;
-            select_rect.y = y + visible_text_height;
+            select_rect.y = y;
             select_rect.w = x + this->rect_cursor.w + this->rect_cursor.w;
             select_rect.h = this->text_height;
         }

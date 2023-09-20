@@ -273,7 +273,7 @@ int32_t main_example() {
     ekg::log() << "OpenGL context created";
     ekg::debug = true;
 
-    SDL_GL_SetSwapInterval(1);
+    SDL_GL_SetSwapInterval(0);
     SDL_Event sdl_event {};
 
     auto frame = ekg::frame("lê rect", {20, 20}, {400, 400});
@@ -339,7 +339,7 @@ int32_t main_example() {
 
         // Swap buffers.
         SDL_GL_SwapWindow(sdl_win);
-        SDL_Delay(16);
+        //SDL_Delay(16);
     }
 
     return 0;
