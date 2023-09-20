@@ -67,7 +67,7 @@ namespace ekg::ui {
             }
 
             inline bool operator==(ekg::ui::textbox_widget::cursor_pos &r) {
-                return this->index == r.index && this->chunk_index == r.chunk_index;
+                return this->text_index == r.text_index && this->chunk_index == r.chunk_index;
             }
 
             inline bool operator!=(ekg::ui::textbox_widget::cursor_pos &r) {
