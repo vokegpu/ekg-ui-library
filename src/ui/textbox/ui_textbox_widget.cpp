@@ -314,6 +314,8 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
         return;
     }
 
+    this->text_edited = true;
+
     std::string &cursor_text_a {ekg_textbox_get_cursor_text(cursor.pos[0])};
     std::string &cursor_text_b {ekg_textbox_get_cursor_text(cursor.pos[1])};
 
@@ -452,6 +454,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
 
         ekg_textbox_clamp_text_chunk_size(this->text_chunk_list, ui_max_lines);
         this->move_cursor(cursor.pos[0], direction, 0);
+
         break;
 
     case ekg::ui::textbox_widget::action::erase_text:
@@ -744,6 +747,7 @@ void ekg::ui::textbox_widget::on_reload() {
             this->text_utf_char_index_list.emplace_back();
         }
 
+        this->text_edited = true;
         this->update_ui_text = true;
         this->rect_text.h = (this->text_height * static_cast<float>(this->text_chunk_list.size()));
 

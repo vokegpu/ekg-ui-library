@@ -104,6 +104,7 @@ namespace ekg::ui {
         float text_height {};
         ekg::vec2 cursor_delta {};
         
+        bool text_edited {};
         bool update_ui_text {};
         bool is_ui_enabled {};
         bool is_action_modifier_enable {};
