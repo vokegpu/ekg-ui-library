@@ -496,19 +496,20 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             break;
         }
 
-        int64_t it {cursor.pos[0].text_index};
         int64_t cursor_dir[2] {0, 1};
         std::string line {};
 
         if (!this->is_action_modifier_enable) {
-            line = ekg::utf_substr(cursor_text_a, it, ekg::utf_length(cursor_text_a));
-            cursor_text_a = ekg::utf_substr(cursor_text_a, 0, it);
+            line = ekg::utf_substr(cursor_text_a, cursor.pos[0].text_index, ekg::utf_length(cursor_text_a));
+            cursor_text_a = ekg::utf_substr(cursor_text_a, 0, cursor.pos[0].text_index);
 
             cursor_dir[0] = 1;
             cursor_dir[1] = 0;
         }
 
+        this->text_chunk_list.reserve(this->text_chunk_list.size() + 1);
         this->text_chunk_list.insert(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1, line);
+        
         ekg_textbox_clamp_text_chunk_size(this->text_chunk_list, ui_max_lines);
         this->move_cursor(cursor.pos[0], cursor_dir[0], cursor_dir[1]);
 
@@ -911,11 +912,10 @@ bool ekg::ui::textbox_widget::find_cursor(ekg::ui::textbox_widget::cursor &targe
     bool b_cursor_pos {};
 
     for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
-        a_cursor_pos = ((((last_line_utf_char_index && utf_char_index + 1 >= cursor.pos[0].text_index) || utf_char_index >= cursor.pos[0].text_index) && chunk_index == cursor.pos[0].chunk_index) || chunk_index > cursor.pos[0].chunk_index);
-        b_cursor_pos = ((((last_line_utf_char_index && utf_char_index + 1 >= cursor.pos[1].text_index) || utf_char_index >= cursor.pos[1].text_index)  && chunk_index == cursor.pos[1].chunk_index) || chunk_index > cursor.pos[1].chunk_index);
+        a_cursor_pos = ((((last_line_utf_char_index && utf_char_index + 1 == cursor.pos[0].text_index) || utf_char_index >= cursor.pos[0].text_index) && chunk_index == cursor.pos[0].chunk_index));
+        b_cursor_pos = ((((last_line_utf_char_index && utf_char_index + 1 == cursor.pos[1].text_index) || utf_char_index <= cursor.pos[1].text_index)  && chunk_index == cursor.pos[1].chunk_index));
 
-        if ((a_cursor_pos && b_cursor_pos) ||
-            (chunk_index > cursor.pos[0].chunk_index && chunk_index < cursor.pos[1].chunk_index)) {
+        if ((a_cursor_pos && b_cursor_pos) || (chunk_index > cursor.pos[0].chunk_index && chunk_index < cursor.pos[1].chunk_index)) {
             target_cursor = cursor;
             return true;
         }

@@ -121,3 +121,5 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Fixed textbox rendering artefacts because of size of floating point.
 -- Fixed slow scrolling from textbox.
 -- Added new inputs tag: mouse-wheel-left and mouse-wheel-right, for X axis.
+-- ULTRA-INSANE textbox performance increase.
+-- Textbox insert line performance 1% increased.
