@@ -22,6 +22,8 @@
 * SOFTWARE.
 */
 
+#include <cstring>
+
 #include "ekg/util/text.hpp"
 #include "ekg/util/geometry.hpp"
 #include "ekg/util/io.hpp"
