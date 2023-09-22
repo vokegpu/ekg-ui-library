@@ -184,16 +184,6 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
     bool chunk_bounding_size_index {cursor.chunk_index + 1 == this->text_chunk_list.size()};
     bool check_cursor_x {x != 0};
 
-    if (x < 0) {
-        x = abs(x);
-        cursor.text_index -= x;
-        x = -1;
-    } else if (x > 0) {
-        x = abs(x);
-        cursor.text_index += x;
-        x = 1;
-    }
-
     if (y < 0) {
         if (cursor.chunk_index == 0) {
             cursor.text_index = 0;
@@ -216,24 +206,19 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
         }
     }
 
-    /*
-     * The selection should not take the size of text,
-     * this is only able when the cursor A is equals to B.
-     */
-    bool out_of_index {cursor.text_index < 0};
+    cursor.text_index += x;
 
-    if (out_of_index && cursor.chunk_index > 0 && check_cursor_x) {
+    if (cursor.text_index < 0 && cursor.chunk_index > 0 && check_cursor_x) {
         cursor.chunk_index--;
         y = -1;
-
         cursor.text_index = static_cast<int64_t>(ekg::utf_length(ekg_textbox_get_cursor_text(cursor)));
+        cursor_text_size = cursor.text_index;
     }
 
-    out_of_index = cursor.text_index > cursor_text_size;
-    if (out_of_index && chunk_bounding_size_index && check_cursor_x) {
+    if (cursor.text_index > cursor_text_size && chunk_bounding_size_index && check_cursor_x) {
         cursor.text_index = cursor_text_size;
         y = -1;
-    } else if (out_of_index && check_cursor_x) {
+    } else if (cursor.text_index > cursor_text_size && check_cursor_x) {
         cursor.chunk_index++;
         cursor.text_index = 0;
         y = 1;
