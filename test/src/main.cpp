@@ -261,7 +261,7 @@ int32_t main_example() {
         ekg::log() << "GLEW initialised";
     }
 
-    ekg::autoscale = true;
+    ekg::autoscale = false;
     ekg::scalebase = {800, 600};
     ekg::pre_decode_clipboard = true;
 
@@ -273,7 +273,7 @@ int32_t main_example() {
     ekg::log() << "OpenGL context created";
     ekg::debug = true;
 
-    SDL_GL_SetSwapInterval(0);
+    SDL_GL_SetSwapInterval(1);
     SDL_Event sdl_event {};
 
     auto frame = ekg::frame("lê rect", {20, 20}, {400, 400});
@@ -283,7 +283,9 @@ int32_t main_example() {
 
     ekg::button("pom pom clcik click!!", ekg::dock::fill);
     ekg::slider("pompo number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+
     auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::fill | ekg::dock::next)->set_scaled_height(26);
+    p_textbox->set_text("oii");
 
     ekg::label("RGB:", ekg::dock::next);
 
@@ -339,7 +341,7 @@ int32_t main_example() {
 
         // Swap buffers.
         SDL_GL_SwapWindow(sdl_win);
-        //SDL_Delay(16);
+        SDL_Delay(16);
     }
 
     return 0;

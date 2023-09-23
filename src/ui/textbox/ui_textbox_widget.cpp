@@ -432,7 +432,7 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
             this->move_cursor(direction < 0 ? cursor.pos[0] : cursor.pos[1], cursor_dir[0], cursor_dir[1]);
         }
 
-        if (cursor.pos[0] == cursor.pos[1] && direction < 0 && (cursor.pos[0].text_index > 0 && cursor.pos[0].chunk_index >= 0)) {
+        if (cursor.pos[0] == cursor.pos[1] && direction < 0 && (cursor.pos[0].text_index > 0 || cursor.pos[0].chunk_index > 0)) {
             if (cursor.pos[0].text_index - 1 < 0 && cursor.pos[0].chunk_index > 0) {
                 std::string stored_text {cursor_text_a};
 
@@ -897,10 +897,10 @@ bool ekg::ui::textbox_widget::find_cursor(ekg::ui::textbox_widget::cursor &targe
     bool b_cursor_pos {};
 
     for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
-        a_cursor_pos = ((((last_line_utf_char_index && utf_char_index + 1 == cursor.pos[0].text_index) || utf_char_index >= cursor.pos[0].text_index) && chunk_index == cursor.pos[0].chunk_index));
-        b_cursor_pos = ((((last_line_utf_char_index && utf_char_index + 1 == cursor.pos[1].text_index) || utf_char_index <= cursor.pos[1].text_index)  && chunk_index == cursor.pos[1].chunk_index));
+        a_cursor_pos = (utf_char_index >= cursor.pos[0].text_index || (last_line_utf_char_index && utf_char_index + 1 == cursor.pos[0].text_index)) && chunk_index == cursor.pos[0].chunk_index;
+        b_cursor_pos = (utf_char_index <= cursor.pos[1].text_index || (last_line_utf_char_index && utf_char_index + 1 == cursor.pos[1].text_index)) && chunk_index == cursor.pos[1].chunk_index;
 
-        if ((a_cursor_pos && b_cursor_pos) || (chunk_index > cursor.pos[0].chunk_index && chunk_index < cursor.pos[1].chunk_index)) {
+        if ((cursor.pos[0].chunk_index != cursor.pos[1].chunk_index && (a_cursor_pos || b_cursor_pos)) || (a_cursor_pos && b_cursor_pos) || (chunk_index > cursor.pos[0].chunk_index && chunk_index < cursor.pos[1].chunk_index)) {
             target_cursor = cursor;
             return true;
         }
@@ -1051,23 +1051,27 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
             if (this->find_cursor(cursor, static_cast<int64_t>(utf_char_index), static_cast<int64_t>(chunk_index), is_utf_char_last_index)) {
                 ekg::rect &select_rect {this->cursor_draw_data_list.emplace_back()};
-                if (cursor.pos[0] != cursor.pos[1] && (chunk_index == cursor.pos[0].chunk_index || chunk_index == cursor.pos[1].chunk_index)) {
-                    draw_additional_selected_last_char = {
-                        (is_utf_char_last_index &&
-                        cursor.pos[0].chunk_index != cursor.pos[1].chunk_index)
-                    };
+                select_rect.x = x + (char_data.wsize * static_cast<float>(is_utf_char_last_index));
+                select_rect.y = y;
+                select_rect.w = this->rect_cursor.w;
+                select_rect.h = this->text_height;
+               //if (cursor.pos[0] != cursor.pos[1]) {
+               //    draw_additional_selected_last_char = {
+               //        (is_utf_char_last_index &&
+               //        cursor.pos[0].chunk_index != cursor.pos[1].chunk_index)
+               //    };
 
-                    select_rect.x = x;
-                    select_rect.y = y;
-                    select_rect.w = char_data.wsize + (static_cast<float>(is_utf_char_last_index) * this->rect_cursor.w) + (static_cast<float>(draw_additional_selected_last_char) * (this->rect_cursor.w + this->rect_cursor.w));
-                    select_rect.h = this->text_height;
-                } else if (cursor.pos[0] == cursor.pos[1]) {
-                    is_utf_char_last_index = is_utf_char_last_index && cursor.pos[0].text_index == utf_char_index + 1;
-                    select_rect.x = x + (char_data.wsize * static_cast<float>(is_utf_char_last_index));
-                    select_rect.y = y;
-                    select_rect.w = this->rect_cursor.w;
-                    select_rect.h = this->text_height;
-                }
+               //    select_rect.x = x;
+               //    select_rect.y = y;
+               //    select_rect.w = char_data.wsize + (static_cast<float>(is_utf_char_last_index) * this->rect_cursor.w) + (static_cast<float>(draw_additional_selected_last_char) * (this->rect_cursor.w + this->rect_cursor.w));
+               //    select_rect.h = this->text_height;
+               //} else if (cursor.pos[0] == cursor.pos[1]) {
+               //    is_utf_char_last_index = is_utf_char_last_index && cursor.pos[0].text_index == utf_char_index + 1;
+               //    select_rect.x = x + (char_data.wsize * static_cast<float>(is_utf_char_last_index));
+               //    select_rect.y = y;
+               //    select_rect.w = this->rect_cursor.w;
+               //    select_rect.h = this->text_height;
+               //}
             }
 
             if (x + this->embedded_scroll.scroll.x < rect.w) {
