@@ -123,3 +123,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Added new inputs tag: mouse-wheel-left and mouse-wheel-right, for X axis.
 -- ULTRA-INSANE textbox performance increase.
 -- Textbox insert line performance 1% increased.
+-- Textbox selection signal of next line.
