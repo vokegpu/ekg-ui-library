@@ -1,26 +1,26 @@
 /*
-* MIT License
-* 
-* Copyright (c) 2022-2023 Rina Wilk / vokegpu@gmail.com
-* 
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in all
-* copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
-*/
+ * MIT License
+ * 
+ * Copyright (c) 2022-2023 Rina Wilk / vokegpu@gmail.com
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 #include <ekg/ekg.hpp>
 
@@ -262,7 +262,7 @@ int32_t main_example() {
     }
 
     ekg::autoscale = false;
-    ekg::scalebase = {800, 600};
+    ekg::scalebase = {1280, 720};
     ekg::pre_decode_clipboard = true;
 
     ekg::log() << "oi queria ser MUIUTO gostosa\t" << ((uint64_t) 0 - (uint64_t) 0);
@@ -284,7 +284,7 @@ int32_t main_example() {
     ekg::button("pom pom clcik click!!", ekg::dock::fill);
     ekg::slider("pompo number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
 
-    auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::fill | ekg::dock::next)->set_scaled_height(26);
+    auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::next)->set_scaled_height(6);
     p_textbox->set_text("oii");
 
     ekg::label("RGB:", ekg::dock::next);
@@ -829,6 +829,22 @@ void utf_test() {
     }
 }
 
+std::ostringstream log() {
+    return {};
+}
+
+template<typename t>
+std::ostringstream &operator+(std::ostringstream &os_string_stream, const t &log_content) {
+    os_string_stream << log_content;
+    return os_string_stream;
+}
+
+std::ostringstream &operator-(std::ostringstream &os_string_stream, std::ostringstream &os_string_stream_final) {
+    std::cout << os_string_stream.str() << std::endl;
+    return os_string_stream;
+}
+
 int32_t main(int32_t, char**) {
+    char oi[2] {'o', 0};
     return main_example();
 }

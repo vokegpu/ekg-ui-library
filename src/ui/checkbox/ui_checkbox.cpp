@@ -67,7 +67,6 @@ ekg::ui::checkbox *ekg::ui::checkbox::set_place(uint16_t docks) {
 ekg::ui::checkbox *ekg::ui::checkbox::set_width(float width) {
     if (this->sync_ui.w != width) {
         this->sync_ui.w = width;
-
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
@@ -83,7 +82,6 @@ float ekg::ui::checkbox::get_width() {
 ekg::ui::checkbox *ekg::ui::checkbox::set_scaled_height(int32_t scaled_height_factor) {
     if (this->scaled_height != scaled_height_factor) {
         this->scaled_height = scaled_height_factor;
-
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
     }
@@ -117,7 +115,7 @@ std::string_view ekg::ui::checkbox::get_text() {
 ekg::ui::checkbox *ekg::ui::checkbox::set_value(bool val) {
     if (this->value != val) {
         this->value = val;
-        ekg::reload(this->id);
+        ekg::dispatch(ekg::env::redraw);
     }
 
     return this;

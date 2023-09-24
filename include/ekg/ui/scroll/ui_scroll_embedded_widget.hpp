@@ -36,6 +36,7 @@ namespace ekg::ui {
         ekg::rect *rect_mother {};
         ekg::rect rect_child {};
         ekg::rect rect_dimension_sync {};
+        ekg::rect last_rect_child {};
 
         ekg::vec4 scroll {};
         ekg::rect rect_vertical_scroll_bar {};
