@@ -179,22 +179,23 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
     }
 
     if (this->flag.hovered && ekg::input::pressed() && ekg::input::action("scrollbar-drag")) {
-        ekg::rect scaled_bar {this->rect_vertical_scroll_bar};
-        scaled_bar.y += this->rect_mother->y;
-        this->flag.state = ekg::rect_collide_vec(scaled_bar, interact);
-        this->bar_drag.x = interact.y - scaled_bar.y;
-    
-        scaled_bar = this->rect_horizontal_scroll_bar;
-        scaled_bar.x += this->rect_mother->x;
+        ekg::rect scaled_vertical_bar {this->rect_vertical_scroll_bar};
+        scaled_vertical_bar.y += this->rect_mother->y;
 
-        this->flag.extra_state = ekg::rect_collide_vec(scaled_bar, interact);
-        this->bar_drag.y = interact.x - scaled_bar.x;
+        this->flag.state = ekg::rect_collide_vec(scaled_vertical_bar, interact);
+        this->bar_drag.y = interact.y - scaled_vertical_bar.y;
+
+        ekg::rect scaled_horizontal_bar {this->rect_horizontal_scroll_bar};
+        scaled_horizontal_bar.x += this->rect_mother->x;
+
+        this->flag.extra_state = ekg::rect_collide_vec(scaled_horizontal_bar, interact);
+        this->bar_drag.x = interact.x - scaled_horizontal_bar.x;
     }
 
     if (ekg::input::motion() && (this->flag.state || this->flag.extra_state)) {
         if (this->flag.state) {
             ekg::rect scaled_bar {this->rect_vertical_scroll_bar};
-            scaled_bar.y = interact.y - this->bar_drag.x;
+            scaled_bar.y = interact.y - this->bar_drag.y;
             scaled_bar.y -= this->rect_mother->y;
 
             this->scroll.w = -ekg::clamp(scaled_bar.y / (this->rect_mother->h - this->rect_vertical_scroll_bar.h), 0.0f, 1.0f) * (this->rect_child.h - this->rect_mother->h);
@@ -203,7 +204,7 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
 
         if (this->flag.extra_state) {
             ekg::rect scaled_bar {this->rect_horizontal_scroll_bar};
-            scaled_bar.x = interact.x - this->bar_drag.y;
+            scaled_bar.x = interact.x - this->bar_drag.x;
             scaled_bar.x -= this->rect_mother->x;
 
             this->scroll.z = -ekg::clamp(scaled_bar.x / (this->rect_mother->w - this->rect_horizontal_scroll_bar.w), 0.0f, 1.0f) * (this->rect_child.w - this->rect_mother->w);

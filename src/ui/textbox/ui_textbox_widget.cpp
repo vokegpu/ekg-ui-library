@@ -1,3 +1,4 @@
+
 /*
  * MIT License
  * 
@@ -758,7 +759,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
 
         bool movement_input_enabled {this->flag.focused && this->is_action_select_enable};
         if (movement_input_enabled && !this->flag.state) {
-            if (clicked_pos.pos[0] >= main_cursor.pos[2]) { // @checklater1 >= operator
+            if (clicked_pos.pos[0] >= main_cursor.pos[2]) {
                 main_cursor.pos[2] = main_cursor.pos[0];
                 main_cursor.pos[1] = clicked_pos.pos[0];
                 main_cursor.pos[3] = clicked_pos.pos[0];
@@ -785,6 +786,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         this->flag.state = false;
     }
 
+    // @TODO  dragging scroll horizontal not working
     this->embedded_scroll.on_event(sdl_event);
     this->flag.highlight = this->flag.hovered;
 
