@@ -26,9 +26,19 @@
 #define EKG_UI_LISTBOX_H
 
 #include "ekg/ui/abstract/abstract.hpp"
+#include  <vector>
 
 namespace ekg::ui {
-    class listbox : public ekg::ui::abstract {}
+    class listbox : public ekg::ui::abstract {
+    public:
+        struct item {
+        public:
+            std::string name {};
+            bool value {};
+        };
+    protected:
+        std::vector<std::string>
+    };
 }
 
 #endif

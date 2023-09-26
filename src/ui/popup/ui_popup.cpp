@@ -45,10 +45,8 @@ ekg::ui::popup *ekg::ui::popup::insert(const std::vector<std::string> &component
 
 ekg::ui::popup *ekg::ui::popup::insert(std::string_view component_name) {
     std::string factored_component_name {component_name};
-    bool is_separator {component_name.size() >= 3 &&
-                                 component_name.at(0) == '-' &&
-                                 component_name.at(1) == '-' &&
-                                 component_name.at(2) == '-'
+    bool is_separator {component_name.size() >= 1 &&
+                                 component_name.at(0) == '\t'
     };
 
     if (is_separator) {
@@ -66,7 +64,7 @@ ekg::ui::popup *ekg::ui::popup::insert(std::string_view component_name) {
     return this;
 }
 
-ekg::ui::popup *ekg::ui::popup::insert(std::string_view component_name, ekg::ui::popup *popup_linked) {
+ekg::ui::popup *ekg::ui::popup::link(std::string_view component_name, ekg::ui::popup *popup_linked) {
     int64_t index {this->contains(component_name)};
 
     if (index == -1) {
@@ -76,7 +74,7 @@ ekg::ui::popup *ekg::ui::popup::insert(std::string_view component_name, ekg::ui:
     auto &component {this->component_list.at(index)};
     component.linked_id = 0;
 
-    if (popup_linked != nullptr) {
+    if (popup_linked) {
         popup_linked->set_state(ekg::state::invisible);
         component.linked_id = popup_linked->get_id();
         this->add_child(component.linked_id);

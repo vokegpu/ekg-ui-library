@@ -296,6 +296,7 @@ int32_t main_example() {
     ekg::scroll("scroll minecraft");
     ekg::pop_group();
 
+    auto p_listbox = ekg::listbox("hello", {}, ekg::dock::fill);
     create_exit_button();
 
     std::string oi_cachorroo = "oi cachorror";
@@ -311,22 +312,22 @@ int32_t main_example() {
 
             if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
                 auto main = ekg::popup("file", {
-                    "---Add",
+                    "\tAdd",
                     "Cut",
                     "Copy",
-                    "---Paste",
-                    "---Select All",
+                    "\tPaste",
+                    "\tSelect All",
                     "Actions"
                 });
-
-                auto three = ekg::popup("file-add", {"Cube", "Plane", "Sphere", "Hexagon", "Hexagon"});
-                auto hexagon = ekg::popup("file-add-hexagon", {"Tree D", "Plane", "Double Pairs Daggers"});
-                auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
   
-                if (main != nullptr && three != nullptr) {
-                    main->insert("Add", three);
-                    main->insert("Actions", game);
-                    three->insert("Hexagon", hexagon);
+                if (main) {
+                    auto three = ekg::popup("file-add", {"Cube", "Plane", "Sphere", "Hexagon", "Hexagon"});
+                    auto hexagon = ekg::popup("file-add-hexagon", {"Tree D", "Plane", "Double Pairs Daggers"});
+                    auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
+
+                    main->link("Add", three);
+                    main->link("Actions", game);
+                    three->link("Hexagon", hexagon);
                 }
             }
         }

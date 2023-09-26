@@ -30,6 +30,7 @@
 
 namespace ekg::ui {
 	class popup : public ekg::ui::abstract {
+    public:
 	protected:
 		std::vector<ekg::ui::component> component_list {};
 		uint16_t text_flags {};
@@ -38,7 +39,7 @@ namespace ekg::ui {
 	public:
 		ekg::ui::popup *insert(const std::vector<std::string> &component_list);
 		ekg::ui::popup *insert(std::string_view component);
-		ekg::ui::popup *insert(std::string_view component, ekg::ui::popup *p_popup);
+		ekg::ui::popup *link(std::string_view component, ekg::ui::popup *p_popup);
 		ekg::ui::popup *erase(std::string_view component);
 
         int64_t contains(std::string_view component);

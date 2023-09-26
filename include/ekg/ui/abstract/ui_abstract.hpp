@@ -43,14 +43,12 @@ namespace ekg {
     };
 
     namespace ui {
-        class component {
+        struct item {
         public:
             std::string name {};
-            ekg::rect rect_dimension {};
-            ekg::rect rect_content {};
-            uint64_t id {};
-            uint64_t linked_id {};
-            uint16_t attributes {};
+            uint32_t id {};
+            uint32_t linked_id {};
+            uint16_t attributes {}; 
         };
 
         class abstract {

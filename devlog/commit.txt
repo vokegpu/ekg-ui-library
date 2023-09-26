@@ -124,3 +124,6 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- ULTRA-INSANE textbox performance increase.
 -- Textbox insert line performance 1% increased.
 -- Textbox selection signal of next line.
+-- Removing verbose popup stuff.
+
+0.0.1.0.5.0 26/09/23
