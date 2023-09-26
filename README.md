@@ -122,15 +122,16 @@ while (SDL_PollEvent(&sdlevent)) {
   ekg::event(sdl_event);
 
   if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
-    auto main = ekg::popup("file", {"---Add", "Cut", "Copy", "---Paste", "---Select All", "Actions"});
+    // \t  add line separator
+    auto main = ekg::popup("file", {"\tAdd", "Cut", "Copy", "\tPaste", "\tSelect All", "Actions"});
     auto three = ekg::popup("file-add", {"Cube", "Plane", "Sphere", "Hexagon", "Hexagon"});
     auto hexagon = ekg::popup("file-add-hexagon", {"Tree D", "Plane", "Double Pairs Daggers"});
     auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
   
-    if (main != nullptr && three != nullptr) {
-      main->append_linked("Add", three);
-      main->append_linked("Actions", game);
-      three->append_linked("Hexagon", hexagon);
+    if (main) { // not null
+      main->link("Add", three);
+      main->link("Actions", game);
+      three->link("Hexagon", hexagon);
     }
   }
 }
