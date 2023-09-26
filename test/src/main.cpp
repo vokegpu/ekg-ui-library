@@ -295,8 +295,7 @@ int32_t main_example() {
 
     ekg::scroll("scroll minecraft");
     ekg::pop_group();
-
-    auto p_listbox = ekg::listbox("hello", {}, ekg::dock::fill);
+    
     create_exit_button();
 
     std::string oi_cachorroo = "oi cachorror";
