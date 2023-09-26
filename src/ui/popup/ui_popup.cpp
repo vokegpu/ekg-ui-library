@@ -35,15 +35,15 @@ int64_t ekg::ui::popup::contains(std::string_view component_name) {
     return -1;
 }
 
-ekg::ui::popup *ekg::ui::popup::append(const std::vector<std::string> &component_name_list) {
+ekg::ui::popup *ekg::ui::popup::insert(const std::vector<std::string> &component_name_list) {
     for (const std::string &component_name : component_name_list) {
-        this->append(component_name);
+        this->insert(component_name);
     }
 
     return this;
 }
 
-ekg::ui::popup *ekg::ui::popup::append(std::string_view component_name) {
+ekg::ui::popup *ekg::ui::popup::insert(std::string_view component_name) {
     std::string factored_component_name {component_name};
     bool is_separator {component_name.size() >= 3 &&
                                  component_name.at(0) == '-' &&
@@ -66,11 +66,11 @@ ekg::ui::popup *ekg::ui::popup::append(std::string_view component_name) {
     return this;
 }
 
-ekg::ui::popup *ekg::ui::popup::append_linked(std::string_view component_name, ekg::ui::popup *popup_linked) {
+ekg::ui::popup *ekg::ui::popup::insert(std::string_view component_name, ekg::ui::popup *popup_linked) {
     int64_t index {this->contains(component_name)};
 
     if (index == -1) {
-        this->append(component_name);
+        this->insert(component_name);
     }
 
     auto &component {this->component_list.at(index)};
@@ -85,7 +85,7 @@ ekg::ui::popup *ekg::ui::popup::append_linked(std::string_view component_name, e
     return this;
 }
 
-ekg::ui::popup *ekg::ui::popup::remove(std::string_view component_name) {
+ekg::ui::popup *ekg::ui::popup::erase(std::string_view component_name) {
     std::vector<ekg::ui::component> new_list {};
     for (ekg::ui::component &component : this->component_list) {
         if (component.name == component_name) {

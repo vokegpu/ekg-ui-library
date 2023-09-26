@@ -324,9 +324,9 @@ int32_t main_example() {
                 auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
   
                 if (main != nullptr && three != nullptr) {
-                    main->append_linked("Add", three);
-                    main->append_linked("Actions", game);
-                    three->append_linked("Hexagon", hexagon);
+                    main->insert("Add", three);
+                    main->insert("Actions", game);
+                    three->insert("Hexagon", hexagon);
                 }
             }
         }
@@ -672,9 +672,9 @@ int32_t main_calculator() {
                         auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
 
                         if (main != nullptr && three != nullptr) {
-                            main->append_linked("Add", three);
-                            main->append_linked("Actions", game);
-                            three->append_linked("Hexagon", hexagon);
+                            main->insert("Add", three);
+                            main->insert("Actions", game);
+                            three->insert("Hexagon", hexagon);
                         }
                     }
 

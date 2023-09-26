@@ -338,7 +338,7 @@ ekg::ui::popup *ekg::popup(std::string_view tag, const std::vector<std::string> 
     }
 
     ui->set_width(100);
-    ui->append(component_list);
+    ui->insert(component_list);
     ui->set_tag(tag);
     ui->set_scaled_height(1);
     ui->set_text_align(ekg::dock::center | ekg::dock::left);

@@ -22,19 +22,13 @@
  * SOFTWARE.
  */
 
-#ifndef EKG_UI_COMBOBOX_H
-#define EKG_UI_COMBOBOX_H
+#ifndef EKG_UI_LISTBOX_H
+#define EKG_UI_LISTBOX_H
 
-#include "ekg/ui/abstract/ui_abstract.hpp"
-#include <vector>
+#include "ekg/ui/abstract/abstract.hpp"
 
 namespace ekg::ui {
-    class combobox : public ekg::ui::abstract {
-    protected:
-        std::vector<std::string> value_list {};
-        std::string value {};
-    public:
-    };
+    class listbox : public ekg::ui::abstract {}
 }
 
 #endif
