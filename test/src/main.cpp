@@ -295,7 +295,7 @@ int32_t main_example() {
 
     ekg::scroll("scroll minecraft");
     ekg::pop_group();
-    
+
     create_exit_button();
 
     std::string oi_cachorroo = "oi cachorror";
@@ -671,10 +671,10 @@ int32_t main_calculator() {
                         auto hexagon = ekg::popup("file-add-hexagon", {"Tree D", "Plane", "Double Pairs Daggers"});
                         auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
 
-                        if (main != nullptr && three != nullptr) {
-                            main->insert("Add", three);
-                            main->insert("Actions", game);
-                            three->insert("Hexagon", hexagon);
+                        if (main) {
+                            main->link("Add", three);
+                            main->link("Actions", game);
+                            three->link("Hexagon", hexagon);
                         }
                     }
 

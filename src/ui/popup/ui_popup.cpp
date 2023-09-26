@@ -25,9 +25,9 @@
 #include "ekg/ui/popup/ui_popup.hpp"
 #include "ekg/util/gui.hpp"
 
-int64_t ekg::ui::popup::contains(std::string_view component_name) {
-    for (uint32_t it {}; it < this->component_list.size(); it++) {
-        if (this->component_list.at(it).name == component_name) {
+int64_t ekg::ui::popup::contains(std::string_view item_name) {
+    for (uint32_t it {}; it < this->item_list.size(); it++) {
+        if (this->item_list.at(it).name == item_name) {
             return it;
         }
     }
@@ -35,77 +35,77 @@ int64_t ekg::ui::popup::contains(std::string_view component_name) {
     return -1;
 }
 
-ekg::ui::popup *ekg::ui::popup::insert(const std::vector<std::string> &component_name_list) {
-    for (const std::string &component_name : component_name_list) {
-        this->insert(component_name);
+ekg::ui::popup *ekg::ui::popup::insert(const std::vector<std::string> &item_name_list) {
+    for (const std::string &item_name : item_name_list) {
+        this->insert(item_name);
     }
 
     return this;
 }
 
-ekg::ui::popup *ekg::ui::popup::insert(std::string_view component_name) {
-    std::string factored_component_name {component_name};
-    bool is_separator {component_name.size() >= 1 &&
-                                 component_name.at(0) == '\t'
+ekg::ui::popup *ekg::ui::popup::insert(std::string_view item_name) {
+    std::string factored_item_name {item_name};
+    bool is_separator {item_name.size() >= 1 &&
+                                 item_name.at(0) == '\t'
     };
 
     if (is_separator) {
-        factored_component_name = factored_component_name.substr(3, factored_component_name.size());
+        factored_item_name.erase(factored_item_name.begin());
     }
 
-    if (this->contains(factored_component_name) != -1) {
+    if (this->contains(factored_item_name) != -1) {
         return this;
     }
 
-    ekg::ui::component component {};
-    component.name = factored_component_name;
-    component.attributes = is_separator ? ekg::attribute::separator : 0;
-    this->component_list.push_back(component);
+    ekg::ui::item item {};
+    item.name = factored_item_name;
+    item.attributes = is_separator ? ekg::attribute::separator : 0;
+    this->item_list.push_back(item);
     return this;
 }
 
-ekg::ui::popup *ekg::ui::popup::link(std::string_view component_name, ekg::ui::popup *popup_linked) {
-    int64_t index {this->contains(component_name)};
+ekg::ui::popup *ekg::ui::popup::link(std::string_view item_name, ekg::ui::popup *popup_linked) {
+    int64_t index {this->contains(item_name)};
 
     if (index == -1) {
-        this->insert(component_name);
+        this->insert(item_name);
     }
 
-    auto &component {this->component_list.at(index)};
-    component.linked_id = 0;
+    auto &item {this->item_list.at(index)};
+    item.linked_id = 0;
 
     if (popup_linked) {
         popup_linked->set_state(ekg::state::invisible);
-        component.linked_id = popup_linked->get_id();
-        this->add_child(component.linked_id);
+        item.linked_id = popup_linked->get_id();
+        this->add_child(item.linked_id);
     }
 
     return this;
 }
 
-ekg::ui::popup *ekg::ui::popup::erase(std::string_view component_name) {
-    std::vector<ekg::ui::component> new_list {};
-    for (ekg::ui::component &component : this->component_list) {
-        if (component.name == component_name) {
-            this->remove_child(component.linked_id);
+ekg::ui::popup *ekg::ui::popup::erase(std::string_view item_name) {
+    std::vector<ekg::ui::item> new_list {};
+    for (ekg::ui::item &item : this->item_list) {
+        if (item.name == item_name) {
+            this->remove_child(item.linked_id);
             continue;
         }
 
-        new_list.push_back(component);
+        new_list.push_back(item);
     }
 
-    this->component_list.clear();
-    this->component_list.insert(this->component_list.end(), new_list.begin(), new_list.end());
+    this->item_list.clear();
+    this->item_list.insert(this->item_list.end(), new_list.begin(), new_list.end());
 
     return this;
 }
 
-ekg::ui::component &ekg::ui::popup::get(uint64_t index) {
-    return this->component_list.at(index);
+ekg::ui::item &ekg::ui::popup::get(uint64_t index) {
+    return this->item_list.at(index);
 }
 
-std::vector<ekg::ui::component> &ekg::ui::popup::get_component_list() {
-    return this->component_list;
+std::vector<ekg::ui::item> &ekg::ui::popup::get_item_list() {
+    return this->item_list;
 }
 
 ekg::ui::popup *ekg::ui::popup::set_text_align(uint16_t flags) {

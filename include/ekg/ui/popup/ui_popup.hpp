@@ -30,21 +30,22 @@
 
 namespace ekg::ui {
 	class popup : public ekg::ui::abstract {
-    public:
 	protected:
-		std::vector<ekg::ui::component> component_list {};
+		std::vector<ekg::ui::item> item_list {};
+
 		uint16_t text_flags {};
         int32_t scaled_height {}, token_id {};
         ekg::font font_size;
 	public:
-		ekg::ui::popup *insert(const std::vector<std::string> &component_list);
-		ekg::ui::popup *insert(std::string_view component);
-		ekg::ui::popup *link(std::string_view component, ekg::ui::popup *p_popup);
-		ekg::ui::popup *erase(std::string_view component);
+		ekg::ui::popup *insert(const std::vector<std::string> &item_list);
+		ekg::ui::popup *insert(std::string_view item);
+		ekg::ui::popup *link(std::string_view item, ekg::ui::popup *p_popup);
+		ekg::ui::popup *erase(std::string_view item);
+        std::string &emplace_back();
 
-        int64_t contains(std::string_view component);
-        ekg::ui::component &get(uint64_t index);
-        std::vector<ekg::ui::component> &get_component_list();
+        int64_t contains(std::string_view item);
+        ekg::ui::item &get(uint64_t index);
+        std::vector<ekg::ui::item> &get_item_list();
 
         ekg::ui::popup *set_pos(float x, float y);
         ekg::vec2 get_pos();
