@@ -37,7 +37,7 @@ elseif(ANDROID)
     message("-- Building EKG Android Linux native library")
     set(LIBRARY_OUTPUT_PATH "${ANDROID_ABI}/")
 else()
-    if (LINUX_NOT_FOUND_FREETYPE)
+    if (EKG_LINUX_NOT_FOUND_FREETYPE)
         include_directories(/usr/include/freetype2)
     endif()
 
