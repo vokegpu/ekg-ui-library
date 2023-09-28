@@ -24,6 +24,7 @@
 
 #include "ekg/ui/popup/ui_popup.hpp"
 #include "ekg/util/gui.hpp"
+#include "ekg/util/text.hpp"
 
 int64_t ekg::ui::popup::contains(std::string_view item_name) {
     for (uint32_t it {}; it < this->item_list.size(); it++) {
@@ -44,22 +45,20 @@ ekg::ui::popup *ekg::ui::popup::insert(const std::vector<std::string> &item_name
 }
 
 ekg::ui::popup *ekg::ui::popup::insert(std::string_view item_name) {
-    std::string factored_item_name {item_name};
-    bool is_separator {item_name.size() >= 1 &&
-                                 item_name.at(0) == '\t'
-    };
+    uint16_t item_attribute_flags {};
+    uint8_t start_index {ekg::check_item_flags(item_name, item_attribute_flags)};
 
-    if (is_separator) {
-        factored_item_name.erase(factored_item_name.begin());
+    if (start_index) {
+        item_name = item_name.substr(start_index, item_name.size()); 
     }
 
-    if (this->contains(factored_item_name) != -1) {
+    if (item_name.empty() || this->contains(item_name) != -1) {
         return this;
     }
 
     ekg::ui::item item {};
-    item.name = factored_item_name;
-    item.attributes = is_separator ? ekg::attribute::separator : 0;
+    item.name = item_name;
+    item.attributes = item_attribute_flags;
     this->item_list.push_back(item);
     return this;
 }

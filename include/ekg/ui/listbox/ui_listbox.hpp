@@ -25,19 +25,23 @@
 #ifndef EKG_UI_LISTBOX_H
 #define EKG_UI_LISTBOX_H
 
-#include "ekg/ui/abstract/abstract.hpp"
+#include "ekg/ui/abstract/ui_abstract.hpp"
 #include  <vector>
 
 namespace ekg::ui {
     class listbox : public ekg::ui::abstract {
-    public:
-        struct item {
-        public:
-            std::string name {};
-            bool value {};
-        };
     protected:
-        std::vector<std::string>
+        std::vector<ekg::ui::item> item_list {};
+        std::string value {};
+    public:
+        int64_t contains(std::string_view item_name);
+        ekg::ui::listbox *insert(std::string_view item_name);
+        ekg::ui::listbox *insert(const std::vector<std::string> &item_name_list);
+        ekg::ui::listbox *erase(std::string_view item_name);
+        std::vector<ekg::ui::item> &get_item_list();
+
+        ekg::ui::listbox *set_value(std::string_view value_item_name);
+        std::string get_value();        
     };
 }
 

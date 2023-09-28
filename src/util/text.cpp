@@ -27,6 +27,7 @@
 #include "ekg/util/text.hpp"
 #include "ekg/util/geometry.hpp"
 #include "ekg/util/io.hpp"
+#include "ekg/ui/abstract/ui_abstract.hpp"
 
 uint64_t ekg::utf_check_sequence(uint8_t &char8, char32_t &char32, std::string &utf_string, std::string_view string, uint64_t index) {
     if (char8 <= 0x7F) {
@@ -231,4 +232,19 @@ void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_rea
 std::string ekg::string_float_precision(float n, int32_t precision) {
     const std::string string {std::to_string(n)};
     return string.substr(0, ekg::max((int32_t) (string.find('.') + precision + (1 * precision)), (int32_t) string.size()));
+}
+
+uint8_t ekg::check_item_flags(std::string_view name, uint16_t &flags) {
+    for (uint8_t it {}; it < 3 && !name.empty(); it++) {
+        switch (name.at(it)) {
+        case '\t':
+            flags |= ekg::attribute::separator;
+            break;
+        case '\\':
+            flags |= ekg::attribute::box;
+            break;
+        default:
+            return it;
+        }
+    }
 }

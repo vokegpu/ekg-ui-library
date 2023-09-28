@@ -31,21 +31,23 @@
 
 namespace ekg {
     enum class type {
-        abstract, frame, button, label, slider, slider2d, checkbox, textbox, entrybox, combobox, tab, popup, scroll
+        abstract, frame, button, label, slider, slider2d, checkbox, textbox, combobox, listbox, tab, popup, scroll
     };
 
     enum class uisync {
-        reset = 1, dimension = 2
+        reset = 1,dimension = 2
     };
 
     enum attribute {
-        separator = 1 << 2
+        separator = 2 << 2,
+        box          = 2 << 3
     };
 
     namespace ui {
         struct item {
         public:
             std::string name {};
+            bool value {};
             uint32_t id {};
             uint32_t linked_id {};
             uint16_t attributes {};

@@ -817,7 +817,7 @@ int32_t main_thread_system() {
 
 void utf_test() {
     std::string utf_text {
-        "ççç ççç"
+    "ççç ççç"
     };
 
     for (uint64_t it {}; it < utf_text.size(); it++) {
@@ -846,5 +846,6 @@ std::ostringstream &operator-(std::ostringstream &os_string_stream, std::ostring
 
 int32_t main(int32_t, char**) {
     char oi[2] {'o', 0};
+    
     return main_example();
 }

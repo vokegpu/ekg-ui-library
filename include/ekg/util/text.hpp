@@ -40,6 +40,7 @@ namespace ekg {
     void utf_decode(std::string_view string, std::vector<std::string> &utf_decoded);
 
     std::string string_float_precision(float number, int32_t precision);
+    uint8_t check_item_flags(std::string_view name, uint16_t &flags);
 }
 
 #endif
