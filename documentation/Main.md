@@ -6,9 +6,9 @@ Topics:
 
 # UI
 
-[Button Widget](ui/Button Widget.md) 
-[Listbox Widget](ui/Listbox Widget.md)
+[Button Widget](ui/buttonwidget.md) 
+[Listbox Widget](ui/listboxwidget.md)
 
 # Layout
 
-[Layout Mask](documentation/layout/Layout Mask.md)
+[Layout Mask](documentation/layout/layoutmask.md)
