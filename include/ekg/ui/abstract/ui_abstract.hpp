@@ -57,6 +57,11 @@ namespace ekg {
             ekg::rect rect_box {};
         };
 
+        struct item {
+        public:
+            std::string name {};
+        };
+
         class abstract {
         protected:
             int32_t id {};

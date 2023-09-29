@@ -3,6 +3,8 @@
 EKG purpose is simplicity way to create fency reitaned high-performance GUIs, always looking for low-specs.  
 EKG is exclusive for SDL for now.  
 
+[Check full documentation here!](documentation/Main.md)
+
 ---
 
 ![Image Text](/splash/splash-shocase-3.0-light-theme.png?raw=true)

@@ -39,27 +39,27 @@ void ekg::reload(int32_t id) {
     ekg::core->do_task_reload(ekg::core->get_fast_widget_by_id(id));
 }
 
-void ekg::reload(ekg::ui::abstract_widget *pwidget) {
-    ekg::core->do_task_reload(pwidget);
+void ekg::reload(ekg::ui::abstract_widget *p_widget) {
+    ekg::core->do_task_reload(p_widget);
 }
 
 void ekg::synclayout(int32_t id) {
     ekg::core->do_task_synclayout(ekg::core->get_fast_widget_by_id(id));
 }
 
-void ekg::synclayout(ekg::ui::abstract_widget *pwidget) {
-    ekg::core->do_task_synclayout(pwidget);
+void ekg::synclayout(ekg::ui::abstract_widget *p_widget) {
+    ekg::core->do_task_synclayout(p_widget);
 }
 
-void ekg::push_back_stack(ekg::ui::abstract_widget *pwidget, ekg::stack &stack) {
-    if (pwidget == nullptr || stack.registry[pwidget->data->get_id()]) {
+void ekg::push_back_stack(ekg::ui::abstract_widget *p_widget, ekg::stack &stack) {
+    if (p_widget == nullptr || stack.registry[p_widget->data->get_id()]) {
         return;
     }
 
-    stack.registry[pwidget->data->get_id()] = true;
-    stack.ordered_list.push_back(pwidget);
+    stack.registry[p_widget->data->get_id()] = true;
+    stack.ordered_list.push_back(p_widget);
 
-    for (int32_t &ids : pwidget->data->get_child_id_list()) {
+    for (int32_t &ids : p_widget->data->get_child_id_list()) {
         auto widgets {ekg::core->get_fast_widget_by_id(ids)};
 
         if (widgets == nullptr) {
@@ -75,12 +75,12 @@ void ekg::stack::clear() {
     this->registry.clear();
 }
 
-ekg::ui::abstract_widget *ekg::find_absolute_parent_master(ekg::ui::abstract_widget *pwidget) {
-    if (pwidget == nullptr || pwidget->data->get_parent_id() == 0) {
-        return pwidget;
+ekg::ui::abstract_widget *ekg::find_absolute_parent_master(ekg::ui::abstract_widget *p_widget) {
+    if (p_widget == nullptr || p_widget->data->get_parent_id() == 0) {
+        return p_widget;
     }
 
-    auto widget {ekg::core->get_fast_widget_by_id(pwidget->data->get_parent_id())};
+    auto widget {ekg::core->get_fast_widget_by_id(p_widget->data->get_parent_id())};
     return ekg::find_absolute_parent_master(widget);
 }
 
@@ -96,12 +96,12 @@ void ekg::update_high_frequency(int32_t id) {
     ekg::core->set_update_high_frequency(ekg::core->get_fast_widget_by_id(id));
 }
 
-void ekg::update_high_frequency(ekg::ui::abstract_widget *widget) {
-    ekg::core->set_update_high_frequency(widget);
+void ekg::update_high_frequency(ekg::ui::abstract_widget *p_widget) {
+    ekg::core->set_update_high_frequency(p_widget);
 }
 
-void ekg::dispatch(ekg::cpu::event* event) {
-    ekg::core->service_handler.generate() = *event;
+void ekg::dispatch(ekg::cpu::event *p_event) {
+    ekg::core->service_handler.generate() = *p_event;
 }
 
 void ekg::dispatch(ekg::env env) {
