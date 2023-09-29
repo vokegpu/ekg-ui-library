@@ -6,8 +6,8 @@ Topics:
 
 # UI
 
-[Button Widget](documentation/ui/Button Widget.md) 
-[Listbox Widget](documentation/ui/Listbox Widget.md)
+[Button Widget](ui/Button Widget.md) 
+[Listbox Widget](ui/Listbox Widget.md)
 
 # Layout
 
