@@ -9,8 +9,8 @@ The docking system of the layout service runs for all containers, which means, t
 
 A widget can be aligned by following docks:  
 `fill` `next` `none` `right` `top` `bottom`  
-By default, the docking is automatically `left-aligned` and `top-aligned.  
-![[Pasted image 20230929135028.png]]
+By default, the docking is automatically `left-aligned` and `top-aligned`.  
+![img](layoutdocksplash.png)
 
 
 
