@@ -45,8 +45,8 @@ ekg::ui::popup *ekg::ui::popup::insert(const std::vector<std::string> &item_name
 }
 
 ekg::ui::popup *ekg::ui::popup::insert(std::string_view item_name) {
-    uint16_t item_attribute_flags {};
-    uint8_t start_index {ekg::check_item_flags(item_name, item_attribute_flags)};
+    uint16_t attribute_flags {};
+    uint8_t start_index {ekg::check_attribute_flags(item_name, attribute_flags)};
 
     if (start_index) {
         item_name = item_name.substr(start_index, item_name.size()); 
@@ -58,7 +58,7 @@ ekg::ui::popup *ekg::ui::popup::insert(std::string_view item_name) {
 
     ekg::ui::item item {};
     item.name = item_name;
-    item.attributes = item_attribute_flags;
+    item.attributes = attribute_flags;
     this->item_list.push_back(item);
     return this;
 }

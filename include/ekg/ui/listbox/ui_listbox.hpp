@@ -41,7 +41,7 @@ namespace ekg::ui {
         std::vector<ekg::ui::item> &get_item_list();
 
         ekg::ui::listbox *set_value(std::string_view value_item_name);
-        std::string get_value();        
+        std::string get_value();
     };
 }
 

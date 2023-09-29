@@ -22,34 +22,13 @@
  * SOFTWARE.
  */
 
-#include "ekg/ui/listbox/ui_listbox.hpp"
-#include "ekg/util/text.hpp"
+#ifndef EKG_UI_MENU_WIDGET_H
+#define EKG_UI_MENU_WIDGET_H
 
-int64_t ekg::ui::listbox::contains(std::string_view item_name) {
-    for (uint64_t it {}; it < this->item_list.size(); it++) {
-        if (this->item_list.at(it).name == item_name) {
-            return static_cast<int64_t>(it);
-        }
-    }
+#include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
-    return -1;
+namespace ekg::ui {
+    class menu_widget : public ekg::ui::abstract_widget {};
 }
 
-ekg::ui::listbox *ekg::ui::listbox::insert(std::string_view item_name) {
-    uint16_t attribute_flags {};
-    uint8_t start_index {ekg::check_attribute_flags(item_name, attribute_flags)};
-
-    if (start_index) {
-        item_name = item_name.substr(start_index, item_name.size()); 
-    }
-
-    if (item_name.empty() || this->contains(item_name) != -1) {
-        return this;
-    }
-
-    ekg::ui::item item {};
-    item.name = item_name;
-    item.attributes = attribute_flags;
-    this->item_list.push_back(item);
-    return this;
-}
+#endif
