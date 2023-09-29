@@ -19,7 +19,11 @@ auto p_button = ekg::button("cat", ekg::dock::fill | ekg::next);
 
 The first parameter is the visible text of a button. The second parameter is the docking alignment in the frame widget.
 
-For create a callback button.
+For create a callback button, with [tasks](../core/eventtask.md).
 ```cpp
-p_button->set_callback(new ekg::cpu::event(nullptr, ));
+p_button->set_callback(new ekg::cpu::event("cat", nullptr, [](void *p_callback) {
+	ekg::log() << "Cat!";
+}));
 ```
+
+This callback event is not deleted after executed, because it is batched, means that all clicks will execute this [task](../core/eventtask.md).
