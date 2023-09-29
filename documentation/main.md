@@ -11,4 +11,5 @@ Topics:
 
 # Layout
 
-[Layout Mask](layout/layoutmask.md)
+[Layout Mask](layout/layoutmask.md)  
+[Layout Dock](layout/layoutdock.md)
