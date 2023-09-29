@@ -32,7 +32,7 @@ This callback event is not deleted after execution, because it is batched, which
 
 # Methods
 
-#### Button
+### Button
 
 Set the [font](../draw/fontrenderer.md) size of button text, `ekg::font::small` `ekg::font::normal` `ekg::font::big`.
 
@@ -130,7 +130,7 @@ Get text alignment dock.
 uint16_t get_text_align();
 ```
 
-#### Abstract
+### Abstract
 
 Set tag for reserved purposes.
 
