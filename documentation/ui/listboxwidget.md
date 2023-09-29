@@ -4,14 +4,12 @@ Here you will read these main topics:
 - Fundamentals
 - Examples
 - Methods
-
 # Fundamentals
 
 The listbox (list box) widget can be fundamentally used to create different selectable and recursive items.
 
 The recursive item system works like a node system, each item of a category can have a sub-item.
 You can create a select box item setting the attribute of the item.
-
 # Examples
 
 ```cpp
