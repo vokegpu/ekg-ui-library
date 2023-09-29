@@ -17,7 +17,7 @@ Each docking direction has it own behavior.
 # Widgets
 
 All widgets use the layout mask feature, normally you can set by `set_*_align`.
-e.g [button widget](documentation/ui/buttonwidget.md) align method:
+e.g [button widget](../ui/buttonwidget.md) align method:
 
 ```cpp
 p_button->set_text_align(ekg::dock::center);
