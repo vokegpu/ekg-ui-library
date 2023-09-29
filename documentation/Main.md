@@ -1,6 +1,3 @@
-
-...
-
 # Topics
 
-[Listbox Widget](/ui/LISTBOX.md)
+[Listbox Widget](/ui/Listbox Widget.md)
