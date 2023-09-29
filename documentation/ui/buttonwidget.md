@@ -18,3 +18,8 @@ auto p_button = ekg::button("cat", ekg::dock::fill | ekg::next);
 ```
 
 The first parameter is the visible text of a button. The second parameter is the docking alignment in the frame widget.
+
+For create a callback button.
+```cpp
+p_button->set_callback(new ekg::cpu::event(nullptr, ));
+```

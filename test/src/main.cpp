@@ -31,7 +31,10 @@ bool running {true};
 
 void create_exit_button() {
     ekg::frame("oi wuria ser linda", {window_size.w / 2, window_size.h - 50}, {100, 40});
-    ekg::button("Exit", ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::cpu::event {"exit-callback", &running, [](void *p_data) {
+    ekg::button("Exit", ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::cpu::event {
+        .p_tag = "exit-callback",
+        .p_callback = &running,
+        .function = [](void *p_data) {
         bool *p_running {static_cast<bool*>(p_data)};
         *p_running = false;
     }});;
