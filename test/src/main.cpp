@@ -848,7 +848,10 @@ std::ostringstream &operator-(std::ostringstream &os_string_stream, std::ostring
 }
 
 int32_t main(int32_t, char**) {
-    char oi[2] {'o', 0};
+    ekg::node node {};
+
+    node["bool"]["option1"].set_string_text("");
+    node["bool"]["option2"].name = "false";
     
     return main_example();
 }

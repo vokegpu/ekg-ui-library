@@ -29,6 +29,7 @@
 #include <sstream>
 #include <vector>
 #include <cstdint>
+#include <map>
 
 #if defined(__ANDROID__)
 #include <android/log.h>
@@ -37,6 +38,17 @@
 #include "geometry.hpp"
 
 namespace ekg {
+    struct node {
+    protected:
+        std::map<std::string, ekg::node> node_map {}; 
+    public:
+        ekg::node &operator[](std::string_view key);
+    public:
+        std::string name {};
+        std::string tag {};
+        uint16_t attr {};
+    };
+
     struct log {
     public:
         static std::ostringstream buffer;

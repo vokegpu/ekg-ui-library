@@ -25,6 +25,10 @@
 #include "ekg/ekg.hpp"
 #include <fstream>
 
+ekg::node &ekg::node::operator[](std::string_view key) {
+return this->node_map[key.data()];
+}
+
 std::ostringstream ekg::log::buffer {};
 bool ekg::log::buffered {};
 bool ekg::log::tracked {};

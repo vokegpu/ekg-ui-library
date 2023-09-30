@@ -29,7 +29,10 @@
 
 namespace ekg::ui {
     class menu : public ekg::ui::abstract {
+    protected:
+        
     public:
+
     };
 }
 
