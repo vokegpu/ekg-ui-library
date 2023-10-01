@@ -26,7 +26,31 @@
 #include <fstream>
 
 ekg::node &ekg::node::operator[](std::string_view key) {
-return this->node_map[key.data()];
+    return this->node_map[key.data()];
+}
+
+void ekg::node::set_tag(std::string_view _tag) {
+    this->tag = _tag;
+}
+
+std::string_view ekg::node::get_tag() {
+    return this->tag;
+}
+
+void ekg::node::set_display_text(std::string_view display_text) {
+    this->text = display_text;
+}
+
+std::string_view ekg::node::get_display_text() {
+    return this->text;
+}
+
+void ekg::node::set_attr(uint16_t flags) {
+    this->attribute_flags = flags;
+}
+
+uint16_t ekg::node::get_attr() {
+    return this->attribute_flags;
 }
 
 std::ostringstream ekg::log::buffer {};

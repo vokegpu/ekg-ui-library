@@ -850,8 +850,8 @@ std::ostringstream &operator-(std::ostringstream &os_string_stream, std::ostring
 int32_t main(int32_t, char**) {
     ekg::node node {};
 
-    node["bool"]["option1"].set_string_text("");
-    node["bool"]["option2"].name = "false";
+    node["bool"]["option1"].set_display_text("");
+    node["bool"]["option2"].set_tag("");
     
     return main_example();
 }
