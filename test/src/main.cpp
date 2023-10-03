@@ -820,7 +820,7 @@ int32_t main_thread_system() {
 
 void utf_test() {
     std::string utf_text {
-    "ççç ççç"
+        "ççç ççç"
     };
 
     for (uint64_t it {}; it < utf_text.size(); it++) {
@@ -847,11 +847,103 @@ std::ostringstream &operator-(std::ostringstream &os_string_stream, std::ostring
     return os_string_stream;
 }
 
-int32_t main(int32_t, char**) {
-    ekg::node node {};
+struct node {
+public:
+    std::vector<node> child_list {};
+    std::string value {};
+    uint16_t attr {};
+    uint16_t state {};
+public:
+    node &operator=(std::string_view _value) {
+        this->set_value(_value);
+        return *this;
+    }
 
-    node["bool"]["option1"].set_display_text("");
-    node["bool"]["option2"].set_tag("");
-    
+    node &operator=(const std::vector<std::string> &node_value_list) {
+        this->child_list.clear();
+        for (const std::string &values : node_value_list) {
+            node &node {this->child_list.emplace_back()};
+            node.set_value(values);
+        }
+
+        return *this;
+    }
+public:
+    node() = default;
+    node(std::string_view _value) {
+        this->set_value(_value);
+    }
+
+    node &emplace_back() {
+        return this->child_list.emplace_back();
+    }
+
+    void push_back(const node &node) {
+        this->child_list.push_back(node);
+    }
+
+    void push_back(std::string_view _value_node) {
+        node &node {this->child_list.emplace_back()};
+        node.value = _value_node;
+    }
+
+    void insert(const std::vector<std::string> &node_value_list) {
+        for (const std::string &values : node_value_list) {
+            node &node {this->child_list.emplace_back()};
+            node.set_value(values);
+        }
+    }
+
+    node &at(uint64_t index) {
+        return this->child_list.at(index);
+    }
+
+    bool empty() {
+        return this->child_list.empty();
+    }
+
+    uint64_t size() {
+        return this->child_list.size();
+    }
+
+    std::vector<node>::iterator begin() {
+        return this->child_list.begin();
+    }
+
+    std::vector<node>::iterator end() {
+        return this->child_list.end();
+    }
+public:
+    void set_value(std::string_view _value) {
+        uint16_t attr_flags {};
+        uint8_t start_index {ekg::check_attribute_flags(_value, attr_flags)};
+
+        if (start_index) {
+            _value = _value.substr(start_index, _value.size()); 
+        }
+
+        this->value = _value;
+        this->attr = attr_flags;
+    }
+};
+
+int32_t main(int32_t, char**) {
+    node animals = {"animals"};
+
+    animals.emplace_back() = "cats";
+    std::cout << animals.at(0).value << std::endl;
+
+    node &cats {animals.at(0)};
+    cats.push_back("potato");
+    std::cout << animals.at(0).value << '\t' << cats.at(0).value << std::endl;
+
+    animals.push_back("dogs");
+    std::cout << animals.at(1).value << std::endl;
+
+    animals.insert({"humans", "monkeys"});
+    std::cout << animals.at(2).value << std::endl;
+    std::cout << animals.at(3).value << std::endl;
+
+    return 0;
     return main_example();
 }

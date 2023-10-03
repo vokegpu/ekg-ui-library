@@ -38,29 +38,6 @@
 #include "geometry.hpp"
 
 namespace ekg {
-    struct node {
-    protected:
-        std::map<std::string, ekg::node> node_map {}; 
-        std::string tag {};
-        std::string text {};
-        uint16_t attribute_flags {};
-        int32_t widget_id_linked {};
-        int32_t box_item_id_linked {};
-    public:
-        ekg::node &operator[](std::string_view key);
-        
-        void set_tag(std::string_view _tag);
-        std::string_view get_tag();
-
-        void set_display_text(std::string_view display_text);
-        std::string_view get_display_text();
-
-        void set_attr(uint16_t flags);
-        uint16_t get_attr();
-
-        void set_widget_linked(int32_t id);
-    };
-
     struct log {
     public:
         static std::ostringstream buffer;
