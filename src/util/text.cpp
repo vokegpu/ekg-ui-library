@@ -238,10 +238,10 @@ uint8_t ekg::check_attribute_flags(std::string_view text, uint16_t &flags) {
     for (uint8_t it {}; it < 3 && !text.empty(); it++) {
         switch (text.at(it)) {
         case '\t':
-            flags |= ekg::attribute::separator;
+            flags |= ekg::attr::separator;
             break;
         case '\\':
-            flags |= ekg::attribute::box;
+            flags |= ekg::attr::box;
             break;
         default:
             return it;

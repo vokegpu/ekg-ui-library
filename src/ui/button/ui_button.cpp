@@ -86,7 +86,7 @@ ekg::ui::button *ekg::ui::button::set_width(float width) {
     if (this->sync_ui.w != width) {
         this->sync_ui.w = width;
 
-        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
+        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
         ekg::reload(this->id);
         ekg::synclayout(this->parent_id);
     }

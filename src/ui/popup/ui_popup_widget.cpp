@@ -365,7 +365,7 @@ void ekg::ui::popup_widget::on_draw_refresh() {
         auto &item {item_list.at(it)};
 
         // Draw the separator.
-        if (ekg::bitwise::contains(item.attributes, ekg::attribute::separator)) {
+        if (ekg::bitwise::contains(item.attributes, ekg::attr::separator)) {
             ekg::draw::rect(rect.x + item.rect_dimension.x, 
                                      rect.y + item.rect_dimension.y + item.rect_dimension.h - 0.5f,
                                      item.rect_dimension.w,

@@ -347,8 +347,8 @@ void ekg::runtime::prepare_tasks() {
                 }
 
                 auto &sync_flags {widgets->data->get_sync()};
-                if (ekg::bitwise::contains(sync_flags, (uint16_t) ekg::uisync::reset)) {
-                    ekg::bitwise::remove(sync_flags, (uint16_t) ekg::uisync::reset);
+                if (ekg::bitwise::contains(sync_flags, (uint16_t) ekg::ui_sync::reset)) {
+                    ekg::bitwise::remove(sync_flags, (uint16_t) ekg::ui_sync::reset);
 
                     switch (widgets->data->get_type()) {
                         case ekg::type::frame: {
@@ -384,12 +384,12 @@ void ekg::runtime::prepare_tasks() {
                     }
                 }
 
-                if (ekg::bitwise::contains(sync_flags, (uint16_t) ekg::uisync::dimension)) {
-                    ekg::bitwise::remove(sync_flags, (uint16_t) ekg::uisync::dimension);
+                if (ekg::bitwise::contains(sync_flags, (uint16_t) ekg::ui_sync::dimension)) {
+                    ekg::bitwise::remove(sync_flags, (uint16_t) ekg::ui_sync::dimension);
 
                     auto &rect {widgets->data->ui()};
-                    switch (widgets->data->get_type()) {
-                        case ekg::type::popup: {
+                    switch (widgets->data->get_category()) {
+                        case ekg::category::top_level: {
                             widgets->dimension.w = rect.w;
                             widgets->parent->x = rect.x;
                             widgets->parent->y = rect.y;

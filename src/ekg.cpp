@@ -342,6 +342,7 @@ ekg::ui::popup *ekg::popup(std::string_view tag, const std::vector<std::string> 
     ui->set_tag(tag);
     ui->set_scaled_height(1);
     ui->set_text_align(ekg::dock::center | ekg::dock::left);
+    ui->set_category(ekg::category::top_level);
 
     return ui;
 }

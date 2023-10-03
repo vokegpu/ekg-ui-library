@@ -90,7 +90,7 @@ ekg::ui::frame *ekg::ui::frame::set_size(float w, float h) {
         this->sync_ui.w = w;
         this->sync_ui.h = h;
 
-        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
+        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
         ekg::reload(this->id);
         ekg::synclayout(this->id);
         ekg::dispatch(ekg::env::redraw);
@@ -108,7 +108,7 @@ ekg::ui::frame *ekg::ui::frame::set_pos(float x, float y) {
         this->sync_ui.x = x;
         this->sync_ui.y = y;
 
-        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
+        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
         ekg::reload(this->id);
         ekg::dispatch(ekg::env::redraw);
     }
@@ -142,7 +142,7 @@ ekg::ui::frame *ekg::ui::frame::set_width(float width) {
     if (this->sync_ui.w != width) {
         this->sync_ui.w = width;
 
-        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
+        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
         ekg::reload(this->id);
         ekg::synclayout(this->id);
         ekg::dispatch(ekg::env::redraw);
@@ -159,7 +159,7 @@ ekg::ui::frame *ekg::ui::frame::set_height(float height) {
     if (this->sync_ui.h != height) {
         this->sync_ui.h = height;
 
-        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::dimension);
+        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
         ekg::reload(this->id);
         ekg::synclayout(this->id);
         ekg::dispatch(ekg::env::redraw);

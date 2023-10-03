@@ -156,7 +156,7 @@ uint16_t &ekg::ui::abstract::get_sync() {
 }
 
 void ekg::ui::abstract::reset() {
-    ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::uisync::reset);
+    ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::reset);
     ekg::reload(this->id);
 }
 
@@ -172,3 +172,12 @@ bool ekg::ui::abstract::has_parent() {
 bool ekg::ui::abstract::has_children() {
     return !this->child_id_list.empty();
 }
+
+void ekg::ui::abstract::set_category(ekg::category new_category) {
+    this->category = new_category;
+}
+
+ekg::category ekg::ui::abstract::get_category() {
+    return this->category;
+}
+
