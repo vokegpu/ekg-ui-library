@@ -913,6 +913,14 @@ public:
     std::vector<node>::iterator end() {
         return this->child_list.end();
     }
+
+    std::vector<node>::const_iterator cbegin() const {
+        return this->child_list.cbegin();
+    }
+
+    std::vector<node>::const_iterator cend() const {
+        return this->child_list.cend();
+    }
 public:
     void set_value(std::string_view _value) {
         uint16_t attr_flags {};
@@ -943,6 +951,12 @@ int32_t main(int32_t, char**) {
     animals.insert({"humans", "monkeys"});
     std::cout << animals.at(2).value << std::endl;
     std::cout << animals.at(3).value << std::endl;
+
+    std::cout << '\n' << std::endl;
+
+    for (const node &items : animals) {
+        std::cout << items.value << std::endl;
+    }
 
     return 0;
     return main_example();
