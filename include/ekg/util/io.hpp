@@ -38,6 +38,37 @@
 #include "geometry.hpp"
 
 namespace ekg {
+    struct item {
+    public:
+        std::vector<ekg::item> child_list {};
+        std::string value {};
+        uint16_t attr {};
+        uint16_t state {};
+    public:
+        ekg::item &operator=(std::string_view _value);
+        ekg::item &operator=(const std::vector<std::string> &item_value_list);
+    public:
+        item() = default;
+        item(std::string_view _value);
+    
+        ekg::item &emplace_back();
+        void push_back(const ekg::item &item);
+        void push_back(std::string_view item_value);
+        void insert(const std::vector<std::string> &item_value_list);
+        ekg::item &at(uint64_t index);
+
+        [[nodiscard]] bool empty() const;
+        [[nodiscard]] uint64_t size() const;
+    
+        std::vector<ekg::item>::iterator begin();
+        std::vector<ekg::item>::iterator end();
+    
+        [[nodiscard]] std::vector<ekg::item>::const_iterator cbegin() const;
+        [[nodiscard]] std::vector<ekg::item>::const_iterator cend() const;
+    public:
+        void set_value(std::string_view _value);
+    };
+
     struct log {
     public:
         static std::ostringstream buffer;

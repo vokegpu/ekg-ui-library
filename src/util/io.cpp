@@ -23,7 +23,88 @@
  */
 
 #include "ekg/ekg.hpp"
+#include "ekg/util/io.hpp"
+
 #include <fstream>
+
+ekg::item &ekg::item::operator=(std::string_view _value) {
+    this->set_value(_value);
+    return *this;
+}
+
+ekg::item &ekg::item::operator=(const std::vector<std::string> &item_value_list) {
+    this->child_list.clear();
+    for (const std::string &values : item_value_list) {
+        ekg::item &item {this->child_list.emplace_back()};
+        item.set_value(values);
+    }
+
+    return *this;
+}
+
+ekg::item::item(std::string_view _value) {
+    this->set_value(_value);
+}
+
+ekg::item &ekg::item::emplace_back() {
+    return this->child_list.emplace_back();
+}
+
+void ekg::item::push_back(const ekg::item &item) {
+    this->child_list.push_back(item);
+}
+
+void ekg::item::push_back(std::string_view item_value) {
+    ekg::item &item {this->child_list.emplace_back()};
+    item.set_value(item_value);
+}
+
+void ekg::item::insert(const std::vector<std::string> &item_value_list) {
+    for (const std::string &values : item_value_list) {
+        ekg::item &item {this->child_list.emplace_back()};
+        item.set_value(values);
+    }
+}
+
+ekg::item &ekg::item::at(uint64_t index) {
+    return this->child_list.at(index);
+}
+
+bool ekg::item::empty() const {
+    return this->child_list.empty();
+}
+
+uint64_t ekg::item::size() const {
+    return this->child_list.size();
+}
+
+std::vector<ekg::item>::iterator ekg::item::begin() {
+    return this->child_list.begin();
+}
+
+std::vector<ekg::item>::iterator ekg::item::end() {
+    return this->child_list.end();
+}
+
+std::vector<ekg::item>::const_iterator ekg::item::cbegin() const {
+    return this->child_list.cbegin();
+}
+
+std::vector<ekg::item>::const_iterator ekg::item::cend() const {
+    return this->child_list.cend();
+}
+
+void ekg::item::set_value(std::string_view _value) {
+    uint16_t attr_flags {};
+    uint8_t start_index {ekg::check_attribute_flags(_value, attr_flags)};
+
+    if (start_index) {
+        _value = _value.substr(start_index, _value.size());
+    }
+
+    this->value = _value;
+    this->attr = attr_flags;
+}
 
 std::ostringstream ekg::log::buffer {};
 bool ekg::log::buffered {};
