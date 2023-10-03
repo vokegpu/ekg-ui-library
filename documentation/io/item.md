@@ -3,6 +3,7 @@
 You will read these topics:
 - Fundamentals
 - Examples
+- Methods
 # Fundamentals
 
 The EKG library contains an item collector named `ekg::item`, the item is a recursive vector collection. However, the item does not have direct iterator methods accessible.
@@ -50,4 +51,10 @@ item.insert({"dogs", "cats", "humans"});
 for (ekg::item &items : item) {
 	std::cout << items.value << std::endl;
 }
+```
+
+# Methods
+
+```
+
 ```
