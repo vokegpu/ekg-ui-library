@@ -1,11 +1,12 @@
 # Overview
 
 You will read these topics:
-- Item collector
-
-# Item Collector
+- Fundamentals
+- Examples
+# Fundamentals
 
 The EKG library contains an item collector named `ekg::item`, the item is a recursive vector collection. However, the item does not have direct iterator methods accessible.
+# Examples
 
 The item contains four fields:
 - `value` the display text of a UI widget.
@@ -24,11 +25,11 @@ ekg::item item {}; // initialization-list implicit
 item.value = "animals"; // accessing the field, but not too recomendded
 ```
 
-Item contains attr (attributes) flags and state flags, both manually configurable or automatically by setting the value component special chars.
+Item contains attr (attributes) flags and state flags, both manually configurable or automatically by setting the value component with special chars.
 
 Special chars:
-- `\t` add automatically the attribute `ekg::attr::separator` to item.
-- `\\` add automatically the attribute `ekg::attr::box` to item.
+- `\t` add automatically the attribute `ekg::attr::separator` to the item.
+- `\\` add automatically the attribute `ekg::attr::box` to the item.
 
 ```cpp
 ekg::item item {"Animals"};
@@ -44,7 +45,7 @@ You can iterate over the item children using for loop:
 
 ```cpp
 ekg::item item("animals");
-item.insert({"dogs", "cats", "humans"})
+item.insert({"dogs", "cats", "humans"});
 
 for (ekg::item &items : item) {
 	std::cout << items.value << std::endl;
