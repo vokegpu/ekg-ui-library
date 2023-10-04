@@ -1,5 +1,5 @@
-Check how the widgets works, the UI class (not widget) is reserved for user only.  
-The widgets class use the UI as layer data.
+Check how the widgets work, the UI class (not the widget) is reserved for the user only.  
+The widgets class uses the UI as layer data.
 
 Example:
 ```cpp
