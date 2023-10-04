@@ -127,7 +127,7 @@ uint16_t &ekg::bitwise::add(uint16_t &target, uint16_t flags) {
 bool ekg::reach(ekg::timing &timing, uint64_t ms) {
     timing.ticks_going_on = SDL_GetTicks64();
     timing.current_ticks = timing.ticks_going_on - timing.elapsed_ticks;
-    return timing.current_ticks >= ms;
+    return timing.current_ticks > ms;
 }
 
 bool ekg::reset(ekg::timing &timing) {

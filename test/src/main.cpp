@@ -597,16 +597,9 @@ int32_t main_calculator() {
      * Mainloop.
      */
     while (running) {
-        if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
-            display_fps = ticked_frames;
-            ticked_frames = 0;
-        }
-
         cpu_last_ticks = cpu_now_ticks;
         cpu_now_ticks = SDL_GetPerformanceCounter();
         ekg::display::dt = static_cast<float>(cpu_now_ticks - cpu_last_ticks) / static_cast<float>(SDL_GetPerformanceFrequency());
-
-        debuglabel->set_text("FPS: " + std::to_string(display_fps));
 
         while (SDL_PollEvent(&sdl_event)) {
             switch (sdl_event.type) {
@@ -709,12 +702,17 @@ int32_t main_calculator() {
         // Count the FPS.
         ticked_frames++;
 
+        if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
+            display_fps = ticked_frames;
+            debuglabel->set_text("FPS: " + std::to_string(display_fps));
+            ticked_frames = 0;
+        }
+
+        SDL_GL_SwapWindow(sdl_win);
+
         // Swap buffers.
         if (framerate) {
-            SDL_GL_SwapWindow(sdl_win);
             SDL_Delay(framerate);
-        } else {
-            SDL_GL_SwapWindow(sdl_win);
         }
     }
 
@@ -873,5 +871,6 @@ int32_t main(int32_t, char**) {
     ekg::item mother {"animals"};
     mother.emplace_back() = "\t\\Select All";
 
-    return main_example();
+    return 0;
+    return main_calculator();
 }
