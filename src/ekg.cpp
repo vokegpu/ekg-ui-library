@@ -145,7 +145,7 @@ ekg::glsl_version + "\n"
         {fsh_src, GL_FRAGMENT_SHADER}
     });
 
-    /* The runtime core, everything need to be setup before init. */
+    /* The runtime core, everything should be setup before the initialization process. */
     ekg::core = p_ekg_runtime;
     ekg::core->f_renderer_small.font_path = font_path;
     ekg::core->f_renderer_normal.font_path = font_path;
@@ -166,7 +166,7 @@ ekg::glsl_version + "\n"
     SDL_version sdl_version {};
     SDL_GetVersion(&sdl_version);
 
-    ekg::log() << "SDL version: " << (int32_t) sdl_version.major << '.' << (int32_t) sdl_version.minor << '.' << (int32_t) (sdl_version.patch);
+    ekg::log() << "SDL version: " << static_cast<int32_t>(sdl_version.major) << '.' << static_cast<int32_t>(sdl_version.minor) << '.' << static_cast<int32_t>(sdl_version.patch);
 }
 
 void ekg::quit() {

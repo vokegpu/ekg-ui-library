@@ -303,20 +303,22 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
 
     switch (type) {
         case ekg::type::frame: {
+            auto &theme {ekg::theme()};
             auto frame {(ekg::ui::frame_widget*) p_widget_parent};
-            initial_offset = static_cast<float>(ekg::theme().scrollbar_pixel_thickness);
+
+            initial_offset = static_cast<float>(theme.scrollbar_pixel_thickness);
             has_scroll_embedded = frame->p_scroll_embedded != nullptr;
 
             if (has_scroll_embedded) {
                 frame->p_scroll_embedded->check_axis_states();
                 is_vertical_enabled = frame->p_scroll_embedded->is_vertical_enabled;
-                initial_offset *= static_cast<float>(ekg::theme().symmetric_layout == false);
+                initial_offset *= static_cast<float>(theme.symmetric_layout == false);
 
                 group_rect.w -= initial_offset * static_cast<float>(is_vertical_enabled);
                 group_rect.h -= initial_offset * static_cast<float>(frame->p_scroll_embedded->is_horizontal_enabled);
             }
 
-            initial_offset = static_cast<float>(ekg::theme().scrollbar_pixel_thickness) * static_cast<float>(ekg::theme().symmetric_layout);
+            initial_offset = static_cast<float>(theme.scrollbar_pixel_thickness) * static_cast<float>(theme.symmetric_layout);
             break;
         }
 
@@ -365,8 +367,6 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
     float max_previous_height {};
     float extent_data_backup[4] {};
 
-    // @TODO Prevent useless scrolling reload;
-
     /*
      * Rect == absolute position of current widget
      * Layout == position based on parent absolute widget 
@@ -391,8 +391,9 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
             }
         }
 
-        // @TODO Okay note, I think I ll remove this.
+        // @TODO Prevent useless scrolling reload.
         p_widgets->on_reload();
+
         if (skip_widget) {
             it++;
             continue;
@@ -538,9 +539,9 @@ void ekg::service::layout::update_scale_factor() {
      * 50  == 2
      * 75  == 3
      * 100 == 4
-     *x
+     *
      * Then is divided by 4 (becase the maximum scale step is 4)
-     * e.g: 2/4 = 0.5f -- 3/4 = 0.75f
+     * e.g: 2/4 = 0.5f --> 3/4 = 0.75f
      */
 
     float base_scale {ekg::scalebase.x * ekg::scalebase.y};
