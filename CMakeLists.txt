@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 set(CMAKE_CXX_STANDARD 17)
-set(EKG_VERSION                   1.0.5)
+set(EKG_VERSION        1.0.5)
 
 message("-- Building EKG user interface library version ${EKG_VERSION}")
 project(ekg VERSION ${EKG_VERSION} DESCRIPTION "graphical user interface")
@@ -36,7 +36,9 @@ if (WIN32)
 elseif(ANDROID)
     message("-- Building EKG Android Linux native library")
     set(LIBRARY_OUTPUT_PATH "${ANDROID_ABI}/")
-else()
+else() # WSL is not detected as Linux-based OS, same you use a Linux kernel-based distribution.
+    # Enable if your base OS is Debian-based (e.g Ubuntu).
+    # It is a common issue related by the Linux community.
     if (EKG_LINUX_NOT_FOUND_FREETYPE)
         include_directories(/usr/include/freetype2)
     endif()
@@ -75,8 +77,8 @@ if (EKG_ENABLE_TEST)
     endif()
 
     target_link_libraries(ekg-tests ${LIBRARY_PATH}
-                                                      ${THIRD_PARTY_LIBRARIES}
-                                                      -static-libgcc -static-libstdc++
+                                    ${THIRD_PARTY_LIBRARIES}
+                                    -static-libgcc -static-libstdc++
     )
 
     message("-- EKG tests building done")
