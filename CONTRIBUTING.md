@@ -37,7 +37,7 @@ int32_t number {5};
 // always use cpp keywords for prevent implicit cast and other behaviours
 static_cast<t>
 
-// ifndef not pragma once
+// ifndef, no pragma once
 #ifndef EKG_PACKAGE_HEADER_NAME_H
 #define EKG_PACKAGE_HEADER_NAME_H
 
