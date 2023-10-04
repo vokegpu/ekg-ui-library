@@ -1,3 +1,5 @@
+# Contributing
+
 Check how the widgets work, the UI class (not the widget) is reserved for the user only.  
 The widgets class uses the UI as layer data.
 
@@ -19,7 +21,8 @@ ekg::ui::drop_down_frame_widget *p_widget {new ...};
 p_widget->ui = new ekg::ui::drop_down_frame();
 ```
 
-Please follow the syntax and patterns:
+# Code of Conduct
+
 ```cpp
 // everything in sneak_case
 namespace ekg {} // always use namespace and ekg
