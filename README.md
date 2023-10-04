@@ -3,7 +3,7 @@
 EKG purpose is simplicity way to create fency reitaned high-performance GUIs, always looking for low-specs.  
 EKG is exclusive for SDL for now.  
 
-[Check ~~~full~~~ documentation here!](https://github.com/vokegpu/ekg-ui-library/wiki)
+[Check documentation here!](https://github.com/vokegpu/ekg-ui-library/wiki)
 
 
 
