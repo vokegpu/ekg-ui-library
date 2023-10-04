@@ -145,7 +145,7 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
  * works okay, but I will write a fast select rect batching.
  */
 void ekg::ui::textbox_widget::update_ui_text_data() {
-    auto p_ui {(ekg::ui::textbox*) this->data};
+    auto p_ui {(ekg::ui::textbox*) this->p_data};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
     auto &rect {this->get_abs_rect()};
 
@@ -233,7 +233,7 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
     }
 
     std::string &current_cursor_text {ekg_textbox_get_cursor_text(cursor)};
-    auto p_ui {(ekg::ui::textbox*) this->data};
+    auto p_ui {(ekg::ui::textbox*) this->p_data};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
     auto &rect {this->get_abs_rect()};
 
@@ -272,7 +272,7 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
 void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &cursor,
                                            std::string_view text,
                                            ekg::ui::textbox_widget::action action, int64_t direction) {
-    auto p_ui {(ekg::ui::textbox*) this->data};
+    auto p_ui {(ekg::ui::textbox*) this->p_data};
     if (!(this->is_ui_enabled = p_ui->is_enabled()) && !(text == "clipboard" && this->is_clipboard_copy)) {
         return;
     }
@@ -526,7 +526,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
         return;
     }
 
-    auto p_ui {(ekg::ui::textbox*) this->data};
+    auto p_ui {(ekg::ui::textbox*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
@@ -671,7 +671,7 @@ void ekg::ui::textbox_widget::on_destroy() {
 }
 
 void ekg::ui::textbox_widget::on_reload() {
-    auto p_ui {(ekg::ui::textbox*) this->data};
+    auto p_ui {(ekg::ui::textbox*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
     auto scaled_height {p_ui->get_scaled_height()};
@@ -725,7 +725,7 @@ void ekg::ui::textbox_widget::on_reload() {
 
     this->embedded_scroll.rect_child = this->rect_text;
     this->embedded_scroll.rect_mother = &rect;
-    this->embedded_scroll.widget_id = this->data->get_id();
+    this->embedded_scroll.widget_id = this->p_data->get_id();
     this->embedded_scroll.on_reload();
 }
 
@@ -914,13 +914,13 @@ bool ekg::ui::textbox_widget::find_cursor(ekg::ui::textbox_widget::cursor &targe
 }
 
 void ekg::ui::textbox_widget::on_draw_refresh() {
-    auto p_ui {(ekg::ui::textbox*) this->data};
+    auto p_ui {(ekg::ui::textbox*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
     auto &theme {ekg::theme()};
     auto &allocator {ekg::core->gpu_allocator};
 
-    ekg::draw::bind_scissor(this->data->get_id());
+    ekg::draw::bind_scissor(this->p_data->get_id());
     ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
     ekg::draw::rect(rect, theme.textbox_background);
 

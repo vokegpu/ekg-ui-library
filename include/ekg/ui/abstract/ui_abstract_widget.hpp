@@ -32,13 +32,13 @@
 namespace ekg::ui {
     class abstract_widget {
     public:
-        ekg::ui::abstract *data {};
+        ekg::ui::abstract *p_data {};
         ekg::flag flag {};
         ekg::rect dimension {};
         ekg::vec2 min_size {};
 
-        ekg::rect *parent {};
-        ekg::vec4 *scroll {};
+        ekg::rect *p_parent {};
+        ekg::vec4 *p_scroll {};
         
         ekg::rect empty_parent {};
         ekg::vec4 empty_scroll {};

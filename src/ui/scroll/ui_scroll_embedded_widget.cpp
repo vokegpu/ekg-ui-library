@@ -75,20 +75,20 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
         return;
     }
 
-    ekg::ui::abstract_widget *mother_widget {ekg::core->get_fast_widget_by_id(this->mother_id)};
-    ekg::ui::abstract_widget *widgets {};
+    ekg::ui::abstract_widget *p_mother_widget {ekg::core->get_fast_widget_by_id(this->mother_id)};
+    ekg::ui::abstract_widget *p_widgets {};
     float service_layout_min_offset {ekg::core->service_layout.get_min_offset()};
 
-    this->child_id_list = mother_widget->data->get_child_id_list();
+    this->child_id_list = p_mother_widget->p_data->get_child_id_list();
     if (this->child_id_list.empty()) {
         this->calculate_rect_bar_sizes();
         this->check_axis_states();
         return;
     }
 
-    switch (mother_widget->data->get_type()) {
+    switch (p_mother_widget->p_data->get_type()) {
         case ekg::type::frame: {
-            ekg::ui::frame_widget *frame {(ekg::ui::frame_widget*) mother_widget};
+            ekg::ui::frame_widget *frame {(ekg::ui::frame_widget*) p_mother_widget};
             frame->p_scroll_embedded = this;
             break;
         }
@@ -107,23 +107,23 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
     this->acceleration.y = text_height + (text_height / 2.0f);
 
     for (int32_t &ids : this->child_id_list) {
-        if ((widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr || widgets->data->get_type() == ekg::type::scroll) {
+        if ((p_widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr || p_widgets->p_data->get_type() == ekg::type::scroll) {
             continue;
         }
 
-        if (widgets->dimension.x > this->rect_child.w) {
-            this->rect_child.w = widgets->dimension.x + widgets->dimension.w;
+        if (p_widgets->dimension.x > this->rect_child.w) {
+            this->rect_child.w = p_widgets->dimension.x + p_widgets->dimension.w;
         }
 
-        if (widgets->dimension.y > this->rect_child.h) {
-            this->rect_child.h = widgets->dimension.y + widgets->dimension.h;
+        if (p_widgets->dimension.y > this->rect_child.h) {
+            this->rect_child.h = p_widgets->dimension.y + p_widgets->dimension.h;
         }
 
-        if (widgets->dimension.h < this->acceleration.y) {
-            this->acceleration.y = widgets->dimension.h;
+        if (p_widgets->dimension.h < this->acceleration.y) {
+            this->acceleration.y = p_widgets->dimension.h;
         }
 
-        widgets->scroll = &this->scroll;
+        p_widgets->p_scroll = &this->scroll;
     }
 
     this->acceleration.y += service_layout_min_offset;

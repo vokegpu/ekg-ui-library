@@ -46,7 +46,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
     abstract_widget::on_event(sdl_event);
 
     auto &interact {ekg::input::interact()};
-    auto p_ui {(ekg::ui::frame*) this->data};
+    auto p_ui {(ekg::ui::frame*) this->p_data};
     auto &rect {this->get_abs_rect()};
 
     uint16_t drag_dock_flags {p_ui->get_drag_dock()};
@@ -55,7 +55,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
     if ((drag_dock_flags != ekg::dock::none || resize_dock_flags != ekg::dock::none) && ekg::input::pressed() && this->flag.hovered && !this->flag.activy && (ekg::input::action("frame-drag-activy") || ekg::input::action("frame-resize-activy"))) {
         ekg::rect rect_visible_scissor {rect};
-        ekg::draw::get_visible(this->data->get_id(), rect_visible_scissor);
+        ekg::draw::get_visible(this->p_data->get_id(), rect_visible_scissor);
 
         const ekg::vec2 vec_limit_offset {this->ui_theme_activy_offset, this->ui_theme_activy_offset};
         ekg::set_dock_scaled(rect_visible_scissor, vec_limit_offset, this->docker_activy_drag);
@@ -109,11 +109,11 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
 
         if (rect != new_rect) {
             if (p_ui->has_parent()) {
-                this->dimension.x = new_rect.x - this->parent->x;
-                this->dimension.y = new_rect.y - this->parent->y;
+                this->dimension.x = new_rect.x - this->p_parent->x;
+                this->dimension.y = new_rect.y - this->p_parent->y;
             } else {
-                this->parent->x = new_rect.x;
-                this->parent->y = new_rect.y;
+                this->p_parent->x = new_rect.x;
+                this->p_parent->y = new_rect.y;
             }
 
             this->dimension.w = new_rect.w;
@@ -133,7 +133,7 @@ void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
         }
     } else if (resize_dock_flags != ekg::dock::none && this->flag.hovered && !this->flag.activy) {
         ekg::rect rect_visible_scissor {};
-        ekg::draw::get_visible(this->data->get_id(), rect_visible_scissor);
+        ekg::draw::get_visible(this->p_data->get_id(), rect_visible_scissor);
 
         const ekg::vec2 vec_limit_offset {this->ui_theme_activy_offset, this->ui_theme_activy_offset};
         ekg::set_dock_scaled(rect_visible_scissor, vec_limit_offset / 4.0f, this->docker_activy_resize);
@@ -190,8 +190,8 @@ void ekg::ui::frame_widget::on_draw_refresh() {
         this->p_scroll_embedded->clamp_scroll();
     }
 
-    ekg::draw::bind_scissor(this->data->get_id());
-    ekg::draw::sync_scissor(rect, this->data->get_parent_id());
+    ekg::draw::bind_scissor(this->p_data->get_id());
+    ekg::draw::sync_scissor(rect, this->p_data->get_parent_id());
 
     ekg::draw::rect(rect, theme.frame_background);
     ekg::draw::rect(this->docker_activy_drag.top, theme.frame_border);

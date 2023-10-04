@@ -203,8 +203,8 @@ float ekg::service::layout::get_respective_mask_size() {
     return this->respective_mask_all;
 }
 
-float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *widget, uint16_t flag_ok, uint16_t flag_stop, int64_t &begin_and_count, ekg::axis axis) {
-    if (widget == nullptr) {
+float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *p_widget, uint16_t flag_ok, uint16_t flag_stop, int64_t &begin_and_count, ekg::axis axis) {
+    if (p_widget == nullptr) {
         return 0.0f;
     }
 
@@ -221,8 +221,8 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *wid
     this->extent_data[0] = static_cast<float>(it);
 
     float extent {};
-    ekg::ui::abstract_widget *widgets {};
-    std::vector<int32_t> &child_id_list {widget->data->get_child_id_list()};
+    ekg::ui::abstract_widget *p_widgets {};
+    std::vector<int32_t> &child_id_list {p_widget->p_data->get_child_id_list()};
     uint64_t size {child_id_list.size()};
     bool is_last_index {};
 
@@ -239,12 +239,12 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *wid
      */
     for (it = it; it < size; it++) {
         ids = child_id_list.at(it);
-        if ((widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr) {
+        if ((p_widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr) {
             continue;
         }
 
-        flags = widgets->data->get_place_dock();
-        is_last_index = it >= size - 1 || widgets->data->get_type() == ekg::type::scroll;
+        flags = p_widgets->p_data->get_place_dock();
+        is_last_index = it >= size - 1 || p_widgets->p_data->get_type() == ekg::type::scroll;
 
         if ((ekg::bitwise::contains(flags, flag_stop) && it != begin_and_count) || is_last_index) {
             extent -= this->min_offset;
@@ -263,10 +263,10 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *wid
 
         switch (axis) {
         case ekg::axis::horizontal:
-            extent += widgets->dimension.w + this->min_offset;
+            extent += p_widgets->dimension.w + this->min_offset;
             break;
         case ekg::axis::vertical:
-            extent += widgets->dimension.h;
+            extent += p_widgets->dimension.h;
             break;
         }
     }
@@ -275,27 +275,27 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *wid
     return extent;
 }
 
-void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_parent) {
-    if (widget_parent == nullptr || widget_parent->data == nullptr) {
+void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_parent) {
+    if (p_widget_parent == nullptr || p_widget_parent->p_data == nullptr) {
         return;
     }
 
-    auto type {widget_parent->data->get_type()};
+    auto type {p_widget_parent->p_data->get_type()};
     auto is_group {type == ekg::type::frame};
-    auto &parent_rect = widget_parent->get_abs_rect();
+    auto &parent_rect = p_widget_parent->get_abs_rect();
 
     if (!is_group || parent_rect.w == 0 || parent_rect.h == 0) {
         return;
     }
 
-    if (widget_parent->is_targeting_absolute_parent) {
-        widget_parent->is_targeting_absolute_parent = false;
-        this->process_scaled(ekg::find_absolute_parent_master(widget_parent));
+    if (p_widget_parent->is_targeting_absolute_parent) {
+        p_widget_parent->is_targeting_absolute_parent = false;
+        this->process_scaled(ekg::find_absolute_parent_master(p_widget_parent));
         return;
     }
 
     float group_top_offset {this->min_offset};
-    ekg::rect group_rect {widget_parent->dimension};
+    ekg::rect group_rect {p_widget_parent->dimension};
     
     bool has_scroll_embedded {};
     bool is_vertical_enabled {};
@@ -303,7 +303,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
     switch (type) {
         case ekg::type::frame: {
-            auto frame {(ekg::ui::frame_widget*) widget_parent};
+            auto frame {(ekg::ui::frame_widget*) p_widget_parent};
             initial_offset = static_cast<float>(ekg::theme().scrollbar_pixel_thickness);
             has_scroll_embedded = frame->p_scroll_embedded != nullptr;
 
@@ -337,7 +337,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
     this->scaled_width_divided = parent_rect.h / 2;
     this->enum_docks_flag = 0;
 
-    ekg::ui::abstract_widget *widgets {};
+    ekg::ui::abstract_widget *p_widgets {};
     uint16_t flags {};
     int64_t it {};
     float dimensional_extent {};
@@ -371,16 +371,16 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
      * Rect == absolute position of current widget
      * Layout == position based on parent absolute widget 
      */
-    for (int32_t &ids : widget_parent->data->get_child_id_list()) {
-        if (ids == 0 || (widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr) {
+    for (int32_t &ids : p_widget_parent->p_data->get_child_id_list()) {
+        if (ids == 0 || (p_widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr) {
             continue;
         }
 
-        auto &layout {widgets->dimension};
-        flags = widgets->data->get_place_dock();
+        auto &layout {p_widgets->dimension};
+        flags = p_widgets->p_data->get_place_dock();
         skip_widget = false;
 
-        switch (widgets->data->get_type()) {
+        switch (p_widgets->p_data->get_type()) {
             case ekg::type::scroll: {
                 skip_widget = true;
                 break;
@@ -392,7 +392,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
         }
 
         // @TODO Okay note, I think I ll remove this.
-        widgets->on_reload();
+        p_widgets->on_reload();
         if (skip_widget) {
             it++;
             continue;
@@ -406,8 +406,8 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
             layout.y = top_rect.y + top_rect.h;
 
             count = it;
-            dimensional_extent = this->get_dimensional_extent(widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
-            dimensional_extent = ekg::min(((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count), widgets->min_size.x);
+            dimensional_extent = this->get_dimensional_extent(p_widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
+            dimensional_extent = ekg::min(((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count), p_widgets->min_size.x);
 
             top_rect.w += dimensional_extent + this->min_offset;
             layout.w = dimensional_extent;
@@ -418,8 +418,8 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
             layout.y = top_rect.y + top_rect.h;
 
             count = it;
-            dimensional_extent = this->get_dimensional_extent(widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
-            dimensional_extent = ekg::min(((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count), widgets->min_size.x);
+            dimensional_extent = this->get_dimensional_extent(p_widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
+            dimensional_extent = ekg::min(((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count), p_widgets->min_size.x);
 
             top_rect.w += dimensional_extent + this->min_offset;
             layout.w = dimensional_extent;
@@ -433,7 +433,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
             top_rect.w += layout.w + this->min_offset;
 
             count = it;
-            dimensional_extent = this->get_dimensional_extent(widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
+            dimensional_extent = this->get_dimensional_extent(p_widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
             max_previous_height = 0.0f;
         } else if (flags == ekg::dock::none) {
             layout.x = top_rect.x + top_rect.w;
@@ -441,7 +441,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
             top_rect.w += layout.w + this->min_offset;
 
             count = it;
-            dimensional_extent = this->get_dimensional_extent(widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
+            dimensional_extent = this->get_dimensional_extent(p_widget_parent, ekg::dock::fill, ekg::dock::next, count, ekg::axis::horizontal);
         }
 
         if (ekg::bitwise::contains(flags, ekg::dock::resize)) {
@@ -450,7 +450,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
 
         max_previous_height = layout.h > max_previous_height ? layout.h : max_previous_height;
         if (should_reload_widget) {
-            widgets->on_reload();
+            p_widgets->on_reload();
         }
 
         extent_data_backup[0] = this->extent_data[0];
@@ -458,8 +458,8 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
         extent_data_backup[2] = this->extent_data[2];
         extent_data_backup[3] = this->extent_data[3];
 
-        if (widgets->data->has_children()) {
-            this->process_scaled(widgets);
+        if (p_widgets->p_data->has_children()) {
+            this->process_scaled(p_widgets);
         }
 
         this->extent_data[0] = extent_data_backup[0];
@@ -475,12 +475,12 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *widget_paren
     if (has_scroll_embedded && !is_vertical_enabled) {
         switch (type) {
             case ekg::type::frame: {
-                auto frame {(ekg::ui::frame_widget *) widget_parent};
+                auto frame {(ekg::ui::frame_widget *) p_widget_parent};
                 has_scroll_embedded = frame->p_scroll_embedded != nullptr;
 
                 if (has_scroll_embedded && !is_vertical_enabled &&
                     frame->p_scroll_embedded->is_vertical_enabled) {
-                    this->process_scaled(widget_parent);
+                    this->process_scaled(p_widget_parent);
                 }
 
                 break;

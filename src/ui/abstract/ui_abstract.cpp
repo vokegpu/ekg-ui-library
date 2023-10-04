@@ -34,7 +34,7 @@ ekg::ui::abstract::~abstract() {
 
 ekg::ui::abstract *ekg::ui::abstract::add_child(int32_t element_id) {
     bool contains {};
-    ekg::ui::abstract_widget *widget {};
+    ekg::ui::abstract_widget *p_widget {};
 
     for (int32_t &element_ids : this->child_id_list) {
         if ((contains = element_ids == element_id)) {
@@ -42,10 +42,10 @@ ekg::ui::abstract *ekg::ui::abstract::add_child(int32_t element_id) {
         }
     }
 
-    if (contains == false && (widget = ekg::core->get_fast_widget_by_id(element_id)) != nullptr) {        
+    if (contains == false && (p_widget = ekg::core->get_fast_widget_by_id(element_id)) != nullptr) {        
         this->child_id_list.push_back(element_id);
-        widget->data->set_parent_id(this->id);
-        widget->parent = &this->rect_widget;
+        p_widget->p_data->set_parent_id(this->id);
+        p_widget->p_parent = &this->rect_widget;
     }
 
     return this;
@@ -56,9 +56,10 @@ std::vector<int32_t> &ekg::ui::abstract::get_child_id_list() {
 }
 
 ekg::ui::abstract *ekg::ui::abstract::remove_child(int32_t element_id) {
-    bool contains {};
-    ekg::ui::abstract_widget *widget {nullptr};
+    ekg::ui::abstract_widget *p_widget {};
+
     uint64_t it {};
+    bool contains {};
 
     for (it = 0; it < this->child_id_list.size(); it++) {
         if ((contains = this->child_id_list.at(it) == element_id)) {
@@ -66,17 +67,17 @@ ekg::ui::abstract *ekg::ui::abstract::remove_child(int32_t element_id) {
         }
     }
 
-    if (contains == false && (widget = ekg::core->get_fast_widget_by_id(element_id)) != nullptr) {
+    if (contains == false && (p_widget = ekg::core->get_fast_widget_by_id(element_id)) != nullptr) {
         this->child_id_list.erase(this->child_id_list.begin() + it);
-        widget->data->set_parent_id(0);
-        widget->parent = &widget->empty_parent;
+        p_widget->p_data->set_parent_id(0);
+        p_widget->p_parent = &p_widget->empty_parent;
     }
 
     return this;
 }
 
 ekg::ui::abstract *ekg::ui::abstract::set_id(int32_t element_id) {
-    this->id = element_id;\
+    this->id = element_id;
     return this;
 }
 
@@ -107,8 +108,8 @@ void ekg::ui::abstract::destroy() {
     ekg::refresh(this->id);
 
     for (int32_t &ids : this->child_id_list) {
-        auto widget {ekg::core->get_fast_widget_by_id(ids)};
-        if (widget != nullptr && widget->data != nullptr) widget->data->destroy();
+        ekg::ui::abstract_widget *p_widget {ekg::core->get_fast_widget_by_id(ids)};
+        if (p_widget != nullptr && p_widget->p_data != nullptr) p_widget->p_data->destroy();
     }
 }
 

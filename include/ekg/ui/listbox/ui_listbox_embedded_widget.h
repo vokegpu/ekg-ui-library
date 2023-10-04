@@ -28,6 +28,8 @@
 namespace ekg::ui {
     class listbox_embedded_widget {
     public:
+        uint32_t
+    public:
         void on_reload();
         void on_update();
         void on_draw_rerfresh();

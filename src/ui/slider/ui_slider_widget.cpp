@@ -28,7 +28,7 @@
 #include "ekg/draw/draw.hpp"
 
 void ekg::ui::slider_widget::update_bar(float x, float y) {
-    auto p_ui {(ekg::ui::slider*) this->data};
+    auto p_ui {(ekg::ui::slider*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto bar {this->rect_bar + rect};
     auto orientation {p_ui->get_bar_align()};
@@ -66,7 +66,7 @@ void ekg::ui::slider_widget::on_destroy() {
 void ekg::ui::slider_widget::on_reload() {
     abstract_widget::on_reload();
 
-    auto p_ui {(ekg::ui::slider*) this->data};
+    auto p_ui {(ekg::ui::slider*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
     auto text_dock_flags {p_ui->get_text_align()};
@@ -183,7 +183,7 @@ void ekg::ui::slider_widget::on_pre_event(SDL_Event &sdl_event) {
 void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
     abstract_widget::on_event(sdl_event);
 
-    auto p_ui {(ekg::ui::slider*) this->data};
+    auto p_ui {(ekg::ui::slider*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto &interact {ekg::input::interact()};
     
@@ -228,7 +228,7 @@ void ekg::ui::slider_widget::on_update() {
 
 void ekg::ui::slider_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
-    auto p_ui {(ekg::ui::slider*) this->data};
+    auto p_ui {(ekg::ui::slider*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};
     auto &f_renderer {ekg::f_renderer(this->font_render_size)};

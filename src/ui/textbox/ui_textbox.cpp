@@ -69,7 +69,7 @@ std::string ekg::ui::textbox::get_text() {
     ekg::ui::textbox_widget *p_widget {static_cast<ekg::ui::textbox_widget*>(ekg::core->get_fast_widget_by_id(this->id))};
 
     // It prevent useless iteration from text.
-    if (p_widget->text_edited) {
+    if (p_widget != nullptr && p_widget->text_edited) {
         p_widget->update_ui_text_data();
         p_widget->text_edited = true;
     }

@@ -52,14 +52,14 @@ void ekg::synclayout(ekg::ui::abstract_widget *p_widget) {
 }
 
 void ekg::push_back_stack(ekg::ui::abstract_widget *p_widget, ekg::stack &stack) {
-    if (p_widget == nullptr || stack.registry[p_widget->data->get_id()]) {
+    if (p_widget == nullptr || stack.registry[p_widget->p_data->get_id()]) {
         return;
     }
 
-    stack.registry[p_widget->data->get_id()] = true;
+    stack.registry[p_widget->p_data->get_id()] = true;
     stack.ordered_list.push_back(p_widget);
 
-    for (int32_t &ids : p_widget->data->get_child_id_list()) {
+    for (int32_t &ids : p_widget->p_data->get_child_id_list()) {
         auto widgets {ekg::core->get_fast_widget_by_id(ids)};
 
         if (widgets == nullptr) {
@@ -76,11 +76,11 @@ void ekg::stack::clear() {
 }
 
 ekg::ui::abstract_widget *ekg::find_absolute_parent_master(ekg::ui::abstract_widget *p_widget) {
-    if (p_widget == nullptr || p_widget->data->get_parent_id() == 0) {
+    if (p_widget == nullptr || p_widget->p_data->get_parent_id() == 0) {
         return p_widget;
     }
 
-    auto widget {ekg::core->get_fast_widget_by_id(p_widget->data->get_parent_id())};
+    auto widget {ekg::core->get_fast_widget_by_id(p_widget->p_data->get_parent_id())};
     return ekg::find_absolute_parent_master(widget);
 }
 
@@ -110,7 +110,7 @@ void ekg::dispatch(ekg::env env) {
         ekg::core->request_redraw_gui();
         break;
     default:
-        ekg::core->service_handler.dispatch_pre_allocated_task((uint64_t) env);
+        ekg::core->service_handler.dispatch_pre_allocated_task(static_cast<uint64_t>(env));
         break;
     }
 }

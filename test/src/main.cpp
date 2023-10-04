@@ -870,6 +870,8 @@ int32_t main(int32_t, char**) {
         std::cout << items.value << std::endl;
     }
 
-    return 0;
+    ekg::item mother {"animals"};
+    mother.emplace_back() = "\t\\Select All";
+
     return main_example();
 }

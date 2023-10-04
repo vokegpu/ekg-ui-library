@@ -221,6 +221,8 @@ void ekg::update() {
 }
 
 void ekg::render() {
+    // TODO: Fast multi-platform renderer allocator 
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -229,98 +231,98 @@ void ekg::render() {
 }
 
 ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_position, const ekg::vec2 &size) {
-    auto ui {new ekg::ui::frame()};
-    ui->set_tag(tag);
-    ui->set_type(ekg::type::frame);
-    ekg::core->gen_widget(ui);
+    auto p_ui {new ekg::ui::frame()};
+    p_ui->set_tag(tag);
+    p_ui->set_type(ekg::type::frame);
+    ekg::core->gen_widget(p_ui);
 
-    ui->set_pos_initial(initial_position.x, initial_position.y);
-    ui->set_size_initial(size.x, size.y);
-    ui->ui() = {initial_position.x, initial_position.y, size.x, size.y};
-    ui->set_place(ekg::dock::none);
+    p_ui->set_pos_initial(initial_position.x, initial_position.y);
+    p_ui->set_size_initial(size.x, size.y);
+    p_ui->ui() = {initial_position.x, initial_position.y, size.x, size.y};
+    p_ui->set_place(ekg::dock::none);
 
-    return ui;
+    return p_ui;
 }
 
 ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &size, uint16_t dock) {
-    auto ui {new ekg::ui::frame()};
-    ui->set_tag(tag);
-    ui->set_type(ekg::type::frame);
-    ekg::core->gen_widget(ui);
+    auto p_ui {new ekg::ui::frame()};
+    p_ui->set_tag(tag);
+    p_ui->set_type(ekg::type::frame);
+    ekg::core->gen_widget(p_ui);
 
-    ui->set_size_initial(size.x, size.y);
-    ui->ui() = {0.0f, 0.0f, size.x, size.y};
-    ui->set_place(dock);
+    p_ui->set_size_initial(size.x, size.y);
+    p_ui->ui() = {0.0f, 0.0f, size.x, size.y};
+    p_ui->set_place(dock);
 
-    return ui;
+    return p_ui;
 }
 
 ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
-    auto ui {new ekg::ui::button()};
-    ui->set_type(ekg::type::button);
-    ekg::core->gen_widget(ui);
+    auto p_ui {new ekg::ui::button()};
+    p_ui->set_type(ekg::type::button);
+    ekg::core->gen_widget(p_ui);
 
-    ui->set_text(text);
-    ui->set_place(dock);
-    ui->set_scaled_height(1);
-    ui->set_font_size(ekg::font::normal);
-    ui->set_text_align(ekg::dock::left | ekg::dock::center);
-    ui->set_tag(text);
+    p_ui->set_text(text);
+    p_ui->set_place(dock);
+    p_ui->set_scaled_height(1);
+    p_ui->set_font_size(ekg::font::normal);
+    p_ui->set_text_align(ekg::dock::left | ekg::dock::center);
+    p_ui->set_tag(text);
 
-    return ui;
+    return p_ui;
 }
 
 ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
-    auto ui {new ekg::ui::label()};
-    ui->set_type(ekg::type::label);
-    ekg::core->gen_widget(ui);
+    auto p_ui {new ekg::ui::label()};
+    p_ui->set_type(ekg::type::label);
+    ekg::core->gen_widget(p_ui);
 
-    ui->set_text(text);
-    ui->set_place(dock);
-    ui->set_scaled_height(1);
-    ui->set_font_size(ekg::font::normal);
-    ui->set_text_align(ekg::dock::left | ekg::dock::center);
-    ui->set_tag(text);
+    p_ui->set_text(text);
+    p_ui->set_place(dock);
+    p_ui->set_scaled_height(1);
+    p_ui->set_font_size(ekg::font::normal);
+    p_ui->set_text_align(ekg::dock::left | ekg::dock::center);
+    p_ui->set_tag(text);
 
-    return ui;
+    return p_ui;
 }
 
 ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, uint16_t dock) {
-    auto ui {new ekg::ui::checkbox()};
-    ui->set_type(ekg::type::checkbox);
-    ekg::core->gen_widget(ui);
+    auto p_ui {new ekg::ui::checkbox()};
+    p_ui->set_type(ekg::type::checkbox);
+    ekg::core->gen_widget(p_ui);
 
-    ui->set_text(text);
-    ui->set_place(dock);
-    ui->set_scaled_height(1);
-    ui->set_font_size(ekg::font::normal);
-    ui->set_text_align(ekg::dock::left | ekg::dock::center);
-    ui->set_box_align(ekg::dock::left | ekg::dock::center);
-    ui->set_tag(text);
-    ui->set_value(value);
+    p_ui->set_text(text);
+    p_ui->set_place(dock);
+    p_ui->set_scaled_height(1);
+    p_ui->set_font_size(ekg::font::normal);
+    p_ui->set_text_align(ekg::dock::left | ekg::dock::center);
+    p_ui->set_box_align(ekg::dock::left | ekg::dock::center);
+    p_ui->set_tag(text);
+    p_ui->set_value(value);
 
-    return ui;
+    return p_ui;
 }
 
 ekg::ui::slider *ekg::slider(std::string_view tag, float val, float min, float max, uint16_t dock) {
-    auto ui {new ekg::ui::slider()};
-    ui->set_type(ekg::type::slider);
-    ekg::core->gen_widget(ui);
+    auto p_ui {new ekg::ui::slider()};
+    p_ui->set_type(ekg::type::slider);
+    ekg::core->gen_widget(p_ui);
 
-    ui->set_tag(tag);
-    ui->set_place(dock);
-    ui->set_text_align(ekg::dock::center);
-    ui->set_bar_align(ekg::dock::left | ekg::dock::center);
-    ui->set_scaled_height(1);
-    ui->set_font_size(ekg::font::normal);
-    ui->set_value_min(min);
-    ui->set_value_max(max);
-    ui->set_precision(0);
-    ui->set_bar_axis(ekg::axis::horizontal);
-    ui->set_width(200);
-    ui->set_value(val);
+    p_ui->set_tag(tag);
+    p_ui->set_place(dock);
+    p_ui->set_text_align(ekg::dock::center);
+    p_ui->set_bar_align(ekg::dock::left | ekg::dock::center);
+    p_ui->set_scaled_height(1);
+    p_ui->set_font_size(ekg::font::normal);
+    p_ui->set_value_min(min);
+    p_ui->set_value_max(max);
+    p_ui->set_precision(0);
+    p_ui->set_bar_axis(ekg::axis::horizontal);
+    p_ui->set_width(200);
+    p_ui->set_value(val);
 
-    return ui;
+    return p_ui;
 }
 
 ekg::ui::popup *ekg::popup(std::string_view tag, const std::vector<std::string> &component_list, bool interact_position) {
@@ -328,46 +330,46 @@ ekg::ui::popup *ekg::popup(std::string_view tag, const std::vector<std::string> 
         return nullptr;
     }
 
-    auto ui {new ekg::ui::popup()};
-    ui->set_type(ekg::type::popup);
-    ekg::core->gen_widget(ui);
+    auto p_ui {new ekg::ui::popup()};
+    p_ui->set_type(ekg::type::popup);
+    ekg::core->gen_widget(p_ui);
 
     if (interact_position) {
         auto &interact {ekg::input::interact()};
-        ui->set_pos(interact.x, interact.y);
+        p_ui->set_pos(interact.x, interact.y);
     }
 
-    ui->set_width(100);
-    ui->insert(component_list);
-    ui->set_tag(tag);
-    ui->set_scaled_height(1);
-    ui->set_text_align(ekg::dock::center | ekg::dock::left);
-    ui->set_category(ekg::category::top_level);
+    p_ui->set_width(100);
+    p_ui->insert(component_list);
+    p_ui->set_tag(tag);
+    p_ui->set_scaled_height(1);
+    p_ui->set_text_align(ekg::dock::center | ekg::dock::left);
+    p_ui->set_category(ekg::category::top_level);
 
-    return ui;
+    return p_ui;
 }
 
 ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint16_t dock) {
-    auto ui {new ekg::ui::textbox()};
-    ui->set_type(ekg::type::textbox);
-    ekg::core->gen_widget(ui);
+    auto p_ui {new ekg::ui::textbox()};
+    p_ui->set_type(ekg::type::textbox);
+    ekg::core->gen_widget(p_ui);
 
-    ui->set_tag(tag);
-    ui->set_place(dock);
-    ui->set_scaled_height(1);
-    ui->set_font_size(ekg::font::normal);
-    ui->set_width(200);
-    ui->set_text(text);
+    p_ui->set_tag(tag);
+    p_ui->set_place(dock);
+    p_ui->set_scaled_height(1);
+    p_ui->set_font_size(ekg::font::normal);
+    p_ui->set_width(200);
+    p_ui->set_text(text);
 
-    return ui;
+    return p_ui;
 }
 
 ekg::ui::scroll *ekg::scroll(std::string_view tag) {
-    auto ui {new ekg::ui::scroll()};
-    ui->set_type(ekg::type::scroll);
-    ui->set_tag(tag);
-    ekg::core->gen_widget(ui);
-    return ui;
+    auto p_ui {new ekg::ui::scroll()};
+    p_ui->set_type(ekg::type::scroll);
+    p_ui->set_tag(tag);
+    ekg::core->gen_widget(p_ui);
+    return p_ui;
 }
 
 void ekg::pop_group() {

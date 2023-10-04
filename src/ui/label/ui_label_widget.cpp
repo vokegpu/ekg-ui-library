@@ -33,7 +33,7 @@ void ekg::ui::label_widget::on_destroy() {
 void ekg::ui::label_widget::on_reload() {
     abstract_widget::on_reload();
 
-    auto p_ui {(ekg::ui::label*) this->data};
+    auto p_ui {(ekg::ui::label*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
     auto scaled_height {p_ui->get_scaled_height()};
@@ -86,11 +86,11 @@ void ekg::ui::label_widget::on_update() {
 }
 
 void ekg::ui::label_widget::on_draw_refresh() {
-    auto p_ui {(ekg::ui::label*) this->data};
+    auto p_ui {(ekg::ui::label*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
-    ekg::draw::bind_scissor(this->data->get_id());
+    ekg::draw::bind_scissor(this->p_data->get_id());
     ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
     f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, ekg::theme().label_string);
     ekg::draw::bind_off_scissor();

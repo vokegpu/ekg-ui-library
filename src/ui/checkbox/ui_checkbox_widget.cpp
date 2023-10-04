@@ -33,7 +33,7 @@ void ekg::ui::checkbox_widget::on_destroy() {
 void ekg::ui::checkbox_widget::on_reload() {
     abstract_widget::on_reload();
 
-    auto p_ui {(ekg::ui::checkbox*) this->data};
+    auto p_ui {(ekg::ui::checkbox*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto scaled_height {p_ui->get_scaled_height()};
     auto f_renderer {ekg::f_renderer(p_ui->get_font_size())};
@@ -81,14 +81,14 @@ void ekg::ui::checkbox_widget::on_event(SDL_Event &sdl_event) {
 
     if (ekg::input::motion() || pressed || released) {
         ekg::set(this->flag.highlight, this->flag.hovered);
-        ekg::set(this->flag.focused, this->flag.hovered && ekg::rect_collide_vec(this->rect_box + (this->dimension + *this->parent), ekg::input::interact()));
+        ekg::set(this->flag.focused, this->flag.hovered && ekg::rect_collide_vec(this->rect_box + (this->dimension + *this->p_parent), ekg::input::interact()));
     }
 
     if (pressed && !this->flag.activy && this->flag.hovered && ekg::input::action("checkbox-activy")) {
         ekg::set(this->flag.activy, true);
     } else if (released && this->flag.activy) {
         if (this->flag.hovered) {
-            auto p_ui {(ekg::ui::checkbox*) this->data};
+            auto p_ui {(ekg::ui::checkbox*) this->p_data};
             p_ui->set_value(!p_ui->get_value());
 
             auto p_callback {p_ui->get_callback()};
@@ -115,7 +115,7 @@ void ekg::ui::checkbox_widget::on_update() {
 
 void ekg::ui::checkbox_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
-    auto p_ui {(ekg::ui::checkbox*) this->data};
+    auto p_ui {(ekg::ui::checkbox*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};

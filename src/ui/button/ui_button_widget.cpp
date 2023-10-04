@@ -34,7 +34,7 @@ void ekg::ui::button_widget::on_destroy() {
 void ekg::ui::button_widget::on_reload() {
     abstract_widget::on_reload();
 
-    auto p_ui {(ekg::ui::button*) this->data};
+    auto p_ui {(ekg::ui::button*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
@@ -80,7 +80,7 @@ void ekg::ui::button_widget::on_event(SDL_Event &sdl_event) {
     if (pressed && !this->flag.activy && this->flag.hovered && ekg::input::action("button-activy")) {
         ekg::set(this->flag.activy, true);
     } else if (released && this->flag.activy) {
-        auto p_ui {(ekg::ui::button*) this->data};
+        auto p_ui {(ekg::ui::button*) this->p_data};
         p_ui->set_value(this->flag.hovered);
 
         auto callback {p_ui->get_callback()};
@@ -104,7 +104,7 @@ void ekg::ui::button_widget::on_update() {
 
 void ekg::ui::button_widget::on_draw_refresh() {
     abstract_widget::on_draw_refresh();
-    auto p_ui {(ekg::ui::button*) this->data};
+    auto p_ui {(ekg::ui::button*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};
     auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
