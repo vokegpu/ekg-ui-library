@@ -33,10 +33,10 @@ namespace ekg {} // always use namespace and ekg
 // pointers start with prefix p_*
 int32_t *p_int {};
 
-// also always use intialization-list implicit {}
+// also always use initialization-list implicit {}
 int32_t number {5};
 
-// always use cpp keywords for prevent implicit cast and other behaviours
+// always use cpp keywords for prevent implicit cast and other behaviors
 static_cast<t>
 
 // ifndef, no pragma once
