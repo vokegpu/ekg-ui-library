@@ -70,7 +70,7 @@ int32_t main(int32_t, char**) {
     while (SDL_PollEvents(sdl_event)) {
       // handle the events here.
       // remember to poll ekg reset events:
-      ekg::event(sdl_event);
+      ekg::task(sdl_event);
     }
     
     if (/* check timing each 1s to update display fps */) {
@@ -123,7 +123,7 @@ Here how to create popup(s)!
 
 ```cpp
 while (SDL_PollEvent(&sdlevent)) {
-  ekg::event(sdl_event);
+  ekg::task(sdl_event);
 
   if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
     // \t  add line separator

@@ -31,7 +31,7 @@ bool running {true};
 
 void create_exit_button() {
     ekg::frame("oi wuria ser linda", {window_size.w / 2, window_size.h - 50}, {100, 40});
-    ekg::button("Exit", ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::cpu::event {
+    ekg::button("Exit", ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::task {
         .p_tag = "exit-callback",
         .p_callback = &running,
         .function = [](void *p_data) {
@@ -310,7 +310,7 @@ int32_t main_example() {
                 running = false;
             }
 
-            ekg::event(sdl_event);
+            ekg::poll_event(sdl_event);
 
             if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
                 auto main = ekg::popup("file", {
@@ -406,7 +406,7 @@ int32_t main_calculator() {
 
     auto f1 = ekg::frame("sou gostosa", {700, 300}, {200, 200})->set_drag(ekg::dock::top)->set_resize(ekg::dock::bottom | ekg::dock::left | ekg::dock::right);
 
-    ekg::button("swap locked-framerate")->set_callback(new ekg::cpu::event {"theme-switcher", nullptr, [](void *pdata) {
+    ekg::button("swap locked-framerate")->set_callback(new ekg::task {"theme-switcher", nullptr, [](void *pdata) {
         framerate = framerate == 0 ? 16 : 0;
         SDL_GL_SetSwapInterval(framerate ? 1 : 0);
     }});
@@ -464,7 +464,7 @@ int32_t main_calculator() {
         framedebug->add_child(frame2->get_id());
 
         ekg::theme().gen_default_dark_theme();
-        ekg::checkbox("Light Theme", false, ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::cpu::event {"theme-switcher", frame2, [](void *pdata) {
+        ekg::checkbox("Light Theme", false, ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::task {"theme-switcher", frame2, [](void *pdata) {
             ekg::ui::frame *frame {static_cast<ekg::ui::frame*>(pdata)};
             // frame->set_pos(20, 20);
             // @TODO fix random issue with set positon
@@ -586,7 +586,7 @@ int32_t main_calculator() {
 
     uint64_t cpu_now_ticks {};
     uint64_t cpu_last_ticks {};
-    ekg::cpu::uievent event {};
+    ekg::event event {};
 
     ekg::input::bind("pompom", "c-up");
     ekg::input::bind("pompom", "rshift");
@@ -666,7 +666,7 @@ int32_t main_calculator() {
                         }
                     }
 
-                    ekg::event(sdl_event);
+                    ekg::poll_event(sdl_event);
 
                     if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
                         auto main = ekg::popup("file", {"---Add", "Cut", "Copy", "---Paste", "---Select All", "Actions"});

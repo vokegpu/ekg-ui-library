@@ -26,6 +26,7 @@
 #define EKG_H
 
 #include "ekg/core/runtime.hpp"
+#include "ekg/core/task.hpp"
 #include "ekg/util/gui.hpp"
 #include "ekg/util/io.hpp"
 #include "ekg/util/text.hpp"
@@ -89,7 +90,7 @@ namespace ekg {
     /*
      * Poll events and sync UI events.
      */
-    void event(SDL_Event&);
+    void poll_event(SDL_Event&);
 
     /*
      * Process events, tasks, services & widgets.

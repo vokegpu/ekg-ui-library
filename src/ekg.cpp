@@ -174,17 +174,18 @@ void ekg::quit() {
     ekg::log() << "Shutdown complete - Thank you for using EKG ;) <3";
 }
 
-void ekg::event(SDL_Event &sdl_event) {
-    bool phase_keep_process {
-            sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
-            sdl_event.type == SDL_FINGERUP                      || sdl_event.type == SDL_FINGERDOWN ||
-            sdl_event.type == SDL_FINGERMOTION           || sdl_event.type == SDL_MOUSEMOTION ||
-            sdl_event.type == SDL_KEYDOWN                      || sdl_event.type == SDL_KEYUP ||
-            sdl_event.type == SDL_WINDOWEVENT            || sdl_event.type == SDL_MOUSEWHEEL ||
-            sdl_event.type == SDL_TEXTINPUT
-    };
-
-    if (!phase_keep_process) {
+void ekg::poll_event(SDL_Event &sdl_event) {
+    if (!(
+        /*
+         * Not all events should be processed, only the requireds.
+         */
+        sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
+        sdl_event.type == SDL_FINGERUP        || sdl_event.type == SDL_FINGERDOWN    ||
+        sdl_event.type == SDL_FINGERMOTION    || sdl_event.type == SDL_MOUSEMOTION   ||
+        sdl_event.type == SDL_KEYDOWN         || sdl_event.type == SDL_KEYUP         ||
+        sdl_event.type == SDL_WINDOWEVENT     || sdl_event.type == SDL_MOUSEWHEEL    ||
+        sdl_event.type == SDL_TEXTINPUT
+    )) {
         return;
     }
 
@@ -192,16 +193,18 @@ void ekg::event(SDL_Event &sdl_event) {
         case SDL_WINDOWEVENT: {
             switch (sdl_event.window.event) {
                 case SDL_WINDOWEVENT_SIZE_CHANGED: {
-                    /* Set new display size, update orthographic matrix and pass the uniforms to the main shader. */
-
                     ekg::display::width = sdl_event.window.data1;
                     ekg::display::height = sdl_event.window.data2;
 
+                    /* Set new display size, update orthographic matrix and pass the uniforms to the main shader. */
+
                     ekg::gpu::invoke(ekg::gpu::allocator::program);
                     ekg::orthographic2d(ekg::gpu::allocator::mat4x4orthographic, 0, static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height), 0);
+
                     ekg::gpu::allocator::program.setm4("uOrthographicMatrix", ekg::gpu::allocator::mat4x4orthographic);
                     ekg::gpu::allocator::program.set("uViewportHeight", static_cast<float>(ekg::display::height));
                     ekg::gpu::revoke();
+
                     ekg::core->update_size_changed();
                     break;
                 }
@@ -211,6 +214,7 @@ void ekg::event(SDL_Event &sdl_event) {
         }
     }
 
+    // Reset the cursor to the default type, then it is never glitch.
     ekg::cursor = ekg::system_cursor::arrow;
     ekg::core->process_event(sdl_event);
 }

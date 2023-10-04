@@ -25,13 +25,10 @@
 #include "ekg/ekg.hpp"
 
 ekg::rect ekg::empty {};
-
-int32_t ekg::hovered::id {};
+int32_t   ekg::hovered::id {};
 ekg::type ekg::hovered::type {};
-
-int32_t ekg::hovered::up {};
-int32_t ekg::hovered::down {};
-
+int32_t   ekg::hovered::up {};
+int32_t   ekg::hovered::down {};
 ekg::type ekg::hovered::downtype {};
 ekg::type ekg::hovered::uptype {};
 
@@ -100,7 +97,7 @@ void ekg::update_high_frequency(ekg::ui::abstract_widget *p_widget) {
     ekg::core->set_update_high_frequency(p_widget);
 }
 
-void ekg::dispatch(ekg::cpu::event *p_event) {
+void ekg::dispatch(task *p_event) {
     ekg::core->service_handler.generate() = *p_event;
 }
 
@@ -115,9 +112,9 @@ void ekg::dispatch(ekg::env env) {
     }
 }
 
-bool ekg::listen(ekg::cpu::uievent &ekg_event, SDL_Event &sdl_event) {
+bool ekg::listen(event &ekg_event, SDL_Event &sdl_event) {
     if (sdl_event.type == ekg::listener) {
-        ekg::cpu::uievent *p_ekg_event {static_cast<ekg::cpu::uievent*>(sdl_event.user.data1)};
+        event *p_ekg_event {static_cast<event*>(sdl_event.user.data1)};
         ekg_event = *p_ekg_event;
         delete p_ekg_event;
         return true;

@@ -22,31 +22,15 @@
 * SOFTWARE.
 */
 
-#ifndef EKG_CPU_EVENT_H
-#define EKG_CPU_EVENT_H
+#ifndef EKG_CORE_EVENT_H
+#define EKG_CORE_EVENT_H
 
 #include <iostream>
 #include <functional>
 #include "ekg/os/ekg_sdl.hpp"
 
 namespace ekg {
-    namespace cpu {
-        struct uievent {
-        public:
-            std::string tag {};
-            std::string value {};
-            uint16_t type {};
-        };
-
-        struct event {
-        public:
-            const char* p_tag {};
-            void* p_callback {};
-            std::function<void(void*)> function {};
-        };
-    }
-
-    enum event {
+    enum event_type {
         unique    = 0,
         alloc     = 2,
         allocated = 4,
@@ -55,6 +39,20 @@ namespace ekg {
 
     extern uint32_t listener;
     void dispatch_ui_event(std::string_view tag, std::string_view value, uint16_t type);
+
+    struct event {
+    public:
+        std::string tag {};
+        std::string value {};
+        uint16_t type {};
+    };
+
+    struct task {
+    public:
+        const char* p_tag {};
+        void* p_callback {};
+        std::function<void(void*)> function {};
+    };
 }
 
 #endif

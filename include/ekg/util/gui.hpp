@@ -28,16 +28,16 @@
 #include <map>
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
-#include "ekg/cpu/event.hpp"
+#include "ekg/core/task.hpp"
 
 namespace ekg {
     enum class env {
         refresh, swap, reload, synclayout, gc, redraw
     };
 
-    void dispatch(ekg::cpu::event *p_ekg_event);
+    void dispatch(task *p_ekg_event);
     void dispatch(ekg::env env);
-    bool listen(ekg::cpu::uievent &ui_event, SDL_Event &sdl_event);
+    bool listen(event &ui_event, SDL_Event &sdl_event);
 
     extern ekg::rect empty;
 

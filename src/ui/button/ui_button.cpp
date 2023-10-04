@@ -68,7 +68,7 @@ uint16_t ekg::ui::button::get_text_align() {
     return this->dock_text;
 }
 
-ekg::ui::button *ekg::ui::button::set_callback(ekg::cpu::event *event) {
+ekg::ui::button *ekg::ui::button::set_callback(task *event) {
     if (this->callback != event && this->callback != nullptr) {
         delete this->callback;
         this->callback = nullptr;
@@ -78,7 +78,7 @@ ekg::ui::button *ekg::ui::button::set_callback(ekg::cpu::event *event) {
     return this;
 }
 
-ekg::cpu::event *ekg::ui::button::get_callback() {
+ekg::task *ekg::ui::button::get_callback() {
     return this->callback;
 }
 

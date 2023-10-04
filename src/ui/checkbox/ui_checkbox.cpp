@@ -25,7 +25,7 @@
 #include "ekg/ui/checkbox/ui_checkbox.hpp"
 #include "ekg/util/gui.hpp"
 
-ekg::ui::checkbox *ekg::ui::checkbox::set_callback(ekg::cpu::event *event) {
+ekg::ui::checkbox *ekg::ui::checkbox::set_callback(task *event) {
     if (this->callback != event && this->callback != nullptr) {
         delete this->callback;
         this->callback = nullptr;
@@ -35,7 +35,7 @@ ekg::ui::checkbox *ekg::ui::checkbox::set_callback(ekg::cpu::event *event) {
     return this;
 }
 
-ekg::cpu::event *ekg::ui::checkbox::get_callback() {
+ekg::task *ekg::ui::checkbox::get_callback() {
     return this->callback;
 }
 

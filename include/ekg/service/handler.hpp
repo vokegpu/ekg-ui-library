@@ -15,7 +15,7 @@
 #ifndef EKG_SERVICE_HANDLER_H
 #define EKG_SERVICE_HANDLER_H
 
-#include "ekg/cpu/event.hpp"
+#include "ekg/core/task.hpp"
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -25,20 +25,20 @@
 namespace ekg::service {
     class handler {
     protected:
-        std::queue<ekg::cpu::event> task_queue {};
+        std::queue<task> task_queue {};
         std::unordered_map<const char*, bool> pre_allocated_task_dispatched_map {};
-        std::vector<ekg::cpu::event> pre_allocated_task_list {};
+        std::vector<task> pre_allocated_task_list {};
     protected:
-        std::queue<ekg::cpu::event> multi_thread_task_queue {};
+        std::queue<task> multi_thread_task_queue {};
         std::unordered_map<const char*, bool> multi_thread_task_dispatched_map {};
         bool running_multi_thread_task {};
     public:
         void set_running_multi_thread_task(bool state);
         bool is_running_multi_thread_task();
 
-        ekg::cpu::event &allocate();
-        ekg::cpu::event &generate();
-        ekg::cpu::event &generate_multi_thread();
+        task &allocate();
+        task &generate();
+        task &generate_multi_thread();
 
         void init_multi_thread_task_thread();
         void dispatch_pre_allocated_task(uint64_t index);

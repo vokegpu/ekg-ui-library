@@ -26,7 +26,7 @@
 #define EKG_UI_BUTTON_H
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
-#include "ekg/cpu/event.hpp"
+#include "ekg/core/task.hpp"
 
 namespace ekg::ui {
 	class button : public ekg::ui::abstract {
@@ -35,7 +35,7 @@ namespace ekg::ui {
         uint16_t dock_text {};
 
         std::string text {};
-        ekg::cpu::event* callback {nullptr};
+        task* callback {nullptr};
         ekg::font font_size {};
     public:
         ekg::ui::button *set_font_size(ekg::font font);
@@ -49,8 +49,8 @@ namespace ekg::ui {
         int32_t get_scaled_height();
         float get_height();
 
-        ekg::ui::button *set_callback(ekg::cpu::event *p_callback);
-        ekg::cpu::event *get_callback();
+        ekg::ui::button *set_callback(task *p_callback);
+        task *get_callback();
 
         ekg::ui::button *set_text(std::string_view text);
         std::string_view get_text();

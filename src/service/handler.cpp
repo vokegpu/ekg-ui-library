@@ -41,11 +41,11 @@ bool ekg::service::handler::is_running_multi_thread_task() {
     return this->running_multi_thread_task;
 }
 
-ekg::cpu::event &ekg::service::handler::allocate() {
+ekg::task &ekg::service::handler::allocate() {
     return this->pre_allocated_task_list.emplace_back();
 }
 
-ekg::cpu::event &ekg::service::handler::generate() {
+ekg::task &ekg::service::handler::generate() {
     return this->task_queue.emplace();
 }
 
@@ -53,7 +53,7 @@ void ekg::service::handler::init_multi_thread_task_thread() {
 }
 
 void ekg::service::handler::dispatch_pre_allocated_task(uint64_t index) {
-    ekg::cpu::event &task {this->pre_allocated_task_list.at(index)};
+    task &task {this->pre_allocated_task_list.at(index)};
     bool &is_dispatched {this->pre_allocated_task_dispatched_map[task.p_tag]};
 
     if (!is_dispatched) {
@@ -64,7 +64,7 @@ void ekg::service::handler::dispatch_pre_allocated_task(uint64_t index) {
 
 void ekg::service::handler::on_update() {
     while (!this->task_queue.empty()) {
-        ekg::cpu::event &ekg_event {this->task_queue.front()};
+        task &ekg_event {this->task_queue.front()};
         ekg_event.function(ekg_event.p_callback);
         this->task_queue.pop();
     }
