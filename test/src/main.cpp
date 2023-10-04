@@ -845,7 +845,28 @@ std::ostringstream &operator-(std::ostringstream &os_string_stream, std::ostring
     return os_string_stream;
 }
 
+struct node {
+public:
+    const char *p_list_tag[256] {};
+    std::vector<node*> child_list {};
+};
+
+std::vector<node*> node_list {};
+
 int32_t main(int32_t, char**) {
+    for (int32_t it {}; it < 64; it++) {
+        node *&p_node {node_list.emplace_back()};
+        p_node = new node {};
+
+        p_node->p_list_tag[0] = "potato";
+        p_node->p_list_tag[1] = "chiquinha";
+        p_node->p_list_tag[2] = "fofooos";
+
+        for (int32_t it_child {it}; it_child > 0; it_child--) {
+            p_node->child_list.emplace_back() = node_list.at(it_child);
+        }
+    }
+
     ekg::item animals = {"animals"};
 
     animals.emplace_back() = "cats";
@@ -871,6 +892,5 @@ int32_t main(int32_t, char**) {
     ekg::item mother {"animals"};
     mother.emplace_back() = "\t\\Select All";
 
-    return 0;
     return main_calculator();
 }
