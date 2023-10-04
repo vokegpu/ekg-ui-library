@@ -70,7 +70,7 @@ int32_t main(int32_t, char**) {
     while (SDL_PollEvents(sdl_event)) {
       // handle the events here.
       // remember to poll ekg reset events:
-      ekg::task(sdl_event);
+      ekg::poll_event(sdl_event);
     }
     
     if (/* check timing each 1s to update display fps */) {
