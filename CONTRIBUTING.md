@@ -23,4 +23,13 @@ Please follow the syntax and patterns:
 ```cpp
 // everything in sneak_case
 namespace ekg {} // always use namespace and ekg
+
+// pointers start with prefix p_*
+int32_t *p_int {};
+
+// also always use intialization-list implicit {}
+int32_t number {5};
+
+// use cpp keywords for prevent implicit cast
+static_cast<t>
 ```
