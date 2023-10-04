@@ -23,7 +23,7 @@ p_widget->p_ui = new ekg::ui::drop_down_frame();
 
 # Code of Conduct
 
-Note: Some old code maybe is not following the code of conduct, but it is being refactored.
+Note: Some old code may not follow the code of conduct, but it is being refactored.
 
 ```cpp
 // everything in sneak_case
