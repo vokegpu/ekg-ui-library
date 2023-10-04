@@ -55,6 +55,74 @@ for (ekg::item &items : item) {
 
 # Methods
 
+Set value with attributes check, use this instead of setting directly the field. 
+
+```cpp
+void set_value(std::string_view _value);
 ```
 
+Initialize an item child without generating a copy.
+
+```cpp
+ekg::item &emplace_back();
+```
+
+Insert an item copy in the child list.
+
+```cpp
+void push_back(const ekg::item &item);
+```
+
+Insert an item by setting the value.
+
+```cpp
+void push_back(std::string_view item_value);
+```
+
+Insert a `std::vector<ekg::item>` child list.
+
+```cpp
+void insert(const std::vector<std::string> &item_value_list);
+```
+
+Get the child item by index position.
+
+```cpp
+ekg::item &at(uint64_t index);
+```
+
+Check if has item children.
+
+```cpp
+bool empty() const;
+```
+
+Get the size of the child list.
+
+```cpp
+uint64_t size() const;
+```
+
+Get begin iterator point.
+
+```cpp
+std::vector<ekg::item>::iterator begin();
+```
+
+Get end iterator point.
+
+```cpp
+std::vector<ekg::item>::iterator end();
+```
+
+Get const begin iterator point.
+
+```cpp
+std::vector<ekg::item>::const_iterator cbegin() const;
+```
+
+Get const end iterator point.
+
+```cpp
+std::vector<ekg::item>::const_iterator cend() const;
 ```
