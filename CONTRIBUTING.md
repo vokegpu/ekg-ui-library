@@ -23,6 +23,8 @@ p_widget->ui = new ekg::ui::drop_down_frame();
 
 # Code of Conduct
 
+Note: Some old code maybe is not following the code of conduct, but it is being refactored.
+
 ```cpp
 // everything in sneak_case
 namespace ekg {} // always use namespace and ekg
