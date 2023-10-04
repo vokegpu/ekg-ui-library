@@ -33,6 +33,14 @@ int32_t *p_int {};
 // also always use intialization-list implicit {}
 int32_t number {5};
 
-// use cpp keywords for prevent implicit cast
+// always use cpp keywords for prevent implicit cast and other behaviours
 static_cast<t>
+
+// no smart ptr
+
+// ifndef not pragma once
+#ifndef EKG_PACKAGE_HEADER_NAME_H
+#define EKG_PACKAGE_HEADER_NAME_H
+
+#endif
 ```
