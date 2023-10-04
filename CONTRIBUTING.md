@@ -1,4 +1,4 @@
-# Contributing
+![image](https://github.com/vokegpu/ekg-ui-library/assets/37088203/924cfd20-7b48-4e6f-9457-c9ac97c0a311)# Contributing
 
 Check how the widgets work, the UI class (not the widget) is reserved for the user only.  
 The widgets class uses the UI as layer data.
@@ -27,6 +27,7 @@ p_widget->ui = new ekg::ui::drop_down_frame();
 // everything in sneak_case
 namespace ekg {} // always use namespace and ekg
 
+// no smart pointers
 // pointers start with prefix p_*
 int32_t *p_int {};
 
@@ -35,8 +36,6 @@ int32_t number {5};
 
 // always use cpp keywords for prevent implicit cast and other behaviours
 static_cast<t>
-
-// no smart ptr
 
 // ifndef not pragma once
 #ifndef EKG_PACKAGE_HEADER_NAME_H
