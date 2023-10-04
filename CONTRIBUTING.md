@@ -18,7 +18,7 @@ public:
 };
 
 ekg::ui::drop_down_frame_widget *p_widget {new ...};
-p_widget->ui = new ekg::ui::drop_down_frame();
+p_widget->p_ui = new ekg::ui::drop_down_frame();
 ```
 
 # Code of Conduct
