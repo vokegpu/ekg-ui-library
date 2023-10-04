@@ -1,4 +1,4 @@
-![image](https://github.com/vokegpu/ekg-ui-library/assets/37088203/924cfd20-7b48-4e6f-9457-c9ac97c0a311)# Contributing
+# Contributing
 
 Check how the widgets work, the UI class (not the widget) is reserved for the user only.  
 The widgets class uses the UI as layer data.
