@@ -82,6 +82,18 @@ ekg::item &ekg::item::insert(const ekg::item &item_copy) {
     return item;
 }
 
+ekg::item &ekg::item::insert(uint64_t index, std::string_view _value) {
+    ekg::item &item {this->child_list.at(index)};
+    item.set_value(_value);
+    return item;
+}
+
+ekg::item &ekg::item::insert(uint64_t index, const ekg::item &copy_item) {
+    ekg::item &item {this->child_list.at(index)};
+    item = copy_item;
+    return item;
+}
+
 ekg::item &ekg::item::at(uint64_t index) {
     return this->child_list.at(index);
 }
@@ -120,6 +132,31 @@ void ekg::item::set_value(std::string_view _value) {
 
     this->value = _value;
     this->attr = attr_flags;
+}
+
+void ekg::item::connect(uint64_t index, const std::vector<uint64_t> &index_list) {
+    ekg::item &main_item {this->child_list.at(index)};
+    for (const uint64_t &indices : index_list) {
+        if (!this->is_connected(indices)) {
+            ekg::item &sub_item {this->child_list.at(indices)};
+            main_item.connected_child_list.push_back(indices);
+            sub_item.p_item_parent = &main_item;
+        }
+    }
+}
+
+bool ekg::item::is_connected(uint64_t index) {
+    for (uint64_t &indices : this->connected_child_list) {
+        if (indices == index) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ekg::item::is_connected() {
+    return this->p_item_parent != nullptr;
 }
 
 std::ostringstream ekg::log::buffer {};

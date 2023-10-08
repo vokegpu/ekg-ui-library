@@ -31,12 +31,12 @@
 namespace ekg::ui {
     class listbox_widget : public ekg::ui::abstract_widget {
     public:
-        std::vector<ekg::component> component_list {};
         ekg::item *p_item {};
+        ekg::rect rect_widget {};
     public:
-        void on_reload();
-        void on_update();
-        void on_draw_refresh();
+        void on_reload() override;
+        void on_update() override;
+        void on_draw_refresh() override;
     };
 }
 

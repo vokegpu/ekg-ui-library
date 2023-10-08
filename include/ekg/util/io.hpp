@@ -48,10 +48,14 @@ namespace ekg {
     struct item {
     public:
         std::vector<ekg::item> child_list {};
+        std::vector<uint64_t> connected_child_list {};
         std::string value {};
+
         uint16_t attr {};
         uint16_t state {};
+
         ekg::component component {};
+        ekg::item *p_item_parent {};
     public:
         ekg::item &operator=(std::string_view _value);
         ekg::item &operator=(const std::vector<std::string> &item_value_list);
@@ -67,6 +71,8 @@ namespace ekg {
         ekg::item &insert(std::string_view item_value);
         ekg::item &insert(const ekg::item &item);
         ekg::item &at(uint64_t index);
+        ekg::item &insert(uint64_t index, std::string_view value);
+        ekg::item &insert(uint64_t index, const ekg::item &copy_item);
 
         [[nodiscard]] bool empty() const;
         [[nodiscard]] uint64_t size() const;
@@ -78,6 +84,10 @@ namespace ekg {
         [[nodiscard]] std::vector<ekg::item>::const_iterator cend() const;
     public:
         void set_value(std::string_view _value);
+        void connect(uint64_t index, const std::vector<uint64_t> &index_list);
+
+        bool is_connected(uint64_t index);
+        bool is_connected();
     };
 
     struct log {

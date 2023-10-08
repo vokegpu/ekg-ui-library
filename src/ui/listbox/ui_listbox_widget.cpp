@@ -25,14 +25,35 @@
 #include "ekg/ui/listbox/ui_listbox_widget.hpp"
 #include "ekg/ui/listbox/ui_listbox.hpp"
 
+void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item) {
+    for (uint64_t it {}; it < parent_item.size(); it++) {
+        ekg::item &item {parent_item.at(it)};
+        ekg::component &component {item.component};
+
+        if (ekg::bitwise::contains(item.attr, ekg::attr::row)) {
+            component.rect_dimension.x = rect.w;
+            rect.w += this->rect_widget.w;
+        }
+
+        if (ekg::bitwise::contains(item.attr, ekg::attr::category)) {
+            this->process_component_template(item);
+
+            component.rect_dimension.h = 60.0f; // temp
+            component.rect_dimension.w = 
+        }
+
+        parent_item.component.rect_dimension.w = ekg::min(component.rect_dimension.x + component.rect_dimension.w, parent_item.component.rect_dimension.w);
+        parent_item.component.rect_dimension.h = ekg::min(component.rect_dimension.y + component.rect_dimension.h, parent_item.component.rect_dimension.h);
+    }
+}
+
 void ekg::ui::listbox_widget::on_reload() {
     auto p_ui {(ekg::ui::listbox*) this->p_data};
-    auto &rect {this->get_abs_rect()};
     auto &ui_item {p_ui->item()};
+    auto &rect {this->get_abs_rect()};
 
-    for (uint64_t it {}; it < ui_item.size(); it++) {
-        ekg::item &item {ui_item.at(it)};
-    }
+    this->rect_widget = {};
+    this->process_component_template(ui_item);
 }
 
 void ekg::ui::listbox_widget::on_update() {

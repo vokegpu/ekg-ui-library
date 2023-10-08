@@ -895,14 +895,18 @@ void item_test() {
     mother.emplace_back() = "\t\\\1\2Select All";
 
     ekg::item o {"listbox"};
-    o.insert("\1\2Name");
-    o.insert("\1\2Usage");
-    o.insert("\1\2Details");
 
-    ekg::item &name = o.at(0);
-    ekg::item &usage = o.at(1);
+    o.insert("\1\2Name"); // 0
+    o.insert("\1\2Status"); // 1
+    o.insert("\1\2CPU"); // 2
+    o.insert("\1\2RAM"); // 3
+    
+    o.connect(0, {1, 2, 3});
 
-    o.connect(0, {1, 2});
+    o.at(0).insert(0, "Cat");
+    o.at(1).insert(0, "Meowing");
+    o.at(2).insert(0, "2%");
+    o.at(3).insert(0, "3%");
 }
 
 int32_t main(int32_t, char**) {

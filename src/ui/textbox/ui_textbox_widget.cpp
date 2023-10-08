@@ -1063,8 +1063,8 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
                 // Draw the offset signal for next line selected.
                 select_rect.w = cursor.pos[0] != cursor.pos[1] ? char_data.wsize + (this->rect_cursor.w + this->rect_cursor.w) *
-                                                                                                                       (is_utf_char_last_index && cursor.pos[1].chunk_index > chunk_index && cursor.pos[0].chunk_index ==  chunk_index)
-                                                                                        : this->rect_cursor.w;
+                                                                                   (is_utf_char_last_index && cursor.pos[1].chunk_index > chunk_index && cursor.pos[0].chunk_index ==  chunk_index)
+                                                               : this->rect_cursor.w;
                 select_rect.h = this->text_height;
             }
 
