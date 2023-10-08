@@ -31,6 +31,8 @@ Item contains attr (attributes) flags and state flags, both manually configurabl
 Special chars:
 - `\t` add automatically the attribute `ekg::attr::separator` to the item.
 - `\\` add automatically the attribute `ekg::attr::box` to the item.
+- `\1` add automatically the attribute `ekg::attr::category` to the item.
+- `\2` add automatically the attribute `ekg::attr::row` to the item.
 
 ```cpp
 ekg::item item {"Animals"};
