@@ -43,6 +43,7 @@ namespace ekg {
         ekg::rect rect_dimension {}; 
         ekg::rect rect_box {};
         ekg::rect rect_text {};
+        ekg::rect rect_visual_dimension {};
     };
 
     struct item {
