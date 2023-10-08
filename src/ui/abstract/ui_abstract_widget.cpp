@@ -47,7 +47,11 @@ void ekg::ui::abstract_widget::on_pre_event(SDL_Event &sdl_event) {
     if (ekg::input::pressed() || ekg::input::released() || ekg::input::motion() || ekg::input::wheel()) {
         auto &interact {ekg::input::interact()};
         auto &rect {this->get_abs_rect()};
-        this->flag.hovered = ekg::rect_collide_vec(rect, interact) && (this->p_data->get_category() == ekg::category::top_level || this->p_data->get_parent_id() == 0 || ekg::draw::is_visible(this->p_data->get_id(), interact));
+
+        this->flag.hovered = ekg::rect_collide_vec(rect, interact) && (
+                             this->p_data->get_level() == ekg::level::top_level ||
+                             this->p_data->get_parent_id() == 0 ||
+                             ekg::draw::is_visible(this->p_data->get_id(), interact));
     }
 }
 
@@ -57,8 +61,11 @@ void ekg::ui::abstract_widget::on_event(SDL_Event &sdl_event) {
 
 void ekg::ui::abstract_widget::on_post_event(SDL_Event &sdl_event) {
     this->flag.hovered = false;
+
     #if defined(__ANDROID__)
-    this->flag.highlight = !(!this->flag.hovered && (ekg::os == ekg::platform::os_android && ekg::input::released())) && this->flag.highlight;
+    this->flag.highlight = !(!this->flag.hovered &&
+                             (ekg::os == ekg::platform::os_android && ekg::input::released())) &&
+                           this->flag.highlight;
     #else
     this->flag.highlight = false;
     #endif

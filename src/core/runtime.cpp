@@ -386,8 +386,8 @@ void ekg::runtime::prepare_tasks() {
                     ekg::bitwise::remove(sync_flags, (uint16_t) ekg::ui_sync::dimension);
 
                     auto &rect {p_widgets->p_data->ui()};
-                    switch (p_widgets->p_data->get_category()) {
-                        case ekg::category::top_level: {
+                    switch (p_widgets->p_data->get_level()) {
+                        case ekg::level::top_level: {
                             p_widgets->dimension.w = rect.w;
                             p_widgets->p_parent->x = rect.x;
                             p_widgets->p_parent->y = rect.y;

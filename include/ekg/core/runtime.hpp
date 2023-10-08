@@ -93,14 +93,12 @@ namespace ekg {
 
         void gen_widget(ekg::ui::abstract *ui);
         void do_task_reload(ekg::ui::abstract_widget *widget);
-        void do_task_scissor(ekg::ui::abstract_widget *widget);
         void do_task_synclayout(ekg::ui::abstract_widget *widget);
         void do_task_refresh(ekg::ui::abstract_widget *widget);
         void set_update_high_frequency(ekg::ui::abstract_widget *widget);
         void request_redraw_gui();
 
         void end_group_flag();
-        void end_scroll_flag();
         void update_size_changed();
 
         void init();

@@ -42,6 +42,10 @@ ekg::item &ekg::item::operator=(const std::vector<std::string> &item_value_list)
     return *this;
 }
 
+ekg::item &ekg::item::operator[](uint64_t it) {
+    return this->child_list.at(it);
+}
+
 ekg::item::item(std::string_view _value) {
     this->set_value(_value);
 }
@@ -64,6 +68,18 @@ void ekg::item::insert(const std::vector<std::string> &item_value_list) {
         ekg::item &item {this->child_list.emplace_back()};
         item.set_value(values);
     }
+}
+
+ekg::item &ekg::item::insert(std::string_view item_value) {
+    ekg::item &item {this->child_list.emplace_back()};
+    item.set_value(item_value);
+    return item;
+}
+
+ekg::item &ekg::item::insert(const ekg::item &item_copy) {
+    ekg::item &item {this->child_list.emplace_back()};
+    item = item_copy;
+    return item;
 }
 
 ekg::item &ekg::item::at(uint64_t index) {

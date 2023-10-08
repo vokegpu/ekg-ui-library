@@ -243,6 +243,12 @@ uint8_t ekg::check_attribute_flags(std::string_view text, uint16_t &flags) {
         case '\\':
             flags |= ekg::attr::box;
             break;
+        case '\1':
+            flags |= ekg::attr::category;
+            break;
+        case '\2':
+            flags |= ekg::attr::row;
+            break;
         default:
             return it;
         }

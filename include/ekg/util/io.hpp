@@ -38,15 +38,24 @@
 #include "geometry.hpp"
 
 namespace ekg {
+    struct component {
+    public:
+        ekg::rect rect_dimension {}; 
+        ekg::rect rect_box {};
+        ekg::rect rect_text {};
+    };
+
     struct item {
     public:
         std::vector<ekg::item> child_list {};
         std::string value {};
         uint16_t attr {};
         uint16_t state {};
+        ekg::component component {};
     public:
         ekg::item &operator=(std::string_view _value);
         ekg::item &operator=(const std::vector<std::string> &item_value_list);
+        ekg::item &operator[](uint64_t index);
     public:
         item() = default;
         item(std::string_view _value);
@@ -55,6 +64,8 @@ namespace ekg {
         void push_back(const ekg::item &item);
         void push_back(std::string_view item_value);
         void insert(const std::vector<std::string> &item_value_list);
+        ekg::item &insert(std::string_view item_value);
+        ekg::item &insert(const ekg::item &item);
         ekg::item &at(uint64_t index);
 
         [[nodiscard]] bool empty() const;
@@ -112,6 +123,21 @@ namespace ekg {
             ekg::log::buffer << value;
             return *this;
         }
+    };
+
+    /*
+     * Attributes are used by item,
+     * they can be dynamically converted by string symbols:
+     * \t separator
+     * \\ box
+     * \1 category
+     * \2 row
+     */
+    enum attr {
+        separator = 2 << 2,
+        box       = 2 << 3,
+        category  = 2 << 4,
+        row       = 2 << 5
     };
 
     bool file_to_string(std::string &file_content, std::string_view path);

@@ -26,22 +26,14 @@
 #define EKG_UI_LISTBOX_H
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
-#include  <vector>
+#include "ekg/util/io.hpp"
 
 namespace ekg::ui {
     class listbox : public ekg::ui::abstract {
     protected:
-        std::vector<ekg::ui::item> item_list {};
-        std::string value {};
+        ekg::item data_item {};
     public:
-        int64_t contains(std::string_view item_name);
-        ekg::ui::listbox *insert(std::string_view item_name);
-        ekg::ui::listbox *insert(const std::vector<std::string> &item_name_list);
-        ekg::ui::listbox *erase(std::string_view item_name);
-        std::vector<ekg::ui::item> &get_item_list();
-
-        ekg::ui::listbox *set_value(std::string_view value_item_name);
-        std::string get_value();
+        ekg::item &item();
     };
 }
 

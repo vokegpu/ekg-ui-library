@@ -853,7 +853,7 @@ public:
 
 std::vector<node*> node_list {};
 
-int32_t main(int32_t, char**) {
+void memory_test() {
     for (int32_t it {}; it < 64; it++) {
         node *&p_node {node_list.emplace_back()};
         p_node = new node {};
@@ -866,7 +866,9 @@ int32_t main(int32_t, char**) {
             p_node->child_list.emplace_back() = node_list.at(it_child);
         }
     }
+}
 
+void item_test() {
     ekg::item animals = {"animals"};
 
     animals.emplace_back() = "cats";
@@ -890,7 +892,20 @@ int32_t main(int32_t, char**) {
     }
 
     ekg::item mother {"animals"};
-    mother.emplace_back() = "\t\\Select All";
+    mother.emplace_back() = "\t\\\1\2Select All";
 
+    ekg::item o {"listbox"};
+    o.insert("\1\2Name");
+    o.insert("\1\2Usage");
+    o.insert("\1\2Details");
+
+    ekg::item &name = o.at(0);
+    ekg::item &usage = o.at(1);
+
+    o.connect(0, {1, 2});
+}
+
+int32_t main(int32_t, char**) {
+    item_test();
     return main_calculator();
 }

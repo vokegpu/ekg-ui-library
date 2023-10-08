@@ -174,11 +174,11 @@ bool ekg::ui::abstract::has_children() {
     return !this->child_id_list.empty();
 }
 
-void ekg::ui::abstract::set_category(ekg::category new_category) {
-    this->category = new_category;
+void ekg::ui::abstract::set_level(ekg::level level) {
+    this->level = level;
 }
 
-ekg::category ekg::ui::abstract::get_category() {
-    return this->category;
+ekg::level ekg::ui::abstract::get_level() {
+    return this->level;
 }
 

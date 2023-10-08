@@ -34,17 +34,13 @@ namespace ekg {
         abstract, frame, button, label, slider, slider2d, checkbox, textbox, combobox, listbox, tab, popup, scroll
     };
 
-    enum class category {
-        bottom_level, top_level
+    enum class level {
+        top_level, bottom_level 
     };
 
     enum class ui_sync {
-        reset = 1, dimension = 2
-    };
-
-    enum attr {
-        separator = 2 << 2,
-        box       = 2 << 3
+        reset     = 1,
+        dimension = 2
     };
 
     namespace ui {
@@ -74,7 +70,7 @@ namespace ekg {
 
             ekg::state state {};
             ekg::type type {ekg::type::abstract};
-            ekg::category category {};
+            ekg::level level {};
             ekg::rect rect_widget {};
             ekg::rect sync_ui {};
         
@@ -83,8 +79,8 @@ namespace ekg {
             abstract();
             ~abstract();
 
-            void set_category(ekg::category new_category);
-            ekg::category get_category();
+            void set_level(ekg::level level);
+            ekg::level get_level();
 
             ekg::ui::abstract *set_tag(std::string_view tag);
             std::string_view get_tag();
