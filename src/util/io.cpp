@@ -37,6 +37,7 @@ ekg::item &ekg::item::operator=(const std::vector<std::string> &item_value_list)
     for (const std::string &values : item_value_list) {
         ekg::item &item {this->child_list.emplace_back()};
         item.set_value(values);
+        item.p_item_parent = this;
     }
 
     return *this;
@@ -51,46 +52,56 @@ ekg::item::item(std::string_view _value) {
 }
 
 ekg::item &ekg::item::emplace_back() {
-    return this->child_list.emplace_back();
+    ekg::item &item {this->child_list.emplace_back()};
+    item.p_item_parent = this;
+    return item;
 }
 
-void ekg::item::push_back(const ekg::item &item) {
-    this->child_list.push_back(item);
+void ekg::item::push_back(const ekg::item &item_copy) {
+    ekg::item &item {this->child_list.emplace_back()};
+    item = item_copy;
+    item.p_item_parent = this;
 }
 
 void ekg::item::push_back(std::string_view item_value) {
     ekg::item &item {this->child_list.emplace_back()};
     item.set_value(item_value);
+    item.p_item_parent = this;
 }
 
 void ekg::item::insert(const std::vector<std::string> &item_value_list) {
     for (const std::string &values : item_value_list) {
         ekg::item &item {this->child_list.emplace_back()};
         item.set_value(values);
+        item.p_item_parent = this;
     }
 }
 
 ekg::item &ekg::item::insert(std::string_view item_value) {
     ekg::item &item {this->child_list.emplace_back()};
     item.set_value(item_value);
+    item.p_item_parent = this;
     return item;
 }
 
 ekg::item &ekg::item::insert(const ekg::item &item_copy) {
     ekg::item &item {this->child_list.emplace_back()};
     item = item_copy;
+    item.p_item_parent = this;
     return item;
 }
 
 ekg::item &ekg::item::insert(uint64_t index, std::string_view _value) {
     ekg::item &item {this->child_list.at(index)};
     item.set_value(_value);
+    item.p_item_parent = this;
     return item;
 }
 
 ekg::item &ekg::item::insert(uint64_t index, const ekg::item &copy_item) {
     ekg::item &item {this->child_list.at(index)};
     item = copy_item;
+    item.p_item_parent = this;
     return item;
 }
 
@@ -140,7 +151,7 @@ void ekg::item::connect(uint64_t index, const std::vector<uint64_t> &index_list)
         if (!this->is_connected(indices)) {
             ekg::item &sub_item {this->child_list.at(indices)};
             main_item.connected_child_list.push_back(indices);
-            sub_item.p_item_parent = &main_item;
+            sub_item.p_item_connected = &main_item;
         }
     }
 }
@@ -156,7 +167,15 @@ bool ekg::item::is_connected(uint64_t index) {
 }
 
 bool ekg::item::is_connected() {
+    return this->p_item_connected != nullptr;
+}
+
+bool ekg::item::has_parent() {
     return this->p_item_parent != nullptr;
+}
+
+bool ekg::item::has_children() {
+    return !this->child_list.empty();
 }
 
 std::ostringstream ekg::log::buffer {};

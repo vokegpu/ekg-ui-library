@@ -127,3 +127,6 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Removing verbose popup stuff.
 
 0.0.1.0.5.0 26/09/23
+
+-- Added item graph system.
+-- Added component to item.

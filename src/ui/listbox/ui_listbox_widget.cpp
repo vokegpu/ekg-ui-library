@@ -26,32 +26,40 @@
 #include "ekg/ui/listbox/ui_listbox.hpp"
 
 void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item) {
+    ekg::rect rect_dimension_update {parent_item.component.rect_dimension_closed};
     for (uint64_t it {}; it < parent_item.size(); it++) {
         ekg::item &item {parent_item.at(it)};
         ekg::component &component {item.component};
+
+        component.rect_dimension_closed.x = rect_dimension_update.x;
+        component.rect_dimension_closed.y = rect_dimension_update.y;
+        component.rect_dimension_closed.w = this->component_category_last.rect_dimension_closed.w;
+        component.rect_dimension_closed.h = 60.0f;
+
+        if (ekg::bitwise::contains(item.attr, ekg::attr::row)) {
+            component.rect_dimension_closed.x += this->component_category_last.rect_dimension_closed.w;
+        }
+
+        if (ekg::bitwise::contains(item.attr, ekg::attr::category)) {
+            component.rect_dimension_closed.w = 100.0f;
+            component.rect_dimension_closed.h = 60.0f;
+            this->component_category_last = component;
+
+            if (!item.has_parent()) {
+                component.rect_dimension_closed.x = 0.0f;
+            }
+        }
+
+        if (!ekg::bitwise::contains(item.attr, ekg::attr::row)) {
+            rect_dimension_update.y += component.rect_dimension_closed.h;
+        }
 
         if (!item.empty()) {
             this->process_component_template(item);
         }
 
-        if (ekg::bitwise::contains(item.attr, ekg::attr::row)) {
-            component.rect_dimension.x = rect.w;
-            rect.w += this->rect_widget.w;
-        }
-
-        if (ekg::bitwise::contains(item.attr, ekg::attr::category)) {
-            component.rect_dimension.h = 60.0f; // temp
-            component.rect_dimension.w = 
-        }
-
-        component.rect_visual_dimension.x = component.rect_dimension.x;
-        component.rect_visual_dimension.y = component.rect_dimension.y;
-
-        parent_item.component.rect_visual_dimension.w = ekg::min(component.rect_dimension.x + component.rect_dimension.w, parent_item.component.rect_dimension.w);
-        parent_item.component.rect_visual_dimension.h = ekg::min(component.rect_dimension.y + component.rect_dimension.h, parent_item.component.rect_dimension.h);
-
-        parent_item.component.rect_dimension.w = ekg::min(component.rect_dimension.x + component.rect_dimension.w, parent_item.component.rect_dimension.w);
-        parent_item.component.rect_dimension.h = ekg::min(component.rect_dimension.y + component.rect_dimension.h, parent_item.component.rect_dimension.h);
+        parent_item.component.rect_dimension_opened.w = ekg::min(parent_item.component.rect_dimension_closed.x + rect_dimension_update.w, parent_item.component.rect_dimension.w);
+        parent_item.component.rect_dimension_opened.h = ekg::min(parent_item.component.rect_dimension_closed.y + rect_dimension_update.h, parent_item.component.rect_dimension.h);
     }
 }
 

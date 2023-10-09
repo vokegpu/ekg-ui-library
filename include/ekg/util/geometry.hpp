@@ -43,24 +43,24 @@ namespace ekg {
     };
 
     enum dock {
-        none     = 0,
-        free     = 2 << 2,
-        top       = 2 << 3,
+        none   = 0,
+        free   = 2 << 2,
+        top    = 2 << 3,
         bottom = 2 << 4,
-        right    = 2 << 5,
-        left      = 2 << 6,
-        center  = 2 << 7,
-        full       = 2 << 8,
-        next     = 2 << 9,
-        fill        = 2 << 10,
-        resize   = 2 << 11 
+        right  = 2 << 5,
+        left   = 2 << 6,
+        center = 2 << 7,
+        full   = 2 << 8,
+        next   = 2 << 9,
+        fill   = 2 << 10,
+        resize = 2 << 11 
     };
 
     /*
      * Enum linked to dock.
      */
     enum axis {
-        vertical     = 12 << 2,
+        vertical   = 12 << 2,
         horizontal = 13 << 2
     };
 
@@ -73,7 +73,7 @@ namespace ekg {
             };
         };
     public:
-        inline explicit vec2() {};
+        inline vec2() {};
         inline vec2(float _x, float _y) {
             this->x = _x;
             this->y = _y;
@@ -92,7 +92,7 @@ namespace ekg {
             };
         };
     public:
-        inline explicit vec3() {};
+        inline vec3() {};
         inline vec3(float _x, float _y, float _z) {
             this->x = _x;
             this->y = _y;
@@ -111,7 +111,7 @@ namespace ekg {
             };
         };
     public:
-        inline explicit vec4() {};
+        inline vec4() {};
         inline vec4(float _x, float _y, float _z, float _w) {
             this->x = _x;
             this->y = _y;
@@ -159,7 +159,7 @@ namespace ekg {
             };
         };
     public:
-        inline explicit rect() {};
+        inline rect() {};
         inline rect(float _x, float _y, float _w, float _h) {
             this->x = _x;
             this->y = _y;

@@ -43,7 +43,8 @@ namespace ekg {
         ekg::rect rect_dimension {}; 
         ekg::rect rect_box {};
         ekg::rect rect_text {};
-        ekg::rect rect_visual_dimension {};
+        ekg::rect rect_dimension_closed {};
+        ekg::rect rect_dimension_opened {};
     };
 
     struct item {
@@ -57,6 +58,7 @@ namespace ekg {
 
         ekg::component component {};
         ekg::item *p_item_parent {};
+        ekg::item *p_item_connected {};
     public:
         ekg::item &operator=(std::string_view _value);
         ekg::item &operator=(const std::vector<std::string> &item_value_list);
@@ -66,7 +68,7 @@ namespace ekg {
         item(std::string_view _value);
     
         ekg::item &emplace_back();
-        void push_back(const ekg::item &item);
+        void push_back(const ekg::item &item_copy);
         void push_back(std::string_view item_value);
         void insert(const std::vector<std::string> &item_value_list);
         ekg::item &insert(std::string_view item_value);
@@ -89,6 +91,8 @@ namespace ekg {
 
         bool is_connected(uint64_t index);
         bool is_connected();
+        bool has_parent();
+        bool has_children();
     };
 
     struct log {

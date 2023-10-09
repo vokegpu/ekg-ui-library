@@ -33,6 +33,9 @@ namespace ekg::ui {
     public:
         ekg::item *p_item {};
         ekg::rect rect_widget {};
+        ekg::component component_category_last {};
+    public:
+        void process_component_template(ekg::item &parent_item);
     public:
         void on_reload() override;
         void on_update() override;
