@@ -61,11 +61,9 @@ namespace ekg::ui {
         void reset_scroll();
         void check_axis_states();
     public: // virtuals
-        void on_destroy();
         void on_reload();
         void on_pre_event(SDL_Event &sdl_event);
         void on_event(SDL_Event &sdl_event);
-        void on_post_event(SDL_Event &sdl_event);
         void on_update();
         void on_draw_refresh();
     };

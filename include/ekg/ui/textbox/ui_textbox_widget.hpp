@@ -126,7 +126,6 @@ namespace ekg::ui {
         void move_target_cursor(ekg::ui::textbox_widget::cursor &cursor, int64_t x, int64_t y);
         void clamp_text_chunk_size();
     public:
-        void on_destroy() override;
         void on_reload() override;
         void on_pre_event(SDL_Event &sdl_event) override;
         void on_event(SDL_Event &sdl_event) override;

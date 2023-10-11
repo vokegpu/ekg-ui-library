@@ -32,12 +32,7 @@ namespace ekg::ui {
     public:
         ekg::rect rect_text {};
     public:
-        void on_destroy() override;
         void on_reload() override;
-        void on_pre_event(SDL_Event &sdl_event) override;
-        void on_event(SDL_Event &sdl_event) override;
-        void on_post_event(SDL_Event &sdl_event) override;
-        void on_update() override;
         void on_draw_refresh() override;
     };
 }

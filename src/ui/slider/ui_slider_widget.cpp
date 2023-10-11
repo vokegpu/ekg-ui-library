@@ -59,10 +59,6 @@ void ekg::ui::slider_widget::update_bar(float x, float y) {
     p_ui->set_value(factor);
 }
 
-void ekg::ui::slider_widget::on_destroy() {
-    abstract_widget::on_destroy();
-}
-
 void ekg::ui::slider_widget::on_reload() {
     abstract_widget::on_reload();
 
@@ -181,8 +177,6 @@ void ekg::ui::slider_widget::on_pre_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
-    abstract_widget::on_event(sdl_event);
-
     auto p_ui {(ekg::ui::slider*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto &interact {ekg::input::interact()};
@@ -216,14 +210,6 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
     } else if (this->flag.activy && motion) {
         this->update_bar(interact.x, interact.y);
     }
-}
-
-void ekg::ui::slider_widget::on_post_event(SDL_Event &sdl_event) {
-    abstract_widget::on_post_event(sdl_event);
-}
-
-void ekg::ui::slider_widget::on_update() {
-    abstract_widget::on_update();
 }
 
 void ekg::ui::slider_widget::on_draw_refresh() {

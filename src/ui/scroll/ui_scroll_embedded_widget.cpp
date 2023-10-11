@@ -28,6 +28,10 @@
 #include "ekg/draw/draw.hpp"
 #include "ekg/os/platform.hpp"
 
+ekg::ui::scroll_embedded_widget::scroll_embedded_widget() {
+    this->rect_mother = &this->rect_child;
+}
+
 void ekg::ui::scroll_embedded_widget::check_axis_states() {
     this->is_vertical_enabled = this->rect_child.h > this->rect_mother->h;
     this->is_horizontal_enabled = this->rect_child.w > this->rect_mother->w;
@@ -60,14 +64,6 @@ void ekg::ui::scroll_embedded_widget::calculate_rect_bar_sizes() {
     this->rect_vertical_scroll_bar.h = offset_vertical;
 }
 
-ekg::ui::scroll_embedded_widget::scroll_embedded_widget() {
-    this->rect_mother = &this->rect_child;
-}
-
-void ekg::ui::scroll_embedded_widget::on_destroy() {
-
-}
- 
 void ekg::ui::scroll_embedded_widget::on_reload() {
     if (this->mother_id == 0 && this->child_id_list.empty()) {
         this->calculate_rect_bar_sizes();
@@ -216,9 +212,6 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
         this->flag.state = false;
         this->flag.extra_state = false;
     }
-}
-
-void ekg::ui::scroll_embedded_widget::on_post_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::scroll_embedded_widget::on_update() {

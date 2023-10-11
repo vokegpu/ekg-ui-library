@@ -27,16 +27,12 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 
-void ekg::ui::button_widget::on_destroy() {
-    abstract_widget::on_destroy();
-}
-
 void ekg::ui::button_widget::on_reload() {
     abstract_widget::on_reload();
 
     auto p_ui {(ekg::ui::button*) this->p_data};
     auto &rect {this->get_abs_rect()};
-    auto f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+    auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
     float text_width {f_renderer.get_text_width(p_ui->get_text())};
     float text_height {f_renderer.get_text_height()};
@@ -63,13 +59,7 @@ void ekg::ui::button_widget::on_reload() {
     this->dimension.h = ekg::min(this->dimension.h, layout_mask.h);
 }
 
-void ekg::ui::button_widget::on_pre_event(SDL_Event &sdl_event) {
-    abstract_widget::on_pre_event(sdl_event);
-}
-
 void ekg::ui::button_widget::on_event(SDL_Event &sdl_event) {
-    abstract_widget::on_event(sdl_event);
-
     bool pressed {ekg::input::pressed()};
     bool released {ekg::input::released()};
 
@@ -94,16 +84,7 @@ void ekg::ui::button_widget::on_event(SDL_Event &sdl_event) {
     }
 }
 
-void ekg::ui::button_widget::on_post_event(SDL_Event &sdl_event) {
-    abstract_widget::on_post_event(sdl_event);
-}
-
-void ekg::ui::button_widget::on_update() {
-    abstract_widget::on_update();
-}
-
 void ekg::ui::button_widget::on_draw_refresh() {
-    abstract_widget::on_draw_refresh();
     auto p_ui {(ekg::ui::button*) this->p_data};
     auto &rect {this->get_abs_rect()};
     auto &theme {ekg::theme()};

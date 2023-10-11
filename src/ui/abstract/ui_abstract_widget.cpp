@@ -86,3 +86,4 @@ ekg::rect ekg::ui::abstract_widget::get_static_rect() {
 ekg::rect &ekg::ui::abstract_widget::get_abs_rect() {
     return (this->p_data->widget() = this->dimension + *this->p_parent + *this->p_scroll);
 }
+    

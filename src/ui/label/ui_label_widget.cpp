@@ -26,10 +26,6 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 
-void ekg::ui::label_widget::on_destroy() {
-    abstract_widget::on_destroy();
-}
-
 void ekg::ui::label_widget::on_reload() {
     abstract_widget::on_reload();
 
@@ -68,21 +64,6 @@ void ekg::ui::label_widget::on_reload() {
         ekg::synclayout(this);
         this->is_targeting_absolute_parent = true;
     }
-}
-
-void ekg::ui::label_widget::on_pre_event(SDL_Event &sdl_event) {
-    abstract_widget::on_pre_event(sdl_event);
-}
-
-void ekg::ui::label_widget::on_event(SDL_Event &sdl_event) {
-    abstract_widget::on_event(sdl_event);
-}
-
-void ekg::ui::label_widget::on_post_event(SDL_Event &sdl_event) {
-    abstract_widget::on_post_event(sdl_event);
-}
-
-void ekg::ui::label_widget::on_update() {
 }
 
 void ekg::ui::label_widget::on_draw_refresh() {

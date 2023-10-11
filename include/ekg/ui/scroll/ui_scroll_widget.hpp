@@ -33,7 +33,6 @@ namespace ekg::ui {
     public:
         ekg::ui::scroll_embedded_widget scroll {};
     public:
-        void on_destroy() override;
         void on_reload() override;
         void on_pre_event(SDL_Event &sdl_event) override;
         void on_event(SDL_Event &sdl_event) override;

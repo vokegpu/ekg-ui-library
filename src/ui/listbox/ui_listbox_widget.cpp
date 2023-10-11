@@ -23,7 +23,7 @@
  */
 
 #include "ekg/ui/listbox/ui_listbox_widget.hpp"
-#include "ekg/ui/listbox/ui_listbox.hpp"
+#include "ekg/ekg.hpp"
 
 void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item) {
     ekg::rect rect_dimension_update {parent_item.component.rect_dimension_closed};
@@ -67,9 +67,12 @@ void ekg::ui::listbox_widget::on_reload() {
     auto p_ui {(ekg::ui::listbox*) this->p_data};
     auto &ui_item {p_ui->item()};
     auto &rect {this->get_abs_rect()};
+    auto &f_renderer {ekg::f_renderer(ekg::font::normal)};
 
     this->rect_widget = {};
     this->process_component_template(ui_item);
+
+    this->dimension.h = f_renderer.get_text_height() * 6.0f;
 }
 
 void ekg::ui::listbox_widget::on_update() {

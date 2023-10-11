@@ -44,11 +44,9 @@ namespace ekg::ui {
         void unset_visible_all_sub_popup();
         void get_popup_path(std::string &path);
     public:
-        void on_destroy() override;
         void on_reload() override;
         void on_pre_event(SDL_Event&) override;
         void on_event(SDL_Event&) override;
-        void on_post_event(SDL_Event&) override;
         void on_update() override;
         void on_draw_refresh() override;
 	};

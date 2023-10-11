@@ -82,10 +82,6 @@ void ekg::ui::popup_widget::unset_visible_all_sub_popup() {
     this->popup_opened = -1;
 }
 
-void ekg::ui::popup_widget::on_destroy() {
-
-}
-
 void ekg::ui::popup_widget::on_reload() {
     ekg::ui::abstract_widget::on_reload();
 
@@ -324,10 +320,6 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
     if (should_destroy) {
         this->p_data->destroy();
     }
-}
-
-void ekg::ui::popup_widget::on_post_event(SDL_Event &sdl_event) {
-    abstract_widget::on_post_event(sdl_event);
 }
 
 void ekg::ui::popup_widget::on_update() {

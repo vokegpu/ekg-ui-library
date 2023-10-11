@@ -290,7 +290,7 @@ int32_t main_example() {
     auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::next)->set_scaled_height(3);
     p_textbox->set_text("oii");
 
-    auto p_listbox = ekg::listbox("listbox", {"listbox"});
+    auto p_listbox = ekg::listbox("listbox", {"listbox"}, ekg::dock::next | ekg::dock::fill);
     auto &item = p_listbox->item();
 
     item.insert(0, "Name");

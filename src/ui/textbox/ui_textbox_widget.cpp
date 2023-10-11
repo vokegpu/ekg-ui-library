@@ -666,10 +666,6 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
     ekg::dispatch(ekg::env::redraw);
 }
 
-void ekg::ui::textbox_widget::on_destroy() {
-
-}
-
 void ekg::ui::textbox_widget::on_reload() {
     auto p_ui {(ekg::ui::textbox*) this->p_data};
     auto &rect {this->get_abs_rect()};

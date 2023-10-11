@@ -26,9 +26,6 @@
 #include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
 
-void ekg::ui::scroll_widget::on_destroy() {
-}
-
 void ekg::ui::scroll_widget::on_reload() {
     this->scroll.rect_mother = this->p_parent;
     this->scroll.mother_id = this->p_data->get_parent_id();
