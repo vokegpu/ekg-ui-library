@@ -368,11 +368,25 @@ ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint
     return p_ui;
 }
 
+ekg::ui::listbox *listbox(std::string_view tag, const ekg::item &item, uint16_t dock) {
+    auto p_ui {new ekg::ui::listbox()};
+    p_ui->set_type(ekg::type::listbox);
+    ekg::core->gen_widget(p_ui);
+
+    p_ui->set_tag(tag);
+    p_ui->set_place(dock);
+    p_ui->item() = item;
+
+    return p_ui;
+}
+
 ekg::ui::scroll *ekg::scroll(std::string_view tag) {
     auto p_ui {new ekg::ui::scroll()};
-    p_ui->set_type(ekg::type::scroll);
     p_ui->set_tag(tag);
     ekg::core->gen_widget(p_ui);
+    
+    p_ui->set_type(ekg::type::scroll);
+
     return p_ui;
 }
 

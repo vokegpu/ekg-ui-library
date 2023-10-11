@@ -25,4 +25,4 @@
 #include "ekg/util/aspect.hpp"
 
 bool ekg::debug {};
-float ekg::scrollsmooth {18.0f};
+float ekg::scroll_smooth {18.0f};

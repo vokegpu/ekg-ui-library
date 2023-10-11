@@ -33,6 +33,7 @@
 #include "ekg/ui/slider/ui_slider_widget.hpp"
 #include "ekg/ui/popup/ui_popup_widget.hpp"
 #include "ekg/ui/textbox/ui_textbox_widget.hpp"
+#include "ekg/ui/listbox/ui_listbox_widget.hpp"
 #include "ekg/ui/scroll/ui_scroll_widget.hpp"
 #include "ekg/ui/scroll/ui_scroll.hpp"
 #include "ekg/draw/draw.hpp"
@@ -598,6 +599,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
         p_widget_created = p_widget;
         break;
     }
+    
     case ekg::type::frame: {
         ekg::ui::frame_widget *p_widget {new ekg::ui::frame_widget()};
         p_widget->is_scissor_refresh = true;
@@ -608,6 +610,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
         p_ui->reset();
         break;
     }
+    
     case ekg::type::button: {
         ekg::ui::button_widget *p_widget {new ekg::ui::button_widget()};
         p_widget->p_data = p_ui;
@@ -615,6 +618,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
         append_group = true;
         break;
     }
+    
     case ekg::type::label: {
         ekg::ui::label_widget *p_widget {new ekg::ui::label_widget()};
         p_widget->p_data = p_ui;
@@ -622,6 +626,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
         append_group = true;
         break;
     }
+    
     case ekg::type::checkbox: {
         ekg::ui::checkbox_widget *p_widget {new ekg::ui::checkbox_widget()};
         p_widget->p_data = p_ui;
@@ -629,6 +634,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
         append_group = true;
         break;
     }
+    
     case ekg::type::slider: {
         ekg::ui::slider_widget *p_widget {new ekg::ui::slider_widget()};
         p_widget->p_data = p_ui;
@@ -636,6 +642,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
         append_group = true;
         break;
     }
+ 
     case ekg::type::popup: {
         ekg::ui::popup_widget *p_widget {new ekg::ui::popup_widget()};
         p_widget->p_data = p_ui;
@@ -643,6 +650,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
         update_layout = false;
         break;
     }
+ 
     case ekg::type::textbox: {
         ekg::ui::textbox_widget *p_widget {new ekg::ui::textbox_widget()};
         p_widget->p_data = p_ui;
@@ -650,6 +658,15 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
         append_group = true;
         break;
     }
+
+    case ekg::type::listbox: {
+        ekg::ui::listbox_widget *p_widget {new ekg::ui::listbox_widget()};
+        p_widget->p_data = p_ui;
+        p_widget_created = p_widget;
+        append_group = true;
+        break;
+    }
+
     case ekg::type::scroll: {
         ekg::ui::scroll_widget *p_widget {new ekg::ui::scroll_widget()};
         p_widget->p_data = p_ui;
@@ -658,8 +675,10 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
         break;
     }
 
-    default:
+    default: {
         break;
+    }
+
     }
 
     this->widget_map[p_ui->get_id()] = p_widget_created;

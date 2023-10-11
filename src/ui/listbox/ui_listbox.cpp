@@ -23,7 +23,16 @@
  */
 
 #include "ekg/ui/listbox/ui_listbox.hpp"
-#include "ekg/util/text.hpp"
+#include "ekg/util/gui.hpp"
+
+ekg::ui::listbox *ekg::ui::listbox::set_place(uint16_t dock) {
+    if (this->dock_flags != dock) {
+        this->dock_flags = dock;
+        ekg::synclayout(this->parent_id);
+    }
+
+    return this;
+}
 
 ekg::item &ekg::ui::listbox::item() {
     return this->data_item;

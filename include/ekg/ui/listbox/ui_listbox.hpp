@@ -33,6 +33,7 @@ namespace ekg::ui {
     protected:
         ekg::item data_item {};
     public:
+        ekg::ui::listbox *set_place(uint16_t dock);
         ekg::item &item();
     };
 }

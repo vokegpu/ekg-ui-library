@@ -35,7 +35,7 @@ namespace ekg {
     };
 
     extern bool debug;
-    extern float scrollsmooth;
+    extern float scroll_smooth;
 }
 
 #endif

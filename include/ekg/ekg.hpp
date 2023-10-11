@@ -39,6 +39,7 @@
 #include "ekg/ui/slider/ui_slider.hpp"
 #include "ekg/ui/popup/ui_popup.hpp"
 #include "ekg/ui/textbox/ui_textbox.hpp"
+#include "ekg/ui/listbox/ui_listbox.hpp"
 #include "ekg/ui/scroll/ui_scroll.hpp"
 
 #define EKG_VERSION_ID "1.0.5.0"
@@ -153,6 +154,11 @@ namespace ekg {
      * Create textbox UI.
      */
     ekg::ui::textbox *textbox(std::string_view tag, std::string_view text, uint16_t dock = ekg::dock::none);
+
+    /*
+     * Create listbox UI.
+     */
+    ekg::ui::listbox *listbox(std::string_view tag, const ekg::item &item, uint16_t dock = ekg::dock::none);
 
     /*
      * Create scroll UI.

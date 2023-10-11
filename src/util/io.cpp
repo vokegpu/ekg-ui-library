@@ -92,6 +92,10 @@ ekg::item &ekg::item::insert(const ekg::item &item_copy) {
 }
 
 ekg::item &ekg::item::insert(uint64_t index, std::string_view _value) {
+    if (this->child_list.size() <= index) {
+        this->child_list.resize(index + 1);
+    }
+
     ekg::item &item {this->child_list.at(index)};
     item.set_value(_value);
     item.p_item_parent = this;
@@ -99,6 +103,10 @@ ekg::item &ekg::item::insert(uint64_t index, std::string_view _value) {
 }
 
 ekg::item &ekg::item::insert(uint64_t index, const ekg::item &copy_item) {
+    if (this->child_list.size() <= index) {
+        this->child_list.resize(index + 1);
+    }
+
     ekg::item &item {this->child_list.at(index)};
     item = copy_item;
     item.p_item_parent = this;

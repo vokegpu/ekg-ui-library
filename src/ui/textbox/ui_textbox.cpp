@@ -31,7 +31,7 @@ void ekg::ui::textbox::unsafe_set_text(std::string &ref_text) {
 
 ekg::ui::textbox *ekg::ui::textbox::set_tab_size(uint8_t size) {
     this->tab_size = size < 1 ? 1 : size;
-    return  this;
+    return this;
 }
 
 uint8_t ekg::ui::textbox::get_tab_size() {
@@ -40,7 +40,7 @@ uint8_t ekg::ui::textbox::get_tab_size() {
 
 ekg::ui::textbox *ekg::ui::textbox::set_enabled(bool state) {
     this->enabled = state;
-    return  this;
+    return this;
 }
 
 bool ekg::ui::textbox::is_enabled() {
@@ -53,7 +53,7 @@ ekg::ui::textbox *ekg::ui::textbox::set_place(uint16_t flags) {
         ekg::synclayout(this->parent_id);
     }
 
-    return  this;
+    return this;
 }
 
 ekg::ui::textbox *ekg::ui::textbox::set_text(std::string_view string) {
@@ -62,7 +62,7 @@ ekg::ui::textbox *ekg::ui::textbox::set_text(std::string_view string) {
         ekg::reload(this->id);
     }
 
-    return  this;
+    return this;
 }
 
 std::string ekg::ui::textbox::get_text() {
@@ -86,7 +86,7 @@ ekg::ui::textbox *ekg::ui::textbox::set_width(float width) {
         ekg::synclayout(this->parent_id);
     }
 
-    return  this;
+    return this;
 }
 
 float ekg::ui::textbox::get_width() {
@@ -101,7 +101,7 @@ ekg::ui::textbox *ekg::ui::textbox::set_scaled_height(int32_t scaled_factor_heig
         ekg::synclayout(this->parent_id);
     }
 
-    return  this;
+    return this;
 }
 
 float ekg::ui::textbox::get_height() {
@@ -120,7 +120,7 @@ ekg::ui::textbox *ekg::ui::textbox::set_font_size(ekg::font font) {
         ekg::synclayout(this->parent_id);
     }
 
-    return  this;
+    return this;
 }
 
 ekg::font ekg::ui::textbox::get_font_size() {
@@ -133,7 +133,7 @@ ekg::ui::textbox *ekg::ui::textbox::set_max_lines(uint64_t lines) {
         ekg::reload(this->id);
     }
 
-    return  this;
+    return this;
 }
 
 uint64_t ekg::ui::textbox::get_max_lines() {
@@ -146,7 +146,7 @@ ekg::ui::textbox *ekg::ui::textbox::set_max_chars_per_line(uint64_t chars_per_li
         ekg::reload(this->id);
     }
 
-    return  this;
+    return this;
 }
 
 uint64_t ekg::ui::textbox::get_max_chars_per_line() {
