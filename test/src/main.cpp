@@ -287,8 +287,15 @@ int32_t main_example() {
     ekg::button("pom pom clcik click!!", ekg::dock::fill);
     ekg::slider("pompo number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
 
-    auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::next)->set_scaled_height(6);
+    auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::next)->set_scaled_height(3);
     p_textbox->set_text("oii");
+
+    auto p_listbox = ekg::listbox("listbox", {"listbox"});
+    auto &item = p_listbox->item();
+
+    item.insert(0, "Name");
+    item.insert(1, "State");
+    item.insert(2, "Usage");
 
     ekg::label("RGB:", ekg::dock::next);
 
@@ -911,5 +918,5 @@ void item_test() {
 
 int32_t main(int32_t, char**) {
     item_test();
-    return main_calculator();
+    return main_example();
 }
