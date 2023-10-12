@@ -35,7 +35,7 @@ namespace ekg {
     };
 
     enum class level {
-        top_level, bottom_level 
+        bottom_level, top_level 
     };
 
     enum class ui_sync {
