@@ -800,6 +800,9 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
         ekg::set(this->flag.focused, false);
     }
 
+    // firing clipboard input by ekg::input::clipboard does not accept if mouse is out of textbox,
+    // in the case of popup with clipboard operations, it will not process the action. 
+
     this->is_clipboard_cut = ekg::input::action("clipboard-cut");
     this->is_clipboard_paste = ekg::input::action("clipboard-paste");
     this->is_clipboard_copy = ekg::input::action("clipboard-copy");

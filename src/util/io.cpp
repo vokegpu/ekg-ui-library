@@ -245,6 +245,16 @@ void ekg::input::fire(std::string_view key_input) {
     ekg::core->service_input.fire(key_input);
 }
 
+void ekg::input::clipboard(ekg::clipboard clipboard_op) {
+    SDL_Event sdl_event {};
+    sdl_event.type = SDL_KEYDOWN;
+    sdl_event.key.type = SDL_KEYDOWN;
+    sdl_event.key.keysym.sym = static_cast<uint64_t>(clipboard_op);
+    SDL_PushEvent(&sdl_event);
+
+    // should push an event to keyup the previous clipboard operator?
+}
+
 bool ekg::input::motion() {
     return ekg::core->service_input.has_motion;
 }

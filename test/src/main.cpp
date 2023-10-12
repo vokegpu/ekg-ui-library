@@ -311,6 +311,8 @@ int32_t main_example() {
     std::string oi_cachorroo = "oi cachorror";
     p_textbox->set_text(oi_cachorroo);
 
+    ekg::event event {};
+
     while (running) {
         while (SDL_PollEvent(&sdl_event)) {
             if (sdl_event.type == SDL_QUIT) {
@@ -318,6 +320,17 @@ int32_t main_example() {
             }
 
             ekg::poll_event(sdl_event);
+            if (ekg::listen(event, sdl_event)) {
+                if (event.tag == "file") {
+                    if (event.value == "Copy") {
+                        ekg::input::clipboard(ekg::clipboard::copy);
+                    } else if (event.value == "Cut") {
+                        ekg::input::clipboard(ekg::clipboard::cut);
+                    } else if (event.value == "Paste") {
+                        ekg::input::clipboard(ekg::clipboard::paste);
+                    }
+                }
+            }
 
             if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
                 auto main = ekg::popup("file", {
@@ -621,11 +634,11 @@ int32_t main_calculator() {
                     if (ekg::listen(event, sdl_event)) {
                         if (event.tag == "file") {
                             if (event.value == "Copy") {
-                                ekg::input::fire("clipboard-copy");
+                                ekg::input::clipboard(ekg::clipboard::copy);
                             } else if (event.value == "Cut") {
-                                ekg::input::fire("clipboard-cut");
+                                ekg::input::clipboard(ekg::clipboard::cut);
                             } else if (event.value == "Paste") {
-                                ekg::input::fire("clipboard-paste");
+                                ekg::input::clipboard(ekg::clipboard::paste);
                             }
                         } else if (event.tag == "base.resolution.width") {
                             ekg::scalebase.x = std::stof(event.value);
@@ -916,7 +929,12 @@ void item_test() {
     o.at(3).insert(0, "3%");
 }
 
+void sdl_test() {
+    std::cout << SDLK_COPY << '\t' << SDLK_CUT << '\t' << SDLK_PASTE << std::endl; 
+}
+
 int32_t main(int32_t, char**) {
     item_test();
+    sdl_test();
     return main_example();
 }

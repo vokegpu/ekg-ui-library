@@ -183,6 +183,12 @@ namespace ekg {
     public:
     };
 
+    enum class clipboard {
+        copy  = 1073741948,
+        cut   = 1073741947,
+        paste = 1073741949
+    };
+
     namespace bitwise {
         bool contains(uint16_t flags, uint16_t target);
         uint16_t &add(uint16_t &flags, uint16_t target);
@@ -192,6 +198,7 @@ namespace ekg {
     namespace input {
         bool action(std::string_view action_key);
         bool receive(std::string_view input_key);
+        void clipboard(ekg::clipboard clipboard_op);
         void fire(std::string_view action_key);
         void bind(std::string_view action_key, std::string_view input_key);
         bool motion();
