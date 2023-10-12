@@ -131,6 +131,5 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
     }
 
     f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.checkbox_string);
-
     ekg::draw::bind_off_scissor();
 }

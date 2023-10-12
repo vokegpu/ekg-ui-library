@@ -71,6 +71,8 @@ namespace ekg::service {
         ekg::vec4 scrollbar_outline {};
         int32_t scrollbar_pixel_thickness {};
 
+        ekg::vec4 listbox_item_background {};
+
         float min_widget_size {5};
         bool symmetric_layout {};
       public:

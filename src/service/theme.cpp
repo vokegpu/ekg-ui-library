@@ -87,6 +87,8 @@ void ekg::service::theme::gen_default_dark_theme() {
     this->scrollbar_activy = ekg::color(44, 166, 255, 200);
     this->scrollbar_highlight = ekg::color(44, 166, 255, 50);
     this->scrollbar_pixel_thickness = 5;
+
+    this->listbox_item_background = ekg::color(85, 85, 85, 50);
 }
 
 void ekg::service::theme::gen_default_light_theme() {
@@ -139,6 +141,8 @@ void ekg::service::theme::gen_default_light_theme() {
     this->scrollbar_activy = ekg::color(44, 166, 255, 200);
     this->scrollbar_highlight = ekg::color(44, 166, 255, 50);
     this->scrollbar_pixel_thickness = 5;
+
+    this->listbox_item_background = ekg::color(204, 204, 204, 50);
 }
 
 void ekg::service::theme::refresh_theme_list() {

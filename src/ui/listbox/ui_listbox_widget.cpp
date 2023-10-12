@@ -24,6 +24,7 @@
 
 #include "ekg/ui/listbox/ui_listbox_widget.hpp"
 #include "ekg/ekg.hpp"
+#include "ekg/draw/draw.hpp"
 
 void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item) {
     ekg::rect rect_dimension_update {parent_item.component.rect_dimension_closed};
@@ -80,4 +81,17 @@ void ekg::ui::listbox_widget::on_update() {
 }
 
 void ekg::ui::listbox_widget::on_draw_refresh() {
+    auto p_ui {(ekg::ui::listbox*) this->p_data};
+    auto &rect {this->get_abs_rect()};
+    auto &theme {ekg::theme()};
+    auto &f_renderer {ekg::f_renderer(ekg::font::normal)};
+
+    ekg::draw::bind_scissor(p_ui->get_id());
+    ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
+
+    for (ekg::item &item : p_ui->item()) {
+        ekg::draw::rect(item.component.rect_dimension_closed + rect, theme.listbox_item_background);
+    }
+
+    ekg::draw::bind_off_scissor();
 }

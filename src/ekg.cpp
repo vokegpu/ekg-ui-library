@@ -382,11 +382,11 @@ ekg::ui::listbox *ekg::listbox(std::string_view tag, const ekg::item &item, uint
 
 ekg::ui::scroll *ekg::scroll(std::string_view tag) {
     auto p_ui {new ekg::ui::scroll()};
-    p_ui->set_tag(tag);
-    ekg::core->gen_widget(p_ui);
     
     p_ui->set_type(ekg::type::scroll);
-
+    ekg::core->gen_widget(p_ui);
+    p_ui->set_tag(tag);
+    
     return p_ui;
 }
 
