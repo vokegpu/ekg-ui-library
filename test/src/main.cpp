@@ -940,5 +940,5 @@ void sdl_test() {
 int32_t main(int32_t, char**) {
     item_test();
     sdl_test();
-    return main_calculator();
+    return main_example();
 }

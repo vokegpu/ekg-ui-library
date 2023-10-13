@@ -86,7 +86,7 @@ void ekg::ui::checkbox_widget::on_event(SDL_Event &sdl_event) {
                 ekg::dispatch(p_callback);
             }
 
-            ekg::dispatch_ui_event(p_ui->get_tag().empty() ? ("unknown checkbox id " + std::to_string(p_ui->get_id())): p_ui->get_tag(),
+            ekg::dispatch_ui_event(p_ui->get_tag().empty() ? ("unknown checkbox id " + std::to_string(p_ui->get_id())) : p_ui->get_tag(),
                                    p_ui->get_value() ? "checked" : "unchecked",
                         (uint16_t) p_ui->get_type());
         }
