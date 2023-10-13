@@ -201,7 +201,7 @@ void ekg::ui::slider_widget::on_event(SDL_Event &sdl_event) {
         this->flag.absolute = true;
     } else if  (released) {
         if (this->flag.activy) {
-            ekg::dispatch_ui_event(p_ui->get_tag().empty() ? "Unknown Slider UI" : p_ui->get_tag(), std::to_string(p_ui->get_value()), (uint16_t) p_ui->get_type());
+            ekg::dispatch_ui_event(p_ui->get_tag().empty() ? ("unknown slider id " + std::to_string(p_ui->get_id())) : p_ui->get_tag(), std::to_string(p_ui->get_value()), (uint16_t) p_ui->get_type());
         }
 
         this->flag.absolute = false;
