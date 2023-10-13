@@ -32,9 +32,17 @@ namespace ekg::ui {
     class listbox : public ekg::ui::abstract {
     protected:
         ekg::item data_item {};
+        ekg::font category_font_size {};
+        ekg::font item_font_size {};
     public:
         ekg::ui::listbox *set_place(uint16_t dock);
         ekg::item &item();
+
+        ekg::ui::listbox *set_category_font_size(ekg::font font);
+        ekg::font get_category_font_size();
+
+        ekg::ui::listbox *set_item_font_size(ekg::font font);
+        ekg::font get_item_font_size();
     };
 }
 

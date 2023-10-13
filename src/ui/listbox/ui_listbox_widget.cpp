@@ -28,6 +28,8 @@
 
 void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item) {
     ekg::rect rect_dimension_update {parent_item.component.rect_dimension_closed};
+    rect_dimension_update.y += rect_dimension_update.h;
+
     for (uint64_t it {}; it < parent_item.size(); it++) {
         ekg::item &item {parent_item.at(it)};
         ekg::component &component {item.component};
@@ -38,21 +40,18 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
         component.rect_dimension_closed.h = 60.0f;
 
         if (ekg::bitwise::contains(item.attr, ekg::attr::row)) {
-            component.rect_dimension_closed.x += this->component_category_last.rect_dimension_closed.w;
+            this->rect_widget.w  += this->component_category_last.rect_dimension_closed.w;
+            component.rect_dimension_closed.x = this->rect_widget.x + this->rect_widget.w;
         }
 
         if (ekg::bitwise::contains(item.attr, ekg::attr::category)) {
             component.rect_dimension_closed.w = 100.0f;
             component.rect_dimension_closed.h = 60.0f;
             this->component_category_last = component;
-
-            if (!item.has_parent()) {
-                component.rect_dimension_closed.x = 0.0f;
-            }
         }
 
         if (!ekg::bitwise::contains(item.attr, ekg::attr::row)) {
-            rect_dimension_update.y += component.rect_dimension_closed.h;
+            rect_dimension_update.h += component.rect_dimension_closed.h;
         }
 
         if (!item.empty()) {
@@ -71,6 +70,7 @@ void ekg::ui::listbox_widget::on_reload() {
     auto &f_renderer {ekg::f_renderer(ekg::font::normal)};
 
     this->rect_widget = {};
+    this->component_category_last = {};
     this->process_component_template(ui_item);
 
     this->dimension.h = f_renderer.get_text_height() * 6.0f;
