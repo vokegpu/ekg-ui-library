@@ -233,20 +233,20 @@ void ekg::draw::font_renderer::reload() {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void ekg::draw::font_renderer::bind_allocator(ekg::gpu::allocator *gpu_allocator) {
-    this->allocator = gpu_allocator;
+void ekg::draw::font_renderer::bind_allocator(ekg::gpu::allocator *p_allocator_bind) {
+    this->p_allocator = p_allocator_bind;
 }
 
 void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, const ekg::vec4 &color) {
-    if (this->allocator == nullptr || this->flag_unloaded || text.empty()) {
+    if (this->p_allocator == nullptr || this->flag_unloaded || text.empty()) {
         return;
     }
 
     x = static_cast<float>(static_cast<int32_t>(x));
     y = static_cast<float>(static_cast<int32_t>(y - this->offset_text_height));
 
-    ekg::gpu::data &data {this->allocator->bind_current_data()};
-    if (this->allocator->is_out_of_scissor_rect()) {
+    ekg::gpu::data &data {this->p_allocator->bind_current_data()};
+    if (this->p_allocator->is_out_of_scissor_rect()) {
         return;
     }
 
@@ -305,20 +305,20 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
         coordinates.w = vertices.w / this->full_width;
         coordinates.h = vertices.h / this->full_height;
 
-        this->allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
-        this->allocator->push_back_geometry(vertices.x, vertices.y + vertices.h, coordinates.x, coordinates.y + coordinates.h);
-        this->allocator->push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h, coordinates.x + coordinates.w, coordinates.y + coordinates.h);
-        this->allocator->push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h, coordinates.x + coordinates.w, coordinates.y + coordinates.h);
-        this->allocator->push_back_geometry(vertices.x + vertices.w, vertices.y, coordinates.x + coordinates.w, coordinates.y);
-        this->allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
+        this->p_allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
+        this->p_allocator->push_back_geometry(vertices.x, vertices.y + vertices.h, coordinates.x, coordinates.y + coordinates.h);
+        this->p_allocator->push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h, coordinates.x + coordinates.w, coordinates.y + coordinates.h);
+        this->p_allocator->push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h, coordinates.x + coordinates.w, coordinates.y + coordinates.h);
+        this->p_allocator->push_back_geometry(vertices.x + vertices.w, vertices.y, coordinates.x + coordinates.w, coordinates.y);
+        this->p_allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
 
         x += char_data.wsize;
         this->ft_uint_previous = char32;
         data.factor += static_cast<int32_t>(x + char32);
     }
 
-    this->allocator->bind_texture(this->texture);
-    this->allocator->dispatch();
+    this->p_allocator->bind_texture(this->texture);
+    this->p_allocator->dispatch();
 }
 
 void ekg::draw::font_renderer::init() {

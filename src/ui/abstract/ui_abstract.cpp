@@ -161,7 +161,7 @@ void ekg::ui::abstract::reset() {
     ekg::reload(this->id);
 }
 
-ekg::ui::abstract *ekg::ui::abstract::set_scaled_height_layout(int32_t scaled_height_int) {
+ekg::ui::abstract *ekg::ui::abstract::unsafe_set_scaled_height_layout(int32_t scaled_height_int) {
     this->scaled_height = scaled_height_int;
     return this;
 }

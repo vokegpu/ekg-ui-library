@@ -25,6 +25,41 @@
 #include "ekg/ui/listbox/ui_listbox.hpp"
 #include "ekg/util/gui.hpp"
 
+ekg::ui::listbox *ekg::ui::listbox::set_width(float w) {
+    if (this->sync_ui.w != w) {
+        this->sync_ui.w = w;
+
+        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
+        ekg::reload(this->id);
+        ekg::synclayout(this->parent_id);
+    }
+
+    return this;
+}
+
+float ekg::ui::listbox::get_width() {
+    return this->rect_widget.w;
+}
+
+ekg::ui::listbox *ekg::ui::listbox::set_scaled_height(int32_t h) {
+    if (this->scaled_height != h) {
+        this->scaled_height = h;
+
+        ekg::reload(this->id);
+        ekg::synclayout(this->parent_id);
+    }
+
+    return this;
+}
+
+int32_t ekg::ui::listbox::get_scaled_height() {
+    return this->scaled_height;
+}
+
+float ekg::ui::listbox::get_height() {
+    return this->rect_widget.h;
+}
+
 ekg::ui::listbox *ekg::ui::listbox::set_place(uint16_t dock) {
     if (this->dock_flags != dock) {
         this->dock_flags = dock;

@@ -35,6 +35,13 @@ namespace ekg::ui {
         ekg::font category_font_size {};
         ekg::font item_font_size {};
     public:
+        ekg::ui::listbox *set_width(float w);
+        float get_width();
+
+        ekg::ui::listbox *set_scaled_height(int32_t h);
+        int32_t get_scaled_height();
+        float get_height();
+
         ekg::ui::listbox *set_place(uint16_t dock);
         ekg::item &item();
 

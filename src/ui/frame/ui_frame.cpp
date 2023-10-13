@@ -120,8 +120,8 @@ ekg::vec2 ekg::ui::frame::get_pos() {
 	return {this->rect_widget.x, this->rect_widget.y};
 }
 
-ekg::ui::frame *ekg::ui::frame::set_initial_width(float width) {
-    this->rect_initial.w = width;
+ekg::ui::frame *ekg::ui::frame::set_initial_width(float w) {
+    this->rect_initial.w = w;
     return this;
 }
 
@@ -129,8 +129,8 @@ float ekg::ui::frame::get_initial_width() {
     return this->rect_initial.w;
 }
 
-ekg::ui::frame *ekg::ui::frame::set_initial_height(float height) {
-    this->rect_initial.h = height;
+ekg::ui::frame *ekg::ui::frame::set_initial_height(float h) {
+    this->rect_initial.h = h;
     return this;
 }
 
@@ -138,9 +138,9 @@ float ekg::ui::frame::get_initial_height() {
     return this->rect_initial.h;
 }
 
-ekg::ui::frame *ekg::ui::frame::set_width(float width) {
-    if (this->sync_ui.w != width) {
-        this->sync_ui.w = width;
+ekg::ui::frame *ekg::ui::frame::set_width(float w) {
+    if (this->sync_ui.w != w) {
+        this->sync_ui.w = w;
 
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
         ekg::reload(this->id);
@@ -155,9 +155,9 @@ float ekg::ui::frame::get_width() {
     return this->rect_widget.w;
 }
 
-ekg::ui::frame *ekg::ui::frame::set_height(float height) {
-    if (this->sync_ui.h != height) {
-        this->sync_ui.h = height;
+ekg::ui::frame *ekg::ui::frame::set_height(float h) {
+    if (this->sync_ui.h != h) {
+        this->sync_ui.h = h;
 
         ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
         ekg::reload(this->id);

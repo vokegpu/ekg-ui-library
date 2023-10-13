@@ -76,6 +76,8 @@ namespace ekg {
         
             int32_t scaled_height {};
         public:
+            ekg::ui::abstract *unsafe_set_scaled_height_layout(int32_t scaled_size);
+        public:
             abstract();
             ~abstract();
 
@@ -112,7 +114,6 @@ namespace ekg {
             ekg::rect &widget();
             ekg::rect &ui();
 
-            ekg::ui::abstract *set_scaled_height_layout(int32_t scaled_size);
             bool has_parent();
             bool has_children();
         };
