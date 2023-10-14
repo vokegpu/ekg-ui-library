@@ -1131,6 +1131,6 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     this->embedded_scroll.rect_child = this->rect_text;
     this->embedded_scroll.on_draw_refresh();
 
-    ekg::draw::rect(rect, theme.textbox_outline, ekg::drawmode::outline);
+    ekg::draw::rect(rect, theme.textbox_outline, ekg::draw_mode::outline);
     ekg::draw::bind_off_scissor();
 }

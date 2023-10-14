@@ -30,25 +30,11 @@
 #include <iostream>
 
 namespace ekg {
-    enum drawmode {
+    enum draw_mode {
         filled = 0, circle = -1, outline = 1
     };
 
     namespace draw {
-        struct box {
-            std::string text {};
-            ekg::rect rect {};
-            int32_t id {};
-        };
-
-        class immediate {
-        protected:
-            std::vector<ekg::draw::box> loaded_box_list {};
-            int32_t token_id {};
-        public:
-            void send_popup(ekg::draw::box&);
-        };
-
         void rect(const ekg::rect&, const ekg::vec4&, int32_t = 0);
         void rect(float, float, float, float, const ekg::vec4&, int32_t = 0);
 

@@ -349,7 +349,7 @@ void ekg::ui::popup_widget::on_draw_refresh() {
 
     ekg::draw::bind_scissor(p_ui->get_id());
     ekg::draw::rect(rect, theme.popup_background);
-    ekg::draw::rect(rect, theme.popup_outline, ekg::drawmode::outline);
+    ekg::draw::rect(rect, theme.popup_outline, ekg::draw_mode::outline);
 
     ekg::rect button_rect {};
 

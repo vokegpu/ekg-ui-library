@@ -94,7 +94,7 @@ void ekg::ui::button_widget::on_draw_refresh() {
     ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
 
     ekg::draw::rect(rect, theme.button_background);
-    ekg::draw::rect(rect, theme.button_outline, ekg::drawmode::outline);
+    ekg::draw::rect(rect, theme.button_outline, ekg::draw_mode::outline);
 
     if (this->flag.highlight) {
         ekg::draw::rect(rect, theme.button_highlight);
@@ -102,7 +102,7 @@ void ekg::ui::button_widget::on_draw_refresh() {
 
     if (this->flag.activy) {
         ekg::draw::rect(rect, theme.button_activy);
-        ekg::draw::rect(rect, {theme.button_activy, theme.button_outline.w}, ekg::drawmode::outline);
+        ekg::draw::rect(rect, {theme.button_activy, theme.button_outline.w}, ekg::draw_mode::outline);
     }
 
     f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.button_string);

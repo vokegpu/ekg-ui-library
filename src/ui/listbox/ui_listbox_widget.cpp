@@ -96,12 +96,12 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
     ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
 
     // draw the outline frame
-    ekg::draw::rect(rect, theme.listbox_outline, ekg::drawmode::outline);
+    ekg::draw::rect(rect, theme.listbox_outline, ekg::draw_mode::outline);
 
     for (ekg::item *&p_item : this->loaded_item_list) {
         if (ekg::bitwise::contains(p_item->attr, ekg::attr::category)) {
             ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_category_background);
-            ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_category_outline, ekg::drawmode::outline);
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_category_outline, ekg::draw_mode::outline);
 
             category_f_renderer.blit(p_item->value,
                                      p_item->component.rect_dimension_closed.x + rect.x,
@@ -109,7 +109,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
                                      theme.listbox_category_string);
         } else {
             ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_item_background);
-            ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_item_outline, ekg::drawmode::outline);
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_item_outline, ekg::draw_mode::outline);
 
             item_f_renderer.blit(p_item->value,
                                  p_item->component.rect_dimension_closed.x + rect.x,

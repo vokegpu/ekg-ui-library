@@ -228,7 +228,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
         ekg::draw::rect(bar, theme.slider_highlight);
     }
     
-    ekg::draw::rect(this->rect_target + rect, theme.slider_activy, ekg::drawmode::circle);
+    ekg::draw::rect(this->rect_target + rect, theme.slider_activy, ekg::draw_mode::circle);
     ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activy_bar);
 
     f_renderer.blit(this->string_value, rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.slider_string);

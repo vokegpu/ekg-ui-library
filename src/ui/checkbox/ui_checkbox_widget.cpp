@@ -106,7 +106,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
     ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
 
     ekg::draw::rect(rect, theme.checkbox_background);
-    ekg::draw::rect(rect, theme.checkbox_outline, ekg::drawmode::outline);
+    ekg::draw::rect(rect, theme.checkbox_outline, ekg::draw_mode::outline);
 
     if (this->flag.highlight) {
         ekg::draw::rect(rect, theme.checkbox_highlight);
@@ -127,7 +127,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
     }
 
     if (p_ui->get_value() && this->flag.highlight) {
-        ekg::draw::rect(box, {theme.checkbox_activy, theme.checkbox_outline.w}, ekg::drawmode::outline);
+        ekg::draw::rect(box, {theme.checkbox_activy, theme.checkbox_outline.w}, ekg::draw_mode::outline);
     }
 
     f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.checkbox_string);
