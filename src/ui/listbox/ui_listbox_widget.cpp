@@ -45,6 +45,13 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
         if (ekg::bitwise::contains(item.attr, ekg::attr::row)) {
             this->rect_widget.w  += this->component_category_last.rect_dimension_closed.w;
             component.rect_dimension_closed.x = this->rect_widget.x + this->rect_widget.w;
+
+            /*
+             * Update the size of parent item if the item attr contains row flag.
+             */
+            if (item.p_item_parent != nullptr) {
+                item.p_item_parent->component.rect_dimension_closed.w = this->rect_widget.w + component.rect_dimension_closed.w - item.p_item_parent->component.rect_dimension_closed.x;
+            }
         } else {
             rect_dimension_update.h += component.rect_dimension_closed.h;
         }
@@ -78,6 +85,23 @@ void ekg::ui::listbox_widget::on_reload() {
 
     auto &item_f_renderer {ekg::f_renderer(p_ui->get_item_font_size())};
     this->dimension.h = item_f_renderer.get_text_height() * static_cast<float>(p_ui->get_scaled_height());
+}
+
+void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
+    bool motion {ekg::input::motion()};
+    bool pressed {ekg::input::pressed()};
+    bool released {ekg::input::released()};
+
+    if (motion || pressed || released) {
+        ekg::vec4 &interact {ekg::interact()};
+
+        for (ekg::item *&p_item : this->loaded_item_list) {
+            auto &component {p_item->component};
+            if (component.is_open) {
+
+            }
+        }
+    }
 }
 
 void ekg::ui::listbox_widget::on_update() {

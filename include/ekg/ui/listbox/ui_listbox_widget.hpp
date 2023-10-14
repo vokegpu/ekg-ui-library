@@ -40,6 +40,7 @@ namespace ekg::ui {
     public:
         void on_reload() override;
         void on_update() override;
+        void on_event(SDL_Event &sdl_event) override;
         void on_draw_refresh() override;
     };
 }

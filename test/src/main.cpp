@@ -294,10 +294,10 @@ int32_t main_example() {
     auto &item = p_listbox->item();
 
     item.insert(0, "Name").attr = ekg::attr::category | ekg::attr::row;
-    item.insert(1, "State").attr = ekg::attr::category | ekg::attr::row;
+    item.insert(1, "State").attr = ekg::attr::row;
     item.insert(2, "Usage").attr = ekg::attr::category | ekg::attr::row;
 
-    item.at(0).insert(0, "Potato");
+    item.at(0).insert(0, "Potato").attr = ekg::row;
     item.at(1).insert(0, "mEOWING");
     item.at(2).insert(0, "50%");
 

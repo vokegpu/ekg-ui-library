@@ -45,6 +45,7 @@ namespace ekg {
         ekg::rect rect_text {};
         ekg::rect rect_dimension_closed {};
         ekg::rect rect_dimension_opened {};
+        bool is_open {};
     };
 
     struct item {
