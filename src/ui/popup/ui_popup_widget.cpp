@@ -359,10 +359,10 @@ void ekg::ui::popup_widget::on_draw_refresh() {
         // Draw the separator.
         if (ekg::bitwise::contains(item.attributes, ekg::attr::separator)) {
             ekg::draw::rect(rect.x + item.rect_dimension.x, 
-                                     rect.y + item.rect_dimension.y + item.rect_dimension.h - 0.5f,
-                                     item.rect_dimension.w,
-                                     1.0f,
-                                     theme.popup_separator);
+                            rect.y + item.rect_dimension.y + item.rect_dimension.h - 0.5f,
+                            item.rect_dimension.w,
+                            1.0f,
+                            theme.popup_separator);
         }
 
         if (this->hovered_element == it) {
@@ -370,9 +370,9 @@ void ekg::ui::popup_widget::on_draw_refresh() {
         }
 
         f_renderer.blit(item.name,
-                                 rect.x + item.rect_dimension.x + item.rect_content.x,
-                                 rect.y + item.rect_dimension.y + item.rect_content.y,
-                                 theme.popup_string);
+                        rect.x + item.rect_dimension.x + item.rect_content.x,
+                        rect.y + item.rect_dimension.y + item.rect_content.y,
+                        theme.popup_string);
     }
 
     ekg::draw::bind_off_scissor();

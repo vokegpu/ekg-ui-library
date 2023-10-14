@@ -49,12 +49,13 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
         }
 
         if (ekg::bitwise::contains(item.attr, ekg::attr::category)) {
-            component.rect_dimension_closed.w = category.get_text_width(item.value);
+            component.rect_dimension_closed.w = category_f_renderer.get_text_width(item.value) + 50.0f;
             component.rect_dimension_closed.h = category_f_renderer.get_text_height();
             this->component_category_last = component;
         }
 
         rect_dimension_update.h += component.rect_dimension_closed.h;
+        ekg::log() << item.value;
 
         if (!item.empty()) {
             this->process_component_template(item);
@@ -62,6 +63,8 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
 
         parent_item.component.rect_dimension_opened.w = ekg::min(parent_item.component.rect_dimension_closed.x + rect_dimension_update.w, parent_item.component.rect_dimension.w);
         parent_item.component.rect_dimension_opened.h = ekg::min(parent_item.component.rect_dimension_closed.y + rect_dimension_update.h, parent_item.component.rect_dimension.h);
+        
+        this->loaded_item_list.push_back(&item);
     }
 }
 
@@ -72,6 +75,7 @@ void ekg::ui::listbox_widget::on_reload() {
 
     this->rect_widget = {};
     this->component_category_last = {};
+    this->loaded_item_list = {};
     this->process_component_template(ui_item);
 
     auto &item_f_renderer {ekg::f_renderer(p_ui->get_item_font_size())};
@@ -93,17 +97,31 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
     ekg::draw::bind_scissor(p_ui->get_id());
     ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
 
-    for (ekg::item &item : p_ui->item()) {
-        if (ekg::bitwise::contains(item.attr, ekg::attr::category)) {
-            category_f_renderer.blit(item.value,
-                                     item.component.rect_dimension_closed.x + rect.x,
-                                     item.component.rect_dimension_closed.y + rect.y,
+    for (ekg::item *&p_item : this->loaded_item_list) {
+        if (ekg::bitwise::contains(p_item->attr, ekg::attr::category)) {
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_category_background);
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_category_outline, ekg::drawmode::outline);
+
+            category_f_renderer.blit(p_item->value,
+                                     p_item->component.rect_dimension_closed.x + rect.x,
+                                     p_item->component.rect_dimension_closed.y + rect.y,
                                      theme.listbox_category_string);
         } else {
-            item_f_renderer.blit(item.value,
-                                 item.component.rect_dimension_closed.x + rect.x,
-                                 item.component.rect_dimension_closed.y + rect.y,
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_item_background);
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_item_outline, ekg::drawmode::outline);
+
+            item_f_renderer.blit(p_item->value,
+                                 p_item->component.rect_dimension_closed.x + rect.x,
+                                 p_item->component.rect_dimension_closed.y + rect.y,
                                  theme.listbox_category_string);
+        }
+
+        if (ekg::bitwise::contains(p_item->attr, ekg::attr::separator)) {
+            ekg::draw::rect(p_item->component.rect_dimension_closed.x + rect.x, 
+                            p_item->component.rect_dimension_closed.y + rect.y + p_item->component.rect_dimension_closed.h - 0.5f,
+                            p_item->component.rect_dimension_closed.w,
+                            1.0f,
+                            theme.listbox_separator);
         }
     }
 

@@ -34,6 +34,7 @@ namespace ekg::ui {
         ekg::item *p_item {};
         ekg::rect rect_widget {};
         ekg::component component_category_last {};
+        std::vector<ekg::item*> loaded_item_list {};
     public:
         void process_component_template(ekg::item &parent_item);
     public:
