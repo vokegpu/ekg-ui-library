@@ -32,20 +32,21 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
     auto &item_f_renderer {ekg::f_renderer(p_ui->get_item_font_size())};
 
     ekg::rect rect_dimension_update {parent_item.component.rect_dimension_closed};
-    rect_dimension_update.y += rect_dimension_update.h;
 
     for (uint64_t it {}; it < parent_item.size(); it++) {
         ekg::item &item {parent_item.at(it)};
         ekg::component &component {item.component};
 
         component.rect_dimension_closed.x = rect_dimension_update.x;
-        component.rect_dimension_closed.y = rect_dimension_update.y;
+        component.rect_dimension_closed.y = rect_dimension_update.y + rect_dimension_update.h;
         component.rect_dimension_closed.w = this->component_category_last.rect_dimension_closed.w;
         component.rect_dimension_closed.h = item_f_renderer.get_text_height();
 
         if (ekg::bitwise::contains(item.attr, ekg::attr::row)) {
             this->rect_widget.w  += this->component_category_last.rect_dimension_closed.w;
             component.rect_dimension_closed.x = this->rect_widget.x + this->rect_widget.w;
+        } else {
+            rect_dimension_update.h += component.rect_dimension_closed.h;
         }
 
         if (ekg::bitwise::contains(item.attr, ekg::attr::category)) {
@@ -53,9 +54,6 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
             component.rect_dimension_closed.h = category_f_renderer.get_text_height();
             this->component_category_last = component;
         }
-
-        rect_dimension_update.h += component.rect_dimension_closed.h;
-        ekg::log() << item.value;
 
         if (!item.empty()) {
             this->process_component_template(item);
@@ -96,6 +94,9 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
 
     ekg::draw::bind_scissor(p_ui->get_id());
     ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
+
+    // draw the outline frame
+    ekg::draw::rect(rect, theme.listbox_outline, ekg::drawmode::outline);
 
     for (ekg::item *&p_item : this->loaded_item_list) {
         if (ekg::bitwise::contains(p_item->attr, ekg::attr::category)) {

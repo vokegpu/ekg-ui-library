@@ -301,6 +301,10 @@ int32_t main_example() {
     item.at(1).insert(0, "mEOWING");
     item.at(2).insert(0, "50%");
 
+    item.at(0).insert(1, "Chiquinha");
+    item.at(1).insert(1, "Sleepingp");
+    item.at(2).insert(1, "3%");
+
     ekg::label("RGB:", ekg::dock::next);
 
     auto r = ekg::slider("red", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
