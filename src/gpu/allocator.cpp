@@ -28,8 +28,8 @@
 #include "ekg/os/ekg_opengl.hpp"
 
 ekg::gpu::program ekg::gpu::allocator::program {};
-float ekg::gpu::allocator::mat4x4orthographic[16] {};
-float ekg::gpu::allocator::viewport[4] {};
+float             ekg::gpu::allocator::mat4x4orthographic[16] {};
+float             ekg::gpu::allocator::viewport[4] {};
 
 void ekg::gpu::allocator::invoke() {
     /* reset all "flags", everything is used tick by tick to compare factories */
@@ -182,7 +182,7 @@ void ekg::gpu::allocator::draw() {
         glUniform4fv(this->uniform_color, GL_TRUE, data.material_color);
         glUniform4fv(this->uniform_rect, GL_TRUE, data.shape_rect);
         glUniform1i(this->uniform_line_thickness, data.line_thickness);
-        glUniform4fv(this->uniform_scissor, GL_TRUE, this->get_scissor_by_id(data.scissor_id)->rect);
+        glUniform4fv(this->uniform_scissor, GL_TRUE, this->scissor_map[data.scissor_id].rect);
 
         switch (data.begin_stride) {
             case 0: {

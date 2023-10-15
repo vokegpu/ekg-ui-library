@@ -93,7 +93,7 @@ void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
     bool released {ekg::input::released()};
 
     if (motion || pressed || released) {
-        ekg::vec4 &interact {ekg::interact()};
+        ekg::vec4 &interact {ekg::input::interact()};
 
         for (ekg::item *&p_item : this->loaded_item_list) {
             auto &component {p_item->component};

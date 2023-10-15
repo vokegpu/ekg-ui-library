@@ -31,18 +31,20 @@
 
 namespace ekg {
     enum draw_mode {
-        filled = 0, circle = -1, outline = 1
+        filled  = 0,
+        circle  = -1,
+        outline = 1
     };
 
     namespace draw {
-        void rect(const ekg::rect&, const ekg::vec4&, int32_t = 0);
-        void rect(float, float, float, float, const ekg::vec4&, int32_t = 0);
+        void rect(const ekg::rect &rect, const ekg::vec4 &color, int32_t draw_mode = 0);
+        void rect(float x, float y, float w, float h, const ekg::vec4 &color, int32_t draw_mode = 0);
 
-        void sync_scissor(ekg::rect&, int32_t);
-        void bind_scissor(int32_t);
+        void sync_scissor(ekg::rect &rect, int32_t id);
+        void bind_scissor(int32_t id);
         void bind_off_scissor();
-        bool is_visible(int32_t, ekg::vec4&);
-        void get_visible(int32_t, ekg::rect&);
+        bool is_visible(int32_t id, ekg::vec4 &interact);
+        void get_visible(int32_t id, ekg::rect &rect);
     }
 }
 

@@ -26,7 +26,6 @@
 #define EKG_GPU_ALLOCATOR_H
 
 #include <array>
-#include <map>
 #include <vector>
 
 #include "ekg/gpu/data.hpp"
