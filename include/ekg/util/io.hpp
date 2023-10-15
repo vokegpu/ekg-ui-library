@@ -45,7 +45,9 @@ namespace ekg {
         ekg::rect rect_text {};
         ekg::rect rect_dimension_closed {};
         ekg::rect rect_dimension_opened {};
+        
         bool is_open {};
+        bool is_hovering {};
     };
 
     struct item {
@@ -148,12 +150,14 @@ namespace ekg {
      * \\ box
      * \1 category
      * \2 row
+     * \3 row_member
      */
     enum attr {
-        separator = 2 << 2,
-        box       = 2 << 3,
-        category  = 2 << 4,
-        row       = 2 << 5
+        separator  = 2 << 2,
+        box        = 2 << 3,
+        category   = 2 << 4,
+        row        = 2 << 5,
+        row_member = 2 << 6  
     };
 
     bool file_to_string(std::string &file_content, std::string_view path);
@@ -178,16 +182,10 @@ namespace ekg {
         bool absolute {};
     };
 
-    struct value {
-    protected:
-        void *p_value {};
-    public:
-    };
-
     enum class clipboard {
-        copy  = 1073741948,
-        cut   = 1073741947,
-        paste = 1073741949
+        copy  = 1073741948, // SDLK_COPY
+        cut   = 1073741947, // SDLK_CUT
+        paste = 1073741949  // SDLK_PASTE
     };
 
     namespace bitwise {

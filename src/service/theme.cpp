@@ -95,7 +95,8 @@ void ekg::service::theme::gen_default_dark_theme() {
     this->listbox_category_string = ekg::color(202, 202, 202, 255);
     this->listbox_category_outline = ekg::color(141, 141, 141, 50);
     this->listbox_separator = ekg::color(141, 141, 141, 50);
-    this->listbox_outline = ekg::color(202, 207, 222, 150);
+    this->listbox_outline = ekg::color(141, 141, 141, 50);
+    this->listbox_highlight = ekg::color(44, 166, 255, 50);
 }
 
 void ekg::service::theme::gen_default_light_theme() {
@@ -157,6 +158,7 @@ void ekg::service::theme::gen_default_light_theme() {
     this->listbox_category_outline = ekg::color(202, 207, 222, 150);
     this->listbox_separator = ekg::color(202, 207, 222, 150);
     this->listbox_outline = ekg::color(202, 207, 222, 150);
+    this->listbox_highlight = ekg::color(44, 166, 255, 50);
 }
 
 void ekg::service::theme::refresh_theme_list() {

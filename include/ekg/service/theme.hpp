@@ -79,6 +79,7 @@ namespace ekg::service {
         ekg::vec4 listbox_category_string {};
         ekg::vec4 listbox_separator {};
         ekg::vec4 listbox_outline {};
+        ekg::vec4 listbox_highlight {};
 
         float min_widget_size {5};
         bool symmetric_layout {};

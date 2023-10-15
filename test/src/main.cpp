@@ -293,11 +293,11 @@ int32_t main_example() {
     auto p_listbox = ekg::listbox("listbox", {"listbox"}, ekg::dock::fill | ekg::dock::next);
     auto &item = p_listbox->item();
 
-    item.insert(0, "Name").attr = ekg::attr::category | ekg::attr::row;
-    item.insert(1, "State").attr = ekg::attr::row;
-    item.insert(2, "Usage").attr = ekg::attr::category | ekg::attr::row;
+    item.insert(0, "Name").attr = ekg::attr::category | ekg::attr::row | ekg::attr::row_member;
+    item.insert(1, "State").attr = ekg::attr::category | ekg::attr::row | ekg::attr::row_member;
+    item.insert(2, "Usage").attr = ekg::attr::category | ekg::attr::row | ekg::attr::row_member;
 
-    item.at(0).insert(0, "Potato").attr = ekg::row;
+    item.at(0).insert(0, "Potato");
     item.at(1).insert(0, "mEOWING");
     item.at(2).insert(0, "50%");
 
@@ -320,6 +320,7 @@ int32_t main_example() {
     p_textbox->set_text(oi_cachorroo);
 
     ekg::event event {};
+    ekg::theme().gen_default_dark_theme();
 
     while (running) {
         while (SDL_PollEvent(&sdl_event)) {

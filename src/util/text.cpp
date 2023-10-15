@@ -249,6 +249,9 @@ uint8_t ekg::check_attribute_flags(std::string_view text, uint16_t &flags) {
         case '\2':
             flags |= ekg::attr::row;
             break;
+        case '\3':
+            flags |= ekg::attr::row_member;
+            break;
         default:
             return it;
         }
