@@ -150,7 +150,7 @@ int32_t &ekg::set(int32_t &value, int32_t result) {
 bool ekg::assert_task_flag {};
 
 float ekg::assert_task(float val, float result) {
-    if (EQUALS_FLOAT(val, result)) {
+    if (ekg_equals_float(val, result)) {
         return val;
     }
 

@@ -48,6 +48,7 @@ bool ekg::gpu::create_basic_program(ekg::gpu::program &program, const std::unord
     int32_t status {};
     program.id = glCreateProgram();
 
+    std::string msg  {};
     for (auto &[value, key] : resources) {
         uint32_t shader {glCreateShader(key)};
         const char *p_src {value.c_str()};
@@ -57,7 +58,7 @@ bool ekg::gpu::create_basic_program(ekg::gpu::program &program, const std::unord
         glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
         if (status == GL_FALSE) {
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &status);
-            std::string msg {}; msg.resize(status);
+            msg.resize(status);
             glGetShaderInfoLog(shader, status, nullptr, msg.data());
             ekg::log() << "Error: Failed to compile shader stage: \n" << msg;
             break;
@@ -82,7 +83,7 @@ bool ekg::gpu::create_basic_program(ekg::gpu::program &program, const std::unord
 
         if (status == GL_FALSE) {
             glGetProgramiv(program.id, GL_INFO_LOG_LENGTH, &status);
-            std::string msg {}; msg.resize(status);
+            msg.resize(status);
             glGetProgramInfoLog(program.id, status, nullptr, msg.data());
             ekg::log() << "Error: Failed to link program: \n" << msg;
         }

@@ -329,7 +329,7 @@ void ekg::ui::popup_widget::on_update() {
     float animation {ekg::smooth(ekg::theme().popup_drop_animation_delay, SDL_GetTicks64() - this->elapsed_animation_ticks)};
     this->scissor_opened_height = animation * this->dimension.h;
 
-    if (EQUALS_FLOAT(this->scissor_opened_height, this->dimension.h)) {
+    if (ekg_equals_float(this->scissor_opened_height, this->dimension.h)) {
         scissor_opened_height = this->dimension.h;
         this->is_high_frequency = false;
     }
@@ -358,8 +358,8 @@ void ekg::ui::popup_widget::on_draw_refresh() {
 
         // Draw the separator.
         if (ekg::bitwise::contains(item.attributes, ekg::attr::separator)) {
-            ekg::draw::rect(rect.x + item.rect_dimension.x, 
-                            rect.y + item.rect_dimension.y + item.rect_dimension.h - 0.5f,
+            ekg::draw::rect(rect.x + item.rect_dimension.x,
+                            rect.y + item.rect_dimension.y + item.rect_dimension.h - ekg_pixel_div_2,
                             item.rect_dimension.w,
                             1.0f,
                             theme.popup_separator);
