@@ -681,12 +681,12 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
     default: {
         break;
     }
-
     }
 
     this->widget_map[p_ui->get_id()] = p_widget_created;
     this->do_task_refresh(p_widget_created);
     this->do_task_reload(p_widget_created);
+    p_widget_created->on_create();
 
     if (append_group && this->current_bind_group != nullptr) {
         this->current_bind_group->add_child(p_ui->get_id());

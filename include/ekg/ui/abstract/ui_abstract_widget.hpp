@@ -53,6 +53,7 @@ namespace ekg::ui {
         explicit abstract_widget();
         ~abstract_widget();
 
+        virtual void on_create();
         virtual void on_destroy();
         virtual void on_reload();
         virtual void on_pre_event(SDL_Event &sdl_event);

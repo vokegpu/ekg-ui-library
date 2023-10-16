@@ -30,7 +30,8 @@
 #include <cfloat>
 #include <cmath>
 
-#define EQUALS_FLOAT(x, y) ((fabsf((x) - (y))) <= FLT_EPSILON * fmaxf(1.0f, fmaxf(fabsf(x), fabsf(y))))
+#define ekg_equals_float(x, y) ((fabsf((x) - (y))) <= FLT_EPSILON * fmaxf(1.0f, fmaxf(fabsf(x), fabsf(y))))
+#define ekg_pixel_div_2        (0.500000f)
 
 namespace ekg {
     extern double pi;
@@ -220,8 +221,20 @@ namespace ekg {
 
     struct dock_rect {
     public:
-        ekg::rect *p_rect {nullptr};
+        ekg::rect *p_rect {};
         uint16_t dock {};        
+    };
+
+    struct component {
+    public:
+        ekg::rect rect_dimension {}; 
+        ekg::rect rect_box {};
+        ekg::rect rect_text {};
+        ekg::rect rect_dimension_closed {};
+        ekg::rect rect_dimension_opened {};
+        
+        bool is_open {};
+        bool is_hovering {};
     };
 
     float clamp(float, float, float);

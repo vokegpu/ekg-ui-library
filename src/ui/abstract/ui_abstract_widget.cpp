@@ -35,6 +35,10 @@ ekg::ui::abstract_widget::~abstract_widget() {
     this->on_destroy();
 }
 
+void ekg::ui::abstract_widget::on_create() {
+    
+}
+
 void ekg::ui::abstract_widget::on_destroy() {
 
 }

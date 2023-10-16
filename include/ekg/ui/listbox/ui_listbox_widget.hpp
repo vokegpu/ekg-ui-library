@@ -35,9 +35,13 @@ namespace ekg::ui {
         ekg::rect rect_widget {};
         ekg::component component_category_last {};
         std::vector<ekg::item*> loaded_item_list {};
+        bool semaphore {};
+        ekg::vec2 category_font_metrics {};
+        ekg::vec2 item_font_metrics {};
     public:
         void process_component_template(ekg::item &parent_item);
     public:
+        void on_create() override;
         void on_reload() override;
         void on_update() override;
         void on_event(SDL_Event &sdl_event) override;

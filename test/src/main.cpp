@@ -24,8 +24,6 @@
 
 #include <ekg/ekg.hpp>
 
-#define SOUGOSTOSA
-
 ekg::rect window_size {0, 0, 1280, 720};
 bool running {true};
 
@@ -294,7 +292,7 @@ int32_t main_example() {
     auto &item = p_listbox->item();
 
     item.insert(0, "Name").attr = ekg::attr::category | ekg::attr::row | ekg::attr::row_member;
-    item.insert(1, "State").attr = ekg::attr::category | ekg::attr::row | ekg::attr::row_member;
+    item.insert(1, "State").attr = ekg::attr::category | ekg::attr::row;
     item.insert(2, "Usage").attr = ekg::attr::category | ekg::attr::row | ekg::attr::row_member;
 
     item.at(0).insert(0, "Potato");
@@ -929,8 +927,6 @@ void item_test() {
     o.insert("\1\2Status"); // 1
     o.insert("\1\2CPU"); // 2
     o.insert("\1\2RAM"); // 3
-    
-    o.connect(0, {1, 2, 3});
 
     o.at(0).insert(0, "Cat");
     o.at(1).insert(0, "Meowing");
@@ -942,8 +938,20 @@ void sdl_test() {
     std::cout << SDLK_COPY << '\t' << SDLK_CUT << '\t' << SDLK_PASTE << std::endl; 
 }
 
+void stl_test() {
+    std::string str {};
+    str.resize(5);
+
+    str.at(0) = '0';
+    str.at(1) = 'i';
+    str.at(2) = ' ';
+    str.at(3) = '!';
+    str.at(4) = '!';
+
+    std::string_view str_view {str};
+    std::cout << str_view << std::endl;
+}
+
 int32_t main(int32_t, char**) {
-    item_test();
-    sdl_test();
     return main_example();
 }

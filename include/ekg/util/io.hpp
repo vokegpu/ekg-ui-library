@@ -38,18 +38,6 @@
 #include "geometry.hpp"
 
 namespace ekg {
-    struct component {
-    public:
-        ekg::rect rect_dimension {}; 
-        ekg::rect rect_box {};
-        ekg::rect rect_text {};
-        ekg::rect rect_dimension_closed {};
-        ekg::rect rect_dimension_opened {};
-        
-        bool is_open {};
-        bool is_hovering {};
-    };
-
     struct item {
     public:
         std::vector<ekg::item> child_list {};
@@ -61,7 +49,7 @@ namespace ekg {
 
         ekg::component component {};
         ekg::item *p_item_parent {};
-        ekg::item *p_item_connected {};
+        bool *p_semaphore {};
     public:
         ekg::item &operator=(std::string_view _value);
         ekg::item &operator=(const std::vector<std::string> &item_value_list);
@@ -69,11 +57,13 @@ namespace ekg {
     public:
         item() = default;
         item(std::string_view _value);
-    
-        ekg::item &emplace_back();
+        
+        void clear();
         void push_back(const ekg::item &item_copy);
         void push_back(std::string_view item_value);
         void insert(const std::vector<std::string> &item_value_list);
+
+        ekg::item &emplace_back();
         ekg::item &insert(std::string_view item_value);
         ekg::item &insert(const ekg::item &item);
         ekg::item &at(uint64_t index);
@@ -90,10 +80,6 @@ namespace ekg {
         [[nodiscard]] std::vector<ekg::item>::const_iterator cend() const;
     public:
         void set_value(std::string_view _value);
-        void connect(uint64_t index, const std::vector<uint64_t> &index_list);
-
-        bool is_connected(uint64_t index);
-        bool is_connected();
         bool has_parent();
         bool has_children();
     };

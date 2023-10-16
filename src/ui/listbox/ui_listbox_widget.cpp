@@ -37,10 +37,11 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
         ekg::item &item {parent_item.at(it)};
         ekg::component &component {item.component};
 
+        // measure that this componet is does not contains category attribute
         component.rect_dimension_closed.x = rect_dimension_update.x;
         component.rect_dimension_closed.y = rect_dimension_update.y + rect_dimension_update.h;
         component.rect_dimension_closed.w = this->component_category_last.rect_dimension_closed.w;
-        component.rect_dimension_closed.h = item_f_renderer.get_text_height();
+        component.rect_dimension_closed.h = this->item_font_metrics.y + this->item_font_metrics.x;
 
         if (ekg::bitwise::contains(item.attr, ekg::attr::row)) {
             this->rect_widget.w  += this->component_category_last.rect_dimension_closed.w;
@@ -57,9 +58,22 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
         }
 
         if (ekg::bitwise::contains(item.attr, ekg::attr::category)) {
-            component.rect_dimension_closed.w = category_f_renderer.get_text_width(item.value) + 50.0f;
-            component.rect_dimension_closed.h = category_f_renderer.get_text_height();
+            component.rect_text.w = category_f_renderer.get_text_width(item.value);
+            component.rect_text.h = this->category_font_metrics.y;
+
+            component.rect_dimension_closed.w = component.rect_text.w + 50.0f;
+            component.rect_dimension_closed.h = this->category_font_metrics.y + this->category_font_metrics.x;
+
+            component.rect_text.x = ekg::find_min_offset(category_f_renderer.get_text_width(item.value), this->category_font_metrics.x);
+            component.rect_text.y = component.rect_text.x;
+
             this->component_category_last = component;
+        } else {
+            component.rect_text.w = item_f_renderer.get_text_width(item.value);
+            component.rect_text.h = this->item_font_metrics.y;
+
+            component.rect_text.x = ekg::find_min_offset(item_f_renderer.get_text_width(item.value), this->item_font_metrics.x);
+            component.rect_text.y = component.rect_text.x;
         }
 
         if (!item.empty()) {
@@ -73,18 +87,32 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
     }
 }
 
+void ekg::ui::listbox_widget::on_create() {
+    auto p_ui {(ekg::ui::listbox*) this->p_data};
+    auto &item {p_ui->item()};
+    item.p_semaphore = &this->semaphore;
+}
+
 void ekg::ui::listbox_widget::on_reload() {
     auto p_ui {(ekg::ui::listbox*) this->p_data};
     auto &ui_item {p_ui->item()};
     auto &rect {this->get_abs_rect()};
+
+    auto &category_f_renderer {ekg::f_renderer(p_ui->get_category_font_size())};
+    auto &item_f_renderer {ekg::f_renderer(p_ui->get_item_font_size())};
+
+    this->category_font_metrics.y = category_f_renderer.get_text_height();
+    this->category_font_metrics.x = this->category_font_metrics.y / 2.0f;
+
+    this->item_font_metrics.y = item_f_renderer.get_text_height();
+    this->item_font_metrics.x = this->item_font_metrics.x / 2.0f;
 
     this->rect_widget = {};
     this->component_category_last = {};
     this->loaded_item_list = {};
     this->process_component_template(ui_item);
 
-    auto &item_f_renderer {ekg::f_renderer(p_ui->get_item_font_size())};
-    this->dimension.h = item_f_renderer.get_text_height() * static_cast<float>(p_ui->get_scaled_height());
+    this->dimension.h = this->item_font_metrics.y * static_cast<float>(p_ui->get_scaled_height());
 }
 
 void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
@@ -92,13 +120,13 @@ void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
     bool pressed {ekg::input::pressed()};
     bool released {ekg::input::released()};
 
-    uint64_t hovered {UINT64_MAX};
-
     if (motion || pressed || released) {
         ekg::vec4 &interact {ekg::input::interact()};
         ekg::rect &rect {this->get_abs_rect()};
 
+        uint64_t hovered {UINT64_MAX};
         std::vector<ekg::item*> hovered_item_list {};
+
         bool was_hovered {};
         bool should_redraw {};
 
@@ -184,16 +212,16 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
             ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_category_outline, ekg::draw_mode::outline);
 
             category_f_renderer.blit(p_item->value,
-                                     p_item->component.rect_dimension_closed.x + rect.x,
-                                     p_item->component.rect_dimension_closed.y + rect.y,
+                                     p_item->component.rect_dimension_closed.x + p_item->component.rect_text.x + rect.x,
+                                     p_item->component.rect_dimension_closed.y + p_item->component.rect_text.y + rect.y,
                                      theme.listbox_category_string);
         } else {
             ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_item_background);
             ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_item_outline, ekg::draw_mode::outline);
 
             item_f_renderer.blit(p_item->value,
-                                 p_item->component.rect_dimension_closed.x + rect.x,
-                                 p_item->component.rect_dimension_closed.y + rect.y,
+                                 p_item->component.rect_dimension_closed.x + p_item->component.rect_text.x + rect.x,
+                                 p_item->component.rect_dimension_closed.y + p_item->component.rect_text.y + rect.y,
                                  theme.listbox_category_string);
         }
 
@@ -202,8 +230,8 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
         }
 
         if (ekg::bitwise::contains(p_item->attr, ekg::attr::separator)) {
-            ekg::draw::rect(p_item->component.rect_dimension_closed.x + rect.x, 
-                            p_item->component.rect_dimension_closed.y + rect.y + p_item->component.rect_dimension_closed.h - 0.5f,
+            ekg::draw::rect(p_item->component.rect_dimension_closed.x + rect.x,
+                            p_item->component.rect_dimension_closed.y + rect.y + p_item->component.rect_dimension_closed.h - ekg_pixel_div_2,
                             p_item->component.rect_dimension_closed.w,
                             1.0f,
                             theme.listbox_separator);

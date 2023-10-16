@@ -172,7 +172,7 @@ float ekg::find_min_offset(float text_width, float offset) {
 }
 
 bool ekg::operator==(const ekg::rect &l, const ekg::rect &r) {
-    return EQUALS_FLOAT(l.x, r.x) && EQUALS_FLOAT(l.y, r.y) && EQUALS_FLOAT(l.w, r.w) && EQUALS_FLOAT(l.h, r.h);
+    return ekg_equals_float(l.x, r.x) && ekg_equals_float(l.y, r.y) && ekg_equals_float(l.w, r.w) && ekg_equals_float(l.h, r.h);
 }
 
 bool ekg::operator!=(const ekg::rect &l, const ekg::rect &r) {
@@ -180,7 +180,7 @@ bool ekg::operator!=(const ekg::rect &l, const ekg::rect &r) {
 }
 
 bool ekg::operator==(const ekg::rect &l, const ekg::vec4 &r) {
-    return EQUALS_FLOAT(l.x, r.x) && EQUALS_FLOAT(l.y, r.y) && EQUALS_FLOAT(l.w, r.z) && EQUALS_FLOAT(l.h, r.w);
+    return ekg_equals_float(l.x, r.x) && ekg_equals_float(l.y, r.y) && ekg_equals_float(l.w, r.z) && ekg_equals_float(l.h, r.w);
 }
 
 bool ekg::operator!=(const ekg::rect &l, const ekg::vec4 &r) {
