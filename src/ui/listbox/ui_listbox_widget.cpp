@@ -124,7 +124,6 @@ void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
         ekg::vec4 &interact {ekg::input::interact()};
         ekg::rect &rect {this->get_abs_rect()};
 
-        uint64_t hovered {UINT64_MAX};
         std::vector<ekg::item*> hovered_item_list {};
 
         bool was_hovered {};
@@ -134,9 +133,12 @@ void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
             auto &p_item {this->loaded_item_list.at(it)};
             auto &component {p_item->component};
 
+            if (ekg::bitwise::contains(p_item->attr, ekg::attr::unselectable)) {
+                continue;
+            }
+
             was_hovered = ekg::rect_collide_vec(component.rect_dimension_closed + rect, interact);
-            if (hovered == UINT64_MAX && was_hovered) {
-                hovered = it;
+            if (hovered_item_list.empty() && was_hovered) {
                 hovered_item_list.emplace_back() = p_item;
             }
 

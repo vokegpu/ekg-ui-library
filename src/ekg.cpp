@@ -378,7 +378,7 @@ ekg::ui::listbox *ekg::listbox(std::string_view tag, const ekg::item &item, uint
     p_ui->item() = item;
     p_ui->set_scaled_height(6);
     p_ui->set_item_font_size(ekg::font::normal);
-    p_ui->set_category_font_size(ekg::font::big);
+    p_ui->set_category_font_size(ekg::font::normal);
 
     return p_ui;
 }

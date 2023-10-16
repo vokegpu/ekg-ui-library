@@ -32,9 +32,9 @@ ekg::item &ekg::item::operator=(std::string_view _value) {
     return *this;
 }
 
-ekg::item &ekg::item::operator=(const std::vector<std::string> &item_value_list) {
+ekg::item &ekg::item::operator=(const std::vector<std::string_view> &item_value_list) {
     this->child_list.clear();
-    for (const std::string &values : item_value_list) {
+    for (const std::string_view &values : item_value_list) {
         ekg::item &item {this->child_list.emplace_back()};
         item.set_value(values);
         item.p_item_parent = this;
@@ -77,12 +77,30 @@ void ekg::item::push_back(std::string_view item_value) {
     item.p_semaphore = this->p_semaphore;
 }
 
-void ekg::item::insert(const std::vector<std::string> &item_value_list) {
-    for (const std::string &values : item_value_list) {
+void ekg::item::insert(const std::vector<std::string_view> &item_value_list) {
+    for (const std::string_view &values : item_value_list) {
         ekg::item &item {this->child_list.emplace_back()};
         item.set_value(values);
         item.p_item_parent = this;
         item.p_semaphore = this->p_semaphore;
+    }
+}
+
+void ekg::item::insert(uint16_t predicate, uint64_t index, const std::vector<std::string_view> &value_list) {
+    if (this->child_list.size() <= index) {
+        this->child_list.resize(index);
+    }
+
+    uint64_t it {};
+    for (ekg::item &items : this->child_list) {
+        if (it >= value_list.size()) {
+            break;
+        }
+
+        if (ekg::bitwise::contains(items.attr, predicate)) {
+            items.insert(index, value_list.at(it));
+            it++;
+        }
     }
 }
 

@@ -52,7 +52,7 @@ namespace ekg {
         bool *p_semaphore {};
     public:
         ekg::item &operator=(std::string_view _value);
-        ekg::item &operator=(const std::vector<std::string> &item_value_list);
+        ekg::item &operator=(const std::vector<std::string_view> &item_value_list);
         ekg::item &operator[](uint64_t index);
     public:
         item() = default;
@@ -61,7 +61,8 @@ namespace ekg {
         void clear();
         void push_back(const ekg::item &item_copy);
         void push_back(std::string_view item_value);
-        void insert(const std::vector<std::string> &item_value_list);
+        void insert(const std::vector<std::string_view> &item_value_list);
+        void insert(uint16_t predicate, uint64_t index, const std::vector<std::string_view> &value_list);
 
         ekg::item &emplace_back();
         ekg::item &insert(std::string_view item_value);
@@ -137,13 +138,15 @@ namespace ekg {
      * \1 category
      * \2 row
      * \3 row_member
+     * \4 unselectable
      */
     enum attr {
         separator  = 2 << 2,
         box        = 2 << 3,
         category   = 2 << 4,
         row        = 2 << 5,
-        row_member = 2 << 6  
+        row_member = 2 << 6,
+        unselectable = 2 << 7
     };
 
     bool file_to_string(std::string &file_content, std::string_view path);

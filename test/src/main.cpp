@@ -291,17 +291,13 @@ int32_t main_example() {
     auto p_listbox = ekg::listbox("listbox", {"listbox"}, ekg::dock::fill | ekg::dock::next);
     auto &item = p_listbox->item();
 
-    item.insert(0, "Name").attr = ekg::attr::category | ekg::attr::row | ekg::attr::row_member;
-    item.insert(1, "State").attr = ekg::attr::category | ekg::attr::row;
-    item.insert(2, "Usage").attr = ekg::attr::category | ekg::attr::row | ekg::attr::row_member;
+    item.insert(0, "\1\2\3Name");
+    item.insert(1, "\1\2\3State");
+    item.insert(2, "\1\2\3Usage");
 
-    item.at(0).insert(0, "Potato");
-    item.at(1).insert(0, "mEOWING");
-    item.at(2).insert(0, "50%");
-
-    item.at(0).insert(1, "Chiquinha");
-    item.at(1).insert(1, "Sleepingp");
-    item.at(2).insert(1, "3%");
+    item.insert(ekg::attr::row_member, 0, {"\4Cat(s)", "\4 ", "\4 "});
+    item.insert(ekg::attr::row_member, 1, {"Potato", "mEOWING", "50%"});
+    item.insert(ekg::attr::row_member, 2, {"Chiquinha", "Sleepingp", "3%"});
 
     ekg::label("RGB:", ekg::dock::next);
 
