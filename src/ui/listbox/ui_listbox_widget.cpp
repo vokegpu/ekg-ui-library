@@ -64,7 +64,7 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
             component.rect_dimension_closed.w = component.rect_text.w + 50.0f;
             component.rect_dimension_closed.h = this->category_font_metrics.y + this->category_font_metrics.x;
 
-            component.rect_text.x = ekg::find_min_offset(category_f_renderer.get_text_width(item.value), this->category_font_metrics.x);
+            component.rect_text.x = ekg::find_min_offset(component.rect_text.w, this->category_font_metrics.x);
             component.rect_text.y = component.rect_text.x;
 
             this->component_category_last = component;
@@ -72,7 +72,7 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
             component.rect_text.w = item_f_renderer.get_text_width(item.value);
             component.rect_text.h = this->item_font_metrics.y;
 
-            component.rect_text.x = ekg::find_min_offset(item_f_renderer.get_text_width(item.value), this->item_font_metrics.x);
+            component.rect_text.x = ekg::find_min_offset(component.rect_text.w, this->item_font_metrics.x);
             component.rect_text.y = component.rect_text.x;
         }
 
@@ -105,7 +105,7 @@ void ekg::ui::listbox_widget::on_reload() {
     this->category_font_metrics.x = this->category_font_metrics.y / 2.0f;
 
     this->item_font_metrics.y = item_f_renderer.get_text_height();
-    this->item_font_metrics.x = this->item_font_metrics.x / 2.0f;
+    this->item_font_metrics.x = this->item_font_metrics.y / 2.0f;
 
     this->rect_widget = {};
     this->component_category_last = {};
