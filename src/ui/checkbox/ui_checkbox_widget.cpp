@@ -105,6 +105,8 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
     ekg::draw::bind_scissor(p_ui->get_id());
     ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
 
+    ekg_draw_assert_scissor();
+
     ekg::draw::rect(rect, theme.checkbox_background);
     ekg::draw::rect(rect, theme.checkbox_outline, ekg::draw_mode::outline);
 

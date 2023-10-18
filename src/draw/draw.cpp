@@ -30,14 +30,11 @@ void ekg::draw::rect(const ekg::rect &rect, const ekg::vec4 &color, int32_t line
 }
 
 void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color, int32_t line_thickness) {
-    if (color.w <= 0) {
+    if (color.w < 0.1f) {
         return;
     }
 
     ekg::gpu::data &data {ekg::core->gpu_allocator.bind_current_data()};
-    if (ekg::core->gpu_allocator.is_out_of_scissor_rect()) {
-        return;
-    }
 
     data.shape_rect[0] = x;
     data.shape_rect[1] = y;

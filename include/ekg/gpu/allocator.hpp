@@ -39,6 +39,7 @@ namespace ekg::gpu {
     public:
         static ekg::gpu::program program;
         static float mat4x4orthographic[16];
+        static bool is_out_of_scissor;
     protected:
         std::vector<ekg::gpu::data> data_list {};
         std::unordered_map<int32_t, ekg::gpu::scissor> scissor_map {};
@@ -169,11 +170,6 @@ namespace ekg::gpu {
          * Stop batching rectangle scissor.
          */
         void bind_off_scissor();
-
-        /*
-         * Check if the current shape rect is out of bound scissor.
-         */
-        bool is_out_of_scissor_rect();
     };
 }
 

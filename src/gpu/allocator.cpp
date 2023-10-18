@@ -30,6 +30,7 @@
 ekg::gpu::program ekg::gpu::allocator::program {};
 float             ekg::gpu::allocator::mat4x4orthographic[16] {};
 float             ekg::gpu::allocator::viewport[4] {};
+bool              ekg::gpu::allocator::is_out_of_scissor {};
 
 void ekg::gpu::allocator::invoke() {
     /* reset all "flags", everything is used tick by tick to compare factories */
@@ -249,7 +250,7 @@ void ekg::gpu::allocator::clear_current_data() {
 }
 
 ekg::gpu::data &ekg::gpu::allocator::bind_current_data() {
-    return this->data_list[this->data_instance_index];
+    return this->data_list.at(this->data_instance_index);
 }
 
 uint32_t ekg::gpu::allocator::get_current_data_id() {
@@ -292,7 +293,7 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_par
     scissor.rect[2] = rect_child.w;
     scissor.rect[3] = rect_child.h;
 
-    this->out_of_scissor_rect = false;
+    ekg::gpu::allocator::is_out_of_scissor = false;
 
     /*
      * The EKG rendering clipping/scissor part solution is actually very simple,
@@ -323,7 +324,7 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_par
         scissor.rect[3] -= (scissor.rect[1] + scissor.rect[3]) - (mother_rect.rect[1] + mother_rect.rect[3]);
     }
 
-    this->out_of_scissor_rect = !(scissor.rect[0] < mother_rect.rect[0] + mother_rect.rect[2] && scissor.rect[0] + scissor.rect[2] > mother_rect.rect[0] &&
+    ekg::gpu::allocator::is_out_of_scissor = !(scissor.rect[0] < mother_rect.rect[0] + mother_rect.rect[2] && scissor.rect[0] + scissor.rect[2] > mother_rect.rect[0] &&
                                                    scissor.rect[1] < mother_rect.rect[1] + mother_rect.rect[3] && scissor.rect[1] + scissor.rect[3] > mother_rect.rect[1]); 
 }
 
@@ -342,8 +343,4 @@ void ekg::gpu::allocator::push_back_geometry(float x, float y, float u, float v)
 
     this->cached_geometry_resources.emplace_back(u);
     this->cached_geometry_resources.emplace_back(v);
-}
-
-bool ekg::gpu::allocator::is_out_of_scissor_rect() {
-    return this->out_of_scissor_rect;
 }

@@ -931,10 +931,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     ekg::gpu::data &data {allocator.bind_current_data()};
     ekg::vec4 color {theme.textbox_string};
 
-    if (allocator.is_out_of_scissor_rect()) {
-        ekg::draw::bind_off_scissor();
-        return;
-    }
+    ekg_draw_assert_scissor();
 
     x = static_cast<float>(static_cast<int32_t>(x));
     data.shape_rect[0] = x;

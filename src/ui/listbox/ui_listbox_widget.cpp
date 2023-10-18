@@ -112,6 +112,7 @@ void ekg::ui::listbox_widget::on_reload() {
     this->process_component_template(ui_item);
 
     this->dimension.h = this->item_font_metrics.y * static_cast<float>(p_ui->get_scaled_height());
+    ekg::dispatch(ekg::env::redraw);
 }
 
 void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
@@ -216,10 +217,8 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
                 ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_highlight);
             }
 
-            std::cout << p_item->component.rect_dimension_closed.x << std::endl;         
-
             item_f_renderer.blit(p_item->value,
-                                     p_item->component.rect_dimension_closed.x + rect.x,
+                                     0.0f,
                                      p_item->component.rect_dimension_closed.y + rect.y,
                                      theme.listbox_category_string);
         } else {

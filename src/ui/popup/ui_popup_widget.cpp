@@ -348,6 +348,7 @@ void ekg::ui::popup_widget::on_draw_refresh() {
     auto &item_list {p_ui->get_item_list()};
 
     ekg::draw::bind_scissor(p_ui->get_id());
+
     ekg::draw::rect(rect, theme.popup_background);
     ekg::draw::rect(rect, theme.popup_outline, ekg::draw_mode::outline);
 

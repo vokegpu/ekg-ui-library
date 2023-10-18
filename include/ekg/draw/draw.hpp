@@ -29,6 +29,8 @@
 #include <vector>
 #include <iostream>
 
+#define ekg_draw_assert_scissor() if (ekg::gpu::allocator::is_out_of_scissor) { ekg::core->gpu_allocator.bind_off_scissor();  return;  }
+
 namespace ekg {
     enum draw_mode {
         filled  = 0,

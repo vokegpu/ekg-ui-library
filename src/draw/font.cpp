@@ -238,7 +238,7 @@ void ekg::draw::font_renderer::bind_allocator(ekg::gpu::allocator *p_allocator_b
 }
 
 void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, const ekg::vec4 &color) {
-    if (this->p_allocator == nullptr || this->flag_unloaded || text.empty()) {
+    if (this->p_allocator == nullptr || this->flag_unloaded || color.w < 0.1f || text.empty()) {
         return;
     }
 
@@ -246,8 +246,9 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     y = static_cast<float>(static_cast<int32_t>(y - this->offset_text_height));
 
     ekg::gpu::data &data {this->p_allocator->bind_current_data()};
-    if (this->p_allocator->is_out_of_scissor_rect()) {
-        return;
+
+    if (text == "Name") {
+        std::cout << x << std::endl;
     }
 
     data.shape_rect[0] = x;
