@@ -217,9 +217,9 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
                 ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_highlight);
             }
 
-            item_f_renderer.blit(p_item->value,
-                                     0.0f,
-                                     p_item->component.rect_dimension_closed.y + rect.y,
+            category_f_renderer.blit(p_item->value,
+                                     p_item->component.rect_dimension_closed.x + p_item->component.rect_text.x + rect.x,
+                                     p_item->component.rect_dimension_closed.y + p_item->component.rect_text.y + rect.y,
                                      theme.listbox_category_string);
         } else {
             ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_item_background);

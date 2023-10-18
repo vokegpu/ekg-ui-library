@@ -963,7 +963,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
     uint64_t it {};
     uint64_t text_chunk_size {this->text_chunk_list.size()};
-
+        
     bool optimize_batching {};
     bool do_not_fill_line {};
     bool draw_additional_selected_last_char {};

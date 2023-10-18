@@ -247,10 +247,6 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
 
     ekg::gpu::data &data {this->p_allocator->bind_current_data()};
 
-    if (text == "Name") {
-        std::cout << x << std::endl;
-    }
-
     data.shape_rect[0] = x;
     data.shape_rect[1] = y;
     data.shape_rect[2] = static_cast<float>(ekg::concave);
