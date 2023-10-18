@@ -37,7 +37,7 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
         ekg::item &item {parent_item.at(it)};
         ekg::component &component {item.component};
 
-        // measure that this componet is does not contains category attribute
+        // measure that this componet does not contains category attribute
         component.rect_dimension_closed.x = rect_dimension_update.x;
         component.rect_dimension_closed.y = rect_dimension_update.y + rect_dimension_update.h;
         component.rect_dimension_closed.w = this->component_category_last.rect_dimension_closed.w;
@@ -47,9 +47,7 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
             this->rect_widget.w  += this->component_category_last.rect_dimension_closed.w;
             component.rect_dimension_closed.x = this->rect_widget.x + this->rect_widget.w;
 
-            /*
-             * Update the size of parent item if the item attr contains row flag.
-             */
+            // update the size of parent item if the item attr contains row flag
             if (item.p_item_parent != nullptr) {
                 item.p_item_parent->component.rect_dimension_closed.w = this->rect_widget.w + component.rect_dimension_closed.w - item.p_item_parent->component.rect_dimension_closed.x;
             }
@@ -61,6 +59,7 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
             component.rect_text.w = category_f_renderer.get_text_width(item.value);
             component.rect_text.h = this->category_font_metrics.y;
 
+            // by default category does not have a width size set
             component.rect_dimension_closed.w = component.rect_text.w + 50.0f;
             component.rect_dimension_closed.h = this->category_font_metrics.y + this->category_font_metrics.x;
 
@@ -213,22 +212,28 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
             ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_category_background);
             ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_category_outline, ekg::draw_mode::outline);
 
-            category_f_renderer.blit(p_item->value,
-                                     p_item->component.rect_dimension_closed.x + p_item->component.rect_text.x + rect.x,
-                                     p_item->component.rect_dimension_closed.y + p_item->component.rect_text.y + rect.y,
+            if (p_item->component.is_hovering) {
+                ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_highlight);
+            }
+
+            std::cout << p_item->component.rect_dimension_closed.x << std::endl;         
+
+            item_f_renderer.blit(p_item->value,
+                                     p_item->component.rect_dimension_closed.x + rect.x,
+                                     p_item->component.rect_dimension_closed.y + rect.y,
                                      theme.listbox_category_string);
         } else {
             ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_item_background);
             ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_item_outline, ekg::draw_mode::outline);
 
+            if (p_item->component.is_hovering) {
+                ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_highlight);
+            }
+
             item_f_renderer.blit(p_item->value,
                                  p_item->component.rect_dimension_closed.x + p_item->component.rect_text.x + rect.x,
                                  p_item->component.rect_dimension_closed.y + p_item->component.rect_text.y + rect.y,
-                                 theme.listbox_category_string);
-        }
-
-        if (p_item->component.is_hovering) {
-            ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_highlight);
+                                 theme.listbox_item_string);
         }
 
         if (ekg::bitwise::contains(p_item->attr, ekg::attr::separator)) {
