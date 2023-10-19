@@ -277,7 +277,7 @@ int32_t main_example() {
     SDL_GL_SetSwapInterval(1);
     SDL_Event sdl_event {};
 
-    auto frame = ekg::frame("lê rect", {20, 20}, {400, 400});
+    auto frame = ekg::frame("lê rect", {20, 20}, {800, 800});
 
     frame->set_drag(ekg::dock::top);
     frame->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
@@ -285,10 +285,10 @@ int32_t main_example() {
     ekg::button("pom pom clcik click!!", ekg::dock::fill);
     ekg::slider("pompo number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
 
-    auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::next)->set_scaled_height(3);
+    auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::next | ekg::dock::fill)->set_scaled_height(1);
     p_textbox->set_text("oii");
 
-    auto p_listbox = ekg::listbox("listbox", {"listbox"}, ekg::dock::fill | ekg::dock::next);
+    auto p_listbox = ekg::listbox("listbox", {"listbox"}, ekg::dock::fill | ekg::dock::next)->set_scaled_height(12);
     auto &item = p_listbox->item();
 
     item.insert(0, "\1\2\3Name");
@@ -296,8 +296,12 @@ int32_t main_example() {
     item.insert(2, "\1\2\3Usage");
 
     item.insert(ekg::attr::row_member, 0, {"\4Cat(s)", "\4 ", "\4 "});
-    item.insert(ekg::attr::row_member, 1, {"Potato", "mEOWING", "50%"});
+    item.insert(ekg::attr::row_member, 1, {"Potato", "Sleeping", "23%"});
     item.insert(ekg::attr::row_member, 2, {"Chiquinha", "Sleepingp", "3%"});
+
+    item.at(0).at(1).insert("Brain");
+    item.at(1).at(1).insert("Sleeping");
+    item.at(2).at(1).insert("23%");
 
     ekg::label("RGB:", ekg::dock::next);
 

@@ -43,7 +43,7 @@
 #include "ekg/ui/scroll/ui_scroll.hpp"
 
 #define ekg_version_id "1.0.5.0"
-#define ekg_version_state1 "ALPHA"
+#define ekg_version_state "ALPHA"
 
 namespace ekg {
     /*

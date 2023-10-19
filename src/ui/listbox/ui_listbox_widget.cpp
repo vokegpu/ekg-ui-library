@@ -125,13 +125,23 @@ void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
         ekg::rect &rect {this->get_abs_rect()};
 
         std::vector<ekg::item*> hovered_item_list {};
+        ekg::item *p_item_hovered {};
 
         bool was_hovered {};
         bool should_redraw {};
+        bool pressed_to_open {pressed && ekg::input::action("listbox-activy-open")};
 
         for (uint64_t it {}; it < this->loaded_item_list.size(); it++) {
             auto &p_item {this->loaded_item_list.at(it)};
             auto &component {p_item->component};
+
+            if (p_item->p_item_parent != nullptr && !p_item->p_item_parent->component.is_open &&
+                // the first item node does not have any parent, but it should render
+                !(p_item->p_item_parent != nullptr &&
+                p_item->p_item_parent != nullptr &&
+                p_item->p_item_parent->p_item_parent == nullptr)) {
+                continue;
+            }
 
             if (ekg::bitwise::contains(p_item->attr, ekg::attr::unselectable)) {
                 continue;
@@ -140,6 +150,11 @@ void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
             was_hovered = ekg::rect_collide_vec(component.rect_dimension_closed + rect, interact);
             if (hovered_item_list.empty() && was_hovered) {
                 hovered_item_list.emplace_back() = p_item;
+                p_item_hovered = p_item;
+            }
+
+            if (p_item->component.is_hovering && !ekg::bitwise::contains(p_item->attr, ekg::attr::category) && pressed_to_open) {
+                p_item->component.is_open = !p_item->component.is_open;
             }
 
             if (should_redraw == false && p_item->component.is_hovering != was_hovered) {
@@ -150,37 +165,47 @@ void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
             p_item->component.is_hovering = was_hovered;
         }
 
-        for (ekg::item *&p_item_hovered : hovered_item_list) {
-            if (p_item_hovered != nullptr &&
-                !ekg::bitwise::contains(p_item_hovered->attr, ekg::attr::category) &&
-                !ekg::bitwise::contains(p_item_hovered->attr, ekg::attr::row) &&
-                p_item_hovered->p_item_parent != nullptr &&
-                ekg::bitwise::contains(p_item_hovered->p_item_parent->attr, ekg::attr::row_member) &&
-                p_item_hovered->p_item_parent->p_item_parent != nullptr &&
-                p_item_hovered->p_item_parent->p_item_parent->size() > 1) {
+        /*
+         * Row members items at the same index, interact togethers.
+         * Category(s) and row(s) items attributes can not interact together.
+         * If the mommy parent contains only one child, then it is not neceassary.
+         */ 
+        if (p_item_hovered != nullptr &&
+            !ekg::bitwise::contains(p_item_hovered->attr, ekg::attr::category) &&
+            !ekg::bitwise::contains(p_item_hovered->attr, ekg::attr::row) &&
+            p_item_hovered->p_item_parent != nullptr &&
+            ekg::bitwise::contains(p_item_hovered->p_item_parent->attr, ekg::attr::row_member) &&
+            p_item_hovered->p_item_parent->p_item_parent != nullptr &&
+            p_item_hovered->p_item_parent->p_item_parent->size() > 1) {
 
-                ekg::item *&p_item_parent_mommy {p_item_hovered->p_item_parent->p_item_parent};
+            ekg::item *&p_item_parent_mommy {p_item_hovered->p_item_parent->p_item_parent};
 
-                uint64_t member_index {};
-                bool found {};
+            uint64_t member_index {};
+            bool found {};
 
-                for (uint64_t it {}; it < p_item_hovered->p_item_parent->size(); it++) {
-                    auto &item {p_item_hovered->p_item_parent->at(it)};
-                    if (item.value == p_item_hovered->value) {
-                        member_index = it;
-                        found = true;
-                        break;
-                    }
+            for (uint64_t it {}; it < p_item_hovered->p_item_parent->size(); it++) {
+                auto &item {p_item_hovered->p_item_parent->at(it)};
+                if (item.value == p_item_hovered->value) {
+                    member_index = it;
+                    found = true;
+                    break;
                 }
+            }
 
-                if (found) {
-                    for (ekg::item &items : *p_item_parent_mommy) {
-                        if (ekg::bitwise::contains(items.attr, ekg::attr::row_member) && ekg::bitwise::contains(items.attr, ekg::attr::row)) {
-                            if (items.size() > member_index) { 
-                                auto &item_target {items.at(member_index)};                           
-                                if (!ekg::bitwise::contains(item_target.attr, ekg::attr::row) && item_target.component.is_hovering != p_item_hovered->component.is_hovering) {
-                                    item_target.component.is_hovering = p_item_hovered->component.is_hovering;
-                                }
+            if (found) {
+                for (ekg::item &items : *p_item_parent_mommy) {
+                    if (ekg::bitwise::contains(items.attr, ekg::attr::row_member) && ekg::bitwise::contains(items.attr, ekg::attr::row)) {
+                        if (items.size() > member_index) { 
+                            auto &item_target {items.at(member_index)};
+
+                            // check hovering state
+                            if (!ekg::bitwise::contains(item_target.attr, ekg::attr::row) && item_target.component.is_hovering != p_item_hovered->component.is_hovering) {
+                                item_target.component.is_hovering = p_item_hovered->component.is_hovering;
+                            }
+
+                            // check open state
+                            if (!ekg::bitwise::contains(item_target.attr, ekg::attr::row) && item_target.component.is_open != p_item_hovered->component.is_open) {
+                                item_target.component.is_open = p_item_hovered->component.is_open;
                             }
                         }
                     }
@@ -208,39 +233,69 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
     // draw the outline frame
     ekg::draw::rect(rect, theme.listbox_outline, ekg::draw_mode::outline);
 
+    ekg::rect rect_opened {};
+    bool should_reset_row {};
+
     for (ekg::item *&p_item : this->loaded_item_list) {
-        if (ekg::bitwise::contains(p_item->attr, ekg::attr::category)) {
-            ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_category_background);
-            ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_category_outline, ekg::draw_mode::outline);
+        if (p_item->p_item_parent != nullptr && !p_item->p_item_parent->component.is_open &&
+            // the first item node does not have any parent, but it should render
+            !(p_item->p_item_parent != nullptr &&
+              p_item->p_item_parent != nullptr &&
+              p_item->p_item_parent->p_item_parent == nullptr)) {
+            continue;
+        }
+
+        switch (p_item->attr & ekg::attr::category) {
+        default:
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened, theme.listbox_category_background);
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened, theme.listbox_category_outline, ekg::draw_mode::outline);
 
             if (p_item->component.is_hovering) {
-                ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_highlight);
+                ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened, theme.listbox_highlight);
             }
 
             category_f_renderer.blit(p_item->value,
-                                     p_item->component.rect_dimension_closed.x + p_item->component.rect_text.x + rect.x,
-                                     p_item->component.rect_dimension_closed.y + p_item->component.rect_text.y + rect.y,
+                                     p_item->component.rect_dimension_closed.x + p_item->component.rect_text.x + rect.x + rect_opened.w,
+                                     p_item->component.rect_dimension_closed.y + p_item->component.rect_text.y + rect.y + rect_opened.h,
                                      theme.listbox_category_string);
-        } else {
-            ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_item_background);
-            ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_item_outline, ekg::draw_mode::outline);
+            break;
+        case 0:
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened, theme.listbox_item_background);
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened, theme.listbox_item_outline, ekg::draw_mode::outline);
 
             if (p_item->component.is_hovering) {
-                ekg::draw::rect(p_item->component.rect_dimension_closed + rect, theme.listbox_highlight);
+                ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened, theme.listbox_highlight);
             }
 
             item_f_renderer.blit(p_item->value,
-                                 p_item->component.rect_dimension_closed.x + p_item->component.rect_text.x + rect.x,
-                                 p_item->component.rect_dimension_closed.y + p_item->component.rect_text.y + rect.y,
+                                 p_item->component.rect_dimension_closed.x + p_item->component.rect_text.x + rect.x + rect_opened.w,
+                                 p_item->component.rect_dimension_closed.y + p_item->component.rect_text.y + rect.y + rect_opened.h,
                                  theme.listbox_item_string);
+            break;
         }
 
         if (ekg::bitwise::contains(p_item->attr, ekg::attr::separator)) {
-            ekg::draw::rect(p_item->component.rect_dimension_closed.x + rect.x,
-                            p_item->component.rect_dimension_closed.y + rect.y + p_item->component.rect_dimension_closed.h - ekg_pixel_div_2,
+            ekg::draw::rect(p_item->component.rect_dimension_closed.x + rect.x + rect_opened.w,
+                            p_item->component.rect_dimension_closed.y + rect.y + p_item->component.rect_dimension_closed.h + rect_opened.h - ekg_pixel_div_2,
                             p_item->component.rect_dimension_closed.w,
                             1.0f,
                             theme.listbox_separator);
+        }
+
+        auto &dimension_closed {p_item->component.rect_dimension_closed};
+        should_reset_row = false;
+
+        if (dimension_closed.x + dimension_closed.w > rect_opened.w) {
+            rect_opened.h -= 0.0f;
+            //rect_opened.w = dimension_closed.x + dimension_closed.w;
+            should_reset_row = true;
+        }
+
+        if (dimension_closed.y + dimension_closed.h > rect_opened.h) {
+            rect_opened.h = dimension_closed.y + dimension_closed.h;
+            if (should_reset_row) {
+                //rect_opened.w = 0.0f;
+            }
         }
     }
 

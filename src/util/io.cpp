@@ -182,6 +182,10 @@ void ekg::item::set_value(std::string_view _value) {
 
     this->value = _value;
     this->attr = attr_flags;
+
+    if (ekg::bitwise::contains(this->attr, ekg::attr::category)) {
+        this->component.is_open = true;
+    }
 }
 
 bool ekg::item::has_children() {
