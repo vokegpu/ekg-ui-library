@@ -37,6 +37,8 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
         ekg::item &item {parent_item.at(it)};
         ekg::component &component {item.component};
 
+        this->loaded_item_list.push_back(&item);
+
         // measure that this componet does not contains category attribute
         component.rect_dimension_closed.x = rect_dimension_update.x;
         component.rect_dimension_closed.y = rect_dimension_update.y + rect_dimension_update.h;
@@ -81,8 +83,6 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
 
         parent_item.component.rect_dimension_opened.w = ekg::min(parent_item.component.rect_dimension_closed.x + rect_dimension_update.w, parent_item.component.rect_dimension.w);
         parent_item.component.rect_dimension_opened.h = ekg::min(parent_item.component.rect_dimension_closed.y + rect_dimension_update.h, parent_item.component.rect_dimension.h);
-        
-        this->loaded_item_list.push_back(&item);
     }
 }
 
@@ -153,7 +153,7 @@ void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
                 p_item_hovered = p_item;
             }
 
-            if (p_item->component.is_hovering && !ekg::bitwise::contains(p_item->attr, ekg::attr::category) && pressed_to_open) {
+            if (p_item->component.is_hovering && !p_item->empty() && !ekg::bitwise::contains(p_item->attr, ekg::attr::category) && pressed_to_open) {
                 p_item->component.is_open = !p_item->component.is_open;
             }
 
@@ -234,7 +234,14 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
     ekg::draw::rect(rect, theme.listbox_outline, ekg::draw_mode::outline);
 
     ekg::rect rect_opened {};
+    ekg::rect rect_opened_rectangle {0.0f, 0.0f, 0.0f, 0.0f};
+    ekg::rect rect_opened_test {};
+
     bool should_reset_row {};
+    bool next_row {};
+    bool next_column {};
+
+    std::cout << "----" << std::endl;
 
     for (ekg::item *&p_item : this->loaded_item_list) {
         if (p_item->p_item_parent != nullptr && !p_item->p_item_parent->component.is_open &&
@@ -245,37 +252,39 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
             continue;
         }
 
+        rect_opened_rectangle.h = rect_opened.h;
+
         switch (p_item->attr & ekg::attr::category) {
         default:
-            ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened, theme.listbox_category_background);
-            ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened, theme.listbox_category_outline, ekg::draw_mode::outline);
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened_rectangle, theme.listbox_category_background);
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened_rectangle, theme.listbox_category_outline, ekg::draw_mode::outline);
 
             if (p_item->component.is_hovering) {
-                ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened, theme.listbox_highlight);
+                ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened_rectangle, theme.listbox_highlight);
             }
 
             category_f_renderer.blit(p_item->value,
-                                     p_item->component.rect_dimension_closed.x + p_item->component.rect_text.x + rect.x + rect_opened.w,
+                                     p_item->component.rect_dimension_closed.x + p_item->component.rect_text.x + rect.x,
                                      p_item->component.rect_dimension_closed.y + p_item->component.rect_text.y + rect.y + rect_opened.h,
                                      theme.listbox_category_string);
             break;
         case 0:
-            ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened, theme.listbox_item_background);
-            ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened, theme.listbox_item_outline, ekg::draw_mode::outline);
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened_rectangle, theme.listbox_item_background);
+            ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened_rectangle, theme.listbox_item_outline, ekg::draw_mode::outline);
 
             if (p_item->component.is_hovering) {
-                ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened, theme.listbox_highlight);
+                ekg::draw::rect(p_item->component.rect_dimension_closed + rect + rect_opened_rectangle, theme.listbox_highlight);
             }
 
             item_f_renderer.blit(p_item->value,
-                                 p_item->component.rect_dimension_closed.x + p_item->component.rect_text.x + rect.x + rect_opened.w,
+                                 p_item->component.rect_dimension_closed.x + p_item->component.rect_text.x + rect.x,
                                  p_item->component.rect_dimension_closed.y + p_item->component.rect_text.y + rect.y + rect_opened.h,
                                  theme.listbox_item_string);
             break;
         }
 
         if (ekg::bitwise::contains(p_item->attr, ekg::attr::separator)) {
-            ekg::draw::rect(p_item->component.rect_dimension_closed.x + rect.x + rect_opened.w,
+            ekg::draw::rect(p_item->component.rect_dimension_closed.x + rect.x,
                             p_item->component.rect_dimension_closed.y + rect.y + p_item->component.rect_dimension_closed.h + rect_opened.h - ekg_pixel_div_2,
                             p_item->component.rect_dimension_closed.w,
                             1.0f,
@@ -283,18 +292,23 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
         }
 
         auto &dimension_closed {p_item->component.rect_dimension_closed};
-        should_reset_row = false;
 
-        if (dimension_closed.x + dimension_closed.w > rect_opened.w) {
-            rect_opened.h -= 0.0f;
-            //rect_opened.w = dimension_closed.x + dimension_closed.w;
-            should_reset_row = true;
+        next_row = dimension_closed.x > rect_opened.w;
+        next_column = dimension_closed.y > rect_opened_test.y;
+
+        if (next_row) {
+            rect_opened.h -= ekg::min((rect_opened.h + p_item->component.rect_dimension_opened.y) - (rect_opened_test.y + rect_opened.h), 0.0f);
+            rect_opened_test.y = p_item->component.rect_dimension_closed.y;
+
+            rect_opened.w = dimension_closed.x;
         }
 
-        if (dimension_closed.y + dimension_closed.h > rect_opened.h) {
-            rect_opened.h = dimension_closed.y + dimension_closed.h;
-            if (should_reset_row) {
-                //rect_opened.w = 0.0f;
+        if (next_column) {
+            rect_opened.h += p_item->component.is_open ? dimension_closed.h : 0.0f;
+            rect_opened_test.y = dimension_closed.y;
+
+            if (!next_column) {
+                rect_opened.w = 0.0f;
             }
         }
     }

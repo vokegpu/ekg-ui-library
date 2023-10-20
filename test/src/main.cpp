@@ -296,12 +296,12 @@ int32_t main_example() {
     item.insert(2, "\1\2\3Usage");
 
     item.insert(ekg::attr::row_member, 0, {"\4Cat(s)", "\4 ", "\4 "});
-    item.insert(ekg::attr::row_member, 1, {"Potato", "Sleeping", "23%"});
-    item.insert(ekg::attr::row_member, 2, {"Chiquinha", "Sleepingp", "3%"});
+    item.insert(ekg::attr::row_member, 1, {"Potato", "Woke", "45%"});
+    item.insert(ekg::attr::row_member, 2, {"Chiquinha", "Sleepiong", "23%"});
 
     item.at(0).at(1).insert("Brain");
-    item.at(1).at(1).insert("Sleeping");
-    item.at(2).at(1).insert("23%");
+    item.at(1).at(1).insert("Exploring");
+    item.at(2).at(1).insert("45%");
 
     ekg::label("RGB:", ekg::dock::next);
 
