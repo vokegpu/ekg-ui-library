@@ -38,6 +38,7 @@ void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item)
         ekg::component &component {item.component};
 
         this->loaded_item_list.push_back(&item);
+        //std::cout << item.value << std::endl;
 
         // measure that this componet does not contains category attribute
         component.rect_dimension_closed.x = rect_dimension_update.x;
@@ -105,6 +106,8 @@ void ekg::ui::listbox_widget::on_reload() {
 
     this->item_font_metrics.y = item_f_renderer.get_text_height();
     this->item_font_metrics.x = this->item_font_metrics.y / 2.0f;
+
+    //std::cout << "88888888888888888" << std::endl;
 
     this->rect_widget = {};
     this->component_category_last = {};
@@ -304,7 +307,30 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
         }
 
         if (next_column) {
-            rect_opened.h += p_item->component.is_open ? dimension_closed.h : 0.0f;
+            bool check {};
+            rect_opened.h += p_item->p_item_parent != nullptr &&
+                             p_item->p_item_parent->component.is_open &&
+
+                             // check if the current component is the last height component of item parent
+                             // when open
+                             ( check =  (
+                                    (
+                                        p_item->component.rect_dimension_closed.y +
+                                        p_item->component.rect_dimension_closed.h +
+                                        1.0f // it is important to increase 1
+                                    ) > (
+                                        p_item->p_item_parent->component.rect_dimension_opened.y +
+                                        p_item->p_item_parent->component.rect_dimension_opened.h
+                                    )
+                                )
+                             )
+
+                             ? p_item->p_item_parent->component.rect_dimension_opened.h : 0.0f;
+
+            if (check) {
+                std::cout << p_item->value << std::endl;
+            }
+
             rect_opened_test.y = dimension_closed.y;
 
             if (!next_column) {

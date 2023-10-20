@@ -69,6 +69,8 @@ namespace ekg::ui {
 
         ekg::ui::textbox *set_max_lines(uint64_t lines);
         uint64_t get_max_lines();
+    
+        ekg::ui::textbox *clear();
     };
 }
 
