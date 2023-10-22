@@ -96,12 +96,12 @@ namespace ekg {
                 std::string p_log {ekg::log::buffer.str()};
 
                 #if defined(__ANDROID__)
-                __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", p_log);
+                __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", p_log.c_str());
                 #else
                 std::cout << p_log;
                 #endif
 
-                ekg::log::buffer = {};
+                ekg::log::buffer.clear();
                 ekg::log::buffered = false;
             }
         }

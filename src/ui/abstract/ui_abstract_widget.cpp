@@ -68,7 +68,7 @@ void ekg::ui::abstract_widget::on_post_event(SDL_Event &sdl_event) {
 
     #if defined(__ANDROID__)
     this->flag.highlight = !(!this->flag.hovered &&
-                             (ekg::os == ekg::platform::os_android && ekg::input::released())) &&
+                           (ekg::input::released())) &&
                            this->flag.highlight;
     #endif
 }

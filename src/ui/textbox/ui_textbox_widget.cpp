@@ -622,14 +622,14 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
         y += this->text_height;
     }
 
-    switch (reset_second_cursor_pos) {
-    case true:
+    if (reset_second_cursor_pos) {
         if (checked) {
             cursor.pos[0].chunk_index = static_cast<int64_t>(chunk_index);
             cursor.pos[0].text_index = static_cast<int64_t>(text_index);
             cursor.pos[0].last_text_index = static_cast<int64_t>(text_index);
         } else {
-            cursor.pos[0].chunk_index = static_cast<int64_t>(chunk_index - (!this->text_chunk_list.empty()));
+            cursor.pos[0].chunk_index = static_cast<int64_t>(chunk_index -
+                                                             (!this->text_chunk_list.empty()));
             cursor.pos[0].text_index = static_cast<int64_t>(utf_char_index);
             cursor.pos[0].last_text_index = static_cast<int64_t>(text_index);
         }
@@ -637,17 +637,19 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
         cursor.pos[1] = cursor.pos[0];
         cursor.pos[2] = cursor.pos[0];
         cursor.pos[3] = cursor.pos[0];
-
-        break;
-    case false:
+    } else {
         if (checked) {
-            it = (text_index < cursor.pos[2].text_index && chunk_index == cursor.pos[2].chunk_index) || chunk_index < cursor.pos[2].chunk_index ? 0 : 1;
+            it = (text_index < cursor.pos[2].text_index &&
+                  chunk_index == cursor.pos[2].chunk_index) ||
+                 chunk_index < cursor.pos[2].chunk_index ? 0 : 1;
             cursor.pos[it].chunk_index = static_cast<int64_t>(chunk_index);
             cursor.pos[it].text_index = static_cast<int64_t>(text_index);
             cursor.pos[it].last_text_index = static_cast<int64_t>(text_index);
         } else {
-            it = text_index < cursor.pos[2].text_index && chunk_index <= cursor.pos[2].chunk_index ? 0 : 1;
-            cursor.pos[it].chunk_index = static_cast<int64_t>(chunk_index - (!this->text_chunk_list.empty()));
+            it = text_index < cursor.pos[2].text_index && chunk_index <= cursor.pos[2].chunk_index
+                 ? 0 : 1;
+            cursor.pos[it].chunk_index = static_cast<int64_t>(chunk_index -
+                                                              (!this->text_chunk_list.empty()));
             cursor.pos[it].text_index = static_cast<int64_t>(utf_char_index);
             cursor.pos[it].last_text_index = static_cast<int64_t>(text_index);
         }
@@ -659,8 +661,6 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget
             cursor.pos[1] = cursor.pos[2];
             cursor.pos[3] = cursor.pos[0];
         }
-
-        break;
     }
 
     ekg::dispatch(ekg::env::redraw);
