@@ -31,6 +31,11 @@
 namespace ekg::ui {
     class listbox_widget : public ekg::ui::abstract_widget {
     public:
+        struct container {
+        public:
+            std::vector<ekg::rect>
+        };
+    public:
         ekg::item *p_item {};
         ekg::rect rect_widget {};
         ekg::component component_category_last {};

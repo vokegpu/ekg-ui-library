@@ -288,6 +288,7 @@ int32_t main_example() {
     auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::next | ekg::dock::fill)->set_scaled_height(1);
     p_textbox->set_text("oii");
 
+    /*
     auto p_listbox = ekg::listbox("listbox", {"listbox"}, ekg::dock::fill | ekg::dock::next)->set_scaled_height(12);
     auto &item = p_listbox->item();
 
@@ -302,6 +303,50 @@ int32_t main_example() {
     item.at(0).at(1).insert("Brain");
     item.at(1).at(1).insert("Exploring");
     item.at(2).at(1).insert("45%");
+
+    */
+
+        auto b4 = ekg::button("4", ekg::dock::fill | ekg::dock::next);
+        b4->set_scaled_height(2);
+        b4->set_text_align(ekg::dock::center);
+        
+        auto b5 = ekg::button("5", ekg::dock::fill);
+        b5->set_scaled_height(2);
+        b5->set_text_align(ekg::dock::center);
+        
+        auto b6 = ekg::button("6", ekg::dock::fill);
+        b6->set_scaled_height(2);
+        b6->set_text_align(ekg::dock::center);
+
+        auto bsubtract = ekg::button("-", ekg::dock::fill);
+        bsubtract->set_scaled_height(2);
+        bsubtract->set_text_align(ekg::dock::center);
+        bsubtract->set_tag("calculator-subtract");
+
+        auto b1 = ekg::button("1", ekg::dock::fill | ekg::dock::next);
+        b1->set_scaled_height(2);
+        b1->set_text_align(ekg::dock::center);
+        
+        auto b2 = ekg::button("2", ekg::dock::fill);
+        b2->set_scaled_height(2);
+        b2->set_text_align(ekg::dock::center);
+    
+        auto b3 = ekg::button("3", ekg::dock::fill);
+        b3->set_scaled_height(2);
+        b3->set_text_align(ekg::dock::center);
+
+        auto baddition = ekg::button("+", ekg::dock::fill);
+        baddition->set_scaled_height(2);
+        baddition->set_text_align(ekg::dock::center);
+        baddition->set_tag("calculator-addition");
+
+        auto buseless1 = ekg::button("", ekg::dock::fill | ekg::dock::next);
+        buseless1->set_scaled_height(2);
+        buseless1->set_text_align(ekg::dock::center);
+
+        auto b0 = ekg::button("0", ekg::dock::fill);
+        b0->set_scaled_height(2);
+        b0->set_text_align(ekg::dock::center);
 
     ekg::label("RGB:", ekg::dock::next);
 
@@ -932,6 +977,19 @@ void item_test() {
     o.at(1).insert(0, "Meowing");
     o.at(2).insert(0, "2%");
     o.at(3).insert(0, "3%");
+
+    ekg::item &item = p_listbox->item();
+    item.insert("Name"); // category 1
+    item.insert("Description"); // category 2
+    item.insert("Status"); // category 3
+
+    item.at(0).insert("potato");
+    item.at(1).insert("cat");
+    item.at(2).insert("playing with friends!");
+
+    item.at(0).insert("chiquinha");
+    item.at(1).insert("cat");
+    item.at(2).insert("carring of children kitties!");
 }
 
 void sdl_test() {
@@ -953,5 +1011,5 @@ void stl_test() {
 }
 
 int32_t main(int32_t, char**) {
-    return main_example();
+    return main_calculator();
 }

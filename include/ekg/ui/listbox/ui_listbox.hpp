@@ -31,7 +31,6 @@
 namespace ekg::ui {
     class listbox : public ekg::ui::abstract {
     protected:
-        ekg::item data_item {};
         ekg::font category_font_size {};
         ekg::font item_font_size {};
     public:

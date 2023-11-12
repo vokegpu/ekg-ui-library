@@ -243,8 +243,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
     bool should_reset_row {};
     bool next_row {};
     bool next_column {};
-
-    std::cout << "----" << std::endl;
+    bool check {};
 
     for (ekg::item *&p_item : this->loaded_item_list) {
         if (p_item->p_item_parent != nullptr && !p_item->p_item_parent->component.is_open &&
@@ -307,12 +306,8 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
         }
 
         if (next_column) {
-            bool check {};
             rect_opened.h += p_item->p_item_parent != nullptr &&
                              p_item->p_item_parent->component.is_open &&
-
-                             // check if the current component is the last height component of item parent
-                             // when open
                              ( check =  (
                                     (
                                         p_item->component.rect_dimension_closed.y +
@@ -326,10 +321,6 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
                              )
 
                              ? p_item->p_item_parent->component.rect_dimension_opened.h : 0.0f;
-
-            if (check) {
-                std::cout << p_item->value << std::endl;
-            }
 
             rect_opened_test.y = dimension_closed.y;
 

@@ -130,3 +130,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 
 -- Added item graph system.
 -- Added component to item.
+-- Added level setting to widgets.

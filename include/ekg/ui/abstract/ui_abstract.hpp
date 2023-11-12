@@ -31,7 +31,19 @@
 
 namespace ekg {
     enum class type {
-        abstract, frame, button, label, slider, slider2d, checkbox, textbox, combobox, listbox, tab, popup, scroll
+        abstract,
+        frame,
+        button,
+        label,
+        slider, 
+        slider2d, 
+        checkbox, 
+        textbox, 
+        combobox, 
+        listbox, 
+        tab, 
+        popup, 
+        scroll
     };
 
     enum class level {
@@ -81,7 +93,7 @@ namespace ekg {
             abstract();
             ~abstract();
 
-            void set_level(ekg::level level);
+            ekg::ui::abstract *set_level(ekg::level level);
             ekg::level get_level();
 
             ekg::ui::abstract *set_tag(std::string_view tag);

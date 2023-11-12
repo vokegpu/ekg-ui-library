@@ -174,8 +174,9 @@ bool ekg::ui::abstract::has_children() {
     return !this->child_id_list.empty();
 }
 
-void ekg::ui::abstract::set_level(ekg::level level) {
+ekg::ui::abstract *ekg::ui::abstract::set_level(ekg::level level) {
     this->level = level;
+    return this;
 }
 
 ekg::level ekg::ui::abstract::get_level() {
