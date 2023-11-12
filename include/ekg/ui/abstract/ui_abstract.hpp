@@ -93,9 +93,6 @@ namespace ekg {
             abstract();
             ~abstract();
 
-            ekg::ui::abstract *set_level(ekg::level level);
-            ekg::level get_level();
-
             ekg::ui::abstract *set_tag(std::string_view tag);
             std::string_view get_tag();
 
@@ -109,12 +106,15 @@ namespace ekg {
             ekg::ui::abstract *set_parent_id(int32_t parent_id);
             int32_t get_parent_id();
 
-            ekg::ui::abstract *set_alive(bool is_alive);
+            ekg::ui::abstract *set_alive(bool state);
             bool is_alive();
             void destroy();
 
             ekg::ui::abstract *set_state(const ekg::state &_state);
             ekg::state get_state();
+
+            ekg::ui::abstract *set_level(const ekg::level &_level);
+            ekg::level get_level();
 
             ekg::ui::abstract *set_type(const ekg::type &_type);
             ekg::type get_type();
