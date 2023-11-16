@@ -57,7 +57,9 @@ message("-- EKG native library building done")
 
 if (EKG_ENABLE_TEST)
     message("-- EKG tests enabled")
-    project(ekg-tests)
+    message("-- EKG GUI showcase test building")
+
+    project(ekg-gui-showcase-test)
 
     if (WIN32)
         set(EXECUTABLE_OUTPUT_PATH ../test/build/win32/)
@@ -66,7 +68,7 @@ if (EKG_ENABLE_TEST)
     endif()
 
     add_compile_options(-O3)
-    add_executable(ekg-tests "test/src/main.cpp")
+    add_executable(ekg-gui-showcase-test "test/src/ekg_gui_showcase_test.cpp")
 
     if (WIN32)
         file(GLOB LIBRARY_PATH "./lib/win32/libekg.a")
@@ -76,10 +78,20 @@ if (EKG_ENABLE_TEST)
         set(THIRD_PARTY_LIBRARIES SDL2main SDL2 GL GLEW freetype)
     endif()
 
-    target_link_libraries(ekg-tests ${LIBRARY_PATH}
+    target_link_libraries(ekg-gui-showcase-test ${LIBRARY_PATH}
                                     ${THIRD_PARTY_LIBRARIES}
-                                    -static-libgcc -static-libstdc++
+                                    -static-libgcc -static-libstdc++    
     )
 
-    message("-- EKG tests building done")
+    message("-- EKG GUI showcase test building done")
+    message("-- EKG off test building")
+
+    project(ekg-off-test)
+
+    add_compile_options(-O3)
+    add_executable(ekg-off-test "test/src/ekg_off_test.cpp")
+
+    target_link_libraries(ekg-off-test -static-libgcc -static-libstdc++)
+
+    message("-- EKG off test building done")
 endif()

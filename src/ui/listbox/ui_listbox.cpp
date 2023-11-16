@@ -70,7 +70,7 @@ ekg::ui::listbox *ekg::ui::listbox::set_place(uint16_t dock) {
 }
 
 ekg::item &ekg::ui::listbox::item() {
-    return this->data_item;
+    return this->metadata;
 }
 
 ekg::ui::listbox *ekg::ui::listbox::set_category_font_size(ekg::font font) {

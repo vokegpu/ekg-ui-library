@@ -33,11 +33,32 @@
 
 #if defined(__ANDROID__)
 #include <android/log.h>
-#endif
+#endif          
 
 #include "geometry.hpp"
 
 namespace ekg {
+    /*
+    struct item {
+    protected:
+        std::vector<ekg::item> children_list {};
+    public:
+        ekg::item &at(size_t index);
+        ekg::item &operator[](size_t index);
+
+        ekg::item &emplace_back();
+        ekg::item &insert(std::string_view insert_item_value);
+        ekg::item &insert(std::string_view insert_item_value, size_t index);
+
+        ekg::item &insert(std::string_view insert_item_value, uint16_t attrib);
+        ekg::item &insert(std::string_view insert_item_value, uint16_t attrib, size_t index);
+
+        void erase(size_t index);    
+    public:
+        std::vector<ekg::item> &vector();
+    };
+    */
+
     struct item {
     public:
         std::vector<ekg::item> child_list {};

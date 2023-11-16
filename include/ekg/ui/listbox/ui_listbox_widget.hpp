@@ -33,7 +33,7 @@ namespace ekg::ui {
     public:
         struct container {
         public:
-            std::vector<ekg::rect>
+            std::vector<ekg::item*> item_list {};
         };
     public:
         ekg::item *p_item {};
