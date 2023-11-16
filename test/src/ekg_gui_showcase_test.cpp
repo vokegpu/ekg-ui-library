@@ -33,8 +33,8 @@ void create_exit_button() {
         .p_tag = "exit-callback",
         .p_callback = &running,
         .function = [](void *p_data) {
-        bool *p_running {static_cast<bool*>(p_data)};
-        *p_running = false;
+            bool *p_running {static_cast<bool*>(p_data)};
+            *p_running = false;
     }});;
 
     ekg::pop_group();
@@ -277,6 +277,24 @@ int32_t main_example() {
     SDL_GL_SetSwapInterval(1);
     SDL_Event sdl_event {};
 
+    auto apperence = ekg::frame("oi", {20, 20}, {400, 400});
+
+    ekg::checkbox("Use default system apparence", false);
+    ekg::label("GUI background", ekg::dock::next);
+    ekg::button("COR PRETA", ekg::dock::fill);
+    ekg::label("GUI style", ekg::dock::next);
+    ekg::button("listbox", ekg::dock::fill);
+    ekg::label("GUI orientation", ekg::dock::next);
+    ekg::button("chooose", ekg::dock::fill);
+    ekg::label("GUI font", ekg::dock::next);
+    ekg::textbox("font", "Arial/pdf", ekg::dock::fill);
+    ekg::button("..");
+    ekg::button("Apply", ekg::dock::next | ekg::dock::fill);
+    ekg::button("Post", ekg::dock::fill);
+    ekg::button("Dimiss", ekg::dock::fill);
+    ekg::pop_group();
+
+
     auto frame = ekg::frame("lê rect", {20, 20}, {800, 800});
 
     frame->set_drag(ekg::dock::top);
@@ -475,6 +493,23 @@ int32_t main_calculator() {
     uint64_t fps_ms_interval {1000 / fps};
     uint64_t display_fps {};
     uint64_t ticked_frames {};
+
+    auto apperence = ekg::frame("oi", {20, 20}, {400, 400})->set_drag(ekg::dock::top);
+
+    ekg::checkbox("Use default system apparence", false);
+    ekg::label("GUI background", ekg::dock::next)->set_width(125.0f);
+    ekg::button("COR PRETA", ekg::dock::fill);
+    ekg::label("GUI style", ekg::dock::next)->set_width(125.0f);
+    ekg::button("listbox", ekg::dock::fill);
+    ekg::label("GUI orientation", ekg::dock::next)->set_width(125.0f);
+    ekg::button("chooose", ekg::dock::fill);
+    ekg::label("GUI font", ekg::dock::next)->set_width(125.0f);
+    ekg::textbox("font", "Arial/pdf", ekg::dock::fill);
+    ekg::button("..");
+    ekg::button("Apply", ekg::dock::next | ekg::dock::fill);
+    ekg::button("Post", ekg::dock::fill);
+    ekg::button("Dimiss", ekg::dock::fill);
+    ekg::pop_group();
 
     auto f1 = ekg::frame("sou gostosa", {700, 300}, {200, 200})->set_drag(ekg::dock::top)->set_resize(ekg::dock::bottom | ekg::dock::left | ekg::dock::right);
 
@@ -1032,14 +1067,13 @@ namespace ekg {
         value<t>(t assign_value) {
             this->p_address = &this->old;
             *this->p_address = assign_value;
-            *this->p_semaphore = *this->p_semaphore || (*this->p_address != this->old);
-            this->old = *this->p_address;
         }
 
         ekg::value<t> &operator=(t assign_value) {
             *this->p_address = assign_value;
             *this->p_semaphore = *this->p_semaphore || (*this->p_address != this->old);
             this->old = *this->p_address;
+            return *this;
         }
     public:
         void set_semaphore(bool *p_set_semaphore) {
@@ -1051,20 +1085,53 @@ namespace ekg {
         }
     
         ekg::value<t> &make_default() {
+            this->p_address = &this->old;
             return *this;
         }
     };
 }
 
-int32_t main(int32_t, char**) {
-    bool signal {};
+struct entity {
+public:
+    float health {};
+};
 
+int32_t main(int32_t, char**) {
+    entity *p_player {new entity {
+        .health = 128.0f
+    }};
+
+    float *p_addr = &p_player->health;
+    bool signal {};
     ekg::value<float> age {33.0f};
+
+    age.set_address(&p_player->health);
     age.set_semaphore(&signal);
 
     float a = age;
-
     std::cout << a << std::endl;
+    age = 66.0f;
+    std::cout << (float) age  << std::endl;
 
-    return 0;// main_calculator();
+    if (signal) {
+        std::cout << "olooi " << p_player->health  << std::endl;
+    }
+
+    delete p_player;
+    if (p_addr != nullptr) {
+        std::cout << *p_addr << std::endl;
+        *p_addr = 44.0f;
+    }
+
+    /*
+    ekg::ui::slider *p_slider = ekg::slider("hello", -23.0f, -50.0f, 100.0f);
+    ekg::value<float> val = p_slider->value();
+
+    p_slider->set_precision(3)->set_dock(ekg::dock::fill);
+    val = 33.0f;
+
+    p_slider->value().set_address(&p_player->health);
+    */
+
+    return main_calculator();
 }

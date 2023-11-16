@@ -246,7 +246,9 @@ float ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *p_w
         flags = p_widgets->p_data->get_place_dock();
         is_last_index = it >= size - 1 || p_widgets->p_data->get_type() == ekg::type::scroll;
 
-        if ((ekg::bitwise::contains(flags, flag_stop) && it != begin_and_count) || is_last_index) {
+        if (
+            (ekg::bitwise::contains(flags, flag_stop) && it != begin_and_count) || is_last_index
+           ) {
             extent -= this->min_offset;
             n += (!ekg::bitwise::contains(flags, flag_stop) && ekg::bitwise::contains(flags, flag_ok) && is_last_index);
 
