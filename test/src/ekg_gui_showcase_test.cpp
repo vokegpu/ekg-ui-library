@@ -1096,7 +1096,7 @@ public:
     float health {};
 };
 
-int32_t main(int32_t, char**) {
+void vaue_test() {
     entity *p_player {new entity {
         .health = 128.0f
     }};
@@ -1132,6 +1132,8 @@ int32_t main(int32_t, char**) {
 
     p_slider->value().set_address(&p_player->health);
     */
+}
 
+int32_t main(int32_t, char**) {
     return main_calculator();
 }

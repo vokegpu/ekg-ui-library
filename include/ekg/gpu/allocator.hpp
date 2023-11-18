@@ -54,9 +54,6 @@ namespace ekg::gpu {
         int32_t previous_factor {};
         int32_t scissor_instance_id {-1};
 
-        uint64_t uvs_size {};
-        uint64_t vertexes_size {};
-
         int32_t begin_stride_count {};
         int32_t end_stride_count {};
 
