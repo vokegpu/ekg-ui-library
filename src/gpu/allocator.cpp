@@ -121,16 +121,7 @@ void ekg::gpu::allocator::revoke() {
     if (should_re_alloc_buffers || this->factor_changed) {
         glBindVertexArray(this->vbo_array);
         glBindBuffer(GL_ARRAY_BUFFER, this->geometry_buffer);
-
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * cached_geometry_resources_size, this->cached_geometry_resources.data(), GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*) 0);
-
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*) (sizeof(float) * 2));
-
-        //glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     }
 
@@ -207,6 +198,84 @@ void ekg::gpu::allocator::draw() {
 }
 
 void ekg::gpu::allocator::init() {
+    const std::string vsh_src {
+ekg::glsl_version + "\n"
+"layout (location = 0) in vec2 aPos;\n"
+"layout (location = 1) in vec2 aTexCoord;\n"
+
+"#define CONVEX -256.0\n"
+
+"uniform mat4 uOrthographicMatrix;\n"
+"uniform vec4 uRect;\n"
+"uniform float uDepth;\n"
+
+"out vec2 vTexCoord;\n"
+"out vec4 vRect;\n"
+
+"void main() {"
+"    vec2 vertex = aPos;\n"
+"    bool modalShape = uRect.z != CONVEX || uRect.w != CONVEX;\n"
+
+"    if (modalShape) {"
+"        vertex *= uRect.zw;"
+"    }\n"
+
+"    vertex += uRect.xy;\n"
+"    gl_Position = uOrthographicMatrix * vec4(vertex, 0.0f, 1.0f);\n"
+
+"    vTexCoord = aTexCoord;\n"
+"    vRect = uRect;\n"
+"}"};
+
+    const std::string fsh_src {
+ekg::glsl_version + "\n"
+"layout (location = 0) out vec4 vFragColor;\n"
+"uniform sampler2D uTextureSampler;\n"
+
+"in vec2 vTexCoord;\n"
+"in vec4 vRect;\n"
+
+"uniform int uLineThickness;\n"
+"uniform bool uActiveTexture;\n"
+"uniform vec4 uColor;\n"
+"uniform vec4 uScissor;\n"
+"uniform float uViewportHeight;\n"
+
+"void main() {"
+"    vFragColor = uColor;\n"
+"    vec2 fragPos = vec2(gl_FragCoord.x, uViewportHeight - gl_FragCoord.y);\n"
+"    bool shouldDiscard = (fragPos.x <= uScissor.x || fragPos.y <= uScissor.y || fragPos.x >= uScissor.x + uScissor.z || fragPos.y >= uScissor.y + uScissor.w);\n"
+
+"    float lineThicknessf = float(uLineThickness);\n"
+"    if (uLineThickness > 0) {"
+"        vec4 outline = vec4(vRect.x + lineThicknessf, vRect.y + lineThicknessf, vRect.z - (lineThicknessf * 2.0f), vRect.w - (lineThicknessf * 2.0f));\n"
+"        shouldDiscard = shouldDiscard || (fragPos.x > outline.x && fragPos.x < outline.x + outline.z && fragPos.y > outline.y && fragPos.y < outline.y + outline.w);\n"
+"    } else if (uLineThickness < 0) {\n"
+"       float radius = vRect.z / 2.0f;\n"
+"       vec2 diff = vec2((vRect.x + radius) - fragPos.x, (vRect.y + radius) - fragPos.y);\n"
+"       float dist = (diff.x * diff.x + diff.y * diff.y);\n"
+
+"       vFragColor.w = (1.0f - smoothstep(0.0, radius * radius, dot(dist, dist)));\n"
+"    }"
+
+"    if (shouldDiscard) {"
+"       vFragColor.w = 0.0f;\n"
+"    }\n"
+
+"    if (uActiveTexture && !shouldDiscard) {"
+"        vFragColor = texture(uTextureSampler, vTexCoord);\n"
+"        vFragColor = vec4(vFragColor.xyz - ((1.0f - uColor.xyz) - 1.0f), vFragColor.w - (1.0f - uColor.w));\n"
+"    }\n"
+"}"};
+
+    ekg::log() << "Loading internal shaders...";
+    
+    /* Create main shading program using two basic shaders (vertex & fragment). */
+    ekg::gpu::create_basic_program(ekg::gpu::allocator::program, {
+        {vsh_src, GL_VERTEX_SHADER},
+        {fsh_src, GL_FRAGMENT_SHADER}
+    });
+
     glGenVertexArrays(1, &this->vbo_array);
     glGenBuffers(1, &this->geometry_buffer);
     glGenBuffers(1, &this->ebo_simple_shape);
@@ -218,9 +287,22 @@ void ekg::gpu::allocator::init() {
     };
 
     glBindVertexArray(this->vbo_array);
+
+    /* Start of geometry resources buffer attributes. */
+    glBindBuffer(GL_ARRAY_BUFFER, this->geometry_buffer);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*) 0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*) (sizeof(float) * 2));
+    /* End of geometry resources buffer attributes. */
+
+    /* Start of simple shape indexing buffer bind to VAO. */
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebo_simple_shape);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(simple_shape_mesh_indices), simple_shape_mesh_indices, GL_STATIC_DRAW);
     glBindVertexArray(0);
+    /* End  of simple shape indexing buffer bind to VAO. */
 
     /* reduce glGetLocation calls when rendering the batch */
     auto &shading_program_id {ekg::gpu::allocator::program.id};
