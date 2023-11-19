@@ -38,70 +38,51 @@
 #include "geometry.hpp"
 
 namespace ekg {
-    /*
     struct item {
     protected:
         std::vector<ekg::item> children_list {};
+        ekg::component geometry_component {};
+        std::string value {};
+
+        uint16_t attributes {};
+        uint16_t states {};
     public:
         ekg::item &at(size_t index);
         ekg::item &operator[](size_t index);
 
         ekg::item &emplace_back();
-        ekg::item &insert(std::string_view insert_item_value);
-        ekg::item &insert(std::string_view insert_item_value, size_t index);
-
-        ekg::item &insert(std::string_view insert_item_value, uint16_t attrib);
-        ekg::item &insert(std::string_view insert_item_value, uint16_t attrib, size_t index);
-
-        void erase(size_t index);    
-    public:
-        std::vector<ekg::item> &vector();
-    };
-    */
-
-    struct item {
-    public:
-        std::vector<ekg::item> child_list {};
-        std::vector<uint64_t> connected_child_list {};
-        std::string value {};
-
-        uint16_t attr {};
-        uint16_t state {};
-
-        ekg::component component {};
-        ekg::item *p_item_parent {};
-        bool *p_semaphore {};
-    public:
-        ekg::item &operator=(std::string_view _value);
-        ekg::item &operator=(const std::vector<std::string_view> &item_value_list);
-        ekg::item &operator[](uint64_t index);
-    public:
-        item() = default;
-        item(std::string_view _value);
-        
-        void clear();
-        void push_back(const ekg::item &item_copy);
-        void push_back(std::string_view item_value);
-        void insert(const std::vector<std::string_view> &item_value_list);
-        void insert(uint16_t predicate, uint64_t index, const std::vector<std::string_view> &value_list);
-
-        ekg::item &emplace_back();
         ekg::item &insert(std::string_view item_value);
-        ekg::item &insert(const ekg::item &item);
-        ekg::item &at(uint64_t index);
-        ekg::item &insert(uint64_t index, std::string_view value);
-        ekg::item &insert(uint64_t index, const ekg::item &copy_item);
+        ekg::item &insert(std::string_view item_value, size_t index);
+
+        ekg::item &insert(const std::pair<std::string_view, uint16_t> &item_pair);
+        ekg::item &insert(const std::pair<std::string_view, uint16_t> &item_pair, size_t index);
+
+        ekg::item &set_value(size_t index, std::string_view item_value);
+        ekg::item &set_attr(size_t index, uint16_t attr_bits);
+        ekg::item &set_state(size_t index, uint16_t state_bits);
+        void erase(size_t index);
 
         [[nodiscard]] bool empty() const;
         [[nodiscard]] uint64_t size() const;
-    
+
         std::vector<ekg::item>::iterator begin();
         std::vector<ekg::item>::iterator end();
-    
+
         [[nodiscard]] std::vector<ekg::item>::const_iterator cbegin() const;
         [[nodiscard]] std::vector<ekg::item>::const_iterator cend() const;
     public:
-        void set_value(std::string_view _value);
+        std::vector<ekg::item> &vector();
+        ekg::component &component();
+
+        void set_value(std::string_view item_value);
+        std::string_view get_value();
+
+        void set_attr(uint16_t attr_bits);
+        uint16_t get_attr();
+
+        void set_state(uint16_t state_bits);
+        uint16_t get_state();
+
         bool has_parent();
         bool has_children();
     };

@@ -95,6 +95,7 @@ public:
 };
 
 int32_t main() {
+    std::pair<const char*, uint16_t> pepe {"oii", 888};
     kist<float> list_of_life {};
 
     list_of_life.emplace_back() = 4.0f;
