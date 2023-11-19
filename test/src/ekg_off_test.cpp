@@ -23,17 +23,18 @@
  */
 
 #include <iostream>
+#include <type_traits>
 
 struct property {
 public:
-    const char *p_tag {};
+    uint32_t id {};
 };
 
 template<typename t>
-void cout_stride(t &list, t p_it_begin, t p_it_end) {
+void cout_stride(void *p_list, void *p_it_begin, void *p_it_end) {
     size_t t_sizeof {sizeof(t)};
 
-    size_t length {sizeof(list) / t_sizeof};
+    size_t length {sizeof(p_list) / t_sizeof};
     std::cout << "len: " << length << std::endl;
 
     size_t begin {sizeof(p_it_begin) / t_sizeof};
@@ -43,15 +44,71 @@ void cout_stride(t &list, t p_it_begin, t p_it_end) {
     std::cout << "end: " << end << std::endl;
 }
 
+template<typename t>
+struct kist {
+protected:
+    size_t cached_length {};
+    size_t length {};
+    t *p_data {};
+protected:
+    void resize() {
+        this->cached_length += 64;
+        t *p_new_size = new t[this->cached_length];
+
+        size_t it {};
+        for (size_t it {}; it < this->length; ++it) {
+            p_new_size[it] = this->p_data[it];
+        }
+
+        delete this->p_data;
+        this->p_data = p_new_size;
+    }
+public:
+    kist() {
+        this->cached_length = 64;
+        this->p_data = new t[64];
+    }
+
+    size_t size() {
+        return this->length;
+    }
+
+    t *&data() {
+        return this->p_data;
+    }
+
+    t &emplace_back() {
+        if (this->length >= this->cached_length) {
+            this->resize();
+        }
+
+        return this->p_data[this->length++];
+    }
+
+    t *begin() {
+        return this->p_data;
+    }
+
+    t *end() {
+        return this->p_data + this->length;
+    }
+};
+
 int32_t main() {
-    property *p_properties {new property[5]};
+    kist<float> list_of_life {};
 
-    p_properties[0].p_tag = "cat";
-    p_properties[1].p_tag = "car";
-    p_properties[2].p_tag = "com";
-    p_properties[3].p_tag = "cur";
-    p_properties[4].p_tag = "col";
+    list_of_life.emplace_back() = 4.0f;
+    list_of_life.emplace_back() = 8.0f;
+    list_of_life.emplace_back() = 16.0f;
+    list_of_life.emplace_back() = 32.0f;
 
-    cout_stride(p_properties, p_properties + 1, p_properties + 3);
+    std::cout << ".." << std::endl;
+    std::cout << list_of_life.size() << std::endl;
+    std::cout << *list_of_life.end() << std::endl;
+
+    for (float &fs : list_of_life) {
+        std::cout << "fffs: " << fs << std::endl;
+    }
+
     return 0;
 }
