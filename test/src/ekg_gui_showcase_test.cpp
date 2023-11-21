@@ -1014,7 +1014,6 @@ void item_test() {
     o.at(2).insert(0, "2%");
     o.at(3).insert(0, "3%");
 
-    /*
     ekg::item &item = p_listbox->item();
     item.insert("Name"); // category 1
     item.insert("Description"); // category 2
@@ -1027,7 +1026,9 @@ void item_test() {
     item.at(0).insert("chiquinha");
     item.at(1).insert("cat");
     item.at(2).insert("carring of children kitties!");
-    */
+
+    item.insert({"cat", ekg::attr::box});
+    item.insert({{"cat"}, {"double"}, {"sum"}});
 }
 
 void sdl_test() {
