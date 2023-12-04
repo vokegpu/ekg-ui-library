@@ -54,7 +54,7 @@ ekg::item &ekg::item::insert(std::string_view item_value, size_t index) {
     return this->insert({item_value}, index);
 }
 
-ekg::item &ekg::item::insert(const ekg::item &insert_item) {
+ekg::item &ekg::item::insert(ekg::item insert_item) {
     ekg_sign_item_sempahore();
     ekg::item &item {this->child_list.emplace_back()};
     item = insert_item;
@@ -63,13 +63,47 @@ ekg::item &ekg::item::insert(const ekg::item &insert_item) {
     return item;
 }
 
-ekg::item &ekg::item::insert(const ekg::item &insert_item, size_t index) {
+ekg::item &ekg::item::insert(ekg::item insert_item, size_t index) {
     ekg_sign_item_sempahore();
-    ekg::item &item {this->child_list.insert(this->child_list.begin() + index)};
-    item = insert_item;
+    this->child_list.insert(this->child_list.begin() + index, insert_item);
+    ekg::item &item {this->child_list.at(index)};
     item.p_parent = this;
     item.p_semaphore = this->p_semaphore;
     return item;
+}
+
+ekg::item &ekg::item::insert(const std::vector<ekg::item> &item_vector) {
+    ekg_sign_item_sempahore();
+
+    size_t previous_size {this->child_list.size()};
+    size_t additional_size {item_vector.size()};
+
+    this->child_list.resize(previous_size + additional_size);
+    for (uint64_t it {}; it < item_vector.size(); it++) {
+        ekg::item &item {this->child_list.at(previous_size + it)};
+        item = item_vector.at(it);
+        item.p_parent = this;
+        item.p_semaphore = this->p_semaphore;
+    }
+
+    return this->child_list.at(previous_size);
+}
+
+ekg::item &ekg::item::insert(const std::vector<ekg::item> &item_vector, size_t index) {
+    ekg_sign_item_sempahore();
+
+    size_t previous_size {this->child_list.size()};
+    size_t additional_size {item_vector.size()};
+
+    this->child_list.insert(this->child_list.begin() + index, item_vector.begin(), item_vector.end());
+    for (uint64_t it {}; it < item_vector.size(); it++) {
+        ekg::item &item {this->child_list.at(index + it)};
+        item = item_vector.at(it);
+        item.p_parent = this;
+        item.p_semaphore = this->p_semaphore;
+    }
+
+    return this->child_list.at(index);
 }
 
 ekg::item &ekg::item::set_value(size_t index, std::string_view item_value) {
@@ -135,21 +169,6 @@ std::vector<ekg::item>::const_iterator ekg::item::cend() const {
     return this->child_list.cend();
 }
 
-ekg::item() {
-    this->semaphore = &ekg::item::default_semaphore;
-}
-
-ekg::item(std::string_view item_value) {
-    this->set_value(item_value);
-    this->p_semaphore = &ekg::item::default_semaphore;
-}
-
-ekg::item(std::string_view item_value, uint16_t attr_bits) {
-    this->value = item_value;
-    this->attributes = attr_bits;
-    this->semaphore = &ekg::item::default_semaphore;
-}
-
 ekg::item &ekg::item::set_value(std::string_view item_value) {
     uint16_t attr_bits {};
     uint8_t start_index {ekg::check_attribute_flags(item_value, attr_bits)};
@@ -159,12 +178,25 @@ ekg::item &ekg::item::set_value(std::string_view item_value) {
     }
 
     this->value = item_value;
-    this->attributes = attr_flags;
+    this->attributes = attr_bits;
     return *this;
 }
 
 std::string_view ekg::item::get_value() {
     return this->value;
+}
+
+ekg::item &ekg::item::set_attr(uint16_t attr_bits) {
+    if (this->attributes != attr_bits) {
+        ekg_sign_item_sempahore();
+        this->attributes = attr_bits;
+    }
+
+    return *this;
+}
+
+uint16_t ekg::item::get_attr() {
+    return this->attributes;
 }
 
 ekg::item &ekg::item::set_state(uint16_t state_bits) {
@@ -173,6 +205,10 @@ ekg::item &ekg::item::set_state(uint16_t state_bits) {
     }
 
     return *this;
+}
+
+uint16_t ekg::item::get_state() {
+    return this->states;
 }
 
 ekg::item &ekg::item::set_semaphore_address(bool *p_addres) {
@@ -198,6 +234,25 @@ bool ekg::item::has_children() {
 
 bool ekg::item::has_parent() {
     return this->p_parent != nullptr;
+}
+
+ekg::item::item() {
+    this->p_semaphore = &ekg::item::default_semaphore;
+}
+
+ekg::item::item(std::string_view item_value) {
+    this->set_value(item_value);
+    this->p_semaphore = &ekg::item::default_semaphore;
+}
+
+ekg::item::item(std::string_view item_value, uint16_t attr_bits) {
+    this->value = item_value;
+    this->attributes = attr_bits;
+    this->p_semaphore = &ekg::item::default_semaphore;
+}
+
+ekg::item::~item() {
+    ekg_sign_item_sempahore();
 }
 
 std::ostringstream ekg::log::buffer {};

@@ -41,7 +41,7 @@
 
 namespace ekg {
     struct item {
-    protected:
+    private:
         static ekg::item *p_parent_instance;
         static bool *p_semaphore_instance;
         static bool default_semaphore;
@@ -61,8 +61,8 @@ namespace ekg {
         ekg::item &insert(std::string_view item_value);
         ekg::item &insert(std::string_view item_value, size_t index);
 
-        ekg::item &insert(const ekg::item &insert_item);
-        ekg::item &insert(const ekg::item &insert_item, size_t index);
+        ekg::item &insert(ekg::item insert_item);
+        ekg::item &insert(ekg::item insert_item, size_t index);
 
         ekg::item &insert(const std::vector<ekg::item> &item_vector);
         ekg::item &insert(const std::vector<ekg::item> &item_vector, size_t index);
@@ -86,10 +86,6 @@ namespace ekg {
     public:
         item *p_parent {};
     public:
-        ekg::item();
-        ekg::item(std::string_view item_value);
-        ekg::item(std::string_view item_value, uint16_t attr_bits);
-
         std::vector<ekg::item> &vector();
         ekg::component &component();
 
@@ -108,6 +104,12 @@ namespace ekg {
 
         bool has_parent();
         bool has_children();
+    public:
+        item();
+        item(std::string_view item_value);
+        item(std::string_view item_value, uint16_t attr_bits);
+    public:
+        ~item();
     };
 
     struct log {

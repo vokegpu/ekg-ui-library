@@ -79,8 +79,8 @@ if (EKG_ENABLE_TEST)
     endif()
 
     target_link_libraries(ekg-gui-showcase-test ${LIBRARY_PATH}
-                                    ${THIRD_PARTY_LIBRARIES}
-                                    -static-libgcc -static-libstdc++    
+                                                ${THIRD_PARTY_LIBRARIES}
+                                                -static-libgcc -static-libstdc++    
     )
 
     message("-- EKG GUI showcase test building done")

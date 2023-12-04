@@ -27,70 +27,11 @@
 #include "ekg/draw/draw.hpp"
 
 void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item) {
-    auto p_ui {(ekg::ui::listbox*) this->p_data};
-    auto &category_f_renderer {ekg::f_renderer(p_ui->get_category_font_size())};
-    auto &item_f_renderer {ekg::f_renderer(p_ui->get_item_font_size())};
-
-    ekg::rect rect_dimension_update {parent_item.component.rect_dimension_closed};
-
-    for (uint64_t it {}; it < parent_item.size(); it++) {
-        ekg::item &item {parent_item.at(it)};
-        ekg::component &component {item.component};
-
-        this->loaded_item_list.push_back(&item);
-        //std::cout << item.value << std::endl;
-
-        // measure that this componet does not contains category attribute
-        component.rect_dimension_closed.x = rect_dimension_update.x;
-        component.rect_dimension_closed.y = rect_dimension_update.y + rect_dimension_update.h;
-        component.rect_dimension_closed.w = this->component_category_last.rect_dimension_closed.w;
-        component.rect_dimension_closed.h = this->item_font_metrics.y + this->item_font_metrics.x;
-
-        if (ekg::bitwise::contains(item.attr, ekg::attr::row)) {
-            this->rect_widget.w  += this->component_category_last.rect_dimension_closed.w;
-            component.rect_dimension_closed.x = this->rect_widget.x + this->rect_widget.w;
-
-            // update the size of parent item if the item attr contains row flag
-            if (item.p_item_parent != nullptr) {
-                item.p_item_parent->component.rect_dimension_closed.w = this->rect_widget.w + component.rect_dimension_closed.w - item.p_item_parent->component.rect_dimension_closed.x;
-            }
-        } else {
-            rect_dimension_update.h += component.rect_dimension_closed.h;
-        }
-
-        if (ekg::bitwise::contains(item.attr, ekg::attr::category)) {
-            component.rect_text.w = category_f_renderer.get_text_width(item.value);
-            component.rect_text.h = this->category_font_metrics.y;
-
-            // by default category does not have a width size set
-            component.rect_dimension_closed.w = component.rect_text.w + 50.0f;
-            component.rect_dimension_closed.h = this->category_font_metrics.y + this->category_font_metrics.x;
-
-            component.rect_text.x = ekg::find_min_offset(component.rect_text.w, this->category_font_metrics.x);
-            component.rect_text.y = component.rect_text.x;
-
-            this->component_category_last = component;
-        } else {
-            component.rect_text.w = item_f_renderer.get_text_width(item.value);
-            component.rect_text.h = this->item_font_metrics.y;
-
-            component.rect_text.x = ekg::find_min_offset(component.rect_text.w, this->item_font_metrics.x);
-            component.rect_text.y = component.rect_text.x;
-        }
-
-        if (!item.empty()) {
-            this->process_component_template(item);
-        }
-
-        parent_item.component.rect_dimension_opened.w = ekg::min(parent_item.component.rect_dimension_closed.x + rect_dimension_update.w, parent_item.component.rect_dimension.w);
-        parent_item.component.rect_dimension_opened.h = ekg::min(parent_item.component.rect_dimension_closed.y + rect_dimension_update.h, parent_item.component.rect_dimension.h);
-    }
 }
 
 void ekg::ui::listbox_widget::on_create() {
     auto p_ui {(ekg::ui::listbox*) this->p_data};
     auto &item {p_ui->item()};
-    item.p_semaphore = &this->semaphore;
 }
 
 void ekg::ui::listbox_widget::on_reload() {
@@ -107,8 +48,6 @@ void ekg::ui::listbox_widget::on_reload() {
     this->item_font_metrics.y = item_f_renderer.get_text_height();
     this->item_font_metrics.x = this->item_font_metrics.y / 2.0f;
 
-    //std::cout << "88888888888888888" << std::endl;
-
     this->rect_widget = {};
     this->component_category_last = {};
     this->loaded_item_list = {};
@@ -119,6 +58,7 @@ void ekg::ui::listbox_widget::on_reload() {
 }
 
 void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
+    /*
     bool motion {ekg::input::motion()};
     bool pressed {ekg::input::pressed()};
     bool released {ekg::input::released()};
@@ -167,12 +107,14 @@ void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
 
             p_item->component.is_hovering = was_hovered;
         }
+        */
 
         /*
          * Row members items at the same index, interact togethers.
          * Category(s) and row(s) items attributes can not interact together.
          * If the mommy parent contains only one child, then it is not neceassary.
          */ 
+    /*
         if (p_item_hovered != nullptr &&
             !ekg::bitwise::contains(p_item_hovered->attr, ekg::attr::category) &&
             !ekg::bitwise::contains(p_item_hovered->attr, ekg::attr::row) &&
@@ -216,6 +158,7 @@ void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
             }
         }
     }
+    */
 }
 
 void ekg::ui::listbox_widget::on_update() {
@@ -229,6 +172,8 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
     auto &theme {ekg::theme()};
     auto &category_f_renderer {ekg::f_renderer(p_ui->get_category_font_size())};
     auto &item_f_renderer {ekg::f_renderer(p_ui->get_item_font_size())};
+
+    /*
 
     ekg::draw::bind_scissor(p_ui->get_id());
     ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
@@ -329,6 +274,8 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
             }
         }
     }
+
+    */
 
     ekg::draw::bind_off_scissor();
 }

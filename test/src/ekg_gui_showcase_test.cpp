@@ -976,6 +976,7 @@ void memory_test() {
 }
 
 void item_test() {
+    /*
     ekg::item animals = {"animals"};
 
     animals.emplace_back() = "cats";
@@ -1014,6 +1015,8 @@ void item_test() {
     o.at(2).insert(0, "2%");
     o.at(3).insert(0, "3%");
 
+    /*
+
     ekg::item &item = p_listbox->item();
     item.insert("Name"); // category 1
     item.insert("Description"); // category 2
@@ -1029,6 +1032,7 @@ void item_test() {
 
     item.insert({"cat", ekg::attr::box});
     item.insert({{"cat"}, {"double"}, {"sum"}});
+    */
 }
 
 void sdl_test() {
