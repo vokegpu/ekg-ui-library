@@ -28,85 +28,87 @@
 #include "ekg/draw/draw.hpp"
 
 void ekg::ui::button_widget::on_reload() {
-    abstract_widget::on_reload();
+  abstract_widget::on_reload();
 
-    auto p_ui {(ekg::ui::button*) this->p_data};
-    auto &rect {this->get_abs_rect()};
-    auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  auto p_ui {(ekg::ui::button *) this->p_data};
+  auto &rect {this->get_abs_rect()};
+  auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
-    float text_width {f_renderer.get_text_width(p_ui->get_text())};
-    float text_height {f_renderer.get_text_height()};
+  float text_width {f_renderer.get_text_width(p_ui->get_text())};
+  float text_height {f_renderer.get_text_height()};
 
-    float dimension_offset {static_cast<float>((int32_t) (text_height / 2.0f))};
-    float offset {ekg::find_min_offset(text_width, dimension_offset)};
+  float dimension_offset {static_cast<float>((int32_t) (text_height / 2.0f))};
+  float offset {ekg::find_min_offset(text_width, dimension_offset)};
 
-    this->dimension.w = ekg::min(this->dimension.w, text_width);
-    this->dimension.h = (text_height + dimension_offset) * static_cast<float>(p_ui->get_scaled_height());
+  this->dimension.w = ekg::min(this->dimension.w, text_width);
+  this->dimension.h = (text_height + dimension_offset) * static_cast<float>(p_ui->get_scaled_height());
 
-    this->min_size.x = ekg::min(this->min_size.x, text_height);
-    this->min_size.y = ekg::min(this->min_size.y, this->dimension.h);
+  this->min_size.x = ekg::min(this->min_size.x, text_height);
+  this->min_size.y = ekg::min(this->min_size.y, this->dimension.h);
 
-    this->rect_text.w = text_width;
-    this->rect_text.h = text_height;
+  this->rect_text.w = text_width;
+  this->rect_text.h = text_height;
 
-    auto &layout {ekg::core->service_layout};
-    layout.set_preset_mask({offset, offset, this->dimension.h}, ekg::axis::horizontal, this->dimension.w);
-    layout.insert_into_mask({&this->rect_text, p_ui->get_text_align()});
-    layout.process_layout_mask();
+  auto &layout {ekg::core->service_layout};
+  layout.set_preset_mask({offset, offset, this->dimension.h}, ekg::axis::horizontal, this->dimension.w);
+  layout.insert_into_mask({&this->rect_text, p_ui->get_text_align()});
+  layout.process_layout_mask();
 
-    auto &layout_mask {layout.get_layout_mask()};
-    this->dimension.w = (int32_t) (this->dimension.w <= text_width ? layout_mask.w : this->dimension.w);
-    this->dimension.h = ekg::min(this->dimension.h, layout_mask.h);
+  auto &layout_mask {layout.get_layout_mask()};
+  this->dimension.w = (int32_t) (this->dimension.w <= text_width ? layout_mask.w : this->dimension.w);
+  this->dimension.h = ekg::min(this->dimension.h, layout_mask.h);
 }
 
 void ekg::ui::button_widget::on_event(SDL_Event &sdl_event) {
-    bool pressed {ekg::input::pressed()};
-    bool released {ekg::input::released()};
+  bool pressed {ekg::input::pressed()};
+  bool released {ekg::input::released()};
 
-    if (ekg::input::motion() || pressed || released) {
-        ekg::set(this->flag.highlight, this->flag.hovered);
+  if (ekg::input::motion() || pressed || released) {
+    ekg::set(this->flag.highlight, this->flag.hovered);
+  }
+
+  if (pressed && !this->flag.activy && this->flag.hovered && ekg::input::action("button-activy")) {
+    ekg::set(this->flag.activy, true);
+  } else if (released && this->flag.activy) {
+    auto p_ui {(ekg::ui::button *) this->p_data};
+    p_ui->set_value(this->flag.hovered);
+
+    auto callback {p_ui->get_callback()};
+    if (p_ui->get_value() && callback != nullptr) {
+      ekg::dispatch(callback);
+      p_ui->set_value(false);
     }
 
-    if (pressed && !this->flag.activy && this->flag.hovered && ekg::input::action("button-activy")) {
-        ekg::set(this->flag.activy, true);
-    } else if (released && this->flag.activy) {
-        auto p_ui {(ekg::ui::button*) this->p_data};
-        p_ui->set_value(this->flag.hovered);
-
-        auto callback {p_ui->get_callback()};
-        if (p_ui->get_value() && callback != nullptr) {
-            ekg::dispatch(callback);
-            p_ui->set_value(false);
-        }
-
-        ekg::dispatch_ui_event(p_ui->get_tag().empty() ? ("unknown button id " + std::to_string(p_ui->get_id())) : p_ui->get_tag(), "callback", (uint16_t) p_ui->get_type());
-        ekg::set(this->flag.activy, false);
-    }
+    ekg::dispatch_ui_event(
+        p_ui->get_tag().empty() ? ("unknown button id " + std::to_string(p_ui->get_id())) : p_ui->get_tag(), "callback",
+        (uint16_t) p_ui->get_type());
+    ekg::set(this->flag.activy, false);
+  }
 }
 
 void ekg::ui::button_widget::on_draw_refresh() {
-    auto p_ui {(ekg::ui::button*) this->p_data};
-    auto &rect {this->get_abs_rect()};
-    auto &theme {ekg::theme()};
-    auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  auto p_ui {(ekg::ui::button *) this->p_data};
+  auto &rect {this->get_abs_rect()};
+  auto &theme {ekg::theme()};
+  auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
-    ekg::draw::bind_scissor(p_ui->get_id());
-    ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
+  ekg::draw::bind_scissor(p_ui->get_id());
+  ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
 
-    ekg_draw_assert_scissor();
+  ekg_draw_assert_scissor();
 
-    ekg::draw::rect(rect, theme.button_background);
-    ekg::draw::rect(rect, theme.button_outline, ekg::draw_mode::outline);
+  ekg::draw::rect(rect, theme.button_background);
+  ekg::draw::rect(rect, theme.button_outline, ekg::draw_mode::outline);
 
-    if (this->flag.highlight) {
-        ekg::draw::rect(rect, theme.button_highlight);
-    }
+  if (this->flag.highlight) {
+    ekg::draw::rect(rect, theme.button_highlight);
+  }
 
-    if (this->flag.activy) {
-        ekg::draw::rect(rect, theme.button_activy);
-        ekg::draw::rect(rect, {theme.button_activy, theme.button_outline.w}, ekg::draw_mode::outline);
-    }
+  if (this->flag.activy) {
+    ekg::draw::rect(rect, theme.button_activy);
+    ekg::draw::rect(rect, {theme.button_activy, theme.button_outline.w}, ekg::draw_mode::outline);
+  }
 
-    f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.button_string);
-    ekg::draw::bind_off_scissor();
+  f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.button_string);
+  ekg::draw::bind_off_scissor();
 }

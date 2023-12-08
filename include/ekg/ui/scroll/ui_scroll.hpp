@@ -28,9 +28,9 @@
 #include "ekg/ui/abstract/ui_abstract.hpp"
 
 namespace ekg::ui {
-    class scroll : public ekg::ui::abstract {
-        // I want to be a hot girl, with big boobs and a big but -><- <3
-    };
+  class scroll : public ekg::ui::abstract {
+    // I want to be a hot girl, with big boobs and a big but -><- <3
+  };
 }
 
 #endif

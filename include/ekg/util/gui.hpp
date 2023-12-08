@@ -31,56 +31,67 @@
 #include "ekg/core/task.hpp"
 
 namespace ekg {
-    enum class env {
-        refresh, swap, reload, synclayout, gc, redraw
-    };
+  enum class env {
+    refresh, swap, reload, synclayout, gc, redraw
+  };
 
-    void dispatch(task *p_ekg_event);
-    void dispatch(ekg::env env);
-    bool listen(event &ui_event, SDL_Event &sdl_event);
+  void dispatch(task *p_ekg_event);
 
-    extern ekg::rect empty;
+  void dispatch(ekg::env env);
 
-    struct hovered {
-        static int32_t id;
-        static ekg::type type;
-        static int32_t up;
-        static int32_t down;
-        static ekg::type downtype;
-        static ekg::type uptype;
-    };
+  bool listen(event &ui_event, SDL_Event &sdl_event);
 
-    struct stack {
-        std::map<int32_t, bool> registry {};
-        std::vector<ekg::ui::abstract_widget*> ordered_list {};
-        void clear();
-    };
+  extern ekg::rect empty;
 
-    void reload(int32_t id);
-    void reload(ekg::ui::abstract_widget *p_widget);
+  struct hovered {
+    static int32_t id;
+    static ekg::type type;
+    static int32_t up;
+    static int32_t down;
+    static ekg::type downtype;
+    static ekg::type uptype;
+  };
 
-    void synclayout(int32_t id);
-    void synclayout(ekg::ui::abstract_widget *p_widgets);
+  struct stack {
+    std::map<int32_t, bool> registry {};
+    std::vector<ekg::ui::abstract_widget *> ordered_list {};
 
-    void refresh(int32_t id);
-    void refresh(ekg::ui::abstract_widget *p_widget);
+    void clear();
+  };
 
-    void update_high_frequency(int32_t id);
-    void update_high_frequency(ekg::ui::abstract_widget *p_widget);
+  void reload(int32_t id);
 
-    void push_back_stack(ekg::ui::abstract_widget *p_widget, ekg::stack &stack);
-    ekg::ui::abstract_widget *find_absolute_parent_master(ekg::ui::abstract_widget *p_widget);
+  void reload(ekg::ui::abstract_widget *p_widget);
 
-    int32_t &set(int32_t &value, int32_t result);
-    bool &set(bool &value, bool result);
-    std::string &set(std::string &value, std::string_view result);
+  void synclayout(int32_t id);
 
-    /*
-     * Instead of dispatching lot of useless events like layout processing,
-     * the assert is able to check and prevent that.
-     */
-    extern bool assert_task_flag;
-    float assert_task(float, float);
+  void synclayout(ekg::ui::abstract_widget *p_widgets);
+
+  void refresh(int32_t id);
+
+  void refresh(ekg::ui::abstract_widget *p_widget);
+
+  void update_high_frequency(int32_t id);
+
+  void update_high_frequency(ekg::ui::abstract_widget *p_widget);
+
+  void push_back_stack(ekg::ui::abstract_widget *p_widget, ekg::stack &stack);
+
+  ekg::ui::abstract_widget *find_absolute_parent_master(ekg::ui::abstract_widget *p_widget);
+
+  int32_t &set(int32_t &value, int32_t result);
+
+  bool &set(bool &value, bool result);
+
+  std::string &set(std::string &value, std::string_view result);
+
+  /*
+   * Instead of dispatching lot of useless events like layout processing,
+   * the assert is able to check and prevent that.
+   */
+  extern bool assert_task_flag;
+
+  float assert_task(float, float);
 }
 
 #endif

@@ -33,152 +33,152 @@ ekg::ui::abstract::~abstract() {
 }
 
 ekg::ui::abstract *ekg::ui::abstract::add_child(int32_t id) {
-    bool contains {};
-    ekg::ui::abstract_widget *p_widget {};
+  bool contains {};
+  ekg::ui::abstract_widget *p_widget {};
 
-    for (int32_t &ids : this->child_id_list) {
-        if ((contains = ids == id)) {
-            break;
-        }
+  for (int32_t &ids: this->child_id_list) {
+    if ((contains = ids == id)) {
+      break;
     }
+  }
 
-    if (contains == false && (p_widget = ekg::core->get_fast_widget_by_id(id)) != nullptr) {        
-        this->child_id_list.push_back(id);
-        p_widget->p_data->set_parent_id(this->id);
-        p_widget->p_parent = &this->rect_widget;
-    }
+  if (contains == false && (p_widget = ekg::core->get_fast_widget_by_id(id)) != nullptr) {
+    this->child_id_list.push_back(id);
+    p_widget->p_data->set_parent_id(this->id);
+    p_widget->p_parent = &this->rect_widget;
+  }
 
-    return this;
+  return this;
 }
 
 std::vector<int32_t> &ekg::ui::abstract::get_child_id_list() {
-    return this->child_id_list;
+  return this->child_id_list;
 }
 
 ekg::ui::abstract *ekg::ui::abstract::remove_child(int32_t id) {
-    ekg::ui::abstract_widget *p_widget {};
+  ekg::ui::abstract_widget *p_widget {};
 
-    uint64_t it {};
-    bool contains {};
+  uint64_t it {};
+  bool contains {};
 
-    for (it = 0; it < this->child_id_list.size(); it++) {
-        if ((contains = this->child_id_list.at(it) == id)) {
-            break;
-        }
+  for (it = 0; it < this->child_id_list.size(); it++) {
+    if ((contains = this->child_id_list.at(it) == id)) {
+      break;
     }
+  }
 
-    if (contains == false && (p_widget = ekg::core->get_fast_widget_by_id(id)) != nullptr) {
-        this->child_id_list.erase(this->child_id_list.begin() + it);
-        p_widget->p_data->set_parent_id(0);
-        p_widget->p_parent = &p_widget->empty_parent;
-    }
+  if (contains == false && (p_widget = ekg::core->get_fast_widget_by_id(id)) != nullptr) {
+    this->child_id_list.erase(this->child_id_list.begin() + it);
+    p_widget->p_data->set_parent_id(0);
+    p_widget->p_parent = &p_widget->empty_parent;
+  }
 
-    return this;
+  return this;
 }
 
 ekg::ui::abstract *ekg::ui::abstract::set_id(int32_t id) {
-    this->id = id;
-    return this;
+  this->id = id;
+  return this;
 }
 
 int32_t ekg::ui::abstract::get_id() {
-    return this->id;
+  return this->id;
 }
 
 ekg::ui::abstract *ekg::ui::abstract::set_parent_id(int32_t id) {
-    this->parent_id = id;
-    return this;
+  this->parent_id = id;
+  return this;
 }
 
 int32_t ekg::ui::abstract::get_parent_id() {
-    return this->parent_id;
+  return this->parent_id;
 }
 
 ekg::ui::abstract *ekg::ui::abstract::set_alive(bool state) {
-    this->alive = state;
-    return this;
+  this->alive = state;
+  return this;
 }
 
 bool ekg::ui::abstract::is_alive() {
-    return this->alive;
+  return this->alive;
 }
 
 void ekg::ui::abstract::destroy() {
-    this->set_alive(false);
-    ekg::refresh(this->id);
+  this->set_alive(false);
+  ekg::refresh(this->id);
 
-    for (int32_t &ids : this->child_id_list) {
-        ekg::ui::abstract_widget *p_widget {ekg::core->get_fast_widget_by_id(ids)};
-        if (p_widget != nullptr && p_widget->p_data != nullptr) p_widget->p_data->destroy();
-    }
+  for (int32_t &ids: this->child_id_list) {
+    ekg::ui::abstract_widget *p_widget {ekg::core->get_fast_widget_by_id(ids)};
+    if (p_widget != nullptr && p_widget->p_data != nullptr) p_widget->p_data->destroy();
+  }
 }
 
 ekg::ui::abstract *ekg::ui::abstract::set_state(const ekg::state &enum_state) {
-    this->state = enum_state;
-    return this;
+  this->state = enum_state;
+  return this;
 }
 
 ekg::state ekg::ui::abstract::get_state() {
-    return this->state;
+  return this->state;
 }
 
 ekg::ui::abstract *ekg::ui::abstract::set_level(const ekg::level &_level) {
-    this->level = _level;
-    return this;
+  this->level = _level;
+  return this;
 }
 
 ekg::level ekg::ui::abstract::get_level() {
-    return this->level;
+  return this->level;
 }
 
 ekg::ui::abstract *ekg::ui::abstract::set_type(const ekg::type &enum_type) {
-    this->type = enum_type;
-    return this;
+  this->type = enum_type;
+  return this;
 }
 
 ekg::type ekg::ui::abstract::get_type() {
-    return this->type;
+  return this->type;
 }
 
 uint16_t ekg::ui::abstract::get_place_dock() {
-    return this->dock_flags;
+  return this->dock_flags;
 }
 
 ekg::rect &ekg::ui::abstract::widget() {
-    return this->rect_widget;
+  return this->rect_widget;
 }
 
 ekg::rect &ekg::ui::abstract::ui() {
-    return this->sync_ui;
+  return this->sync_ui;
 }
 
 ekg::ui::abstract *ekg::ui::abstract::set_tag(std::string_view string) {
-    this->tag = string;
-    return this;
+  this->tag = string;
+  return this;
 }
 
 std::string_view ekg::ui::abstract::get_tag() {
-    return this->tag;
+  return this->tag;
 }
 
 uint16_t &ekg::ui::abstract::get_sync() {
-    return this->sync_flags;
+  return this->sync_flags;
 }
 
 void ekg::ui::abstract::reset() {
-    ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::reset);
-    ekg::reload(this->id);
+  ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::reset);
+  ekg::reload(this->id);
 }
 
 ekg::ui::abstract *ekg::ui::abstract::unsafe_set_scaled_height_layout(int32_t scaled_height_int) {
-    this->scaled_height = scaled_height_int;
-    return this;
+  this->scaled_height = scaled_height_int;
+  return this;
 }
 
 bool ekg::ui::abstract::has_parent() {
-    return this->parent_id != 0;
+  return this->parent_id != 0;
 }
 
 bool ekg::ui::abstract::has_children() {
-    return !this->child_id_list.empty();
+  return !this->child_id_list.empty();
 }

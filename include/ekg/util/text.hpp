@@ -30,17 +30,22 @@
 #include <vector>
 
 namespace ekg {
-    std::string utf_char32_to_string(char32_t char32);
-    std::string utf_substr(std::string_view string, uint64_t offset, uint64_t size);
+  std::string utf_char32_to_string(char32_t char32);
 
-    uint64_t utf_length(std::string_view string);
-    uint64_t utf_check_sequence(uint8_t &char8, char32_t &char32, std::string &utf_string, std::string_view string, uint64_t index);
+  std::string utf_substr(std::string_view string, uint64_t offset, uint64_t size);
 
-    char32_t utf_string_to_char32(std::string_view string);
-    void utf_decode(std::string_view string, std::vector<std::string> &utf_decoded);
+  uint64_t utf_length(std::string_view string);
 
-    std::string string_float_precision(float number, int32_t precision);
-    uint8_t check_attribute_flags(std::string_view text, uint16_t &flags);
+  uint64_t utf_check_sequence(uint8_t &char8, char32_t &char32, std::string &utf_string, std::string_view string,
+                              uint64_t index);
+
+  char32_t utf_string_to_char32(std::string_view string);
+
+  void utf_decode(std::string_view string, std::vector<std::string> &utf_decoded);
+
+  std::string string_float_precision(float number, int32_t precision);
+
+  uint8_t check_attribute_flags(std::string_view text, uint16_t &flags);
 }
 
 #endif

@@ -46,129 +46,130 @@
 #define ekg_version_state "ALPHA"
 
 namespace ekg {
-    /*
-     * The runtime core of ekg.
-     */
-    extern ekg::runtime *core;
+  /*
+   * The runtime core of ekg.
+   */
+  extern ekg::runtime *core;
 
-    /*
-     * Shaders version should be higher than 300.
-     */
-    extern std::string glsl_version;
+  /*
+   * Shaders version should be higher than 300.
+   */
+  extern std::string glsl_version;
 
-    /*
-     * When enabled, ekg automatically find the base resolution scale by monitor.
-     */
-    extern bool autoscale;
+  /*
+   * When enabled, ekg automatically find the base resolution scale by monitor.
+   */
+  extern bool autoscale;
 
-    /*
-     * The scale interval between the base scaled resolution and root size.
-     */
-    extern float scaleinterval;
+  /*
+   * The scale interval between the base scaled resolution and root size.
+   */
+  extern float scaleinterval;
 
-    /*
-     * The resolution scale base, for edit, then you need to disable 'ekg::autoscale'.
-     */
-    extern ekg::vec2 scalebase;
+  /*
+   * The resolution scale base, for edit, then you need to disable 'ekg::autoscale'.
+   */
+  extern ekg::vec2 scalebase;
 
-    /*
-     * Pre-decode clipboard content.
-     */
-    extern bool pre_decode_clipboard;
+  /*
+   * Pre-decode clipboard content.
+   */
+  extern bool pre_decode_clipboard;
 
-    /* The setup and handling functions of ekg. */
+  /* The setup and handling functions of ekg. */
 
-    /*
-     * Init the runtime core of ekg, set window SDL instance and font renderer path (default but changeable).
-     */
-    void init(ekg::runtime *p_ekg_runtime, SDL_Window *p_root, std::string_view font_path);
+  /*
+   * Init the runtime core of ekg, set window SDL instance and font renderer path (default but changeable).
+   */
+  void init(ekg::runtime *p_ekg_runtime, SDL_Window *p_root, std::string_view font_path);
 
-    /*
-     * Quit from all services and main runtime core.
-     */
-    void quit();
+  /*
+   * Quit from all services and main runtime core.
+   */
+  void quit();
 
-    /*
-     * Poll events and sync UI events.
-     */
-    void poll_event(SDL_Event&);
+  /*
+   * Poll events and sync UI events.
+   */
+  void poll_event(SDL_Event &);
 
-    /*
-     * Process events, tasks, services & widgets.
-     */
-    void update();
+  /*
+   * Process events, tasks, services & widgets.
+   */
+  void update();
 
-    /*
-     * Draw all data from gpu allocator.
-     */
-    void render();
+  /*
+   * Draw all data from gpu allocator.
+   */
+  void render();
 
-    /* The environment getters of ekg. */
+  /* The environment getters of ekg. */
 
-    /*
-     * Get the theme service, you can load custom theme files.
-     */
-    ekg::service::theme &theme();
+  /*
+   * Get the theme service, you can load custom theme files.
+   */
+  ekg::service::theme &theme();
 
-    /*
-     * Get font renderer based on scaled sizes.
-     */
-    ekg::draw::font_renderer &f_renderer(ekg::font font);
+  /*
+   * Get font renderer based on scaled sizes.
+   */
+  ekg::draw::font_renderer &f_renderer(ekg::font font);
 
-    /*
-     * Create frame UI.
-     */
-    ekg::ui::frame *frame(std::string_view tag, const ekg::vec2 &pos, const ekg::vec2 &size);
+  /*
+   * Create frame UI.
+   */
+  ekg::ui::frame *frame(std::string_view tag, const ekg::vec2 &pos, const ekg::vec2 &size);
 
-    /*
-     * Create embedded frame UI.
-     */
-    ekg::ui::frame *frame(std::string_view tag, const ekg::vec2 &size, uint16_t dock = ekg::dock::none);
+  /*
+   * Create embedded frame UI.
+   */
+  ekg::ui::frame *frame(std::string_view tag, const ekg::vec2 &size, uint16_t dock = ekg::dock::none);
 
-    /*
-     * Create button UI.
-     */
-    ekg::ui::button *button(std::string_view text, uint16_t dock = ekg::dock::none);
+  /*
+   * Create button UI.
+   */
+  ekg::ui::button *button(std::string_view text, uint16_t dock = ekg::dock::none);
 
-    /*
-     * Create label UI.
-     */
-    ekg::ui::label *label(std::string_view text, uint16_t dock = ekg::dock::none);
+  /*
+   * Create label UI.
+   */
+  ekg::ui::label *label(std::string_view text, uint16_t dock = ekg::dock::none);
 
-    /*
-     * Create checkbox UI.
-     */
-    ekg::ui::checkbox *checkbox(std::string_view text, bool checked, uint16_t dock = ekg::dock::none);
+  /*
+   * Create checkbox UI.
+   */
+  ekg::ui::checkbox *checkbox(std::string_view text, bool checked, uint16_t dock = ekg::dock::none);
 
-    /*
-     * Create slider UI.
-     */
-    ekg::ui::slider *slider(std::string_view tag, float val, float min, float max, uint16_t dock = ekg::dock::none);
+  /*
+   * Create slider UI.
+   */
+  ekg::ui::slider *slider(std::string_view tag, float val, float min, float max, uint16_t dock = ekg::dock::none);
 
-    /*
-     * Create popup UI.
-     */
-    ekg::ui::popup *popup(std::string_view tag, const std::vector<std::string> &component_list, bool interact_position = true);
+  /*
+   * Create popup UI.
+   */
+  ekg::ui::popup *
+  popup(std::string_view tag, const std::vector<std::string> &component_list, bool interact_position = true);
 
-    /*
-     * Create textbox UI.
-     */
-    ekg::ui::textbox *textbox(std::string_view tag, std::string_view text, uint16_t dock = ekg::dock::none);
+  /*
+   * Create textbox UI.
+   */
+  ekg::ui::textbox *textbox(std::string_view tag, std::string_view text, uint16_t dock = ekg::dock::none);
 
-    /*
-     * Create listbox UI.
-     */
-    ekg::ui::listbox *listbox(std::string_view tag, const ekg::item &item, uint16_t dock = ekg::dock::none);
+  /*
+   * Create listbox UI.
+   */
+  ekg::ui::listbox *listbox(std::string_view tag, const ekg::item &item, uint16_t dock = ekg::dock::none);
 
-    /*
-     * Create scroll UI.
-     */
-    ekg::ui::scroll *scroll(std::string_view tag);
+  /*
+   * Create scroll UI.
+   */
+  ekg::ui::scroll *scroll(std::string_view tag);
 
-    /*
-     * Stop collecting UIs to group.
-     */
-    void pop_group();
+  /*
+   * Stop collecting UIs to group.
+   */
+  void pop_group();
 }
 
 #endif

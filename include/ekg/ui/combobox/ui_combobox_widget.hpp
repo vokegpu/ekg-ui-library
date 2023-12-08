@@ -26,5 +26,4 @@
 #define EKG_UI_COMBOBOX_WIDGET_H
 
 
-
 #endif

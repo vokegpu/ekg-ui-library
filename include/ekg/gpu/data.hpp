@@ -29,29 +29,29 @@
 #include <cstdint>
 
 namespace ekg {
-    extern int32_t concave;
+  extern int32_t concave;
 
-    namespace gpu {
-        struct data {
-        public:
-            float shape_rect[4] {};
-            float material_color[4] {};
+  namespace gpu {
+    struct data {
+    public:
+      float shape_rect[4] {};
+      float material_color[4] {};
 
-            uint8_t active_tex_slot {};
-            int32_t begin_stride {};
-            int32_t end_stride {};
-            int32_t line_thickness {};
+      uint8_t active_tex_slot {};
+      int32_t begin_stride {};
+      int32_t end_stride {};
+      int32_t line_thickness {};
 
-            int32_t factor {};
-            int32_t scissor_id {-1};
-            int32_t id {};
-        };
+      int32_t factor {};
+      int32_t scissor_id {-1};
+      int32_t id {};
+    };
 
-        struct scissor {
-        public:
-            float rect[4] {};
-        };
-    }
+    struct scissor {
+    public:
+      float rect[4] {};
+    };
+  }
 }
 
 #endif

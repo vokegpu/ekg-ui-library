@@ -30,29 +30,30 @@
 #include "ekg/os/ekg_sdl.hpp"
 
 namespace ekg {
-    enum event_type {
-        unique    = 0,
-        alloc     = 2,
-        allocated = 4,
-        shared    = 8
-    };
+  enum event_type {
+    unique = 0,
+    alloc = 2,
+    allocated = 4,
+    shared = 8
+  };
 
-    extern uint32_t listener;
-    void dispatch_ui_event(std::string_view tag, std::string_view value, uint16_t type);
+  extern uint32_t listener;
 
-    struct event {
-    public:
-        std::string tag {};
-        std::string value {};
-        uint16_t type {};
-    };
+  void dispatch_ui_event(std::string_view tag, std::string_view value, uint16_t type);
 
-    struct task {
-    public:
-        const char* p_tag {};
-        void* p_callback {};
-        std::function<void(void*)> function {};
-    };
+  struct event {
+  public:
+    std::string tag {};
+    std::string value {};
+    uint16_t type {};
+  };
+
+  struct task {
+  public:
+    const char *p_tag {};
+    void *p_callback {};
+    std::function<void(void *)> function {};
+  };
 }
 
 #endif

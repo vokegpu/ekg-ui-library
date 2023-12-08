@@ -29,28 +29,34 @@
 #include "ekg/util/io.hpp"
 
 namespace ekg::ui {
-    class listbox : public ekg::ui::abstract {
-    protected:
-        ekg::item metadata {};
-        ekg::font category_font_size {};
-        ekg::font item_font_size {};
-    public:
-        ekg::ui::listbox *set_width(float w);
-        float get_width();
+  class listbox : public ekg::ui::abstract {
+  protected:
+    ekg::item metadata {};
+    ekg::font category_font_size {};
+    ekg::font item_font_size {};
+  public:
+    ekg::ui::listbox *set_width(float w);
 
-        ekg::ui::listbox *set_scaled_height(int32_t h);
-        int32_t get_scaled_height();
-        float get_height();
+    float get_width();
 
-        ekg::ui::listbox *set_place(uint16_t dock);
-        ekg::item &item();
+    ekg::ui::listbox *set_scaled_height(int32_t h);
 
-        ekg::ui::listbox *set_category_font_size(ekg::font font);
-        ekg::font get_category_font_size();
+    int32_t get_scaled_height();
 
-        ekg::ui::listbox *set_item_font_size(ekg::font font);
-        ekg::font get_item_font_size();
-    };
+    float get_height();
+
+    ekg::ui::listbox *set_place(uint16_t dock);
+
+    ekg::item &item();
+
+    ekg::ui::listbox *set_category_font_size(ekg::font font);
+
+    ekg::font get_category_font_size();
+
+    ekg::ui::listbox *set_item_font_size(ekg::font font);
+
+    ekg::font get_item_font_size();
+  };
 }
 
 #endif

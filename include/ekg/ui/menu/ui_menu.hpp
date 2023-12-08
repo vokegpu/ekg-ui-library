@@ -28,10 +28,10 @@
 #include "ekg/ui/abstract/ui_abstract.hpp"
 
 namespace ekg::ui {
-    class menu : public ekg::ui::abstract {
-    protected:
-    public:
-    };
+  class menu : public ekg::ui::abstract {
+  protected:
+  public:
+  };
 }
 
 #endif

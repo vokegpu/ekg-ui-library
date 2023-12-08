@@ -23,32 +23,38 @@
 #include <unordered_map>
 
 namespace ekg::service {
-    class handler {
-    protected:
-        std::queue<task> task_queue {};
-        std::unordered_map<const char*, bool> pre_allocated_task_dispatched_map {};
-        std::vector<task> pre_allocated_task_list {};
-    protected:
-        std::queue<task> multi_thread_task_queue {};
-        std::unordered_map<const char*, bool> multi_thread_task_dispatched_map {};
-        bool running_multi_thread_task {};
-    public:
-        void set_running_multi_thread_task(bool state);
-        bool is_running_multi_thread_task();
+  class handler {
+  protected:
+    std::queue<task> task_queue {};
+    std::unordered_map<const char *, bool> pre_allocated_task_dispatched_map {};
+    std::vector<task> pre_allocated_task_list {};
+  protected:
+    std::queue<task> multi_thread_task_queue {};
+    std::unordered_map<const char *, bool> multi_thread_task_dispatched_map {};
+    bool running_multi_thread_task {};
+  public:
+    void set_running_multi_thread_task(bool state);
 
-        task &allocate();
-        task &generate();
-        task &generate_multi_thread();
+    bool is_running_multi_thread_task();
 
-        void init_multi_thread_task_thread();
-        void dispatch_pre_allocated_task(uint64_t index);
-        void on_update();
-        void on_update_multi_thread();
-    };
+    task &allocate();
+
+    task &generate();
+
+    task &generate_multi_thread();
+
+    void init_multi_thread_task_thread();
+
+    void dispatch_pre_allocated_task(uint64_t index);
+
+    void on_update();
+
+    void on_update_multi_thread();
+  };
 }
 
 namespace ekg {
-    void multi_thread_task_thread_update(ekg::service::handler *p_service_handler);
+  void multi_thread_task_thread_update(ekg::service::handler *p_service_handler);
 }
 
 #endif

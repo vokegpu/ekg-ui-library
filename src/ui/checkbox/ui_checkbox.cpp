@@ -26,127 +26,127 @@
 #include "ekg/util/gui.hpp"
 
 ekg::ui::checkbox *ekg::ui::checkbox::set_callback(task *event) {
-    if (this->callback != event && this->callback != nullptr) {
-        delete this->callback;
-        this->callback = nullptr;
-    }
+  if (this->callback != event && this->callback != nullptr) {
+    delete this->callback;
+    this->callback = nullptr;
+  }
 
-    this->callback = event;
-    return this;
+  this->callback = event;
+  return this;
 }
 
 ekg::task *ekg::ui::checkbox::get_callback() {
-    return this->callback;
+  return this->callback;
 }
 
 ekg::ui::checkbox *ekg::ui::checkbox::set_font_size(ekg::font font) {
-    if (this->font_size != font) {
-        this->font_size = font;
+  if (this->font_size != font) {
+    this->font_size = font;
 
-        ekg::synclayout(this->parent_id);
-        ekg::reload(this->id);
-    }
+    ekg::synclayout(this->parent_id);
+    ekg::reload(this->id);
+  }
 
-    return this;
+  return this;
 }
 
 ekg::font ekg::ui::checkbox::get_font_size() {
-    return this->font_size;
+  return this->font_size;
 }
 
 ekg::ui::checkbox *ekg::ui::checkbox::set_place(uint16_t docks) {
-    if (this->dock_flags != docks) {
-        this->dock_flags = docks;
+  if (this->dock_flags != docks) {
+    this->dock_flags = docks;
 
-        ekg::synclayout(this->id);
-    }
+    ekg::synclayout(this->id);
+  }
 
-    return this;
+  return this;
 }
 
 ekg::ui::checkbox *ekg::ui::checkbox::set_width(float w) {
-    if (this->sync_ui.w != w) {
-        this->sync_ui.w = w;
-        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+  if (this->sync_ui.w != w) {
+    this->sync_ui.w = w;
+    ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 float ekg::ui::checkbox::get_width() {
-    return this->rect_widget.w;
+  return this->rect_widget.w;
 }
 
 ekg::ui::checkbox *ekg::ui::checkbox::set_scaled_height(int32_t scaled_height_factor) {
-    if (this->scaled_height != scaled_height_factor) {
-        this->scaled_height = scaled_height_factor;
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+  if (this->scaled_height != scaled_height_factor) {
+    this->scaled_height = scaled_height_factor;
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 int32_t ekg::ui::checkbox::get_scaled_height() {
-    return this->scaled_height;
+  return this->scaled_height;
 }
 
 float ekg::ui::checkbox::get_height() {
-    return this->rect_widget.h;
+  return this->rect_widget.h;
 }
 
 ekg::ui::checkbox *ekg::ui::checkbox::set_text(std::string_view string) {
-    if (this->text != string) {
-        this->text = string;
+  if (this->text != string) {
+    this->text = string;
 
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 std::string_view ekg::ui::checkbox::get_text() {
-    return this->text;
+  return this->text;
 }
 
 ekg::ui::checkbox *ekg::ui::checkbox::set_value(bool val) {
-    if (this->value != val) {
-        this->value = val;
-        ekg::dispatch(ekg::env::redraw);
-    }
+  if (this->value != val) {
+    this->value = val;
+    ekg::dispatch(ekg::env::redraw);
+  }
 
-    return this;
+  return this;
 }
 
 bool ekg::ui::checkbox::get_value() {
-    return this->value;
+  return this->value;
 }
 
 ekg::ui::checkbox *ekg::ui::checkbox::set_text_align(uint16_t docks) {
-    if (this->dock_text != docks) {
-        this->dock_text = docks;
-        ekg::reload(this->id);
-    }
+  if (this->dock_text != docks) {
+    this->dock_text = docks;
+    ekg::reload(this->id);
+  }
 
-    return this;
+  return this;
 }
 
 uint16_t ekg::ui::checkbox::get_text_align() {
-    return this->dock_text;
+  return this->dock_text;
 }
 
 ekg::ui::checkbox *ekg::ui::checkbox::set_box_align(uint16_t docks) {
-    if (this->dock_box != docks) {
-        this->dock_box = docks;
-        ekg::reload(this->id);
-    }
+  if (this->dock_box != docks) {
+    this->dock_box = docks;
+    ekg::reload(this->id);
+  }
 
-    return this;
+  return this;
 }
 
 uint16_t ekg::ui::checkbox::get_box_align() {
-    return this->dock_box;    
+  return this->dock_box;
 }

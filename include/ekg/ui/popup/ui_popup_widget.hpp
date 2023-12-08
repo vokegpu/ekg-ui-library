@@ -29,27 +29,34 @@
 
 // @TODO State for components/elements disabled
 namespace ekg::ui {
-	class popup_widget : public ekg::ui::abstract_widget {
-    public:
-        float scissor_opened_height {};
-        float separator_offset {};
-        uint64_t elapsed_animation_ticks {};
-        bool parent_id_popup_opened {false};
+  class popup_widget : public ekg::ui::abstract_widget {
+  public:
+    float scissor_opened_height {};
+    float separator_offset {};
+    uint64_t elapsed_animation_ticks {};
+    bool parent_id_popup_opened {false};
 
-        int32_t hovered_element {};
-        int32_t popup_opened {-1};
-        int32_t top_level_popup {};
-    public:
-        bool is_hovering_any_popup(int32_t top_level);
-        void unset_visible_all_sub_popup();
-        void get_popup_path(std::string &path);
-    public:
-        void on_reload() override;
-        void on_pre_event(SDL_Event&) override;
-        void on_event(SDL_Event&) override;
-        void on_update() override;
-        void on_draw_refresh() override;
-	};
+    int32_t hovered_element {};
+    int32_t popup_opened {-1};
+    int32_t top_level_popup {};
+  public:
+    bool is_hovering_any_popup(int32_t top_level);
+
+    void unset_visible_all_sub_popup();
+
+    void get_popup_path(std::string &path);
+
+  public:
+    void on_reload() override;
+
+    void on_pre_event(SDL_Event &) override;
+
+    void on_event(SDL_Event &) override;
+
+    void on_update() override;
+
+    void on_draw_refresh() override;
+  };
 }
 
 #endif

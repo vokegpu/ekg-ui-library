@@ -26,73 +26,73 @@
 #include "ekg/util/gui.hpp"
 
 ekg::ui::listbox *ekg::ui::listbox::set_width(float w) {
-    if (this->sync_ui.w != w) {
-        this->sync_ui.w = w;
+  if (this->sync_ui.w != w) {
+    this->sync_ui.w = w;
 
-        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+    ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 float ekg::ui::listbox::get_width() {
-    return this->rect_widget.w;
+  return this->rect_widget.w;
 }
 
 ekg::ui::listbox *ekg::ui::listbox::set_scaled_height(int32_t h) {
-    if (this->scaled_height != h) {
-        this->scaled_height = h;
+  if (this->scaled_height != h) {
+    this->scaled_height = h;
 
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 int32_t ekg::ui::listbox::get_scaled_height() {
-    return this->scaled_height;
+  return this->scaled_height;
 }
 
 float ekg::ui::listbox::get_height() {
-    return this->rect_widget.h;
+  return this->rect_widget.h;
 }
 
 ekg::ui::listbox *ekg::ui::listbox::set_place(uint16_t dock) {
-    if (this->dock_flags != dock) {
-        this->dock_flags = dock;
-        ekg::synclayout(this->parent_id);
-    }
+  if (this->dock_flags != dock) {
+    this->dock_flags = dock;
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 ekg::item &ekg::ui::listbox::item() {
-    return this->metadata;
+  return this->metadata;
 }
 
 ekg::ui::listbox *ekg::ui::listbox::set_category_font_size(ekg::font font) {
-    if (this->category_font_size != font) {
-        this->category_font_size = font;
-    }
+  if (this->category_font_size != font) {
+    this->category_font_size = font;
+  }
 
-    return this;
+  return this;
 }
 
 ekg::font ekg::ui::listbox::get_category_font_size() {
-    return this->category_font_size;
+  return this->category_font_size;
 }
 
 ekg::ui::listbox *ekg::ui::listbox::set_item_font_size(ekg::font font) {
-    if (this->item_font_size != font) {
-        this->item_font_size = font;
-    }
+  if (this->item_font_size != font) {
+    this->item_font_size = font;
+  }
 
-    return this;
+  return this;
 }
 
 ekg::font ekg::ui::listbox::get_item_font_size() {
-    return this->item_font_size;
+  return this->item_font_size;
 }

@@ -29,29 +29,34 @@
 #include "ekg/util/io.hpp"
 
 namespace ekg::ui {
-    class listbox_widget : public ekg::ui::abstract_widget {
+  class listbox_widget : public ekg::ui::abstract_widget {
+  public:
+    struct container {
     public:
-        struct container {
-        public:
-            std::vector<ekg::item*> item_list {};
-        };
-    public:
-        ekg::item *p_item {};
-        ekg::rect rect_widget {};
-        ekg::component component_category_last {};
-        std::vector<ekg::item*> loaded_item_list {};
-        bool semaphore {};
-        ekg::vec2 category_font_metrics {};
-        ekg::vec2 item_font_metrics {};
-    public:
-        void process_component_template(ekg::item &parent_item);
-    public:
-        void on_create() override;
-        void on_reload() override;
-        void on_update() override;
-        void on_event(SDL_Event &sdl_event) override;
-        void on_draw_refresh() override;
+      std::vector<ekg::item *> item_list {};
     };
+  public:
+    ekg::item *p_item {};
+    ekg::rect rect_widget {};
+    ekg::component component_category_last {};
+    std::vector<ekg::item *> loaded_item_list {};
+    bool semaphore {};
+    ekg::vec2 category_font_metrics {};
+    ekg::vec2 item_font_metrics {};
+  public:
+    void process_component_template(ekg::item &parent_item);
+
+  public:
+    void on_create() override;
+
+    void on_reload() override;
+
+    void on_update() override;
+
+    void on_event(SDL_Event &sdl_event) override;
+
+    void on_draw_refresh() override;
+  };
 }
 
 #endif

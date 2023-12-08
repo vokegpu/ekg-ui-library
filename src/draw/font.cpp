@@ -30,292 +30,299 @@
 FT_Library ekg::draw::font_renderer::ft_library {};
 
 float ekg::draw::font_renderer::get_text_width(std::string_view text, int32_t &lines) {
-    if (text.empty()) {
-        return 0.0f;
+  if (text.empty()) {
+    return 0.0f;
+  }
+
+  lines = 1;
+
+  FT_Vector ft_vec {};
+  this->ft_uint_previous = 0;
+
+  float text_width {};
+  float largest_text_width {};
+
+  uint64_t text_size {text.size()};
+  char32_t char32 {};
+  uint8_t char8 {};
+  std::string utf_string {};
+
+  bool break_text {};
+  bool r_n_break_text {};
+
+  for (uint64_t it {}; it < text_size; it++) {
+    char8 = static_cast<uint8_t>(text.at(it));
+    it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
+
+    break_text = char8 == '\n';
+    if (break_text || (r_n_break_text = (char8 == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
+      it += static_cast<uint64_t>(r_n_break_text);
+      largest_text_width = ekg::min(largest_text_width, text_width);
+      text_width = 0.0f;
+      lines++;
+      continue;
     }
 
-    lines = 1;
-
-    FT_Vector ft_vec {};
-    this->ft_uint_previous = 0;
-
-    float text_width {};
-    float largest_text_width {};
-
-    uint64_t text_size {text.size()};
-    char32_t char32 {};
-    uint8_t char8 {};
-    std::string utf_string {};
-
-    bool break_text {};
-    bool r_n_break_text {};
-
-    for (uint64_t it {}; it < text_size; it++) {
-        char8 = static_cast<uint8_t>(text.at(it));
-        it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
-
-        break_text = char8 == '\n';
-        if (break_text || (r_n_break_text = (char8 == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
-            it += static_cast<uint64_t>(r_n_break_text);
-            largest_text_width = ekg::min(largest_text_width, text_width);
-            text_width = 0.0f;
-            lines++;
-            continue;
-        }
-
-        if (this->ft_bool_kerning && this->ft_uint_previous) {
-            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, char32, 0, &ft_vec);
-            text_width += static_cast<float>(ft_vec.x >> 6);
-        }
-
-        this->ft_uint_previous = char32;
-        text_width += this->allocated_char_data[char32].wsize;
+    if (this->ft_bool_kerning && this->ft_uint_previous) {
+      FT_Get_Kerning(this->ft_face, this->ft_uint_previous, char32, 0, &ft_vec);
+      text_width += static_cast<float>(ft_vec.x >> 6);
     }
 
-    largest_text_width = ekg::min(largest_text_width, text_width);
-    return largest_text_width;
+    this->ft_uint_previous = char32;
+    text_width += this->allocated_char_data[char32].wsize;
+  }
+
+  largest_text_width = ekg::min(largest_text_width, text_width);
+  return largest_text_width;
 }
 
 float ekg::draw::font_renderer::get_text_width(std::string_view text) {
-    if (text.empty()) {
-        return 0.0f;
+  if (text.empty()) {
+    return 0.0f;
+  }
+
+  FT_Vector ft_vec {};
+  this->ft_uint_previous = 0;
+
+  float text_width {};
+  float largest_text_width {};
+  char32_t char32 {};
+
+  uint64_t text_size {text.size()};
+  std::string utf_string {};
+  uint8_t char8 {};
+
+  bool break_text {};
+  bool r_n_break_text {};
+
+  for (uint64_t it {}; it < text_size; it++) {
+    char8 = static_cast<uint8_t>(text.at(it));
+    it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
+
+    break_text = char8 == '\n';
+    if (break_text || (r_n_break_text = (char8 == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
+      it += static_cast<uint64_t>(r_n_break_text);
+      largest_text_width = ekg::min(largest_text_width, text_width);
+      text_width = 0.0f;
+      continue;
     }
 
-    FT_Vector ft_vec {};
-    this->ft_uint_previous = 0;
-
-    float text_width {};
-    float largest_text_width {};
-    char32_t char32 {};
-
-    uint64_t text_size {text.size()};
-    std::string utf_string {};
-    uint8_t char8 {};
-
-    bool break_text {};
-    bool r_n_break_text {};
-
-    for (uint64_t it {}; it < text_size; it++) {
-        char8 = static_cast<uint8_t>(text.at(it));
-        it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
-
-        break_text = char8 == '\n';
-        if (break_text || (r_n_break_text = (char8 == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
-            it += static_cast<uint64_t>(r_n_break_text);
-            largest_text_width = ekg::min(largest_text_width, text_width);
-            text_width = 0.0f;
-            continue;
-        }
-
-        if (this->ft_bool_kerning && this->ft_uint_previous) {
-            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, char32, 0, &ft_vec);
-            text_width += static_cast<float>(ft_vec.x >> 6);
-        }
-
-        this->ft_uint_previous = char32;
-        text_width += this->allocated_char_data[char32].wsize;
+    if (this->ft_bool_kerning && this->ft_uint_previous) {
+      FT_Get_Kerning(this->ft_face, this->ft_uint_previous, char32, 0, &ft_vec);
+      text_width += static_cast<float>(ft_vec.x >> 6);
     }
 
-    largest_text_width = ekg::min(largest_text_width, text_width);
-    return largest_text_width;
+    this->ft_uint_previous = char32;
+    text_width += this->allocated_char_data[char32].wsize;
+  }
+
+  largest_text_width = ekg::min(largest_text_width, text_width);
+  return largest_text_width;
 }
 
 float ekg::draw::font_renderer::get_text_height() {
-    return this->text_height;
+  return this->text_height;
 }
 
 void ekg::draw::font_renderer::set_font(const std::string &path) {
-    if (this->font_path != path) {
-        this->font_path = path;
-        this->reload();
-    }
+  if (this->font_path != path) {
+    this->font_path = path;
+    this->reload();
+  }
 }
 
 void ekg::draw::font_renderer::set_size(uint32_t size) {
-    if (this->font_size != size) {
-        this->font_size = size;
-        this->reload();
-    }
+  if (this->font_size != size) {
+    this->font_size = size;
+    this->reload();
+  }
 }
 
 void ekg::draw::font_renderer::reload() {
-    if (!this->flag_first_time) {
-        FT_Done_Face(this->ft_face);
+  if (!this->flag_first_time) {
+    FT_Done_Face(this->ft_face);
+  }
+
+  this->flag_unloaded = FT_New_Face(ekg::draw::font_renderer::ft_library, this->font_path.c_str(), 0, &this->ft_face);
+  this->flag_first_time = false;
+
+  if (this->flag_unloaded) {
+    ekg::log() << "Error: Failed to create font face from '" << this->font_path << '\'';
+    return;
+  }
+
+  FT_Set_Pixel_Sizes(this->ft_face, 0, this->font_size);
+
+  /* Phase of getting bitmap texture bounds. */
+  this->full_width = 0;
+  this->full_height = 0;
+
+  this->ft_bool_kerning = FT_HAS_KERNING(this->ft_face);
+  this->ft_glyph_slot = this->ft_face->glyph;
+
+  for (char32_t char_codes {}; char_codes < 256; char_codes++) {
+    if (FT_Load_Char(this->ft_face, char_codes, FT_LOAD_RENDER)) {
+      continue;
     }
 
-    this->flag_unloaded = FT_New_Face(ekg::draw::font_renderer::ft_library, this->font_path.c_str(), 0, &this->ft_face);
-    this->flag_first_time = false;
+    this->full_width += static_cast<float>(this->ft_glyph_slot->bitmap.width);
+    this->full_height = std::max(this->full_height, static_cast<float>(this->ft_glyph_slot->bitmap.rows));
+  }
 
-    if (this->flag_unloaded) {
-        ekg::log() << "Error: Failed to create font face from '" << this->font_path << '\'';
-        return;
+  this->text_height = this->full_height;
+  this->offset_text_height = (this->text_height / 6.0f) / 2.0f;
+
+  /*
+   * A common issue with rendering overlay elements is flot32 imprecision, for this reason
+   * the cast float32 to int32 is necessary.
+   */
+  this->text_height += static_cast<int32_t>(this->offset_text_height);
+
+  /* Phase of getting chars metric_list. */
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+  if (this->texture != 0) {
+    glDeleteTextures(1, &this->texture);
+  }
+
+  auto internal_format {GL_RED};
+#if defined(__ANDROID__)
+  /*
+   * Android does not support GL_RED, perharps because of the GL ES version.
+   * For this reason, the format is GL_ALPHA and not GL_RED.
+   * Also both of internal format, and format is the same.
+   */
+  internal_format = GL_ALPHA;
+#endif
+
+  glGenTextures(1, &this->texture);
+  glBindTexture(GL_TEXTURE_2D, this->texture);
+  glTexImage2D(GL_TEXTURE_2D, 0, internal_format, (GLint) this->full_width, (GLint) this->full_height, 0,
+               internal_format, GL_UNSIGNED_BYTE, nullptr);
+
+  float offset {};
+  for (char32_t char_codes {}; char_codes < 256; char_codes++) {
+    if (FT_Load_Char(this->ft_face, char_codes, FT_LOAD_RENDER)) {
+      continue;
     }
 
-    FT_Set_Pixel_Sizes(this->ft_face, 0, this->font_size);
+    ekg::char_data &char_data {this->allocated_char_data[char_codes]};
+    char_data.x = offset / static_cast<float>(this->full_width);
+    char_data.w = static_cast<float>(this->ft_glyph_slot->bitmap.width);
+    char_data.h = static_cast<float>(this->ft_glyph_slot->bitmap.rows);
 
-    /* Phase of getting bitmap texture bounds. */
-    this->full_width = 0;
-    this->full_height = 0;
+    char_data.left = static_cast<float>(this->ft_glyph_slot->bitmap_left);
+    char_data.top = static_cast<float>(this->ft_glyph_slot->bitmap_top);
+    char_data.wsize = static_cast<float>(static_cast<int32_t>(this->ft_glyph_slot->advance.x >> 6));
 
-    this->ft_bool_kerning = FT_HAS_KERNING(this->ft_face);
-    this->ft_glyph_slot = this->ft_face->glyph;
+    glTexSubImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(offset), 0, static_cast<GLsizei>(char_data.w),
+                    static_cast<GLsizei>(char_data.h), internal_format, GL_UNSIGNED_BYTE,
+                    this->ft_glyph_slot->bitmap.buffer);
+    offset += char_data.w;
+  }
 
-    for (char32_t char_codes {}; char_codes < 256; char_codes++) {
-        if (FT_Load_Char(this->ft_face, char_codes, FT_LOAD_RENDER)) {
-            continue;
-        }
+#if defined(__ANDROID__)
+  // GLES 3 does not support swizzle function, the format GL_ALPHA supply this issue.
+#else
+  GLint swizzle_format[] {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
 
-        this->full_width += static_cast<float>(this->ft_glyph_slot->bitmap.width);
-        this->full_height = std::max(this->full_height, static_cast<float>(this->ft_glyph_slot->bitmap.rows));
-    }
-	
-    this->text_height = this->full_height;
-    this->offset_text_height = (this->text_height / 6.0f) / 2.0f;
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
+#endif
 
-    /*
-     * A common issue with rendering overlay elements is flot32 imprecision, for this reason
-     * the cast float32 to int32 is necessary.
-     */
-    this->text_height += static_cast<int32_t>(this->offset_text_height);
-
-    /* Phase of getting chars metric_list. */
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    if (this->texture != 0) {
-        glDeleteTextures(1, &this->texture);
-    }
-
-    auto internal_format {GL_RED};
-    #if defined(__ANDROID__)
-    /*
-     * Android does not support GL_RED, perharps because of the GL ES version.
-     * For this reason, the format is GL_ALPHA and not GL_RED.
-     * Also both of internal format, and format is the same.
-     */
-    internal_format = GL_ALPHA;
-    #endif
-
-    glGenTextures(1, &this->texture);
-    glBindTexture(GL_TEXTURE_2D, this->texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, internal_format, (GLint) this->full_width, (GLint) this->full_height, 0, internal_format, GL_UNSIGNED_BYTE, nullptr);
-
-    float offset {};
-    for (char32_t char_codes {}; char_codes < 256; char_codes++) {
-        if (FT_Load_Char(this->ft_face, char_codes, FT_LOAD_RENDER)) {
-            continue;
-        }
-
-        ekg::char_data &char_data {this->allocated_char_data[char_codes]};
-        char_data.x = offset / static_cast<float>(this->full_width);
-        char_data.w = static_cast<float>(this->ft_glyph_slot->bitmap.width);
-        char_data.h = static_cast<float>(this->ft_glyph_slot->bitmap.rows);
-
-        char_data.left = static_cast<float>(this->ft_glyph_slot->bitmap_left);
-        char_data.top = static_cast<float>(this->ft_glyph_slot->bitmap_top);
-        char_data.wsize = static_cast<float>(static_cast<int32_t>(this->ft_glyph_slot->advance.x >> 6));
-
-        glTexSubImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(offset), 0, static_cast<GLsizei>(char_data.w), static_cast<GLsizei>(char_data.h), internal_format, GL_UNSIGNED_BYTE, this->ft_glyph_slot->bitmap.buffer);
-        offset += char_data.w;
-    }
-
-    #if defined(__ANDROID__)
-    // GLES 3 does not support swizzle function, the format GL_ALPHA supply this issue.
-    #else
-    GLint swizzle_format[] {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
-
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
-    #endif
-
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, 0);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void ekg::draw::font_renderer::bind_allocator(ekg::gpu::allocator *p_allocator_bind) {
-    this->p_allocator = p_allocator_bind;
+  this->p_allocator = p_allocator_bind;
 }
 
 void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, const ekg::vec4 &color) {
-    if (this->p_allocator == nullptr || this->flag_unloaded || color.w < 0.1f || text.empty()) {
-        return;
+  if (this->p_allocator == nullptr || this->flag_unloaded || color.w < 0.1f || text.empty()) {
+    return;
+  }
+
+  x = static_cast<float>(static_cast<int32_t>(x));
+  y = static_cast<float>(static_cast<int32_t>(y - this->offset_text_height));
+
+  ekg::gpu::data &data {this->p_allocator->bind_current_data()};
+
+  data.shape_rect[0] = x;
+  data.shape_rect[1] = y;
+  data.shape_rect[2] = static_cast<float>(ekg::concave);
+  data.shape_rect[3] = static_cast<float>(ekg::concave);
+
+  data.material_color[0] = color.x;
+  data.material_color[1] = color.y;
+  data.material_color[2] = color.z;
+  data.material_color[3] = color.w;
+
+  ekg::rect vertices {};
+  ekg::rect coordinates {};
+
+  x = 0.0f;
+  y = 0.0f;
+
+  data.factor = 1;
+  char32_t char32 {};
+  uint8_t char8 {};
+
+  std::string utf_string {};
+  uint64_t text_size {text.size()};
+
+  bool break_text {};
+  bool r_n_break_text {};
+
+  for (uint64_t it {}; it < text_size; it++) {
+    char8 = static_cast<uint8_t>(text.at(it));
+    it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
+
+    break_text = char8 == '\n';
+    if (break_text || (r_n_break_text = (char8 == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
+      it += static_cast<uint64_t>(r_n_break_text);
+      data.factor += static_cast<int32_t>(y + char32);
+      y += this->text_height;
+      x = 0.0f;
+      continue;
     }
 
-    x = static_cast<float>(static_cast<int32_t>(x));
-    y = static_cast<float>(static_cast<int32_t>(y - this->offset_text_height));
-
-    ekg::gpu::data &data {this->p_allocator->bind_current_data()};
-
-    data.shape_rect[0] = x;
-    data.shape_rect[1] = y;
-    data.shape_rect[2] = static_cast<float>(ekg::concave);
-    data.shape_rect[3] = static_cast<float>(ekg::concave);
-
-    data.material_color[0] = color.x;
-    data.material_color[1] = color.y;
-    data.material_color[2] = color.z;
-    data.material_color[3] = color.w;
-
-    ekg::rect vertices {};
-    ekg::rect coordinates {};
-
-    x = 0.0f;
-    y = 0.0f;
-
-    data.factor = 1;
-    char32_t char32 {};
-    uint8_t char8 {};
-
-    std::string utf_string {};
-    uint64_t text_size {text.size()};
-
-    bool break_text {};
-    bool r_n_break_text {};
-
-    for (uint64_t it {}; it < text_size; it++) {
-        char8 = static_cast<uint8_t>(text.at(it));
-        it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
-
-        break_text = char8 == '\n';
-        if (break_text || (r_n_break_text = (char8 == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
-            it += static_cast<uint64_t>(r_n_break_text);
-            data.factor += static_cast<int32_t>(y + char32);
-            y += this->text_height;
-            x = 0.0f;
-            continue;
-        }
-
-        if (this->ft_bool_kerning && this->ft_uint_previous) {
-            FT_Get_Kerning(this->ft_face, this->ft_uint_previous, char32, 0, &this->ft_vector_previous_char);
-            x += static_cast<float>(this->ft_vector_previous_char.x >> 6);
-        }
-
-        ekg::char_data &char_data {this->allocated_char_data[char32]};
-        vertices.x = x + char_data.left;
-        vertices.y = y + this->full_height - char_data.top;
-
-        vertices.w = char_data.w;
-        vertices.h = char_data.h;
-
-        coordinates.x = char_data.x;
-        coordinates.w = vertices.w / this->full_width;
-        coordinates.h = vertices.h / this->full_height;
-
-        this->p_allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
-        this->p_allocator->push_back_geometry(vertices.x, vertices.y + vertices.h, coordinates.x, coordinates.y + coordinates.h);
-        this->p_allocator->push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h, coordinates.x + coordinates.w, coordinates.y + coordinates.h);
-        this->p_allocator->push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h, coordinates.x + coordinates.w, coordinates.y + coordinates.h);
-        this->p_allocator->push_back_geometry(vertices.x + vertices.w, vertices.y, coordinates.x + coordinates.w, coordinates.y);
-        this->p_allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
-
-        x += char_data.wsize;
-        this->ft_uint_previous = char32;
-        data.factor += static_cast<int32_t>(x + char32);
+    if (this->ft_bool_kerning && this->ft_uint_previous) {
+      FT_Get_Kerning(this->ft_face, this->ft_uint_previous, char32, 0, &this->ft_vector_previous_char);
+      x += static_cast<float>(this->ft_vector_previous_char.x >> 6);
     }
 
-    this->p_allocator->bind_texture(this->texture);
-    this->p_allocator->dispatch();
+    ekg::char_data &char_data {this->allocated_char_data[char32]};
+    vertices.x = x + char_data.left;
+    vertices.y = y + this->full_height - char_data.top;
+
+    vertices.w = char_data.w;
+    vertices.h = char_data.h;
+
+    coordinates.x = char_data.x;
+    coordinates.w = vertices.w / this->full_width;
+    coordinates.h = vertices.h / this->full_height;
+
+    this->p_allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
+    this->p_allocator->push_back_geometry(vertices.x, vertices.y + vertices.h, coordinates.x,
+                                          coordinates.y + coordinates.h);
+    this->p_allocator->push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h,
+                                          coordinates.x + coordinates.w, coordinates.y + coordinates.h);
+    this->p_allocator->push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h,
+                                          coordinates.x + coordinates.w, coordinates.y + coordinates.h);
+    this->p_allocator->push_back_geometry(vertices.x + vertices.w, vertices.y, coordinates.x + coordinates.w,
+                                          coordinates.y);
+    this->p_allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
+
+    x += char_data.wsize;
+    this->ft_uint_previous = char32;
+    data.factor += static_cast<int32_t>(x + char32);
+  }
+
+  this->p_allocator->bind_texture(this->texture);
+  this->p_allocator->dispatch();
 }
 
 void ekg::draw::font_renderer::init() {
@@ -323,5 +330,5 @@ void ekg::draw::font_renderer::init() {
 }
 
 void ekg::draw::font_renderer::quit() {
-    FT_Done_Face(this->ft_face);
+  FT_Done_Face(this->ft_face);
 }

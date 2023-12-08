@@ -27,163 +27,163 @@
 #include "ekg/ui/slider/ui_slider.hpp"
 
 ekg::ui::slider *ekg::ui::slider::set_dragging(bool state) {
-    this->dragging = state;
-    return this;
+  this->dragging = state;
+  return this;
 }
 
 bool ekg::ui::slider::is_dragging() {
-    return this->dragging;
+  return this->dragging;
 }
 
 ekg::ui::slider *ekg::ui::slider::set_bar_axis(ekg::axis axis) {
-    if (this->bar_axis != axis) {
-        this->bar_axis = axis;
+  if (this->bar_axis != axis) {
+    this->bar_axis = axis;
 
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 ekg::axis ekg::ui::slider::get_bar_axis() {
-    return this->bar_axis;
+  return this->bar_axis;
 }
 
 ekg::ui::slider *ekg::ui::slider::set_place(uint16_t flags) {
-    if (this->dock_flags != flags) {
-        this->dock_flags = flags;
-        ekg::synclayout(this->id);
-    }
+  if (this->dock_flags != flags) {
+    this->dock_flags = flags;
+    ekg::synclayout(this->id);
+  }
 
-    return this;
+  return this;
 }
 
 ekg::ui::slider *ekg::ui::slider::set_bar_align(uint16_t dock) {
-    if (this->bar_flags != dock) {
-        this->bar_flags = dock;
-        ekg::reload(this->id);
-    }
+  if (this->bar_flags != dock) {
+    this->bar_flags = dock;
+    ekg::reload(this->id);
+  }
 
-    return this;
+  return this;
 }
 
 uint16_t ekg::ui::slider::get_bar_align() {
-    return this->bar_flags;;
+  return this->bar_flags;;
 }
 
 ekg::ui::slider *ekg::ui::slider::set_font_size(ekg::font font) {
-    if (this->font_size != font) {
-        this->font_size = font;
+  if (this->font_size != font) {
+    this->font_size = font;
 
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 ekg::font ekg::ui::slider::get_font_size() {
-    return this->font_size;
+  return this->font_size;
 }
 
 ekg::ui::slider *ekg::ui::slider::set_width(float width) {
-    if (this->sync_ui.w != width) {
-        this->sync_ui.w = width;
+  if (this->sync_ui.w != width) {
+    this->sync_ui.w = width;
 
-        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+    ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 float ekg::ui::slider::get_width() {
-    return this->rect_widget.w;
+  return this->rect_widget.w;
 }
 
 ekg::ui::slider *ekg::ui::slider::set_scaled_height(int32_t scaled_factor_height) {
-    if (this->scaled_height != scaled_factor_height) {
-        this->scaled_height = scaled_factor_height;
+  if (this->scaled_height != scaled_factor_height) {
+    this->scaled_height = scaled_factor_height;
 
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 int32_t ekg::ui::slider::get_scaled_height() {
-    return this->scaled_height;
+  return this->scaled_height;
 }
 
 float ekg::ui::slider::get_height() {
-    return this->rect_widget.h;
+  return this->rect_widget.h;
 }
 
 ekg::ui::slider *ekg::ui::slider::set_text_align(uint16_t flags) {
-    if (this->text_flags != flags) {
-        this->text_flags = flags;
-        ekg::reload(this->id);
-    }
+  if (this->text_flags != flags) {
+    this->text_flags = flags;
+    ekg::reload(this->id);
+  }
 
-    return this;
+  return this;
 }
 
 uint16_t ekg::ui::slider::get_text_align() {
-    return this->text_flags;
+  return this->text_flags;
 }
 
 ekg::ui::slider *ekg::ui::slider::set_value(float val) {
-    val = ekg::clamp(val, this->minimum_value, this->maximum_value);;
-    if (this->value != val) {
-        this->value = val;
-        ekg::reload(this->id);
-    }
+  val = ekg::clamp(val, this->minimum_value, this->maximum_value);;
+  if (this->value != val) {
+    this->value = val;
+    ekg::reload(this->id);
+  }
 
-    return this;
+  return this;
 }
 
 float ekg::ui::slider::get_value() {
-    return this->value;
+  return this->value;
 }
 
 ekg::ui::slider *ekg::ui::slider::set_value_min(float val_min) {
-    if (this->minimum_value != val_min) {
-        this->minimum_value = val_min;
-        ekg::reload(this->id);
-    }
+  if (this->minimum_value != val_min) {
+    this->minimum_value = val_min;
+    ekg::reload(this->id);
+  }
 
-    return this;
+  return this;
 }
 
 float ekg::ui::slider::get_value_min() {
-    return this->minimum_value;
+  return this->minimum_value;
 }
 
 ekg::ui::slider *ekg::ui::slider::set_value_max(float val_max) {
-    if (this->maximum_value != val_max) {
-        this->maximum_value = val_max;
-        ekg::reload(this->id);
-    }
+  if (this->maximum_value != val_max) {
+    this->maximum_value = val_max;
+    ekg::reload(this->id);
+  }
 
-    return this;
+  return this;
 }
 
 float ekg::ui::slider::get_value_max() {
-    return this->maximum_value;
+  return this->maximum_value;
 }
 
 ekg::ui::slider *ekg::ui::slider::set_precision(int32_t precision) {
-    if (this->float_precision != precision) {
-        this->float_precision = precision;
-        ekg::reload(this->id);
-    }
+  if (this->float_precision != precision) {
+    this->float_precision = precision;
+    ekg::reload(this->id);
+  }
 
-    return this;
+  return this;
 }
 
 int32_t ekg::ui::slider::get_precision() {
-    return this->float_precision;
+  return this->float_precision;
 }

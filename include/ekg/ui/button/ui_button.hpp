@@ -29,38 +29,47 @@
 #include "ekg/core/task.hpp"
 
 namespace ekg::ui {
-	class button : public ekg::ui::abstract {
-	protected:
-		bool value {};
-        uint16_t dock_text {};
+  class button : public ekg::ui::abstract {
+  protected:
+    bool value {};
+    uint16_t dock_text {};
 
-        std::string text {};
-        task* callback {nullptr};
-        ekg::font font_size {};
-    public:
-        ekg::ui::button *set_font_size(ekg::font font);
-        ekg::font get_font_size();
-        ekg::ui::button *set_place(uint16_t dock);
+    std::string text {};
+    task *callback {nullptr};
+    ekg::font font_size {};
+  public:
+    ekg::ui::button *set_font_size(ekg::font font);
 
-        ekg::ui::button *set_width(float w);
-        float get_width();
+    ekg::font get_font_size();
 
-        ekg::ui::button *set_scaled_height(int32_t h);
-        int32_t get_scaled_height();
-        float get_height();
+    ekg::ui::button *set_place(uint16_t dock);
 
-        ekg::ui::button *set_callback(task *p_callback);
-        task *get_callback();
+    ekg::ui::button *set_width(float w);
 
-        ekg::ui::button *set_text(std::string_view text);
-        std::string_view get_text();
+    float get_width();
 
-		ekg::ui::button *set_value(bool state);
-		bool get_value();
+    ekg::ui::button *set_scaled_height(int32_t h);
 
-        ekg::ui::button *set_text_align(uint16_t dock);
-        uint16_t get_text_align();
-	};
+    int32_t get_scaled_height();
+
+    float get_height();
+
+    ekg::ui::button *set_callback(task *p_callback);
+
+    task *get_callback();
+
+    ekg::ui::button *set_text(std::string_view text);
+
+    std::string_view get_text();
+
+    ekg::ui::button *set_value(bool state);
+
+    bool get_value();
+
+    ekg::ui::button *set_text_align(uint16_t dock);
+
+    uint16_t get_text_align();
+  };
 }
 
 #endif

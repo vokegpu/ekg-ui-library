@@ -26,119 +26,119 @@
 #include "ekg/util/gui.hpp"
 
 ekg::ui::button *ekg::ui::button::set_value(bool state) {
-    if (this->value != state) {
-        this->value = state;
-        ekg::reload(this->id);
-    }
+  if (this->value != state) {
+    this->value = state;
+    ekg::reload(this->id);
+  }
 
-    return this;
+  return this;
 }
 
 bool ekg::ui::button::get_value() {
-    return this->value;
+  return this->value;
 }
 
 ekg::ui::button *ekg::ui::button::set_text(std::string_view new_text) {
-    if (this->text != new_text) {
-        this->text = new_text;
+  if (this->text != new_text) {
+    this->text = new_text;
 
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 std::string_view ekg::ui::button::get_text() {
-    return this->text;
+  return this->text;
 }
 
 ekg::ui::button *ekg::ui::button::set_text_align(uint16_t enum_docks) {
-    if (this->dock_text != enum_docks) {
-        this->dock_text = enum_docks;
+  if (this->dock_text != enum_docks) {
+    this->dock_text = enum_docks;
 
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 uint16_t ekg::ui::button::get_text_align() {
-    return this->dock_text;
+  return this->dock_text;
 }
 
 ekg::ui::button *ekg::ui::button::set_callback(task *event) {
-    if (this->callback != event && this->callback != nullptr) {
-        delete this->callback;
-        this->callback = nullptr;
-    }
+  if (this->callback != event && this->callback != nullptr) {
+    delete this->callback;
+    this->callback = nullptr;
+  }
 
-    this->callback = event;
-    return this;
+  this->callback = event;
+  return this;
 }
 
 ekg::task *ekg::ui::button::get_callback() {
-    return this->callback;
+  return this->callback;
 }
 
 ekg::ui::button *ekg::ui::button::set_width(float w) {
-    if (this->sync_ui.w != w) {
-        this->sync_ui.w = w;
+  if (this->sync_ui.w != w) {
+    this->sync_ui.w = w;
 
-        ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+    ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::dimension);
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 float ekg::ui::button::get_width() {
-    return this->rect_widget.w;
+  return this->rect_widget.w;
 }
 
 ekg::ui::button *ekg::ui::button::set_scaled_height(int32_t scaled_height_factor) {
-    if (this->scaled_height != scaled_height_factor) {
-        this->scaled_height = scaled_height_factor;
+  if (this->scaled_height != scaled_height_factor) {
+    this->scaled_height = scaled_height_factor;
 
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 float ekg::ui::button::get_height() {
-    return this->rect_widget.h;
+  return this->rect_widget.h;
 }
 
 int32_t ekg::ui::button::get_scaled_height() {
-    return this->scaled_height;
+  return this->scaled_height;
 }
 
 ekg::ui::button *ekg::ui::button::set_place(uint16_t flags) {
-    if (this->dock_flags != flags) {
-        this->dock_flags = flags;
+  if (this->dock_flags != flags) {
+    this->dock_flags = flags;
 
-        ekg::reload(this->id);
-        ekg::synclayout(this->id);
-    }
+    ekg::reload(this->id);
+    ekg::synclayout(this->id);
+  }
 
-    return this;
+  return this;
 }
 
 ekg::ui::button *ekg::ui::button::set_font_size(ekg::font font) {
-    if (this->font_size != font) {
-        this->font_size = font;
+  if (this->font_size != font) {
+    this->font_size = font;
 
-        ekg::reload(this->id);
-        ekg::synclayout(this->parent_id);
-    }
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
 
-    return this;
+  return this;
 }
 
 ekg::font ekg::ui::button::get_font_size() {
-    return this->font_size;
+  return this->font_size;
 }

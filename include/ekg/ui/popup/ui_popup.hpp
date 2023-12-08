@@ -29,40 +29,52 @@
 #include "ekg/util/io.hpp"
 
 namespace ekg::ui {
-	class popup : public ekg::ui::abstract {
-	protected:
-		std::vector<ekg::ui::item> item_list {};
+  class popup : public ekg::ui::abstract {
+  protected:
+    std::vector<ekg::ui::item> item_list {};
 
-		uint16_t text_flags {};
-        int32_t scaled_height {}, token_id {};
-        ekg::font font_size;
-	public:
-		ekg::ui::popup *insert(const std::vector<std::string> &item_list);
-		ekg::ui::popup *insert(std::string_view item_name);
-		ekg::ui::popup *link(std::string_view item_name, ekg::ui::popup *p_popup);
-		ekg::ui::popup *erase(std::string_view item_name);
-        std::string &emplace_back();
+    uint16_t text_flags {};
+    int32_t scaled_height {}, token_id {};
+    ekg::font font_size;
+  public:
+    ekg::ui::popup *insert(const std::vector<std::string> &item_list);
 
-        int64_t contains(std::string_view item_name);
-        ekg::ui::item &get(uint64_t index);
-        std::vector<ekg::ui::item> &get_item_list();
+    ekg::ui::popup *insert(std::string_view item_name);
 
-        ekg::ui::popup *set_pos(float x, float y);
-        ekg::vec2 get_pos();
+    ekg::ui::popup *link(std::string_view item_name, ekg::ui::popup *p_popup);
 
-		ekg::ui::popup *set_text_align(uint16_t dock);
-		uint16_t get_text_align();
+    ekg::ui::popup *erase(std::string_view item_name);
 
-        ekg::ui::popup *set_width(float w);
-        float get_width();
+    std::string &emplace_back();
 
-        ekg::ui::popup *set_scaled_height(int32_t h);
-        int32_t get_scaled_height();
-        float get_height();
+    int64_t contains(std::string_view item_name);
 
-        ekg::ui::popup *set_font_size(ekg::font font);
-        ekg::font get_font_size();
-	};
+    ekg::ui::item &get(uint64_t index);
+
+    std::vector<ekg::ui::item> &get_item_list();
+
+    ekg::ui::popup *set_pos(float x, float y);
+
+    ekg::vec2 get_pos();
+
+    ekg::ui::popup *set_text_align(uint16_t dock);
+
+    uint16_t get_text_align();
+
+    ekg::ui::popup *set_width(float w);
+
+    float get_width();
+
+    ekg::ui::popup *set_scaled_height(int32_t h);
+
+    int32_t get_scaled_height();
+
+    float get_height();
+
+    ekg::ui::popup *set_font_size(ekg::font font);
+
+    ekg::font get_font_size();
+  };
 }
 
 #endif

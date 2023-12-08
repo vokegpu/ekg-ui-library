@@ -30,25 +30,36 @@
 #include <unordered_map>
 
 namespace ekg::gpu {
-    struct program {
-    public:
-        uint32_t id {};
-    public:
-        void set(const std::string &str, bool value);
-        void set(const std::string &str, uint32_t value);
-        void set(const std::string &str, int32_t value);
-        void set(const std::string &str, float value);
-        void set2(const std::string &str, float* value);
-        void set3(const std::string &str, float* value);
-        void set4(const std::string &str, float* value);
-        void setm2(const std::string &str, float* matrix);
-        void setm3(const std::string &str, float* matrix);
-        void setm4(const std::string &str, float* matrix);
-    };
+  struct program {
+  public:
+    uint32_t id {};
+  public:
+    void set(const std::string &str, bool value);
 
-    void invoke(ekg::gpu::program &program);
-    void revoke();
-    bool create_basic_program(ekg::gpu::program &program, const std::unordered_map<std::string, uint32_t> &resources);
+    void set(const std::string &str, uint32_t value);
+
+    void set(const std::string &str, int32_t value);
+
+    void set(const std::string &str, float value);
+
+    void set2(const std::string &str, float *value);
+
+    void set3(const std::string &str, float *value);
+
+    void set4(const std::string &str, float *value);
+
+    void setm2(const std::string &str, float *matrix);
+
+    void setm3(const std::string &str, float *matrix);
+
+    void setm4(const std::string &str, float *matrix);
+  };
+
+  void invoke(ekg::gpu::program &program);
+
+  void revoke();
+
+  bool create_basic_program(ekg::gpu::program &program, const std::unordered_map<std::string, uint32_t> &resources);
 };
 
 #endif

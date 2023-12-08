@@ -28,7 +28,8 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
 namespace ekg::ui {
-    class menu_widget : public ekg::ui::abstract_widget {};
+  class menu_widget : public ekg::ui::abstract_widget {
+  };
 }
 
 #endif

@@ -33,196 +33,233 @@
 
 #if defined(__ANDROID__)
 #include <android/log.h>
-#endif          
+#endif
 
 #include "geometry.hpp"
 
 #define ekg_sign_item_sempahore() if (this->p_semaphore) *this->p_semaphore = true
 
 namespace ekg {
-    struct item {
-    private:
-        static ekg::item *p_parent_instance;
-        static bool *p_semaphore_instance;
-        static bool default_semaphore;
-    protected:
-        std::vector<ekg::item> child_list {};
-        ekg::component geometry_component {};
-        std::string value {};
+  struct item {
+  private:
+    static ekg::item *p_parent_instance;
+    static bool *p_semaphore_instance;
+    static bool default_semaphore;
+  protected:
+    std::vector<ekg::item> child_list {};
+    ekg::component geometry_component {};
+    std::string value {};
 
-        uint16_t attributes {};
-        uint16_t states {};
-        bool *p_semaphore {};
-    public:
-        ekg::item &at(size_t index);
-        ekg::item &operator[](size_t index);
+    uint16_t attributes {};
+    uint16_t states {};
+    bool *p_semaphore {};
+  public:
+    ekg::item &at(size_t index);
 
-        ekg::item &emplace_back();
-        ekg::item &insert(std::string_view item_value);
-        ekg::item &insert(std::string_view item_value, size_t index);
+    ekg::item &operator[](size_t index);
 
-        ekg::item &insert(ekg::item insert_item);
-        ekg::item &insert(ekg::item insert_item, size_t index);
+    ekg::item &emplace_back();
 
-        ekg::item &insert(const std::vector<ekg::item> &item_vector);
-        ekg::item &insert(const std::vector<ekg::item> &item_vector, size_t index);
+    ekg::item &insert(std::string_view item_value);
 
-        ekg::item &set_value(size_t index, std::string_view item_value);
-        ekg::item &set_attr(size_t index, uint16_t attr_bits);
-        ekg::item &set_state(size_t index, uint16_t state_bits);
+    ekg::item &insert(std::string_view item_value, size_t index);
 
-        ekg::item &erase(size_t begin, size_t end);
-        ekg::item &erase(size_t index);
-        ekg::item &clear();
+    ekg::item &insert(ekg::item insert_item);
 
-        [[nodiscard]] bool empty() const;
-        [[nodiscard]] size_t size() const;
+    ekg::item &insert(ekg::item insert_item, size_t index);
 
-        std::vector<ekg::item>::iterator begin();
-        std::vector<ekg::item>::iterator end();
+    ekg::item &insert(const std::vector<ekg::item> &item_vector);
 
-        [[nodiscard]] std::vector<ekg::item>::const_iterator cbegin() const;
-        [[nodiscard]] std::vector<ekg::item>::const_iterator cend() const;
-    public:
-        item *p_parent {};
-    public:
-        std::vector<ekg::item> &vector();
-        ekg::component &component();
+    ekg::item &insert(const std::vector<ekg::item> &item_vector, size_t index);
 
-        ekg::item &set_value(std::string_view item_value);
-        std::string_view get_value();
+    ekg::item &set_value(size_t index, std::string_view item_value);
 
-        ekg::item &set_attr(uint16_t attr_bits);
-        uint16_t get_attr();
+    ekg::item &set_attr(size_t index, uint16_t attr_bits);
 
-        ekg::item &set_state(uint16_t state_bits);
-        uint16_t get_state();
+    ekg::item &set_state(size_t index, uint16_t state_bits);
 
-        ekg::item &set_semaphore_address(bool *p_semaphore_address);
-        ekg::item &set_semaphore(bool signal);
-        bool &get_semaphore();
+    ekg::item &erase(size_t begin, size_t end);
 
-        bool has_parent();
-        bool has_children();
-    public:
-        item();
-        item(std::string_view item_value);
-        item(std::string_view item_value, uint16_t attr_bits);
-    public:
-        ~item();
-    };
+    ekg::item &erase(size_t index);
 
-    struct log {
-    public:
-        static std::ostringstream buffer;
-        static bool buffered;
-        static bool tracked;
-    public:
-        static void flush() {
-            if (ekg::log::buffered) {
-                std::string p_log {ekg::log::buffer.str()};
+    ekg::item &clear();
 
-                #if defined(__ANDROID__)
-                __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", p_log.c_str());
-                #else
-                std::cout << p_log;
-                #endif
+    [[nodiscard]] bool empty() const;
 
-                ekg::log::buffer.clear();
-                ekg::log::buffered = false;
-            }
-        }
+    [[nodiscard]] size_t size() const;
 
-        template<typename t>
-        static void trace(bool should, t trace, bool interrupt_runtime = false) {
-            if (!should) {
-                return;
-            }
+    std::vector<ekg::item>::iterator begin();
 
-            std::cout << "\n[EKG-TRACE] " << trace << std::endl;
-            if (interrupt_runtime) {
-                std::terminate();
-            }
-        }
+    std::vector<ekg::item>::iterator end();
 
-        explicit log() {
-            ekg::log::buffered = true;
-            ekg::log::buffer << "\n[EKG-INFO] ";
-        }
+    [[nodiscard]] std::vector<ekg::item>::const_iterator cbegin() const;
 
-        template<typename t>
-        log &operator<<(const t &value) {
-            ekg::log::buffer << value;
-            return *this;
-        }
-    };
+    [[nodiscard]] std::vector<ekg::item>::const_iterator cend() const;
 
-    /*
-     * Attributes are used by item,
-     * they can be dynamically converted by string symbols:
-     * \t separator
-     * \\ box
-     * \1 category
-     * \2 row
-     * \3 row_member
-     * \4 unselectable
-     */
-    enum attr {
-        separator  = 2 << 2,
-        box        = 2 << 3,
-        category   = 2 << 4,
-        row        = 2 << 5,
-        row_member = 2 << 6,
-        unselectable = 2 << 7
-    };
+  public:
+    item *p_parent {};
+  public:
+    std::vector<ekg::item> &vector();
 
-    bool file_to_string(std::string &file_content, std::string_view path);
+    ekg::component &component();
 
-    struct timing {
-    public:
-        uint64_t elapsed_ticks {};
-        uint64_t current_ticks {};
-        uint64_t ticks_going_on {};
-    };
+    ekg::item &set_value(std::string_view item_value);
 
-    bool reach(ekg::timing&, uint64_t);
-    bool reset(ekg::timing&);
+    std::string_view get_value();
 
-    struct flag {
-        bool highlight {};
-        bool hovered {};
-        bool activy {};
-        bool focused {};
-        bool state {};
-        bool extra_state {};
-        bool absolute {};
-    };
+    ekg::item &set_attr(uint16_t attr_bits);
 
-    enum class clipboard {
-        copy  = 1073741948, // SDLK_COPY
-        cut   = 1073741947, // SDLK_CUT
-        paste = 1073741949  // SDLK_PASTE
-    };
+    uint16_t get_attr();
 
-    namespace bitwise {
-        bool contains(uint16_t flags, uint16_t target);
-        uint16_t &add(uint16_t &flags, uint16_t target);
-        uint16_t &remove(uint16_t &flags, uint16_t target);
+    ekg::item &set_state(uint16_t state_bits);
+
+    uint16_t get_state();
+
+    ekg::item &set_semaphore_address(bool *p_semaphore_address);
+
+    ekg::item &set_semaphore(bool signal);
+
+    bool &get_semaphore();
+
+    bool has_parent();
+
+    bool has_children();
+
+  public:
+    item();
+
+    item(std::string_view item_value);
+
+    item(std::string_view item_value, uint16_t attr_bits);
+
+  public:
+    ~item();
+  };
+
+  struct log {
+  public:
+    static std::ostringstream buffer;
+    static bool buffered;
+    static bool tracked;
+  public:
+    static void flush() {
+      if (ekg::log::buffered) {
+        std::string p_log {ekg::log::buffer.str()};
+
+#if defined(__ANDROID__)
+        __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", p_log.c_str());
+#else
+        std::cout << p_log;
+#endif
+
+        ekg::log::buffer.clear();
+        ekg::log::buffered = false;
+      }
     }
 
-    namespace input {
-        bool action(std::string_view action_key);
-        bool receive(std::string_view input_key);
-        void clipboard(ekg::clipboard clipboard_op);
-        void fire(std::string_view action_key);
-        void bind(std::string_view action_key, std::string_view input_key);
-        bool motion();
-        bool released();
-        bool pressed();
-        bool wheel();
-        bool typed();
-        ekg::vec4 &interact();
+    template<typename t>
+    static void trace(bool should, t trace, bool interrupt_runtime = false) {
+      if (!should) {
+        return;
+      }
+
+      std::cout << "\n[EKG-TRACE] " << trace << std::endl;
+      if (interrupt_runtime) {
+        std::terminate();
+      }
     }
+
+    explicit log() {
+      ekg::log::buffered = true;
+      ekg::log::buffer << "\n[EKG-INFO] ";
+    }
+
+    template<typename t>
+    log &operator<<(const t &value) {
+      ekg::log::buffer << value;
+      return *this;
+    }
+  };
+
+  /*
+   * Attributes are used by item,
+   * they can be dynamically converted by string symbols:
+   * \t separator
+   * \\ box
+   * \1 category
+   * \2 row
+   * \3 row_member
+   * \4 unselectable
+   */
+  enum attr {
+    separator = 2 << 2,
+    box = 2 << 3,
+    category = 2 << 4,
+    row = 2 << 5,
+    row_member = 2 << 6,
+    unselectable = 2 << 7
+  };
+
+  bool file_to_string(std::string &file_content, std::string_view path);
+
+  struct timing {
+  public:
+    uint64_t elapsed_ticks {};
+    uint64_t current_ticks {};
+    uint64_t ticks_going_on {};
+  };
+
+  bool reach(ekg::timing &, uint64_t);
+
+  bool reset(ekg::timing &);
+
+  struct flag {
+    bool highlight {};
+    bool hovered {};
+    bool activy {};
+    bool focused {};
+    bool state {};
+    bool extra_state {};
+    bool absolute {};
+  };
+
+  enum class clipboard {
+    copy = 1073741948, // SDLK_COPY
+    cut = 1073741947, // SDLK_CUT
+    paste = 1073741949  // SDLK_PASTE
+  };
+
+  namespace bitwise {
+    bool contains(uint16_t flags, uint16_t target);
+
+    uint16_t &add(uint16_t &flags, uint16_t target);
+
+    uint16_t &remove(uint16_t &flags, uint16_t target);
+  }
+
+  namespace input {
+    bool action(std::string_view action_key);
+
+    bool receive(std::string_view input_key);
+
+    void clipboard(ekg::clipboard clipboard_op);
+
+    void fire(std::string_view action_key);
+
+    void bind(std::string_view action_key, std::string_view input_key);
+
+    bool motion();
+
+    bool released();
+
+    bool pressed();
+
+    bool wheel();
+
+    bool typed();
+
+    ekg::vec4 &interact();
+  }
 }
 
 #endif

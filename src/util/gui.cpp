@@ -33,127 +33,127 @@ ekg::type ekg::hovered::downtype {};
 ekg::type ekg::hovered::uptype {};
 
 void ekg::reload(int32_t id) {
-    ekg::core->do_task_reload(ekg::core->get_fast_widget_by_id(id));
+  ekg::core->do_task_reload(ekg::core->get_fast_widget_by_id(id));
 }
 
 void ekg::reload(ekg::ui::abstract_widget *p_widget) {
-    ekg::core->do_task_reload(p_widget);
+  ekg::core->do_task_reload(p_widget);
 }
 
 void ekg::synclayout(int32_t id) {
-    ekg::core->do_task_synclayout(ekg::core->get_fast_widget_by_id(id));
+  ekg::core->do_task_synclayout(ekg::core->get_fast_widget_by_id(id));
 }
 
 void ekg::synclayout(ekg::ui::abstract_widget *p_widget) {
-    ekg::core->do_task_synclayout(p_widget);
+  ekg::core->do_task_synclayout(p_widget);
 }
 
 void ekg::push_back_stack(ekg::ui::abstract_widget *p_widget, ekg::stack &stack) {
-    if (p_widget == nullptr || stack.registry[p_widget->p_data->get_id()]) {
-        return;
+  if (p_widget == nullptr || stack.registry[p_widget->p_data->get_id()]) {
+    return;
+  }
+
+  stack.registry[p_widget->p_data->get_id()] = true;
+  stack.ordered_list.push_back(p_widget);
+
+  for (int32_t &ids: p_widget->p_data->get_child_id_list()) {
+    auto widgets {ekg::core->get_fast_widget_by_id(ids)};
+
+    if (widgets == nullptr) {
+      continue;
     }
 
-    stack.registry[p_widget->p_data->get_id()] = true;
-    stack.ordered_list.push_back(p_widget);
-
-    for (int32_t &ids : p_widget->p_data->get_child_id_list()) {
-        auto widgets {ekg::core->get_fast_widget_by_id(ids)};
-
-        if (widgets == nullptr) {
-            continue;
-        }
-
-        ekg::push_back_stack(widgets, stack);
-    }
+    ekg::push_back_stack(widgets, stack);
+  }
 }
 
 void ekg::stack::clear() {
-    this->ordered_list.clear();
-    this->registry.clear();
+  this->ordered_list.clear();
+  this->registry.clear();
 }
 
 ekg::ui::abstract_widget *ekg::find_absolute_parent_master(ekg::ui::abstract_widget *p_widget) {
-    if (p_widget == nullptr || p_widget->p_data->get_parent_id() == 0) {
-        return p_widget;
-    }
+  if (p_widget == nullptr || p_widget->p_data->get_parent_id() == 0) {
+    return p_widget;
+  }
 
-    auto widget {ekg::core->get_fast_widget_by_id(p_widget->p_data->get_parent_id())};
-    return ekg::find_absolute_parent_master(widget);
+  auto widget {ekg::core->get_fast_widget_by_id(p_widget->p_data->get_parent_id())};
+  return ekg::find_absolute_parent_master(widget);
 }
 
 void ekg::refresh(int32_t id) {
-    ekg::core->do_task_refresh(ekg::core->get_fast_widget_by_id(id));
+  ekg::core->do_task_refresh(ekg::core->get_fast_widget_by_id(id));
 }
 
 void ekg::refresh(ekg::ui::abstract_widget *widget) {
-    ekg::core->do_task_refresh(widget);
+  ekg::core->do_task_refresh(widget);
 }
 
 void ekg::update_high_frequency(int32_t id) {
-    ekg::core->set_update_high_frequency(ekg::core->get_fast_widget_by_id(id));
+  ekg::core->set_update_high_frequency(ekg::core->get_fast_widget_by_id(id));
 }
 
 void ekg::update_high_frequency(ekg::ui::abstract_widget *p_widget) {
-    ekg::core->set_update_high_frequency(p_widget);
+  ekg::core->set_update_high_frequency(p_widget);
 }
 
 void ekg::dispatch(task *p_event) {
-    ekg::core->service_handler.generate() = *p_event;
+  ekg::core->service_handler.generate() = *p_event;
 }
 
 void ekg::dispatch(ekg::env env) {
-    switch (env) {
+  switch (env) {
     case ekg::env::redraw:
-        ekg::core->request_redraw_gui();
-        break;
+      ekg::core->request_redraw_gui();
+      break;
     default:
-        ekg::core->service_handler.dispatch_pre_allocated_task(static_cast<uint64_t>(env));
-        break;
-    }
+      ekg::core->service_handler.dispatch_pre_allocated_task(static_cast<uint64_t>(env));
+      break;
+  }
 }
 
 bool ekg::listen(event &ekg_event, SDL_Event &sdl_event) {
-    if (sdl_event.type == ekg::listener) {
-        event *p_ekg_event {static_cast<event*>(sdl_event.user.data1)};
-        ekg_event = *p_ekg_event;
-        delete p_ekg_event;
-        return true;
-    }
+  if (sdl_event.type == ekg::listener) {
+    event *p_ekg_event {static_cast<event *>(sdl_event.user.data1)};
+    ekg_event = *p_ekg_event;
+    delete p_ekg_event;
+    return true;
+  }
 
-    return false;
+  return false;
 }
 
 bool &ekg::set(bool &value, bool result) {
-    if (value != result) {
-        ekg::core->request_redraw_gui();
-    }
+  if (value != result) {
+    ekg::core->request_redraw_gui();
+  }
 
-    return (value = result);
+  return (value = result);
 }
 
 std::string &ekg::set(std::string &value, std::string_view result) {
-    if (value != result) {
-        ekg::core->request_redraw_gui();
-    }
+  if (value != result) {
+    ekg::core->request_redraw_gui();
+  }
 
-    return (value = result);
+  return (value = result);
 }
 
 int32_t &ekg::set(int32_t &value, int32_t result) {
-    if (value != result) {
-        ekg::dispatch(ekg::env::redraw);
-    }
+  if (value != result) {
+    ekg::dispatch(ekg::env::redraw);
+  }
 
-    return (value = result);
+  return (value = result);
 }
 
 bool ekg::assert_task_flag {};
 
 float ekg::assert_task(float val, float result) {
-    if (ekg_equals_float(val, result)) {
-        return val;
-    }
+  if (ekg_equals_float(val, result)) {
+    return val;
+  }
 
-    ekg::assert_task_flag = true;
-    return result;
+  ekg::assert_task_flag = true;
+  return result;
 }

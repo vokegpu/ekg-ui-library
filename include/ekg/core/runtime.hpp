@@ -37,77 +37,89 @@
 #include <unordered_map>
 
 namespace ekg {
-    /* The swap maps for prevent copies of hashes and vector. */
-    struct swap {
-        static ekg::stack collect;
-        static ekg::stack back;
-        static ekg::stack front;
-        static std::vector<ekg::ui::abstract_widget*> buffer;
-        static std::vector<uint64_t> tooktimeanalyzingtelemtry;
+  /* The swap maps for prevent copies of hashes and vector. */
+  struct swap {
+    static ekg::stack collect;
+    static ekg::stack back;
+    static ekg::stack front;
+    static std::vector<ekg::ui::abstract_widget *> buffer;
+    static std::vector<uint64_t> tooktimeanalyzingtelemtry;
 
-        static void refresh();
-    };
+    static void refresh();
+  };
 
-    /* The main runtime for run ekg. */
-    class runtime {
-    protected:
-        void prepare_tasks();
-        void prepare_ui_env();
-        void erase(int32_t id);
-    private:
-        /* Widget env lists and maps for tasks. */
+  /* The main runtime for run ekg. */
+  class runtime {
+  protected:
+    void prepare_tasks();
 
-        std::unordered_map<std::string, std::vector<ekg::ui::abstract_widget*>> widget_list_map {};
-        std::unordered_map<int32_t, ekg::ui::abstract_widget*> widget_map {};
-        std::unordered_map<int32_t, bool> processed_widget_map {};
+    void prepare_ui_env();
 
-        /* Core services and instances. */
+    void erase(int32_t id);
 
-        ekg::ui::abstract *current_bind_group {};
-        ekg::ui::abstract_widget *widget_absolute_activy {};
+  private:
+    /* Widget env lists and maps for tasks. */
 
-        int32_t token_id {};
-        int32_t widget_id_focused {};
-        int32_t prev_widget_id_focused {};
-        int32_t swap_widget_id_focused {};
-        int32_t widget_id_pressed_focused {};
-        int32_t widget_id_released_focused {};
+    std::unordered_map<std::string, std::vector<ekg::ui::abstract_widget *>> widget_list_map {};
+    std::unordered_map<int32_t, ekg::ui::abstract_widget *> widget_map {};
+    std::unordered_map<int32_t, bool> processed_widget_map {};
 
-        bool enable_high_priority_frequency {};
-        bool should_re_batch_gui {};
-    public:
-        ekg::service::input service_input {};
-        ekg::service::theme service_theme {};
-        ekg::service::handler service_handler {};
-        ekg::service::layout service_layout {};
+    /* Core services and instances. */
 
-        ekg::draw::font_renderer f_renderer_small {};
-        ekg::draw::font_renderer f_renderer_normal {};
-        ekg::draw::font_renderer f_renderer_big {};
+    ekg::ui::abstract *current_bind_group {};
+    ekg::ui::abstract_widget *widget_absolute_activy {};
 
-        ekg::gpu::allocator gpu_allocator {};
-        ekg::timing ui_timing {};
-        SDL_Window* root {};
-    public:
-        ekg::ui::abstract_widget* get_fast_widget_by_id(int32_t id);
+    int32_t token_id {};
+    int32_t widget_id_focused {};
+    int32_t prev_widget_id_focused {};
+    int32_t swap_widget_id_focused {};
+    int32_t widget_id_pressed_focused {};
+    int32_t widget_id_released_focused {};
 
-        void gen_widget(ekg::ui::abstract *ui);
-        void do_task_reload(ekg::ui::abstract_widget *widget);
-        void do_task_synclayout(ekg::ui::abstract_widget *widget);
-        void do_task_refresh(ekg::ui::abstract_widget *widget);
-        void set_update_high_frequency(ekg::ui::abstract_widget *widget);
-        void request_redraw_gui();
+    bool enable_high_priority_frequency {};
+    bool should_re_batch_gui {};
+  public:
+    ekg::service::input service_input {};
+    ekg::service::theme service_theme {};
+    ekg::service::handler service_handler {};
+    ekg::service::layout service_layout {};
 
-        void end_group_flag();
-        void update_size_changed();
+    ekg::draw::font_renderer f_renderer_small {};
+    ekg::draw::font_renderer f_renderer_normal {};
+    ekg::draw::font_renderer f_renderer_big {};
 
-        void init();
-        void quit();
+    ekg::gpu::allocator gpu_allocator {};
+    ekg::timing ui_timing {};
+    SDL_Window *root {};
+  public:
+    ekg::ui::abstract_widget *get_fast_widget_by_id(int32_t id);
 
-        void process_event(SDL_Event &sdl_event);
-        void process_update();
-        void process_render();
-    };
+    void gen_widget(ekg::ui::abstract *ui);
+
+    void do_task_reload(ekg::ui::abstract_widget *widget);
+
+    void do_task_synclayout(ekg::ui::abstract_widget *widget);
+
+    void do_task_refresh(ekg::ui::abstract_widget *widget);
+
+    void set_update_high_frequency(ekg::ui::abstract_widget *widget);
+
+    void request_redraw_gui();
+
+    void end_group_flag();
+
+    void update_size_changed();
+
+    void init();
+
+    void quit();
+
+    void process_event(SDL_Event &sdl_event);
+
+    void process_update();
+
+    void process_render();
+  };
 };
 
 #endif

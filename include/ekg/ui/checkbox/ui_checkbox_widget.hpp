@@ -28,15 +28,17 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
 namespace ekg::ui {
-    class checkbox_widget : public ekg::ui::abstract_widget {
-    public:
-        ekg::rect rect_text {};
-        ekg::rect rect_box {};
-    public:
-        void on_reload() override;
-        void on_event(SDL_Event &sdl_event) override;
-        void on_draw_refresh() override;
-    };
+  class checkbox_widget : public ekg::ui::abstract_widget {
+  public:
+    ekg::rect rect_text {};
+    ekg::rect rect_box {};
+  public:
+    void on_reload() override;
+
+    void on_event(SDL_Event &sdl_event) override;
+
+    void on_draw_refresh() override;
+  };
 }
 
 #endif

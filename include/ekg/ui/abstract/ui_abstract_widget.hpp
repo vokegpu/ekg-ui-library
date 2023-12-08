@@ -30,38 +30,48 @@
 #include "ekg/util/io.hpp"
 
 namespace ekg::ui {
-    class abstract_widget {
-    public:
-        ekg::ui::abstract *p_data {};
-        ekg::flag flag {};
-        ekg::rect dimension {};
-        ekg::vec2 min_size {};
+  class abstract_widget {
+  public:
+    ekg::ui::abstract *p_data {};
+    ekg::flag flag {};
+    ekg::rect dimension {};
+    ekg::vec2 min_size {};
 
-        ekg::rect *p_parent {};
-        ekg::vec4 *p_scroll {};
-        
-        ekg::rect empty_parent {};
-        ekg::vec4 empty_scroll {};
+    ekg::rect *p_parent {};
+    ekg::vec4 *p_scroll {};
 
-        bool is_scissor_refresh {};
-        bool is_high_frequency {};
-        bool is_targeting_absolute_parent {};
-    public:
-        ekg::rect get_static_rect();
-        [[nodiscard]] ekg::rect &get_abs_rect();
-    public:
-        explicit abstract_widget();
-        ~abstract_widget();
+    ekg::rect empty_parent {};
+    ekg::vec4 empty_scroll {};
 
-        virtual void on_create();
-        virtual void on_destroy();
-        virtual void on_reload();
-        virtual void on_pre_event(SDL_Event &sdl_event);
-        virtual void on_event(SDL_Event &sdl_event);
-        virtual void on_post_event(SDL_Event &sdl_event);
-        virtual void on_update();
-        virtual void on_draw_refresh();
-    };
+    bool is_scissor_refresh {};
+    bool is_high_frequency {};
+    bool is_targeting_absolute_parent {};
+  public:
+    ekg::rect get_static_rect();
+
+    [[nodiscard]] ekg::rect &get_abs_rect();
+
+  public:
+    explicit abstract_widget();
+
+    ~abstract_widget();
+
+    virtual void on_create();
+
+    virtual void on_destroy();
+
+    virtual void on_reload();
+
+    virtual void on_pre_event(SDL_Event &sdl_event);
+
+    virtual void on_event(SDL_Event &sdl_event);
+
+    virtual void on_post_event(SDL_Event &sdl_event);
+
+    virtual void on_update();
+
+    virtual void on_draw_refresh();
+  };
 }
 
 #endif

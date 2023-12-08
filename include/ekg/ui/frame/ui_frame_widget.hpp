@@ -29,23 +29,26 @@
 #include "ekg/ui/scroll/ui_scroll_embedded_widget.hpp"
 
 namespace ekg::ui {
-	class frame_widget : public ekg::ui::abstract_widget {
-	public:
-        uint16_t target_dock_drag {};
-        uint16_t target_dock_resize {};
+  class frame_widget : public ekg::ui::abstract_widget {
+  public:
+    uint16_t target_dock_drag {};
+    uint16_t target_dock_resize {};
 
-        ekg::ui::scroll_embedded_widget *p_scroll_embedded {};
-        ekg::docker docker_activy_drag {};
-        ekg::docker docker_activy_resize {};
-        ekg::rect rect_delta {};
+    ekg::ui::scroll_embedded_widget *p_scroll_embedded {};
+    ekg::docker docker_activy_drag {};
+    ekg::docker docker_activy_resize {};
+    ekg::rect rect_delta {};
 
-        float ui_theme_activy_offset {};
-    public:
-		void on_reload() override;
-		void on_event(SDL_Event &sdl_event) override;
-		void on_update() override;
-		void on_draw_refresh() override;
-	};
+    float ui_theme_activy_offset {};
+  public:
+    void on_reload() override;
+
+    void on_event(SDL_Event &sdl_event) override;
+
+    void on_update() override;
+
+    void on_draw_refresh() override;
+  };
 }
 
 #endif

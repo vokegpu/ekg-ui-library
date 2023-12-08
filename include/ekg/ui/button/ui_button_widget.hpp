@@ -28,14 +28,16 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
 namespace ekg::ui {
-    class button_widget : public ekg::ui::abstract_widget {
-    public:
-        ekg::rect rect_text {};
-    public:
-        void on_reload() override;
-        void on_event(SDL_Event &sdl_event) override;
-        void on_draw_refresh() override;
-    };
+  class button_widget : public ekg::ui::abstract_widget {
+  public:
+    ekg::rect rect_text {};
+  public:
+    void on_reload() override;
+
+    void on_event(SDL_Event &sdl_event) override;
+
+    void on_draw_refresh() override;
+  };
 }
 
 #endif

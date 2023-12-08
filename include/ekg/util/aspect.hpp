@@ -26,16 +26,16 @@
 #define EKG_UTIL_ASPECT_H
 
 namespace ekg {
-    enum class state {
-        visible, invisible
-    };
+  enum class state {
+    visible, invisible
+  };
 
-    enum class font {
-        small = 0, normal = 1, big = 2
-    };
+  enum class font {
+    small = 0, normal = 1, big = 2
+  };
 
-    extern bool debug;
-    extern float scroll_smooth;
+  extern bool debug;
+  extern float scroll_smooth;
 }
 
 #endif

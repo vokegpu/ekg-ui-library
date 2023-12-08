@@ -29,12 +29,12 @@
 #include <vector>
 
 namespace ekg::ui {
-    class combobox : public ekg::ui::abstract {
-    protected:
-        std::vector<std::string> value_list {};
-        std::string value {};
-    public:
-    };
+  class combobox : public ekg::ui::abstract {
+  protected:
+    std::vector<std::string> value_list {};
+    std::string value {};
+  public:
+  };
 }
 
 #endif

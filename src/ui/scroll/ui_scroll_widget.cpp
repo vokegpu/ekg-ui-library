@@ -27,54 +27,54 @@
 #include "ekg/ekg.hpp"
 
 void ekg::ui::scroll_widget::on_reload() {
-    this->scroll.rect_mother = this->p_parent;
-    this->scroll.mother_id = this->p_data->get_parent_id();
-    this->scroll.widget_id = this->p_data->get_id();
-    this->dimension.w = this->p_parent->w;
-    this->dimension.h = this->p_parent->h;
-    this->scroll.on_reload();
+  this->scroll.rect_mother = this->p_parent;
+  this->scroll.mother_id = this->p_data->get_parent_id();
+  this->scroll.widget_id = this->p_data->get_id();
+  this->dimension.w = this->p_parent->w;
+  this->dimension.h = this->p_parent->h;
+  this->scroll.on_reload();
 }
 
 void ekg::ui::scroll_widget::on_pre_event(SDL_Event &sdl_event) {
-    this->scroll.on_pre_event(sdl_event);
-    this->flag.hovered = this->scroll.flag.hovered && !this->scroll.flag.activy;
-    this->flag.absolute = this->scroll.is_dragging_bar() || this->scroll.flag.activy;
+  this->scroll.on_pre_event(sdl_event);
+  this->flag.hovered = this->scroll.flag.hovered && !this->scroll.flag.activy;
+  this->flag.absolute = this->scroll.is_dragging_bar() || this->scroll.flag.activy;
 }
 
 void ekg::ui::scroll_widget::on_event(SDL_Event &sdl_event) {
-    this->flag.hovered = this->scroll.flag.hovered;
-    this->scroll.on_event(sdl_event);
+  this->flag.hovered = this->scroll.flag.hovered;
+  this->scroll.on_event(sdl_event);
 
-    if ((this->flag.absolute || this->scroll.flag.activy) && !this->is_high_frequency) {
-        ekg::update_high_frequency(this);
-        this->is_high_frequency = true;
-    }
+  if ((this->flag.absolute || this->scroll.flag.activy) && !this->is_high_frequency) {
+    ekg::update_high_frequency(this);
+    this->is_high_frequency = true;
+  }
 
-    if (this->scroll.flag.state || this->scroll.flag.extra_state || this->flag.absolute) {
-        ekg::dispatch(ekg::env::redraw);
-    }
+  if (this->scroll.flag.state || this->scroll.flag.extra_state || this->flag.absolute) {
+    ekg::dispatch(ekg::env::redraw);
+  }
 }
 
 void ekg::ui::scroll_widget::on_post_event(SDL_Event &sdl_event) {
-    ekg::ui::abstract_widget::on_post_event(sdl_event);
-    this->scroll.flag.hovered = false;
-    this->scroll.flag.activy = false;
+  ekg::ui::abstract_widget::on_post_event(sdl_event);
+  this->scroll.flag.hovered = false;
+  this->scroll.flag.activy = false;
 }
 
 void ekg::ui::scroll_widget::on_update() {
-    this->scroll.on_update();
-    this->is_high_frequency = this->scroll.check_activy_state(this->flag.hovered || this->scroll.flag.activy);
+  this->scroll.on_update();
+  this->is_high_frequency = this->scroll.check_activy_state(this->flag.hovered || this->scroll.flag.activy);
 }
 
 void ekg::ui::scroll_widget::on_draw_refresh() {
-    this->dimension.w = this->p_parent->w;
-    this->dimension.h = this->p_parent->h;
+  this->dimension.w = this->p_parent->w;
+  this->dimension.h = this->p_parent->h;
 
-    ekg::draw::bind_scissor(this->p_data->get_id());
-    ekg::draw::sync_scissor(this->get_abs_rect(), this->p_data->get_parent_id());
-    
-    ekg_draw_assert_scissor();
+  ekg::draw::bind_scissor(this->p_data->get_id());
+  ekg::draw::sync_scissor(this->get_abs_rect(), this->p_data->get_parent_id());
 
-    this->scroll.on_draw_refresh();
-    ekg::draw::bind_off_scissor();
+  ekg_draw_assert_scissor();
+
+  this->scroll.on_draw_refresh();
+  ekg::draw::bind_off_scissor();
 }
