@@ -278,9 +278,12 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
   ekg::dispatch(ekg::env::redraw);
 }
 
-void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &cursor,
-                                           std::string_view text,
-                                           ekg::ui::textbox_widget::action action, int64_t direction) {
+void ekg::ui::textbox_widget::process_text(
+  ekg::ui::textbox_widget::cursor &cursor,
+  std::string_view text,
+  ekg::ui::textbox_widget::action action,
+  int64_t direction
+) {
   auto p_ui {(ekg::ui::textbox *) this->p_data};
   if (!(this->is_ui_enabled = p_ui->is_enabled()) && !(text == "clipboard" && this->is_clipboard_copy)) {
     return;
@@ -538,8 +541,10 @@ void ekg::ui::textbox_widget::process_text(ekg::ui::textbox_widget::cursor &curs
   ekg::dispatch(ekg::env::redraw);
 }
 
-void ekg::ui::textbox_widget::check_cursor_text_bounding(ekg::ui::textbox_widget::cursor &cursor,
-                                                         bool reset_second_cursor_pos) {
+void ekg::ui::textbox_widget::check_cursor_text_bounding(
+  ekg::ui::textbox_widget::cursor &cursor,
+  bool reset_second_cursor_pos
+) {
   if (!this->flag.focused) {
     return;
   }
@@ -720,9 +725,7 @@ void ekg::ui::textbox_widget::on_reload() {
     this->rect_text.h = (this->text_height * static_cast<float>(this->text_chunk_list.size()));
 
     float vertical_scroll_limit {this->rect_text.h - rect.h};
-    float new_text_height_diff {this->text_height *
-                                (static_cast<float>(static_cast<int64_t>(this->text_chunk_list.size()) -
-                                                    previous_size) + 1.0f)};
+    float new_text_height_diff {this->text_height * (static_cast<float>(static_cast<int64_t>(this->text_chunk_list.size()) - previous_size) + 1.0f)};
 
     /*
      * If the difference between the new and old texts,
@@ -856,8 +859,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     main_cursor.pos[0].last_text_index = 0;
 
     main_cursor.pos[1].chunk_index = ekg::min((int64_t) this->text_chunk_list.size() - 1, (int64_t) 0);
-    main_cursor.pos[1].text_index = static_cast<int64_t>(ekg::utf_length(
-        ekg_textbox_get_cursor_text(main_cursor.pos[1])));
+    main_cursor.pos[1].text_index = static_cast<int64_t>(ekg::utf_length(ekg_textbox_get_cursor_text(main_cursor.pos[1])));
     main_cursor.pos[1].last_text_index = main_cursor.pos[1].chunk_index;
 
     this->loaded_multi_cursor_list.clear();
@@ -913,8 +915,12 @@ void ekg::ui::textbox_widget::on_update() {
  * but how the entire selection system is CPU-batched (it means not called all the render time),
  * the performance is not necessary bad.
  */
-bool ekg::ui::textbox_widget::find_cursor(ekg::ui::textbox_widget::cursor &target_cursor,
-                                          int64_t utf_char_index, int64_t chunk_index, bool last_line_utf_char_index) {
+bool ekg::ui::textbox_widget::find_cursor(
+  ekg::ui::textbox_widget::cursor &target_cursor,
+  int64_t utf_char_index,
+  int64_t chunk_index,
+  bool last_line_utf_char_index
+) {
   bool a_cursor_pos {};
   bool b_cursor_pos {};
 
