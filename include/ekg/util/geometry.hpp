@@ -35,8 +35,8 @@
 
 /*
  * The STL std:::min, and std::max implementation,
- * are not suitable to perform the required comparions
- * without confunsing the code.
+ * are not suitable to perform the required comparions inside of EKG
+ * without making the code confuse.
  * 
  * Max STL impl:
  * ```

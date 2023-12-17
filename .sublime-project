@@ -14,6 +14,12 @@
 		{
 			"name": "Run",
 			"shell_cmd": "cd $folder & cmake -S . -B ./cmake-build-debug/ -G Ninja -DEKG_ENABLE_TEST=1 -DCMAKE_EXPORT_COMPILE_COMMANDS=1 & cmake --build ./cmake-build-debug/ & cd ./test/build/ & cd ./$platform/ & ekg-gui-showcase-test & ekg-off-test",
-		}
+		},
+		{
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"name": "Anaconda Python Builder",
+			"selector": "source.python",
+			"shell_cmd": "\"python\" -u \"$file\""
+		},
 	],
 }

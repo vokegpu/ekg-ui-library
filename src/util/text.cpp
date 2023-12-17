@@ -29,8 +29,13 @@
 #include "ekg/util/io.hpp"
 #include "ekg/ui/abstract/ui_abstract.hpp"
 
-uint64_t ekg::utf_check_sequence(uint8_t &char8, char32_t &char32, std::string &utf_string, std::string_view string,
-                                 uint64_t index) {
+uint64_t ekg::utf_check_sequence(
+  uint8_t &char8,
+  char32_t &char32,
+  std::string &utf_string,
+  std::string_view string,
+  uint64_t index
+) {
   if (char8 <= 0x7F) {
     utf_string = char8;
     char32 = static_cast<char32_t>(char8);

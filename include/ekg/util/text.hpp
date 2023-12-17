@@ -36,8 +36,13 @@ namespace ekg {
 
   uint64_t utf_length(std::string_view string);
 
-  uint64_t utf_check_sequence(uint8_t &char8, char32_t &char32, std::string &utf_string, std::string_view string,
-                              uint64_t index);
+  uint64_t utf_check_sequence(
+    uint8_t &char8,
+    char32_t &char32,
+    std::string &utf_string,
+    std::string_view string,
+    uint64_t index
+  );
 
   char32_t utf_string_to_char32(std::string_view string);
 

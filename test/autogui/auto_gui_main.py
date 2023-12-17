@@ -28,11 +28,11 @@ import platform
 import os
 import time
 import random
-    test_program_path = test_program_path + "\\build\\{os}".format(os = "win32" if platform.system() ==  "Windows" else "linux")
 
 def init_test_program():
     test_program_path = os.getcwd()
     test_program_path = test_program_path[0:len(test_program_path) - len("\\autogui")]
+    test_program_path = test_program_path + "\\build\\{os}".format(os = "win32" if platform.system() ==  "Windows" else "linux")
 
     os.system("cd {path} && start ekg-tests.exe".format(path = test_program_path))
     time.sleep(1)
