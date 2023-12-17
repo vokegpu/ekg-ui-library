@@ -49,6 +49,7 @@ namespace ekg::gpu {
 
     uint64_t data_instance_index {};
     uint64_t previous_cached_geometry_resources_size {};
+    uint64_t cached_geometry_index {};
 
     int32_t simple_shape_index {-1};
     int32_t previous_factor {};

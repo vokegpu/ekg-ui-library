@@ -33,6 +33,7 @@ namespace ekg::ui {
   public:
     float scissor_opened_height {};
     float separator_offset {};
+
     uint64_t elapsed_animation_ticks {};
     bool parent_id_popup_opened {false};
 
@@ -45,7 +46,6 @@ namespace ekg::ui {
     void unset_visible_all_sub_popup();
 
     void get_popup_path(std::string &path);
-
   public:
     void on_reload() override;
 

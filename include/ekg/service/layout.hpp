@@ -62,8 +62,13 @@ namespace ekg::service {
 
     float get_scale_factor();
 
-    float get_dimensional_extent(ekg::ui::abstract_widget *widget, uint16_t flag_ok, uint16_t flag_stop,
-                                 int64_t &begin_and_count, ekg::axis axis);
+    float get_dimensional_extent(
+      ekg::ui::abstract_widget *widget,
+      uint16_t flag_ok,
+      uint16_t flag_stop,
+      int64_t &begin_and_count,
+      ekg::axis axis
+    );
 
     void process_scaled(ekg::ui::abstract_widget *widget_parent);
   };

@@ -108,8 +108,12 @@ int32_t main() {
     std::cout << *list_of_life.end() << std::endl;
 
     for (float &fs : list_of_life) {
-        std::cout << "fffs: " << fs << std::endl;
+    std::cout << "fff333s: " << fs << std::endl;
     }
+
+    float val = 20.0f;
+    float min = std::min(val, 2.0f);
+    std::cout << "OIOIOIOIOIOIOIOIOIOIOI " << std::endl;
 
     return 0;
 }

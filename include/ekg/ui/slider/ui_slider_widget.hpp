@@ -33,7 +33,6 @@ namespace ekg::ui {
     void update_bar(float, float);
 
     void update_bar_axis(ekg::dock);
-
   public:
     ekg::rect rect_target {};
     ekg::rect rect_text {};

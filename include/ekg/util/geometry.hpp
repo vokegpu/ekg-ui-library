@@ -248,45 +248,25 @@ namespace ekg {
     bool is_hovering {};
   };
 
-  float clamp(float, float, float);
+  bool rect_collide_rect(const ekg::rect &a, const ekg::rect &b);
+  bool rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec);
+  bool rect_collide_vec_precisely(const ekg::rect &rect, const ekg::vec4 &vec);
 
-  void orthographic2d(float *, float, float, float, float);
+  void set_rect_clamped(ekg::rect &rect, float min_size);
+  void set_dock_scaled(const ekg::rect &rect, const ekg::vec2 &offset, ekg::docker &docker);
+  void orthographic2d(float *p_matrix, float left, float right, float bottom, float top);
 
-  bool rect_collide_rect(const ekg::rect &, const ekg::rect &);
+  float find_min_offset(float width, float offset);
+  float smooth(float duration, uint64_t ticks);
+  float lerp(float a, float b, float dt);
 
-  bool rect_collide_vec(const ekg::rect &, const ekg::vec4 &);
+  ekg::vec4 color(uint8_t r, uint8_t g, uint8_t b, int32_t a);
+  int32_t find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::vec4 &vec);
 
-  bool rect_collide_vec_precisely(const ekg::rect &, const ekg::vec4 &);
-
-  void set_rect_clamped(ekg::rect &, float);
-
-  void set_dock_scaled(const ekg::rect &, const ekg::vec2 &, ekg::docker &);
-
-  int32_t find_collide_dock(ekg::docker &, uint16_t, const ekg::vec4 &);
-
-  float find_min_offset(float, float);
-
-  int32_t min(int32_t, int32_t);
-
-  int32_t max(int32_t, int32_t);
-
-  uint64_t min(uint64_t, uint64_t);
-
-  uint64_t max(uint64_t, uint64_t);
-
-  int64_t min(int64_t, int64_t);
-
-  int64_t max(int64_t, int64_t);
-
-  ekg::vec4 color(int32_t, int32_t, int32_t, int32_t);
-
-  float min(float, float);
-
-  float max(float, float);
-
-  float smooth(float, uint64_t);
-
-  float lerp(float, float, float);
+  template<typename t>
+  t clamp(t val, t min, t max) {
+    return val < min ? min : val > max ? max : val;
+  }
 }
 
 #endif

@@ -127,8 +127,12 @@ namespace ekg::ui {
     void check_cursor_text_bounding(ekg::ui::textbox_widget::cursor &cursor, bool reset_second_cursor_pos);
 
     void
-    process_text(ekg::ui::textbox_widget::cursor &cursor, std::string_view text, ekg::ui::textbox_widget::action action,
-                 int64_t direction);
+    process_text(
+      ekg::ui::textbox_widget::cursor &cursor,
+      std::string_view text,
+      ekg::ui::textbox_widget::action action,
+      int64_t direction
+    );
 
     void move_cursor(ekg::ui::textbox_widget::cursor_pos &cursor, int64_t x, int64_t y);
 

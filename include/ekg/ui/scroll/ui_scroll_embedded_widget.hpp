@@ -65,7 +65,6 @@ namespace ekg::ui {
     void reset_scroll();
 
     void check_axis_states();
-
   public: // virtuals
     void on_reload();
 

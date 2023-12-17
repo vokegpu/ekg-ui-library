@@ -33,13 +33,20 @@ float             ekg::gpu::allocator::viewport[4] {};
 bool              ekg::gpu::allocator::is_out_of_scissor {};
 
 void ekg::gpu::allocator::invoke() {
-  /* reset all "flags", everything is used tick by tick to compare factories */
-
+  /*
+   * Invocation segment reset the CPU-batching counters.
+   */
   this->data_instance_index = 0;
   this->begin_stride_count = 0;
   this->end_stride_count = 0;
   this->simple_shape_index = 0;
+  this->cached_geometry_index = 0;
 
+  /*
+   * The first 4 vertices are used by the simple shapes,
+   * soon it is necessary to add not even one simple shape indices
+   * but everything.
+   */
   this->push_back_geometry(0.0f, 0.0f, 0.0f, 0.0f);
   this->push_back_geometry(0.0f, 1.0f, 0.0f, 1.0f);
   this->push_back_geometry(1.0f, 0.0f, 1.0f, 0.0f);
@@ -111,14 +118,13 @@ void ekg::gpu::allocator::dispatch() {
 }
 
 void ekg::gpu::allocator::revoke() {
-  uint64_t cached_geometry_resources_size {this->cached_geometry_resources.size()};
+  uint64_t cached_geometry_resources_size {this->cached_geometry_index};
   bool should_re_alloc_buffers {this->previous_cached_geometry_resources_size != cached_geometry_resources_size};
 
   if (this->data_instance_index < this->data_list.size()) {
     this->data_list.erase(this->data_list.begin() + this->data_instance_index + 1, this->data_list.end());
   }
 
-  this->previous_cached_geometry_resources_size = cached_geometry_resources_size;
   if (should_re_alloc_buffers || this->factor_changed) {
     glBindVertexArray(this->vbo_array);
     glBindBuffer(GL_ARRAY_BUFFER, this->geometry_buffer);
@@ -128,7 +134,15 @@ void ekg::gpu::allocator::revoke() {
   }
 
   this->factor_changed = false;
-  this->cached_geometry_resources = {};
+
+  if (this->cached_geometry_resources.size() < this->previous_cached_geometry_resources_size) {
+    this->cached_geometry_resources.erase(
+      this->cached_geometry_resources.begin() + cached_geometry_resources_size + 1,
+      this->cached_geometry_resources.end()
+    );
+  }
+
+  this->previous_cached_geometry_resources_size = cached_geometry_resources_size;
 }
 
 void ekg::gpu::allocator::on_update() {
@@ -422,10 +436,25 @@ void ekg::gpu::allocator::bind_off_scissor() {
 }
 
 void ekg::gpu::allocator::push_back_geometry(float x, float y, float u, float v) {
-  this->cached_geometry_resources.emplace_back(x);
-  this->cached_geometry_resources.emplace_back(y);
   this->end_stride_count++;
 
-  this->cached_geometry_resources.emplace_back(u);
-  this->cached_geometry_resources.emplace_back(v);
+  if (this->cached_geometry_index >=
+      this->cached_geometry_resources.size()) {
+
+    this->cached_geometry_index += 4;
+
+    this->cached_geometry_resources.emplace_back(x);
+    this->cached_geometry_resources.emplace_back(y);
+
+    this->cached_geometry_resources.emplace_back(u);
+    this->cached_geometry_resources.emplace_back(v);
+
+    return;
+  }
+
+  this->cached_geometry_resources.at(this->cached_geometry_index++) = x;
+  this->cached_geometry_resources.at(this->cached_geometry_index++) = y;
+
+  this->cached_geometry_resources.at(this->cached_geometry_index++) = u;
+  this->cached_geometry_resources.at(this->cached_geometry_index++) = v;
 }
