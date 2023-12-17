@@ -233,7 +233,7 @@ void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_rea
 std::string ekg::string_float_precision(float n, int32_t precision) {
   const std::string string {std::to_string(n)};
   return string.substr(0,
-                       ekg::max((int32_t) (string.find('.') + precision + (1 * precision)), (int32_t) string.size()));
+                       ekg_max((int32_t) (string.find('.') + precision + (1 * precision)), (int32_t) string.size()));
 }
 
 uint8_t ekg::check_attribute_flags(std::string_view text, uint16_t &flags) {

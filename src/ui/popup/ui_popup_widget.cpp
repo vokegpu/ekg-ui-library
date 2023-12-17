@@ -118,7 +118,7 @@ void ekg::ui::popup_widget::on_reload() {
   ekg::vec3 layout_offset {offset, offset, text_height + dimension_offset};
   auto &layout_mask {layout.get_layout_mask()};
 
-  this->dimension.w = ekg::min(this->dimension.w, max_width + dimension_offset);
+  this->dimension.w = ekg_min(this->dimension.w, max_width + dimension_offset);
   this->dimension.h = offset;
   this->separator_offset = offset;
 
@@ -175,8 +175,8 @@ void ekg::ui::popup_widget::on_reload() {
     }
   }
 
-  this->min_size.x = ekg::min(this->min_size.x, this->dimension.w);
-  this->min_size.y = ekg::min(this->min_size.y, this->dimension.h);
+  this->min_size.x = ekg_min(this->min_size.x, this->dimension.w);
+  this->min_size.y = ekg_min(this->min_size.y, this->dimension.h);
 }
 
 void ekg::ui::popup_widget::on_pre_event(SDL_Event &sdl_event) {

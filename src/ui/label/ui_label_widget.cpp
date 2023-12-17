@@ -40,11 +40,11 @@ void ekg::ui::label_widget::on_reload() {
   float dimension_offset {text_height / 2};
   float offset {ekg::find_min_offset(text_width, dimension_offset)};
 
-  this->dimension.w = ekg::min(this->dimension.w, text_width);
+  this->dimension.w = ekg_min(this->dimension.w, text_width);
   this->dimension.h = (text_height + dimension_offset) * static_cast<float>(scaled_height);
 
-  this->min_size.x = ekg::min(this->min_size.x, text_height);
-  this->min_size.y = ekg::min(this->min_size.y, this->dimension.h);
+  this->min_size.x = ekg_min(this->min_size.x, text_height);
+  this->min_size.y = ekg_min(this->min_size.y, this->dimension.h);
 
   this->rect_text.w = text_width;
   this->rect_text.h = text_height * static_cast<float>(scaled_height);
@@ -59,7 +59,7 @@ void ekg::ui::label_widget::on_reload() {
   ekg::assert_task_flag = false;
   this->dimension.w = ekg::assert_task(this->dimension.w,
                                        this->dimension.w <= text_width ? layout_mask.w : this->dimension.w);
-  this->dimension.h = ekg::assert_task(this->dimension.h, ekg::min(this->dimension.h, layout_mask.h));
+  this->dimension.h = ekg::assert_task(this->dimension.h, ekg_min(this->dimension.h, layout_mask.h));
 
   if (ekg::assert_task_flag && p_ui->has_parent()) {
     ekg::synclayout(this);

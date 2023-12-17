@@ -244,7 +244,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
       next_column = dimension_closed.y > rect_opened_test.y;
 
       if (next_row) {
-          rect_opened.h -= ekg::min((rect_opened.h + p_item->component.rect_dimension_opened.y) - (rect_opened_test.y + rect_opened.h), 0.0f);
+          rect_opened.h -= ekg_min((rect_opened.h + p_item->component.rect_dimension_opened.y) - (rect_opened_test.y + rect_opened.h), 0.0f);
           rect_opened_test.y = p_item->component.rect_dimension_closed.y;
 
           rect_opened.w = dimension_closed.x;

@@ -117,7 +117,7 @@ void ekg::service::layout::process_layout_mask() {
         dock_rect.p_rect->y = this->offset_mask.z - clamped_offset - dock_rect.p_rect->h;
       }
     } else {
-      clamped_offset = ekg::clamp((dock_rect.p_rect->w + this->offset_mask.x) - this->offset_mask.z, 0,
+      clamped_offset = ekg_clamp((dock_rect.p_rect->w + this->offset_mask.x) - this->offset_mask.z, 0,
                                   this->offset_mask.x);
       left_or_right = ekg::bitwise::contains(dock_rect.dock, ekg::dock::left) ||
                       ekg::bitwise::contains(dock_rect.dock, ekg::dock::right);
@@ -164,9 +164,9 @@ void ekg::service::layout::process_layout_mask() {
   }
 
   if (axis) {
-    this->layout_mask.w = ekg::min(v, this->layout_mask.w);
+    this->layout_mask.w = ekg_min(v, this->layout_mask.w);
   } else {
-    this->layout_mask.h = ekg::min(v, this->layout_mask.h);
+    this->layout_mask.h = ekg_min(v, this->layout_mask.h);
   }
 
   this->dock_rect_list.clear();
@@ -205,7 +205,7 @@ float ekg::service::layout::get_respective_mask_size() {
   }
 
   this->respective_mask_center = (only_center_count != 0 ? (respective_center_size / only_center_count) : 0.0f);
-  this->respective_mask_all = ekg::min(this->respective_mask_all, respective_size);
+  this->respective_mask_all = ekg_min(this->respective_mask_all, respective_size);
 
   return this->respective_mask_all;
 }
@@ -421,7 +421,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
       count = it;
       dimensional_extent = this->get_dimensional_extent(p_widget_parent, ekg::dock::fill, ekg::dock::next, count,
                                                         ekg::axis::horizontal);
-      dimensional_extent = ekg::min(
+      dimensional_extent = ekg_min(
           ((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count),
           p_widgets->min_size.x);
 
@@ -436,7 +436,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
       count = it;
       dimensional_extent = this->get_dimensional_extent(p_widget_parent, ekg::dock::fill, ekg::dock::next, count,
                                                         ekg::axis::horizontal);
-      dimensional_extent = ekg::min(
+      dimensional_extent = ekg_min(
           ((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count),
           p_widgets->min_size.x);
 
@@ -571,7 +571,7 @@ void ekg::service::layout::update_scale_factor() {
   float factor {((input_resolution.x * input_resolution.y) / base_scale) * 100.0f};
 
   factor = roundf(factor / ekg::scaleinterval) / (monitor_scale_percent / ekg::scaleinterval);
-  this->scale_factor = ekg::clamp(factor, 0.5f, 2.0f);
+  this->scale_factor = ekg_clamp(factor, 0.5f, 2.0f);
 }
 
 float ekg::service::layout::get_scale_factor() {

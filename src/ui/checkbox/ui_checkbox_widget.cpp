@@ -42,11 +42,11 @@ void ekg::ui::checkbox_widget::on_reload() {
   float offset {ekg::find_min_offset(text_width, dimension_offset)};
   float dimension_height {(text_height + dimension_offset) * static_cast<float>(scaled_height)};
 
-  this->dimension.w = ekg::min(this->dimension.w, text_width);
+  this->dimension.w = ekg_min(this->dimension.w, text_width);
   this->dimension.h = dimension_height;
 
-  this->min_size.x = ekg::min(this->min_size.x, text_height);
-  this->min_size.y = ekg::min(this->min_size.y, dimension_height);
+  this->min_size.x = ekg_min(this->min_size.x, text_height);
+  this->min_size.y = ekg_min(this->min_size.y, dimension_height);
 
   this->rect_box.w = box_size;
   this->rect_box.h = box_size;
@@ -63,7 +63,7 @@ void ekg::ui::checkbox_widget::on_reload() {
 
   auto &layout_mask {layout.get_layout_mask()};
   this->dimension.w = this->dimension.w <= text_width ? layout_mask.w : this->dimension.w;
-  this->dimension.h = ekg::min(this->dimension.h, layout_mask.h);
+  this->dimension.h = ekg_min(this->dimension.h, layout_mask.h);
 }
 
 void ekg::ui::checkbox_widget::on_event(SDL_Event &sdl_event) {

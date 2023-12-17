@@ -168,7 +168,7 @@ void ekg::ui::textbox_widget::update_ui_text_data() {
     formated_text += text;
     formated_text += chunk_index + 1 == text_chunk_size ? 0 : '\n';
 
-    this->rect_text.w = ekg::min(this->rect_text.w, f_renderer.get_text_width(text));
+    this->rect_text.w = ekg_min(this->rect_text.w, f_renderer.get_text_width(text));
   }
 
   this->embedded_scroll.acceleration.y = (this->text_height * 3.0f) + (this->text_offset * 2.0f);
@@ -194,7 +194,7 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
       cursor_text_size = (int64_t) ekg::utf_length(ekg_textbox_get_cursor_text(cursor));
 
       cursor.text_index = cursor.last_text_index;
-      cursor.text_index = ekg::max(cursor.text_index, (int64_t) cursor_text_size);
+      cursor.text_index = ekg_max(cursor.text_index, (int64_t) cursor_text_size);
     }
   } else if (y > 0) {
     if (chunk_bounding_size_index) {
@@ -204,7 +204,7 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
 
       cursor_text_size = (int64_t) ekg::utf_length(ekg_textbox_get_cursor_text(cursor));
       cursor.text_index = cursor.last_text_index;
-      cursor.text_index = ekg::max(cursor.text_index, (int64_t) cursor_text_size);
+      cursor.text_index = ekg_max(cursor.text_index, (int64_t) cursor_text_size);
     }
   }
 
@@ -226,8 +226,8 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
     y = 1;
   }
 
-  cursor.text_index = ekg::min(cursor.text_index, (int64_t) 0);
-  cursor.chunk_index = ekg::max(cursor.chunk_index, (int64_t) this->text_chunk_list.size());
+  cursor.text_index = ekg_min(cursor.text_index, (int64_t) 0);
+  cursor.chunk_index = ekg_max(cursor.chunk_index, (int64_t) this->text_chunk_list.size());
 
   if (check_cursor_x) {
     cursor.last_text_index = cursor.text_index;
@@ -463,7 +463,7 @@ void ekg::ui::textbox_widget::process_text(
 
           ekg_textbox_clamp_line(upper_line_text, ui_max_chars_per_line);
         } else {
-          int64_t it {ekg::min(cursor.pos[0].text_index - 1, (int64_t) 0)};
+          int64_t it {ekg_min(cursor.pos[0].text_index - 1, (int64_t) 0)};
           cursor_text_a = ekg::utf_substr(cursor_text_a, 0, it) +
                           ekg::utf_substr(cursor_text_a, it + 1, ekg::utf_length(cursor_text_a));
           ekg_textbox_clamp_line(cursor_text_a, ui_max_chars_per_line);
@@ -559,8 +559,8 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(
   ekg::rect char_rect {};
   ekg::vec4 &interact {ekg::input::interact()};
 
-  interact.x = ekg::clamp(interact.x, rect.x + this->rect_cursor.w, rect.x + rect.w - this->rect_cursor.w);
-  interact.y = ekg::clamp(interact.y, rect.y + this->text_offset * 2.0f, rect.y + rect.h - this->text_offset * 2.0f);
+  interact.x = ekg_clamp(interact.x, rect.x + this->rect_cursor.w, rect.x + rect.w - this->rect_cursor.w);
+  interact.y = ekg_clamp(interact.y, rect.y + this->text_offset * 2.0f, rect.y + rect.h - this->text_offset * 2.0f);
 
   uint64_t text_chunk_size {this->text_chunk_list.size()};
   bool checked {};
@@ -699,11 +699,11 @@ void ekg::ui::textbox_widget::on_reload() {
   this->text_height = f_renderer.get_text_height();
   this->text_offset = ekg::find_min_offset(text_width, dimension_offset);
 
-  this->dimension.w = ekg::min(this->dimension.w, text_width);
+  this->dimension.w = ekg_min(this->dimension.w, text_width);
   this->dimension.h = (this->text_height + dimension_offset) * static_cast<float>(scaled_height);
 
-  this->min_size.x = ekg::min(this->min_size.x, this->text_height);
-  this->min_size.y = ekg::min(this->min_size.y, this->dimension.h);
+  this->min_size.x = ekg_min(this->min_size.x, this->text_height);
+  this->min_size.y = ekg_min(this->min_size.y, this->dimension.h);
 
   if (this->widget_side_text != p_ui->get_text() || this->widget_side_text.empty()) {
     int64_t previous_size {static_cast<int64_t>(this->text_chunk_list.size())};
@@ -858,7 +858,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     main_cursor.pos[0].text_index = 0;
     main_cursor.pos[0].last_text_index = 0;
 
-    main_cursor.pos[1].chunk_index = ekg::min((int64_t) this->text_chunk_list.size() - 1, (int64_t) 0);
+    main_cursor.pos[1].chunk_index = ekg_min((int64_t) this->text_chunk_list.size() - 1, (int64_t) 0);
     main_cursor.pos[1].text_index = static_cast<int64_t>(ekg::utf_length(ekg_textbox_get_cursor_text(main_cursor.pos[1])));
     main_cursor.pos[1].last_text_index = main_cursor.pos[1].chunk_index;
 

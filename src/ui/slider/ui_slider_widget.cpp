@@ -44,7 +44,7 @@ void ekg::ui::slider_widget::update_bar(float x, float y) {
     }
 
     default: {
-      factor = ekg::min(x - bar.x, 0.0f);
+      factor = ekg_min(x - bar.x, 0.0f);
       dimension_factor = bar.w;
       break;
     }
@@ -93,11 +93,11 @@ void ekg::ui::slider_widget::on_reload() {
   auto &layout {ekg::core->service_layout};
   bool centered_text {text_dock_flags == ekg::dock::center};
 
-  this->dimension.w = ekg::min(this->dimension.w, text_width);
+  this->dimension.w = ekg_min(this->dimension.w, text_width);
   this->dimension.h = dimension_height;
 
-  this->min_size.x = ekg::min(this->min_size.x, text_height);
-  this->min_size.y = ekg::min(this->min_size.y, dimension_height);
+  this->min_size.x = ekg_min(this->min_size.x, text_height);
+  this->min_size.y = ekg_min(this->min_size.y, dimension_height);
 
   if (centered_text) {
     auto &f_renderer_small {ekg::f_renderer(this->font_render_size)};
@@ -125,7 +125,7 @@ void ekg::ui::slider_widget::on_reload() {
       this->rect_target.h = this->rect_target.w;
 
       bar_difference_size = this->rect_bar.h;
-      this->rect_bar.h = ekg::min(this->rect_bar.h, this->rect_target.h);
+      this->rect_bar.h = ekg_min(this->rect_bar.h, this->rect_target.h);
 
       layout.set_preset_mask({offset, offset, dimension_height}, bar_axis, this->dimension.w);
       break;
@@ -148,7 +148,7 @@ void ekg::ui::slider_widget::on_reload() {
 
   auto &layout_mask {layout.get_layout_mask()};
   this->dimension.h = layout_mask.h;
-  this->dimension.h = ekg::min(this->dimension.h, layout_mask.h);
+  this->dimension.h = ekg_min(this->dimension.h, layout_mask.h);
 
   this->rect_bar.h = bar_difference_size;
   this->rect_target.x = this->rect_bar.x + this->rect_bar_value.w - (this->rect_target.w / 2);

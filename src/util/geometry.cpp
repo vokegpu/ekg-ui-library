@@ -188,14 +188,10 @@ int32_t ekg::find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::v
 }
 
 void ekg::set_rect_clamped(ekg::rect &rect, float min_size) {
-  rect.x = ekg::min(rect.x, 0.0f);
-  rect.y = ekg::min(rect.y, 0.0f);
-  rect.w = ekg::min(rect.w, min_size);
-  rect.h = ekg::min(rect.h, min_size);
-}
-
-float ekg::clamp(float value, float min, float max) {
-  return value < min ? min : (value > max ? max : value);
+  rect.x = ekg_min(rect.x, 0.0f);
+  rect.y = ekg_min(rect.y, 0.0f);
+  rect.w = ekg_min(rect.w, min_size);
+  rect.h = ekg_min(rect.h, min_size);
 }
 
 float ekg::find_min_offset(float width, float offset) {
@@ -209,7 +205,7 @@ float ekg::find_min_offset(float width, float offset) {
 
 float ekg::smooth(float duration, uint64_t ticks) {
   duration = static_cast<float>(ticks) / duration;
-  return ekg::clamp(6.0f * powf(duration, 5) - (15 * powf(duration, 4)) + (10 * powf(duration, 3)), 0.0f, 1.0f);
+  return ekg_clamp(6.0f * powf(duration, 5) - (15 * powf(duration, 4)) + (10 * powf(duration, 3)), 0.0f, 1.0f);
 }
 
 float ekg::lerp(float a, float b, float dt) {

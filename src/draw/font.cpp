@@ -57,7 +57,7 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text, int32_t &l
     break_text = char8 == '\n';
     if (break_text || (r_n_break_text = (char8 == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
       it += static_cast<uint64_t>(r_n_break_text);
-      largest_text_width = ekg::min(largest_text_width, text_width);
+      largest_text_width = ekg_min(largest_text_width, text_width);
       text_width = 0.0f;
       lines++;
       continue;
@@ -72,7 +72,7 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text, int32_t &l
     text_width += this->allocated_char_data[char32].wsize;
   }
 
-  largest_text_width = ekg::min(largest_text_width, text_width);
+  largest_text_width = ekg_min(largest_text_width, text_width);
   return largest_text_width;
 }
 
@@ -102,7 +102,7 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
     break_text = char8 == '\n';
     if (break_text || (r_n_break_text = (char8 == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
       it += static_cast<uint64_t>(r_n_break_text);
-      largest_text_width = ekg::min(largest_text_width, text_width);
+      largest_text_width = ekg_min(largest_text_width, text_width);
       text_width = 0.0f;
       continue;
     }
@@ -116,7 +116,7 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
     text_width += this->allocated_char_data[char32].wsize;
   }
 
-  largest_text_width = ekg::min(largest_text_width, text_width);
+  largest_text_width = ekg_min(largest_text_width, text_width);
   return largest_text_width;
 }
 

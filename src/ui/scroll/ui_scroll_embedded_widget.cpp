@@ -155,16 +155,16 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
 
 #if defined(ANDROID)
   if (hovered_and_action_scroll_fired && this->is_vertical_enabled) {
-      this->scroll.w = ekg::clamp(this->scroll.y + (interact.w * this->acceleration.y), this->rect_mother->h - this->rect_child.h, 0.0f);
+      this->scroll.w = ekg_clamp(this->scroll.y + (interact.w * this->acceleration.y), this->rect_mother->h - this->rect_child.h, 0.0f);
   }
 
   if (hovered_and_action_scroll_fired && this->is_horizontal_enabled) {
-      this->scroll.z = ekg::clamp(this->scroll.x + (-interact.z * this->acceleration.y), this->rect_mother->w - this->rect_child.w, 0.0f);
+      this->scroll.z = ekg_clamp(this->scroll.x + (-interact.z * this->acceleration.y), this->rect_mother->w - this->rect_child.w, 0.0f);
   }
 #else
   if (hovered_and_action_scroll_fired && this->is_vertical_enabled) {
     bool over_max_motion {static_cast<int32_t>(interact.w) > 1 || static_cast<int32_t>(interact.w) < -1};
-    this->scroll.w = ekg::clamp(this->scroll.y + (interact.w *
+    this->scroll.w = ekg_clamp(this->scroll.y + (interact.w *
                                                   (over_max_motion ? this->acceleration.y + this->acceleration.y
                                                                    : this->acceleration.y)),
                                 this->rect_mother->h - this->rect_child.h, 0.0f);
@@ -172,7 +172,7 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
 
   if (hovered_and_action_scroll_fired && this->is_horizontal_enabled) {
     bool over_max_motion {static_cast<int32_t>(interact.z) >= 2 || static_cast<int32_t>(interact.z) <= -2};
-    this->scroll.z = ekg::clamp(this->scroll.x + (-interact.z *
+    this->scroll.z = ekg_clamp(this->scroll.x + (-interact.z *
                                                   (over_max_motion ? this->acceleration.x + this->acceleration.x
                                                                    : this->acceleration.x)),
                                 this->rect_mother->w - this->rect_child.w, 0.0f);
@@ -204,7 +204,7 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
       scaled_bar.y -= this->rect_mother->y;
 
       this->scroll.w =
-          -ekg::clamp(scaled_bar.y / (this->rect_mother->h - this->rect_vertical_scroll_bar.h), 0.0f, 1.0f) *
+          -ekg_clamp(scaled_bar.y / (this->rect_mother->h - this->rect_vertical_scroll_bar.h), 0.0f, 1.0f) *
           (this->rect_child.h - this->rect_mother->h);
       this->scroll.y = this->scroll.w;
     }
@@ -215,7 +215,7 @@ void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
       scaled_bar.x -= this->rect_mother->x;
 
       this->scroll.z =
-          -ekg::clamp(scaled_bar.x / (this->rect_mother->w - this->rect_horizontal_scroll_bar.w), 0.0f, 1.0f) *
+          -ekg_clamp(scaled_bar.x / (this->rect_mother->w - this->rect_horizontal_scroll_bar.w), 0.0f, 1.0f) *
           (this->rect_child.w - this->rect_mother->w);
       this->scroll.x = this->scroll.z;
     }
@@ -276,7 +276,7 @@ void ekg::ui::scroll_embedded_widget::on_draw_refresh() {
   float y_pos_factor {abs(this->scroll.y) / out_of_mother_height};
 
   this->rect_vertical_scroll_bar.h = this->rect_mother->h -
-                                     (out_of_mother_height <= 0.0f ? this->rect_mother->h : ekg::max(
+                                     (out_of_mother_height <= 0.0f ? this->rect_mother->h : ekg_max(
                                          out_of_mother_height, this->rect_mother->h - 30.0f));
   this->rect_vertical_scroll_bar.y = y_pos_factor * (this->rect_mother->h - this->rect_vertical_scroll_bar.h);
 
@@ -296,7 +296,7 @@ void ekg::ui::scroll_embedded_widget::on_draw_refresh() {
   float x_pos_factor {abs(this->scroll.x) / out_of_mother_width};
 
   this->rect_horizontal_scroll_bar.w = this->rect_mother->w -
-                                       (out_of_mother_width <= 0.0f ? this->rect_mother->w : ekg::max(
+                                       (out_of_mother_width <= 0.0f ? this->rect_mother->w : ekg_max(
                                            out_of_mother_width, this->rect_mother->w - 30.0f));
   this->rect_horizontal_scroll_bar.x = x_pos_factor * (this->rect_mother->w - this->rect_horizontal_scroll_bar.w);
 

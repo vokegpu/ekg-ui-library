@@ -33,6 +33,25 @@
 #define ekg_equals_float(x, y) ((fabsf((x) - (y))) <= FLT_EPSILON * fmaxf(1.0f, fmaxf(fabsf(x), fabsf(y))))
 #define ekg_pixel_div_2        (0.500000f)
 
+/*
+ * The STL std:::min, and std::max implementation,
+ * are not suitable to perform the required comparions
+ * without confunsing the code.
+ * 
+ * Max STL impl:
+ * ```
+ * (a < b) ? b : a;
+ * ```
+ *
+ * Max EKG impl:
+ * ```
+ * (a > b) ? b : a; 
+ * ```
+ */
+#define ekg_min(a, b)      ((a < b) ? b : a)
+#define ekg_max(a, b)      ((a > b) ? b : a)
+#define ekg_clamp(a, b, c) ((a < b) ? b : ((a > c) ? c : a))
+
 namespace ekg {
   extern double pi;
 
@@ -260,13 +279,8 @@ namespace ekg {
   float smooth(float duration, uint64_t ticks);
   float lerp(float a, float b, float dt);
 
-  ekg::vec4 color(uint8_t r, uint8_t g, uint8_t b, int32_t a);
+  ekg::vec4 color(int32_t r, int32_t g, int32_t b, int32_t a);
   int32_t find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::vec4 &vec);
-
-  template<typename t>
-  t clamp(t val, t min, t max) {
-    return val < min ? min : val > max ? max : val;
-  }
 }
 
 #endif

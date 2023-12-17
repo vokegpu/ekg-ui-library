@@ -59,16 +59,16 @@ void ekg::runtime::update_size_changed() {
 
   this->service_layout.update_scale_factor();
   uint32_t font_size {
-      static_cast<uint32_t>(ekg::clamp(static_cast<int32_t>(18.0f * this->service_layout.get_scale_factor()), 0, 256))};
+      static_cast<uint32_t>(ekg_clamp(static_cast<int32_t>(18.0f * this->service_layout.get_scale_factor()), 0, 256))};
 
   if (this->f_renderer_normal.font_size != font_size) {
-    this->f_renderer_small.font_size = ekg::min(font_size - 4, 4);
+    this->f_renderer_small.font_size = ekg_min(font_size - 4, 4);
     this->f_renderer_small.reload();
 
-    this->f_renderer_normal.font_size = ekg::min(font_size, 8);
+    this->f_renderer_normal.font_size = ekg_min(font_size, 8);
     this->f_renderer_normal.reload();
 
-    this->f_renderer_big.font_size = ekg::min(font_size + 6, 12);
+    this->f_renderer_big.font_size = ekg_min(font_size + 6, 12);
     this->f_renderer_big.reload();
   }
 
