@@ -31,21 +31,25 @@ message("-- Building EKG user interface library version ${EKG_VERSION}")
 project(ekg VERSION ${EKG_VERSION} DESCRIPTION "graphical user interface")
 
 if (WIN32)
-    message("-- Building EKG WIN32 native library")
-    set(LIBRARY_OUTPUT_PATH "../lib/win32/")
+    set(LIBRARY_OUTPUT_PATH "../lib/windows/")
+    set(PLATFORM            "windows")
 elseif(ANDROID)
-    message("-- Building EKG Android Linux native library")
     set(LIBRARY_OUTPUT_PATH "${ANDROID_ABI}/")
-else() # WSL is not detected as Linux-based OS, same you use a Linux kernel-based distribution.
+    set(PLATFORM            "${ANDROID_ABI}")
+else()
     # Enable if your base OS is Debian-based (e.g Ubuntu).
     # It is a common issue related by the Linux community.
     if (EKG_LINUX_NOT_FOUND_FREETYPE)
         include_directories(/usr/include/freetype2)
+        message("-- Using var EKG_LINUX_NOT_FOUND_FREETYPE to include `/usr/include/freetype2` directly")
     endif()
 
-    message("-- Generating EKG Linux native library")
+    # WSL is not detected as Linux-based OS, same you use a Linux kernel-based distribution.
     set(LIBRARY_OUTPUT_PATH "../lib/linux/")
+    set(PLATFORM            "linux")
 endif()
+
+message("-- Generating EKG ${PLATFORM} native library")
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
 include_directories(include/)
@@ -62,19 +66,19 @@ if (EKG_ENABLE_TEST)
     project(ekg-gui-showcase-test)
 
     if (WIN32)
-        set(EXECUTABLE_OUTPUT_PATH ../test/build/win32/)
+        set(EXECUTABLE_OUTPUT_PATH ../test/build/windows/)
     else()
         set(EXECUTABLE_OUTPUT_PATH ../test/build/linux/)
     endif()
 
     add_compile_options(-O3)
     add_executable(ekg-gui-showcase-test "test/src/ekg_gui_showcase_test.cpp")
+    
+    file(GLOB LIBRARY_PATH "./lib/${PLATFORM}/libekg.a")
 
     if (WIN32)
-        file(GLOB LIBRARY_PATH "./lib/win32/libekg.a")
         set(THIRD_PARTY_LIBRARIES mingw32 SDL2main SDL2 opengl32 glew32 freetype)
     else()
-        file(GLOB LIBRARY_PATH "./lib/linux/libekg.a")
         set(THIRD_PARTY_LIBRARIES SDL2main SDL2 GL GLEW freetype)
     endif()
 
