@@ -141,64 +141,38 @@ std::string ekg::utf_substr(std::string_view string, uint64_t offset, uint64_t s
   }
 
   uint64_t string_size {string.size()};
-  uint64_t utf_text_size {};
+  uint64_t utf_text_size {};       
 
   offset = offset > string_size ? string_size : offset;
   size += offset;
-
-  std::string result {};
-  bool entered {};
 
   uint64_t insert_size {};
   uint64_t index {};
   uint8_t utf_sequence_size {};
   uint8_t char8 {};
+  uint64_t begin {UINT64_MAX};
 
   /*
    * This function implementation checks the amount of bytes per char for UTF-8.
    * There is no support for UTF-16 or UTF-32 still.
    *
-   * The resize is function is not the best approach, not in this case, considering
-   * that UTF chars can be represented by a maximum of only 4 chars.
+   * First step is get the size of 
    */
 
   while (index < string_size) {
     char8 = static_cast<uint8_t>(string.at(index));
-    entered = utf_text_size >= offset && utf_text_size < size;
 
-    if (char8 <= 0x7F) {
-      utf_sequence_size = 1;
-      if (entered) result += char8;
-    } else if ((char8 & 0xE0) == 0xC0) {
-      utf_sequence_size = 2;
-      if (entered) {
-        result += char8;
-        result += string.at(index + 1);
-      }
-    } else if ((char8 & 0xF0) == 0xE0) {
-      utf_sequence_size = 3;
-      if (entered) {
-        result += char8;
-        result += string.at(index + 1);
-        result += string.at(index + 2);
-      }
-    } else if ((char8 & 0xF8) == 0xF0) {
-      utf_sequence_size = 4;
-      if (entered) {
-        result += char8;
-        result += string.at(index + 1);
-        result += string.at(index + 2);
-        result += string.at(index + 4);
-      }
+    if (utf_text_size >= offset && begin == UINT64_MAX) {
+      begin = index;
     }
 
-    // I will let this code here <3.
-    //if (utf_text_size >= offset && utf_text_size < size) {
-    //    insert_size = result.size();
-    //    result.resize(insert_size + utf_sequence_size);
-    //    memcpy(&result.at(insert_size), &string.at(index), utf_sequence_size);
+    utf_sequence_size += 4 * ((char8 & 0xF8) == 0xF0);
+    utf_sequence_size += 3 * ((char8 & 0xF0) == 0xE0);
+    utf_sequence_size += 2 * ((char8 & 0xE0) == 0xC0);
+    utf_sequence_size += (char8 <= 0x7F); 
 
     if (utf_text_size > size) {
+      result = 
       break;
     }
 

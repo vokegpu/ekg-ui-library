@@ -30,12 +30,30 @@
 #include <vector>
 
 namespace ekg {
-  std::string utf_char32_to_string(char32_t char32);
+  /**
+   * Returns a UTF string by `char32` converting
+   * the UTF-32 unique char into a sequence of UTF-8
+   * chars.* 
+   */
+  std::string_view utf_char32_to_string(char32_t char32);
 
-  std::string utf_substr(std::string_view string, uint64_t offset, uint64_t size);
+  /**
+   * Returns a string subtracted by stride begin `offset`
+   * and end index `size`. If string is empty, return
+   * empty.
+   */
+  std::string_view utf_substr(std::string_view string, uint64_t offset, uint64_t size);
 
+  /**
+   * Returns the `string` length considering UTF chars.
+   */
   uint64_t utf_length(std::string_view string);
 
+  /**
+   * Returns index size that represent an UTF-8 char.
+   * Possibles::
+   * 3, 2, 1, and 0.
+   */
   uint64_t utf_check_sequence(
     uint8_t &char8,
     char32_t &char32,

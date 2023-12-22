@@ -127,9 +127,15 @@ void ekg::gpu::allocator::revoke() {
 
   if (should_re_alloc_buffers || this->factor_changed) {
     glBindVertexArray(this->vbo_array);
+
     glBindBuffer(GL_ARRAY_BUFFER, this->geometry_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * cached_geometry_resources_size,
-                 this->cached_geometry_resources.data(), GL_STATIC_DRAW);
+    glBufferData(
+      GL_ARRAY_BUFFER,
+      sizeof(float) * cached_geometry_resources_size,
+      this->cached_geometry_resources.data(),
+      GL_STATIC_DRAW
+    );
+
     glBindVertexArray(0);
   }
 
@@ -452,9 +458,9 @@ void ekg::gpu::allocator::push_back_geometry(float x, float y, float u, float v)
     return;
   }
 
-  this->cached_geometry_resources.at(this->cached_geometry_index++) = x;
-  this->cached_geometry_resources.at(this->cached_geometry_index++) = y;
+  this->cached_geometry_resources[this->cached_geometry_index++] = x;
+  this->cached_geometry_resources[this->cached_geometry_index++] = y;
 
-  this->cached_geometry_resources.at(this->cached_geometry_index++) = u;
-  this->cached_geometry_resources.at(this->cached_geometry_index++) = v;
+  this->cached_geometry_resources[this->cached_geometry_index++] = u;
+  this->cached_geometry_resources[this->cached_geometry_index++] = v;
 }

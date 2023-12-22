@@ -39,8 +39,10 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
   std::string &cursor_text {ekg_textbox_get_cursor_text(target_cursor_pos)};
   uint64_t cursor_text_size {cursor_text.size()};
 
-  if (cursor_text.empty() || (x == 0 || (x < 0 && target_cursor_pos.text_index == 0) ||
-                              (x > 0 && target_cursor_pos.text_index == cursor_text_size))) {
+  if (cursor_text.empty() ||
+      (x == 0 || (x < 0 && target_cursor_pos.text_index == 0) ||
+      (x > 0 && target_cursor_pos.text_index == cursor_text_size))
+     ) {
     return;
   }
 
@@ -339,8 +341,10 @@ void ekg::ui::textbox_widget::process_text(
                * (B += A), the subtract result between cursor 1 and 0
                * should temp fix this.
                */
-              copy_text += ekg::utf_substr(cursor_text_a, cursor.pos[0].text_index,
-                                           (cursor.pos[1].text_index - cursor.pos[0].text_index));
+              copy_text += ekg::utf_substr(
+                cursor_text_a, cursor.pos[0].text_index,
+                cursor.pos[1].text_index - cursor.pos[0].text_index
+              );
             } else {
               copy_text += ekg::utf_substr(cursor_text_a, cursor.pos[0].text_index, ekg::utf_length(cursor_text_a));
               copy_text += '\n';
@@ -380,15 +384,19 @@ void ekg::ui::textbox_widget::process_text(
         break;
       }
 
-      cursor_text_a = ekg::utf_substr(cursor_text_a, 0, cursor.pos[0].text_index) +
-                      text.data() +
-                      ekg::utf_substr(cursor_text_b, cursor.pos[1].text_index, ekg::utf_length(cursor_text_b));
+      cursor_text_a = (
+        ekg::utf_substr(cursor_text_a, 0, cursor.pos[0].text_index) +
+        text.data() +
+        ekg::utf_substr(cursor_text_b, cursor.pos[1].text_index, ekg::utf_length(cursor_text_b))
+      );
 
       ekg_textbox_clamp_line(cursor_text_a, ui_max_chars_per_line);
 
       if (cursor.pos[0].chunk_index != cursor.pos[1].chunk_index) {
-        this->text_chunk_list.erase(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1,
-                                    this->text_chunk_list.begin() + cursor.pos[1].chunk_index + 1);
+        this->text_chunk_list.erase(
+          this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1,
+          this->text_chunk_list.begin() + cursor.pos[1].chunk_index + 1
+        );
       }
 
       if (this->is_clipboard_paste && SDL_HasClipboardText() && !(text = SDL_GetClipboardText()).empty()) {
@@ -400,8 +408,10 @@ void ekg::ui::textbox_widget::process_text(
         uint64_t sum_decoded_size {this->text_chunk_list.size() + utf_clipboard_decoded.size() - 1};
         if (sum_decoded_size > ui_max_lines) {
           uint64_t subtract_decoded_size {sum_decoded_size - ui_max_lines};
-          utf_clipboard_decoded.erase(utf_clipboard_decoded.begin() + static_cast<int64_t>(subtract_decoded_size),
-                                      utf_clipboard_decoded.end());
+          utf_clipboard_decoded.erase(
+            utf_clipboard_decoded.begin() + static_cast<int64_t>(subtract_decoded_size),
+            utf_clipboard_decoded.end()
+          );
         }
 
         if (utf_clipboard_decoded.size() == 1) {
