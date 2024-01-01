@@ -1,7 +1,7 @@
-/*
+/**
  * MIT License
  * 
- * Copyright (c) 2022-2023 Rina Wilk / vokegpu@gmail.com
+ * Copyright (c) 2022-2024 Rina Wilk / vokegpu@gmail.com
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -151,6 +151,7 @@ std::string ekg::utf_substr(std::string_view string, uint64_t offset, uint64_t s
   uint8_t utf_sequence_size {};
   uint8_t char8 {};
   uint64_t begin {UINT64_MAX};
+  bool skip {};
 
   /*
    * This function implementation checks the amount of bytes per char for UTF-8.
@@ -160,27 +161,26 @@ std::string ekg::utf_substr(std::string_view string, uint64_t offset, uint64_t s
    */
 
   while (index < string_size) {
-    char8 = static_cast<uint8_t>(string.at(index));
-
+    char &char8 {string.at(index)};
     if (utf_text_size >= offset && begin == UINT64_MAX) {
       begin = index;
     }
 
-    utf_sequence_size += 4 * ((char8 & 0xF8) == 0xF0);
-    utf_sequence_size += 3 * ((char8 & 0xF0) == 0xE0);
-    utf_sequence_size += 2 * ((char8 & 0xE0) == 0xC0);
-    utf_sequence_size += (char8 <= 0x7F); 
-
-    if (utf_text_size > size) {
-      result = 
-      break;
-    }
+    utf_sequence_size += 4 * ((char8 & 0b11111000) == 0b11110000);
+    utf_sequence_size += 3 * ((char8 & 0b11110000) == 0b11100000);
+    utf_sequence_size += 2 * ((char8 & 0b11100000) == 0b11000000);
+    utf_sequence_size += !utf_sequence_size; 
 
     index += utf_sequence_size;
     utf_text_size++;
+
+    if (utf_text_size >= size) {
+      string = string.substr(begin, (index - begin));
+      return std::string {string.begin(), string.end()};
+    }
   }
 
-  return result;
+  return "";
 }
 
 /*

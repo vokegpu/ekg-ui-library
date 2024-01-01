@@ -1,0 +1,1924 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"cached_geomtr",
+				"cached_geometry_resources_size"
+			],
+			[
+				"cachedgeometr",
+				"cached_geometry_index"
+			],
+			[
+				"cachedgeometry",
+				"cached_geometry_resources_size"
+			],
+			[
+				"previ",
+				"previous_cached_geometry_resources_size"
+			],
+			[
+				"cachedgeom",
+				"cached_geometry_index"
+			],
+			[
+				"cache",
+				"cached_geometry_index"
+			],
+			[
+				"EKG_",
+				"EKG_LINUX_NOT_FOUND_FREETYPE"
+			],
+			[
+				"endif",
+				"endfunction"
+			],
+			[
+				"vk",
+				"vk_layer_khronos_validation"
+			],
+			[
+				"enable",
+				"pp_enabled_layer_names"
+			],
+			[
+				"InstaceCreate",
+				"InstanceCreateInfo"
+			],
+			[
+				"en",
+				"engine_name"
+			],
+			[
+				"appl",
+				"p_application_name"
+			],
+			[
+				"App",
+				"ApplicationInfoBuilder"
+			],
+			[
+				"vu",
+				"vulkan_create_surface"
+			],
+			[
+				"create",
+				"vulkan_create_surface(…)"
+			],
+			[
+				"Vide",
+				"video"
+			],
+			[
+				"que",
+				"queue_count"
+			],
+			[
+				"present",
+				"get_physical_device_wayland_presentation_support_khr"
+			],
+			[
+				"queue_",
+				"queue_flags"
+			],
+			[
+				"Onc",
+				"OnceLock"
+			],
+			[
+				"take",
+				"take_while(…) (as Iterator)"
+			],
+			[
+				"enu",
+				"enumerate_physical_devices(…)"
+			],
+			[
+				"API_VERSION",
+				"API_VERSION_1_0 VK_API_VERSION_1_0"
+			],
+			[
+				"Cstr",
+				"CString"
+			],
+			[
+				"evnet",
+				"event_pump()"
+			],
+			[
+				"sdl",
+				"sdl_event_pump"
+			],
+			[
+				"eve",
+				"event_pump()"
+			],
+			[
+				"gen",
+				"generate_vk_context"
+			],
+			[
+				"els",
+				"else"
+			],
+			[
+				"target_link",
+				"target_link_libraries"
+			],
+			[
+				"incl",
+				"include_directories"
+			],
+			[
+				"attr",
+				"attr_bits"
+			],
+			[
+				"p_",
+				"p_parent"
+			],
+			[
+				"extens",
+				"enabled_extension_names(…)"
+			],
+			[
+				"prin",
+				"println\tprintln!(…)"
+			],
+			[
+				"print",
+				"println\tprintln!(…)"
+			],
+			[
+				"into",
+				"into_iter() (as IntoIterator)"
+			],
+			[
+				"prio",
+				"prioerity_val"
+			],
+			[
+				"as",
+				"as_ptr()"
+			],
+			[
+				"enabledla",
+				"enabled_layer_names(…)"
+			],
+			[
+				"enabled_ex",
+				"enabled_extension_names(…)"
+			],
+			[
+				"queue",
+				"queue_indices"
+			],
+			[
+				"Hash",
+				"HashSet"
+			],
+			[
+				"enabled_",
+				"enabled_layer_count"
+			],
+			[
+				"queue_create",
+				"queue_create_info_count"
+			],
+			[
+				"layer",
+				"enabled_layer_names"
+			],
+			[
+				"enabled",
+				"enabled_extension_count"
+			],
+			[
+				"DeviceQueueCreate",
+				"DeviceQueueCreateInfo"
+			],
+			[
+				"VK",
+				"VK_PHYSICAL_DEVICE"
+			],
+			[
+				"create_device",
+				"create_device(…)"
+			],
+			[
+				"device_queue",
+				"device_queue_create_info_list"
+			],
+			[
+				"DeviceQueueB",
+				"DeviceQueueCreateInfoBuilder"
+			],
+			[
+				"device_",
+				"device_queue_create_info_list"
+			],
+			[
+				"SDL_",
+				"SDL_Joystick (use sdl2::sys::SDL_Joystick)"
+			],
+			[
+				"DeviceQueueBui",
+				"DeviceQueueCreateInfoBuilder"
+			],
+			[
+				"_",
+				"_graphics_found"
+			],
+			[
+				"wait",
+				"take_while (as Iterator)"
+			],
+			[
+				"tranfer",
+				"_transfer_found"
+			],
+			[
+				"enumerate_physcia",
+				"enumerate_physical_device_groups(…)"
+			],
+			[
+				"queu",
+				"queue_flags"
+			],
+			[
+				"q",
+				"queue_count"
+			],
+			[
+				"macro",
+				"macro_use"
+			],
+			[
+				"FLag",
+				"Flags64"
+			],
+			[
+				"devi",
+				"device_family_queues"
+			],
+			[
+				"derive",
+				"derive(…)"
+			],
+			[
+				"get",
+				"get_or_init(…)"
+			],
+			[
+				"sli",
+				"as_slice()"
+			],
+			[
+				"sdl_wind",
+				"_sdl_window"
+			],
+			[
+				"Screen",
+				"screen_width"
+			],
+			[
+				"app",
+				"Application"
+			],
+			[
+				"scre",
+				"screen_height"
+			],
+			[
+				"Ap",
+				"Application"
+			],
+			[
+				"sc",
+				"screen_height"
+			],
+			[
+				"c",
+				"sdl_context"
+			],
+			[
+				"Once",
+				"OnceLock"
+			],
+			[
+				"include",
+				"include_directories"
+			],
+			[
+				"DUNGE",
+				"DUNGEON_OF_CHESS_LINK_LIBRARIES"
+			],
+			[
+				"targetlin",
+				"target_link_libraries"
+			],
+			[
+				"addcom",
+				"add_compile_options"
+			],
+			[
+				"sd",
+				"sdl2::Sdl"
+			],
+			[
+				"init",
+				"get_or_init(…)"
+			],
+			[
+				"fromt",
+				"from_utf8_lossy"
+			],
+			[
+				"VK_",
+				"VK_INSTANCE"
+			],
+			[
+				"Entry",
+				"EntryLoader (use erupt::EntryLoader)"
+			],
+			[
+				"Entr",
+				"EntryLoader"
+			],
+			[
+				"vid",
+				"video_subsystem"
+			],
+			[
+				"find",
+				"find_library"
+			],
+			[
+				"write",
+				"write_descriptor_set_non_const"
+			],
+			[
+				"buffer",
+				"buffer_create_info"
+			],
+			[
+				"ekg",
+				"ekg_sign_item_sempahore"
+			],
+			[
+				"chi",
+				"children_list"
+			],
+			[
+				"strin",
+				"string_view"
+			],
+			[
+				"state",
+				"states"
+			],
+			[
+				"uint",
+				"uint16_t"
+			],
+			[
+				"k",
+				"key"
+			],
+			[
+				"empl",
+				"emplace_back_to_end"
+			],
+			[
+				"p",
+				"p_address"
+			],
+			[
+				"glRotat",
+				"glRotatef"
+			],
+			[
+				"ra",
+				"raio"
+			],
+			[
+				"cente",
+				"center_z"
+			],
+			[
+				"cen",
+				"center_y"
+			],
+			[
+				"VkDescriptorSetLayo",
+				"VkDescriptorSetLayoutBinding"
+			],
+			[
+				"descrit",
+				"descriptor_type_count"
+			],
+			[
+				"des",
+				"descriptor_type"
+			],
+			[
+				"VK_DESCRIPTOR_TYPE_",
+				"VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER"
+			],
+			[
+				"em",
+				"emplace_back"
+			],
+			[
+				"gpu",
+				"gpu_descriptor"
+			],
+			[
+				"gpu_pipelin",
+				"gpu_pipeline_state_object_uniform"
+			],
+			[
+				"dstbiin",
+				"dst_set_layout_binding_list"
+			],
+			[
+				"psoi",
+				"pso_layout_binding"
+			],
+			[
+				"bindingdesc",
+				"binding_descriptor_count"
+			],
+			[
+				"VK_SHADER_STAGE_",
+				"VK_SHADER_STAGE_VERTEX_BIT"
+			],
+			[
+				"dstst",
+				"dst_set_layout_binding"
+			],
+			[
+				"pso_la",
+				"pso_layout_info"
+			],
+			[
+				"PUS",
+				"push_back"
+			],
+			[
+				"binding",
+				"binding_stage"
+			],
+			[
+				"VK_DESCRIPTOR",
+				"VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER"
+			],
+			[
+				"ty",
+				"type"
+			],
+			[
+				"descr",
+				"descriptor_type_count"
+			],
+			[
+				"serip",
+				"serialized_pso_layout_binding_list"
+			],
+			[
+				"dstset",
+				"dst_set_layout_binding_list"
+			],
+			[
+				"VkDescriptorSetLa",
+				"VkDescriptorSetLayoutBinding"
+			],
+			[
+				"dst_s",
+				"dst_set_layout_binding_list"
+			],
+			[
+				"VkShader",
+				"VkShaderStageFlags"
+			],
+			[
+				"descriptor",
+				"descriptor_type"
+			],
+			[
+				"map",
+				"mapped_serialized_dst_set_layout"
+			],
+			[
+				"uOr",
+				"uOrthoMatrix"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "/*\n * MIT License\n * \n * Copyright (c) 2022-2024 Rina Wilk / vokegpu@gmail.com\n * \n * Permission is hereby granted, free of charge, to any person obtaining a copy\n * of this software and associated documentation files (the \"Software\"), to deal\n * in the Software without restriction, including without limitation the rights\n * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n * copies of the Software, and to permit persons to whom the Software is\n * furnished to do so, subject to the following conditions:\n * \n * The above copyright notice and this permission notice shall be included in all\n * copies or substantial portions of the Software.\n * \n * THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n * SOFTWARE.\n */\n\n#include <chrono>\n\n#include \"ekg/core/runtime.hpp\"\n#include \"ekg/ui/frame/ui_frame.hpp\"\n#include \"ekg/ui/frame/ui_frame_widget.hpp\"\n#include \"ekg/ui/button/ui_button_widget.hpp\"\n#include \"ekg/ui/label/ui_label_widget.hpp\"\n#include \"ekg/ui/checkbox/ui_checkbox_widget.hpp\"\n#include \"ekg/ui/slider/ui_slider_widget.hpp\"\n#include \"ekg/ui/popup/ui_popup_widget.hpp\"\n#include \"ekg/ui/textbox/ui_textbox_widget.hpp\"\n#include \"ekg/ui/listbox/ui_listbox_widget.hpp\"\n#include \"ekg/ui/scroll/ui_scroll_widget.hpp\"\n#include \"ekg/ui/scroll/ui_scroll.hpp\"\n#include \"ekg/draw/draw.hpp\"\n#include \"ekg/ekg.hpp\"\n#include \"ekg/os/ekg_opengl.hpp\"\n\nekg::stack ekg::swap::collect {};\nekg::stack ekg::swap::back {};\nekg::stack ekg::swap::front {};\n\nstd::vector<ekg::ui::abstract_widget *> ekg::swap::buffer {};\nstd::vector<uint64_t> ekg::swap::tooktimeanalyzingtelemtry {};\n\nvoid ekg::swap::refresh() {\n  ekg::swap::collect.clear();\n  ekg::swap::back.clear();\n  ekg::swap::front.clear();\n  ekg::swap::buffer.clear();\n}\n\nvoid ekg::runtime::update_size_changed() {\n  ekg::dispatch(ekg::env::redraw);\n\n  this->service_layout.update_scale_factor();\n  uint32_t font_size {\n      static_cast<uint32_t>(ekg_clamp(static_cast<int32_t>(18.0f * this->service_layout.get_scale_factor()), 0, 256))};\n\n  if (this->f_renderer_normal.font_size != font_size) {\n    this->f_renderer_small.font_size = ekg_min(font_size - 4, 4);\n    this->f_renderer_small.reload();\n\n    this->f_renderer_normal.font_size = ekg_min(font_size, 8);\n    this->f_renderer_normal.reload();\n\n    this->f_renderer_big.font_size = ekg_min(font_size + 6, 12);\n    this->f_renderer_big.reload();\n  }\n\n  for (ekg::ui::abstract_widget *&p_widgets: this->widget_list_map[\"all\"]) {\n    p_widgets->on_reload();\n    if (!p_widgets->p_data->has_parent() && p_widgets->p_data->has_children()) {\n      this->do_task_synclayout(p_widgets);\n    }\n  }\n}\n\nvoid ekg::runtime::init() {\n  if (FT_Init_FreeType(&ekg::draw::font_renderer::ft_library)) {\n    ekg::log() << \"Error: Failed to init FreeType library\";\n  }\n\n  this->gpu_allocator.init();\n  this->prepare_tasks();\n  this->prepare_ui_env();\n  this->service_layout.init();\n  this->service_theme.init();\n}\n\nvoid ekg::runtime::quit() {\n  this->gpu_allocator.quit();\n  this->service_theme.quit();\n  this->service_layout.quit();\n}\n\nvoid ekg::runtime::process_event(SDL_Event &sdl_event) {\n  this->service_input.on_event(sdl_event);\n\n  bool pressed {ekg::input::pressed()};\n  bool released {ekg::input::released()};\n\n  if (pressed || released || ekg::input::motion()) {\n    this->widget_id_focused = 0;\n  }\n\n  if (this->widget_absolute_activy != nullptr && this->widget_absolute_activy->flag.absolute) {\n    this->widget_absolute_activy->on_pre_event(sdl_event);\n    this->widget_absolute_activy->on_event(sdl_event);\n    this->widget_absolute_activy->on_post_event(sdl_event);\n    return;\n  }\n\n  this->widget_absolute_activy = nullptr;\n\n  bool hovered {};\n  bool first_absolute {};\n\n  ekg::ui::abstract_widget *p_widget_focused {};\n  int32_t widgets_id {};\n\n  for (ekg::ui::abstract_widget *&p_widgets: this->widget_list_map[\"all\"]) {\n    if (p_widgets == nullptr || !p_widgets->p_data->is_alive()) {\n      continue;\n    }\n\n    p_widgets->on_pre_event(sdl_event);\n\n    /*\n     * Text input like textbox and keyboard events should not update stack, instead just mouse events.\n     */\n    hovered = !(sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_KEYUP || sdl_event.type == SDL_TEXTINPUT)\n              && p_widgets->flag.hovered && p_widgets->p_data->get_state() == ekg::state::visible;\n    if (hovered) {\n      this->widget_id_focused = p_widgets->p_data->get_id();\n\n      p_widget_focused = p_widgets;\n      first_absolute = false;\n    }\n\n    /*\n     * The absolute/top-level system check for the first absolute fired widget,\n     * everytime a widget is hovered then reset again the checking state.\n     *\n     * The order of scrollable widgets like scroll widget is not sequentially,\n     * e.g, the mouse is hovering some children of frame 2 and absolute widget scroll from frame 2 is fired:\n     * frame 1           // hovered, check for the first absolute\n     *\n     * frame 2 (frame 1) // hovered, then reset and find for the first absolute again\n     * widgets...        // hovering some of children widgets, then reset over again\n     * scroll (frame 2)  // found the first absolute, target it\n     *\n     * frame 3 (frame 1) // not hovering, then does not reset any absolute checking\n     * ...\n     *\n     * scroll (frame 1)  // do not target this fired absolute widget.\n     * end of e.g.\n     */\n    if (p_widgets->flag.absolute && !first_absolute) {\n      p_widget_focused = p_widgets;\n      first_absolute = true;\n    }\n\n    p_widgets->on_post_event(sdl_event);\n    if (!hovered && !p_widgets->flag.absolute) {\n      p_widgets->on_event(sdl_event);\n    }\n  }\n\n  ekg::hovered::type = ekg::type::abstract;\n  ekg::hovered::id = this->widget_id_focused;\n\n  if (p_widget_focused != nullptr) {\n    p_widget_focused->on_pre_event(sdl_event);\n    p_widget_focused->on_event(sdl_event);\n    p_widget_focused->on_post_event(sdl_event);\n\n    if (p_widget_focused->flag.absolute) {\n      this->widget_absolute_activy = p_widget_focused;\n    }\n\n    ekg::hovered::type = p_widget_focused->p_data->get_type();\n  }\n\n  if (pressed) {\n    this->widget_id_pressed_focused = this->widget_id_focused;\n    ekg::hovered::down = this->widget_id_focused;\n    ekg::hovered::downtype = p_widget_focused != nullptr ? p_widget_focused->p_data->get_type() : ekg::type::abstract;\n  } else if (released) {\n    this->widget_id_released_focused = this->widget_id_focused;\n    ekg::hovered::up = this->widget_id_focused;\n    ekg::hovered::uptype = p_widget_focused != nullptr ? p_widget_focused->p_data->get_type() : ekg::type::abstract;\n  }\n\n  if (this->prev_widget_id_focused != this->widget_id_focused && this->widget_id_focused != 0 &&\n      (pressed || released)) {\n    this->swap_widget_id_focused = this->widget_id_focused;\n    this->prev_widget_id_focused = this->widget_id_focused;\n\n    ekg::dispatch(ekg::env::swap);\n    ekg::dispatch(ekg::env::redraw);\n  }\n}\n\nvoid ekg::runtime::process_update() {\n  ekg::reach(this->ui_timing, 1000) && ekg::reset(this->ui_timing);\n  this->service_input.on_update();\n\n  if (this->enable_high_priority_frequency) {\n    auto &update = this->widget_list_map[\"update\"];\n    size_t counter {};\n\n    for (ekg::ui::abstract_widget *&p_widgets: update) {\n      if (p_widgets == nullptr || !p_widgets->is_high_frequency) {\n        ++counter;\n        continue;\n      }\n\n      p_widgets->on_update();\n    }\n\n    if (counter == update.size()) {\n      this->enable_high_priority_frequency = false;\n      update.clear();\n    }\n  }\n\n  this->service_handler.on_update();\n  this->gpu_allocator.on_update();\n\n  ekg::log::flush();\n}\n\nvoid ekg::runtime::request_redraw_gui() {\n  this->should_re_batch_gui = true;\n}\n\nvoid ekg::runtime::process_render() {\n  if (this->should_re_batch_gui) {\n    this->should_re_batch_gui = false;\n\n    auto &all {this->widget_list_map[\"all\"]};\n    this->gpu_allocator.invoke();\n\n    for (ekg::ui::abstract_widget *&p_widgets: all) {\n      if (p_widgets != nullptr && p_widgets->p_data->is_alive() &&\n          p_widgets->p_data->get_state() == ekg::state::visible) {\n        p_widgets->on_draw_refresh();\n      }\n    }\n\n    this->gpu_allocator.revoke();\n  }\n\n  glViewport(0, 0, ekg::display::width, ekg::display::height);\n  this->gpu_allocator.draw();\n}\n\nvoid ekg::runtime::prepare_tasks() {\n  ekg::log() << \"Preparing internal EKG core\";\n\n  this->service_handler.init_multi_thread_task_thread();\n  this->service_handler.allocate() = {\n      .p_tag      = \"refresh\",\n      .p_callback = this,\n      .function   = [](void *p_callback) {\n        auto *runtime {static_cast<ekg::runtime *>(p_callback)};\n        auto &all = runtime->widget_list_map[\"all\"];\n        auto &refresh = runtime->widget_list_map[\"refresh\"];\n        bool should_call_gc {};\n\n        for (ekg::ui::abstract_widget *&p_widgets: refresh) {\n          if (p_widgets == nullptr || runtime->processed_widget_map[p_widgets->p_data->get_id()]) {\n            continue;\n          }\n\n          if (p_widgets == nullptr || !p_widgets->p_data->is_alive()) {\n            should_call_gc = true;\n            continue;\n          }\n\n          all.push_back(p_widgets);\n          runtime->processed_widget_map[p_widgets->p_data->get_id()] = true;\n        }\n\n        refresh.clear();\n        runtime->processed_widget_map.clear();\n\n        if (should_call_gc) {\n          ekg::dispatch(ekg::env::gc);\n        }\n      }\n  };\n\n  this->service_handler.allocate() = {\n      .p_tag      = \"swap\",\n      .p_callback = this,\n      .function   = [](void *p_callback) {\n        auto *runtime {static_cast<ekg::runtime *>(p_callback)};\n\n        if (runtime->swap_widget_id_focused == 0) {\n          return;\n        }\n\n        auto &all {runtime->widget_list_map[\"all\"]};\n        for (ekg::ui::abstract_widget *&p_widgets: all) {\n          if (p_widgets == nullptr || ekg::swap::collect.registry[p_widgets->p_data->get_id()] ||\n              ekg::swap::front.registry[p_widgets->p_data->get_id()]) {\n            continue;\n          }\n\n          ekg::swap::collect.clear();\n          ekg::push_back_stack(p_widgets, ekg::swap::collect);\n\n          if (ekg::swap::collect.registry[runtime->swap_widget_id_focused]) {\n            ekg::swap::front.registry.insert(ekg::swap::collect.registry.begin(), ekg::swap::collect.registry.end());\n            ekg::swap::front.ordered_list.insert(ekg::swap::front.ordered_list.end(),\n                                                 ekg::swap::collect.ordered_list.begin(),\n                                                 ekg::swap::collect.ordered_list.end());\n          } else {\n            ekg::swap::back.registry.insert(ekg::swap::collect.registry.begin(), ekg::swap::collect.registry.end());\n            ekg::swap::back.ordered_list.insert(ekg::swap::back.ordered_list.end(),\n                                                ekg::swap::collect.ordered_list.begin(),\n                                                ekg::swap::collect.ordered_list.end());\n          }\n        }\n\n        runtime->swap_widget_id_focused = 0;\n\n        all.clear();\n        all.insert(all.end(), ekg::swap::back.ordered_list.begin(), ekg::swap::back.ordered_list.end());\n        all.insert(all.end(), ekg::swap::front.ordered_list.begin(), ekg::swap::front.ordered_list.end());\n        ekg::swap::refresh();\n      }\n  };\n\n  this->service_handler.allocate() = {\n      .p_tag      = \"reload\",\n      .p_callback = this,\n      .function   = [](void *p_callback) {\n        auto *runtime {static_cast<ekg::runtime *>(p_callback)};\n        auto &reload = runtime->widget_list_map[\"reload\"];\n\n        ekg::vec4 rect {};\n\n        for (ekg::ui::abstract_widget *&p_widgets: reload) {\n          if (p_widgets == nullptr) {\n            continue;\n          }\n\n          auto &sync_flags {p_widgets->p_data->get_sync()};\n          if (ekg::bitwise::contains(sync_flags, (uint16_t) ekg::ui_sync::reset)) {\n            ekg::bitwise::remove(sync_flags, (uint16_t) ekg::ui_sync::reset);\n\n            switch (p_widgets->p_data->get_type()) {\n              case ekg::type::frame: {\n                auto p_ui {(ekg::ui::frame *) p_widgets->p_data};\n                auto pos {p_ui->get_pos_initial()};\n                auto size {p_ui->get_size_initial()};\n                auto &rect_ui {p_ui->ui()};\n\n                rect.x = pos.x;\n                rect.y = pos.y;\n                rect.z = size.x;\n                rect.w = size.y;\n\n                if (p_ui->widget() != rect) {\n                  p_widgets->dimension.w = size.x;\n                  p_widgets->dimension.h = size.y;\n\n                  if (p_ui->get_parent_id() != 0) {\n                    p_widgets->dimension.x = pos.x - p_widgets->p_parent->x;\n                    p_widgets->dimension.y = pos.y - p_widgets->p_parent->y;\n                  } else {\n                    p_widgets->p_parent->x = pos.x;\n                    p_widgets->p_parent->y = pos.y;\n                  }\n                }\n\n                break;\n              }\n\n              default: {\n                break;\n              }\n            }\n          }\n\n          if (ekg::bitwise::contains(sync_flags, (uint16_t) ekg::ui_sync::dimension)) {\n            ekg::bitwise::remove(sync_flags, (uint16_t) ekg::ui_sync::dimension);\n\n            auto &rect {p_widgets->p_data->ui()};\n            switch (p_widgets->p_data->get_level()) {\n              case ekg::level::top_level: {\n                p_widgets->dimension.w = rect.w;\n                p_widgets->p_parent->x = rect.x;\n                p_widgets->p_parent->y = rect.y;\n                break;\n              }\n\n              default: {\n                p_widgets->dimension.w = rect.w;\n                p_widgets->dimension.h = rect.h;\n\n                if (p_widgets->p_data->has_parent()) {\n                  p_widgets->dimension.x = rect.x - p_widgets->p_parent->x;\n                  p_widgets->dimension.y = rect.y - p_widgets->p_parent->y;\n                } else {\n                  p_widgets->p_parent->x = rect.x;\n                  p_widgets->p_parent->y = rect.y;\n                }\n\n                break;\n              }\n            }\n          }\n\n          p_widgets->on_reload();\n        }\n\n        reload.clear();\n      }\n  };\n\n  this->service_handler.allocate() = {\n      .p_tag      = \"synclayout\",\n      .p_callback = this,\n      .function   = [](void *p_callback) {\n        auto *runtime {static_cast<ekg::runtime *>(p_callback)};\n        auto &synclayout {runtime->widget_list_map[\"synclayout\"]};\n\n        for (ekg::ui::abstract_widget *&p_widgets: synclayout) {\n          if (p_widgets == nullptr || runtime->processed_widget_map[p_widgets->p_data->get_id()]) {\n            continue;\n          }\n\n          runtime->service_layout.process_scaled(p_widgets);\n          runtime->processed_widget_map[p_widgets->p_data->get_id()] = true;\n        }\n\n        synclayout.clear();\n        runtime->processed_widget_map.clear();\n        ekg::dispatch(ekg::env::redraw);\n      }\n  };\n\n  this->service_handler.allocate() = {\n      .p_tag      = \"gc\",\n      .p_callback = this,\n      .function   = [](void *p_callback) {\n        auto *runtime {static_cast<ekg::runtime *>(p_callback)};\n        auto &all {runtime->widget_list_map[\"all\"]};\n        auto &high_frequency {runtime->widget_list_map[\"update\"]};\n        auto &redraw {runtime->widget_list_map[\"redraw\"]};\n        auto &allocator {runtime->gpu_allocator};\n\n        redraw.clear();\n        high_frequency.clear();\n        std::vector<ekg::ui::abstract_widget *> new_list {};\n\n        for (ekg::ui::abstract_widget *&p_widgets: all) {\n          if (p_widgets == nullptr || p_widgets->p_data == nullptr) {\n            continue;\n          }\n\n          if (!p_widgets->p_data->is_alive()) {\n            ekg::hovered::id = ekg::hovered::id == p_widgets->p_data->get_id() ? 0 : ekg::hovered::id;\n            ekg::hovered::up = ekg::hovered::up == p_widgets->p_data->get_id() ? 0 : ekg::hovered::up;\n            ekg::hovered::down = ekg::hovered::down == p_widgets->p_data->get_id() ? 0 : ekg::hovered::down;\n            allocator.erase_scissor_by_id(p_widgets->p_data->get_id());\n\n            delete p_widgets->p_data;\n            delete p_widgets;\n\n            continue;\n          }\n\n          if (p_widgets->is_high_frequency) {\n            high_frequency.push_back(p_widgets);\n          }\n\n          if (p_widgets->p_data->get_state() == ekg::state::visible) {\n            redraw.push_back(p_widgets);\n          }\n\n          new_list.push_back(p_widgets);\n        }\n\n        all = new_list;\n      }\n  };\n}\n\nekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(int32_t id) {\n  /* widget ID 0 is defined as none, or be, ID token accumulation start with 1 and not 0 */\n  return id ? this->widget_map[id] : nullptr;\n}\n\nvoid ekg::runtime::do_task_reload(ekg::ui::abstract_widget *p_widget) {\n  if (p_widget != nullptr) {\n    this->widget_list_map[\"reload\"].emplace_back(p_widget);\n    ekg::dispatch(ekg::env::reload);\n  }\n}\n\nvoid ekg::runtime::prepare_ui_env() {\n  ekg::log() << \"Preparing internal user interface environment\";\n\n  this->widget_list_map[\"all\"] = {};\n  this->widget_list_map[\"refresh\"] = {};\n  this->widget_list_map[\"reload\"] = {};\n  this->widget_list_map[\"synclayout\"] = {};\n  this->widget_list_map[\"redraw\"] = {};\n  this->widget_list_map[\"scissor\"] = {};\n  this->widget_list_map[\"update\"] = {};\n\n  this->f_renderer_small.font_size = 16;\n  this->f_renderer_small.bind_allocator(&this->gpu_allocator);\n\n  this->f_renderer_normal.font_size = 0;\n  this->f_renderer_normal.bind_allocator(&this->gpu_allocator);\n\n  this->f_renderer_big.font_size = 24;\n  this->f_renderer_big.bind_allocator(&this->gpu_allocator);\n  this->update_size_changed();\n\n  ekg::log() << \"Registering user interface input bindings\";\n\n  this->service_input.bind(\"frame-drag-activy\", \"mouse-1\");\n  this->service_input.bind(\"frame-drag-activy\", \"finger-click\");\n  this->service_input.bind(\"frame-resize-activy\", \"mouse-1\");\n  this->service_input.bind(\"frame-resize-activy\", \"finger-click\");\n\n  this->service_input.bind(\"button-activy\", \"mouse-1\");\n  this->service_input.bind(\"button-activy\", \"finger-click\");\n\n  this->service_input.bind(\"checkbox-activy\", \"mouse-1\");\n  this->service_input.bind(\"checkbox-activy\", \"finger-click\");\n\n  this->service_input.bind(\"popup-activy\", \"mouse-1\");\n  this->service_input.bind(\"popup-activy\", \"finger-click\");\n\n  this->service_input.bind(\"textbox-action-select-all\", \"lctrl+a\");\n  this->service_input.bind(\"textbox-action-select-all\", \"rctrl+a\");\n\n  this->service_input.bind(\"textbox-action-select-all-inline\", \"mouse-1\");\n  this->service_input.bind(\"textbox-action-select\", \"lshift\");\n  this->service_input.bind(\"textbox-action-select\", \"rshift\");\n\n  this->service_input.bind(\"textbox-action-select-word\", \"mouse-1-double\");\n  this->service_input.bind(\"textbox-action-select-word\", \"finger-hold\");\n\n  this->service_input.bind(\"textbox-action-delete-left\", \"abs-backspace\");\n  this->service_input.bind(\"textbox-action-delete-right\", \"abs-delete\");\n  this->service_input.bind(\"textbox-action-break-line\", \"abs-return\");\n  this->service_input.bind(\"textbox-action-break-line\", \"abs-keypad enter\");\n  this->service_input.bind(\"textbox-action-tab\", \"tab\");\n  this->service_input.bind(\"textbox-action-modifier\", \"lctrl\");\n  this->service_input.bind(\"textbox-action-modifier\", \"rctrl\");\n\n  this->service_input.bind(\"clipboard-copy\", \"lctrl+c\");\n  this->service_input.bind(\"clipboard-copy\", \"rctrl+c\");\n  this->service_input.bind(\"clipboard-copy\", \"copy\");\n  this->service_input.bind(\"clipboard-paste\", \"lctrl+v\");\n  this->service_input.bind(\"clipboard-paste\", \"rctrl+v\");\n  this->service_input.bind(\"clipboard-paste\", \"paste\");\n  this->service_input.bind(\"clipboard-cut\", \"lctrl+x\");\n  this->service_input.bind(\"clipboard-cut\", \"rctrl+x\");\n  this->service_input.bind(\"clipboard-cut\", \"cut\");\n\n  this->service_input.bind(\"textbox-action-up\", \"abs-up\");\n  this->service_input.bind(\"textbox-action-down\", \"abs-down\");\n  this->service_input.bind(\"textbox-action-right\", \"abs-right\");\n  this->service_input.bind(\"textbox-action-left\", \"abs-left\");\n\n  this->service_input.bind(\"textbox-activy\", \"mouse-1\");\n  this->service_input.bind(\"textbox-activy\", \"finger-click\");\n\n  this->service_input.bind(\"listbox-activy-open\", \"mouse-1-double\");\n\n  this->service_input.bind(\"slider-activy\", \"mouse-1\");\n  this->service_input.bind(\"slider-activy\", \"finger-click\");\n  this->service_input.bind(\"slider-bar-increase\", \"mouse-wheel-up\");\n  this->service_input.bind(\"slider-bar-decrease\", \"mouse-wheel-down\");\n  this->service_input.bind(\"slider-bar-modifier\", \"lctrl\");\n  this->service_input.bind(\"slider-bar-modifier\", \"rctrl\");\n\n  this->service_input.bind(\"scrollbar-drag\", \"mouse-1\");\n  this->service_input.bind(\"scrollbar-drag\", \"finger-click\");\n  this->service_input.bind(\"scrollbar-scroll\", \"mouse-wheel\");\n  this->service_input.bind(\"scrollbar-scroll\", \"finger-swipe\");\n}\n\nvoid ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {\n  p_ui->set_id(++this->token_id);\n\n  this->swap_widget_id_focused = p_ui->get_id();\n  ekg::ui::abstract_widget *p_widget_created {};\n\n  bool update_layout {};\n  bool append_group {};\n\n  switch (p_ui->get_type()) {\n    case ekg::type::abstract: {\n      ekg::ui::abstract_widget *p_widget {new ekg::ui::abstract_widget()};\n      p_widget->p_data = p_ui;\n      p_widget_created = p_widget;\n      break;\n    }\n\n    case ekg::type::frame: {\n      ekg::ui::frame_widget *p_widget {new ekg::ui::frame_widget()};\n      p_widget->is_scissor_refresh = true;\n      p_widget->p_data = p_ui;\n      update_layout = true;\n      p_widget_created = p_widget;\n      this->current_bind_group = p_ui;\n      p_ui->reset();\n      break;\n    }\n\n    case ekg::type::button: {\n      ekg::ui::button_widget *p_widget {new ekg::ui::button_widget()};\n      p_widget->p_data = p_ui;\n      p_widget_created = p_widget;\n      append_group = true;\n      break;\n    }\n\n    case ekg::type::label: {\n      ekg::ui::label_widget *p_widget {new ekg::ui::label_widget()};\n      p_widget->p_data = p_ui;\n      p_widget_created = p_widget;\n      append_group = true;\n      break;\n    }\n\n    case ekg::type::checkbox: {\n      ekg::ui::checkbox_widget *p_widget {new ekg::ui::checkbox_widget()};\n      p_widget->p_data = p_ui;\n      p_widget_created = p_widget;\n      append_group = true;\n      break;\n    }\n\n    case ekg::type::slider: {\n      ekg::ui::slider_widget *p_widget {new ekg::ui::slider_widget()};\n      p_widget->p_data = p_ui;\n      p_widget_created = p_widget;\n      append_group = true;\n      break;\n    }\n\n    case ekg::type::popup: {\n      ekg::ui::popup_widget *p_widget {new ekg::ui::popup_widget()};\n      p_widget->p_data = p_ui;\n      p_widget_created = p_widget;\n      update_layout = false;\n      break;\n    }\n\n    case ekg::type::textbox: {\n      ekg::ui::textbox_widget *p_widget {new ekg::ui::textbox_widget()};\n      p_widget->p_data = p_ui;\n      p_widget_created = p_widget;\n      append_group = true;\n      break;\n    }\n\n    case ekg::type::listbox: {\n      ekg::ui::listbox_widget *p_widget {new ekg::ui::listbox_widget()};\n      p_widget->p_data = p_ui;\n      p_widget_created = p_widget;\n      append_group = true;\n      break;\n    }\n\n    case ekg::type::scroll: {\n      ekg::ui::scroll_widget *p_widget {new ekg::ui::scroll_widget()};\n      p_widget->p_data = p_ui;\n      p_widget_created = p_widget;\n      append_group = true;\n      break;\n    }\n\n    default: {\n      break;\n    }\n  }\n\n  this->widget_map[p_ui->get_id()] = p_widget_created;\n  this->do_task_refresh(p_widget_created);\n  this->do_task_reload(p_widget_created);\n  p_widget_created->on_create();\n\n  if (append_group && this->current_bind_group != nullptr) {\n    this->current_bind_group->add_child(p_ui->get_id());\n  }\n\n  if (update_layout) {\n    this->do_task_synclayout(p_widget_created);\n  }\n\n  ekg::dispatch(ekg::env::swap);\n}\n\nvoid ekg::runtime::do_task_synclayout(ekg::ui::abstract_widget *p_widget) {\n  if (p_widget == nullptr) {\n    return;\n  }\n\n  bool is_group {p_widget->p_data->get_type() == ekg::type::frame};\n  bool check_parent {is_group == false && p_widget->p_data->has_parent()};\n\n  if (check_parent) {\n    p_widget = this->get_fast_widget_by_id(p_widget->p_data->get_parent_id());\n  }\n\n  if (p_widget != nullptr) {\n    this->widget_list_map[\"synclayout\"].emplace_back(p_widget);\n    ekg::dispatch(ekg::env::synclayout);\n  }\n}\n\nvoid ekg::runtime::do_task_refresh(ekg::ui::abstract_widget *p_widget) {\n  if (p_widget == nullptr) {\n    return;\n  }\n\n  this->widget_list_map[\"refresh\"].emplace_back(p_widget);\n  ekg::dispatch(ekg::env::refresh);\n  ekg::dispatch(ekg::env::redraw);\n}\n\nvoid ekg::runtime::end_group_flag() {\n  this->current_bind_group = nullptr;\n}\n\nvoid ekg::runtime::erase(int32_t id) {\n  auto &all {this->widget_list_map[\"all\"]};\n\n  for (size_t it {}; it < all.size(); it++) {\n    ekg::ui::abstract_widget *&p_widget {all[it]};\n\n    if (p_widget != nullptr && p_widget->p_data->get_id() == id) {\n      this->widget_map.erase(p_widget->p_data->get_id());\n      all.erase(all.begin() + it);\n      break;\n    }\n  }\n}\n\nvoid ekg::runtime::set_update_high_frequency(ekg::ui::abstract_widget *p_widget) {\n  if (p_widget != nullptr && !p_widget->is_high_frequency) {\n    this->enable_high_priority_frequency = true;\n\n    auto &update {this->widget_list_map[\"update\"]};\n    bool contains {};\n\n    for (ekg::ui::abstract_widget *&p_widgets: update) {\n      contains = p_widgets == p_widget;\n      if (contains) {\n        break;\n      }\n    }\n\n    if (!contains) {\n      update.push_back(p_widget);\n      p_widget->is_high_frequency = true;\n    }\n  }\n}",
+			"file": "src/core/runtime.cpp",
+			"file_size": 26694,
+			"file_write_time": 133473140813464843,
+			"settings":
+			{
+				"buffer_size": 25919,
+				"line_ending": "Windows"
+			},
+			"undo_stack":
+			[
+				[
+					4,
+					1,
+					"left_delete",
+					null,
+					"AQAAAC8AAAAAAAAALwAAAAAAAAABAAAAMw",
+					"AQAAAAAAAAABAAAAMAAAAAAAAAAwAAAAAAAAAAAAAAAAAPC/"
+				],
+				[
+					5,
+					1,
+					"insert",
+					{
+						"characters": "4"
+					},
+					"AQAAAC8AAAAAAAAAMAAAAAAAAAAAAAAA",
+					"AQAAAAAAAAABAAAALwAAAAAAAAAvAAAAAAAAAAAAAAAAAPC/"
+				]
+			]
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"packaen",
+				"Package Control: Enable Package"
+			],
+			[
+				"setting",
+				"Preferences: Settings"
+			],
+			[
+				"packains",
+				"Package Control: Install Package"
+			],
+			[
+				"packae",
+				"Package Control: Enable Package"
+			],
+			[
+				"enable",
+				"Package Control: Enable Package"
+			],
+			[
+				"dis",
+				"Package Control: Disable Package"
+			],
+			[
+				"disalb",
+				"Package Control: Disable Package"
+			],
+			[
+				"lspsettin",
+				"Preferences: LSP Settings"
+			],
+			[
+				"lsprust",
+				"Preferences: LSP-rust-analyzer Settings"
+			],
+			[
+				"lspset",
+				"Preferences: LSP Settings"
+			],
+			[
+				"ena",
+				"Package Control: Enable Package"
+			],
+			[
+				"disacpa",
+				"Package Control: Disable Package"
+			],
+			[
+				"packadis",
+				"Package Control: Disable Package"
+			],
+			[
+				"disacp",
+				"Package Control: Disable Package"
+			],
+			[
+				"disablepac",
+				"Package Control: Disable Package"
+			],
+			[
+				"lspdisa",
+				"LSP: Disable Language Server in Project"
+			],
+			[
+				"disablea",
+				"Package Control: Disable Package"
+			],
+			[
+				"lspena",
+				"LSP: Enable Language Server in Project"
+			],
+			[
+				"lspdis",
+				"LSP: Disable Language Server in Project"
+			],
+			[
+				"lspdi",
+				"LSP: Disable Language Server in Project"
+			],
+			[
+				"lspdisable",
+				"LSP: Disable Language Server in Project"
+			],
+			[
+				"lsp",
+				"LSP-rust-analyzer: Reload Project"
+			],
+			[
+				"enablepack",
+				"Package Control: Enable Package"
+			],
+			[
+				"rust",
+				"Preferences: LSP-rust-analyzer Settings"
+			],
+			[
+				"PACKEN",
+				"Package Control: Enable Package"
+			],
+			[
+				"LSP",
+				"LSP: Troubleshoot Server"
+			],
+			[
+				"lspenab",
+				"LSP: Enable Language Server Globally"
+			],
+			[
+				"selectthe",
+				"UI: Select Theme"
+			],
+			[
+				"scheme",
+				"UI: Customize Color Scheme"
+			],
+			[
+				"selecthem",
+				"UI: Select Theme"
+			],
+			[
+				"settings",
+				"Preferences: Settings"
+			],
+			[
+				"enal",
+				"Package Control: Enable Package"
+			],
+			[
+				"disa",
+				"Package Control: Disable Package"
+			],
+			[
+				"enab",
+				"Package Control: Enable Package"
+			],
+			[
+				"disal",
+				"Package Control: Disable Package"
+			],
+			[
+				"packageen",
+				"Package Control: Enable Package"
+			],
+			[
+				"lsprus",
+				"LSP-rust-analyzer: Reload Project"
+			],
+			[
+				"runco",
+				"LSP: Run Code Lens"
+			],
+			[
+				"main",
+				"Snippet: fn main() { … }"
+			],
+			[
+				"lspsetting",
+				"Preferences: LSP Settings"
+			],
+			[
+				"lspclear",
+				"LSP-rust-analyzer: Memory Usage (Clears Database)"
+			],
+			[
+				"disablel",
+				"LSP: Disable Language Server Globally"
+			],
+			[
+				"lsprest",
+				"LSP: Restart Server"
+			],
+			[
+				"colorse",
+				"UI: Select Color Scheme"
+			],
+			[
+				"color sce",
+				"UI: Select Color Scheme"
+			],
+			[
+				"packageena",
+				"Package Control: Enable Package"
+			],
+			[
+				"packaendebu",
+				"Package Control: Disable Debug Mode"
+			],
+			[
+				"packaedn",
+				"Package Control: Enable Debug Mode"
+			],
+			[
+				"lsprustsett",
+				"Preferences: LSP-rust-analyzer Settings"
+			],
+			[
+				"lspsett",
+				"Preferences: LSP Settings"
+			],
+			[
+				"uti",
+				"Preferences: LSP Utils Settings"
+			],
+			[
+				"lsppre",
+				"LSP-rust-analyzer: Reload Project"
+			],
+			[
+				"lsp-rustsett",
+				"Preferences: LSP-rust-analyzer Settings"
+			],
+			[
+				"p",
+				"Package Control: Enable Package"
+			],
+			[
+				"lsprustsetting",
+				"Preferences: LSP-rust-analyzer Settings"
+			],
+			[
+				"lsp prefe",
+				"Preferences: LSP Settings"
+			],
+			[
+				"pacins",
+				"Package Control: Install Package"
+			],
+			[
+				"disab",
+				"Package Control: Disable Package"
+			],
+			[
+				"lspsettn",
+				"Preferences: LSP Settings"
+			],
+			[
+				"lspen",
+				"LSP: Enable Language Server Globally"
+			],
+			[
+				"pakains",
+				"Package Control: Install Package"
+			],
+			[
+				"pakcains",
+				"Package Control: Install Package"
+			],
+			[
+				"disable",
+				"Package Control: Disable Package"
+			],
+			[
+				"packaeins",
+				"Package Control: Install Package"
+			],
+			[
+				"packageins",
+				"Package Control: Install Package"
+			],
+			[
+				"colors",
+				"UI: Select Color Scheme"
+			],
+			[
+				"color",
+				"UI: Select Color Scheme"
+			],
+			[
+				"theme",
+				"UI: Select Color Scheme"
+			],
+			[
+				"pakc",
+				"Package Control: Enable Package"
+			],
+			[
+				"pakcagedis",
+				"Package Control: Disable Package"
+			],
+			[
+				"ec",
+				"ECC: Settings"
+			],
+			[
+				"custo",
+				"UI: Customize Theme"
+			],
+			[
+				"prefer",
+				"Preferences: Settings"
+			],
+			[
+				"colo",
+				"UI: Select Color Scheme"
+			],
+			[
+				"colrosc",
+				"UI: Select Color Scheme"
+			],
+			[
+				"packa",
+				"Package Control: Remove Package"
+			],
+			[
+				"packagene",
+				"Package Control: Enable Package"
+			],
+			[
+				"plug",
+				"Plugin Development: Profile Events"
+			],
+			[
+				"ke",
+				"Preferences: Key Bindings"
+			],
+			[
+				"key",
+				"Preferences: Key Bindings"
+			],
+			[
+				"PACKAGEEN",
+				"Package Control: Enable Package"
+			],
+			[
+				"SETTING",
+				"Preferences: Settings"
+			],
+			[
+				"clear",
+				"ECC: Clean current CMake cache"
+			],
+			[
+				"COLOR",
+				"UI: Select Color Scheme"
+			],
+			[
+				"colorsc",
+				"UI: Select Color Scheme"
+			],
+			[
+				"colorscem",
+				"UI: Select Color Scheme"
+			],
+			[
+				"set",
+				"Set Syntax: C++"
+			],
+			[
+				"waka",
+				"WakaTime: Open Dashboard"
+			],
+			[
+				"colorsce",
+				"UI: Select Color Scheme"
+			],
+			[
+				"disabl",
+				"Package Control: Disable Package"
+			],
+			[
+				"disalb e",
+				"Package Control: Disable Package"
+			],
+			[
+				"selec",
+				"UI: Select Color Scheme"
+			],
+			[
+				"package control: list",
+				"Package Control: List Packages"
+			],
+			[
+				"color se",
+				"UI: Select Color Scheme"
+			],
+			[
+				"olor",
+				"UI: Select Color Scheme"
+			],
+			[
+				"sele",
+				"UI: Select Color Scheme"
+			],
+			[
+				"e",
+				"ECC: Settings"
+			],
+			[
+				"eccle",
+				"ECC: Clean current CMake cache"
+			],
+			[
+				"packaist",
+				"Package Control: Install Package"
+			],
+			[
+				"colorcs",
+				"UI: Select Color Scheme"
+			],
+			[
+				"select",
+				"UI: Select Color Scheme"
+			],
+			[
+				"ecc",
+				"ECC: Clean current CMake cache"
+			],
+			[
+				"sett",
+				"ECC: Settings"
+			],
+			[
+				"settig",
+				"ECC: Settings"
+			],
+			[
+				"ECC",
+				"ECC: Clean current CMake cache"
+			],
+			[
+				"distr",
+				"View: Toggle Distraction Free"
+			],
+			[
+				"distract",
+				"View: Toggle Distraction Free"
+			],
+			[
+				"colorsceme",
+				"UI: Select Color Scheme"
+			],
+			[
+				"distrac",
+				"View: Toggle Distraction Free"
+			],
+			[
+				"color sch",
+				"UI: Select Color Scheme"
+			],
+			[
+				"ECCLE",
+				"ECC: Clean current CMake cache"
+			],
+			[
+				"custom",
+				"UI: Customize Theme"
+			],
+			[
+				"cust",
+				"UI: Customize Theme"
+			],
+			[
+				"packageinst",
+				"Package Control: Install Package"
+			],
+			[
+				"settin",
+				"ECC: Settings"
+			],
+			[
+				"SETTINGS",
+				"Preferences: Settings"
+			],
+			[
+				"selecolr",
+				"UI: Select Color Scheme"
+			],
+			[
+				"selecto",
+				"UI: Select Color Scheme"
+			],
+			[
+				"c",
+				"UI: Customize Theme"
+			],
+			[
+				"ecs",
+				"ECC: Settings"
+			],
+			[
+				"PACKAGEINSTA",
+				"Package Control: Install Package"
+			],
+			[
+				"colorscheme",
+				"UI: Select Color Scheme"
+			],
+			[
+				"clean",
+				"ECC: Clean current CMake cache"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"packag",
+				"Package Control: Remove Package"
+			],
+			[
+				"selectcol",
+				"UI: Select Color Scheme"
+			],
+			[
+				"selectoclor",
+				"UI: Select Color Scheme"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 302.0,
+		"history":
+		[
+			"SerializedCppIntelisense",
+			"view",
+			"view.runCommand",
+			"print(view.)",
+			"print(view)",
+			"cls",
+			"view.runCommand(\"serialized_cpp_intelisense\")",
+			"view",
+			"serialized_cpp_intelisense",
+			"sdknflsdn",
+			"sdofhnçsdfnsdçjfnsdf",
+			"sdfmsndçfnsdkçjfn",
+			"sdfsdf",
+			"ef",
+			"print",
+			"import sys; sys.exit()",
+			"os.system(\"exit\")",
+			"oi",
+			"os.system(\"exit\")",
+			"os.",
+			"import os",
+			"print(23423432)",
+			"print",
+			"oi"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": false,
+		"show_minimap": false,
+		"show_open_files": true,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/core"
+	],
+	"file_history":
+	[
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/text.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/gpu/allocator.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/textbox/ui_textbox_widget.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/ekg-ui-library.sublime-project",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/util/text.cpp",
+		"/C/Users/Diyng/Documents/GitHub/personal-file-stuff/filosofia de um programador/A filosofia do Programador.txt",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/autogui/auto_gui_main.py",
+		"/C/Users/Diyng/AppData/Roaming/Sublime Text/Packages/User/EKG C++.sublime-build",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/CMakeLists.txt",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/slider/ui_slider.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/slider/ui_slider_widget.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/scroll/ui_scroll_embedded_widget.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/popup/ui_popup_widget.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/devlog/commit.txt",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/textbox/ui_textbox_widget.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/slider/ui_slider_widget.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/scroll/ui_scroll_embedded_widget.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/gpu/allocator.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/service/layout.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/src/ekg_gui_showcase_test.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/src/ekg_off_test.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/draw/font.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/util/geometry.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/core/runtime.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/listbox/ui_listbox_widget.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/label/ui_label_widget.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/checkbox/ui_checkbox_widget.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/button/ui_button_widget.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/service/layout.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/core/runtime.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/geometry.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/.sublime-project",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/popup/ui_popup_widget.hpp",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/.gitignore",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/Cargo.toml",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/src/main.rs",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/src/gpu.rs",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/src/utility/io.rs",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/gpu/gpu_vulkan_context.hpp",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/gpu/gpu_vulkan_context.cpp",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/gpu/gpu_swapchain.hpp",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/src/gay.rs",
+		"/C/Users/Diyng/.cargo/registry/src/index.crates.io-6f17d22bba15001f/sdl2-0.34.5/src/sdl2/video.rs",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/.sublime-project",
+		"/C/Users/Diyng/AppData/Roaming/Sublime Text/Packages/User/Rust Death-Physics.sublime-build",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/src/gpu/context.rs",
+		"/C/Users/Diyng/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ash-0.37.3+1.3.251/src/vk/definitions.rs",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/gpu/gpu_swapchain.cpp",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/deathphysics.sublime-project",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/src/gpu/swapchain.rs",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/src/utility.rs",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/src/tmp1ip26f",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/src/tmptyia81",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/src/io.rs",
+		"/C/Users/Diyng/Desktop/emu-physics/building.cmd",
+		"/C/Users/Diyng/Desktop/emu-physics/CMakeLists.txt",
+		"/C/Users/Diyng/Desktop/emu-physics/src/client/host.hpp",
+		"/C/Users/Diyng/Desktop/emu-physics/src/client/host.cpp",
+		"/C/Users/Diyng/Desktop/emu-physics/src/application_entry_point.cpp",
+		"/C/Users/Diyng/AppData/Roaming/Sublime Text/Packages/User/Any C++.sublime-build",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/util/io.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/io.hpp",
+		"/C/Users/Diyng/Desktop/twitch livestream titles.txt",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/gpu/gpu_pipeline_state_object.cpp",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/src/world.rs",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/build/release/.fingerprint/ash-066bee1307a45483/invoked.timestamp",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/main.cpp",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/build/release/deps/winapi-ccea5e35f9f7c09d.d",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/src/application.rs",
+		"/C/Users/Diyng/Documents/GitHub/dungeon-of-chess/.gitignore",
+		"/C/Users/Diyng/Documents/GitHub/dungeon-of-chess/build.bat",
+		"/C/Users/Diyng/Documents/GitHub/dungeon-of-chess/build/win32-build/dungeon-of-chess-LICENSE.txt",
+		"/C/Users/Diyng/Documents/GitHub/dungeon-of-chess/LICENSE",
+		"/C/Users/Diyng/Documents/GitHub/dungeon-of-chess/src/main.cpp",
+		"/C/Users/Diyng/Documents/GitHub/dungeon-of-chess/src/chess.cpp",
+		"/C/Users/Diyng/Documents/GitHub/dungeon-of-chess/CMakeLists.txt",
+		"/C/Users/Diyng/Documents/GitHub/dungeon-of-chess/src/chess.h",
+		"/C/Users/Diyng/Documents/GitHub/dungeon-of-chess/src/ia.cpp",
+		"/C/Users/Diyng/Documents/GitHub/dungeon-of-chess/build-run.bat",
+		"/C/Users/Diyng/Documents/GitHub/dungeon-of-chess/sublime_text_build/cpp_sdl2_gl.sublime-build",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/LICENSE",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/src/gpu/gpu_vulkan.rs",
+		"/C/Users/Diyng/Documents/GitHub/death-physics/Cargo.lock",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/glsl/shader.overlay.vert",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/CMakeLists.txt",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/glsl/shader.overlay.frag",
+		"/C/Users/Diyng/Downloads/GT4_S4N_4NDR34S/GT4_S4N_4NDR34S/samp-license.txt",
+		"/C/Users/Diyng/Documents/GitHub/JanS2DL-Studio/Wks Jan Studio/data/JanGui.py",
+		"/C/Users/Diyng/Documents/GitHub/JanS2DL-Studio/Wks Jan Studio/data/JanPort.py",
+		"/C/Users/Diyng/Documents/GitHub/JanS2DL-Studio/Wks Jan Studio/data/JanMath.py",
+		"/C/Users/Diyng/Documents/GitHub/JanS2DL-Studio/Wks Jan Studio/data/JanDecode.py",
+		"/C/Users/Diyng/Documents/GitHub/Lotus/src/main/java/me/manesko/lotus/Lotus.java",
+		"/C/Users/Diyng/Documents/GitHub/Lotus/src/main/java/me/manesko/lotus/mixins/AccessorCPacketCloseWindow.java",
+		"/C/Users/Diyng/Documents/GitHub/Lotus/src/main/java/me/manesko/lotus/gui/glass/GUI/impl/widget/value/WidgetValueNumber.java",
+		"/C/Users/Diyng/Documents/GitHub/Lotus/src/main/java/me/manesko/lotus/gui/glass/GUI/impl/widget/value/WidgetValueEnum.java",
+		"/C/Users/Diyng/Documents/GitHub/Lotus/src/main/java/me/manesko/lotus/gui/glass/GUI/impl/widget/bind/WidgetModuleBind.java",
+		"/C/Users/Diyng/Documents/GitHub/Lotus/src/main/java/me/manesko/lotus/gui/glass/GUI/GlassGUI.java",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/io/io_log.hpp",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/gpu/gpu_io.cpp",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/gpu/gpu_pipeline_state_object.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/build/win32/libwinpthread-1.dll",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/listbox/ui_listbox.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/listbox/ui_listbox.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ekg.cpp",
+		"/C/Users/Diyng/Desktop/estimativa.txt",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/gpu/data.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ekg.hpp",
+		"/C/Users/Diyng/Documents/GitHub/personal-file-stuff/sublime text/EasyClangComplete.sublime-settings",
+		"/C/Users/Diyng/Documents/GitHub/ekg-docs/mkdocs.yml",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/listbox/ui_listbox_widget.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/aspect.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/gui.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/abstract/ui_abstract_widget.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/abstract/ui_abstract.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/abstract/ui_abstract_widget.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/abstract/ui_abstract.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/scroll/ui_scroll_widget.cpp",
+		"/C/Users/Diyng/Documents/GitHub/GPU-paralelismo/demo/src/math/linear_algebra.cpp",
+		"/C/Users/Diyng/Documents/GitHub/anubis-graphics-kit/src/world/camera/frustum.hpp",
+		"/C/Users/Diyng/Documents/GitHub/anubis-graphics-kit/src/world/camera/frustum.cpp",
+		"/C/Users/Diyng/Documents/GitHub/GPU-paralelismo/demo/src/main.cpp",
+		"/C/Users/Diyng/Downloads/s/main.c",
+		"/C/Users/Diyng/Downloads/main.c",
+		"/C/Users/Diyng/Desktop/lerp.py",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/gpu/gpu_io.hpp",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/application/application.cpp",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/application/application.hpp",
+		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/direct/direct_window.cpp"
+	],
+	"find":
+	{
+		"height": 37.0
+	},
+	"find_in_files":
+	{
+		"height": 697.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "src/core/runtime.cpp",
+					"selected": true,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 25919,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2,
+								2
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 37.0
+	},
+	"input":
+	{
+		"height": 235.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": false,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Run",
+	"project": "ekg-ui-library.sublime-project",
+	"replace":
+	{
+		"height": 70.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"text",
+				"src\\util\\text.cpp"
+			],
+			[
+				"",
+				"src\\gpu\\allocator.cpp"
+			],
+			[
+				"textbox",
+				"src\\ui\\textbox\\ui_textbox_widget.cpp"
+			],
+			[
+				"te",
+				"src\\util\\text.cpp"
+			],
+			[
+				"all",
+				"src\\gpu\\allocator.cpp"
+			],
+			[
+				"textbo",
+				"src\\ui\\textbox\\ui_textbox_widget.cpp"
+			],
+			[
+				"alloca",
+				"src\\gpu\\allocator.cpp"
+			],
+			[
+				"auto",
+				"test\\autogui\\auto_gui_main.py"
+			],
+			[
+				"ge",
+				"include\\ekg\\util\\geometry.hpp"
+			],
+			[
+				"geom",
+				"include\\ekg\\util\\geometry.hpp"
+			],
+			[
+				"slider",
+				"src\\ui\\slider\\ui_slider.cpp"
+			],
+			[
+				"button",
+				"src\\ui\\button\\ui_button_widget.cpp"
+			],
+			[
+				"la",
+				"src\\service\\layout.cpp"
+			],
+			[
+				"run",
+				"src\\core\\runtime.cpp"
+			],
+			[
+				"font",
+				"src\\draw\\font.cpp"
+			],
+			[
+				"geome",
+				"include\\ekg\\util\\geometry.hpp"
+			],
+			[
+				"fon",
+				"src\\draw\\font.cpp"
+			],
+			[
+				"sublime",
+				".sublime-project"
+			],
+			[
+				"of",
+				"test\\src\\ekg_off_test.cpp"
+			],
+			[
+				"cmak",
+				"CMakeLists.txt"
+			],
+			[
+				"proje",
+				".sublime-project"
+			],
+			[
+				"offte",
+				"test\\src\\ekg_off_test.cpp"
+			],
+			[
+				"ALLO",
+				"src\\gpu\\allocator.cpp"
+			],
+			[
+				"pop",
+				"src\\ui\\popup\\ui_popup_widget.cpp"
+			],
+			[
+				"com",
+				"devlog\\commit.txt"
+			],
+			[
+				"show",
+				"test\\src\\ekg_gui_showcase_test.cpp"
+			],
+			[
+				"off",
+				"test\\src\\ekg_off_test.cpp"
+			],
+			[
+				"allo",
+				"src\\gpu\\allocator.cpp"
+			],
+			[
+				"RUN",
+				"src\\core\\runtime.cpp"
+			],
+			[
+				"lalo",
+				"include\\ekg\\gpu\\allocator.hpp"
+			],
+			[
+				"runt",
+				"src\\core\\runtime.cpp"
+			],
+			[
+				"main",
+				"test\\autogui\\auto_gui_main.py"
+			],
+			[
+				"git",
+				".gitignore"
+			],
+			[
+				"car",
+				"Cargo.toml"
+			],
+			[
+				"ga",
+				"src\\gay.rs"
+			],
+			[
+				"gay",
+				"src\\gay.rs"
+			],
+			[
+				"swap",
+				"C:\\Users\\Diyng\\Documents\\GitHub\\VkPowerSampler\\solution\\win32\\src\\gpu\\gpu_swapchain.cpp"
+			],
+			[
+				"io",
+				"src\\utility\\io.rs"
+			],
+			[
+				"conte",
+				"src\\gpu\\context.rs"
+			],
+			[
+				"gasy",
+				"src\\gay.rs"
+			],
+			[
+				"con",
+				"src\\gpu\\context.rs"
+			],
+			[
+				"sub",
+				".sublime-project"
+			],
+			[
+				"gp",
+				"src\\gpu.rs"
+			],
+			[
+				"cont",
+				"src\\gpu\\context.rs"
+			],
+			[
+				"mai",
+				"src\\main.rs"
+			],
+			[
+				"man",
+				"src\\main.rs"
+			],
+			[
+				"g",
+				"src\\gpu.rs"
+			],
+			[
+				"GP",
+				"src\\gpu.rs"
+			],
+			[
+				"cma",
+				"CMakeLists.txt"
+			],
+			[
+				"cm",
+				"CMakeLists.txt"
+			],
+			[
+				"list",
+				"src\\ui\\listbox\\ui_listbox_widget.cpp"
+			],
+			[
+				"listbox",
+				"src\\ui\\listbox\\ui_listbox_widget.cpp"
+			],
+			[
+				"ain",
+				"build\\release\\.fingerprint\\ash-066bee1307a45483\\invoked.timestamp"
+			],
+			[
+				"IO",
+				"src\\io.rs"
+			],
+			[
+				"gpu",
+				"src\\gpu.rs"
+			],
+			[
+				"ap",
+				"build\\release\\deps\\winapi-ccea5e35f9f7c09d.d"
+			],
+			[
+				"app",
+				"src\\application.rs"
+			],
+			[
+				"core",
+				"src\\core.rs"
+			],
+			[
+				"bui",
+				"C:\\Users\\Diyng\\Documents\\GitHub\\dungeon-of-chess\\build.bat"
+			],
+			[
+				"caro",
+				"Cargo.toml"
+			],
+			[
+				"r",
+				"src\\main.rs"
+			],
+			[
+				"cmake",
+				"CMakeLists.txt"
+			],
+			[
+				"pso",
+				"src\\gpu\\gpu_pipeline_state_object.cpp"
+			],
+			[
+				"ver",
+				"src\\glsl\\shader.overlay.vert"
+			],
+			[
+				"fra",
+				"src\\glsl\\shader.overlay.frag"
+			],
+			[
+				"m",
+				"src\\main.cpp"
+			],
+			[
+				"fr",
+				"src\\glsl\\shader.overlay.frag"
+			],
+			[
+				"vert",
+				"src\\glsl\\shader.overlay.vert"
+			],
+			[
+				"sh",
+				"src\\glsl\\shader.overlay.frag"
+			],
+			[
+				"swa",
+				"src\\gpu\\gpu_swapchain.cpp"
+			],
+			[
+				"PSO",
+				"src\\gpu\\gpu_pipeline_state_object.cpp"
+			],
+			[
+				"PS",
+				"src\\gpu\\gpu_pipeline_state_object.hpp"
+			],
+			[
+				"ma",
+				"src\\main.cpp"
+			],
+			[
+				"p",
+				"src\\gpu\\gpu_pipeline_state_object.cpp"
+			],
+			[
+				"gpu_io",
+				"src\\gpu\\gpu_io.cpp"
+			],
+			[
+				"1",
+				"test\\build\\win32\\libwinpthread-1.dll"
+			],
+			[
+				"shwo",
+				"test\\src\\ekg_gui_showcase_test.cpp"
+			],
+			[
+				"runtime",
+				"src\\core\\runtime.cpp"
+			],
+			[
+				"al",
+				"src\\gpu\\allocator.cpp"
+			],
+			[
+				"da",
+				"include\\ekg\\gpu\\data.hpp"
+			],
+			[
+				"ekg",
+				"src\\ekg.cpp"
+			],
+			[
+				"label",
+				"src\\ui\\label\\ui_label_widget.cpp"
+			],
+			[
+				"lal",
+				"C:\\Users\\Diyng\\Documents\\GitHub\\GPU-paralelismo\\demo\\src\\math\\linear_algebra.cpp"
+			],
+			[
+				"layout",
+				"src\\service\\layout.cpp"
+			],
+			[
+				"sublim",
+				"C:\\Users\\Diyng\\AppData\\Roaming\\Sublime Text\\Packages\\User\\EKG C++.sublime-build"
+			],
+			[
+				"asp",
+				"include\\ekg\\util\\aspect.hpp"
+			],
+			[
+				"gui",
+				"include\\ekg\\util\\gui.hpp"
+			],
+			[
+				"swoca",
+				"test\\src\\ekg_gui_showcase_test.cpp"
+			],
+			[
+				"test",
+				"test\\src\\ekg_gui_showcase_test.cpp"
+			],
+			[
+				"abstr",
+				"include\\ekg\\ui\\abstract\\ui_abstract.hpp"
+			],
+			[
+				"abs",
+				"src\\ui\\abstract\\ui_abstract.cpp"
+			],
+			[
+				"comm",
+				"devlog\\commit.txt"
+			],
+			[
+				"listboxw",
+				"include\\ekg\\ui\\listbox\\ui_listbox_widget.hpp"
+			],
+			[
+				"scrol",
+				"src\\ui\\scroll\\ui_scroll_embedded_widget.cpp"
+			],
+			[
+				"scr",
+				"src\\ui\\scroll\\ui_scroll_widget.cpp"
+			],
+			[
+				"gpuio",
+				"src\\gpu\\gpu_io.cpp"
+			],
+			[
+				"min",
+				"src\\main.cpp"
+			],
+			[
+				"so",
+				"src\\gpu\\gpu_pipeline_state_object.cpp"
+			],
+			[
+				"MAIN",
+				"src\\main.cpp"
+			],
+			[
+				"laao",
+				"src\\application\\application.hpp"
+			],
+			[
+				"ps",
+				"src\\gpu\\gpu_pipeline_state_object.cpp"
+			],
+			[
+				"log",
+				"src\\io\\io_log.hpp"
+			],
+			[
+				"appl",
+				"src\\application\\application.cpp"
+			],
+			[
+				"gpupso",
+				"src\\gpu\\gpu_pipeline_state_object.hpp"
+			],
+			[
+				"frag",
+				"src\\glsl\\shader.overlay.frag"
+			],
+			[
+				"math",
+				"src\\math\\math_vulkan.hpp"
+			],
+			[
+				"psop",
+				"src\\gpu\\gpu_pipeline_state_object.hpp"
+			],
+			[
+				"vulkan",
+				"src\\gpu\\gpu_vulkan_context.hpp"
+			],
+			[
+				"vuka",
+				"src\\gpu\\gpu_vulkan_context.cpp"
+			],
+			[
+				"VULKA",
+				"src\\gpu\\gpu_vulkan_context.cpp"
+			],
+			[
+				"vul",
+				"src\\gpu\\gpu_vulkan_context.hpp"
+			],
+			[
+				"sswap",
+				"src\\gpu\\gpu_swapchain.cpp"
+			],
+			[
+				"bu",
+				"src\\gpu\\gpu_buffer.cpp"
+			],
+			[
+				"vu",
+				"src\\gpu\\gpu_vulkan_context.hpp"
+			],
+			[
+				"gpu_buffer",
+				"src\\gpu\\gpu_buffer.hpp"
+			],
+			[
+				"SWAP",
+				"src\\gpu\\gpu_swapchain.hpp"
+			],
+			[
+				"vulka",
+				"src\\gpu\\gpu_vulkan_context.cpp"
+			],
+			[
+				"mem",
+				"gpu_memory"
+			],
+			[
+				"pub",
+				"src\\gpu\\gpu_buffer.hpp"
+			],
+			[
+				"sw",
+				"src\\gpu\\gpu_swapchain.cpp"
+			],
+			[
+				"me",
+				"src\\util\\memory.cpp"
+			],
+			[
+				"gpucon",
+				"src\\gpu\\gpu_content_io.hpp"
+			],
+			[
+				"buffer",
+				"src\\gpu\\gpu_buffer.hpp"
+			],
+			[
+				"b",
+				"src\\gpu\\gpu_buffer.hpp"
+			],
+			[
+				"buf",
+				"src\\gpu\\gpu_buffer.cpp"
+			],
+			[
+				"dire",
+				"src\\direct\\direct_core.cpp"
+			],
+			[
+				"apl",
+				"src\\application\\application.cpp"
+			],
+			[
+				"buffe",
+				"src\\gpu\\gpu_buffer.cpp"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": false,
+	"side_bar_visible": true,
+	"side_bar_width": 269.0,
+	"status_bar_visible": false,
+	"template_settings":
+	{
+	}
+}
