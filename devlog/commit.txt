@@ -133,3 +133,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Added level setting to widgets.
 -- Small rendering geometry resources buffer swap (re-allocating geometry resources) overhead fix.
 -- Removed nested sets, and if-elses from cmake build.
+-- Optimized geometry resources re-allocating ticks.

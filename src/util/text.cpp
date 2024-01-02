@@ -61,19 +61,23 @@ std::string ekg::utf_char32_to_string(char32_t char32) {
   std::string result {};
 
   if (char32 < 0x80) {
-    result += static_cast<char>(char32);
+    result.reserve(1);
+    result[0] = static_cast<char>(char32);
   } else if (char32 < 0x800) {
-    result += static_cast<char>(0xC0 | (char32 >> 6));
-    result += static_cast<char>(0x80 | (char32 & 0x3F));
+    result.reserve(2);
+    result[0] += static_cast<char>(0xC0 | (char32 >> 6));
+    result[1] += static_cast<char>(0x80 | (char32 & 0x3F));
   } else if (char32 < 0x10000) {
-    result += static_cast<char>(0xE0 | (char32 >> 12));
-    result += static_cast<char>(0x80 | ((char32 >> 6) & 0x3F));
-    result += static_cast<char>(0x80 | (char32 & 0x3F));
+    result.reserve(3);
+    result[0] += static_cast<char>(0xE0 | (char32 >> 12));
+    result[1] += static_cast<char>(0x80 | ((char32 >> 6) & 0x3F));
+    result[2] += static_cast<char>(0x80 | (char32 & 0x3F));
   } else if (char32 < 0x110000) {
-    result += static_cast<char>(0xF0 | (char32 >> 18));
-    result += static_cast<char>(0x80 | ((char32 >> 12) & 0x3F));
-    result += static_cast<char>(0x80 | ((char32 >> 6) & 0x3F));
-    result += static_cast<char>(0x80 | (char32 & 0x3F));
+    result.reserve(4);
+    result[0] = static_cast<char>(0xF0 | (char32 >> 18));
+    result[1] = static_cast<char>(0x80 | ((char32 >> 12) & 0x3F));
+    result[2] = static_cast<char>(0x80 | ((char32 >> 6) & 0x3F));
+    result[3] = static_cast<char>(0x80 | (char32 & 0x3F));
   }
 
   return result;
@@ -136,45 +140,47 @@ uint64_t ekg::utf_length(std::string_view utf_string) {
 }
 
 std::string ekg::utf_substr(std::string_view string, uint64_t offset, uint64_t size) {
-  if (string.empty()) {
+  if (string.empty() || size == 0) {
     return "";
   }
 
   uint64_t string_size {string.size()};
   uint64_t utf_text_size {};       
 
-  offset = offset > string_size ? string_size : offset;
+  //offset = offset > string_size ? string_size : offset;
   size += offset;
 
-  uint64_t insert_size {};
   uint64_t index {};
-  uint8_t utf_sequence_size {};
-  uint8_t char8 {};
+  uint64_t utf_sequence_size {};
+  uint64_t substr_size {};
   uint64_t begin {UINT64_MAX};
-  bool skip {};
+  uint8_t char8 {};
+  bool at_last_index {};
 
   /*
    * This function implementation checks the amount of bytes per char for UTF-8.
    * There is no support for UTF-16 or UTF-32 still.
-   *
-   * First step is get the size of 
    */
 
   while (index < string_size) {
-    char &char8 {string.at(index)};
-    if (utf_text_size >= offset && begin == UINT64_MAX) {
-      begin = index;
-    }
+    char8 = static_cast<uint8_t>(string.at(index));
 
-    utf_sequence_size += 4 * ((char8 & 0b11111000) == 0b11110000);
-    utf_sequence_size += 3 * ((char8 & 0b11110000) == 0b11100000);
-    utf_sequence_size += 2 * ((char8 & 0b11100000) == 0b11000000);
-    utf_sequence_size += !utf_sequence_size; 
+    utf_sequence_size = 1;
+    utf_sequence_size += ((char8 & 0xE0) == 0xC0);
+    utf_sequence_size += 2 * ((char8 & 0xF0) == 0xE0);
+    utf_sequence_size += 3 * ((char8 & 0xF8) == 0xF0);
+
+    at_last_index = index + utf_sequence_size == string_size;
+    std::cout << (index + utf_sequence_size) << " " << string_size << std::endl;
 
     index += utf_sequence_size;
     utf_text_size++;
 
-    if (utf_text_size >= size) {
+    if ((at_last_index || utf_text_size >= offset) && begin == UINT64_MAX) {
+      begin = ekg_max(index, string_size);
+    }
+
+    if (at_last_index || utf_text_size >= size) {
       string = string.substr(begin, (index - begin));
       return std::string {string.begin(), string.end()};
     }
@@ -211,8 +217,13 @@ void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_rea
 
 std::string ekg::string_float_precision(float n, int32_t precision) {
   const std::string string {std::to_string(n)};
-  return string.substr(0,
-                       ekg_max((int32_t) (string.find('.') + precision + (1 * precision)), (int32_t) string.size()));
+  return string.substr(
+    0,
+    ekg_max(
+      static_cast<int32_t>(string.find('.') + precision + (1 * precision)),
+      static_cast<int32_t>(string.size())
+    )
+  );
 }
 
 uint8_t ekg::check_attribute_flags(std::string_view text, uint16_t &flags) {

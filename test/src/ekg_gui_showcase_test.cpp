@@ -1140,5 +1140,8 @@ void vaue_test() {
 }
 
 int32_t main(int32_t, char**) {
+    std::string text_utf {"ccccc"};
+    std::cout << ekg::utf_substr(text_utf, 3, 5) << "|" << text_utf.substr(3, 5) << std::endl;
+
     return main_calculator();
 }
