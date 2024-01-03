@@ -414,8 +414,11 @@ void ekg::ui::textbox_widget::process_text(
         }
 
         if (utf_clipboard_decoded.size() == 1) {
-          cursor_text_a = ekg::utf_substr(cursor_text_a, 0, cursor.pos[0].text_index) + utf_clipboard_decoded.at(0) +
-                          ekg::utf_substr(cursor_text_a, cursor.pos[0].text_index, ekg::utf_length(cursor_text_a));
+          cursor_text_a = (
+            ekg::utf_substr(cursor_text_a, 0, cursor.pos[0].text_index) +
+            utf_clipboard_decoded.at(0) +
+            ekg::utf_substr(cursor_text_a, cursor.pos[0].text_index, ekg::utf_length(cursor_text_a))
+          );
         } else if (utf_clipboard_decoded.size() > 1) {
           int64_t last_clipboard_list_index {static_cast<int64_t>(utf_clipboard_decoded.size() - 1)};
           std::string &last_clipboard_line {utf_clipboard_decoded.at(last_clipboard_list_index)};
@@ -424,15 +427,20 @@ void ekg::ui::textbox_widget::process_text(
           cursor.pos[1].chunk_index = cursor.pos[0].chunk_index + last_clipboard_list_index;
           cursor.pos[1].select_index = cursor.pos[1].text_index;
 
-          std::string stored_text = ekg::utf_substr(cursor_text_a, cursor.pos[0].text_index,
-                                                    ekg::utf_length(cursor_text_a));
+          std::string stored_text = ekg::utf_substr(
+            cursor_text_a, cursor.pos[0].text_index,
+            ekg::utf_length(cursor_text_a)
+          );
+
           cursor_text_a = ekg::utf_substr(cursor_text_a, 0, cursor.pos[0].text_index) + utf_clipboard_decoded.at(0);
           ekg_textbox_clamp_line(cursor_text_a, ui_max_chars_per_line);
 
           last_clipboard_line = last_clipboard_line + stored_text;
-          this->text_chunk_list.insert(this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1,
-                                       utf_clipboard_decoded.begin() + 1,
-                                       utf_clipboard_decoded.end());
+          this->text_chunk_list.insert(
+            this->text_chunk_list.begin() + cursor.pos[0].chunk_index + 1,
+            utf_clipboard_decoded.begin() + 1,
+            utf_clipboard_decoded.end()
+          );
 
           cursor.pos[0] = cursor.pos[1];
           direction = 0;
