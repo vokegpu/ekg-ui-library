@@ -4,3 +4,4 @@ cmake-build-debug/
 .sublimetext/
 .obsidian/
 .sublime-project.sublime-workspace
+*.sublime-workspace
