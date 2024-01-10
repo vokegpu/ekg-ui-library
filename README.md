@@ -155,4 +155,6 @@ At total, there is 40% of the widgets done:
 - Slider/ProgressBar
 - Textbox/Entryfield
 
-@VokeGpu 2023 All rights reserved.
+```
+@copyright 2024 - Rina Wilk - VokeGpu
+```
