@@ -95,6 +95,8 @@ public:
 };
 
 int32_t main() {
+    return 0;
+
     std::pair<const char*, uint16_t> pepe {"oii", 888};
     kist<float> list_of_life {};
 

@@ -22,289 +22,290 @@
  * SOFTWARE.
  */
 
+#include "ekg/util/text.hpp"
 #include <ekg/ekg.hpp>
 
 ekg::rect window_size {0, 0, 1280, 720};
 bool running {true};
 
 void create_exit_button() {
-    ekg::frame("oi wuria ser linda", {window_size.w / 2, window_size.h - 50}, {100, 40});
-    ekg::button("Exit", ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::task {
-        .p_tag = "exit-callback",
-        .p_callback = &running,
-        .function = [](void *p_data) {
-            bool *p_running {static_cast<bool*>(p_data)};
-            *p_running = false;
+  ekg::frame("oi wuria ser linda", {window_size.w / 2, window_size.h - 50}, {100, 40});
+  ekg::button("Exit", ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::task {
+    .p_tag = "exit-callback",
+    .p_callback = &running,
+    .function = [](void *p_data) {
+      bool *p_running {static_cast<bool*>(p_data)};
+      *p_running = false;
     }});;
 
-    ekg::pop_group();
+  ekg::pop_group();
 
-    ekg::log() << window_size.w / 2 << window_size.h - 50 + 20;
+  ekg::log() << window_size.w / 2 << window_size.h - 50 + 20;
 }
 
 std::string checkcalc(std::string_view text, std::string_view operatortext) {
-    std::string result {};
-    result += text.substr(text.size() - 1, 1);
-    if ((result == "*" || result == "-" || result == "+")) {
-        result.clear();
-        result += text.substr(0, text.size() - 1);
-        result += operatortext;
-    } else {
-        result.clear();
-        result += text;
-        result += operatortext;
-    }
+  std::string result {};
+  result += text.substr(text.size() - 1, 1);
+  if ((result == "*" || result == "-" || result == "+")) {
+    result.clear();
+    result += text.substr(0, text.size() - 1);
+    result += operatortext;
+  } else {
+    result.clear();
+    result += text;
+    result += operatortext;
+  }
 
-    return result;
+  return result;
 }
 
 std::string resultcalc(std::string_view text) {
-    std::string result {};
+  std::string result {};
 
-    int64_t lpom {};
-    int64_t rpom {};
-    int64_t cpom {};
+  int64_t lpom {};
+  int64_t rpom {};
+  int64_t cpom {};
 
-    bool firstoperation {true};
-    bool reset {};
+  bool firstoperation {true};
+  bool reset {};
 
-    uint64_t find {};
-    uint64_t size {text.size()};
-    
-    std::string textsubstr {text};
-    std::string aliasoperator[3] {
-        "*", "-", "+"
-    };
+  uint64_t find {};
+  uint64_t size {text.size()};
 
-    uint64_t it {};
-    char prevoperator {};
-    bool docalc {};
-    bool kissme {};
+  std::string textsubstr {text};
+  std::string aliasoperator[3] {
+    "*", "-", "+"
+  };
 
-    for (it = 0; it < size; it++) {
-        if (!docalc) {
-            switch (textsubstr.at(it)) {
-            case '*':
-                cpom = std::stoi(result);
-                result.clear();
-                docalc = true;
-                break;
-            case '-':
-                cpom = std::stoi(result);
-                result.clear();
-                docalc = true;
-                break;
-            case '+':
-                cpom = std::stoi(result);
-                result.clear();
-                docalc = true;
-                break;
-            default:
-                result += textsubstr.at(it);
-                break;
-            }
+  uint64_t it {};
+  char prevoperator {};
+  bool docalc {};
+  bool kissme {};
 
-            prevoperator = textsubstr.at(it);
-            continue;
-        }
+  for (it = 0; it < size; it++) {
+    if (!docalc) {
+      switch (textsubstr.at(it)) {
+      case '*':
+        cpom = std::stoi(result);
+        result.clear();
+        docalc = true;
+        break;
+      case '-':
+        cpom = std::stoi(result);
+        result.clear();
+        docalc = true;
+        break;
+      case '+':
+        cpom = std::stoi(result);
+        result.clear();
+        docalc = true;
+        break;
+      default:
+        result += textsubstr.at(it);
+        break;
+      }
 
-        kissme = false;
-        switch (textsubstr.at(it)) {
-        case '*':
-            kissme = true;
-            break;
-        case '-':
-            kissme = true;
-            break;
-        case '+':
-            kissme = true;
-            break;
-        default:
-            kissme = it == size - 1;
-            if (kissme) result += textsubstr.at(it);
-            break;
-        }
-
-        if (!kissme) {
-            result += textsubstr.at(it);
-            continue;
-        }
-
-        switch (prevoperator) {
-        case '*':
-            cpom = cpom * std::stoi(result);
-            result.clear();
-            prevoperator = textsubstr.at(it);
-            break;
-        case '-':
-            cpom = cpom - std::stoi(result);
-            result.clear();
-            prevoperator = textsubstr.at(it);
-            break;
-        case '+':
-            cpom = cpom + std::stoi(result);
-            result.clear();
-            prevoperator = textsubstr.at(it);
-            break;
-        default:
-            break;
-        }
+      prevoperator = textsubstr.at(it);
+      continue;
     }
 
-    result = std::to_string(cpom);
-    return result;
+    kissme = false;
+    switch (textsubstr.at(it)) {
+    case '*':
+      kissme = true;
+      break;
+    case '-':
+      kissme = true;
+      break;
+    case '+':
+      kissme = true;
+      break;
+    default:
+      kissme = it == size - 1;
+      if (kissme) result += textsubstr.at(it);
+      break;
+    }
+
+    if (!kissme) {
+      result += textsubstr.at(it);
+      continue;
+    }
+
+    switch (prevoperator) {
+    case '*':
+      cpom = cpom * std::stoi(result);
+      result.clear();
+      prevoperator = textsubstr.at(it);
+      break;
+    case '-':
+      cpom = cpom - std::stoi(result);
+      result.clear();
+      prevoperator = textsubstr.at(it);
+      break;
+    case '+':
+      cpom = cpom + std::stoi(result);
+      result.clear();
+      prevoperator = textsubstr.at(it);
+      break;
+    default:
+      break;
+    }
+  }
+
+  result = std::to_string(cpom);
+  return result;
 }
 
 template<typename t>
 struct linkedlist {
 public:
     template<typename s>
-    struct node {
-    public:
-        node<s> *p_next {};
-        s value {};
-    };
+  struct node {
+  public:
+    node<s> *p_next {};
+    s value {};
+  };
 protected:
-    linkedlist::node<t> *p_node_list {};
-    uint64_t size {};
+  linkedlist::node<t> *p_node_list {};
+  uint64_t size {};
 public:
-    explicit linkedlist() {
-        this->p_node_list = new linkedlist::node<t>();
-    }
+  explicit linkedlist() {
+    this->p_node_list = new linkedlist::node<t>();
+  }
 
-    ~linkedlist() {
-        delete this->p_node_list;
-    }
+  ~linkedlist() {
+    delete this->p_node_list;
+  }
 
-    void push_back(const t &copy) {
-        this->p_node_list[this->size] = {};
-        this->p_node_list[this->size].value = copy;
-        this->size++;
-    }
+  void push_back(const t &copy) {
+    this->p_node_list[this->size] = {};
+    this->p_node_list[this->size].value = copy;
+    this->size++;
+  }
 
-    t &operator[](uint64_t it) {
-        return this->p_node_list[this->size].value;
-    }
+  t &operator[](uint64_t it) {
+    return this->p_node_list[this->size].value;
+  }
 };
 
 static uint64_t framerate {};
 
 template<typename t, typename s>
 t ref(s _ref) {
-    return static_cast<s>(_ref);
+  return static_cast<s>(_ref);
 }
 
 int32_t main_example_with_no_ekg() {
-    int32_t root_width {1280};
-    int32_t root_height {720};
+  int32_t root_width {1280};
+  int32_t root_height {720};
 
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+  SDL_Init(SDL_INIT_VIDEO);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
-    SDL_Window* sdl_win {SDL_CreateWindow("Pompom Calculator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
-    SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
+  SDL_Window* sdl_win {SDL_CreateWindow("Pompom Calculator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
+  SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
 
-    glewExperimental = GL_TRUE;
+  glewExperimental = GL_TRUE;
 
-    if (glewInit() != GLEW_OK) {
-        ekg::log() << "Error: Failed to initialise GLEW";
-    } else {
-        ekg::log() << "GLEW initialised";
+  if (glewInit() != GLEW_OK) {
+    ekg::log() << "Error: Failed to initialise GLEW";
+  } else {
+    ekg::log() << "GLEW initialised";
+  }
+
+  ekg::runtime ekg_runtime {};
+
+  ekg::log() << "OpenGL context created";
+  ekg::debug = true;
+
+  SDL_GL_SetSwapInterval(1);
+  SDL_Event sdl_event {};
+
+  while (running) {
+    while (SDL_PollEvent(&sdl_event)) {
+      if (sdl_event.type == SDL_QUIT) {
+        running = false;
+      }
     }
 
-    ekg::runtime ekg_runtime {};
-
-    ekg::log() << "OpenGL context created";
-    ekg::debug = true;
-
-    SDL_GL_SetSwapInterval(1);
-    SDL_Event sdl_event {};
-
-    while (running) {
-        while (SDL_PollEvent(&sdl_event)) {
-            if (sdl_event.type == SDL_QUIT) {
-                running = false;
-            }
-        }
-
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        glClearColor(1.0f, 0.69f, 1.0f, 1.0f);
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    glClearColor(1.0f, 0.69f, 1.0f, 1.0f);
 
         // Swap buffers.
-        SDL_GL_SwapWindow(sdl_win);
-        SDL_Delay(16);
-    }
+    SDL_GL_SwapWindow(sdl_win);
+    SDL_Delay(16);
+  }
 
-    return 0;
+  return 0;
 }
 
 
 int32_t main_example() {
-    int32_t root_width {1280};
-    int32_t root_height {720};
+  int32_t root_width {1280};
+  int32_t root_height {720};
 
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+  SDL_Init(SDL_INIT_VIDEO);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+  SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-    SDL_Window* sdl_win {SDL_CreateWindow("Pompom Calculator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
-    SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
+  SDL_Window* sdl_win {SDL_CreateWindow("Pompom Calculator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
+  SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
 
-    glewExperimental = GL_TRUE;
+  glewExperimental = GL_TRUE;
 
-    if (glewInit() != GLEW_OK) {
-        ekg::log() << "Error: Failed to initialise GLEW";
-    } else {
-        ekg::log() << "GLEW initialised";
-    }
+  if (glewInit() != GLEW_OK) {
+    ekg::log() << "Error: Failed to initialise GLEW";
+  } else {
+    ekg::log() << "GLEW initialised";
+  }
 
-    ekg::autoscale = false;
-    ekg::scalebase = {1280, 720};
-    ekg::pre_decode_clipboard = true;
+  ekg::autoscale = false;
+  ekg::scalebase = {1280, 720};
+  ekg::pre_decode_clipboard = true;
 
-    ekg::log() << "oi queria ser MUIUTO gostosa\t" << ((uint64_t) 0 - (uint64_t) 0);
+  ekg::log() << "oi queria ser MUIUTO gostosa\t" << ((uint64_t) 0 - (uint64_t) 0);
 
-    ekg::runtime ekg_runtime {};
-    ekg::init(&ekg_runtime, sdl_win, "whitneybook.otf");
+  ekg::runtime ekg_runtime {};
+  ekg::init(&ekg_runtime, sdl_win, "whitneybook.otf");
 
-    ekg::log() << "OpenGL context created";
-    ekg::debug = true;
+  ekg::log() << "OpenGL context created";
+  ekg::debug = true;
 
-    SDL_GL_SetSwapInterval(1);
-    SDL_Event sdl_event {};
+  SDL_GL_SetSwapInterval(1);
+  SDL_Event sdl_event {};
 
-    auto apperence = ekg::frame("oi", {20, 20}, {400, 400});
+  auto apperence = ekg::frame("oi", {20, 20}, {400, 400});
 
-    ekg::checkbox("Use default system apparence", false);
-    ekg::label("GUI background", ekg::dock::next);
-    ekg::button("COR PRETA", ekg::dock::fill);
-    ekg::label("GUI style", ekg::dock::next);
-    ekg::button("listbox", ekg::dock::fill);
-    ekg::label("GUI orientation", ekg::dock::next);
-    ekg::button("chooose", ekg::dock::fill);
-    ekg::label("GUI font", ekg::dock::next);
-    ekg::textbox("font", "Arial/pdf", ekg::dock::fill);
-    ekg::button("..");
-    ekg::button("Apply", ekg::dock::next | ekg::dock::fill);
-    ekg::button("Post", ekg::dock::fill);
-    ekg::button("Dimiss", ekg::dock::fill);
-    ekg::pop_group();
+  ekg::checkbox("Use default system apparence", false);
+  ekg::label("GUI background", ekg::dock::next);
+  ekg::button("COR PRETA", ekg::dock::fill);
+  ekg::label("GUI style", ekg::dock::next);
+  ekg::button("listbox", ekg::dock::fill);
+  ekg::label("GUI orientation", ekg::dock::next);
+  ekg::button("chooose", ekg::dock::fill);
+  ekg::label("GUI font", ekg::dock::next);
+  ekg::textbox("font", "Arial/pdf", ekg::dock::fill);
+  ekg::button("..");
+  ekg::button("Apply", ekg::dock::next | ekg::dock::fill);
+  ekg::button("Post", ekg::dock::fill);
+  ekg::button("Dimiss", ekg::dock::fill);
+  ekg::pop_group();
 
 
-    auto frame = ekg::frame("lê rect", {20, 20}, {800, 800});
+  auto frame = ekg::frame("lê rect", {20, 20}, {800, 800});
 
-    frame->set_drag(ekg::dock::top);
-    frame->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+  frame->set_drag(ekg::dock::top);
+  frame->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
 
-    ekg::button("pom pom clcik click!!", ekg::dock::fill);
-    ekg::slider("pompo number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
+  ekg::button("pom pom clcik click!!", ekg::dock::fill);
+  ekg::slider("pompo number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
 
-    auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::next | ekg::dock::fill)->set_scaled_height(1);
-    p_textbox->set_text("oii");
+  auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::next | ekg::dock::fill)->set_scaled_height(1);
+  p_textbox->set_text("oii");
 
     /*
     auto p_listbox = ekg::listbox("listbox", {"listbox"}, ekg::dock::fill | ekg::dock::next)->set_scaled_height(12);
@@ -324,155 +325,155 @@ int32_t main_example() {
 
     */
 
-        auto b4 = ekg::button("4", ekg::dock::fill | ekg::dock::next);
-        b4->set_scaled_height(2);
-        b4->set_text_align(ekg::dock::center);
-        
-        auto b5 = ekg::button("5", ekg::dock::fill);
-        b5->set_scaled_height(2);
-        b5->set_text_align(ekg::dock::center);
-        
-        auto b6 = ekg::button("6", ekg::dock::fill);
-        b6->set_scaled_height(2);
-        b6->set_text_align(ekg::dock::center);
+  auto b4 = ekg::button("4", ekg::dock::fill | ekg::dock::next);
+  b4->set_scaled_height(2);
+  b4->set_text_align(ekg::dock::center);
 
-        auto bsubtract = ekg::button("-", ekg::dock::fill);
-        bsubtract->set_scaled_height(2);
-        bsubtract->set_text_align(ekg::dock::center);
-        bsubtract->set_tag("calculator-subtract");
+  auto b5 = ekg::button("5", ekg::dock::fill);
+  b5->set_scaled_height(2);
+  b5->set_text_align(ekg::dock::center);
 
-        auto b1 = ekg::button("1", ekg::dock::fill | ekg::dock::next);
-        b1->set_scaled_height(2);
-        b1->set_text_align(ekg::dock::center);
-        
-        auto b2 = ekg::button("2", ekg::dock::fill);
-        b2->set_scaled_height(2);
-        b2->set_text_align(ekg::dock::center);
-    
-        auto b3 = ekg::button("3", ekg::dock::fill);
-        b3->set_scaled_height(2);
-        b3->set_text_align(ekg::dock::center);
+  auto b6 = ekg::button("6", ekg::dock::fill);
+  b6->set_scaled_height(2);
+  b6->set_text_align(ekg::dock::center);
 
-        auto baddition = ekg::button("+", ekg::dock::fill);
-        baddition->set_scaled_height(2);
-        baddition->set_text_align(ekg::dock::center);
-        baddition->set_tag("calculator-addition");
+  auto bsubtract = ekg::button("-", ekg::dock::fill);
+  bsubtract->set_scaled_height(2);
+  bsubtract->set_text_align(ekg::dock::center);
+  bsubtract->set_tag("calculator-subtract");
 
-        auto buseless1 = ekg::button("", ekg::dock::fill | ekg::dock::next);
-        buseless1->set_scaled_height(2);
-        buseless1->set_text_align(ekg::dock::center);
+  auto b1 = ekg::button("1", ekg::dock::fill | ekg::dock::next);
+  b1->set_scaled_height(2);
+  b1->set_text_align(ekg::dock::center);
 
-        auto b0 = ekg::button("0", ekg::dock::fill);
-        b0->set_scaled_height(2);
-        b0->set_text_align(ekg::dock::center);
+  auto b2 = ekg::button("2", ekg::dock::fill);
+  b2->set_scaled_height(2);
+  b2->set_text_align(ekg::dock::center);
 
-    ekg::label("RGB:", ekg::dock::next);
+  auto b3 = ekg::button("3", ekg::dock::fill);
+  b3->set_scaled_height(2);
+  b3->set_text_align(ekg::dock::center);
 
-    auto r = ekg::slider("red", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
-    auto g = ekg::slider("green", 0.69f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
-    auto b = ekg::slider("blue", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
+  auto baddition = ekg::button("+", ekg::dock::fill);
+  baddition->set_scaled_height(2);
+  baddition->set_text_align(ekg::dock::center);
+  baddition->set_tag("calculator-addition");
 
-    ekg::scroll("scroll minecraft");
-    ekg::pop_group();
+  auto buseless1 = ekg::button("", ekg::dock::fill | ekg::dock::next);
+  buseless1->set_scaled_height(2);
+  buseless1->set_text_align(ekg::dock::center);
 
-    create_exit_button();
+  auto b0 = ekg::button("0", ekg::dock::fill);
+  b0->set_scaled_height(2);
+  b0->set_text_align(ekg::dock::center);
 
-    std::string oi_cachorroo = "oi cachorror";
-    p_textbox->set_text(oi_cachorroo);
+  ekg::label("RGB:", ekg::dock::next);
 
-    ekg::event event {};
-    ekg::theme().gen_default_dark_theme();
+  auto r = ekg::slider("red", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
+  auto g = ekg::slider("green", 0.69f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
+  auto b = ekg::slider("blue", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
 
-    while (running) {
-        while (SDL_PollEvent(&sdl_event)) {
-            if (sdl_event.type == SDL_QUIT) {
-                running = false;
-            }
+  ekg::scroll("scroll minecraft");
+  ekg::pop_group();
 
-            ekg::poll_event(sdl_event);
-            if (ekg::listen(event, sdl_event)) {
-                if (event.tag == "file") {
-                    if (event.value == "Copy") {
-                        ekg::input::clipboard(ekg::clipboard::copy);
-                    } else if (event.value == "Cut") {
-                        ekg::input::clipboard(ekg::clipboard::cut);
-                    } else if (event.value == "Paste") {
-                        ekg::input::clipboard(ekg::clipboard::paste);
-                    }
-                }
-            }
+  create_exit_button();
 
-            if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
-                auto main = ekg::popup("file", {
-                    "\tAdd",
-                    "Cut",
-                    "Copy",
-                    "\tPaste",
-                    "\tSelect All",
-                    "Actions"
-                });
-  
-                if (main) {
-                    auto three = ekg::popup("file-add", {"Cube", "Plane", "Sphere", "Hexagon", "Hexagon"});
-                    auto hexagon = ekg::popup("file-add-hexagon", {"Tree D", "Plane", "Double Pairs Daggers"});
-                    auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
+  std::string oi_cachorroo = "oi cachorror";
+  p_textbox->set_text(oi_cachorroo);
 
-                    main->link("Add", three);
-                    main->link("Actions", game);
-                    three->link("Hexagon", hexagon);
-                }
-            }
+  ekg::event event {};
+  ekg::theme().gen_default_dark_theme();
+
+  while (running) {
+    while (SDL_PollEvent(&sdl_event)) {
+      if (sdl_event.type == SDL_QUIT) {
+        running = false;
+      }
+
+      ekg::poll_event(sdl_event);
+      if (ekg::listen(event, sdl_event)) {
+        if (event.tag == "file") {
+          if (event.value == "Copy") {
+            ekg::input::clipboard(ekg::clipboard::copy);
+          } else if (event.value == "Cut") {
+            ekg::input::clipboard(ekg::clipboard::cut);
+          } else if (event.value == "Paste") {
+            ekg::input::clipboard(ekg::clipboard::paste);
+          }
         }
+      }
 
-        ekg::display::dt = 0.016f;
-        ekg::update();
+      if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
+        auto main = ekg::popup("file", {
+          "\tAdd",
+          "Cut",
+          "Copy",
+          "\tPaste",
+          "\tSelect All",
+          "Actions"
+        });
 
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        glClearColor(r->get_value(), g->get_value(), b->get_value(), 1.0f);
+        if (main) {
+          auto three = ekg::popup("file-add", {"Cube", "Plane", "Sphere", "Hexagon", "Hexagon"});
+          auto hexagon = ekg::popup("file-add-hexagon", {"Tree D", "Plane", "Double Pairs Daggers"});
+          auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
 
-        ekg::render();
-
-        // Swap buffers.
-        SDL_GL_SwapWindow(sdl_win);
-        SDL_Delay(16);
+          main->link("Add", three);
+          main->link("Actions", game);
+          three->link("Hexagon", hexagon);
+        }
+      }
     }
 
-    return 0;
+    ekg::display::dt = 0.016f;
+    ekg::update();
+
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    glClearColor(r->get_value(), g->get_value(), b->get_value(), 1.0f);
+
+    ekg::render();
+
+        // Swap buffers.
+    SDL_GL_SwapWindow(sdl_win);
+    SDL_Delay(16);
+  }
+
+  return 0;
 }
 
 /*
  * Created by Rina.
  */
 int32_t main_calculator() {
-    std::string utf8pompom {"𒁑𒁕𒈢𒋟𒈙"};
-    std::string le {"宇"};
+  std::string utf8pompom {"𒁑𒁕𒈢𒋟𒈙"};
+  std::string le {"宇"};
 
-    ekg::log() << le << " utf8 size: " << ekg::utf_length(le) << " string size: " << le.size();
-    ekg::log() << "EKG User interface library demo starting";
+  ekg::log() << le << " utf8 size: " << ekg::utf_length(le) << " string size: " << le.size();
+  ekg::log() << "EKG User interface library demo starting";
 
-    std::string something_ascii {"qrsergostosaterumbumbumlindo"};
-    std::string something_utf8 {"qrsergostósaterumbumbumlindo"};
-    ekg::log() << '\n' << "(EKG utf8) " << ekg::utf_substr(something_utf8, 2, 40) << "\n substr vs \n(STL ascii) " << something_ascii.substr(2, 40);
+  std::string something_ascii {"qrsergostosaterumbumbumlindo"};
+  std::string something_utf8 {"qrsergostósaterumbumbumlindo"};
+  ekg::log() << '\n' << "(EKG utf8) " << ekg::utf_substr(something_utf8, 2, 40) << "\n substr vs \n(STL ascii) " << something_ascii.substr(2, 40);
 
-    int32_t root_width {1280};
-    int32_t root_height {720};
+  int32_t root_width {1280};
+  int32_t root_height {720};
 
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+  SDL_Init(SDL_INIT_VIDEO);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+  SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-    SDL_Window* sdl_win {SDL_CreateWindow("Pompom Calculator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
-    SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
+  SDL_Window* sdl_win {SDL_CreateWindow("Pompom Calculator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, root_width, root_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
+  SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(sdl_win)};
 
-    glewExperimental = GL_TRUE;
+  glewExperimental = GL_TRUE;
 
-    if (glewInit() != GLEW_OK) {
-        ekg::log() << "Error: Failed to initialise GLEW";
-    } else {
-        ekg::log() << "GLEW initialised";
-    }
+  if (glewInit() != GLEW_OK) {
+    ekg::log() << "Error: Failed to initialise GLEW";
+  } else {
+    ekg::log() << "GLEW initialised";
+  }
 
     SDL_GL_SetSwapInterval(1); // v-sync on
     framerate = 16;
@@ -514,8 +515,8 @@ int32_t main_calculator() {
     auto f1 = ekg::frame("sou gostosa", {700, 300}, {200, 200})->set_drag(ekg::dock::top)->set_resize(ekg::dock::bottom | ekg::dock::left | ekg::dock::right);
 
     ekg::button("swap locked-framerate")->set_callback(new ekg::task {"theme-switcher", nullptr, [](void *pdata) {
-        framerate = framerate == 0 ? 16 : 0;
-        SDL_GL_SetSwapInterval(framerate ? 1 : 0);
+      framerate = framerate == 0 ? 16 : 0;
+      SDL_GL_SetSwapInterval(framerate ? 1 : 0);
     }});
 
     ekg::label("oioioioioio", ekg::dock::fill);
@@ -549,141 +550,141 @@ int32_t main_calculator() {
     ekg::ui::frame *frame2 {};
 
     for (int32_t it {}; it < 1; it++) {
-        auto frame1 = ekg::frame("cat", {400, 400}, ekg::dock::none);
-        frame1->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
+      auto frame1 = ekg::frame("cat", {400, 400}, ekg::dock::none);
+      frame1->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
 
-        ekg::checkbox("meow enabled", false, ekg::dock::next);
-        ekg::checkbox("meow enabled", false, ekg::dock::next);
-        ekg::checkbox("meow enabled", false);
-        ekg::checkbox("meow enabled", false, ekg::dock::next);
+      ekg::checkbox("meow enabled", false, ekg::dock::next);
+      ekg::checkbox("meow enabled", false, ekg::dock::next);
+      ekg::checkbox("meow enabled", false);
+      ekg::checkbox("meow enabled", false, ekg::dock::next);
 
         // @TODO remove text from UI slider
 
-        auto slider = ekg::slider("gato", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
-        slider->set_text_align(ekg::dock::center);
-        slider->set_precision(23);
-        ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
-        ekg::scroll("pompom-meow");
+      auto slider = ekg::slider("gato", 0.0f, 0.0f, 1000000.0f, ekg::dock::fill);
+      slider->set_text_align(ekg::dock::center);
+      slider->set_precision(23);
+      ekg::checkbox("meow enabled", false, ekg::dock::fill | ekg::dock::next);
+      ekg::scroll("pompom-meow");
 
-        framedebug->add_child(frame1->get_id());
-        frame2 = ekg::frame("cha", {400, 400}, ekg::dock::none);
-        frame2->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
-        framedebug->add_child(frame2->get_id());
+      framedebug->add_child(frame1->get_id());
+      frame2 = ekg::frame("cha", {400, 400}, ekg::dock::none);
+      frame2->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
+      framedebug->add_child(frame2->get_id());
 
-        ekg::theme().gen_default_dark_theme();
-        ekg::checkbox("Light Theme", false, ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::task {"theme-switcher", frame2, [](void *pdata) {
-            ekg::ui::frame *frame {static_cast<ekg::ui::frame*>(pdata)};
+      ekg::theme().gen_default_dark_theme();
+      ekg::checkbox("Light Theme", false, ekg::dock::fill | ekg::dock::next)->set_callback(new ekg::task {"theme-switcher", frame2, [](void *pdata) {
+        ekg::ui::frame *frame {static_cast<ekg::ui::frame*>(pdata)};
             // frame->set_pos(20, 20);
             // @TODO fix random issue with set positon
 
-            auto &theme {ekg::theme()};
-            std::string current_theme_name {theme.get_current_theme_name()};
+        auto &theme {ekg::theme()};
+        std::string current_theme_name {theme.get_current_theme_name()};
 
-            if (current_theme_name == "dark") {
-                theme.gen_default_light_theme();
-            } else if (current_theme_name == "light") {
-                theme.gen_default_dark_theme();
-            }
-        }});
+        if (current_theme_name == "dark") {
+          theme.gen_default_light_theme();
+        } else if (current_theme_name == "light") {
+          theme.gen_default_dark_theme();
+        }
+      }});
 
-        labelresult = ekg::label("0", ekg::dock::fill | ekg::dock::next);
-        labelresult->set_scaled_height(4);
-        labelresult->set_text_align(ekg::dock::right | ekg::dock::bottom);
-        labelresult->set_font_size(ekg::font::big);
-        labelresult->set_tag("calculator-result");
+      labelresult = ekg::label("0", ekg::dock::fill | ekg::dock::next);
+      labelresult->set_scaled_height(4);
+      labelresult->set_text_align(ekg::dock::right | ekg::dock::bottom);
+      labelresult->set_font_size(ekg::font::big);
+      labelresult->set_tag("calculator-result");
 
-        auto buselesstop1 = ekg::button("", ekg::dock::fill | ekg::dock::next);
-        buselesstop1->set_scaled_height(2);
-        buselesstop1->set_text_align(ekg::dock::center);
+      auto buselesstop1 = ekg::button("", ekg::dock::fill | ekg::dock::next);
+      buselesstop1->set_scaled_height(2);
+      buselesstop1->set_text_align(ekg::dock::center);
 
-        auto buselesstop2 = ekg::button("", ekg::dock::fill);
-        buselesstop2->set_scaled_height(2);
-        buselesstop2->set_text_align(ekg::dock::center);
+      auto buselesstop2 = ekg::button("", ekg::dock::fill);
+      buselesstop2->set_scaled_height(2);
+      buselesstop2->set_text_align(ekg::dock::center);
 
-        auto bcls = ekg::button("cls", ekg::dock::fill);
-        bcls->set_scaled_height(2);
-        bcls->set_text_align(ekg::dock::center);
-        bcls->set_tag("calculator-cls");
+      auto bcls = ekg::button("cls", ekg::dock::fill);
+      bcls->set_scaled_height(2);
+      bcls->set_text_align(ekg::dock::center);
+      bcls->set_tag("calculator-cls");
 
-        auto berase = ekg::button("<=", ekg::dock::fill);
-        berase->set_scaled_height(2);
-        berase->set_text_align(ekg::dock::center);
-        berase->set_tag("calculator-erase");
+      auto berase = ekg::button("<=", ekg::dock::fill);
+      berase->set_scaled_height(2);
+      berase->set_text_align(ekg::dock::center);
+      berase->set_tag("calculator-erase");
 
-        auto b7 = ekg::button("7", ekg::dock::fill | ekg::dock::next);
-        b7->set_scaled_height(2);
-        b7->set_text_align(ekg::dock::center);
-        
-        auto b8 = ekg::button("8", ekg::dock::fill);
-        b8->set_scaled_height(2);
-        b8->set_text_align(ekg::dock::center);
-        
-        auto b9 = ekg::button("9", ekg::dock::fill);
-        b9->set_scaled_height(2);
-        b9->set_text_align(ekg::dock::center);
+      auto b7 = ekg::button("7", ekg::dock::fill | ekg::dock::next);
+      b7->set_scaled_height(2);
+      b7->set_text_align(ekg::dock::center);
 
-        auto bmultiply = ekg::button("x", ekg::dock::fill);
-        bmultiply->set_scaled_height(2);
-        bmultiply->set_text_align(ekg::dock::center);
-        bmultiply->set_tag("calculator-multiply");
+      auto b8 = ekg::button("8", ekg::dock::fill);
+      b8->set_scaled_height(2);
+      b8->set_text_align(ekg::dock::center);
 
-        auto b4 = ekg::button("4", ekg::dock::fill | ekg::dock::next);
-        b4->set_scaled_height(2);
-        b4->set_text_align(ekg::dock::center);
-        
-        auto b5 = ekg::button("5", ekg::dock::fill);
-        b5->set_scaled_height(2);
-        b5->set_text_align(ekg::dock::center);
-        
-        auto b6 = ekg::button("6", ekg::dock::fill);
-        b6->set_scaled_height(2);
-        b6->set_text_align(ekg::dock::center);
+      auto b9 = ekg::button("9", ekg::dock::fill);
+      b9->set_scaled_height(2);
+      b9->set_text_align(ekg::dock::center);
 
-        auto bsubtract = ekg::button("-", ekg::dock::fill);
-        bsubtract->set_scaled_height(2);
-        bsubtract->set_text_align(ekg::dock::center);
-        bsubtract->set_tag("calculator-subtract");
+      auto bmultiply = ekg::button("x", ekg::dock::fill);
+      bmultiply->set_scaled_height(2);
+      bmultiply->set_text_align(ekg::dock::center);
+      bmultiply->set_tag("calculator-multiply");
 
-        auto b1 = ekg::button("1", ekg::dock::fill | ekg::dock::next);
-        b1->set_scaled_height(2);
-        b1->set_text_align(ekg::dock::center);
-        
-        auto b2 = ekg::button("2", ekg::dock::fill);
-        b2->set_scaled_height(2);
-        b2->set_text_align(ekg::dock::center);
-    
-        auto b3 = ekg::button("3", ekg::dock::fill);
-        b3->set_scaled_height(2);
-        b3->set_text_align(ekg::dock::center);
+      auto b4 = ekg::button("4", ekg::dock::fill | ekg::dock::next);
+      b4->set_scaled_height(2);
+      b4->set_text_align(ekg::dock::center);
 
-        auto baddition = ekg::button("+", ekg::dock::fill);
-        baddition->set_scaled_height(2);
-        baddition->set_text_align(ekg::dock::center);
-        baddition->set_tag("calculator-addition");
+      auto b5 = ekg::button("5", ekg::dock::fill);
+      b5->set_scaled_height(2);
+      b5->set_text_align(ekg::dock::center);
 
-        auto buseless1 = ekg::button("", ekg::dock::fill | ekg::dock::next);
-        buseless1->set_scaled_height(2);
-        buseless1->set_text_align(ekg::dock::center);
+      auto b6 = ekg::button("6", ekg::dock::fill);
+      b6->set_scaled_height(2);
+      b6->set_text_align(ekg::dock::center);
 
-        auto b0 = ekg::button("0", ekg::dock::fill);
-        b0->set_scaled_height(2);
-        b0->set_text_align(ekg::dock::center);
+      auto bsubtract = ekg::button("-", ekg::dock::fill);
+      bsubtract->set_scaled_height(2);
+      bsubtract->set_text_align(ekg::dock::center);
+      bsubtract->set_tag("calculator-subtract");
 
-        auto buseless2 = ekg::button("", ekg::dock::fill);
-        buseless2->set_scaled_height(2);
-        buseless2->set_text_align(ekg::dock::center);
+      auto b1 = ekg::button("1", ekg::dock::fill | ekg::dock::next);
+      b1->set_scaled_height(2);
+      b1->set_text_align(ekg::dock::center);
 
-        auto bassign = ekg::button("=", ekg::dock::fill);
-        bassign->set_scaled_height(2);
-        bassign->set_text_align(ekg::dock::center);
-        bassign->set_tag("calculator-assign");
-        ekg::scroll("pompom-calc");
-        ekg::pop_group();
+      auto b2 = ekg::button("2", ekg::dock::fill);
+      b2->set_scaled_height(2);
+      b2->set_text_align(ekg::dock::center);
 
-        framedebug->add_child(ekg::frame("helko", {300, 300}, ekg::dock::next)->get_id());
-        ekg::button("hello", ekg::dock::fill);
-        ekg::button("hello vc é lindo", ekg::dock::next);
-        ekg::pop_group();
+      auto b3 = ekg::button("3", ekg::dock::fill);
+      b3->set_scaled_height(2);
+      b3->set_text_align(ekg::dock::center);
+
+      auto baddition = ekg::button("+", ekg::dock::fill);
+      baddition->set_scaled_height(2);
+      baddition->set_text_align(ekg::dock::center);
+      baddition->set_tag("calculator-addition");
+
+      auto buseless1 = ekg::button("", ekg::dock::fill | ekg::dock::next);
+      buseless1->set_scaled_height(2);
+      buseless1->set_text_align(ekg::dock::center);
+
+      auto b0 = ekg::button("0", ekg::dock::fill);
+      b0->set_scaled_height(2);
+      b0->set_text_align(ekg::dock::center);
+
+      auto buseless2 = ekg::button("", ekg::dock::fill);
+      buseless2->set_scaled_height(2);
+      buseless2->set_text_align(ekg::dock::center);
+
+      auto bassign = ekg::button("=", ekg::dock::fill);
+      bassign->set_scaled_height(2);
+      bassign->set_text_align(ekg::dock::center);
+      bassign->set_tag("calculator-assign");
+      ekg::scroll("pompom-calc");
+      ekg::pop_group();
+
+      framedebug->add_child(ekg::frame("helko", {300, 300}, ekg::dock::next)->get_id());
+      ekg::button("hello", ekg::dock::fill);
+      ekg::button("hello vc é lindo", ekg::dock::next);
+      ekg::pop_group();
     }
 
     framedebug->add_child(ekg::scroll("mewoscroll")->get_id());
@@ -704,137 +705,137 @@ int32_t main_calculator() {
      * Mainloop.
      */
     while (running) {
-        cpu_last_ticks = cpu_now_ticks;
-        cpu_now_ticks = SDL_GetPerformanceCounter();
-        ekg::display::dt = static_cast<float>(cpu_now_ticks - cpu_last_ticks) / static_cast<float>(SDL_GetPerformanceFrequency());
+      cpu_last_ticks = cpu_now_ticks;
+      cpu_now_ticks = SDL_GetPerformanceCounter();
+      ekg::display::dt = static_cast<float>(cpu_now_ticks - cpu_last_ticks) / static_cast<float>(SDL_GetPerformanceFrequency());
 
-        while (SDL_PollEvent(&sdl_event)) {
-            switch (sdl_event.type) {
-                case SDL_QUIT: {
-                    running = false;
-                    break;
-                }
+      while (SDL_PollEvent(&sdl_event)) {
+        switch (sdl_event.type) {
+        case SDL_QUIT: {
+          running = false;
+          break;
+        }
 
-                default: {
+      default: {
                     //framedebug->set_height(ekg::display::height);
 
-                    if (ekg::listen(event, sdl_event)) {
-                        if (event.tag == "file") {
-                            if (event.value == "Copy") {
-                                ekg::input::clipboard(ekg::clipboard::copy);
-                            } else if (event.value == "Cut") {
-                                ekg::input::clipboard(ekg::clipboard::cut);
-                            } else if (event.value == "Paste") {
-                                ekg::input::clipboard(ekg::clipboard::paste);
-                            }
-                        } else if (event.tag == "base.resolution.width") {
-                            ekg::scalebase.x = std::stof(event.value);
-                        } else if (event.tag == "base.resolution.height") {
-                            ekg::scalebase.y = std::stof(event.value);
-                        } else if (event.tag == "base.resolution.autoscale") {
-                            ekg::autoscale = event.value == "checked";
-                        }
-
-                        if (event.tag == "calculator-assign") {
-                            labelresult->set_text(resultcalc(labelresult->get_text()));
-                        } else if (event.tag == "calculator-cls") {
-                            labelresult->set_text("0");
-                        } else if (event.tag == "calculator-addition") {
-                            labelresult->set_text(checkcalc(labelresult->get_text(), "+"));
-                        } else if (event.tag == "calculator-subtract") {
-                            labelresult->set_text(checkcalc(labelresult->get_text(), "-"));
-                        } else if (event.tag == "calculator-multiply") {
-                            labelresult->set_text(checkcalc(labelresult->get_text(), "*"));
-                        } else if (event.tag == "calculator-erase") {
-                            std::string text {labelresult->get_text()};
-                            if (text.size() <= 1) {
-                                text = "0";
-                            } else {
-                                text = text.substr(0, text.size() - 1);
-                            }
-
-                            labelresult->set_text(text);
-                        } else {
-                            std::string number {};
-                            for (uint32_t i {}; i < 10; i++) {
-                                number = std::to_string(i);
-                                if (event.tag == number) {
-                                    labelresult->set_text(labelresult->get_text() == "0" ? number : labelresult->get_text() + number);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    ekg::poll_event(sdl_event);
-
-                    if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
-                        auto main = ekg::popup("file", {"---Add", "Cut", "Copy", "---Paste", "---Select All", "Actions"});
-                        auto three = ekg::popup("file-add", {"Cube", "Plane", "Sphere", "Hexagon", "Hexagon"});
-                        auto hexagon = ekg::popup("file-add-hexagon", {"Tree D", "Plane", "Double Pairs Daggers"});
-                        auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
-
-                        if (main) {
-                            main->link("Add", three);
-                            main->link("Actions", game);
-                            three->link("Hexagon", hexagon);
-                        }
-                    }
-
-                    if (ekg::input::action("pompom")) {
-                        ekg::log() << "VASCO GAMMA E JOAO É GOSTOSAA";
-                    }
-
-                    break;
-                }
+        if (ekg::listen(event, sdl_event)) {
+          if (event.tag == "file") {
+            if (event.value == "Copy") {
+              ekg::input::clipboard(ekg::clipboard::copy);
+            } else if (event.value == "Cut") {
+              ekg::input::clipboard(ekg::clipboard::cut);
+            } else if (event.value == "Paste") {
+              ekg::input::clipboard(ekg::clipboard::paste);
             }
+          } else if (event.tag == "base.resolution.width") {
+            ekg::scalebase.x = std::stof(event.value);
+          } else if (event.tag == "base.resolution.height") {
+            ekg::scalebase.y = std::stof(event.value);
+          } else if (event.tag == "base.resolution.autoscale") {
+            ekg::autoscale = event.value == "checked";
+          }
+
+          if (event.tag == "calculator-assign") {
+            labelresult->set_text(resultcalc(labelresult->get_text()));
+          } else if (event.tag == "calculator-cls") {
+            labelresult->set_text("0");
+          } else if (event.tag == "calculator-addition") {
+            labelresult->set_text(checkcalc(labelresult->get_text(), "+"));
+          } else if (event.tag == "calculator-subtract") {
+            labelresult->set_text(checkcalc(labelresult->get_text(), "-"));
+          } else if (event.tag == "calculator-multiply") {
+            labelresult->set_text(checkcalc(labelresult->get_text(), "*"));
+          } else if (event.tag == "calculator-erase") {
+            std::string text {labelresult->get_text()};
+            if (text.size() <= 1) {
+              text = "0";
+            } else {
+              text = text.substr(0, text.size() - 1);
+            }
+
+            labelresult->set_text(text);
+          } else {
+            std::string number {};
+            for (uint32_t i {}; i < 10; i++) {
+              number = std::to_string(i);
+              if (event.tag == number) {
+                labelresult->set_text(labelresult->get_text() == "0" ? number : labelresult->get_text() + number);
+                break;
+              }
+            }
+          }
         }
+
+        ekg::poll_event(sdl_event);
+
+        if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
+          auto main = ekg::popup("file", {"---Add", "Cut", "Copy", "---Paste", "---Select All", "Actions"});
+          auto three = ekg::popup("file-add", {"Cube", "Plane", "Sphere", "Hexagon", "Hexagon"});
+          auto hexagon = ekg::popup("file-add-hexagon", {"Tree D", "Plane", "Double Pairs Daggers"});
+          auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
+
+          if (main) {
+            main->link("Add", three);
+            main->link("Actions", game);
+            three->link("Hexagon", hexagon);
+          }
+        }
+
+        if (ekg::input::action("pompom")) {
+          ekg::log() << "VASCO GAMMA E JOAO É GOSTOSAA";
+        }
+
+        break;
+      }
+    }
+  }
 
         // framedebug->set_size(ekg::display::width, ekg::display::height);
 
-        if (ekg::log::buffered) {
-            std::string old_log {textboxdebug->get_text()};
-            if (old_log.size() > 50000) old_log = '\n';
-            old_log += ekg::log::buffer.str();
-            textboxdebug->set_text(old_log);
-        }
+  if (ekg::log::buffered) {
+    std::string old_log {textboxdebug->get_text()};
+    if (old_log.size() > 50000) old_log = '\n';
+    old_log += ekg::log::buffer.str();
+    textboxdebug->set_text(old_log);
+  }
 
-        ekg::update();
+  ekg::update();
 
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+  glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+  glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-        ekg::render();
+  ekg::render();
 
         // Count the FPS.
-        ticked_frames++;
+  ticked_frames++;
 
-        if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
-            display_fps = ticked_frames;
-            debuglabel->set_text("FPS: " + std::to_string(display_fps));
-            ticked_frames = 0;
-        }
+  if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
+    display_fps = ticked_frames;
+    debuglabel->set_text("FPS: " + std::to_string(display_fps));
+    ticked_frames = 0;
+  }
 
-        SDL_GL_SwapWindow(sdl_win);
+  SDL_GL_SwapWindow(sdl_win);
 
         // Swap buffers.
-        if (framerate) {
-            SDL_Delay(framerate);
-        }
-    }
+  if (framerate) {
+    SDL_Delay(framerate);
+  }
+}
 
-    if (!ekg::swap::tooktimeanalyzingtelemtry.empty()) {
-        uint64_t sum {};
-        for (uint64_t &took_time : ekg::swap::tooktimeanalyzingtelemtry) {
-            sum += took_time;
-        }
+if (!ekg::swap::tooktimeanalyzingtelemtry.empty()) {
+  uint64_t sum {};
+  for (uint64_t &took_time : ekg::swap::tooktimeanalyzingtelemtry) {
+    sum += took_time;
+  }
 
-        ekg::log() << "(telemetry size, sum) (average timing): " << ekg::swap::tooktimeanalyzingtelemtry.size() << ", " << sum << '\t' << (sum / ekg::swap::tooktimeanalyzingtelemtry.size());
-    }
+  ekg::log() << "(telemetry size, sum) (average timing): " << ekg::swap::tooktimeanalyzingtelemtry.size() << ", " << sum << '\t' << (sum / ekg::swap::tooktimeanalyzingtelemtry.size());
+}
 
-    ekg::quit();
+ekg::quit();
 
-    return 0;
+return 0;
 }
 
 #include <thread>
@@ -844,135 +845,135 @@ uint64_t ticking_sleep {};
 std::vector<std::string> task_list {};
 
 void parallel_runtime() {
-    while (running) {    
-        for (std::string &tasks : task_list) {
-            std::cout << tasks << std::endl;
-        }
-
-        task_list.clear();
-        ticking_sleep = 100;
-        std::this_thread::sleep_for(std::chrono::milliseconds(ticking_sleep));
+  while (running) {    
+    for (std::string &tasks : task_list) {
+      std::cout << tasks << std::endl;
     }
+
+    task_list.clear();
+    ticking_sleep = 100;
+    std::this_thread::sleep_for(std::chrono::milliseconds(ticking_sleep));
+  }
 }
 
 int32_t main_thread_system() {
-    for (uint32_t it {}; it < 256; it++) {
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-        task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
-    }
+  for (uint32_t it {}; it < 256; it++) {
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+    task_list.emplace_back("oiii fofa"); task_list.emplace_back("fofooo"); task_list.emplace_back("gatinho e cachorro");
+  }
 
-    ticking_sleep = 600;
-    std::thread thread_fofa(parallel_runtime);
+  ticking_sleep = 600;
+  std::thread thread_fofa(parallel_runtime);
 
-    while (running) {
-        ticking_sleep = 0;
-
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        running = false;
-    }
-
-    std::flush(std::cout);
+  while (running) {
     ticking_sleep = 0;
-    thread_fofa.join();
-    return 0;
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    running = false;
+  }
+
+  std::flush(std::cout);
+  ticking_sleep = 0;
+  thread_fofa.join();
+  return 0;
 }
 
 void utf_test() {
-    std::string utf_text {
-        "ççç ççç"
-    };
+  std::string utf_text {
+    "ççç ççç"
+  };
 
-    for (uint64_t it {}; it < utf_text.size(); it++) {
-        uint8_t char8 {static_cast<uint8_t>(utf_text.at(it))};
-        char32_t char32 {};
-        std::string utf_char {};
-        it += ekg::utf_check_sequence(char8, char32, utf_char, utf_text, it);
-        std::cout << it << " joao(s)" << utf_char  << "\t" << std::endl;
-    }
+  for (uint64_t it {}; it < utf_text.size(); it++) {
+    uint8_t char8 {static_cast<uint8_t>(utf_text.at(it))};
+    char32_t char32 {};
+    std::string utf_char {};
+    it += ekg::utf_check_sequence(char8, char32, utf_char, utf_text, it);
+    std::cout << it << " joao(s)" << utf_char  << "\t" << std::endl;
+  }
 }
 
 std::ostringstream log() {
-    return {};
+  return {};
 }
 
 template<typename t>
 std::ostringstream &operator+(std::ostringstream &os_string_stream, const t &log_content) {
-    os_string_stream << log_content;
-    return os_string_stream;
+  os_string_stream << log_content;
+  return os_string_stream;
 }
 
 std::ostringstream &operator-(std::ostringstream &os_string_stream, std::ostringstream &os_string_stream_final) {
-    std::cout << os_string_stream.str() << std::endl;
-    return os_string_stream;
+  std::cout << os_string_stream.str() << std::endl;
+  return os_string_stream;
 }
 
 struct node {
 public:
-    const char *p_list_tag[256] {};
-    std::vector<node*> child_list {};
+  const char *p_list_tag[256] {};
+  std::vector<node*> child_list {};
 };
 
 std::vector<node*> node_list {};
 
 void memory_test() {
-    for (int32_t it {}; it < 64; it++) {
-        node *&p_node {node_list.emplace_back()};
-        p_node = new node {};
+  for (int32_t it {}; it < 64; it++) {
+    node *&p_node {node_list.emplace_back()};
+    p_node = new node {};
 
-        p_node->p_list_tag[0] = "potato";
-        p_node->p_list_tag[1] = "chiquinha";
-        p_node->p_list_tag[2] = "fofooos";
+    p_node->p_list_tag[0] = "potato";
+    p_node->p_list_tag[1] = "chiquinha";
+    p_node->p_list_tag[2] = "fofooos";
 
-        for (int32_t it_child {it}; it_child > 0; it_child--) {
-            p_node->child_list.emplace_back() = node_list.at(it_child);
-        }
+    for (int32_t it_child {it}; it_child > 0; it_child--) {
+      p_node->child_list.emplace_back() = node_list.at(it_child);
     }
+  }
 }
 
 void item_test() {
@@ -1036,97 +1037,97 @@ void item_test() {
 }
 
 void sdl_test() {
-    std::cout << SDLK_COPY << '\t' << SDLK_CUT << '\t' << SDLK_PASTE << std::endl; 
+  std::cout << SDLK_COPY << '\t' << SDLK_CUT << '\t' << SDLK_PASTE << std::endl; 
 }
 
 void stl_test() {
-    std::string str {};
-    str.resize(5);
+  std::string str {};
+  str.resize(5);
 
-    str.at(0) = '0';
-    str.at(1) = 'i';
-    str.at(2) = ' ';
-    str.at(3) = '!';
-    str.at(4) = '!';
+  str.at(0) = '0';
+  str.at(1) = 'i';
+  str.at(2) = ' ';
+  str.at(3) = '!';
+  str.at(4) = '!';
 
-    std::string_view str_view {str};
-    std::cout << str_view << std::endl;
+  std::string_view str_view {str};
+  std::cout << str_view << std::endl;
 }
 
 namespace ekg {
     template<typename t>
-    struct value {
-    protected:
-        t *p_address {};
-        bool *p_semaphore {};
-        t old {};
-    public:
-        &operator t() {
-            return *this->p_address;
-        }
+  struct value {
+  protected:
+    t *p_address {};
+    bool *p_semaphore {};
+    t old {};
+  public:
+    &operator t() {
+      return *this->p_address;
+    }
 
-        value<t>() {
-            this->p_address = &this->old;
-        }
+    value<t>() {
+      this->p_address = &this->old;
+    }
 
-        value<t>(t assign_value) {
-            this->p_address = &this->old;
-            *this->p_address = assign_value;
-        }
+    value<t>(t assign_value) {
+      this->p_address = &this->old;
+      *this->p_address = assign_value;
+    }
 
-        ekg::value<t> &operator=(t assign_value) {
-            *this->p_address = assign_value;
-            *this->p_semaphore = *this->p_semaphore || (*this->p_address != this->old);
-            this->old = *this->p_address;
-            return *this;
-        }
-    public:
-        void set_semaphore(bool *p_set_semaphore) {
-            this->p_semaphore = p_set_semaphore;
-        }
+    ekg::value<t> &operator=(t assign_value) {
+      *this->p_address = assign_value;
+      *this->p_semaphore = *this->p_semaphore || (*this->p_address != this->old);
+      this->old = *this->p_address;
+      return *this;
+    }
+  public:
+    void set_semaphore(bool *p_set_semaphore) {
+      this->p_semaphore = p_set_semaphore;
+    }
 
-        void set_address(t *p_value_address) {
-            this->p_address = p_value_address;
-        }
+    void set_address(t *p_value_address) {
+      this->p_address = p_value_address;
+    }
     
-        ekg::value<t> &make_default() {
-            this->p_address = &this->old;
-            return *this;
-        }
-    };
+    ekg::value<t> &make_default() {
+      this->p_address = &this->old;
+      return *this;
+    }
+  };
 }
 
 struct entity {
 public:
-    float health {};
+  float health {};
 };
 
 void vaue_test() {
-    entity *p_player {new entity {
-        .health = 128.0f
-    }};
+  entity *p_player {new entity {
+    .health = 128.0f
+  }};
 
-    float *p_addr = &p_player->health;
-    bool signal {};
-    ekg::value<float> age {33.0f};
+  float *p_addr = &p_player->health;
+  bool signal {};
+  ekg::value<float> age {33.0f};
 
-    age.set_address(&p_player->health);
-    age.set_semaphore(&signal);
+  age.set_address(&p_player->health);
+  age.set_semaphore(&signal);
 
-    float a = age;
-    std::cout << a << std::endl;
-    age = 66.0f;
-    std::cout << (float) age  << std::endl;
+  float a = age;
+  std::cout << a << std::endl;
+  age = 66.0f;
+  std::cout << (float) age  << std::endl;
 
-    if (signal) {
-        std::cout << "olooi " << p_player->health  << std::endl;
-    }
+  if (signal) {
+    std::cout << "olooi " << p_player->health  << std::endl;
+  }
 
-    delete p_player;
-    if (p_addr != nullptr) {
-        std::cout << *p_addr << std::endl;
-        *p_addr = 44.0f;
-    }
+  delete p_player;
+  if (p_addr != nullptr) {
+    std::cout << *p_addr << std::endl;
+    *p_addr = 44.0f;
+  }
 
     /*
     ekg::ui::slider *p_slider = ekg::slider("hello", -23.0f, -50.0f, 100.0f);
@@ -1139,9 +1140,29 @@ void vaue_test() {
     */
 }
 
-int32_t main(int32_t, char**) {
-    std::string text_utf {"ccccc"};
-    std::cout << ekg::utf_substr(text_utf, 3, 5) << "|" << text_utf.substr(3, 5) << std::endl;
+void trash_utf_testing() {
+  std::string line_a {
+    "oivc"
+  };
 
-    return main_calculator();
+  std::string &line_b {line_a};
+  uint64_t cursor_index {1};
+
+  std::cout << ekg::utf_substr(line_a, 0, cursor_index) << std::endl;
+  std::cout << ekg::utf_substr(line_b, cursor_index, ekg::utf_length(line_b)) << std::endl;
+
+  line_a = (
+    ekg::utf_substr(line_a, 0, cursor_index) +
+    "f" +
+    ekg::utf_substr(line_b, cursor_index, ekg::utf_length(line_b))
+  );
+
+  std::cout << line_a << std::endl;
+
+  std::string text_utf {"ccccc"};
+  std::cout << ekg::utf_substr(text_utf, 3, 5) << "|" << text_utf.substr(3, 5) << std::endl;
+}
+
+int32_t main(int32_t, char**) {
+  return main_calculator();
 }

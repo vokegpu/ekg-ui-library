@@ -23,6 +23,7 @@
  */
 
 #include <cstring>
+#include <stdint.h>
 
 #include "ekg/util/text.hpp"
 #include "ekg/util/geometry.hpp"
@@ -159,7 +160,7 @@ std::string ekg::utf_substr(std::string_view string, uint64_t offset, uint64_t s
 
   /*
    * This function implementation checks the amount of bytes per char for UTF-8.
-   * There is no support for UTF-16 or UTF-32 still.
+   * There is no support for UTF-16 or directly UTF-32.
    */
 
   while (index < string_size) {
@@ -171,16 +172,23 @@ std::string ekg::utf_substr(std::string_view string, uint64_t offset, uint64_t s
     utf_sequence_size += 3 * ((char8 & 0xF8) == 0xF0);
 
     at_last_index = index + utf_sequence_size == string_size;
-    std::cout << (index + utf_sequence_size) << " " << string_size << std::endl;
-
-    index += utf_sequence_size;
-    utf_text_size++;
 
     if ((at_last_index || utf_text_size >= offset) && begin == UINT64_MAX) {
       begin = ekg_max(index, string_size);
     }
 
-    if (at_last_index || utf_text_size >= size) {
+    index += utf_sequence_size;
+    utf_text_size++;
+
+    if (
+        /*
+         * OBS:
+         *  If the `offset` parameter is equals to the last UTF-8 string size,
+         *  then it continue without substring process.
+         */
+        (at_last_index && begin != UINT64_MAX && offset != utf_text_size) ||
+        (utf_text_size >= size)
+       ) {
       string = string.substr(begin, (index - begin));
       return std::string {string.begin(), string.end()};
     }
@@ -190,8 +198,8 @@ std::string ekg::utf_substr(std::string_view string, uint64_t offset, uint64_t s
 }
 
 /*
- * This function have a potential memory leak issue,
- * and is very dangerous.
+ * This function has a potential memory leak issue,
+ * and it is very dangerous.
  */
 void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_read) {
   if (string.empty()) {

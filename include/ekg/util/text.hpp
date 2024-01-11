@@ -62,12 +62,24 @@ namespace ekg {
     uint64_t index
   );
 
+  /**
+   * Returns a UTF-32 char32 based in UTF-8 sequence
+   */
   char32_t utf_string_to_char32(std::string_view string);
 
+  /**
+   * Splits a text by `\n` using UTF-8 decode mode.
+   */
   void utf_decode(std::string_view string, std::vector<std::string> &utf_decoded);
 
+  /**
+   * Returns a customised float precision as a string.
+   */
   std::string string_float_precision(float number, int32_t precision);
 
+  /**
+   * Return the index of last attribute-token and insert bits.
+   */
   uint8_t check_attribute_flags(std::string_view text, uint16_t &flags);
 }
 

@@ -27,6 +27,7 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 #include "ekg/os/platform.hpp"
+#include "ekg/util/text.hpp"
 
 void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor &cursor, int64_t &x, int64_t &y) {
   if (!this->is_action_modifier_enable) {
@@ -813,9 +814,15 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     this->flag.state = this->flag.hovered;
   } else if (this->flag.state && motion && !this->embedded_scroll.is_dragging_bar()) {
     auto &interact {ekg::input::interact()};
-    ekg::vec2 diff {interact.x - this->cursor_delta.x, interact.y - this->cursor_delta.y};
-    this->check_cursor_text_bounding(this->loaded_multi_cursor_list.at(0),
-                                     !(static_cast<int32_t>(diff.x * diff.x + diff.y * diff.y) > 5));
+    ekg::vec2 diff {
+      interact.x - this->cursor_delta.x,
+      interact.y - this->cursor_delta.y
+    };
+
+    this->check_cursor_text_bounding(
+      this->loaded_multi_cursor_list.at(0),
+      !(static_cast<int32_t>(diff.x * diff.x + diff.y * diff.y) > 5)
+    );
   }
 
   if (released) {
@@ -849,8 +856,9 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
 
   bool should_process_textbox {
       this->flag.focused && (
-          (sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_TEXTINPUT) ||
-          (this->is_clipboard_copy || this->is_clipboard_cut || this->is_clipboard_paste))
+        (sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_TEXTINPUT) ||
+        (this->is_clipboard_copy || this->is_clipboard_cut || this->is_clipboard_paste)
+      )
   };
 
   if (!should_process_textbox) {

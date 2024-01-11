@@ -1235,7 +1235,7 @@
 	],
 	"find":
 	{
-		"height": 25.0
+		"height": 27.0
 	},
 	"find_in_files":
 	{
@@ -1275,7 +1275,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 25.0
+		"height": 27.0
 	},
 	"input":
 	{
@@ -1304,6 +1304,14 @@
 		]
 	},
 	"menu_visible": false,
+	"output.LSP Log Panel":
+	{
+		"height": 0.0
+	},
+	"output.diagnostics":
+	{
+		"height": 0.0
+	},
 	"output.exec":
 	{
 		"height": 232.0
@@ -1320,7 +1328,7 @@
 	"project": "ekg-ui-library.sublime-project",
 	"replace":
 	{
-		"height": 46.0
+		"height": 50.0
 	},
 	"save_all_on_build": true,
 	"select_file":
