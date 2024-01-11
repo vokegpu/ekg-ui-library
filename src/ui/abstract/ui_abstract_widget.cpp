@@ -66,11 +66,11 @@ void ekg::ui::abstract_widget::on_event(SDL_Event &sdl_event) {
 void ekg::ui::abstract_widget::on_post_event(SDL_Event &sdl_event) {
   this->flag.hovered = false;
 
-#if defined(__ANDROID__)
+  #if defined(__ANDROID__)
   this->flag.highlight = !(!this->flag.hovered &&
                          (ekg::input::released())) &&
                          this->flag.highlight;
-#endif
+  #endif
 }
 
 void ekg::ui::abstract_widget::on_update() {

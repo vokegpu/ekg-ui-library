@@ -38,9 +38,11 @@ namespace ekg::ui {
     uint64_t max_lines {UINT32_MAX};
     uint64_t max_chars_per_line {UINT32_MAX};
   public:
-    /*
-      * As the name says, unsafe set text is not a method for any general purpose.
-      */
+    /**
+     * As the name says, unsafe
+     * due the desynchronization between widget
+     * and UI interface.
+     */
     void unsafe_set_text(std::string &ref_text);
 
   public:
