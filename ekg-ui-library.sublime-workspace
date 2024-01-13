@@ -4,6 +4,30 @@
 		"selected_items":
 		[
 			[
+				"utf",
+				"utf_sequence_size"
+			],
+			[
+				"string",
+				"string_size"
+			],
+			[
+				"UINT",
+				"UINT64_MAX"
+			],
+			[
+				"utf_",
+				"utf_sequence_size"
+			],
+			[
+				"curs",
+				"cursor_index"
+			],
+			[
+				"cur",
+				"cursor_index"
+			],
+			[
 				"tef",
 				"text_utf"
 			],
@@ -490,30 +514,6 @@
 			[
 				"serip",
 				"serialized_pso_layout_binding_list"
-			],
-			[
-				"dstset",
-				"dst_set_layout_binding_list"
-			],
-			[
-				"VkDescriptorSetLa",
-				"VkDescriptorSetLayoutBinding"
-			],
-			[
-				"dst_s",
-				"dst_set_layout_binding_list"
-			],
-			[
-				"VkShader",
-				"VkShaderStageFlags"
-			],
-			[
-				"descriptor",
-				"descriptor_type"
-			],
-			[
-				"map",
-				"mapped_serialized_dst_set_layout"
 			]
 		]
 	},
@@ -548,16 +548,40 @@
 		"selected_items":
 		[
 			[
-				"discor",
-				"Discord Rich Presence: Reconnect to Discord"
+				"colorsce",
+				"UI: Select Color Scheme"
+			],
+			[
+				"theme",
+				"UI: Select Color Scheme"
 			],
 			[
 				"packaen",
 				"Package Control: Enable Package"
 			],
 			[
+				"colors",
+				"UI: Select Color Scheme"
+			],
+			[
+				"seletht",
+				"UI: Select Theme"
+			],
+			[
+				"keys",
+				"Preferences: Key Bindings"
+			],
+			[
+				"terminus",
+				"Preferences: Terminus Settings"
+			],
+			[
 				"setting",
 				"Preferences: Settings"
+			],
+			[
+				"discor",
+				"Discord Rich Presence: Reconnect to Discord"
 			],
 			[
 				"packains",
@@ -812,15 +836,7 @@
 				"Package Control: Install Package"
 			],
 			[
-				"colors",
-				"UI: Select Color Scheme"
-			],
-			[
 				"color",
-				"UI: Select Color Scheme"
-			],
-			[
-				"theme",
 				"UI: Select Color Scheme"
 			],
 			[
@@ -902,10 +918,6 @@
 			[
 				"waka",
 				"WakaTime: Open Dashboard"
-			],
-			[
-				"colorsce",
-				"UI: Select Color Scheme"
 			],
 			[
 				"disabl",
@@ -1046,18 +1058,6 @@
 			[
 				"insta",
 				"Package Control: Install Package"
-			],
-			[
-				"instal",
-				"Package Control: Install Package"
-			],
-			[
-				"packag",
-				"Package Control: Remove Package"
-			],
-			[
-				"selectcol",
-				"UI: Select Color Scheme"
 			]
 		],
 		"width": 0.0
@@ -1102,28 +1102,38 @@
 		"side_bar_visible": false,
 		"status_bar_visible": false
 	},
+	"expanded_folders":
+	[
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src"
+	],
 	"file_history":
 	[
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/devlog/commit.txt",
-		"/C/Users/Diyng/Documents/GitHub/ak-norm/main.py",
+		"/C/Users/Diyng/Downloads/wordsList",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ekg.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/CMakeLists.txt",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/textbox/ui_textbox_widget.cpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/src/ekg_gui_showcase_test.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/util/text.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/text.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/src/ekg_off_test.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/devlog/commit.txt",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/.gitignore",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/textbox/ui_textbox.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/autogui/auto_gui_main.py",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/textbox/ui_textbox.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/src/ekg_gui_showcase_test.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ak-norm/main.py",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/autogui/auto_gui_tools.py",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/LICENSE.txt",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/build/linux/LICENSE.txt",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/build/windows/LICENSE.txt",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ekg.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/util/io.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ekg.hpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/text.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/io.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/gui.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/geometry.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/aspect.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/textbox/ui_textbox_widget.hpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/textbox/ui_textbox.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/slider/ui_slider_widget.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/slider/ui_slider.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/scroll/ui_scroll_widget.hpp",
@@ -1165,7 +1175,6 @@
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/util/gui.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/util/geometry.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/util/aspect.cpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/textbox/ui_textbox.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/slider/ui_slider_widget.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/slider/ui_slider.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/scroll/ui_scroll_widget.cpp",
@@ -1199,8 +1208,6 @@
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/ekg-ui-library.sublime-project",
 		"/C/Users/Diyng/Documents/GitHub/personal-file-stuff/filosofia de um programador/A filosofia do Programador.txt",
 		"/C/Users/Diyng/AppData/Roaming/Sublime Text/Packages/User/EKG C++.sublime-build",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/CMakeLists.txt",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/src/ekg_off_test.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/.sublime-project",
 		"/C/Users/Diyng/Documents/GitHub/death-physics/.gitignore",
 		"/C/Users/Diyng/Documents/GitHub/death-physics/Cargo.toml",
@@ -1229,13 +1236,11 @@
 		"/C/Users/Diyng/Desktop/emu-physics/src/client/host.cpp",
 		"/C/Users/Diyng/Desktop/emu-physics/src/application_entry_point.cpp",
 		"/C/Users/Diyng/AppData/Roaming/Sublime Text/Packages/User/Any C++.sublime-build",
-		"/C/Users/Diyng/Desktop/twitch livestream titles.txt",
-		"/C/Users/Diyng/Documents/GitHub/VkPowerSampler/solution/win32/src/gpu/gpu_pipeline_state_object.cpp",
-		"/C/Users/Diyng/Documents/GitHub/death-physics/src/world.rs"
+		"/C/Users/Diyng/Desktop/twitch livestream titles.txt"
 	],
 	"find":
 	{
-		"height": 27.0
+		"height": 29.0
 	},
 	"find_in_files":
 	{
@@ -1249,6 +1254,8 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"main_cal",
+			"std::cout"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1275,7 +1282,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 27.0
+		"height": 29.0
 	},
 	"input":
 	{
@@ -1308,13 +1315,17 @@
 	{
 		"height": 0.0
 	},
+	"output.Terminus":
+	{
+		"height": 119.0
+	},
 	"output.diagnostics":
 	{
 		"height": 0.0
 	},
 	"output.exec":
 	{
-		"height": 232.0
+		"height": 379.0
 	},
 	"output.find_results":
 	{
@@ -1324,11 +1335,11 @@
 	{
 		"height": 0.0
 	},
-	"pinned_build_system": "Packages/Python/Python.sublime-build",
+	"pinned_build_system": "Run",
 	"project": "ekg-ui-library.sublime-project",
 	"replace":
 	{
-		"height": 50.0
+		"height": 54.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -1339,15 +1350,7 @@
 		[
 			[
 				"",
-				"src\\ui\\textbox\\ui_textbox_widget.cpp"
-			],
-			[
-				"com",
-				"devlog\\commit.txt"
-			],
-			[
-				"textbo",
-				"src\\ui\\textbox\\ui_textbox_widget.cpp"
+				"test\\src\\ekg_gui_showcase_test.cpp"
 			],
 			[
 				"show",
@@ -1358,16 +1361,52 @@
 				"test\\autogui\\auto_gui_main.py"
 			],
 			[
-				"text",
-				"src\\util\\text.cpp"
+				"textbox",
+				"src\\ui\\textbox\\ui_textbox.cpp"
 			],
 			[
-				"textbox",
-				"src\\ui\\textbox\\ui_textbox_widget.cpp"
+				"text",
+				"include\\ekg\\ui\\textbox\\ui_textbox.hpp"
+			],
+			[
+				"comm",
+				"devlog\\commit.txt"
+			],
+			[
+				"tex",
+				"src\\util\\text.cpp"
 			],
 			[
 				"te",
 				"src\\util\\text.cpp"
+			],
+			[
+				"cmake",
+				"CMakeLists.txt"
+			],
+			[
+				"off",
+				"test\\src\\ekg_off_test.cpp"
+			],
+			[
+				"showcas",
+				"test\\src\\ekg_gui_showcase_test.cpp"
+			],
+			[
+				"ekg",
+				"src\\ekg.cpp"
+			],
+			[
+				"showcase",
+				"test\\src\\ekg_gui_showcase_test.cpp"
+			],
+			[
+				"com",
+				"devlog\\commit.txt"
+			],
+			[
+				"textbo",
+				"src\\ui\\textbox\\ui_textbox_widget.cpp"
 			],
 			[
 				"all",
@@ -1444,10 +1483,6 @@
 			[
 				"pop",
 				"src\\ui\\popup\\ui_popup_widget.cpp"
-			],
-			[
-				"off",
-				"test\\src\\ekg_off_test.cpp"
 			],
 			[
 				"allo",
@@ -1582,10 +1617,6 @@
 				"src\\main.rs"
 			],
 			[
-				"cmake",
-				"CMakeLists.txt"
-			],
-			[
 				"pso",
 				"src\\gpu\\gpu_pipeline_state_object.cpp"
 			],
@@ -1658,10 +1689,6 @@
 				"include\\ekg\\gpu\\data.hpp"
 			],
 			[
-				"ekg",
-				"src\\ekg.cpp"
-			],
-			[
 				"label",
 				"src\\ui\\label\\ui_label_widget.cpp"
 			],
@@ -1700,10 +1727,6 @@
 			[
 				"abs",
 				"src\\ui\\abstract\\ui_abstract.cpp"
-			],
-			[
-				"comm",
-				"devlog\\commit.txt"
 			],
 			[
 				"listboxw",
@@ -1835,18 +1858,6 @@
 			],
 			[
 				"buf",
-				"src\\gpu\\gpu_buffer.cpp"
-			],
-			[
-				"dire",
-				"src\\direct\\direct_core.cpp"
-			],
-			[
-				"apl",
-				"src\\application\\application.cpp"
-			],
-			[
-				"buffe",
 				"src\\gpu\\gpu_buffer.cpp"
 			]
 		],
