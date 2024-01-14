@@ -27,6 +27,7 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 #include "ekg/os/platform.hpp"
+#include "ekg/util/geometry.hpp"
 #include "ekg/util/text.hpp"
 
 void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor &cursor, int64_t &x, int64_t &y) {
@@ -1223,6 +1224,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     }
   }
 
+  this->rect_text.h += this->text_offset + ekg_pixel_div_2;
   this->embedded_scroll.rect_child = this->rect_text;
   this->embedded_scroll.on_draw_refresh();
 

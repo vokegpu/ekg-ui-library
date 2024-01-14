@@ -135,3 +135,5 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Removed nested sets, and if-elses from cmake build.
 -- Optimized geometry resources re-allocating ticks.
 -- Optimized UTF-8 substring performance.
+-- Split feature in text util.
+-- Textbox UI is a STL vector-based.
