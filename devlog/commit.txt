@@ -137,3 +137,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Optimized UTF-8 substring performance.
 -- Split feature in text util.
 -- Textbox UI is a STL vector-based.
+-- Fixed `ekg::log::flush` copying string buffer and not cleaning.
