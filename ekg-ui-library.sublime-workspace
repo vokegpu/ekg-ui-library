@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"previ",
+				"previous_text_chunk_size"
+			],
+			[
+				"text",
+				"textbox_widget"
+			],
+			[
 				"utf",
 				"utf_sequence_size"
 			],
@@ -42,10 +50,6 @@
 			[
 				"cachedgeometry",
 				"cached_geometry_resources_size"
-			],
-			[
-				"previ",
-				"previous_cached_geometry_resources_size"
 			],
 			[
 				"cachedgeom",
@@ -510,10 +514,6 @@
 			[
 				"descr",
 				"descriptor_type_count"
-			],
-			[
-				"serip",
-				"serialized_pso_layout_binding_list"
 			]
 		]
 	},
@@ -1104,24 +1104,34 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src"
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library"
 	],
 	"file_history":
 	[
-		"/C/Users/Diyng/Downloads/wordsList",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ekg.cpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/CMakeLists.txt",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/textbox/ui_textbox_widget.cpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/util/text.cpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/text.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/src/ekg_off_test.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/devlog/commit.txt",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/.gitignore",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/textbox/ui_textbox.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/service/layout.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/io.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/core/runtime.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ekg.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/service/handler.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/src/ekg_gui_showcase_test.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/autogui/auto_gui_main.py",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/textbox/ui_textbox.hpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/src/ekg_gui_showcase_test.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/textbox/ui_textbox_widget.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/abstract/ui_abstract_widget.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/listbox/ui_listbox_widget.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/listbox/ui_listbox.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/listbox/ui_listbox.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/scroll/ui_scroll_embedded_widget.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/textbox/ui_textbox_widget.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/textbox/ui_textbox.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/util/text.cpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/text.hpp",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/ekg-ui-library.sublime-project",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/CMakeLists.txt",
+		"/C/Users/Diyng/Downloads/wordsList",
+		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/.gitignore",
 		"/C/Users/Diyng/Documents/GitHub/ak-norm/main.py",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/autogui/auto_gui_tools.py",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/LICENSE.txt",
@@ -1129,11 +1139,9 @@
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/test/build/windows/LICENSE.txt",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/util/io.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ekg.hpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/io.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/gui.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/geometry.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/util/aspect.hpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/textbox/ui_textbox_widget.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/slider/ui_slider_widget.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/slider/ui_slider.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/scroll/ui_scroll_widget.hpp",
@@ -1144,7 +1152,6 @@
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/menu/ui_menu_widget.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/menu/ui_menu.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/listbox/ui_listbox_widget.hpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/listbox/ui_listbox.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/label/ui_label_widget.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/label/ui_label.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/frame/ui_frame_widget.hpp",
@@ -1155,7 +1162,6 @@
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/checkbox/ui_checkbox.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/button/ui_button_widget.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/button/ui_button.hpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/abstract/ui_abstract_widget.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/ui/abstract/ui_abstract.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/service/theme.hpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/include/ekg/service/layout.hpp",
@@ -1178,11 +1184,8 @@
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/slider/ui_slider_widget.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/slider/ui_slider.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/scroll/ui_scroll_widget.cpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/scroll/ui_scroll_embedded_widget.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/popup/ui_popup_widget.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/popup/ui_popup.cpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/listbox/ui_listbox_widget.cpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/listbox/ui_listbox.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/label/ui_label_widget.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/label/ui_label.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/frame/ui_frame_widget.cpp",
@@ -1194,9 +1197,7 @@
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/abstract/ui_abstract_widget.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/ui/abstract/ui_abstract.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/service/theme.cpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/service/layout.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/service/input.cpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/service/handler.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/os/platform.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/gpu/gl.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/gpu/data.cpp",
@@ -1204,8 +1205,6 @@
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/draw/font.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/draw/draw.cpp",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/core/task.cpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/src/core/runtime.cpp",
-		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/ekg-ui-library.sublime-project",
 		"/C/Users/Diyng/Documents/GitHub/personal-file-stuff/filosofia de um programador/A filosofia do Programador.txt",
 		"/C/Users/Diyng/AppData/Roaming/Sublime Text/Packages/User/EKG C++.sublime-build",
 		"/C/Users/Diyng/Documents/GitHub/ekg-ui-library/.sublime-project",
@@ -1240,7 +1239,7 @@
 	],
 	"find":
 	{
-		"height": 29.0
+		"height": 60.0
 	},
 	"find_in_files":
 	{
@@ -1254,6 +1253,73 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"update_ui",
+			"set_text",
+			"set_text(",
+			"set_text",
+			"this->text",
+			"this-",
+			"get_text",
+			"this->text",
+			"this->text_offset",
+			"this->text_height =",
+			"this->text_height",
+			"widget_side_text",
+			"update_ui_text = true",
+			"update_ui_text",
+			"clear",
+			"this->text",
+			"this->p_text_chunk_list->clear",
+			"this->p_text_chunk_list",
+			"emplace_back",
+			"update_ui_text_data",
+			"get_text",
+			"this->p_text_chunk_list->clear()",
+			"this->p_text_chunk_list->clear()'",
+			"this->p_text_chunk_list->clear()",
+			"this->p_text_chunk_list->clear",
+			"this->p_text_chunk_list->clar",
+			"update_ui_text_data",
+			"get_text()",
+			"update_ui_text_data",
+			"get_text",
+			"get_text()",
+			"get_text",
+			"p_ui->get_text",
+			"p_text_chunk_list",
+			"utf_decode",
+			"utf_decoded",
+			"this->p_text_chunk_list",
+			"this->p_text_chunk_list ",
+			"this->p_text_chunk_list",
+			"this->text_chunk_list",
+			"text_chunk_list->",
+			"text_chunk_list",
+			"text_chunk_list.",
+			"text_chunk_list",
+			"ekg_textbox_get_cursor_text",
+			"flush",
+			"ekg::log::flu",
+			"textboxdebug",
+			"textbox",
+			"textboxdebug",
+			"this->widget_side_text",
+			"set_text",
+			"set_text(",
+			"set_text",
+			"widget_side_text",
+			"set_text(",
+			"update_ui_text",
+			"widget_side_text",
+			"widget_side_text\\",
+			"update_ui_text_data",
+			"set_text",
+			"this->text_chunk",
+			"this->p_data",
+			"text_chunk_list",
+			"this->text_chunk_list",
+			"gostosa",
+			"main_calc",
 			"main_cal",
 			"std::cout"
 		],
@@ -1282,7 +1348,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 29.0
+		"height": 46.0
 	},
 	"input":
 	{
@@ -1339,7 +1405,7 @@
 	"project": "ekg-ui-library.sublime-project",
 	"replace":
 	{
-		"height": 54.0
+		"height": 88.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -1349,6 +1415,10 @@
 		"selected_items":
 		[
 			[
+				"com",
+				"devlog\\commit.txt"
+			],
+			[
 				"",
 				"test\\src\\ekg_gui_showcase_test.cpp"
 			],
@@ -1357,20 +1427,100 @@
 				"test\\src\\ekg_gui_showcase_test.cpp"
 			],
 			[
-				"main",
-				"test\\autogui\\auto_gui_main.py"
+				"io",
+				"include\\ekg\\util\\io.hpp"
+			],
+			[
+				"runt",
+				"src\\core\\runtime.cpp"
 			],
 			[
 				"textbox",
-				"src\\ui\\textbox\\ui_textbox.cpp"
+				"include\\ekg\\ui\\textbox\\ui_textbox.hpp"
+			],
+			[
+				"listbox",
+				"include\\ekg\\ui\\listbox\\ui_listbox.hpp"
 			],
 			[
 				"text",
 				"include\\ekg\\ui\\textbox\\ui_textbox.hpp"
 			],
 			[
+				"scrol",
+				"src\\ui\\scroll\\ui_scroll_embedded_widget.cpp"
+			],
+			[
 				"comm",
 				"devlog\\commit.txt"
+			],
+			[
+				"layout",
+				"src\\service\\layout.cpp"
+			],
+			[
+				"textobox",
+				"include\\ekg\\ui\\textbox\\ui_textbox_widget.hpp"
+			],
+			[
+				"listbox.hpp",
+				"include\\ekg\\ui\\listbox\\ui_listbox.hpp"
+			],
+			[
+				"wid",
+				"src\\ui\\textbox\\ui_textbox_widget.cpp"
+			],
+			[
+				"run",
+				"src\\core\\runtime.cpp"
+			],
+			[
+				"textboxwid",
+				"include\\ekg\\ui\\textbox\\ui_textbox_widget.hpp"
+			],
+			[
+				"textboxwi",
+				"include\\ekg\\ui\\textbox\\ui_textbox_widget.hpp"
+			],
+			[
+				"ui_abstr",
+				"include\\ekg\\ui\\abstract\\ui_abstract_widget.hpp"
+			],
+			[
+				"texbo",
+				"include\\ekg\\ui\\textbox\\ui_textbox_widget.hpp"
+			],
+			[
+				"hand",
+				"src\\service\\handler.cpp"
+			],
+			[
+				"off",
+				"test\\src\\ekg_off_test.cpp"
+			],
+			[
+				"ekg",
+				"src\\ekg.cpp"
+			],
+			[
+				"main",
+				"test\\autogui\\auto_gui_main.py"
+			],
+			[
+				"pro",
+				"ekg-ui-library.sublime-project"
+			],
+			[
+				"cmake",
+				"CMakeLists.txt"
+			],
+			[
+				"offte",
+				"test\\src\\ekg_off_test.cpp"
+			],
+			[
+				"textbpx",
+				"include\\ekg\\ui\\textbox\\ui_textbox.hpp"
 			],
 			[
 				"tex",
@@ -1381,28 +1531,12 @@
 				"src\\util\\text.cpp"
 			],
 			[
-				"cmake",
-				"CMakeLists.txt"
-			],
-			[
-				"off",
-				"test\\src\\ekg_off_test.cpp"
-			],
-			[
 				"showcas",
 				"test\\src\\ekg_gui_showcase_test.cpp"
 			],
 			[
-				"ekg",
-				"src\\ekg.cpp"
-			],
-			[
 				"showcase",
 				"test\\src\\ekg_gui_showcase_test.cpp"
-			],
-			[
-				"com",
-				"devlog\\commit.txt"
 			],
 			[
 				"textbo",
@@ -1441,10 +1575,6 @@
 				"src\\service\\layout.cpp"
 			],
 			[
-				"run",
-				"src\\core\\runtime.cpp"
-			],
-			[
 				"font",
 				"src\\draw\\font.cpp"
 			],
@@ -1473,10 +1603,6 @@
 				".sublime-project"
 			],
 			[
-				"offte",
-				"test\\src\\ekg_off_test.cpp"
-			],
-			[
 				"ALLO",
 				"src\\gpu\\allocator.cpp"
 			],
@@ -1497,10 +1623,6 @@
 				"include\\ekg\\gpu\\allocator.hpp"
 			],
 			[
-				"runt",
-				"src\\core\\runtime.cpp"
-			],
-			[
 				"git",
 				".gitignore"
 			],
@@ -1519,10 +1641,6 @@
 			[
 				"swap",
 				"C:\\Users\\Diyng\\Documents\\GitHub\\VkPowerSampler\\solution\\win32\\src\\gpu\\gpu_swapchain.cpp"
-			],
-			[
-				"io",
-				"src\\utility\\io.rs"
 			],
 			[
 				"conte",
@@ -1574,10 +1692,6 @@
 			],
 			[
 				"list",
-				"src\\ui\\listbox\\ui_listbox_widget.cpp"
-			],
-			[
-				"listbox",
 				"src\\ui\\listbox\\ui_listbox_widget.cpp"
 			],
 			[
@@ -1697,10 +1811,6 @@
 				"C:\\Users\\Diyng\\Documents\\GitHub\\GPU-paralelismo\\demo\\src\\math\\linear_algebra.cpp"
 			],
 			[
-				"layout",
-				"src\\service\\layout.cpp"
-			],
-			[
 				"sublim",
 				"C:\\Users\\Diyng\\AppData\\Roaming\\Sublime Text\\Packages\\User\\EKG C++.sublime-build"
 			],
@@ -1731,10 +1841,6 @@
 			[
 				"listboxw",
 				"include\\ekg\\ui\\listbox\\ui_listbox_widget.hpp"
-			],
-			[
-				"scrol",
-				"src\\ui\\scroll\\ui_scroll_embedded_widget.cpp"
 			],
 			[
 				"scr",
@@ -1819,46 +1925,6 @@
 			[
 				"gpu_buffer",
 				"src\\gpu\\gpu_buffer.hpp"
-			],
-			[
-				"SWAP",
-				"src\\gpu\\gpu_swapchain.hpp"
-			],
-			[
-				"vulka",
-				"src\\gpu\\gpu_vulkan_context.cpp"
-			],
-			[
-				"mem",
-				"gpu_memory"
-			],
-			[
-				"pub",
-				"src\\gpu\\gpu_buffer.hpp"
-			],
-			[
-				"sw",
-				"src\\gpu\\gpu_swapchain.cpp"
-			],
-			[
-				"me",
-				"src\\util\\memory.cpp"
-			],
-			[
-				"gpucon",
-				"src\\gpu\\gpu_content_io.hpp"
-			],
-			[
-				"buffer",
-				"src\\gpu\\gpu_buffer.hpp"
-			],
-			[
-				"b",
-				"src\\gpu\\gpu_buffer.hpp"
-			],
-			[
-				"buf",
-				"src\\gpu\\gpu_buffer.cpp"
 			]
 		],
 		"width": 0.0
