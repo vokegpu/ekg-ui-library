@@ -419,11 +419,18 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
       layout.y = top_rect.y + top_rect.h;
 
       count = it;
-      dimensional_extent = this->get_dimensional_extent(p_widget_parent, ekg::dock::fill, ekg::dock::next, count,
-                                                        ekg::axis::horizontal);
+      dimensional_extent = this->get_dimensional_extent(
+        p_widget_parent,
+        ekg::dock::fill,
+        ekg::dock::next,
+        count,
+        ekg::axis::horizontal
+      );
+
       dimensional_extent = ekg_min(
-          ((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count),
-          p_widgets->min_size.x);
+        ((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count),
+        p_widgets->min_size.x
+      );
 
       top_rect.w += dimensional_extent + this->min_offset;
       layout.w = dimensional_extent;
@@ -434,11 +441,18 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
       layout.y = top_rect.y + top_rect.h;
 
       count = it;
-      dimensional_extent = this->get_dimensional_extent(p_widget_parent, ekg::dock::fill, ekg::dock::next, count,
-                                                        ekg::axis::horizontal);
+      dimensional_extent = this->get_dimensional_extent(
+        p_widget_parent,
+        ekg::dock::fill,
+        ekg::dock::next,
+        count,
+        ekg::axis::horizontal
+      );
+
       dimensional_extent = ekg_min(
-          ((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count),
-          p_widgets->min_size.x);
+        ((group_rect.w - dimensional_extent) - (count * this->min_offset)) / static_cast<float>(count),
+        p_widgets->min_size.x
+      );
 
       top_rect.w += dimensional_extent + this->min_offset;
       layout.w = dimensional_extent;
@@ -452,8 +466,14 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
       top_rect.w += layout.w + this->min_offset;
 
       count = it;
-      dimensional_extent = this->get_dimensional_extent(p_widget_parent, ekg::dock::fill, ekg::dock::next, count,
-                                                        ekg::axis::horizontal);
+      dimensional_extent = this->get_dimensional_extent(
+        p_widget_parent,
+        ekg::dock::fill,
+        ekg::dock::next,
+        count,
+        ekg::axis::horizontal
+      );
+
       max_previous_height = 0.0f;
     } else if (flags == ekg::dock::none) {
       layout.x = top_rect.x + top_rect.w;
@@ -461,8 +481,13 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
       top_rect.w += layout.w + this->min_offset;
 
       count = it;
-      dimensional_extent = this->get_dimensional_extent(p_widget_parent, ekg::dock::fill, ekg::dock::next, count,
-                                                        ekg::axis::horizontal);
+      dimensional_extent = this->get_dimensional_extent(
+        p_widget_parent,
+        ekg::dock::fill,
+        ekg::dock::next,
+        count,
+        ekg::axis::horizontal
+      );
     }
 
     if (ekg::bitwise::contains(flags, ekg::dock::resize)) {
