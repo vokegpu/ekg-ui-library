@@ -22,6 +22,7 @@
  * SOFTWARE.
  **/
 
+#include "ekg/util/io.hpp"
 #include "ekg/util/text.hpp"
 #include <ekg/ekg.hpp>
 
@@ -271,7 +272,7 @@ int32_t main_example() {
   ekg::scalebase = {1280, 720};
   ekg::pre_decode_clipboard = true;
 
-  ekg::log() << "oi queria ser MUIUTO gostosa\t" << ((uint64_t) 0 - (uint64_t) 0);
+  ekg::log() << "oi queria ser MUIUTO\t" << ((uint64_t) 0 - (uint64_t) 0);
 
   ekg::runtime ekg_runtime {};
   ekg::init(&ekg_runtime, sdl_win, "whitneybook.otf");
@@ -455,7 +456,7 @@ int32_t main_calculator() {
   ekg::log() << le << " utf8 size: " << ekg::utf_length(le) << " string size: " << le.size();
   ekg::log() << "EKG User interface library demo starting";
 
-  std::string something_ascii {"qrsergostosaterumbumbumlindo"};
+  std::string something_ascii {"qrseterumbumbumlindo"};
   std::string something_utf8 {"qrsergostósaterumbumbumlindo"};
   ekg::log() << '\n' << "(EKG utf8) " << ekg::utf_substr(something_utf8, 2, 40) << "\n substr vs \n(STL ascii) "
              << something_ascii.substr(2, 40);
@@ -520,8 +521,9 @@ int32_t main_calculator() {
   ekg::button("Dimiss", ekg::dock::fill);
   ekg::pop_group();
 
-  auto f1 = ekg::frame("sou gostosa", {700, 300}, {200, 200})->set_drag(ekg::dock::top)->set_resize(
-      ekg::dock::bottom | ekg::dock::left | ekg::dock::right);
+  auto f1 = ekg::frame("sou ", {700, 300}, {200, 200})->
+    set_drag(ekg::dock::top)->
+    set_resize(ekg::dock::bottom | ekg::dock::left | ekg::dock::right);
 
   ekg::button("swap locked-framerate")->set_callback(new ekg::task {"theme-switcher", nullptr, [](void *pdata) {
     framerate = framerate == 0 ? 16 : 0;
@@ -534,14 +536,18 @@ int32_t main_calculator() {
   ff->set_height(300.0f);
 
   auto ff3 = ekg::textbox("frame-debug", "oi", ekg::dock::fill | ekg::dock::next);
+
   ff3->set_scaled_height(16);
+  ff3->insert(ff3->begin(), "oiiiiiiii");
+
   ekg::checkbox("Auto-scale", true, ekg::dock::fill | ekg::dock::next)->set_tag("base.resolution.autoscale");
   ekg::label("Aspect:", ekg::dock::fill | ekg::dock::next);
   ekg::slider("base.resolution.width", 1920.0f, 800.0f, 2560.0f, ekg::dock::fill);
   ekg::slider("base.resolution.height", 1080.0f, 600.0f, 1440.0f, ekg::dock::fill);
-  ff->add_child(ekg::scroll("hello-sou-gostosa")->get_id());
+
+  ff->add_child(ekg::scroll("hello-sou")->get_id());
   f1->add_child(ff->get_id());
-  f1->add_child(ekg::scroll("hello-sou-gostosa")->get_id());
+  f1->add_child(ekg::scroll("hello-sou")->get_id());
 
   auto framedebug = ekg::frame("frame-debug", {0, 0}, {400, root_height});
   framedebug->set_resize(ekg::dock::right | ekg::dock::bottom);
@@ -595,7 +601,7 @@ int32_t main_calculator() {
           } else if (current_theme_name == "light") {
             theme.gen_default_dark_theme();
           }
-        }});
+    }});
 
     labelresult = ekg::label("0", ekg::dock::fill | ekg::dock::next);
     labelresult->set_scaled_height(4);
@@ -805,10 +811,7 @@ int32_t main_calculator() {
     // framedebug->set_size(ekg::display::width, ekg::display::height);
 
     if (ekg::log::buffered) {
-      std::string old_log {textboxdebug->get_text()};
-      if (old_log.size() > 50000) old_log = '\n';
-      old_log += ekg::log::buffer.str();
-      textboxdebug->set_text(old_log);
+      ekg::split(textboxdebug, ekg::log::buffer.str(), '\n');
     }
 
     ekg::update();
@@ -1263,9 +1266,9 @@ void trash_utf_testing() {
   std::cout << ekg::utf_substr(line_b, cursor_index, ekg::utf_length(line_b)) << std::endl;
 
   line_a = (
-      ekg::utf_substr(line_a, 0, cursor_index) +
-      "f" +
-      ekg::utf_substr(line_b, cursor_index, ekg::utf_length(line_b))
+    ekg::utf_substr(line_a, 0, cursor_index) +
+    "f" +
+    ekg::utf_substr(line_b, cursor_index, ekg::utf_length(line_b))
   );
 
   std::cout << line_a << std::endl;

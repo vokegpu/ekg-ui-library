@@ -81,6 +81,13 @@ namespace ekg {
    * Return the index of last attribute-token and insert bits.
    */
   uint8_t check_attribute_flags(std::string_view text, uint16_t &flags);
+
+  /**
+   * Return true if `string` contains `find_char`,
+   * then it must allocate and insert elements to
+   * `p_string_split_list` ptr.
+   */
+  bool split(std::vector<std::string> *p_string_split_list, const std::string &string, char find_char);
 }
 
 #endif

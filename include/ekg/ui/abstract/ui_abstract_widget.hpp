@@ -50,7 +50,6 @@ namespace ekg::ui {
     ekg::rect get_static_rect();
 
     [[nodiscard]] ekg::rect &get_abs_rect();
-
   public:
     explicit abstract_widget();
 

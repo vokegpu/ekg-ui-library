@@ -24,6 +24,7 @@
 
 #include <cstring>
 #include <stdint.h>
+#include <string>
 
 #include "ekg/util/text.hpp"
 #include "ekg/util/geometry.hpp"
@@ -261,4 +262,26 @@ uint8_t ekg::check_attribute_flags(std::string_view text, uint16_t &flags) {
   }
 
   return 0;
+}
+
+bool ekg::split(
+  std::vector<std::string> *p_string_split_list,
+  const std::string &string,
+  char find_char
+) {
+  if (p_string_split_list == nullptr) {
+    return false;
+  }
+
+  std::stringstream ss(string);
+  std::string find_string {};
+
+  bool found_flag {};
+
+  while (std::getline(ss, find_string, find_char)) {
+    p_string_split_list->push_back(find_string);
+    found_flag = true;
+  }
+
+  return found_flag;
 }

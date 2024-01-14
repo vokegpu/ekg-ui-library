@@ -24,6 +24,16 @@
 
 #include <iostream>
 #include <type_traits>
+#include <vector>
+
+namespace rtd {
+  class my_own_vector_based : public std::vector<std::string> {
+  public:
+    void update() {
+      std::cout << "omaga hello" << std::endl;
+    }
+  };
+}
 
 struct property {
 public:
@@ -32,24 +42,24 @@ public:
 
 template<typename t>
 void cout_stride(void *p_list, void *p_it_begin, void *p_it_end) {
-    size_t t_sizeof {sizeof(t)};
+  size_t t_sizeof {sizeof(t)};
 
-    size_t length {sizeof(p_list) / t_sizeof};
-    std::cout << "len: " << length << std::endl;
+  size_t length {sizeof(p_list) / t_sizeof};
+  std::cout << "len: " << length << std::endl;
 
-    size_t begin {sizeof(p_it_begin) / t_sizeof};
-    std::cout << "begin: " << begin << std::endl;
+  size_t begin {sizeof(p_it_begin) / t_sizeof};
+  std::cout << "begin: " << begin << std::endl;
 
-    size_t end {length - (sizeof(p_it_end) / t_sizeof)};
-    std::cout << "end: " << end << std::endl;
+  size_t end {length - (sizeof(p_it_end) / t_sizeof)};
+  std::cout << "end: " << end << std::endl;
 }
 
 template<typename t>
 struct kist {
 protected:
-    size_t cached_length {};
-    size_t length {};
-    t *p_data {};
+  size_t cached_length {};
+  size_t length {};
+  t *p_data {};
 protected:
     void resize() {
         this->cached_length += 64;
@@ -94,28 +104,11 @@ public:
     }
 };
 
-int32_t main() {
-    return 0;
+int32_t main(int32_t, char**) {
+  rtd::my_own_vector_based text_box {};
 
-    std::pair<const char*, uint16_t> pepe {"oii", 888};
-    kist<float> list_of_life {};
+  text_box.update();
+  text_box.insert(text_box.begin(), "hello");
 
-    list_of_life.emplace_back() = 4.0f;
-    list_of_life.emplace_back() = 8.0f;
-    list_of_life.emplace_back() = 16.0f;
-    list_of_life.emplace_back() = 32.0f;
-
-    std::cout << ".." << std::endl;
-    std::cout << list_of_life.size() << std::endl;
-    std::cout << *list_of_life.end() << std::endl;
-
-    for (float &fs : list_of_life) {
-    std::cout << "fff333s: " << fs << std::endl;
-    }
-
-    float val = 20.0f;
-    float min = std::min(val, 2.0f);
-    std::cout << "OIOIOIOIOIOIOIOIOIOIOI " << std::endl;
-
-    return 0;
+  return 0;
 }

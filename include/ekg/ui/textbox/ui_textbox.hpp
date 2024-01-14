@@ -28,7 +28,7 @@
 #include "ekg/ui/abstract/ui_abstract.hpp"
 
 namespace ekg::ui {
-  class textbox : public ekg::ui::abstract {
+  class textbox : public ekg::ui::abstract, public std::vector<std::string>  {
   protected:
     std::string text {};
     ekg::font font_size {};
@@ -44,7 +44,6 @@ namespace ekg::ui {
      * and UI interface.
      */
     void unsafe_set_text(std::string &ref_text);
-
   public:
     ekg::ui::textbox *set_enabled(bool enabled);
 
@@ -81,8 +80,6 @@ namespace ekg::ui {
     ekg::ui::textbox *set_max_lines(uint64_t lines);
 
     uint64_t get_max_lines();
-
-    ekg::ui::textbox *clear();
   };
 }
 

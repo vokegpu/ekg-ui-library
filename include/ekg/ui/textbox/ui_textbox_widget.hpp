@@ -29,9 +29,20 @@
 #include "ekg/ui/scroll/ui_scroll_embedded_widget.hpp"
 #include <unordered_map>
 
-#define ekg_textbox_clamp_text_chunk_size(text_chunk_list, max_size) if (text_chunk_list.size() > max_size) text_chunk_list.erase(text_chunk_list.begin() + max_size, text_chunk_list.end())
-#define ekg_textbox_clamp_line(line, max_size) if (line.size() > max_size) line.erase(line.begin() + max_size, line.end())
-#define ekg_textbox_get_cursor_text(cursor) this->text_chunk_list.at(cursor.chunk_index)
+/* start of `ekg_textbox_clamp_text_chunk_size` macro */
+#define ekg_textbox_clamp_text_chunk_size(text_chunk_list, max_size) \
+  if (this->p_text_chunk_list->size() > max_size) this->p_text_chunk_list->erase(this->p_text_chunk_list->begin() + max_size, this->p_text_chunk_list->end())
+/* end of `ekg_textbox_clamp_text_chunk_size` macro */
+
+/* start of `ekg_textbox_clamp_text_chunk_size` macro */
+#define ekg_textbox_clamp_line(line, max_size) \
+  if (line.size() > max_size) line.erase(line.begin() + max_size, line.end())
+/* end of `ekg_textbox_clamp_line` macro */
+
+/* start of `ekg_textbox_get_cursor_text` macro */
+#define ekg_textbox_get_cursor_text(cursor) \
+  this->p_text_chunk_list->at(cursor.chunk_index)
+/* end of `ekg_textbox_clamp_line` macro */
 
 namespace ekg::ui {
   class textbox_widget : public ekg::ui::abstract_widget {
@@ -89,9 +100,10 @@ namespace ekg::ui {
       ekg::ui::textbox_widget::cursor_pos pos[4] {};
     };
   public:
-    std::vector<std::string> text_chunk_list {};
+    std::vector<std::string> *p_text_chunk_list {};
     std::vector<ekg::rect> cursor_draw_data_list {};
     std::vector<uint64_t> text_utf_char_index_list {};
+    uint64_t last_text_chunk_size {};
 
     std::string widget_side_text {};
     std::vector<ekg::ui::textbox_widget::cursor> loaded_multi_cursor_list {
@@ -145,6 +157,8 @@ namespace ekg::ui {
     void clamp_text_chunk_size();
 
   public:
+    void on_create() override;
+
     void on_reload() override;
 
     void on_pre_event(SDL_Event &sdl_event) override;

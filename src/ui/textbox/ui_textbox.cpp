@@ -67,7 +67,8 @@ ekg::ui::textbox *ekg::ui::textbox::set_text(std::string_view string) {
 
 std::string ekg::ui::textbox::get_text() {
   ekg::ui::textbox_widget *p_widget {
-      static_cast<ekg::ui::textbox_widget *>(ekg::core->get_fast_widget_by_id(this->id))};
+    static_cast<ekg::ui::textbox_widget *>(ekg::core->get_fast_widget_by_id(this->id))
+  };
 
   // It prevent useless iteration from text.
   if (p_widget != nullptr && p_widget->text_edited) {
@@ -152,13 +153,4 @@ ekg::ui::textbox *ekg::ui::textbox::set_max_chars_per_line(uint64_t chars_per_li
 
 uint64_t ekg::ui::textbox::get_max_chars_per_line() {
   return this->max_chars_per_line;
-}
-
-ekg::ui::textbox *ekg::ui::textbox::clear() {
-  if (!this->text.empty()) {
-    this->text.clear();
-    ekg::reload(this->id);
-  }
-
-  return this;
 }
