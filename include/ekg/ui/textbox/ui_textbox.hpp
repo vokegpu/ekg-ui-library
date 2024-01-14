@@ -30,21 +30,27 @@
 namespace ekg::ui {
   class textbox : public ekg::ui::abstract, public std::vector<std::string>  {
   protected:
-    std::string text {};
     ekg::font font_size {};
+    std::string formatted_text {};
     bool enabled {true};
+    bool must_format_text {};
     uint8_t tab_size {4};
 
     uint64_t max_lines {UINT32_MAX};
     uint64_t max_chars_per_line {UINT32_MAX};
   public:
     /**
-     * As the name says, unsafe
-     * due the desynchronization between widget
-     * and UI interface.
+     * Set UI `must_format_text` value.
+     * If true `ekg::ui::listbox::get_text` return formatted,
+     * else false return the latest text formatted.
      */
-    void unsafe_set_text(std::string &ref_text);
-  public:
+    void set_must_format_text(bool state);
+
+    /**
+     * Return UI `must_format_text` value.
+     */
+    bool is_must_format_text();
+
     ekg::ui::textbox *set_enabled(bool enabled);
 
     bool is_enabled();
@@ -65,8 +71,11 @@ namespace ekg::ui {
 
     float get_height();
 
-    ekg::ui::textbox *set_text(std::string_view text);
-
+    /**
+     * Return formatted text from text box content.
+     * if `must_format_text` is true, then re-format the text,
+     * and automatically set `must_format_text` to false.
+     */
     std::string get_text();
 
     ekg::ui::textbox *set_tab_size(uint8_t size);

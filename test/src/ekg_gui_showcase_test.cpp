@@ -310,7 +310,6 @@ int32_t main_example() {
   ekg::slider("pompo number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
 
   auto p_textbox = ekg::textbox("Le textbox", "", ekg::dock::next | ekg::dock::fill)->set_scaled_height(1);
-  p_textbox->set_text("oii");
 
   /*
   auto p_listbox = ekg::listbox("listbox", {"listbox"}, ekg::dock::fill | ekg::dock::next)->set_scaled_height(12);
@@ -382,9 +381,6 @@ int32_t main_example() {
   ekg::pop_group();
 
   create_exit_button();
-
-  std::string oi_cachorroo = "oi cachorror";
-  p_textbox->set_text(oi_cachorroo);
 
   ekg::event event {};
   ekg::theme().gen_default_dark_theme();

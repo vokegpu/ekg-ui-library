@@ -146,13 +146,13 @@ namespace ekg {
       if (ekg::log::buffered) {
         std::string p_log {ekg::log::buffer.str()};
 
-#if defined(__ANDROID__)
+        #if defined(__ANDROID__)
         __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", p_log.c_str());
-#else
+        #else
         std::cout << p_log;
-#endif
+        #endif
 
-        ekg::log::buffer.clear();
+        ekg::log::buffer = std::ostringstream {};
         ekg::log::buffered = false;
       }
     }

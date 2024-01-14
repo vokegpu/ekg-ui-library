@@ -25,10 +25,6 @@
 #include "ekg/ekg.hpp"
 #include "ekg/ui/textbox/ui_textbox_widget.hpp"
 
-void ekg::ui::textbox::unsafe_set_text(std::string &ref_text) {
-  this->text = ref_text;
-}
-
 ekg::ui::textbox *ekg::ui::textbox::set_tab_size(uint8_t size) {
   this->tab_size = size < 1 ? 1 : size;
   return this;
@@ -56,27 +52,19 @@ ekg::ui::textbox *ekg::ui::textbox::set_place(uint16_t flags) {
   return this;
 }
 
-ekg::ui::textbox *ekg::ui::textbox::set_text(std::string_view string) {
-  if (this->text != string) {
-    this->text = string;
-    ekg::reload(this->id);
-  }
-
-  return this;
-}
-
 std::string ekg::ui::textbox::get_text() {
-  ekg::ui::textbox_widget *p_widget {
-    static_cast<ekg::ui::textbox_widget *>(ekg::core->get_fast_widget_by_id(this->id))
-  };
-
   // It prevent useless iteration from text.
-  if (p_widget != nullptr && p_widget->text_edited) {
-    p_widget->update_ui_text_data();
-    p_widget->text_edited = true;
+  if (this->must_format_text) {
+    uint64_t text_chunk_size {this->size()};
+    for (uint64_t it {}; it < this->size(); it++) {
+      this->formatted_text += this->at(it);
+      this->formatted_text += '\n' && (it + 1 == text_chunk_size);
+    }
+
+    this->must_format_text = false;
   }
 
-  return this->text;
+  return this->formatted_text;
 }
 
 ekg::ui::textbox *ekg::ui::textbox::set_width(float w) {
