@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+#include <algorithm>
 #include <chrono>
 
 #include "ekg/core/runtime.hpp"
@@ -39,6 +40,7 @@
 #include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/os/ekg_opengl.hpp"
+#include "ekg/util/gui.hpp"
 
 ekg::stack ekg::swap::collect {};
 ekg::stack ekg::swap::back {};
@@ -46,13 +48,6 @@ ekg::stack ekg::swap::front {};
 
 std::vector<ekg::ui::abstract_widget *> ekg::swap::buffer {};
 std::vector<uint64_t> ekg::swap::tooktimeanalyzingtelemtry {};
-
-void ekg::swap::refresh() {
-  ekg::swap::collect.clear();
-  ekg::swap::back.clear();
-  ekg::swap::front.clear();
-  ekg::swap::buffer.clear();
-}
 
 void ekg::runtime::update_size_changed() {
   ekg::dispatch(ekg::env::redraw);
@@ -306,35 +301,40 @@ void ekg::runtime::prepare_tasks() {
           return;
         }
 
+        ekg::swap::collect.target_id = runtime->swap_widget_id_focused;
+
         auto &all {runtime->widget_list_map["all"]};
         for (ekg::ui::abstract_widget *&p_widgets: all) {
-          if (p_widgets == nullptr || ekg::swap::collect.registry[p_widgets->p_data->get_id()] ||
-              ekg::swap::front.registry[p_widgets->p_data->get_id()]) {
+          if (p_widgets == nullptr || p_widgets->p_data->has_parent()) {
             continue;
           }
 
           ekg::swap::collect.clear();
           ekg::push_back_stack(p_widgets, ekg::swap::collect);
 
-          if (ekg::swap::collect.registry[runtime->swap_widget_id_focused]) {
-            ekg::swap::front.registry.insert(ekg::swap::collect.registry.begin(), ekg::swap::collect.registry.end());
-            ekg::swap::front.ordered_list.insert(ekg::swap::front.ordered_list.end(),
-                                                 ekg::swap::collect.ordered_list.begin(),
-                                                 ekg::swap::collect.ordered_list.end());
+          if (ekg::swap::collect.target_id_found) {
+            ekg::swap::front.ordered_list.insert(
+              ekg::swap::front.ordered_list.end(),
+              ekg::swap::collect.ordered_list.begin(),
+              ekg::swap::collect.ordered_list.end()
+            );
           } else {
-            ekg::swap::back.registry.insert(ekg::swap::collect.registry.begin(), ekg::swap::collect.registry.end());
-            ekg::swap::back.ordered_list.insert(ekg::swap::back.ordered_list.end(),
-                                                ekg::swap::collect.ordered_list.begin(),
-                                                ekg::swap::collect.ordered_list.end());
+            ekg::swap::back.ordered_list.insert(
+              ekg::swap::back.ordered_list.end(),
+              ekg::swap::collect.ordered_list.begin(),
+              ekg::swap::collect.ordered_list.end()
+            );
           }
         }
 
         runtime->swap_widget_id_focused = 0;
 
-        all.clear();
-        all.insert(all.end(), ekg::swap::back.ordered_list.begin(), ekg::swap::back.ordered_list.end());
-        all.insert(all.end(), ekg::swap::front.ordered_list.begin(), ekg::swap::front.ordered_list.end());
-        ekg::swap::refresh();
+        std::copy(ekg::swap::back.ordered_list.begin(), ekg::swap::back.ordered_list.end(), all.begin());
+        std::copy(ekg::swap::front.ordered_list.begin(), ekg::swap::front.ordered_list.end(), all.begin() + ekg::swap::back.ordered_list.size());
+
+        ekg::swap::front.clear();
+        ekg::swap::back.clear();
+        ekg::swap::collect.clear();
       }
   };
 

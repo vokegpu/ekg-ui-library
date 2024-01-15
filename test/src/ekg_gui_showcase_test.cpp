@@ -560,7 +560,7 @@ int32_t main_calculator() {
   std::string previous_operator {};
   ekg::ui::frame *frame2 {};
 
-  for (int32_t it {}; it < 1; it++) {
+  for (int32_t it {}; it < 1200; it++) {
     auto frame1 = ekg::frame("cat", {400, 400}, ekg::dock::none);
     frame1->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left);
 

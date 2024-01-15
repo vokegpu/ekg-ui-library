@@ -23,6 +23,7 @@
  */
 
 #include "ekg/ekg.hpp"
+#include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
 ekg::rect ekg::empty {};
 int32_t   ekg::hovered::id {};
@@ -49,27 +50,30 @@ void ekg::synclayout(ekg::ui::abstract_widget *p_widget) {
 }
 
 void ekg::push_back_stack(ekg::ui::abstract_widget *p_widget, ekg::stack &stack) {
-  if (p_widget == nullptr || stack.registry[p_widget->p_data->get_id()]) {
+  if (p_widget == nullptr) {
     return;
   }
 
-  stack.registry[p_widget->p_data->get_id()] = true;
+  if (stack.target_id == p_widget->p_data->get_id()) {
+    stack.target_id_found = true;
+  }
+
   stack.ordered_list.push_back(p_widget);
 
   for (int32_t &ids: p_widget->p_data->get_child_id_list()) {
-    auto widgets {ekg::core->get_fast_widget_by_id(ids)};
+    auto *p_widgets {ekg::core->get_fast_widget_by_id(ids)};
 
-    if (widgets == nullptr) {
+    if (p_widgets == nullptr) {
       continue;
     }
 
-    ekg::push_back_stack(widgets, stack);
+    ekg::push_back_stack(p_widgets, stack);
   }
 }
 
 void ekg::stack::clear() {
   this->ordered_list.clear();
-  this->registry.clear();
+  this->target_id_found = false;
 }
 
 ekg::ui::abstract_widget *ekg::find_absolute_parent_master(ekg::ui::abstract_widget *p_widget) {

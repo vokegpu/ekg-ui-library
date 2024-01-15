@@ -26,6 +26,7 @@
 #define EKG_UTIL_EVENT_H
 
 #include <map>
+#include <stdint.h>
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include "ekg/core/task.hpp"
@@ -53,9 +54,11 @@ namespace ekg {
   };
 
   struct stack {
-    std::map<int32_t, bool> registry {};
-    std::vector<ekg::ui::abstract_widget *> ordered_list {};
-
+  public:
+    std::vector<ekg::ui::abstract_widget*> ordered_list {};
+    int32_t target_id {};
+    bool target_id_found {};
+  public:
     void clear();
   };
 
