@@ -134,7 +134,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
      * Text input like textbox and keyboard events should not update stack, instead just mouse events.
      */
     hovered = !(sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_KEYUP || sdl_event.type == SDL_TEXTINPUT)
-              && p_widgets->flag.hovered && p_widgets->p_data->get_state() == ekg::state::visible;
+              && p_widgets->flag.hovered && p_widgets->p_data->is_visible() && p_widgets->p_data->get_state() != ekg::state::disabled;
     if (hovered) {
       this->widget_id_focused = p_widgets->p_data->get_id();
 
@@ -248,7 +248,7 @@ void ekg::runtime::process_render() {
 
     for (ekg::ui::abstract_widget *&p_widgets: all) {
       if (p_widgets != nullptr && p_widgets->p_data->is_alive() &&
-          p_widgets->p_data->get_state() == ekg::state::visible) {
+          p_widgets->p_data->is_visible()) {
         p_widgets->on_draw_refresh();
       }
     }
@@ -483,7 +483,7 @@ void ekg::runtime::prepare_tasks() {
             high_frequency.push_back(p_widgets);
           }
 
-          if (p_widgets->p_data->get_state() == ekg::state::visible) {
+          if (p_widgets->p_data->is_visible()) {
             redraw.push_back(p_widgets);
           }
 
@@ -596,7 +596,7 @@ void ekg::runtime::prepare_ui_env() {
 }
 
 void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
-  p_ui->set_id(++this->token_id);
+  p_ui->unsafe_set_id(++this->token_id);
 
   this->swap_widget_id_focused = p_ui->get_id();
   ekg::ui::abstract_widget *p_widget_created {};

@@ -75,8 +75,8 @@ void ekg::ui::popup_widget::unset_visible_all_sub_popup() {
   auto &item {p_ui->get_item_list().at(this->popup_opened)};
   auto p_popup {(ekg::ui::popup_widget *) ekg::core->get_fast_widget_by_id(item.linked_id)};
 
-  if (p_popup->p_data->get_state() == ekg::state::visible) {
-    p_popup->p_data->set_state(ekg::state::invisible);
+  if (p_popup->p_data->is_visible()) {
+    p_popup->p_data->set_visible(false);
     ekg::reload(item.linked_id);
     ekg::dispatch(ekg::env::redraw);
   }
@@ -145,10 +145,10 @@ void ekg::ui::popup_widget::on_reload() {
 
   /* Reset scissor height if current state is invisible. */
   auto *gpu_scissor {ekg::core->gpu_allocator.get_scissor_by_id(p_ui->get_id())};
-  if (p_ui->get_state() == ekg::state::invisible && gpu_scissor != nullptr) {
+  if (!p_ui->is_visible()  && gpu_scissor != nullptr) {
     gpu_scissor->rect[3] = this->scissor_opened_height = 0;
     this->is_high_frequency = false;
-  } else if (p_ui->get_state() == ekg::state::visible && !this->is_high_frequency) {
+  } else if (p_ui->is_visible() && !this->is_high_frequency) {
     ekg::update_high_frequency(this);
     this->elapsed_animation_ticks = SDL_GetTicks64();
   }
@@ -180,7 +180,7 @@ void ekg::ui::popup_widget::on_reload() {
 }
 
 void ekg::ui::popup_widget::on_pre_event(SDL_Event &sdl_event) {
-  if (this->p_data->get_state() == ekg::state::invisible) {
+  if (!this->p_data->is_visible()) {
     return;
   }
 
@@ -188,7 +188,7 @@ void ekg::ui::popup_widget::on_pre_event(SDL_Event &sdl_event) {
 }
 
 void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
-  if (this->p_data->get_state() == ekg::state::invisible) {
+  if (!this->p_data->is_visible()) {
     return;
   }
 
@@ -233,7 +233,7 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
         case -1:
           if (this->popup_opened == it && item.linked_id != 0 &&
               (p_popup = (ekg::ui::popup_widget *) ekg::core->get_fast_widget_by_id(item.linked_id)) != nullptr) {
-            p_popup->p_data->set_state(ekg::state::invisible);
+            p_popup->p_data->set_visible(false);
             p_popup->top_level_popup = this->top_level_popup;
 
             p_popup->parent_id_popup_opened = false;
@@ -249,7 +249,7 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
           /* When the popup is linked with another some other popup widget, this should showcase the popup linked. */
           if (this->popup_opened != hover && item.linked_id != 0 &&
               (p_popup = (ekg::ui::popup_widget *) ekg::core->get_fast_widget_by_id(item.linked_id)) != nullptr) {
-            p_popup->p_data->set_state(ekg::state::visible);
+            p_popup->p_data->set_visible(true);
             p_popup->top_level_popup = this->top_level_popup;
 
             auto &popup_rect {p_popup->dimension};
@@ -281,7 +281,7 @@ void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
             if (popup_opened_item.linked_id != 0 &&
                 (p_popup = (ekg::ui::popup_widget *) ekg::core->get_fast_widget_by_id(popup_opened_item.linked_id)) !=
                 nullptr) {
-              p_popup->p_data->set_state(ekg::state::invisible);
+              p_popup->p_data->set_visible(false);
               p_popup->top_level_popup = this->top_level_popup;
 
               p_popup->parent_id_popup_opened = false;

@@ -76,7 +76,7 @@ ekg::ui::abstract *ekg::ui::abstract::remove_child(int32_t id) {
   return this;
 }
 
-ekg::ui::abstract *ekg::ui::abstract::set_id(int32_t id) {
+ekg::ui::abstract *ekg::ui::abstract::unsafe_set_id(int32_t id) {
   this->id = id;
   return this;
 }
@@ -103,13 +103,24 @@ bool ekg::ui::abstract::is_alive() {
   return this->alive;
 }
 
+ekg::ui::abstract *ekg::ui::abstract::set_visible(bool state) {
+  this->visible = state;
+  return this;
+}
+
+bool ekg::ui::abstract::is_visible() {
+  return this->visible;
+}
+
 void ekg::ui::abstract::destroy() {
   this->set_alive(false);
   ekg::refresh(this->id);
 
   for (int32_t &ids: this->child_id_list) {
     ekg::ui::abstract_widget *p_widget {ekg::core->get_fast_widget_by_id(ids)};
-    if (p_widget != nullptr && p_widget->p_data != nullptr) p_widget->p_data->destroy();
+    if (p_widget != nullptr && p_widget->p_data != nullptr) {
+      p_widget->p_data->destroy();
+    }
   }
 }
 

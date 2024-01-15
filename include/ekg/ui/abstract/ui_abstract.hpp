@@ -76,6 +76,8 @@ namespace ekg {
       std::vector<int32_t> child_id_list {};
 
       bool alive {true};
+      bool visible {true};
+
       uint16_t dock_flags {};
       uint16_t sync_flags {};
       std::string tag {};
@@ -90,23 +92,49 @@ namespace ekg {
     public:
       ekg::ui::abstract *unsafe_set_scaled_height_layout(int32_t scaled_size);
 
+      /**
+       * Set the element ID, which is unsafe due to collisions between others IDs.
+       */
+      ekg::ui::abstract *unsafe_set_id(int32_t id);
     public:
+      /**
+       * The abstract constructor.
+       */
       abstract();
 
+      /**
+       * The abstract desconstructor.
+       */
       ~abstract();
 
+      /**
+       * Set general-purpose use tag.
+       */
       ekg::ui::abstract *set_tag(std::string_view tag);
 
+      /**
+       * Returns the general-purpose use tag.
+       */
       std::string_view get_tag();
 
+      /**
+       * Add an UI element as child.
+       */
       ekg::ui::abstract *add_child(int32_t id);
 
+      /**
+       * Returns the list of child elements, containing all UI element IDs.
+       */
       std::vector<int32_t> &get_child_id_list();
 
+      /**
+       * Remove an element from child list.
+       */
       ekg::ui::abstract *remove_child(int32_t id);
 
-      ekg::ui::abstract *set_id(int32_t id);
-
+      /**
+       * Returns the element ID.
+       */
       int32_t get_id();
 
       ekg::ui::abstract *set_parent_id(int32_t parent_id);
@@ -116,6 +144,10 @@ namespace ekg {
       ekg::ui::abstract *set_alive(bool state);
 
       bool is_alive();
+
+      ekg::ui::abstract *set_visible(bool state);
+
+      bool is_visible();
 
       void destroy();
 

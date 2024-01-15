@@ -74,7 +74,7 @@ ekg::ui::popup *ekg::ui::popup::link(std::string_view item_name, ekg::ui::popup 
   item.linked_id = 0;
 
   if (popup_linked) {
-    popup_linked->set_state(ekg::state::invisible);
+    popup_linked->set_visible(false);
     item.linked_id = popup_linked->get_id();
     this->add_child(item.linked_id);
   }

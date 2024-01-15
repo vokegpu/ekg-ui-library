@@ -27,7 +27,8 @@
 
 namespace ekg {
   enum class state {
-    visible, invisible
+    enabled,
+    disabled
   };
 
   enum class font {

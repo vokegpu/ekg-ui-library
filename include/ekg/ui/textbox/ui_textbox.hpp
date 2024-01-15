@@ -41,16 +41,19 @@ namespace ekg::ui {
   public:
     /**
      * Set UI `must_format_text` value.
-     * If true `ekg::ui::listbox::get_text` return formatted,
-     * else false return the latest text formatted.
+     * If true `ekg::ui::listbox::get_text` re-format the content,
+     * else false content is not re-format.
      */
-    void set_must_format_text(bool state);
+    ekg::ui::textbox *set_must_format_text(bool state);
 
     /**
      * Return UI `must_format_text` value.
      */
     bool is_must_format_text();
 
+    /**
+     * Set UI state.
+     */
     ekg::ui::textbox *set_enabled(bool enabled);
 
     bool is_enabled();
