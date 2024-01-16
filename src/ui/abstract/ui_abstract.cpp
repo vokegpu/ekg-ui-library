@@ -114,8 +114,11 @@ bool ekg::ui::abstract::is_visible() {
 
 void ekg::ui::abstract::destroy() {
   this->set_alive(false);
+  this->unsafe_destroy_childs();
   ekg::refresh(this->id);
+}
 
+void ekg::ui::abstract::unsafe_destroy_childs() {
   for (int32_t &ids: this->child_id_list) {
     ekg::ui::abstract_widget *p_widget {ekg::core->get_fast_widget_by_id(ids)};
     if (p_widget != nullptr && p_widget->p_data != nullptr) {

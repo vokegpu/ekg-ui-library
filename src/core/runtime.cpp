@@ -329,8 +329,17 @@ void ekg::runtime::prepare_tasks() {
 
         runtime->swap_widget_id_focused = 0;
 
-        std::copy(ekg::swap::back.ordered_list.begin(), ekg::swap::back.ordered_list.end(), all.begin());
-        std::copy(ekg::swap::front.ordered_list.begin(), ekg::swap::front.ordered_list.end(), all.begin() + ekg::swap::back.ordered_list.size());
+        std::copy(
+          ekg::swap::back.ordered_list.begin(),
+          ekg::swap::back.ordered_list.end(),
+          all.begin()
+        );
+        
+        std::copy(
+          ekg::swap::front.ordered_list.begin(),
+          ekg::swap::front.ordered_list.end(),
+          all.begin() + ekg::swap::back.ordered_list.size()
+        );
 
         ekg::swap::front.clear();
         ekg::swap::back.clear();
@@ -460,7 +469,9 @@ void ekg::runtime::prepare_tasks() {
 
         redraw.clear();
         high_frequency.clear();
-        std::vector<ekg::ui::abstract_widget *> new_list {};
+
+        std::vector<ekg::ui::abstract_widget*> new_list {};
+        int32_t element_id {};
 
         for (ekg::ui::abstract_widget *&p_widgets: all) {
           if (p_widgets == nullptr || p_widgets->p_data == nullptr) {
@@ -468,9 +479,12 @@ void ekg::runtime::prepare_tasks() {
           }
 
           if (!p_widgets->p_data->is_alive()) {
-            ekg::hovered::id = ekg::hovered::id == p_widgets->p_data->get_id() ? 0 : ekg::hovered::id;
-            ekg::hovered::up = ekg::hovered::up == p_widgets->p_data->get_id() ? 0 : ekg::hovered::up;
-            ekg::hovered::down = ekg::hovered::down == p_widgets->p_data->get_id() ? 0 : ekg::hovered::down;
+            element_id = p_widgets->p_data->get_id();
+
+            ekg::hovered::id *= ekg::hovered::id == element_id;
+            ekg::hovered::up *= ekg::hovered::up == element_id;
+            ekg::hovered::down *= ekg::hovered::down == element_id;
+
             allocator.erase_scissor_by_id(p_widgets->p_data->get_id());
 
             delete p_widgets->p_data;

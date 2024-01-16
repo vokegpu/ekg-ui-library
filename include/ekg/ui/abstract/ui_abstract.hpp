@@ -93,9 +93,16 @@ namespace ekg {
       ekg::ui::abstract *unsafe_set_scaled_height_layout(int32_t scaled_size);
 
       /**
-       * Set the element ID, which is unsafe due to collisions between others IDs.
+       * Set the element ID, which is unsafe due
+       * to collisions between others IDs.
        */
       ekg::ui::abstract *unsafe_set_id(int32_t id);
+
+      /**
+       * Destroy the element childs,
+       * which is unsafe due the performance overhead. 
+       */
+      void unsafe_destroy_childs();
     public:
       /**
        * The abstract constructor.
@@ -137,22 +144,54 @@ namespace ekg {
        */
       int32_t get_id();
 
+      /**
+       * Set parent element ID.
+       */
       ekg::ui::abstract *set_parent_id(int32_t parent_id);
 
+      /**
+       * Returns the parent element ID.
+       */
       int32_t get_parent_id();
 
+      /**
+       * Set current alive state,
+       * but the element is destroyed when
+       * GC task runs.
+       */
       ekg::ui::abstract *set_alive(bool state);
 
+      /**
+       * Returns current element alive state.
+       */
       bool is_alive();
 
+      /**
+       * Set the visibility of element.
+       */
       ekg::ui::abstract *set_visible(bool state);
 
+      /**
+       * Returns element visible state.
+       */
       bool is_visible();
 
+      /**
+       * Destroy the element.
+       */
       void destroy();
 
+      /**
+       * Set the current element state,
+       * possible states:
+       * `ekg::state::enabled` element is interactive by IO inputs.
+       * `ekg::state::disabled` element is not interactive by IO inputs.
+       */
       ekg::ui::abstract *set_state(const ekg::state &_state);
 
+      /**
+       * Returns the current element state.
+       */
       ekg::state get_state();
 
       ekg::ui::abstract *set_level(const ekg::level &_level);
