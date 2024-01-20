@@ -151,7 +151,7 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
  * works okay, but I will write a fast select rect batching.
  */
 void ekg::ui::textbox_widget::update_ui_text_data() {
-  auto p_ui {(ekg::ui::textbox *) this->p_data};
+  auto *p_ui {(ekg::ui::textbox *) this->p_data};
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
   auto &rect {this->get_abs_rect()};
 
@@ -168,20 +168,12 @@ void ekg::ui::textbox_widget::update_ui_text_data() {
   this->is_ui_enabled = p_ui->is_enabled();
 
   for (int64_t chunk_index {}; chunk_index < text_chunk_size; chunk_index++) {
-    std::string &text {this->p_text_chunk_list->at(chunk_index)};
-
-    //formated_text += text;
-    //formated_text += chunk_index + 1 == text_chunk_size ? 0 : '\n';
-
-    this->rect_text.w = ekg_min(this->rect_text.w, f_renderer.get_text_width(text));
+    this->rect_text.w = ekg_min(this->rect_text.w, f_renderer.get_text_width(this->p_text_chunk_list->at(chunk_index)));
   }
 
   this->embedded_scroll.acceleration.y = (this->text_height * 3.0f) + (this->text_offset * 2.0f);
-
-  //p_ui->unsafe_set_text(formated_text);
-  //this->widget_side_text = formated_text;
-
   this->rect_text.w += this->text_offset * 2.0f;
+  p_ui->set_must_format_text(true);
 }
 
 void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &cursor, int64_t x, int64_t y) {
@@ -1172,14 +1164,48 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         coordinates.w = vertices.w / f_renderer.full_width;
         coordinates.h = vertices.h / f_renderer.full_height;
 
-        allocator.push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
-        allocator.push_back_geometry(vertices.x, vertices.y + vertices.h, coordinates.x, coordinates.y + coordinates.h);
-        allocator.push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h, coordinates.x + coordinates.w,
-                                     coordinates.y + coordinates.h);
-        allocator.push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h, coordinates.x + coordinates.w,
-                                     coordinates.y + coordinates.h);
-        allocator.push_back_geometry(vertices.x + vertices.w, vertices.y, coordinates.x + coordinates.w, coordinates.y);
-        allocator.push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
+        allocator.push_back_geometry(
+          vertices.x,
+          vertices.y,
+          coordinates.x,
+          coordinates.y
+        );
+        
+        allocator.push_back_geometry(
+          vertices.x,
+          vertices.y + vertices.h,
+          coordinates.x,
+          coordinates.y + coordinates.h
+        );
+
+        allocator.push_back_geometry(
+          vertices.x + vertices.w,
+          vertices.y + vertices.h,
+          coordinates.x + coordinates.w,
+          coordinates.y + coordinates.h
+        );
+
+        allocator.push_back_geometry(
+          vertices.x + vertices.w,
+          vertices.y + vertices.h,
+          coordinates.x + coordinates.w,
+          coordinates.y + coordinates.h
+        );
+
+        allocator.push_back_geometry(
+          vertices.x + vertices.w,
+          vertices.y,
+          coordinates.x + coordinates.w,
+          coordinates.y
+        );
+        
+        allocator.push_back_geometry(
+          vertices.x,
+          vertices.y,
+          coordinates.x,
+          coordinates.y
+        );
+
         data.factor += static_cast<int32_t>(x) + static_cast<int32_t>(char32);
       }
 

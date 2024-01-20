@@ -59,9 +59,16 @@ namespace ekg {
   private:
     /* Widget env lists and maps for tasks. */
 
-    std::unordered_map<std::string, std::vector<ekg::ui::abstract_widget *>> widget_list_map {};
-    std::unordered_map<int32_t, ekg::ui::abstract_widget *> widget_map {};
+    std::unordered_map<int32_t, ekg::ui::abstract_widget*> widget_map {};
     std::unordered_map<int32_t, bool> processed_widget_map {};
+
+    std::vector<ekg::ui::abstract_widget*> loaded_widget_list  {};
+    std::vector<ekg::ui::abstract_widget*> refresh_widget_list  {};
+    std::vector<ekg::ui::abstract_widget*> reload_widget_list  {};
+    std::vector<ekg::ui::abstract_widget*> synclayout_widget_list  {};
+    std::vector<ekg::ui::abstract_widget*> redraw_widget_list  {};
+    std::vector<ekg::ui::abstract_widget*> scissor_widget_list  {};
+    std::vector<ekg::ui::abstract_widget*> update_widget_list {};
 
     /* Core services and instances. */
 

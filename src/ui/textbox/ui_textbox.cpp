@@ -23,10 +23,20 @@
  */
 
 #include "ekg/ekg.hpp"
+#include "ekg/ui/textbox/ui_textbox.hpp"
 #include "ekg/ui/textbox/ui_textbox_widget.hpp"
 
+ekg::ui::textbox *ekg::ui::textbox::set_must_format_text(bool state) {
+  this->must_format_text = state;
+  return this;
+}
+
+bool ekg::ui::textbox::is_must_format_text() {
+  return this->must_format_text;
+}
+
 ekg::ui::textbox *ekg::ui::textbox::set_tab_size(uint8_t size) {
-  this->tab_size = size < 1 ? 1 : size;
+  this->tab_size = ekg_min(size, 1);
   return this;
 }
 
@@ -53,7 +63,6 @@ ekg::ui::textbox *ekg::ui::textbox::set_place(uint16_t flags) {
 }
 
 std::string ekg::ui::textbox::get_text() {
-  // It prevent useless iteration from text.
   if (this->must_format_text) {
     uint64_t text_chunk_size {this->size()};
     for (uint64_t it {}; it < this->size(); it++) {

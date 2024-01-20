@@ -67,7 +67,7 @@ void ekg::runtime::update_size_changed() {
     this->f_renderer_big.reload();
   }
 
-  for (ekg::ui::abstract_widget *&p_widgets: this->widget_list_map["all"]) {
+  for (ekg::ui::abstract_widget *&p_widgets: this->loaded_widget_list) {
     p_widgets->on_reload();
     if (!p_widgets->p_data->has_parent() && p_widgets->p_data->has_children()) {
       this->do_task_synclayout(p_widgets);
@@ -118,7 +118,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
   ekg::ui::abstract_widget *p_widget_focused {};
   int32_t widgets_id {};
 
-  for (ekg::ui::abstract_widget *&p_widgets: this->widget_list_map["all"]) {
+  for (ekg::ui::abstract_widget *&p_widgets: this->loaded_widget_list) {
     if (p_widgets == nullptr || !p_widgets->p_data->is_alive()) {
       continue;
     }
@@ -206,7 +206,7 @@ void ekg::runtime::process_update() {
   this->service_input.on_update();
 
   if (this->enable_high_priority_frequency) {
-    auto &update = this->widget_list_map["update"];
+    auto &update = this->update_widget_list;
     size_t counter {};
 
     for (ekg::ui::abstract_widget *&p_widgets: update) {
@@ -238,7 +238,7 @@ void ekg::runtime::process_render() {
   if (this->should_re_batch_gui) {
     this->should_re_batch_gui = false;
 
-    auto &all {this->widget_list_map["all"]};
+    auto &all {this->loaded_widget_list};
     this->gpu_allocator.invoke();
 
     for (ekg::ui::abstract_widget *&p_widgets: all) {
@@ -264,8 +264,8 @@ void ekg::runtime::prepare_tasks() {
       .p_callback = this,
       .function   = [](void *p_callback) {
         auto *runtime {static_cast<ekg::runtime *>(p_callback)};
-        auto &all = runtime->widget_list_map["all"];
-        auto &refresh = runtime->widget_list_map["refresh"];
+        auto &all = runtime->loaded_widget_list;
+        auto &refresh = runtime->refresh_widget_list;
         bool should_call_gc {};
 
         for (ekg::ui::abstract_widget *&p_widgets: refresh) {
@@ -303,7 +303,7 @@ void ekg::runtime::prepare_tasks() {
 
         ekg::swap::collect.target_id = runtime->swap_widget_id_focused;
 
-        auto &all {runtime->widget_list_map["all"]};
+        auto &all {runtime->loaded_widget_list};
         for (ekg::ui::abstract_widget *&p_widgets: all) {
           if (p_widgets == nullptr || p_widgets->p_data->has_parent()) {
             continue;
@@ -352,7 +352,7 @@ void ekg::runtime::prepare_tasks() {
       .p_callback = this,
       .function   = [](void *p_callback) {
         auto *runtime {static_cast<ekg::runtime *>(p_callback)};
-        auto &reload = runtime->widget_list_map["reload"];
+        auto &reload = runtime->reload_widget_list;
 
         ekg::vec4 rect {};
 
@@ -440,7 +440,7 @@ void ekg::runtime::prepare_tasks() {
       .p_callback = this,
       .function   = [](void *p_callback) {
         auto *runtime {static_cast<ekg::runtime *>(p_callback)};
-        auto &synclayout {runtime->widget_list_map["synclayout"]};
+        auto &synclayout {runtime->synclayout_widget_list};
 
         for (ekg::ui::abstract_widget *&p_widgets: synclayout) {
           if (p_widgets == nullptr || runtime->processed_widget_map[p_widgets->p_data->get_id()]) {
@@ -462,9 +462,9 @@ void ekg::runtime::prepare_tasks() {
       .p_callback = this,
       .function   = [](void *p_callback) {
         auto *runtime {static_cast<ekg::runtime *>(p_callback)};
-        auto &all {runtime->widget_list_map["all"]};
-        auto &high_frequency {runtime->widget_list_map["update"]};
-        auto &redraw {runtime->widget_list_map["redraw"]};
+        auto &all {runtime->loaded_widget_list};
+        auto &high_frequency {runtime->update_widget_list};
+        auto &redraw {runtime->redraw_widget_list};
         auto &allocator {runtime->gpu_allocator};
 
         redraw.clear();
@@ -516,21 +516,13 @@ ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(int32_t id) {
 
 void ekg::runtime::do_task_reload(ekg::ui::abstract_widget *p_widget) {
   if (p_widget != nullptr) {
-    this->widget_list_map["reload"].emplace_back(p_widget);
+    this->reload_widget_list.emplace_back(p_widget);
     ekg::dispatch(ekg::env::reload);
   }
 }
 
 void ekg::runtime::prepare_ui_env() {
   ekg::log() << "Preparing internal user interface environment";
-
-  this->widget_list_map["all"] = {};
-  this->widget_list_map["refresh"] = {};
-  this->widget_list_map["reload"] = {};
-  this->widget_list_map["synclayout"] = {};
-  this->widget_list_map["redraw"] = {};
-  this->widget_list_map["scissor"] = {};
-  this->widget_list_map["update"] = {};
 
   this->f_renderer_small.font_size = 16;
   this->f_renderer_small.bind_allocator(&this->gpu_allocator);
@@ -735,7 +727,7 @@ void ekg::runtime::do_task_synclayout(ekg::ui::abstract_widget *p_widget) {
   }
 
   if (p_widget != nullptr) {
-    this->widget_list_map["synclayout"].emplace_back(p_widget);
+    this->synclayout_widget_list.emplace_back(p_widget);
     ekg::dispatch(ekg::env::synclayout);
   }
 }
@@ -745,7 +737,7 @@ void ekg::runtime::do_task_refresh(ekg::ui::abstract_widget *p_widget) {
     return;
   }
 
-  this->widget_list_map["refresh"].emplace_back(p_widget);
+  this->refresh_widget_list.emplace_back(p_widget);
   ekg::dispatch(ekg::env::refresh);
   ekg::dispatch(ekg::env::redraw);
 }
@@ -755,7 +747,7 @@ void ekg::runtime::end_group_flag() {
 }
 
 void ekg::runtime::erase(int32_t id) {
-  auto &all {this->widget_list_map["all"]};
+  auto &all {this->loaded_widget_list};
 
   for (size_t it {}; it < all.size(); it++) {
     ekg::ui::abstract_widget *&p_widget {all[it]};
@@ -772,7 +764,7 @@ void ekg::runtime::set_update_high_frequency(ekg::ui::abstract_widget *p_widget)
   if (p_widget != nullptr && !p_widget->is_high_frequency) {
     this->enable_high_priority_frequency = true;
 
-    auto &update {this->widget_list_map["update"]};
+    auto &update {this->update_widget_list};
     bool contains {};
 
     for (ekg::ui::abstract_widget *&p_widgets: update) {

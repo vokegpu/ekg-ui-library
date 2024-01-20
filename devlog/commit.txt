@@ -139,3 +139,7 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Textbox UI is a STL vector-based.
 -- Fixed `ekg::log::flush` copying string buffer and not cleaning.
 -- Performance in swap frames optimized 81.87%.
+
+0.0.1.0.6.0 19/01/24
+
+-- New initialization system object-state based.

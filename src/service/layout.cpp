@@ -192,11 +192,15 @@ float ekg::service::layout::get_respective_mask_size() {
       continue;
     }
 
-    size = (this->dock_axis_mask == ekg::axis::horizontal) ? (dock_rect.p_rect->w + this->offset_mask.x) : (
-        dock_rect.p_rect->h + this->offset_mask.y);
-    if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::center) &&
-        !(ekg::bitwise::contains(dock_rect.dock, ekg::dock::left) ||
-          ekg::bitwise::contains(dock_rect.dock, ekg::dock::right))) {
+    size = (
+      this->dock_axis_mask == ekg::axis::horizontal ?
+      (dock_rect.p_rect->w + this->offset_mask.x) : (dock_rect.p_rect->h + this->offset_mask.y)
+    );
+
+    if (
+        ekg::bitwise::contains(dock_rect.dock, ekg::dock::center) &&
+        !(ekg::bitwise::contains(dock_rect.dock, ekg::dock::left) || ekg::bitwise::contains(dock_rect.dock, ekg::dock::right))
+      ) {
       respective_center_size += size;
       only_center_count++;
     }
@@ -210,9 +214,13 @@ float ekg::service::layout::get_respective_mask_size() {
   return this->respective_mask_all;
 }
 
-float
-ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *p_widget, uint16_t flag_ok, uint16_t flag_stop,
-                                             int64_t &begin_and_count, ekg::axis axis) {
+float ekg::service::layout::get_dimensional_extent(
+  ekg::ui::abstract_widget *p_widget,
+  uint16_t flag_ok,
+  uint16_t flag_stop,
+  int64_t &begin_and_count,
+  ekg::axis axis
+) {
   if (p_widget == nullptr) {
     return 0.0f;
   }
@@ -258,7 +266,7 @@ ekg::service::layout::get_dimensional_extent(ekg::ui::abstract_widget *p_widget,
 
     if (
         (ekg::bitwise::contains(flags, flag_stop) && it != begin_and_count) || is_last_index
-        ) {
+      ) {
       extent -= this->min_offset;
       n += (!ekg::bitwise::contains(flags, flag_stop) && ekg::bitwise::contains(flags, flag_ok) && is_last_index);
 

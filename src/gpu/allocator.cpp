@@ -83,6 +83,9 @@ void ekg::gpu::allocator::bind_texture(uint32_t texture) {
 
   auto &data {this->bind_current_data()};
   data.active_tex_slot = texture_slot + 1;
+
+  // @ GPU API 3
+  ekg::core->p_gpu_api->bind_texture(texture)
 }
 
 void ekg::gpu::allocator::dispatch() {
@@ -90,8 +93,11 @@ void ekg::gpu::allocator::dispatch() {
 
   /* if this data contains a simple rect shape scheme, save this index and reuse later */
 
-  this->simple_shape = static_cast<int32_t>(data.shape_rect[2]) != ekg::concave &&
-                       static_cast<int32_t>(data.shape_rect[3]) != ekg::concave;
+  this->simple_shape = (
+    static_cast<int32_t>(data.shape_rect[2]) != ekg::concave &&
+    static_cast<int32_t>(data.shape_rect[3]) != ekg::concave
+  );
+
   if (this->simple_shape) {
     data.begin_stride = this->simple_shape_index;
     data.end_stride = 4; // simple shape contains 4 vertices.
@@ -137,6 +143,12 @@ void ekg::gpu::allocator::revoke() {
     );
 
     glBindVertexArray(0);
+
+    // @ GPU API 1
+    ekg::core->p_gpu_api->re_alloc_rendering_geometry(
+      this->cached_geometry_resources.data(),
+      this->cached_geometry_resources.size()
+    );
   }
 
   this->factor_changed = false;
@@ -155,6 +167,8 @@ void ekg::gpu::allocator::on_update() {
 }
 
 void ekg::gpu::allocator::draw() {
+  ekg::core->p_gpu_api->draw();
+
   ekg::gpu::invoke(ekg::gpu::allocator::program);
 
   glBindVertexArray(this->vbo_array);
@@ -335,6 +349,9 @@ void ekg::gpu::allocator::init() {
   this->uniform_scissor = glGetUniformLocation(shading_program_id, "uScissor");
 
   ekg::log() << "GPU allocator initialised";
+
+  // @ GPU API 2
+  ekg::core->p_gpu_api->init_pipeline();
 }
 
 void ekg::gpu::allocator::clear_current_data() {
@@ -372,6 +389,9 @@ void ekg::gpu::allocator::quit() {
   glDeleteTextures((int32_t) this->cached_textures.size(), &this->cached_textures[0]);
   glDeleteBuffers(1, &this->vbo_array);
   glDeleteVertexArrays(1, &this->vbo_array);
+
+  // @ GPU API 3
+  ekg::core->p_gpu_api->quit();
 }
 
 ekg::gpu::scissor *ekg::gpu::allocator::get_scissor_by_id(int32_t id) {
@@ -427,10 +447,12 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_par
     scissor.rect[3] -= (scissor.rect[1] + scissor.rect[3]) - (mother_rect.rect[1] + mother_rect.rect[3]);
   }
 
-  ekg::gpu::allocator::is_out_of_scissor = !(scissor.rect[0] < mother_rect.rect[0] + mother_rect.rect[2] &&
-                                             scissor.rect[0] + scissor.rect[2] > mother_rect.rect[0] &&
-                                             scissor.rect[1] < mother_rect.rect[1] + mother_rect.rect[3] &&
-                                             scissor.rect[1] + scissor.rect[3] > mother_rect.rect[1]);
+  ekg::gpu::allocator::is_out_of_scissor = (
+    !(scissor.rect[0]                   < mother_rect.rect[0] + mother_rect.rect[2] &&
+      scissor.rect[0] + scissor.rect[2] > mother_rect.rect[0] &&
+      scissor.rect[1]                   < mother_rect.rect[1] + mother_rect.rect[3] &&
+      scissor.rect[1] + scissor.rect[3] > mother_rect.rect[1])
+  );
 }
 
 void ekg::gpu::allocator::bind_scissor(int32_t scissor_id) {
@@ -441,7 +463,12 @@ void ekg::gpu::allocator::bind_off_scissor() {
   this->scissor_instance_id = -1;
 }
 
-void ekg::gpu::allocator::push_back_geometry(float x, float y, float u, float v) {
+void ekg::gpu::allocator::push_back_geometry(
+  float x,
+  float y,
+  float u,
+  float v
+) {
   this->end_stride_count++;
 
   if (this->cached_geometry_index >=

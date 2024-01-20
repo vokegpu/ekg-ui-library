@@ -27,6 +27,7 @@
 
 #include "ekg/core/runtime.hpp"
 #include "ekg/core/task.hpp"
+#include "ekg/gpu/gpu_base_impl.hpp"
 #include "ekg/util/gui.hpp"
 #include "ekg/util/io.hpp"
 #include "ekg/util/text.hpp"
@@ -78,10 +79,17 @@ namespace ekg {
 
   /* The setup and handling functions of ekg. */
 
+  struct runtime_property {
+  public:
+    const char *p_font_path {};
+    ekg::gpu_api gpu_api {};
+    void *p_sdl_win {};
+  };
+
   /*
    * Init the runtime core of ekg, set window SDL instance and font renderer path (default but changeable).
    */
-  void init(ekg::runtime *p_ekg_runtime, SDL_Window *p_root, std::string_view font_path);
+  void init(ekg::runtime *p_ekg_runtime, ekg::runtime_property *p_ekg_runtime_property);
 
   /*
    * Quit from all services and main runtime core.

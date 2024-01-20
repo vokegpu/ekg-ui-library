@@ -56,30 +56,43 @@ ekg::draw::font_renderer &ekg::f_renderer(ekg::font font_size) {
   return ekg::core->f_renderer_normal;
 }
 
-void ekg::init(ekg::runtime *p_ekg_runtime, SDL_Window *p_root, std::string_view font_path) {
+void ekg::init(
+  ekg::runtime *p_ekg_runtime,
+  ekg::runtime_property *p_ekg_runtime_property
+) {
   ekg::log() << "Initialising EKG";
-  ekg::listener = SDL_RegisterEvents(1);
 
-  /* Init OS cursor and check mouse icons. */
+  if (p_ekg_runtime_property->p_sdl_win != nullptr) {
+    ekg::listener = SDL_RegisterEvents(1);
+  
+    /* Init OS cursor and check mouse icons. */
 
-  ekg::init_cursor();
-  ekg::log() << "Initialising OS cursor";
+    ekg::init_cursor();
+    ekg::log() << "Initialising OS cursor";
 
-  SDL_GetWindowSize(p_root, &ekg::display::width, &ekg::display::height);
+    SDL_GetWindowSize(p_root, &ekg::display::width, &ekg::display::height);
+  }
+
 
   /* The runtime core, everything should be setup before the initialization process. */
   ekg::core = p_ekg_runtime;
   ekg::core->f_renderer_small.font_path = font_path;
   ekg::core->f_renderer_normal.font_path = font_path;
   ekg::core->f_renderer_big.font_path = font_path;
-  ekg::core->root = p_root;
+  ekg::core->root = p_ekg_runtime_property->p_sdl_win;
   ekg::core->init();
 
   /* First update of orthographic matrix and uniforms. */
 
   ekg::gpu::invoke(ekg::gpu::allocator::program);
-  ekg::orthographic2d(ekg::gpu::allocator::mat4x4orthographic, 0, static_cast<float>(ekg::display::width),
-                      static_cast<float>(ekg::display::height), 0);
+  ekg::orthographic2d(
+    ekg::gpu::allocator::mat4x4orthographic,
+    0, 
+    static_cast<float>(ekg::display::width),
+    static_cast<float>(ekg::display::height),
+    0
+  );
+
   ekg::gpu::allocator::program.setm4("uOrthographicMatrix", ekg::gpu::allocator::mat4x4orthographic);
   ekg::gpu::allocator::program.set("uViewportHeight", static_cast<float>(ekg::display::height));
   ekg::gpu::revoke();
@@ -89,8 +102,15 @@ void ekg::init(ekg::runtime *p_ekg_runtime, SDL_Window *p_root, std::string_view
   SDL_version sdl_version {};
   SDL_GetVersion(&sdl_version);
 
-  ekg::log() << "SDL version: " << static_cast<int32_t>(sdl_version.major) << '.'
-             << static_cast<int32_t>(sdl_version.minor) << '.' << static_cast<int32_t>(sdl_version.patch);
+
+  ekg::log() << "SDL version: "
+             << static_cast<int32_t>(sdl_version.major)
+             << '.'
+             << static_cast<int32_t>(sdl_version.minor)
+             << '.'
+             << static_cast<int32_t>(sdl_version.patch);
+
+  ekg::log() << "Vendor details: ";
 }
 
 void ekg::quit() {
