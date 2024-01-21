@@ -23,8 +23,8 @@ int32_t showcase_useless_window() {
 
   ekg::runtime_property ekg_runtime_property {
     .p_font_path = "whitneybook.otf",
-    .p_processor = new ekg::os::sdl_processor(p_sdl_win),
-    .p_gpu_api = new ekg::os::opengl_api(),
+    .p_processor = new ekg::os::sdl(p_sdl_win),
+    .p_gpu_api = new ekg::os::opengl(),
   }
 
   ekg::runtime runtime {};
