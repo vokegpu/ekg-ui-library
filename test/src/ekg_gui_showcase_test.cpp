@@ -23,9 +23,22 @@ int32_t showcase_useless_window() {
 
   ekg::runtime_property ekg_runtime_property {
     .p_font_path = "whitneybook.otf",
-    .p_processor = new ekg::os::sdl(p_sdl_win),
-    .p_gpu_api = new ekg::os::opengl(),
-  }
+    .p_gpu_api = new ekg::os::opengl()
+  };
+
+  ekg::sampler_create_info img_asset {
+    .p_tag = "oi amo gatos e bejinhos ><",
+    .w = 320,
+    .h = 240,
+    .internal_format = GL_RGBA,
+    .format = GL_RGBA,
+    .p_data = nullptr,
+  };
+
+  uint32_t img_id {};
+  ekg::create_sampler(&img_id, &img_asset);
+
+  auto p_frame = ekg::frame("oi", {20, 20}, {200, 200})->set_sampler(img_id);
 
   ekg::runtime runtime {};
   ekg::init(&runtime, &ekg_runtime_property);
@@ -41,10 +54,12 @@ int32_t showcase_useless_window() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.6f, 0.0f, 0.6f, 0.993f);
 
+    ekg::dt = 0.016f;
     ekg::update();
     ekg::render();
 
     SDL_GL_SwapWindow(p_sdl_win);
+    SDL_Delay(16)
   }
 }
 

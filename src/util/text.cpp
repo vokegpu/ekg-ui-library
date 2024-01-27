@@ -200,7 +200,7 @@ std::string ekg::utf_substr(std::string_view string, uint64_t offset, uint64_t s
 
 /*
  * This function has a potential memory leak issue,
- * and it is very dangerous.
+ * and is very dangerous.
  */
 void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_read) {
   if (string.empty()) {

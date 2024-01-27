@@ -351,7 +351,7 @@ void ekg::gpu::allocator::init() {
   ekg::log() << "GPU allocator initialised";
 
   // @ GPU API 2
-  ekg::core->p_gpu_api->init_pipeline();
+  ekg::core->p_gpu_api->init();
 }
 
 void ekg::gpu::allocator::clear_current_data() {
@@ -418,11 +418,11 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_par
 
   ekg::gpu::allocator::is_out_of_scissor = false;
 
-  /*
+  /**
    * The EKG rendering clipping/scissor part solution is actually very simple,
    * each draws section contains an ID, which map for a scissor data,
    * when batching is going on, the scissor is automatically fixed together.
-   */
+   **/
   if (mother_parent_id == 0) {
     return;
   }

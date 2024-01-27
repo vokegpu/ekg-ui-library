@@ -42,7 +42,7 @@ namespace ekg::ui {
     /**
      * Set UI `must_format_text` value.
      * If true `ekg::ui::listbox::get_text` re-format the content,
-     * else false content is not re-format.
+     * else false content is not re-formatted.
      */
     ekg::ui::textbox *set_must_format_text(bool state);
 

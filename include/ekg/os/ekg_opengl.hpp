@@ -28,9 +28,23 @@
 #if defined(__ANDROID__)
 #include <GLES3/gl3.h>
 #else
-
 #include <GL/glew.h>
-
 #endif
+
+#include "ekg/gpu/api.hpp"
+
+namespace ekg::os {
+  class opengl : public ekg::gpu::api {
+  public:
+    uint32_t compile_shader(std::string_view shader_source, uint32_t shader_type);
+  public:
+    void init() override;
+    void quit() override;
+    void invoke_pipeline() override;
+    void revoke_pipeline() override;
+    void update_viewport(int32_t w, int32_t h) override;
+    void re_alloc_rendering_geometry(const float *p_data, uint64_t size) override;
+  }
+}
 
 #endif
