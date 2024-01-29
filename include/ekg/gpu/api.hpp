@@ -66,7 +66,7 @@ namespace ekg {
 
     struct data_t {
     public:
-      float buffer_content[8] {};
+      float buffer_content[12] {};
       int32_t sampler_index {};
       int8_t line_thickness {};
       int32_t begin_stride {};

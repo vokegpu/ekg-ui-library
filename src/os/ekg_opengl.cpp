@@ -1,6 +1,7 @@
 #include "ekg/os/ekg_opengl.hpp"
 #include "ekg/gpu/api.hpp"
 #include <stdio.h>
+#include <unordered_map>
 
 void ekg::os::opengl::init() {
 
@@ -10,12 +11,21 @@ void ekg::os::opengl::quit() {
   
 }
 
-void ekg::os::opengl::re_alloc_rendering_geometry(const float *p_data, uint64_t size) {
+void ekg::os::opengl::re_alloc_rendering_geometry(
+  const float *p_data,
+  uint64_t size
+) {
+  glBindVertexArray(this->vbo_array);
 
-}
+  glBindBuffer(GL_ARRAY_BUFFER, this->geometry_buffer);
+  glBufferData(
+    GL_ARRAY_BUFFER,
+    sizeof(p_data),
+    p_data,
+    GL_STATIC_DRAW
+  );
 
-void ekg::os::opengl::bind_texture(uint32_t texture_id) {
-
+  glBindVertexArray(0);
 }
 
 uint64_t ekg::os::opengl::allocate_sampler(
@@ -129,9 +139,10 @@ void ekg::os::opengl::draw(
   const ekg::gpu::data_t *p_gpu_data,
   uint64_t loaded_gpu_data_size,
   const ekg::gpu::sampler_t *p_sampler_data,
-  uint64_t loaded_sampler_data_size,
+  uint64_t loaded_sampler_data_size
 ) {
   glUseProgram(this->gl_program);
+  glBindVertexArray(this->vbo_array);
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -174,10 +185,10 @@ void ekg::os::opengl::draw(
       previous_sampler_bound = -1;
     }
 
-    glUniform4fv(this->uniform_color, GL_TRUE, &data.buffer_content[4]);
-    glUniform4fv(this->uniform_rect, GL_TRUE, data.buffer_content);
     glUniform1i(this->uniform_line_thickness, data.line_thickness);
-    glUniform4fv(this->uniform_scissor, GL_TRUE, this->scissor_map[data.scissor_id].rect);
+    glUniform4fv(this->uniform_rect, GL_TRUE, data.buffer_content);
+    glUniform4fv(this->uniform_color, GL_TRUE, &data.buffer_content[4]);
+    glUniform4fv(this->uniform_scissor, GL_TRUE, &data.buffer_content[8]);
 
     switch (data.begin_stride) {
       case 0: {
@@ -191,6 +202,20 @@ void ekg::os::opengl::draw(
       }
     }
   }
+
+  glDisable(GL_BLEND);
+
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, 0);
+
+  glActiveTexture(GL_TEXTURE1);
+  glBindTexture(GL_TEXTURE_2D, 0);
+
+  glActiveTexture(GL_TEXTURE2);
+  glBindTexture(GL_TEXTURE_2D, 0);
+
+  glActiveTexture(GL_TEXTURE3);
+  glBindTexture(GL_TEXTURE_2D, 0);
 
   glUseProgram(0);
 }

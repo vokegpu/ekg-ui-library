@@ -55,47 +55,24 @@ void ekg::gpu::allocator::invoke() {
   /* unique shape data will break if not clear the first index. */
 
   this->clear_current_data();
-  this->bind_current_data().begin_stride = this->end_stride_count;
+  this->loaded_data_list.at(this->data_instance_index).begin_stride = this->end_stride_count;
   this->begin_stride_count += this->end_stride_count;
   this->end_stride_count = 0;
 }
 
-void ekg::gpu::allocator::bind_texture(uint32_t texture) {
-  bool should_alloc_new_texture {true};
-  uint8_t texture_slot {};
-
-  /* repeating textures increase the active textures, for this reason allocator prevent "dupes" */
-
-  for (std::size_t it = 0; it < this->cached_texture_list.size(); it++) {
-    auto &textures = this->cached_texture_list.at(it);
-    should_alloc_new_texture = textures != texture;
-
-    if (!should_alloc_new_texture) {
-      texture_slot = (uint8_t) it;
-      break;
-    }
-  }
-
-  if (should_alloc_new_texture) {
-    this->cached_texture_list.push_back(texture);
-    texture_slot = (uint8_t) this->cached_texture_list.size() - 1;
-  }
-
-  auto &data {this->bind_current_data()};
-  data.active_tex_slot = texture_slot + 1;
-
-  // @ GPU API 3
-  ekg::core->p_gpu_api->bind_texture(texture)
+void ekg::gpu::allocator::bind_texture(ekg::sampler_t *p_sampler) {
+  ekg::gpu::data_t &data {this->loaded_data_list.at(this->data_instance_index)};
+  data.sampler_index = ekg::core->p_gpu_api->bind_sampler(p_sampler);
 }
 
 void ekg::gpu::allocator::dispatch() {
-  auto &data {this->bind_current_data()};
+  ekg::gpu::data_t &data {this->loaded_data_list.at(this->data_instance_index)};
 
   /* if this data contains a simple rect shape scheme, save this index and reuse later */
 
   this->simple_shape = (
-    static_cast<int32_t>(data.shape_rect[2]) != ekg::concave &&
-    static_cast<int32_t>(data.shape_rect[3]) != ekg::concave
+    static_cast<int32_t>(data.buffer_content[2]) != ekg::concave &&
+    static_cast<int32_t>(data.buffer_content[3]) != ekg::concave
   );
 
   if (this->simple_shape) {
@@ -112,7 +89,9 @@ void ekg::gpu::allocator::dispatch() {
   /* flag re alloc buffers if factor changed */
 
   if (!this->factor_changed) {
-    this->factor_changed = this->previous_factor != data.factor;
+    this->factor_changed = (
+      this->previous_factor != data.factor
+    );
   }
 
   this->begin_stride_count += this->end_stride_count;
@@ -131,19 +110,6 @@ void ekg::gpu::allocator::revoke() {
   }
 
   if (should_re_alloc_buffers || this->factor_changed) {
-    glBindVertexArray(this->vbo_array);
-
-    glBindBuffer(GL_ARRAY_BUFFER, this->geometry_buffer);
-    glBufferData(
-      GL_ARRAY_BUFFER,
-      sizeof(float) * cached_geometry_resources_size,
-      this->cached_geometry_resources.data(),
-      GL_STATIC_DRAW
-    );
-
-    glBindVertexArray(0);
-
-    // @ GPU API 1
     ekg::core->p_gpu_api->re_alloc_rendering_geometry(
       this->cached_geometry_resources.data(),
       this->cached_geometry_resources.size()
@@ -199,7 +165,7 @@ void ekg::gpu::allocator::draw() {
    */
 
   for (uint64_t it {}; it < this->data_instance_index; it++) {
-    ekg::gpu::data &data {this->loaded_data_list.at(it)};
+    ekg::gpu::data_t &data {this->loaded_data_list.at(it)};
     texture_enabled = data.active_tex_slot > 0;
 
     if (texture_enabled && prev_texture_bound != data.active_tex_slot) {
@@ -365,7 +331,7 @@ void ekg::gpu::allocator::clear_current_data() {
     this->loaded_data_list.emplace_back();
   }
 
-  ekg::gpu::data &data {this->bind_current_data()};
+  ekg::gpu::data_t &data {this->loaded_data_list.at(this->data_instance_index)};
   data.line_thickness = 0;
   data.active_tex_slot = 0;
   data.scissor_id = -1;
@@ -373,7 +339,7 @@ void ekg::gpu::allocator::clear_current_data() {
   this->previous_factor = data.factor;
 }
 
-ekg::gpu::data &ekg::gpu::allocator::bind_current_data() {
+ekg::gpu::data_t &ekg::gpu::allocator::bind_current_data() {
   return this->loaded_data_list.at(this->data_instance_index);
 }
 
@@ -381,7 +347,7 @@ uint32_t ekg::gpu::allocator::get_current_data_id() {
   return this->data_instance_index;
 }
 
-ekg::gpu::data *ekg::gpu::allocator::get_data_by_id(int32_t id) {
+ekg::gpu::data_t *ekg::gpu::allocator::get_data_by_id(int32_t id) {
   if (id < 0 || id > this->data_instance_index) {
     return nullptr;
   }
@@ -415,10 +381,10 @@ uint32_t ekg::gpu::allocator::get_instance_scissor_id() {
 void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_parent_id) {
   auto &scissor {this->scissor_map[this->scissor_instance_id]};
 
-  scissor.rect[0] = rect_child.x;
-  scissor.rect[1] = rect_child.y;
-  scissor.rect[2] = rect_child.w;
-  scissor.rect[3] = rect_child.h;
+  scissor.rect.x = rect_child.x;
+  scissor.rect.y = rect_child.y;
+  scissor.rect.w = rect_child.w;
+  scissor.rect.h = rect_child.h;
 
   ekg::gpu::allocator::is_out_of_scissor = false;
 
@@ -427,36 +393,45 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_par
    * each draws section contains an ID, which map for a scissor data,
    * when batching is going on, the scissor is automatically fixed together.
    **/
-  if (mother_parent_id == 0) {
-    return;
+  if (mother_parent_id) {
+    auto &mother_rect {this->scissor_map[mother_parent_id]};
+
+    if (scissor.rect.x < mother_rect.rect.x) {
+      scissor.rect.w -= mother_rect.rect.x - scissor.rect.x;
+      scissor.rect.x = mother_rect.rect.x;
+    }
+
+    if (scissor.rect.y < mother_rect.rect.y) {
+      scissor.rect.h -= mother_rect.rect.y - scissor.rect.y;
+      scissor.rect.y = mother_rect.rect.y;
+    }
+
+    if (scissor.rect.x + scissor.rect.w > mother_rect.rect.x + mother_rect.rect.w) {
+      scissor.rect.w -= (scissor.rect.x + scissor.rect.w) - (mother_rect.rect.x + mother_rect.rect.w);
+    }
+
+    if (scissor.rect.y + scissor.rect.h > mother_rect.rect.y + mother_rect.rect.h) {
+      scissor.rect.h -= (scissor.rect.y + scissor.rect.h) - (mother_rect.rect.y + mother_rect.rect.h);
+    }
+
+    ekg::gpu::allocator::is_out_of_scissor = (
+      !(scissor.rect.x                  < mother_rect.rect.x + mother_rect.rect.w &&
+        scissor.rect.x + scissor.rect.w > mother_rect.rect.x &&
+        scissor.rect.y                  < mother_rect.rect.y + mother_rect.rect.h &&
+        scissor.rect.y + scissor.rect.h > mother_rect.rect.y)
+    );
   }
 
-  auto &mother_rect {this->scissor_map[mother_parent_id]};
 
-  if (scissor.rect[0] < mother_rect.rect[0]) {
-    scissor.rect[2] -= mother_rect.rect[0] - scissor.rect[0];
-    scissor.rect[0] = mother_rect.rect[0];
-  }
-
-  if (scissor.rect[1] < mother_rect.rect[1]) {
-    scissor.rect[3] -= mother_rect.rect[1] - scissor.rect[1];
-    scissor.rect[1] = mother_rect.rect[1];
-  }
-
-  if (scissor.rect[0] + scissor.rect[2] > mother_rect.rect[0] + mother_rect.rect[2]) {
-    scissor.rect[2] -= (scissor.rect[0] + scissor.rect[2]) - (mother_rect.rect[0] + mother_rect.rect[2]);
-  }
-
-  if (scissor.rect[1] + scissor.rect[3] > mother_rect.rect[1] + mother_rect.rect[3]) {
-    scissor.rect[3] -= (scissor.rect[1] + scissor.rect[3]) - (mother_rect.rect[1] + mother_rect.rect[3]);
-  }
-
-  ekg::gpu::allocator::is_out_of_scissor = (
-    !(scissor.rect[0]                   < mother_rect.rect[0] + mother_rect.rect[2] &&
-      scissor.rect[0] + scissor.rect[2] > mother_rect.rect[0] &&
-      scissor.rect[1]                   < mother_rect.rect[1] + mother_rect.rect[3] &&
-      scissor.rect[1] + scissor.rect[3] > mother_rect.rect[1])
-  );
+  ekg::gpu::data_t &data {this->loaded_data_list.at(this->data_instance_index)};
+  
+  /**
+   * It is much better to waste memory than CPU runtime processing.
+   **/
+  data.buffer_content[8]  = scissor.rect.x;
+  data.buffer_content[9]  = scissor.rect.y;
+  data.buffer_content[10] = scissor.rect.w;
+  data.buffer_content[11] = scissor.rect.h;
 }
 
 void ekg::gpu::allocator::bind_scissor(int32_t scissor_id) {
