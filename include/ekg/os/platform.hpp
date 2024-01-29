@@ -29,16 +29,25 @@
 
 namespace ekg {
   enum class system_cursor {
-    arrow, ibeam, wait, crosshair, wait_arrow, size_nwse, size_nesw, size_we, size_ns, size_all, no, hand
+    arrow,
+    ibeam,
+    wait,
+    crosshair,
+    wait_arrow,
+    size_nwse,
+    size_nesw,
+    size_we,
+    size_ns,
+    size_all,
+    no,
+    hand
   };
 
   extern ekg::system_cursor cursor;
   static SDL_Cursor *loaded_system_cursor_list[12];
 
   void init_cursor();
-
   void set_cursor(ekg::system_cursor system_cursor);
-
   void os_get_monitor_resolution(float &w, float &h);
 }
 

@@ -44,6 +44,8 @@ namespace ekg::os {
     void revoke_pipeline() override;
     void update_viewport(int32_t w, int32_t h) override;
     void re_alloc_rendering_geometry(const float *p_data, uint64_t size) override;
+    void draw() override;
+    void bind_texture(uint32_t texture_id) override;
   }
 }
 
