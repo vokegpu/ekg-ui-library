@@ -66,8 +66,8 @@ void ekg::gpu::allocator::bind_texture(uint32_t texture) {
 
   /* repeating textures increase the active textures, for this reason allocator prevent "dupes" */
 
-  for (std::size_t it = 0; it < this->cached_textures.size(); it++) {
-    auto &textures = this->cached_textures.at(it);
+  for (std::size_t it = 0; it < this->cached_texture_list.size(); it++) {
+    auto &textures = this->cached_texture_list.at(it);
     should_alloc_new_texture = textures != texture;
 
     if (!should_alloc_new_texture) {
@@ -77,8 +77,8 @@ void ekg::gpu::allocator::bind_texture(uint32_t texture) {
   }
 
   if (should_alloc_new_texture) {
-    this->cached_textures.push_back(texture);
-    texture_slot = (uint8_t) this->cached_textures.size() - 1;
+    this->cached_texture_list.push_back(texture);
+    texture_slot = (uint8_t) this->cached_texture_list.size() - 1;
   }
 
   auto &data {this->bind_current_data()};
@@ -108,7 +108,6 @@ void ekg::gpu::allocator::dispatch() {
   }
 
   data.scissor_id = this->scissor_instance_id;
-  data.id = static_cast<int32_t>(this->data_instance_index);
 
   /* flag re alloc buffers if factor changed */
 
@@ -127,8 +126,8 @@ void ekg::gpu::allocator::revoke() {
   uint64_t cached_geometry_resources_size {this->cached_geometry_index};
   bool should_re_alloc_buffers {this->previous_cached_geometry_resources_size != cached_geometry_resources_size};
 
-  if (this->data_instance_index < this->data_list.size()) {
-    this->data_list.erase(this->data_list.begin() + this->data_instance_index + 1, this->data_list.end());
+  if (this->data_instance_index < this->loaded_data_list.size()) {
+    this->loaded_data_list.erase(this->loaded_data_list.begin() + this->data_instance_index + 1, this->loaded_data_list.end());
   }
 
   if (should_re_alloc_buffers || this->factor_changed) {
@@ -167,7 +166,12 @@ void ekg::gpu::allocator::on_update() {
 }
 
 void ekg::gpu::allocator::draw() {
-  ekg::core->p_gpu_api->draw();
+  ekg::core->p_gpu_api->draw(
+    this->loaded_data_list.data(),
+    this->loaded_data_list.size()
+    this->cached_texture_list.data(),
+    this->cached_texture_list.size()
+  );
 
   ekg::gpu::invoke(ekg::gpu::allocator::program);
 
@@ -180,9 +184,9 @@ void ekg::gpu::allocator::draw() {
   /*
    * Before each rendering section, the allocator iterate alls textures and bind it on global context.
    */
-  for (uint32_t it {}; it < this->cached_textures.size(); it++) {
+  for (uint32_t it {}; it < this->cached_texture_list.size(); it++) {
     glActiveTexture(GL_TEXTURE0 + static_cast<int32_t>(it));
-    glBindTexture(GL_TEXTURE_2D, this->cached_textures.at(it));
+    glBindTexture(GL_TEXTURE_2D, this->cached_texture_list.at(it));
   }
 
   glEnable(GL_BLEND);
@@ -195,7 +199,7 @@ void ekg::gpu::allocator::draw() {
    */
 
   for (uint64_t it {}; it < this->data_instance_index; it++) {
-    ekg::gpu::data &data {this->data_list.at(it)};
+    ekg::gpu::data &data {this->loaded_data_list.at(it)};
     texture_enabled = data.active_tex_slot > 0;
 
     if (texture_enabled && prev_texture_bound != data.active_tex_slot) {
@@ -357,8 +361,8 @@ void ekg::gpu::allocator::init() {
 void ekg::gpu::allocator::clear_current_data() {
   /* allocator handle automatically the size of data */
 
-  if (this->data_instance_index >= this->data_list.size()) {
-    this->data_list.emplace_back();
+  if (this->data_instance_index >= this->loaded_data_list.size()) {
+    this->loaded_data_list.emplace_back();
   }
 
   ekg::gpu::data &data {this->bind_current_data()};
@@ -370,7 +374,7 @@ void ekg::gpu::allocator::clear_current_data() {
 }
 
 ekg::gpu::data &ekg::gpu::allocator::bind_current_data() {
-  return this->data_list.at(this->data_instance_index);
+  return this->loaded_data_list.at(this->data_instance_index);
 }
 
 uint32_t ekg::gpu::allocator::get_current_data_id() {
@@ -382,11 +386,11 @@ ekg::gpu::data *ekg::gpu::allocator::get_data_by_id(int32_t id) {
     return nullptr;
   }
 
-  return &this->data_list[id];
+  return &this->loaded_data_list[id];
 }
 
 void ekg::gpu::allocator::quit() {
-  glDeleteTextures((int32_t) this->cached_textures.size(), &this->cached_textures[0]);
+  glDeleteTextures((int32_t) this->cached_texture_list.size(), &this->cached_texture_list[0]);
   glDeleteBuffers(1, &this->vbo_array);
   glDeleteVertexArrays(1, &this->vbo_array);
 

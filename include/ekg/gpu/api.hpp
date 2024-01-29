@@ -1,15 +1,77 @@
+/**
+ * MIT License
+ * 
+ * Copyright (c) 2022-2024 Rina Wilk / vokegpu@gmail.com
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 #ifndef EKG_GPU_BASE_IMPL_H
 #define EKG_GPU_BASE_IMPL_H
 
 #include <iostream>
+#include <stdint.h>
 #include <string_view>
+#include "ekg/io/geometry.hpp"
 
 namespace ekg {
   enum class api {
     vulkan, opengl
   };
-
+  
   namespace gpu {
+    struct sampler_info {
+    public:
+      const char *p_tag {};
+      uint32_t offset[2] {};
+      uint32_t w {};
+      uint32_t h {};
+      uint32_t gl_parameter_filter[2] {};
+      uint32_t gl_wrap_modes[2] {};
+      uint32_t gl_repeat_mode {};
+      uint32_t gl_internal_format {};
+      uint32_t gl_format {};
+      uint32_t gl_type {};
+      void *p_data {};
+    };
+
+    typedef sampler_allocate_info sampler_info;
+    typedef sampler_fill_info sampler_info;
+
+    struct sampler_t {
+    public:
+      const char *p_tag {};
+      uint32_t w {};
+      uint32_t h {};
+      uint32_t channel {};
+      uint32_t gl_id {};
+    };
+
+    struct data_t {
+    public:
+      int32_t sampler_index {};
+      int8_t line_thickness {};
+
+      int32_t begin_stride {};
+      int32_t end_stride {};
+    };
+
     class api {
     protected:
       std::string_view rendering_shader_fragment_source {};
@@ -21,9 +83,19 @@ namespace ekg {
       virtual void invoke_pipeline() {};
       virtual void revoke_pipeline() {};
       virtual void update_viewport(int32_t w, int32_t h) {};
-      virtual uint32_t dispatch_sampler(const ekg::sampler_create_info *p_sampler_create_info) { return 0 };
       virtual void draw() {};
-      virtual void bind_texture(uint32_t texture_id) {};
+
+      virtual uint64_t allocate_sampler(
+        const ekg::gpu::sampler_allocate_info *p_sampler_allocate_info,
+        ekg::gpu::sampler_t *p_sampler,
+      ) {};
+
+      virtual uint64_t fill_sampler(
+        const ekg::gpu::sampler_fill_info *p_sampler_fill_info,
+        ekg::gpu::sampler_t *p_sampler,
+      ) {};
+
+      virtual uint64_t bind_sampler(ekg::gpu::sampler_t *p_sampler) {};
     }
   }
 }

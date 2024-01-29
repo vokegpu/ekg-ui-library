@@ -45,7 +45,18 @@ namespace ekg::os {
     void update_viewport(int32_t w, int32_t h) override;
     void re_alloc_rendering_geometry(const float *p_data, uint64_t size) override;
     void draw() override;
-    void bind_texture(uint32_t texture_id) override;
+
+    uint64_t allocate_sampler(
+      const ekg::gpu::sampler_allocate_info *p_sampler_allocate_info,
+      ekg::gpu::sampler_t *p_sampler,
+    ) override;
+
+    uint64_t fill_sampler(
+      const ekg::gpu::sampler_fill_info *sampler_fill_info,
+      ekg::gpu::sampler_t *p_sampler,
+    ) override;
+
+    bool bind_sampler(ekg::gpu::sampler_t *p_sampler) override;
   }
 }
 

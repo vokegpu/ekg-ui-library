@@ -26,17 +26,27 @@ int32_t showcase_useless_window() {
     .p_gpu_api = new ekg::os::opengl()
   };
 
-  ekg::sampler_create_info img_asset {
+  ekg::sampler_allocate_info img_asset {
     .p_tag = "oi amo gatos e bejinhos ><",
     .w = 320,
     .h = 240,
-    .internal_format = GL_RGBA,
-    .format = GL_RGBA,
+    .gl_internal_format = GL_RGBA,
+    .gl_format = GL_RGBA,
     .p_data = nullptr,
   };
 
-  uint32_t img_id {};
-  ekg::create_sampler(&img_id, &img_asset);
+  ekg::sampler_t img_id {};
+  ekg::allocate_sampler(&img_id, &img_asset);
+
+  ekg::sub_sampler_allocate_info sub_sampler_create_info {
+    .w = 320,
+    .h = 240,
+    .gl_internal_format = GL_RGBA,
+    .gl_format = GL_RGBA,
+    .p_data = nulltr;
+  };
+
+  ekg::sub_sampler();
 
   auto p_frame = ekg::frame("oi", {20, 20}, {200, 200})->set_sampler(img_id);
 
