@@ -32,9 +32,14 @@
 #endif
 
 #include "ekg/gpu/api.hpp"
+#include <vector>
+
+#define ekg_is_sampler_protected(sampler_protected_index) sampler_protected_index > -1
 
 namespace ekg::os {
   class opengl : public ekg::gpu::api {
+  protected:
+    std::vector<ekg::gpu::sampler_t*> bound_sampler_list {};
   public:
     uint32_t compile_shader(std::string_view shader_source, uint32_t shader_type);
   public:
@@ -44,7 +49,13 @@ namespace ekg::os {
     void revoke_pipeline() override;
     void update_viewport(int32_t w, int32_t h) override;
     void re_alloc_rendering_geometry(const float *p_data, uint64_t size) override;
-    void draw() override;
+    
+    void draw(
+      const ekg::gpu::data_t *p_gpu_data,
+      uint64_t loaded_gpu_data_size,
+      const ekg::gpu::sampler_t *p_sampler_data,
+      uint64_t loaded_sampler_data_size,
+    ) override;
 
     uint64_t allocate_sampler(
       const ekg::gpu::sampler_allocate_info *p_sampler_allocate_info,

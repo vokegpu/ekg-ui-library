@@ -61,15 +61,18 @@ namespace ekg {
       uint32_t h {};
       uint32_t channel {};
       uint32_t gl_id {};
+      int8_t gl_protected_active_index {-1};
     };
 
     struct data_t {
     public:
+      float buffer_content[8] {};
       int32_t sampler_index {};
       int8_t line_thickness {};
-
       int32_t begin_stride {};
       int32_t end_stride {};
+      int32_t factor {};
+      int32_t scissor_id {-1};
     };
 
     class api {
@@ -83,7 +86,13 @@ namespace ekg {
       virtual void invoke_pipeline() {};
       virtual void revoke_pipeline() {};
       virtual void update_viewport(int32_t w, int32_t h) {};
-      virtual void draw() {};
+      
+      virtual void draw(
+        const ekg::gpu::data_t *p_gpu_data,
+        uint64_t loaded_gpu_data_size,
+        const ekg::gpu::sampler_t *p_sampler_data,
+        uint64_t loaded_sampler_data_size,
+      ) {};
 
       virtual uint64_t allocate_sampler(
         const ekg::gpu::sampler_allocate_info *p_sampler_allocate_info,
