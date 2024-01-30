@@ -40,8 +40,19 @@ namespace ekg::os {
   class opengl : public ekg::gpu::api {
   protected:
     std::vector<ekg::gpu::sampler_t*> bound_sampler_list {};
+    
+    int32_t uniform_active_texture {};
+    int32_t uniform_active_tex_slot {};
+    int32_t uniform_color {};
+    int32_t uniform_rect {};
+    int32_t uniform_line_thickness {};
+    int32_t uniform_scissor {};
+
+    uint32_t geometry_buffer {};
+    uint32_t vbo_array {};
+    uint32_t ebo_simple_shape {};
   public:
-    uint32_t compile_shader(std::string_view shader_source, uint32_t shader_type);
+    uint32_t create_pipeline_program(uint32_t &program, const std::unordered_map<std::string, uint32_t> &resources);
   public:
     void init() override;
     void quit() override;

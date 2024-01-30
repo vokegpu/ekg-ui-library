@@ -4,11 +4,186 @@
 #include <unordered_map>
 
 void ekg::os::opengl::init() {
+  std::string_view vsh_src {
+    ekg::glsl_version + "\n"
+    "layout (location = 0) in vec2 aPos;\n"
+    "layout (location = 1) in vec2 aTexCoord;\n"
 
+    "#define CONVEX -256.0\n"
+
+    "uniform mat4 uOrthographicMatrix;\n"
+    "uniform vec4 uRect;\n"
+
+    "out vec2 vTexCoord;\n"
+    "out vec4 vRect;\n"
+
+    "void main() {"
+    "    vec2 vertex = aPos;\n"
+    "    bool modalShape = uRect.z != CONVEX || uRect.w != CONVEX;\n"
+
+    "    if (modalShape) {"
+    "        vertex *= uRect.zw;"
+    "    }\n"
+
+    "    vertex += uRect.xy;\n"
+    "    gl_Position = uOrthographicMatrix * vec4(vertex, 0.0f, 1.0f);\n"
+
+    "    vTexCoord = aTexCoord;\n"
+    "    vRect = uRect;\n"
+    "}"
+  };
+
+  std::string_view fsh_src {
+    ekg::glsl_version + "\n"
+    "layout (location = 0) out vec4 vFragColor;\n"
+    "uniform sampler2D uTextureSampler;\n"
+
+    "in vec2 vTexCoord;\n"
+    "in vec4 vRect;\n"
+
+    "uniform int uLineThickness;\n"
+    "uniform bool uActiveTexture;\n"
+    "uniform vec4 uColor;\n"
+    "uniform vec4 uScissor;\n"
+    "uniform float uViewportHeight;\n"
+
+    "void main() {"
+    "    vFragColor = uColor;\n"
+    "    vec2 fragPos = vec2(gl_FragCoord.x, uViewportHeight - gl_FragCoord.y);\n"
+    "    bool shouldDiscard = (fragPos.x <= uScissor.x || fragPos.y <= uScissor.y || fragPos.x >= uScissor.x + uScissor.z || fragPos.y >= uScissor.y + uScissor.w);\n"
+
+    "    float lineThicknessf = float(uLineThickness);\n"
+    "    if (uLineThickness > 0) {"
+    "        vec4 outline = vec4(vRect.x + lineThicknessf, vRect.y + lineThicknessf, vRect.z - (lineThicknessf * 2.0f), vRect.w - (lineThicknessf * 2.0f));\n"
+    "        shouldDiscard = shouldDiscard || (fragPos.x > outline.x && fragPos.x < outline.x + outline.z && fragPos.y > outline.y && fragPos.y < outline.y + outline.w);\n"
+    "    } else if (uLineThickness < 0) {\n"
+    "       float radius = vRect.z / 2.0f;\n"
+    "       vec2 diff = vec2((vRect.x + radius) - fragPos.x, (vRect.y + radius) - fragPos.y);\n"
+    "       float dist = (diff.x * diff.x + diff.y * diff.y);\n"
+
+    "       vFragColor.w = (1.0f - smoothstep(0.0, radius * radius, dot(dist, dist)));\n"
+    "    }"
+
+    "    if (shouldDiscard) {"
+    "       vFragColor.w = 0.0f;\n"
+    "    }\n"
+
+    "    if (uActiveTexture && !shouldDiscard) {"
+    "        vFragColor = texture(uTextureSampler, vTexCoord);\n"
+    "        vFragColor = vec4(vFragColor.xyz - ((1.0f - uColor.xyz) - 1.0f), vFragColor.w - (1.0f - uColor.w));\n"
+    "    }\n"
+    "}"
+  };
+
+  if (!this->rendering_shader_fragment_source.empty()) {
+    fsh_src = this->render_shader_fragment_source;
+  }
+
+  ekg::log() << "Loading internal shaders...";
+
+  /* Create main shading program using two basic shaders (vertex & fragment). */
+  this->create_pipeline_program(this->pipeline_program, {
+      {vsh_src, GL_VERTEX_SHADER},
+      {fsh_src, GL_FRAGMENT_SHADER}
+  });
+
+  glGenVertexArrays(1, &this->vbo_array);
+  glGenBuffers(1, &this->geometry_buffer);
+  glGenBuffers(1, &this->ebo_simple_shape);
+
+  /* Generate base shape rendering. */
+  uint8_t simple_shape_mesh_indices[6] {
+      0, 2, 3,
+      3, 1, 0
+  };
+
+  glBindVertexArray(this->vbo_array);
+
+  /* Start of geometry resources buffer attributes. */
+  glBindBuffer(GL_ARRAY_BUFFER, this->geometry_buffer);
+
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void *) 0);
+
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void *) (sizeof(float) * 2));
+  /* End of geometry resources buffer attributes. */
+
+  /* Start of simple shape indexing buffer bind to VAO. */
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebo_simple_shape);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(simple_shape_mesh_indices), simple_shape_mesh_indices, GL_STATIC_DRAW);
+  glBindVertexArray(0);
+  /* End  of simple shape indexing buffer bind to VAO. */
+
+  /* reduce glGetLocation calls when rendering the batch */
+  auto &shading_program_id {ekg::gpu::allocator::program};
+  this->uniform_active_texture = glGetUniformLocation(shading_program_id, "uActiveTexture");
+  this->uniform_active_tex_slot = glGetUniformLocation(shading_program_id, "uTextureSampler");
+  this->uniform_color = glGetUniformLocation(shading_program_id, "uColor");
+  this->uniform_rect = glGetUniformLocation(shading_program_id, "uRect");
+  this->uniform_line_thickness = glGetUniformLocation(shading_program_id, "uLineThickness");
+  this->uniform_scissor = glGetUniformLocation(shading_program_id, "uScissor");
+
+  ekg::log() << "GPU allocator initialised";
 }
 
 void ekg::os::opengl::quit() {
   
+}
+
+bool ekg::os::opengl::create_pipeline_program(uint32_t &program, const std::unordered_map<std::string, uint32_t> &resources) {
+  if (resources.empty()) {
+    ekg::log() << "Error: Invalid shader, empty resources";
+    return true;
+  }
+
+  std::string shader_src {};
+  std::vector<uint32_t> compiled_shader_list {};
+  int32_t status {};
+  program = glCreateProgram();
+
+  std::string msg {};
+  for (auto &[value, key]: resources) {
+    uint32_t shader {glCreateShader(key)};
+    const char *p_src {value.c_str()};
+    glShaderSource(shader, 1, &p_src, nullptr);
+    glCompileShader(shader);
+
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+    if (status == GL_FALSE) {
+      glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &status);
+      msg.resize(status);
+      glGetShaderInfoLog(shader, status, nullptr, msg.data());
+      ekg::log() << "Error: Failed to compile shader stage: \n" << msg;
+      break;
+    }
+
+    compiled_shader_list.push_back(shader);
+  }
+
+  bool keep {compiled_shader_list.size() == resources.size()};
+
+  for (uint32_t &shaders: compiled_shader_list) {
+    if (keep) {
+      glAttachShader(program, shaders);
+    }
+
+    glDeleteShader(shaders);
+  }
+
+  if (keep) {
+    glLinkProgram(program);
+    glGetProgramiv(program, GL_LINK_STATUS, &status);
+
+    if (status == GL_FALSE) {
+      glGetProgramiv(program, GL_INFO_LOG_LENGTH, &status);
+      msg.resize(status);
+      glGetProgramInfoLog(program, status, nullptr, msg.data());
+      ekg::log() << "Error: Failed to link program: \n" << msg;
+    }
+  }
+
+  return false;
 }
 
 void ekg::os::opengl::re_alloc_rendering_geometry(

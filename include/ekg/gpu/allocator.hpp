@@ -43,9 +43,7 @@ namespace ekg::gpu {
   protected:
     std::vector<ekg::gpu::data> data_list {};
     std::unordered_map<int32_t, ekg::gpu::scissor> scissor_map {};
-
     std::vector<float> cached_geometry_resources {};
-    std::vector<uint32_t> cached_textures {};
 
     uint64_t data_instance_index {};
     uint64_t previous_cached_geometry_resources_size {};
@@ -57,17 +55,6 @@ namespace ekg::gpu {
 
     int32_t begin_stride_count {};
     int32_t end_stride_count {};
-
-    int32_t uniform_active_texture {};
-    int32_t uniform_active_tex_slot {};
-    int32_t uniform_color {};
-    int32_t uniform_rect {};
-    int32_t uniform_line_thickness {};
-    int32_t uniform_scissor {};
-
-    uint32_t geometry_buffer {};
-    uint32_t vbo_array {};
-    uint32_t ebo_simple_shape {};
 
     bool factor_changed {};
     bool simple_shape {};
