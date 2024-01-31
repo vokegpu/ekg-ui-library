@@ -82,7 +82,8 @@ if (EKG_ENABLE_TEST)
         set(THIRD_PARTY_LIBRARIES SDL2main SDL2 GL GLEW freetype)
     endif()
 
-    target_link_libraries(ekg-gui-showcase-test
+    target_link_libraries(
+        ekg-gui-showcase-test
         ${LIBRARY_PATH}
         ${THIRD_PARTY_LIBRARIES}
         -static-libgcc -static-libstdc++    
