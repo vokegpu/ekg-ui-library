@@ -83,8 +83,8 @@ void ekg::os::opengl::init() {
 
   /* Create main shading program using two basic shaders (vertex & fragment). */
   this->create_pipeline_program(this->pipeline_program, {
-      {vsh_src, GL_VERTEX_SHADER},
-      {fsh_src, GL_FRAGMENT_SHADER}
+    {vsh_src, GL_VERTEX_SHADER},
+    {fsh_src, GL_FRAGMENT_SHADER}
   });
 
   glGenVertexArrays(1, &this->vbo_array);
@@ -116,19 +116,25 @@ void ekg::os::opengl::init() {
   /* End  of simple shape indexing buffer bind to VAO. */
 
   /* reduce glGetLocation calls when rendering the batch */
-  auto &shading_program_id {ekg::gpu::allocator::program};
-  this->uniform_active_texture = glGetUniformLocation(shading_program_id, "uActiveTexture");
-  this->uniform_active_tex_slot = glGetUniformLocation(shading_program_id, "uTextureSampler");
-  this->uniform_color = glGetUniformLocation(shading_program_id, "uColor");
-  this->uniform_rect = glGetUniformLocation(shading_program_id, "uRect");
-  this->uniform_line_thickness = glGetUniformLocation(shading_program_id, "uLineThickness");
-  this->uniform_scissor = glGetUniformLocation(shading_program_id, "uScissor");
+  this->uniform_active_texture = glGetUniformLocation(this->pipeline_program, "uActiveTexture");
+  this->uniform_active_tex_slot = glGetUniformLocation(this->pipeline_program, "uTextureSampler");
+  this->uniform_color = glGetUniformLocation(this->pipeline_program, "uColor");
+  this->uniform_rect = glGetUniformLocation(this->pipeline_program, "uRect");
+  this->uniform_line_thickness = glGetUniformLocation(this->pipeline_program, "uLineThickness");
+  this->uniform_scissor = glGetUniformLocation(this->pipeline_program, "uScissor");
+  this->uniform_viewport_height = glGetUniformLocation(this->pipeline_program, "uViewportHeight");
+  this->uniform_viewport_orthographic_matrix = glGetUniformLocation(this->pipeline_programm, "uOrthographicMatrix");
 
   ekg::log() << "GPU allocator initialised";
 }
 
 void ekg::os::opengl::quit() {
-  
+
+}
+
+void ekg::os::opengl::update_viewport(int32_t w, int32_t h) {
+  glUseProgram(this->pipeline_program);
+  glUseProgram(0);
 }
 
 bool ekg::os::opengl::create_pipeline_program(uint32_t &program, const std::unordered_map<std::string, uint32_t> &resources) {

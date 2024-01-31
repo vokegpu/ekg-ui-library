@@ -54,7 +54,8 @@ void ekg::runtime::update_size_changed() {
 
   this->service_layout.update_scale_factor();
   uint32_t font_size {
-      static_cast<uint32_t>(ekg_clamp(static_cast<int32_t>(18.0f * this->service_layout.get_scale_factor()), 0, 256))};
+    static_cast<uint32_t>(ekg_clamp(static_cast<int32_t>(18.0f * this->service_layout.get_scale_factor()), 0, 256))
+  };
 
   if (this->f_renderer_normal.font_size != font_size) {
     this->f_renderer_small.font_size = ekg_min(font_size - 4, 4);
@@ -85,12 +86,14 @@ void ekg::runtime::init() {
   this->prepare_ui_env();
   this->service_layout.init();
   this->service_theme.init();
+  this->p_gpu_api->init();
 }
 
 void ekg::runtime::quit() {
   this->gpu_allocator.quit();
   this->service_theme.quit();
   this->service_layout.quit();
+  this->p_gpu_api->quit();
 }
 
 void ekg::runtime::process_event(SDL_Event &sdl_event) {

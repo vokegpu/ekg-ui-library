@@ -94,6 +94,7 @@ namespace ekg {
     ekg::draw::font_renderer f_renderer_normal {};
     ekg::draw::font_renderer f_renderer_big {};
 
+    ekg::gpu::api *p_gpu_api {};
     ekg::gpu::allocator gpu_allocator {};
     ekg::timing ui_timing {};
     SDL_Window *root {};

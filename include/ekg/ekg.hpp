@@ -82,7 +82,7 @@ namespace ekg {
   struct runtime_property {
   public:
     const char *p_font_path {};
-    ekg::gpu_api gpu_api {};
+    ekg::gpu::api *p_gpu_api {};
     void *p_sdl_win {};
   };
 

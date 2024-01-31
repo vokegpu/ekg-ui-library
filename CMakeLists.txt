@@ -31,22 +31,22 @@ message("-- Building EKG user interface library version ${EKG_VERSION}")
 project(ekg VERSION ${EKG_VERSION} DESCRIPTION "graphical user interface")
 
 if (WIN32)
-    set(LIBRARY_OUTPUT_PATH "../lib/windows/")
-    set(PLATFORM            "windows")
+  set(LIBRARY_OUTPUT_PATH "../lib/windows/")
+  set(PLATFORM            "windows")
 elseif(ANDROID)
-    set(LIBRARY_OUTPUT_PATH "${ANDROID_ABI}/")
-    set(PLATFORM            "${ANDROID_ABI}")
+  set(LIBRARY_OUTPUT_PATH "${ANDROID_ABI}/")
+  set(PLATFORM            "${ANDROID_ABI}")
 else()
-    # Enable if your base OS is Debian-based (e.g Ubuntu).
-    # It is a common issue related by the Linux community.
-    if (EKG_LINUX_NOT_FOUND_FREETYPE)
-        include_directories(/usr/include/freetype2)
-        message("-- Using var EKG_LINUX_NOT_FOUND_FREETYPE to include `/usr/include/freetype2` directly")
-    endif()
+  # Enable if your base OS is Debian-based (e.g Ubuntu).
+  # It is a common issue related by the Linux community.
+  if (EKG_LINUX_NOT_FOUND_FREETYPE)
+      include_directories(/usr/include/freetype2)
+      message("-- Using var EKG_LINUX_NOT_FOUND_FREETYPE to include `/usr/include/freetype2` directly")
+  endif()
 
-    # WSL is not detected as Linux-based OS, same you use a Linux kernel-based distribution.
-    set(LIBRARY_OUTPUT_PATH "../lib/linux/")
-    set(PLATFORM            "linux")
+  # WSL is not detected as Linux-based OS, same you use a Linux kernel-based distribution.
+  set(LIBRARY_OUTPUT_PATH "../lib/linux/")
+  set(PLATFORM            "linux")
 endif()
 
 message("-- Generating EKG ${PLATFORM} native library")
@@ -60,44 +60,48 @@ add_library(ekg STATIC ${SOURCE_FILES})
 message("-- EKG native library building done")
 
 if (EKG_ENABLE_TEST)
-    message("-- EKG tests enabled")
-    message("-- EKG GUI showcase test building")
+  message("-- EKG tests enabled")
+  message("-- EKG GUI showcase test building")
 
-    project(ekg-gui-showcase-test)
+  project(ekg-gui-showcase-test)
 
-    if (WIN32)
-        set(EXECUTABLE_OUTPUT_PATH ../test/build/windows/)
-    else()
-        set(EXECUTABLE_OUTPUT_PATH ../test/build/linux/)
-    endif()
+  if (WIN32)
+    set(EXECUTABLE_OUTPUT_PATH ../test/build/windows/)
+  else()
+    set(EXECUTABLE_OUTPUT_PATH ../test/build/linux/)
+  endif()
 
-    add_compile_options(-O3)
-    add_executable(ekg-gui-showcase-test "test/src/ekg_gui_showcase_test.cpp")
+  add_compile_options(-O3)
+  add_executable(ekg-gui-showcase-test "test/src/ekg_gui_showcase_test.cpp")
     
-    file(GLOB LIBRARY_PATH "./lib/${PLATFORM}/libekg.a")
+  file(GLOB LIBRARY_PATH "./lib/${PLATFORM}/libekg.a")
 
-    if (WIN32)
-        set(THIRD_PARTY_LIBRARIES mingw32 SDL2main SDL2 opengl32 glew32 freetype)
-    else()
-        set(THIRD_PARTY_LIBRARIES SDL2main SDL2 GL GLEW freetype)
-    endif()
+  if (WIN32)
+    set(THIRD_PARTY_LIBRARIES mingw32 SDL2main SDL2 opengl32 glew32 freetype)
+  else()
+    set(THIRD_PARTY_LIBRARIES SDL2main SDL2 GL GLEW freetype)
+  endif()
 
-    target_link_libraries(
-        ekg-gui-showcase-test
-        ${LIBRARY_PATH}
-        ${THIRD_PARTY_LIBRARIES}
-        -static-libgcc -static-libstdc++    
-    )
+  target_link_libraries(
+    ekg-gui-showcase-test
+    ${LIBRARY_PATH}
+    ${THIRD_PARTY_LIBRARIES}
+    -static-libgcc -static-libstdc++    
+  )
 
-    message("-- EKG GUI showcase test building done")
-    message("-- EKG off test building")
+  message("-- EKG GUI showcase test building done")
+  message("-- EKG off test building")
 
-    project(ekg-off-test)
+  project(ekg-off-test)
 
-    add_compile_options(-O3)
-    add_executable(ekg-off-test "test/src/ekg_off_test.cpp")
+  add_compile_options(-O3)
+  add_executable(ekg-off-test "test/src/ekg_off_test.cpp")
 
-    target_link_libraries(ekg-off-test -static-libgcc -static-libstdc++)
+  target_link_libraries(
+    ekg-off-test
+    -static-libgcc
+    -static-libstdc++
+  )
 
-    message("-- EKG off test building done")
+  message("-- EKG off test building done")
 endif()

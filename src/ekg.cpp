@@ -25,6 +25,7 @@
 #include "ekg/ekg.hpp"
 #include "ekg/os/platform.hpp"
 #include "ekg/os/ekg_opengl.hpp"
+#include "ekg/util/geometry.hpp"
 
 ekg::runtime *ekg::core {};
 std::string ekg::glsl_version {"#version 450"};
@@ -73,18 +74,16 @@ void ekg::init(
     SDL_GetWindowSize(p_root, &ekg::display::width, &ekg::display::height);
   }
 
-
   /* The runtime core, everything should be setup before the initialization process. */
   ekg::core = p_ekg_runtime;
-  ekg::core->f_renderer_small.font_path = font_path;
-  ekg::core->f_renderer_normal.font_path = font_path;
-  ekg::core->f_renderer_big.font_path = font_path;
+  ekg::core->f_renderer_small.font_path = p_ekg_runtime_property->p_font_path;
+  ekg::core->f_renderer_normal.font_path = p_ekg_runtime_property->p_font_path;
+  ekg::core->f_renderer_big.font_path = p_ekg_runtime_property->p_font_path;
   ekg::core->root = p_ekg_runtime_property->p_sdl_win;
   ekg::core->init();
 
   /* First update of orthographic matrix and uniforms. */
 
-  ekg::gpu::invoke(ekg::gpu::allocator::program);
   ekg::orthographic2d(
     ekg::gpu::allocator::mat4x4orthographic,
     0, 
@@ -93,15 +92,10 @@ void ekg::init(
     0
   );
 
-  ekg::gpu::allocator::program.setm4("uOrthographicMatrix", ekg::gpu::allocator::mat4x4orthographic);
-  ekg::gpu::allocator::program.set("uViewportHeight", static_cast<float>(ekg::display::height));
-  ekg::gpu::revoke();
-
   /* Output SDL info. */
 
   SDL_version sdl_version {};
   SDL_GetVersion(&sdl_version);
-
 
   ekg::log() << "SDL version: "
              << static_cast<int32_t>(sdl_version.major)
@@ -140,16 +134,15 @@ void ekg::poll_event(SDL_Event &sdl_event) {
           ekg::display::width = sdl_event.window.data1;
           ekg::display::height = sdl_event.window.data2;
 
-          /* Set new display size, update orthographic matrix and pass the uniforms to the main shader. */
+          ekg::orthographic2d(
+            ekg::gpu::allocator::mat4x4orthographic,
+            0,
+            static_cast<float>(ekg::display::width),
+            static_cast<float>(ekg::display::height),
+            0
+          );
 
-          ekg::gpu::invoke(ekg::gpu::allocator::program);
-          ekg::orthographic2d(ekg::gpu::allocator::mat4x4orthographic, 0, static_cast<float>(ekg::display::width),
-                              static_cast<float>(ekg::display::height), 0);
-
-          ekg::gpu::allocator::program.setm4("uOrthographicMatrix", ekg::gpu::allocator::mat4x4orthographic);
-          ekg::gpu::allocator::program.set("uViewportHeight", static_cast<float>(ekg::display::height));
-          ekg::gpu::revoke();
-
+          ekg::core->p_gpu_api->update_viewport(ekg::display::width, ekg::display::height);
           ekg::core->update_size_changed();
           break;
         }
@@ -195,6 +188,7 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_positi
 
 ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &size, uint16_t dock) {
   auto p_ui {new ekg::ui::frame()};
+
   p_ui->set_tag(tag);
   p_ui->set_type(ekg::type::frame);
   ekg::core->gen_widget(p_ui);
