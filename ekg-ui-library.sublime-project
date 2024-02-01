@@ -2,12 +2,19 @@
 	"folders":
 	[
 		{
-			"path": "."
+			"path": ".",
 		}
 	],
 	"settings":
 	{
 		"tab_size": 2,
+		"LSP":
+		{
+			"clangd":
+			{
+				"enabled": false
+			}
+		},
 	},
 	"build_systems":
 	[

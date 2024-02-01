@@ -31,6 +31,8 @@
 #include <SDL2/SDL.h>
 #endif
 
-namespace ekg::os {}
+namespace ekg::os {
+  
+}
 
 #endif

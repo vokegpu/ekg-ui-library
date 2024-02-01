@@ -1,4 +1,5 @@
 #include "ekg/os/ekg_opengl.hpp"
+#include "ekg/ekg.hpp"
 #include "ekg/gpu/api.hpp"
 #include <stdio.h>
 #include <unordered_map>
@@ -11,7 +12,7 @@ void ekg::os::opengl::init() {
 
     "#define CONVEX -256.0\n"
 
-    "uniform mat4 uOrthographicMatrix;\n"
+    "uniform mat4 uProjection;\n"
     "uniform vec4 uRect;\n"
 
     "out vec2 vTexCoord;\n"
@@ -26,7 +27,7 @@ void ekg::os::opengl::init() {
     "    }\n"
 
     "    vertex += uRect.xy;\n"
-    "    gl_Position = uOrthographicMatrix * vec4(vertex, 0.0f, 1.0f);\n"
+    "    gl_Position = uProjection * vec4(vertex, 0.0f, 1.0f);\n"
 
     "    vTexCoord = aTexCoord;\n"
     "    vRect = uRect;\n"
@@ -123,7 +124,7 @@ void ekg::os::opengl::init() {
   this->uniform_line_thickness = glGetUniformLocation(this->pipeline_program, "uLineThickness");
   this->uniform_scissor = glGetUniformLocation(this->pipeline_program, "uScissor");
   this->uniform_viewport_height = glGetUniformLocation(this->pipeline_program, "uViewportHeight");
-  this->uniform_viewport_orthographic_matrix = glGetUniformLocation(this->pipeline_programm, "uOrthographicMatrix");
+  this->uniform_projection = glGetUniformLocation(this->pipeline_programm, "uProjection");
 
   ekg::log() << "GPU allocator initialised";
 }
@@ -133,7 +134,13 @@ void ekg::os::opengl::quit() {
 }
 
 void ekg::os::opengl::update_viewport(int32_t w, int32_t h) {
+  ekg::gpu::api::viewport[0] = 0.0f;
+  ekg::gpu::api::viewport[1] = 0.0f;
+  ekg::gpu::api::viewport[2] = static_cast<float>(w);
+  ekg::gpu::api::viewport[3] = static_cast<float>(h);
+
   glUseProgram(this->pipeline_program);
+  glUniformMatrix4fv(this->uniform_projection, GL_FALSE, 1, ekg::gpu::api::projection);
   glUseProgram(0);
 }
 

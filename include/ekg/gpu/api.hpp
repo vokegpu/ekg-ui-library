@@ -79,6 +79,9 @@ namespace ekg {
     protected:
       std::string_view rendering_shader_fragment_source {};
     public:
+      static float projection[16];
+      static float viewport[4];
+    public:
       void set_rendering_shader_fragment_source(std::string_view source);
     public:
       virtual void init() {};

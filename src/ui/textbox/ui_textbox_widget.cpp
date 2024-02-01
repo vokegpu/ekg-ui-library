@@ -178,7 +178,7 @@ void ekg::ui::textbox_widget::update_ui_text_data() {
 
 void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &cursor, int64_t x, int64_t y) {
   std::string &cursor_text {ekg_textbox_get_cursor_text(cursor)};
-  int64_t cursor_text_size {(int64_t) ekg::utf_length(cursor_text)};
+  int64_t cursor_text_size {static_cast<int64_t>(ekg::utf_length(cursor_text))};
 
   bool chunk_bounding_size_index {cursor.chunk_index + 1 == this->p_text_chunk_list->size()};
   bool check_cursor_x {x != 0};
@@ -188,10 +188,10 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
       cursor.text_index = 0;
     } else {
       cursor.chunk_index--;
-      cursor_text_size = (int64_t) ekg::utf_length(ekg_textbox_get_cursor_text(cursor));
+      cursor_text_size = static_cast<int64_t>(ekg::utf_length(ekg_textbox_get_cursor_text(cursor)));
 
       cursor.text_index = cursor.last_text_index;
-      cursor.text_index = ekg_max(cursor.text_index, (int64_t) cursor_text_size);
+      cursor.text_index = ekg_max(cursor.text_index, static_cast<int64_t>(cursor_text_size));
     }
   } else if (y > 0) {
     if (chunk_bounding_size_index) {
@@ -199,9 +199,9 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
     } else {
       cursor.chunk_index++;
 
-      cursor_text_size = (int64_t) ekg::utf_length(ekg_textbox_get_cursor_text(cursor));
+      cursor_text_size = static_cast<int64_t>(ekg::utf_length(ekg_textbox_get_cursor_text(cursor)));
       cursor.text_index = cursor.last_text_index;
-      cursor.text_index = ekg_max(cursor.text_index, (int64_t) cursor_text_size);
+      cursor.text_index = ekg_max(cursor.text_index, static_cast<int64_t>(cursor_text_size));
     }
   }
 
@@ -223,8 +223,8 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
     y = 1;
   }
 
-  cursor.text_index = ekg_min(cursor.text_index, (int64_t) 0);
-  cursor.chunk_index = ekg_max(cursor.chunk_index, (int64_t) this->p_text_chunk_list->size());
+  cursor.text_index = ekg_min(cursor.text_index, static_cast<int64_t>(0));
+  cursor.chunk_index = ekg_max(cursor.chunk_index, static_cast<int64_t>(this->p_text_chunk_list->size()));
 
   if (check_cursor_x) {
     cursor.last_text_index = cursor.text_index;
@@ -480,7 +480,7 @@ void ekg::ui::textbox_widget::process_text(
 
           ekg_textbox_clamp_line(upper_line_text, ui_max_chars_per_line);
         } else {
-          int64_t it {ekg_min(cursor.pos[0].text_index - 1, (int64_t) 0)};
+          int64_t it {ekg_min(cursor.pos[0].text_index - 1, static_cast<int64_t>(0))};
           cursor_text_a = (
             ekg::utf_substr(cursor_text_a, 0, it) +
             ekg::utf_substr(cursor_text_a, it + 1, ekg::utf_length(cursor_text_a))
@@ -502,7 +502,7 @@ void ekg::ui::textbox_widget::process_text(
 
         ekg_textbox_clamp_line(cursor_text_a, ui_max_chars_per_line);
       } else if (cursor.pos[0] == cursor.pos[1] && direction > 0) {
-        int64_t cursor_text_size {(int64_t) ekg::utf_length(cursor_text_a)};
+        int64_t cursor_text_size {static_cast<int64_t>(ekg::utf_length(cursor_text_a))};
         bool chunk_bounding_size_index {cursor.pos[0].chunk_index + 1 == this->p_text_chunk_list->size()};
 
         if (cursor.pos[0].text_index >= cursor_text_size && !chunk_bounding_size_index) {
@@ -908,7 +908,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     main_cursor.pos[0].text_index = 0;
     main_cursor.pos[0].last_text_index = 0;
 
-    main_cursor.pos[1].chunk_index = ekg_min((int64_t) this->p_text_chunk_list->size() - 1, (int64_t) 0);
+    main_cursor.pos[1].chunk_index = ekg_min(static_cast<int64_t>(this->p_text_chunk_list->size()) - 1, static_cast<int64_t>(0));
     main_cursor.pos[1].text_index = static_cast<int64_t>(ekg::utf_length(ekg_textbox_get_cursor_text(main_cursor.pos[1])));
     main_cursor.pos[1].last_text_index = main_cursor.pos[1].chunk_index;
 
