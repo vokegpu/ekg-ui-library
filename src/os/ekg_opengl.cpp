@@ -4,6 +4,11 @@
 #include <stdio.h>
 #include <unordered_map>
 
+void ekg::os::opengl::log_vendor_details() {
+  const char *p_vendor {glGetString(GL_VENDOR)};
+  ekg::log() << p_vendor;
+}
+
 void ekg::os::opengl::init() {
   std::string_view vsh_src {
     ekg::glsl_version + "\n"
@@ -138,6 +143,14 @@ void ekg::os::opengl::update_viewport(int32_t w, int32_t h) {
   ekg::gpu::api::viewport[1] = 0.0f;
   ekg::gpu::api::viewport[2] = static_cast<float>(w);
   ekg::gpu::api::viewport[3] = static_cast<float>(h);
+
+  ekg::ortho(
+    ekg::gpu::api::projection,
+    0,
+    ekg::gpu::api::viewport[2],
+    ekg::gpu::api::viewport[3],
+    0
+  );
 
   glUseProgram(this->pipeline_program);
   glUniformMatrix4fv(this->uniform_projection, GL_FALSE, 1, ekg::gpu::api::projection);

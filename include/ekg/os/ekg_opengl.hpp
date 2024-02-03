@@ -51,9 +51,12 @@ namespace ekg::os {
     uint32_t geometry_buffer {};
     uint32_t vbo_array {};
     uint32_t ebo_simple_shape {};
+    uint32_t pipeline_program {};
   public:
     uint32_t create_pipeline_program(uint32_t &program, const std::unordered_map<std::string, uint32_t> &resources);
   public:
+    void log_vendor_details() override;
+
     void init() override;
     void quit() override;
     void invoke_pipeline() override;

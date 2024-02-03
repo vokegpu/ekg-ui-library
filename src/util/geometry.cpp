@@ -93,7 +93,7 @@ bool ekg::rect_collide_rect(const ekg::rect &a, const ekg::rect &b) {
          a.y < b.y + b.h && a.x + a.w > b.y;
 }
 
-void ekg::orthographic2d(float *p_matrix, float left, float right, float bottom, float top) {
+void ekg::ortho(float *p_matrix, float left, float right, float bottom, float top) {
   const float depth_near = -1.0f;
   const float depth_far = 1.0f;
   const float depth_inv = 1.0f / (depth_far - depth_near);

@@ -33,6 +33,7 @@
 #include "ekg/service/layout.hpp"
 #include "ekg/util/io.hpp"
 #include "ekg/util/gui.hpp"
+#inclide "ekg/gpu/api.hpp"
 #include <unordered_map>
 
 namespace ekg {
@@ -97,7 +98,6 @@ namespace ekg {
     ekg::gpu::api *p_gpu_api {};
     ekg::gpu::allocator gpu_allocator {};
     ekg::timing ui_timing {};
-    SDL_Window *root {};
   public:
     ekg::ui::abstract_widget *get_fast_widget_by_id(int32_t id);
 

@@ -84,6 +84,7 @@ namespace ekg {
     public:
       void set_rendering_shader_fragment_source(std::string_view source);
     public:
+      virutal void log_vendor_details() {};
       virtual void init() {};
       virtual void quit() {};
       virtual void invoke_pipeline() {};

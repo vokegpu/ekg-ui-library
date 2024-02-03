@@ -65,21 +65,33 @@ void ekg::init(
 
   if (p_ekg_runtime_property->p_sdl_win != nullptr) {
     ekg::listener = SDL_RegisterEvents(1);
-  
-    /* Init OS cursor and check mouse icons. */
-
-    ekg::init_cursor();
-    ekg::log() << "Initialising OS cursor";
 
     SDL_GetWindowSize(p_root, &ekg::display::width, &ekg::display::height);
+
+    /* Output SDL info. */
+
+    SDL_version sdl_version {};
+    SDL_GetVersion(&sdl_version);
+
+    ekg::log() << "SDL version: "
+               << static_cast<int32_t>(sdl_version.major)
+               << '.'
+               << static_cast<int32_t>(sdl_version.minor)
+               << '.'
+               << static_cast<int32_t>(sdl_version.patch);
   }
+
+  /* Init OS cursor and check mouse icons. */
+
+  ekg::init_cursor();
+  ekg::log() << "Initialising OS cursor";
 
   /* The runtime core, everything should be setup before the initialization process. */
   ekg::core = p_ekg_runtime;
+  ekg::core->p_gpu_api = p_ekg_runtime_property->p_gpu_api;
   ekg::core->f_renderer_small.font_path = p_ekg_runtime_property->p_font_path;
   ekg::core->f_renderer_normal.font_path = p_ekg_runtime_property->p_font_path;
   ekg::core->f_renderer_big.font_path = p_ekg_runtime_property->p_font_path;
-  ekg::core->root = p_ekg_runtime_property->p_sdl_win;
   ekg::core->init();
 
   /* First update of orthographic matrix and uniforms. */
@@ -92,19 +104,8 @@ void ekg::init(
     0
   );
 
-  /* Output SDL info. */
-
-  SDL_version sdl_version {};
-  SDL_GetVersion(&sdl_version);
-
-  ekg::log() << "SDL version: "
-             << static_cast<int32_t>(sdl_version.major)
-             << '.'
-             << static_cast<int32_t>(sdl_version.minor)
-             << '.'
-             << static_cast<int32_t>(sdl_version.patch);
-
   ekg::log() << "Vendor details: ";
+  p_ekg_runtime_property->p_gpu_api->log_vendor_details();
 }
 
 void ekg::quit() {
@@ -133,17 +134,10 @@ void ekg::poll_event(SDL_Event &sdl_event) {
         case SDL_WINDOWEVENT_SIZE_CHANGED: {
           ekg::display::width = sdl_event.window.data1;
           ekg::display::height = sdl_event.window.data2;
-
-          ekg::orthographic2d(
-            ekg::gpu::allocator::mat4x4orthographic,
-            0,
-            static_cast<float>(ekg::display::width),
-            static_cast<float>(ekg::display::height),
-            0
-          );
-
+          
           ekg::core->p_gpu_api->update_viewport(ekg::display::width, ekg::display::height);
           ekg::core->update_size_changed();
+
           break;
         }
       }

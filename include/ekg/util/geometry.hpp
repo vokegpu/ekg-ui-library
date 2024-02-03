@@ -273,7 +273,7 @@ namespace ekg {
 
   void set_rect_clamped(ekg::rect &rect, float min_size);
   void set_dock_scaled(const ekg::rect &rect, const ekg::vec2 &offset, ekg::docker &docker);
-  void orthographic2d(float *p_matrix, float left, float right, float bottom, float top);
+  void ortho(float *p_matrix, float left, float right, float bottom, float top);
 
   float find_min_offset(float width, float offset);
   float smooth(float duration, uint64_t ticks);

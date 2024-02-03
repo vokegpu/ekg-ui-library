@@ -133,13 +133,16 @@ namespace ekg::ui {
     std::string cached_tab_size {};
     uint64_t visible_text[4] {};
   public:
-    bool find_cursor(ekg::ui::textbox_widget::cursor &target_cursor, int64_t total_it, int64_t it_chunk,
-                     bool last_line_utf_char_index);
+    bool find_cursor(
+      ekg::ui::textbox_widget::cursor &target_cursor,
+      int64_t total_it,
+      int64_t it_chunk,
+      bool last_line_utf_char_index
+    );
 
     void check_cursor_text_bounding(ekg::ui::textbox_widget::cursor &cursor, bool reset_second_cursor_pos);
 
-    void
-    process_text(
+    void process_text(
       ekg::ui::textbox_widget::cursor &cursor,
       std::string_view text,
       ekg::ui::textbox_widget::action action,
