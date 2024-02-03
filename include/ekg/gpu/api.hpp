@@ -111,6 +111,16 @@ namespace ekg {
       virtual uint64_t bind_sampler(ekg::gpu::sampler_t *p_sampler) {};
     }
   }
+
+  void allocate_sampler(
+    const ekg::gpu::sampler_allocate_info *p_sampler_allocate_info,
+    ekg::gpu::sampler_t *p_sampler,
+  );
+
+  void fill_sampler(
+    const ekg::gpu::sampler_fill_info *p_sampler_fill_info,
+    ekg::gpu::sampler_t *p_sampler,
+  );
 }
 
 #endif

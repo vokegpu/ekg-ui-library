@@ -98,6 +98,7 @@ namespace ekg {
     ekg::gpu::api *p_gpu_api {};
     ekg::gpu::allocator gpu_allocator {};
     ekg::timing ui_timing {};
+    ekg::os::platform *p_os_platform {};
   public:
     ekg::ui::abstract_widget *get_fast_widget_by_id(int32_t id);
 

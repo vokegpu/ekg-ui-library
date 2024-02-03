@@ -17,37 +17,17 @@ int32_t showcase_useless_window() {
     )
   };
 
+  SDL_Event sdl_event {};
   SDLGL_Context sdl_gl_context {SDL_GL_CreateContext(p_sdl_win)};
+
   glewExperimental = GL_TRUE;
   glewInit();
 
   ekg::runtime_property ekg_runtime_property {
     .p_font_path = "whitneybook.otf",
     .p_gpu_api = new ekg::os::opengl(),
-    .p_sdl_win = p_sdl_win,
+    .p_os_platform = new ekg::os::sdl(p_sdl_win, &sdl_event),
   };
-
-  ekg::sampler_allocate_info img_asset {
-    .p_tag = "oi amo gatos e bejinhos ><",
-    .w = 320,
-    .h = 240,
-    .gl_internal_format = GL_RGBA,
-    .gl_format = GL_RGBA,
-    .p_data = nullptr,
-  };
-
-  ekg::sampler_t img_id {};
-  ekg::allocate_sampler(&img_id, &img_asset);
-
-  ekg::sub_sampler_allocate_info sub_sampler_create_info {
-    .w = 320,
-    .h = 240,
-    .gl_internal_format = GL_RGBA,
-    .gl_format = GL_RGBA,
-    .p_data = nulltr;
-  };
-
-  ekg::sub_sampler();
 
   auto p_frame = ekg::frame("oi", {20, 20}, {200, 200})->set_sampler(img_id);
 
@@ -55,7 +35,6 @@ int32_t showcase_useless_window() {
   ekg::init(&runtime, &ekg_runtime_property);
 
   bool running {true};
-  SDL_Event sdl_event {};
 
   while (running) {
     while (SDL_PollEvent(&sdl_event)) {

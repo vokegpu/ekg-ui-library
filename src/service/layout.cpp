@@ -556,6 +556,11 @@ void ekg::service::layout::init() {
    * Same as font.cpp:
    * A common issue with rendering overlay elements is flot32 imprecision, for this reason
    * the cast float32 to int32 is necessary.
+   * Extra:
+   * I am totally wrong about this imprecision, I guess, the possible solution for this
+   * big bizzare calculations, is, uses a scale-based position and size, the horrible part
+   * of implementing it, is the unknown LOGIC.
+   * god, do not read this.
    */
   this->min_offset = (this->min_height / 6.0f) / 2.0f;
   this->min_offset = static_cast<int32_t>(this->min_offset);
@@ -570,14 +575,19 @@ float ekg::service::layout::get_min_offset() {
 }
 
 void ekg::service::layout::update_scale_factor() {
-  this->viewport_scale = {static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height)};
+  this->viewport_scale = {
+    static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height)
+  };
 
   ekg::vec2 monitor_resolution {ekg::scalebase};
   ekg::vec2 input_resolution {this->viewport_scale};
 
   if (ekg::autoscale) {
+    ekg::core->p_os_platform->update_monitor_resolution();
+    monitor_resolution.x = static_cast<float>(ekg::core->p_os_platform->monitor_resolution[0]);
+    monitor_resolution.y = static_cast<float>(ekg::core->p_os_platform->monitor_resolution[1]);
+
     ekg::scalebase = {1920.0f, 1080.0f};
-    ekg::os_get_monitor_resolution(monitor_resolution.x, monitor_resolution.y);
     input_resolution = monitor_resolution;
   }
 
@@ -597,13 +607,30 @@ void ekg::service::layout::update_scale_factor() {
    * e.g: 2/4 = 0.5f --> 3/4 = 0.75f
    */
 
-  float base_scale {ekg::scalebase.x * ekg::scalebase.y};
-  float monitor_scale {monitor_resolution.x * monitor_resolution.y};
-  float monitor_factor {monitor_scale / base_scale};
-  float monitor_scale_percent {monitor_factor * 100.0f};
-  float factor {((input_resolution.x * input_resolution.y) / base_scale) * 100.0f};
+  float base_scale {
+    ekg::scalebase.x * ekg::scalebase.y
+  };
 
-  factor = roundf(factor / ekg::scaleinterval) / (monitor_scale_percent / ekg::scaleinterval);
+  float monitor_scale {
+    monitor_resolution.x * monitor_resolution.y
+  };
+
+  float monitor_factor {
+    monitor_scale / base_scale
+  };
+
+  float monitor_scale_percent {
+    monitor_factor * 100.0f
+  };
+  
+  float factor {
+    ((input_resolution.x * input_resolution.y) / base_scale) * 100.0f
+  };
+
+  factor = (
+    roundf(factor / ekg::scaleinterval) / (monitor_scale_percent / ekg::scaleinterval)
+  );
+
   this->scale_factor = ekg_clamp(factor, 0.5f, 2.0f);
 }
 

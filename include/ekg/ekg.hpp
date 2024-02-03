@@ -27,11 +27,11 @@
 
 #include "ekg/core/runtime.hpp"
 #include "ekg/core/task.hpp"
-#include "ekg/gpu/gpu_base_impl.hpp"
 #include "ekg/util/gui.hpp"
 #include "ekg/util/io.hpp"
 #include "ekg/util/text.hpp"
-#include "ekg/os/ekg_opengl.hpp"
+#include "ekg/gpu/api.hpp"
+#include "ekg/os/platform.hpp"
 
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ui/label/ui_label.hpp"
@@ -83,11 +83,25 @@ namespace ekg {
   public:
     const char *p_font_path {};
     ekg::gpu::api *p_gpu_api {};
-    void *p_sdl_win {};
+    ekg::os::platform *p_os_platform {};
   };
 
   /**
-   * Init the runtime core of ekg, set window SDL instance and font renderer path (default but changeable).
+   * The initialization of EKG,
+   * initialize `ekg::runtime_property` correct before calling this.
+   * 
+   * EKG does not has a font-service to handle system fonts, then it is required
+   * to load a local (ttf, otf) font file.
+   * 
+   * GPU API tells which GPU API the application is built in; For OpenGL API
+   * do not worry about the initialization setup process; Vulkan API requires
+   * more of work to setup, EKG only initialize the necessary descriptor sets,
+   * and PSO - you pre-initialize everything -.
+   * Check: <link-about-RHI-concept-documentation-not-done>
+   * 
+   * The OS platform, under the system libraries (X11, Wayland, Win32) or
+   * window library (SDL, GLEW, etc).
+   * Check: <OS-platform-documention-aobut-not-done>  
    */
   void init(ekg::runtime *p_ekg_runtime, ekg::runtime_property *p_ekg_runtime_property);
 

@@ -43,12 +43,20 @@ namespace ekg {
     hand
   };
 
+  namespace os {
+    class platform {
+    public:
+      int32_t monitor_resolution[2] {};
+    public:
+      virtual void init() {};
+      virtual void quit() {};
+      virtual void update_monitor_resolution() {};
+      virtual void update_cursor(ekg::system_cursor system_cursor) {};
+    };
+  };
+
   extern ekg::system_cursor cursor;
   static SDL_Cursor *loaded_system_cursor_list[12];
-
-  void init_cursor();
-  void set_cursor(ekg::system_cursor system_cursor);
-  void os_get_monitor_resolution(float &w, float &h);
 }
 
 #endif

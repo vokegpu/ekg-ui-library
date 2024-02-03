@@ -24,7 +24,6 @@
 
 #include "ekg/ekg.hpp"
 #include "ekg/os/platform.hpp"
-#include "ekg/os/ekg_opengl.hpp"
 #include "ekg/util/geometry.hpp"
 
 ekg::runtime *ekg::core {};

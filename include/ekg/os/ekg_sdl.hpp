@@ -31,8 +31,23 @@
 #include <SDL2/SDL.h>
 #endif
 
+#include "platform.hpp"
+
 namespace ekg::os {
-  
+  class sdl : public ekg::os::platform {
+  protected:
+    SDL_Cursor loaded_system_cursor_list[12] {};
+    SDL_Window *p_sdl_win {};
+    SDL_Event *p_sdl_event {};
+  public:
+    sdl(SDL_Window *p_sdl_win, SDL_Event *p_sdl_event);
+  public:
+    void init() override;
+    void quit() override;
+
+    void update_monitor_resolution() override;
+    void update_cursor(ekg::system_cursor system_cursor) override;
+  };
 }
 
 #endif
