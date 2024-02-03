@@ -96,8 +96,12 @@ void ekg::runtime::quit() {
   this->p_gpu_api->quit();
 }
 
-void ekg::runtime::process_event(SDL_Event &sdl_event) {
-  this->service_input.on_event(sdl_event);
+void ekg::runtime::process_event() {
+  if (!this->must_proceess_event) {
+    return;
+  }
+
+  this->service_input.on_event(this->serialized_event_entity);
 
   bool pressed {ekg::input::pressed()};
   bool released {ekg::input::released()};
@@ -128,10 +132,10 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
 
     p_widgets->on_pre_event(sdl_event);
 
-    /*
+    /**
      * Text input like textbox and keyboard events should not update stack, instead just mouse events.
      */
-    hovered = !(sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_KEYUP || sdl_event.type == SDL_TEXTINPUT)
+    hovered = !(this->current_event_key_down || this->current_event_key_up || this->current_event_text_input)
               && p_widgets->flag.hovered && p_widgets->p_data->is_visible() && p_widgets->p_data->get_state() != ekg::state::disabled;
     if (hovered) {
       this->widget_id_focused = p_widgets->p_data->get_id();
@@ -140,7 +144,7 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
       first_absolute = false;
     }
 
-    /*
+    /**
      * The absolute/top-level system check for the first absolute fired widget,
      * everytime a widget is hovered then reset again the checking state.
      *
@@ -201,6 +205,18 @@ void ekg::runtime::process_event(SDL_Event &sdl_event) {
 
     ekg::dispatch(ekg::env::swap);
     ekg::dispatch(ekg::env::redraw);
+  }
+
+  if (this->current_event_key_up) {
+    this->current_event_key_up = false;
+  }
+
+  if (this->current_event_key_down) {
+    this->current_event_key_up = false;
+  } 
+
+  if (this->current_event_key_input_) {
+    this->current_event_key_up = false;
   }
 }
 
@@ -513,7 +529,7 @@ void ekg::runtime::prepare_tasks() {
 }
 
 ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(int32_t id) {
-  /* widget ID 0 is defined as none, or be, ID token accumulation start with 1 and not 0 */
+  /** widget ID 0 is defined as none, or be, ID token accumulation start with 1 and not 0 */
   return id ? this->widget_map[id] : nullptr;
 }
 

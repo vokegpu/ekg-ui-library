@@ -40,7 +40,10 @@ namespace ekg::os {
     SDL_Window *p_sdl_win {};
     SDL_Event *p_sdl_event {};
   public:
-    sdl(SDL_Window *p_sdl_win, SDL_Event *p_sdl_event);
+    sdl(
+      SDL_Window *p_sdl_win,
+      SDL_Event *p_sdl_event
+    );
   public:
     void init() override;
     void quit() override;

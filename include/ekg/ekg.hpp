@@ -90,7 +90,7 @@ namespace ekg {
    * The initialization of EKG,
    * initialize `ekg::runtime_property` correct before calling this.
    * 
-   * EKG does not has a font-service to handle system fonts, then it is required
+   * EKG does not has a font-service to handle system fonts, so it is required
    * to load a local (ttf, otf) font file.
    * 
    * GPU API tells which GPU API the application is built in; For OpenGL API
@@ -100,7 +100,7 @@ namespace ekg {
    * Check: <link-about-RHI-concept-documentation-not-done>
    * 
    * The OS platform, under the system libraries (X11, Wayland, Win32) or
-   * window library (SDL, GLEW, etc).
+   * window library (SDL, GLFW, etc).
    * Check: <OS-platform-documention-aobut-not-done>  
    */
   void init(ekg::runtime *p_ekg_runtime, ekg::runtime_property *p_ekg_runtime_property);
@@ -113,7 +113,7 @@ namespace ekg {
   /**
    * Poll events and sync UI events.
    */
-  void poll_event(SDL_Event &);
+  void poll_event();
 
   /**
    * Process events, tasks, services & widgets.
