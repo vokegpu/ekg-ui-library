@@ -56,7 +56,6 @@ namespace ekg {
   };
 
   extern ekg::system_cursor cursor;
-  static SDL_Cursor *loaded_system_cursor_list[12];
 }
 
 #endif

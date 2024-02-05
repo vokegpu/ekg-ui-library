@@ -72,13 +72,13 @@ namespace ekg::os {
     ) override;
 
     uint64_t allocate_sampler(
-      ekg::gpu::sampler_t *p_sampler,
       const ekg::gpu::sampler_allocate_info *p_sampler_allocate_info,
+      ekg::gpu::sampler_t *p_sampler,
     ) override;
 
     uint64_t fill_sampler(
-      ekg::gpu::sampler_t *p_sampler,
       const ekg::gpu::sampler_fill_info *sampler_fill_info,
+      ekg::gpu::sampler_t *p_sampler,
     ) override;
 
     bool bind_sampler(ekg::gpu::sampler_t *p_sampler) override;

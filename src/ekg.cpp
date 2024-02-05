@@ -156,13 +156,7 @@ void ekg::update() {
 }
 
 void ekg::render() {
-  // TODO: Fast multi-platform renderer allocator
-
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
   ekg::core->process_render();
-  glDisable(GL_BLEND);
 }
 
 ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_position, const ekg::vec2 &size) {

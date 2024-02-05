@@ -30,7 +30,7 @@ Note: Some old code may not follow the code of conduct, but it is being refactor
 namespace ekg {} // always use namespace and ekg
 
 // no smart pointers
-// pointers start with prefix p_*
+// pointers start with prefix p_* (except `ekg::core`, check lacunes)
 int32_t *p_int {};
 
 // also always use initialization-list implicit {}
@@ -45,3 +45,7 @@ static_cast<t>
 
 #endif
 ```
+
+# Lacunes
+
+The `ekg::core` is the unique PTR wich does not has `p_` prefix. The reason, pure design.
