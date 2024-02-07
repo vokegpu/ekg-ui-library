@@ -26,11 +26,11 @@
 #include <iostream>
 #include <fstream>
 
+#include "ekg/ekg.hpp"
 #include "ekg/os/ekg_sdl.hpp"
 
-ekg::os::sdl::sdl(SDL_Window *p_sdl_win, SDL_Event  *p_sdl_event) {
+ekg::os::sdl::sdl(SDL_Window *p_sdl_win) {
   this->p_sdl_win = p_sdl_win;
-  this->p_sdl_event = p_sdl_event;
 }
 
 void ekg::os::sdl::init() {
@@ -73,4 +73,58 @@ void ekg::os::sdl::update_monitor_resolution() {
 
   this->monitor_resolution[0] = static_cast<int32_t>(sdl_display_mode.w);
   this->monitor_resolution[1] = static_cast<int32_t>(sdl_display_mode.h)
+}
+
+void ekg::os::sdl::get_key_name(int32_t key, std::string_view &name) {
+  name = SDL_GetKeyName(key);
+}
+
+void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
+  ekg::os::io_event_serialized io_event_serialized {};
+
+  switch (sdl_event.type) {
+  case SDL_WINDOWEVENT:
+    switch (sdl_event.window.event) {
+      case SDL_WINDOWEVENT_SIZE_CHANGED:
+        ekg::display::width = sdl_event.window.data1;
+        ekg::display::height = sdl_event.window.data2;
+        
+        ekg::core->p_gpu_api->update_viewport(ekg::display::width, ekg::display::height);
+        ekg::core->update_size_changed();
+
+        break;
+    }
+
+    break;
+
+  case SDL_KEYDOWN:
+    io_event_serialized.is_key_down = true;
+    io_event_serialized.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
+    break;
+
+  case SDL_KEYUP:
+    io_event_serialized.is_key_up = true;
+    io_event_serialized.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
+    break;
+
+  case SDL_TEXTINPUT:
+    io_event_serialized.is_text_input = true;
+    io_event_serialized.text_input = sdl_event.text;
+    break;
+
+  case SDL_MOUSEBUTTONUP:
+    io_event_serialized.is_mouse_button_up = true;
+    io_event_serialized.mouse_button = sdl_event.button.button;
+    break;
+
+  case SDL_MOUSEBUTTONDOWN:
+    io_event_serialized.is_mouse_button_down = true;
+    io_event_serialized.mouse_button = sdl_event.button.button;
+    break;
+
+  case SDL_MOUSEWHEEL:
+    io_event_serialized.is_mouse_wheel = true;
+    io_event_serialized.mouse_wheel
+    break;
+  }
 }

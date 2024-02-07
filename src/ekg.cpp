@@ -113,46 +113,32 @@ void ekg::quit() {
 }
 
 void ekg::poll_event(SDL_Event &sdl_event) {
-  if (!(
-      /*
-       * Not all events should be processed, only the requireds.
-       */
-      sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
-      sdl_event.type == SDL_FINGERUP || sdl_event.type == SDL_FINGERDOWN ||
-      sdl_event.type == SDL_FINGERMOTION || sdl_event.type == SDL_MOUSEMOTION ||
-      sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_KEYUP ||
-      sdl_event.type == SDL_WINDOWEVENT || sdl_event.type == SDL_MOUSEWHEEL ||
-      sdl_event.type == SDL_TEXTINPUT
-  )) {
-    return;
-  }
 
-  switch (sdl_event.type) {
-    case SDL_WINDOWEVENT: {
-      switch (sdl_event.window.event) {
-        case SDL_WINDOWEVENT_SIZE_CHANGED: {
-          ekg::display::width = sdl_event.window.data1;
-          ekg::display::height = sdl_event.window.data2;
-          
-          ekg::core->p_gpu_api->update_viewport(ekg::display::width, ekg::display::height);
-          ekg::core->update_size_changed();
-
-          break;
-        }
-      }
-
-      break;
-    }
-  }
-
-  // Reset the cursor to the default type, then it is never glitch.
-  ekg::cursor = ekg::system_cursor::arrow;
-  ekg::core->process_event(sdl_event);
 }
 
 void ekg::update() {
+  if (ekg::core->must_process_event) {
+    ekg::cursor = ekg::system_cursor::arrow; // reset, due a glitch
+    ekg::core->process_event();
+    ekg::core->must_process_event = false;
+  }
+
+  //if (!(
+  //    /*
+  //     * Not all events should be processed, only the requireds.
+  //     */
+  //    sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
+  //    sdl_event.type == SDL_FINGERUP || sdl_event.type == SDL_FINGERDOWN ||
+  //    sdl_event.type == SDL_FINGERMOTION || sdl_event.type == SDL_MOUSEMOTION ||
+  //    sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_KEYUP ||
+  //    sdl_event.type == SDL_WINDOWEVENT || sdl_event.type == SDL_MOUSEWHEEL ||
+  //    sdl_event.type == SDL_TEXTINPUT
+  //)) {
+  //  return;
+  //}
+
   ekg::core->process_update();
-  ekg::set_cursor(ekg::cursor);
+  ekg::core->p_os_platform->update_cursor(ekg::cursor);
 }
 
 void ekg::render() {
