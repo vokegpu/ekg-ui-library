@@ -124,7 +124,28 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
 
   case SDL_MOUSEWHEEL:
     io_event_serialized.is_mouse_wheel = true;
-    io_event_serialized.mouse_wheel
+    io_event_serialized.mouse_wheel_x = sdl_event.wheel.x;
+    io_event_serialized.mouse_wheel_y = sdl_event.wheel.y;
+    io_event_serialized.mouse_wheel_precise_x = sdl_event.wheel.preciseX;
+    io_event_serialized.mouse_wheel_precise_y = sdl_event.wheel.preciseY;
+    break;
+
+  case SDL_FINGERUP:
+    io_event_serialized.is_finger_up = true;
+    io_event_serialized.finger_x = sdl_event.tfinger.x;
+    io_event_serialized.finger_y = sdl_event.tfinger.y;        
+    break;
+
+  case SDL_FINGERDOWN:
+    io_event_serialized.is_finger_down = true;
+    io_event_serialized.finger_x = sdl_event.tfinger.x;
+    io_event_serialized.finger_y = sdl_event.tfinger.y;   
+    break;
+
+  case SDL_FINGERMOTION:
+    io_event_serialized.is_finger_motion = true;
+    io_event_serialized.finger_x = sdl_event.tfinger.x;
+    io_event_serialized.finger_y = sdl_event.tfinger.y;   
     break;
   }
 }

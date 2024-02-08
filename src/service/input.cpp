@@ -141,13 +141,13 @@ void ekg::service::input::on_event(ekg::os::io_event_serialized &io_event_serial
     this->callback("mouse-wheel", true);
     this->was_wheel = true;
 
-    this->callback("mouse-wheel-up", io_event_serialized.wheel_y > 0);
-    this->callback("mouse-wheel-down", io_event_serialized.wheel_y < 0);
-    this->callback("mouse-wheel-right", io_event_serialized.wheel_x > 0);
-    this->callback("mouse-wheel-left", io_event_serialized.wheel_x < 0);
+    this->callback("mouse-wheel-up", io_event_serialized.mouse_wheel_y > 0);
+    this->callback("mouse-wheel-down", io_event_serialized.mouse_wheel_y < 0);
+    this->callback("mouse-wheel-right", io_event_serialized.mouse_wheel_x > 0);
+    this->callback("mouse-wheel-left", io_event_serialized.mouse_wheel_x < 0);
 
-    this->interact.z = io_event_serialized.wheel_precise_x;
-    this->interact.w = io_event_serialized.wheel_precise_y;
+    this->interact.z = io_event_serialized.mouse_wheel_precise_x;
+    this->interact.w = io_event_serialized.mouse_wheel_precise_y;
   } else if (io_event_serialized.is_finger_down) {
     this->was_pressed = true;
     ekg::reset(this->timing_last_interact);
