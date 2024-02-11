@@ -62,6 +62,9 @@ namespace ekg::ui {...
 class drop_down_frame : public ekg::ui::abstract {
 public:
   ...
+
+  // buildable pattern, just add at end of function `return this`.
+  ekg::ui::drop_down_frame *set_something(foo bar);
 };
 
 // include/ui/frame/ui_drop_down_frame_widget.hpp
@@ -110,7 +113,9 @@ Letting accessible to the user-programmer, after the widget is registered, must 
 
 ```cpp
 // include/ekg.hpp
-// if this UI element contains the feature of alignment (dockable to a container element), pre-initialize with `ekg::dock::none`.
+
+// if this UI element is dockable by a container element,
+// pre-initialize with `ekg::dock::none`.
 
 /**
  * Docks go here.
