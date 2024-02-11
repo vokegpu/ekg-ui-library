@@ -80,7 +80,7 @@ void ekg::os::sdl::get_key_name(int32_t key, std::string_view &name) {
 }
 
 void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
-  ekg::os::io_event_serialized io_event_serialized {};
+  ekg::event::serialized serialized {};
 
   switch (sdl_event.type) {
   case SDL_WINDOWEVENT:

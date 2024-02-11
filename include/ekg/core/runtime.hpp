@@ -44,7 +44,6 @@ namespace ekg {
     static ekg::stack front;
     static std::vector<ekg::ui::abstract_widget *> buffer;
     static std::vector<uint64_t> tooktimeanalyzingtelemtry;
-
     static void refresh();
   };
 
@@ -99,10 +98,12 @@ namespace ekg {
     ekg::gpu::allocator gpu_allocator {};
     ekg::timing ui_timing {};
     ekg::os::platform *p_os_platform {};
+
+    ekg::
   public:
     ekg::ui::abstract_widget *get_fast_widget_by_id(int32_t id);
 
-    void gen_widget(ekg::ui::abstract *ui);
+    void gen_widget(ekg::ui::abstract *p_ui);
 
     void do_task_reload(ekg::ui::abstract_widget *widget);
 
