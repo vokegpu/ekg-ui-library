@@ -55,6 +55,7 @@ public:
 ```
 
 E.g. creating a drop down frame UI element:
+- Each setter method, must return the element instance (buildable pattern)
 
 ```cpp
 // include/ui/frame ui_drop_down_frame.hpp

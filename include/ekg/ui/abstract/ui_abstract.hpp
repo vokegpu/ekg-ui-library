@@ -108,7 +108,7 @@ namespace ekg {
        * Set the element type,
        * not recommend to use, due the object origin be incorrect with the current set.
        */
-      ekg::ui::abstract *unsafe_set_typeekg::type enum_type);
+      ekg::ui::abstract *unsafe_set_type(ekg::type enum_type);
     public:
       /**
        * The abstract constructor.

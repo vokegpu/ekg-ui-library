@@ -182,7 +182,7 @@ std::string ekg::utf_substr(std::string_view string, uint64_t offset, uint64_t s
     utf_text_size++;
 
     if (
-        /*
+        /**
          * OBS:
          *  If the `offset` parameter is equals to the last UTF-8 string size,
          *  then it continue without substring process.

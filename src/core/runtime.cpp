@@ -622,7 +622,7 @@ void ekg::runtime::prepare_ui_env() {
 
 void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
   p_ui->unsafe_set_id(++this->token_id);
-
+  
   this->swap_widget_id_focused = p_ui->get_id();
   ekg::ui::abstract_widget *p_widget_created {};
 

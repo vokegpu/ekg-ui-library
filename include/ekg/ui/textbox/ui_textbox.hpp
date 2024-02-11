@@ -32,7 +32,7 @@ namespace ekg::ui {
   protected:
     ekg::font font_size {};
     std::string formatted_text {};
-    bool enabled {true};
+    bool enabled {};
     bool must_format_text {};
     uint8_t tab_size {4};
 

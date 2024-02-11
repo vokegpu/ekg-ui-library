@@ -25,20 +25,20 @@ int32_t showcase_useless_window() {
 
   ekg::runtime_property ekg_runtime_property {
     .p_font_path = "whitneybook.otf",
-    .p_gpu_api = new ekg::os::opengl(),
-    .p_os_platform = new ekg::os::sdl(p_sdl_win)
+    .p_gpu_api = new ekg::os::vulkan(),
+    .p_os_platform = new ekg::os::glfw(p_glfw_win)
   };
 
   auto p_frame = ekg::frame("oi", {20, 20}, {200, 200})->set_sampler(img_id);
 
-  ekg::runtime runtime {};
+  ekg::core::runtime runtime {};
   ekg::init(&runtime, &ekg_runtime_property);
 
   bool running {true};
 
   while (running) {
     while (SDL_PollEvent(&sdl_event)) {
-      ekg::os::sdl_poll_event(sdl_event);
+      ekg::os::_poll_event(sdl_event);
       ekg::poll_event(); // sem isso aq, motivos evidentes
     }
 
