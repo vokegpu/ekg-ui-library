@@ -148,7 +148,7 @@ void ekg::render() {
 ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_position, const ekg::vec2 &size) {
   auto p_ui {new ekg::ui::frame()};
   p_ui->set_tag(tag);
-  p_ui->set_type(ekg::type::frame);
+  p_ui->unsafe_set_type(ekg::type::frame);
   ekg::core->gen_widget(p_ui);
 
   p_ui->set_pos_initial(initial_position.x, initial_position.y);
@@ -163,7 +163,7 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &size, uint16_t
   auto p_ui {new ekg::ui::frame()};
 
   p_ui->set_tag(tag);
-  p_ui->set_type(ekg::type::frame);
+  p_ui->unsafe_set_type(ekg::type::frame);
   ekg::core->gen_widget(p_ui);
 
   p_ui->set_size_initial(size.x, size.y);
@@ -175,7 +175,7 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &size, uint16_t
 
 ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
   auto p_ui {new ekg::ui::button()};
-  p_ui->set_type(ekg::type::button);
+  p_ui->unsafe_set_type(ekg::type::button);
   ekg::core->gen_widget(p_ui);
 
   p_ui->set_text(text);
@@ -190,7 +190,7 @@ ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
 
 ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
   auto p_ui {new ekg::ui::label()};
-  p_ui->set_type(ekg::type::label);
+  p_ui->unsafe_set_type(ekg::type::label);
   ekg::core->gen_widget(p_ui);
 
   p_ui->set_text(text);
@@ -205,7 +205,7 @@ ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
 
 ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, uint16_t dock) {
   auto p_ui {new ekg::ui::checkbox()};
-  p_ui->set_type(ekg::type::checkbox);
+  p_ui->unsafe_set_type(ekg::type::checkbox);
   ekg::core->gen_widget(p_ui);
 
   p_ui->set_text(text);
@@ -222,7 +222,7 @@ ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, uint16_t doc
 
 ekg::ui::slider *ekg::slider(std::string_view tag, float val, float min, float max, uint16_t dock) {
   auto p_ui {new ekg::ui::slider()};
-  p_ui->set_type(ekg::type::slider);
+  p_ui->unsafe_set_type(ekg::type::slider);
   ekg::core->gen_widget(p_ui);
 
   p_ui->set_tag(tag);
@@ -248,7 +248,7 @@ ekg::popup(std::string_view tag, const std::vector<std::string> &component_list,
   }
 
   auto p_ui {new ekg::ui::popup()};
-  p_ui->set_type(ekg::type::popup);
+  p_ui->unsafe_set_type(ekg::type::popup);
   ekg::core->gen_widget(p_ui);
 
   if (interact_position) {
@@ -268,7 +268,7 @@ ekg::popup(std::string_view tag, const std::vector<std::string> &component_list,
 
 ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint16_t dock) {
   auto p_ui {new ekg::ui::textbox()};
-  p_ui->set_type(ekg::type::textbox);
+  p_ui->unsafe_set_type(ekg::type::textbox);
   ekg::core->gen_widget(p_ui);
 
   p_ui->set_tag(tag);
@@ -283,7 +283,7 @@ ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint
 
 ekg::ui::listbox *ekg::listbox(std::string_view tag, const ekg::item &item, uint16_t dock) {
   auto p_ui {new ekg::ui::listbox()};
-  p_ui->set_type(ekg::type::listbox);
+  p_ui->unsafe_set_type(ekg::type::listbox);
   ekg::core->gen_widget(p_ui);
 
   p_ui->set_tag(tag);
@@ -299,7 +299,7 @@ ekg::ui::listbox *ekg::listbox(std::string_view tag, const ekg::item &item, uint
 ekg::ui::scroll *ekg::scroll(std::string_view tag) {
   auto p_ui {new ekg::ui::scroll()};
 
-  p_ui->set_type(ekg::type::scroll);
+  p_ui->unsafe_set_type(ekg::type::scroll);
   ekg::core->gen_widget(p_ui);
   p_ui->set_tag(tag);
 

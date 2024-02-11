@@ -145,7 +145,7 @@ ekg::level ekg::ui::abstract::get_level() {
   return this->level;
 }
 
-ekg::ui::abstract *ekg::ui::abstract::set_type(const ekg::type &enum_type) {
+ekg::ui::abstract *ekg::ui::abstract::unsafe_set_type(ekg::type enum_type) {
   this->type = enum_type;
   return this;
 }

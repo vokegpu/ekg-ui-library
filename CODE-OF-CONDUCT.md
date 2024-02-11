@@ -24,11 +24,11 @@ Note: Some old code may not follow the code of conduct, but it is being refactor
 namespace ekg {} // always use namespace and ekg
 
 // no smart pointers
-// pointers start with prefix p_* (except `ekg::core`, check lacunes [3])
+// pointers start with prefix p_* (except `ekg::core`, check lacune [3])
 int32_t *p_int {};
 
 // also always use initialization-list implicit {}
-int32_t number {5};
+int32_t number {5}; // check lacune [1]
 
 // always use cpp keywords for prevent implicit cast and other behaviors
 static_cast<t>
@@ -42,14 +42,23 @@ static_cast<t>
 
 ### UI elements
 
-Creating UI elements requires two importants objects, `ekg::ui::abstract` and `ekg::ui::abstract_widget`.  
-The `ekg::ui::abstract` does not has access to the `ekg::ui::abstract_widget`; only `ekg::ui::abstract_widget` contains  
-contains access to the `ekg::ui::abstract`. E.g. creating a drop down frame UI element:
+Creating UI elements requires two importants objects: `ekg::ui::abstract` and `ekg::ui::abstract_widget`.  
+The `::abstract` does not has access to the `::abstract_widget`; only `::abstract_widget` contains  
+access to the `ekg::ui::abstract`.
+
+```cpp
+// include/ui/abstract/ui_abstract.hpp
+class ekg::ui::abstract_widget {
+public:
+  ekg::ui::abstract_widget *p_ui {};
+};
+```
+
+E.g. creating a drop down frame UI element:
 
 ```cpp
 // include/ui/frame ui_drop_down_frame.hpp
 namespace ekg::ui {...
-
 class drop_down_frame : public ekg::ui::abstract {
 public:
   ...
@@ -62,9 +71,9 @@ public:
 };
 ```
 
-Initially you create the `ekg::ui::abstract`, which gonna be accessible to  
-the user-programmer (the programmer who uses the lib). Then, you need to implement the `ekg::ui::abstract_widget` registration,  
-in `ekg::runtime::gen_widget`, and the type in enum struct `ekg::type::drop_down_frame`.
+Registering the widget requires two fundamental steps: 
+- Insert the type at enum `ekg::type::drop_down_frame`
+- Implement the generator at `ekg::runtime::gen_widget`
 
 ```cpp
 // include/ui/abstract/ui_abstract.hpp
@@ -95,6 +104,32 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
     ...
   }
 }
+```
+
+Letting accessible to the user-programmer, after the widget is registered, must be in `ekg.hpp`:
+
+```cpp
+// include/ekg.hpp
+// if this UI element contains the feature of alignment (dockable to a container element), pre-initialize with `ekg::dock::none`.
+
+/**
+ * Docks go here.
+ */
+ekg::ui::drop_down_frame ekg::drop_down_frame(..., ekg::dock dock = ekg::dock::none);
+
+// src/ekg.cpp
+ekg::ui::drop_down_frame ekg::drop_down_frame(...) {
+  ekg::ui::drop_down_frame *p_ui {new ekg::ui::drop_down_frame()};
+
+  p_ui->unsafe_set_type(ekg::type::drop_down_frame());
+  ekg::core->gen_widget(p_ui);
+
+  p_ui->set_something(something_from_param);
+  ...
+
+  return p_ui;
+}
+
 ```
 
 # Lacunes

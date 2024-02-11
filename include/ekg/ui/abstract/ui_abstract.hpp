@@ -103,6 +103,12 @@ namespace ekg {
        * which is unsafe due the performance overhead. 
        */
       void unsafe_destroy_childs();
+
+      /**
+       * Set the element type,
+       * not recommend to use, due the object origin be incorrect with the current set.
+       */
+      ekg::ui::abstract *unsafe_set_typeekg::type enum_type);
     public:
       /**
        * The abstract constructor.
@@ -197,8 +203,6 @@ namespace ekg {
       ekg::ui::abstract *set_level(const ekg::level &_level);
 
       ekg::level get_level();
-
-      ekg::ui::abstract *set_type(const ekg::type &_type);
 
       ekg::type get_type();
 
