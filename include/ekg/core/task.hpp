@@ -37,22 +37,23 @@ namespace ekg {
     shared = 8
   };
 
-  extern uint32_t listener;
-
-  void dispatch_ui_event(std::string_view tag, std::string_view value, uint16_t type);
-
   struct event {
   public:
-    std::string tag {};
-    std::string value {};
-    uint16_t type {};
+    bool button {};
+    bool checkbox {};
+    float slider {};
+
   };
 
   struct task {
   public:
-    const char *p_tag {};
-    void *p_callback {};
-    std::function<void(void *)> function {};
+    struct info {
+      
+    };
+  public:
+    std::string_view tag {};
+    void *p_data {};
+    std::function<void(void*)> function {};
   };
 }
 
