@@ -47,7 +47,7 @@ void ekg::ui::abstract_widget::on_reload() {
   ekg::dispatch(ekg::env::redraw);
 }
 
-void ekg::ui::abstract_widget::on_pre_event(SDL_Event &sdl_event) {
+void ekg::ui::abstract_widget::on_pre_event(ekg::os::io_event_serial &io_event_serial) {
   if (ekg::input::pressed() || ekg::input::released() || ekg::input::motion() || ekg::input::wheel()) {
     ekg::vec4 &interact {ekg::input::interact()};
     ekg::rect &rect {this->get_abs_rect()};
@@ -59,11 +59,11 @@ void ekg::ui::abstract_widget::on_pre_event(SDL_Event &sdl_event) {
   }
 }
 
-void ekg::ui::abstract_widget::on_event(SDL_Event &sdl_event) {
+void ekg::ui::abstract_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
 
 }
 
-void ekg::ui::abstract_widget::on_post_event(SDL_Event &sdl_event) {
+void ekg::ui::abstract_widget::on_post_event(ekg::os::io_event_serial &io_event_serial) {
   this->flag.hovered = false;
 
   #if defined(__ANDROID__)

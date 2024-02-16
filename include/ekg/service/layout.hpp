@@ -25,8 +25,9 @@
 #ifndef EKG_LAYOUT_H
 #define EKG_LAYOUT_H
 
-#include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include <map>
+
+#include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
 namespace ekg::service {
   class layout {
