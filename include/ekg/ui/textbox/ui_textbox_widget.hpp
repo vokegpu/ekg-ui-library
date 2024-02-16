@@ -25,9 +25,9 @@
 #ifndef EKG_UI_TEXT_BOX_WIDGET_H
 #define EKG_UI_TEXT_BOX_WIDGET_H
 
-#include "ekg/ui/abstract/ui_abstract_widget.hpp"
-#include "ekg/ui/scroll/ui_scroll_embedded_widget.hpp"
 #include <unordered_map>
+#include "ekg/ui/scroll/ui_scroll_embedded_widget.hpp"
+#include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
 /* start of `ekg_textbox_clamp_text_chunk_size` macro */
 #define ekg_textbox_clamp_text_chunk_size(text_chunk_list, max_size) \

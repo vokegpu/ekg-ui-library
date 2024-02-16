@@ -63,18 +63,18 @@ void ekg::draw::bind_off_scissor() {
   ekg::core->gpu_allocator.bind_off_scissor();
 }
 
-bool ekg::draw::is_visible(int32_t scissor_id, ekg::vec4 &interact) {
-  auto scissor {ekg::core->gpu_allocator.get_scissor_by_id(scissor_id)};
+bool ekg::draw::is_visible(int32_t id, ekg::vec4 &interact) {
+  ekg::rect *p_scissor {ekg::core->gpu_allocator.get_scissor_by_id(id)};
   return scissor != nullptr &&
-         ekg::rect_collide_vec({scissor->rect[0], scissor->rect[1], scissor->rect[2], scissor->rect[3]}, interact);
+         ekg::rect_collide_vec({p_scissor->x, p_scissor->y, p_scissor->w, p_scissor->h}, interact);
 }
 
-void ekg::draw::get_visible(int32_t scissor_id, ekg::rect &rect) {
-  auto scissor {ekg::core->gpu_allocator.get_scissor_by_id(scissor_id)};
+void ekg::draw::get_visible(int32_t id, ekg::rect &rect) {
+  ekg::rect *p_scissor {ekg::core->gpu_allocator.get_scissor_by_id(id)};
   if (scissor != nullptr) {
-    rect.x = scissor->rect[0];
-    rect.y = scissor->rect[1];
-    rect.w = scissor->rect[2];
-    rect.h = scissor->rect[3];
+    rect.x = p_scissor->x;
+    rect.y = p_scissor->y;
+    rect.w = p_scissor->w;
+    rect.h = p_scissor->h;
   }
 }

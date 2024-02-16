@@ -26,7 +26,6 @@
 #define EKG_UI_ABSTRACT_WIDGET_H
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
-#include "ekg/os/ekg_sdl.hpp"
 #include "ekg/util/io.hpp"
 #include "ekg/os/platform.hpp"
 

@@ -25,44 +25,29 @@
 #ifndef EKG_SERVICE_HANDLER_H
 #define EKG_SERVICE_HANDLER_H
 
-#include "ekg/core/task.hpp"
 #include <iostream>
 #include <vector>
 #include <queue>
 #include <map>
 #include <unordered_map>
 
+#include "ekg/core/task.hpp"
+
 namespace ekg::service {
   class handler {
   protected:
-    std::queue<ekg::callback> callback {};
-    std::unordered_map<const char *, bool> ekg::callback {};
-    std::vector<ekg::callback> ekg::callback {};
-  protected:
-    std::queue<ekg::callback> ekg::callback {};
-    std::unordered_map<const char *, bool> ekg::callback {};
-    bool ekg::callback {};
+    std::queue<ekg::task> task_queue {};
+    std::unordered_map<const char *, bool> pre_allocated_task_dispatched_map {};
+    std::vector<ekg::task> pre_allocated_task_list {};
   public:
-    void ekg::callback(bool state);
+    ekg::task &allocate();
 
-    bool ekg::callback();
+    ekg::task &generate();
 
-    ekg::callback &allocate();
-
-    ekg::callback &generate();
-
-    ekg::callback &generate_multi_thread();
-
-    void ekg::callback();
-
-    void ekg::callback(uint64_t index);
+    void dispatch_pre_allocated_task(uint64_t index);
 
     void on_update();
-
-    void on_update_multi_thread();
   };
-
-  void ekg::callback(ekg::service::handler *p_service_handler);
 }
 
 #endif

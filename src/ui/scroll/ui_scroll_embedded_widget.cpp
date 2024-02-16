@@ -129,7 +129,7 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
   this->clamp_scroll();
 }
 
-void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
+void ekg::ui::scroll_embedded_widget::on_pre_event(ekg::os::io_event_serial &io_event_serial) {
   if (ekg::input::pressed() || ekg::input::released() || ekg::input::motion() || ekg::input::wheel()) {
     ekg::rect scaled_vertical_bar {this->rect_vertical_scroll_bar};
     scaled_vertical_bar.y += this->rect_mother->y;
@@ -147,7 +147,7 @@ void ekg::ui::scroll_embedded_widget::on_pre_event(SDL_Event &sdl_event) {
   }
 }
 
-void ekg::ui::scroll_embedded_widget::on_event(SDL_Event &sdl_event) {
+void ekg::ui::scroll_embedded_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
   this->check_axis_states();
 
   auto &interact {ekg::input::interact()};

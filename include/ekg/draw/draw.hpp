@@ -25,9 +25,10 @@
 #ifndef EKG_DRAW_H
 #define EKG_DRAW_H
 
-#include "ekg/util/geometry.hpp"
 #include <vector>
 #include <iostream>
+
+#include "ekg/util/geometry.hpp"
 
 #define ekg_draw_assert_scissor() if (ekg::gpu::allocator::is_out_of_scissor) { ekg::core->gpu_allocator.bind_off_scissor();  return;  }
 

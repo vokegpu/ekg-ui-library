@@ -49,8 +49,8 @@ void ekg::ui::abstract_widget::on_reload() {
 
 void ekg::ui::abstract_widget::on_pre_event(SDL_Event &sdl_event) {
   if (ekg::input::pressed() || ekg::input::released() || ekg::input::motion() || ekg::input::wheel()) {
-    auto &interact {ekg::input::interact()};
-    auto &rect {this->get_abs_rect()};
+    ekg::vec4 &interact {ekg::input::interact()};
+    ekg::rect &rect {this->get_abs_rect()};
 
     this->flag.hovered = ekg::rect_collide_vec(rect, interact) && (
         this->p_data->get_level() == ekg::level::top_level ||
@@ -67,9 +67,11 @@ void ekg::ui::abstract_widget::on_post_event(SDL_Event &sdl_event) {
   this->flag.hovered = false;
 
   #if defined(__ANDROID__)
-  this->flag.highlight = !(!this->flag.hovered &&
-                         (ekg::input::released())) &&
-                         this->flag.highlight;
+  this->flag.highlight = (
+    !(!this->flag.hovered &&
+    (ekg::input::released())) &&
+    this->flag.highlight
+  )
   #endif
 }
 

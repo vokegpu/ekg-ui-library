@@ -25,8 +25,8 @@
 #ifndef EKG_SERVICE_THEME_H
 #define EKG_SERVICE_THEME_H
 
-#include "ekg/util/geometry.hpp"
 #include <vector>
+#include "ekg/util/geometry.hpp"
 
 namespace ekg::service {
   class theme {

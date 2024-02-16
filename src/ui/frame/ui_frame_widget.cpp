@@ -34,7 +34,7 @@ void ekg::ui::frame_widget::on_reload() {
   this->ui_theme_activy_offset = static_cast<float>(ekg::theme().frame_activy_offset);
 }
 
-void ekg::ui::frame_widget::on_event(SDL_Event &sdl_event) {
+void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
   auto &interact {ekg::input::interact()};
   auto p_ui {(ekg::ui::frame *) this->p_data};
   auto &rect {this->get_abs_rect()};

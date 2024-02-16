@@ -57,7 +57,7 @@ void ekg::ui::listbox_widget::on_reload() {
   ekg::dispatch(ekg::env::redraw);
 }
 
-void ekg::ui::listbox_widget::on_event(SDL_Event &sdl_event) {
+void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
   /*
   bool motion {ekg::input::motion()};
   bool pressed {ekg::input::pressed()};

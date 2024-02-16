@@ -39,7 +39,6 @@
 #include "ekg/ui/scroll/ui_scroll.hpp"
 #include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
-#include "ekg/os/ekg_opengl.hpp"
 #include "ekg/util/gui.hpp"
 
 ekg::stack ekg::swap::collect {};
@@ -128,7 +127,7 @@ void ekg::runtime::process_event() {
     /**
      * Text input like textbox and keyboard events should not update stack, instead just mouse events.
      */
-    hovered = !(this->io_event_serial.key_down || this->io_event_serial.key_up || this->io_event_serial.input_text)
+    hovered = !(this->io_event_serial.is_key_down || this->io_event_serial.is_key_up || this->io_event_serial.input_text)
               && p_widgets->flag.hovered && p_widgets->p_data->is_visible() && p_widgets->p_data->get_state() != ekg::state::disabled;
     if (hovered) {
       this->widget_id_focused = p_widgets->p_data->get_id();
@@ -200,16 +199,16 @@ void ekg::runtime::process_event() {
     ekg::dispatch(ekg::env::redraw);
   }
 
-  if (this->io_event_serial.key_up) {
-    this->io_event_serial.key_up = false;
+  if (this->io_event_serial.is_key_up) {
+    this->io_event_serial.is_key_up = false;
   }
 
-  if (this->io_event_serial.key_down) {
-    this->io_event_serial.key_up = false;
+  if (this->io_event_serial.is_key_down) {
+    this->io_event_serial.is_key_up = false;
   }
 
   if (this->current_event_key_input_) {
-    this->io_event_serial.key_up = false;
+    this->io_event_serial.is_key_up = false;
   }
 }
 

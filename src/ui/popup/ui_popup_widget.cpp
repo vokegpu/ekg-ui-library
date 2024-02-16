@@ -179,15 +179,15 @@ void ekg::ui::popup_widget::on_reload() {
   this->min_size.y = ekg_min(this->min_size.y, this->dimension.h);
 }
 
-void ekg::ui::popup_widget::on_pre_event(SDL_Event &sdl_event) {
+void ekg::ui::popup_widget::on_pre_event(ekg::os::io_event_serial &io_event_serial) {
   if (!this->p_data->is_visible()) {
     return;
   }
 
-  abstract_widget::on_pre_event(sdl_event);
+  abstract_widget::on_pre_event(io_event_serial);
 }
 
-void ekg::ui::popup_widget::on_event(SDL_Event &sdl_event) {
+void ekg::ui::popup_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
   if (!this->p_data->is_visible()) {
     return;
   }

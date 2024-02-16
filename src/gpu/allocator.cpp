@@ -24,13 +24,8 @@
 
 #include "ekg/gpu/allocator.hpp"
 #include "ekg/ekg.hpp"
-#include "ekg/gpu/gl.hpp"
-#include "ekg/os/ekg_opengl.hpp"
 
-ekg::gpu::program ekg::gpu::allocator::program {};
-float             ekg::gpu::allocator::mat4x4orthographic[16] {};
-float             ekg::gpu::allocator::viewport[4] {};
-bool              ekg::gpu::allocator::is_out_of_scissor {};
+bool ekg::gpu::allocator::is_out_of_scissor {};
 
 void ekg::gpu::allocator::invoke() {
   /*
@@ -138,69 +133,6 @@ void ekg::gpu::allocator::draw() {
     this->cached_texture_list.data(),
     this->cached_texture_list.size()
   );
-
-  ekg::gpu::invoke(ekg::gpu::allocator::program);
-
-  glBindVertexArray(this->vbo_array);
-  glBindTexture(GL_TEXTURE_2D, 0);
-
-  uint8_t prev_texture_bound {};
-  bool texture_enabled {};
-
-  /*
-   * Before each rendering section, the allocator iterate alls textures and bind it on global context.
-   */
-  for (uint32_t it {}; it < this->cached_texture_list.size(); it++) {
-    glActiveTexture(GL_TEXTURE0 + static_cast<int32_t>(it));
-    glBindTexture(GL_TEXTURE_2D, this->cached_texture_list.at(it));
-  }
-
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  /*
-   * The allocator provides a high-performance dynamic mapped-shapes batching,
-   * each simple rect (not a complex shape) is not batched, but complex shapes
-   * like textured shapes - font rendering - is batched.
-   */
-
-  for (uint64_t it {}; it < this->data_instance_index; it++) {
-    ekg::gpu::data_t &data {this->loaded_data_list.at(it)};
-    texture_enabled = data.active_tex_slot > 0;
-
-    if (texture_enabled && prev_texture_bound != data.active_tex_slot) {
-      glUniform1i(this->uniform_active_tex_slot, data.active_tex_slot - 1);
-      glUniform1i(this->uniform_active_texture, true);
-      prev_texture_bound = data.active_tex_slot;
-    } else if (!texture_enabled && prev_texture_bound > 0) {
-      glUniform1i(this->uniform_active_texture, false);
-      prev_texture_bound = 0;
-    }
-
-    glUniform4fv(this->uniform_color, GL_TRUE, data.material_color);
-    glUniform4fv(this->uniform_rect, GL_TRUE, data.shape_rect);
-    glUniform1i(this->uniform_line_thickness, data.line_thickness);
-    glUniform4fv(this->uniform_scissor, GL_TRUE, this->scissor_map[data.scissor_id].rect);
-
-    switch (data.begin_stride) {
-      case 0: {
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, nullptr);
-        break;
-      }
-
-      default: {
-        glDrawArrays(GL_TRIANGLES, data.begin_stride, data.end_stride);
-        break;
-      }
-    }
-  }
-
-  glUniform1i(this->uniform_active_texture, false);
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glDisable(GL_BLEND);
-
-  glBindVertexArray(0);
-  glUseProgram(0);
 }
 
 void ekg::gpu::allocator::init() {
@@ -247,7 +179,7 @@ void ekg::gpu::allocator::quit() {
   ekg::core->p_gpu_api->quit();
 }
 
-ekg::gpu::scissor *ekg::gpu::allocator::get_scissor_by_id(int32_t id) {
+ekg::rect *ekg::gpu::allocator::get_scissor_by_id(int32_t id) {
   return &this->scissor_map[id];
 }
 
@@ -264,10 +196,10 @@ uint32_t ekg::gpu::allocator::get_instance_scissor_id() {
 void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_parent_id) {
   auto &scissor {this->scissor_map[this->scissor_instance_id]};
 
-  scissor.rect.x = rect_child.x;
-  scissor.rect.y = rect_child.y;
-  scissor.rect.w = rect_child.w;
-  scissor.rect.h = rect_child.h;
+  scissor.x = rect_child.x;
+  scissor.y = rect_child.y;
+  scissor.w = rect_child.w;
+  scissor.h = rect_child.h;
 
   ekg::gpu::allocator::is_out_of_scissor = false;
 
@@ -279,29 +211,29 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_par
   if (mother_parent_id) {
     auto &mother_rect {this->scissor_map[mother_parent_id]};
 
-    if (scissor.rect.x < mother_rect.rect.x) {
-      scissor.rect.w -= mother_rect.rect.x - scissor.rect.x;
-      scissor.rect.x = mother_rect.rect.x;
+    if (scissor.x < mother_rect.rect.x) {
+      scissor.w -= mother_rect.rect.x - scissor.x;
+      scissor.x = mother_rect.rect.x;
     }
 
-    if (scissor.rect.y < mother_rect.rect.y) {
-      scissor.rect.h -= mother_rect.rect.y - scissor.rect.y;
-      scissor.rect.y = mother_rect.rect.y;
+    if (scissor.y < mother_rect.rect.y) {
+      scissor.h -= mother_rect.rect.y - scissor.y;
+      scissor.y = mother_rect.rect.y;
     }
 
-    if (scissor.rect.x + scissor.rect.w > mother_rect.rect.x + mother_rect.rect.w) {
-      scissor.rect.w -= (scissor.rect.x + scissor.rect.w) - (mother_rect.rect.x + mother_rect.rect.w);
+    if (scissor.x + scissor.w > mother_rect.rect.x + mother_rect.rect.w) {
+      scissor.w -= (scissor.x + scissor.w) - (mother_rect.rect.x + mother_rect.rect.w);
     }
 
-    if (scissor.rect.y + scissor.rect.h > mother_rect.rect.y + mother_rect.rect.h) {
-      scissor.rect.h -= (scissor.rect.y + scissor.rect.h) - (mother_rect.rect.y + mother_rect.rect.h);
+    if (scissor.y + scissor.h > mother_rect.rect.y + mother_rect.rect.h) {
+      scissor.h -= (scissor.y + scissor.h) - (mother_rect.rect.y + mother_rect.rect.h);
     }
 
     ekg::gpu::allocator::is_out_of_scissor = (
-      !(scissor.rect.x                  < mother_rect.rect.x + mother_rect.rect.w &&
-        scissor.rect.x + scissor.rect.w > mother_rect.rect.x &&
-        scissor.rect.y                  < mother_rect.rect.y + mother_rect.rect.h &&
-        scissor.rect.y + scissor.rect.h > mother_rect.rect.y)
+      !(scissor.x             < mother_rect.rect.x + mother_rect.rect.w &&
+        scissor.x + scissor.w > mother_rect.rect.x                      &&
+        scissor.y             < mother_rect.rect.y + mother_rect.rect.h &&
+        scissor.y + scissor.h > mother_rect.rect.y                      )
     );
   }
 
@@ -311,10 +243,10 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_par
   /**
    * It is much better to waste memory than CPU runtime processing.
    **/
-  data.buffer_content[8] = scissor.rect.x;
-  data.buffer_content[9] = scissor.rect.y;
-  data.buffer_content[10] = scissor.rect.w;
-  data.buffer_content[11] = scissor.rect.h;
+  data.buffer_content[8] = scissor.x;
+  data.buffer_content[9] = scissor.y;
+  data.buffer_content[10] = scissor.w;
+  data.buffer_content[11] = scissor.h;
 }
 
 void ekg::gpu::allocator::bind_scissor(int32_t scissor_id) {

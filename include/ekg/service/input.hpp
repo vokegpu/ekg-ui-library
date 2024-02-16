@@ -25,11 +25,11 @@
 #ifndef EKG_SERVICE_INPUT_H
 #define EKG_SERVICE_INPUT_H
 
+#include <vector>
+#include <unordered_map>
+
 #include "ekg/util/io.hpp"
 #include "ekg/util/geometry.hpp"
-#include <unordered_map>
-#include <vector>
-#include "ekg/os/ekg_sdl.hpp"
 
 namespace ekg::service {
   class input {
@@ -82,7 +82,7 @@ namespace ekg::service {
 
     bool receive(std::string_view key);
 
-    void on_event(ekg::os::io_event_serial &sdl_event);
+    void on_event(ekg::os::io_event_serial &io_event_serial);
 
     void on_update();
   };

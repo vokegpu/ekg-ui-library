@@ -35,15 +35,15 @@ void ekg::ui::scroll_widget::on_reload() {
   this->scroll.on_reload();
 }
 
-void ekg::ui::scroll_widget::on_pre_event(SDL_Event &sdl_event) {
-  this->scroll.on_pre_event(sdl_event);
+void ekg::ui::scroll_widget::on_pre_event(ekg::os::io_event_serial &io_event_serial) {
+  this->scroll.on_pre_event(io_event_serial);
   this->flag.hovered = this->scroll.flag.hovered && !this->scroll.flag.activy;
   this->flag.absolute = this->scroll.is_dragging_bar() || this->scroll.flag.activy;
 }
 
-void ekg::ui::scroll_widget::on_event(SDL_Event &sdl_event) {
+void ekg::ui::scroll_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
   this->flag.hovered = this->scroll.flag.hovered;
-  this->scroll.on_event(sdl_event);
+  this->scroll.on_event(io_event_serial);
 
   if ((this->flag.absolute || this->scroll.flag.activy) && !this->is_high_frequency) {
     ekg::update_high_frequency(this);
@@ -55,8 +55,8 @@ void ekg::ui::scroll_widget::on_event(SDL_Event &sdl_event) {
   }
 }
 
-void ekg::ui::scroll_widget::on_post_event(SDL_Event &sdl_event) {
-  ekg::ui::abstract_widget::on_post_event(sdl_event);
+void ekg::ui::scroll_widget::on_post_event(ekg::os::io_event_serial &io_event_serial) {
+  ekg::ui::abstract_widget::on_post_event(io_event_serial);
   this->scroll.flag.hovered = false;
   this->scroll.flag.activy = false;
 }

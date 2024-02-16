@@ -24,22 +24,6 @@
 
 #include "ekg/service/handler.hpp"
 #include "ekg/util/io.hpp"
-#include "ekg/os/ekg_stl_thread.hpp"
-
-void ekg::multi_thread_task_thread_update(ekg::service::handler *p_service_handler) {
-  std::mutex mutex {};
-  while (p_service_handler->is_running_multi_thread_task()) {
-    mutex.lock();
-  }
-}
-
-void ekg::service::handler::set_running_multi_thread_task(bool state) {
-  this->running_multi_thread_task = state;
-}
-
-bool ekg::service::handler::is_running_multi_thread_task() {
-  return this->running_multi_thread_task;
-}
 
 ekg::task &ekg::service::handler::allocate() {
   return this->pre_allocated_task_list.emplace_back();
@@ -49,11 +33,8 @@ ekg::task &ekg::service::handler::generate() {
   return this->task_queue.emplace();
 }
 
-void ekg::service::handler::init_multi_thread_task_thread() {
-}
-
 void ekg::service::handler::dispatch_pre_allocated_task(uint64_t index) {
-  task &task {this->pre_allocated_task_list.at(index)};
+  ekg::task &task {this->pre_allocated_task_list.at(index)};
   bool &is_dispatched {this->pre_allocated_task_dispatched_map[task.p_tag]};
 
   if (!is_dispatched) {
@@ -64,7 +45,7 @@ void ekg::service::handler::dispatch_pre_allocated_task(uint64_t index) {
 
 void ekg::service::handler::on_update() {
   while (!this->task_queue.empty()) {
-    task &ekg_event {this->task_queue.front()};
+    ekg::task &ekg_event {this->task_queue.front()};
     ekg_event.function(ekg_event.p_callback);
     this->task_queue.pop();
   }

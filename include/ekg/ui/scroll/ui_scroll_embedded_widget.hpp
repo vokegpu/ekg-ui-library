@@ -25,7 +25,6 @@
 #ifndef EKG_UI_SCROLL_EMBEDDED_WIDGET_H
 #define EKG_UI_SCROLL_EMBEDDED_WIDGET_H
 
-#include "ekg/os/ekg_sdl.hpp"
 #include "ekg/util/geometry.hpp"
 #include "ekg/util/io.hpp"
 

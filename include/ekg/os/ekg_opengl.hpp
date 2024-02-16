@@ -31,8 +31,9 @@
 #include <GL/glew.h>
 #endif
 
-#include "ekg/gpu/api.hpp"
 #include <vector>
+
+#include "ekg/gpu/api.hpp"
 
 #define ekg_is_sampler_protected(sampler_protected_index) sampler_protected_index > -1
 

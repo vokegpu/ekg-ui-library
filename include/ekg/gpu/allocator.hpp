@@ -28,21 +28,16 @@
 #include <array>
 #include <vector>
 
-#include "ekg/gpu/data.hpp"
-#include "ekg/gpu/gl.hpp"
+#include "ekg/gpu/api.hpp"
 #include "ekg/util/geometry.hpp"
 
 namespace ekg::gpu {
   class allocator {
-  protected:
-    static float viewport[4];
   public:
-    static ekg::gpu::program program;
-    static float mat4x4orthographic[16];
     static bool is_out_of_scissor;
   protected:
-    std::vector<ekg::gpu::data> data_list {};
-    std::unordered_map<int32_t, ekg::gpu::scissor> scissor_map {};
+    std::vector<ekg::gpu::data_t_t> data_list {};
+    std::unordered_map<int32_t, ekg::rect> scissor_map {};
     std::vector<float> cached_geometry_resources {};
 
     uint64_t data_instance_index {};
@@ -73,7 +68,7 @@ namespace ekg::gpu {
     /*
      * Bind a new gpu data.
      */
-    ekg::gpu::data &bind_current_data();
+    ekg::gpu::data_t &bind_current_data();
 
     /*
      * Clear current gpu data active.
@@ -83,7 +78,7 @@ namespace ekg::gpu {
     /*
      * Find registered gpu data in allocator's batch.
      */
-    ekg::gpu::data *get_data_by_id(int32_t);
+    ekg::gpu::data_t *get_data_by_id(int32_t id);
 
     /*
      * Get current gpu data.
@@ -93,12 +88,12 @@ namespace ekg::gpu {
     /*
      * Find registered scissor in allocator's batch.
      */
-    ekg::gpu::scissor *get_scissor_by_id(int32_t);
+    ekg::rect *get_scissor_by_id(int32_t id);
 
     /*
      * Remove scissor data from memory.
      */
-    void erase_scissor_by_id(int32_t);
+    void erase_scissor_by_id(int32_t id);
 
     /*
      * Get current scissor active.
@@ -144,12 +139,12 @@ namespace ekg::gpu {
     /*
      * Sync active scissor position.
      */
-    void sync_scissor(ekg::rect &, int32_t);
+    void sync_scissor(ekg::rect &rect, int32_t id);
 
     /*
      * Bind scissor using one ID for send in batch.
      */
-    void bind_scissor(int32_t);
+    void bind_scissor(int32_t id);
 
     /*
      * Stop batching rectangle scissor.

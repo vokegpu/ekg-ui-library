@@ -27,7 +27,6 @@
 
 #include <iostream>
 #include <functional>
-#include "ekg/os/ekg_sdl.hpp"
 
 namespace ekg {
   enum event_type {

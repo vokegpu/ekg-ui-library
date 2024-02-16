@@ -785,10 +785,10 @@ void ekg::ui::textbox_widget::on_reload() {
   this->embedded_scroll.on_reload();
 }
 
-void ekg::ui::textbox_widget::on_pre_event(SDL_Event &sdl_event) {
-  abstract_widget::on_pre_event(sdl_event);
+void ekg::ui::textbox_widget::on_pre_event(ekg::os::io_event_serial &io_event_serial) {
+  abstract_widget::on_pre_event(io_event_serial);
 
-  this->embedded_scroll.on_pre_event(sdl_event);
+  this->embedded_scroll.on_pre_event(io_event_serial);
   this->flag.absolute = (
     this->embedded_scroll.is_dragging_bar() ||
     this->embedded_scroll.flag.activy ||
@@ -796,7 +796,7 @@ void ekg::ui::textbox_widget::on_pre_event(SDL_Event &sdl_event) {
   );
 }
 
-void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
+void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
   bool pressed {ekg::input::pressed() && ekg::input::action("textbox-activy")};
   bool released {ekg::input::released()};
   bool motion {ekg::input::motion()};
@@ -855,7 +855,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
   }
 
   // @TODO  dragging scroll horizontal not working
-  this->embedded_scroll.on_event(sdl_event);
+  this->embedded_scroll.on_event(io_event_serial);
   this->flag.highlight = this->flag.hovered;
 
   if ((this->flag.focused || this->flag.hovered || this->flag.absolute) && !this->is_high_frequency) {
@@ -881,7 +881,7 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
 
   bool should_process_textbox {
       this->flag.focused && (
-        (sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_TEXTINPUT) ||
+        (io_event_serial.is_key_down || io_event_serial.is_text_input) ||
         (this->is_clipboard_copy || this->is_clipboard_cut || this->is_clipboard_paste)
       )
   };
@@ -890,11 +890,11 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
     return;
   }
 
-  if (sdl_event.type == SDL_TEXTINPUT) {
+  if (io_event_serial.is_text_input) {
     for (ekg::ui::textbox_widget::cursor &cursor: this->loaded_multi_cursor_list) {
-      this->process_text(cursor, sdl_event.text.text, ekg::ui::textbox_widget::action::add_text, 1);
+      this->process_text(cursor, io_event_serial.text_input, ekg::ui::textbox_widget::action::add_text, 1);
     }
-  } else if (sdl_event.type == SDL_KEYDOWN && sdl_event.key.keysym.sym == SDLK_ESCAPE) {
+  } else if (io_event_serial.is_key_down && ekg::input::receive("escape")) {
     ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
     main_cursor.pos[1] = main_cursor.pos[0];
 
@@ -949,8 +949,8 @@ void ekg::ui::textbox_widget::on_event(SDL_Event &sdl_event) {
   }
 }
 
-void ekg::ui::textbox_widget::on_post_event(SDL_Event &sdl_event) {
-  abstract_widget::on_post_event(sdl_event);
+void ekg::ui::textbox_widget::on_post_event(ekg::os::io_event_serial &io_event_serial) {
+  abstract_widget::on_post_event(io_event_serial);
   this->embedded_scroll.flag.hovered = false;
   this->embedded_scroll.flag.activy = false;
 }

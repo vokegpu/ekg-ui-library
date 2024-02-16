@@ -25,6 +25,8 @@
 #ifndef EKG_CORE_H
 #define EKG_CORE_H
 
+#include <unordered_map>
+
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include "ekg/service/handler.hpp"
 #include "ekg/draw/font.hpp"
@@ -34,7 +36,6 @@
 #include "ekg/util/io.hpp"
 #include "ekg/util/gui.hpp"
 #include "ekg/gpu/api.hpp"
-#include <unordered_map>
 
 namespace ekg {
   struct swap {
@@ -63,8 +64,6 @@ namespace ekg {
     std::vector<ekg::ui::abstract_widget*> scissor_widget_list  {};
     std::vector<ekg::ui::abstract_widget*> update_widget_list {};
 
-    /* Core services and instances. */
-
     ekg::ui::abstract *current_bind_group {};
     ekg::ui::abstract_widget *widget_absolute_activy {};
 
@@ -91,7 +90,7 @@ namespace ekg {
     ekg::gpu::allocator gpu_allocator {};
     ekg::timing ui_timing {};
     ekg::os::platform *p_os_platform {};
-    ekg::os::io_serial_event io_serial_event {};
+    ekg::os::io_event_serial io_event_serial {};
   public:
     ekg::ui::abstract_widget *get_fast_widget_by_id(int32_t id);
 

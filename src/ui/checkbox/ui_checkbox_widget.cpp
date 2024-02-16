@@ -66,7 +66,7 @@ void ekg::ui::checkbox_widget::on_reload() {
   this->dimension.h = ekg_min(this->dimension.h, layout_mask.h);
 }
 
-void ekg::ui::checkbox_widget::on_event(SDL_Event &sdl_event) {
+void ekg::ui::checkbox_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
   bool pressed {ekg::input::pressed()};
   bool released {ekg::input::released()};
 
