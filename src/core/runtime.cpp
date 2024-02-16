@@ -46,9 +46,6 @@ ekg::stack ekg::swap::collect {};
 ekg::stack ekg::swap::back {};
 ekg::stack ekg::swap::front {};
 
-std::vector<ekg::ui::abstract_widget *> ekg::swap::buffer {};
-std::vector<uint64_t> ekg::swap::tooktimeanalyzingtelemtry {};
-
 void ekg::runtime::update_size_changed() {
   ekg::dispatch(ekg::env::redraw);
 
@@ -97,10 +94,6 @@ void ekg::runtime::quit() {
 }
 
 void ekg::runtime::process_event() {
-  if (!this->must_proceess_event) {
-    return;
-  }
-
   this->service_input.on_event(this->serialized_event_entity);
 
   bool pressed {ekg::input::pressed()};
@@ -111,9 +104,9 @@ void ekg::runtime::process_event() {
   }
 
   if (this->widget_absolute_activy != nullptr && this->widget_absolute_activy->flag.absolute) {
-    this->widget_absolute_activy->on_pre_event(sdl_event);
-    this->widget_absolute_activy->on_event(sdl_event);
-    this->widget_absolute_activy->on_post_event(sdl_event);
+    this->widget_absolute_activy->on_pre_event(this->io_event_serial);
+    this->widget_absolute_activy->on_event(this->io_event_serial);
+    this->widget_absolute_activy->on_post_event(this->io_event_serial);
     return;
   }
 
@@ -130,12 +123,12 @@ void ekg::runtime::process_event() {
       continue;
     }
 
-    p_widgets->on_pre_event(sdl_event);
+    p_widgets->on_pre_event(this->io_event_serial);
 
     /**
      * Text input like textbox and keyboard events should not update stack, instead just mouse events.
      */
-    hovered = !(this->current_event_key_down || this->current_event_key_up || this->current_event_text_input)
+    hovered = !(this->io_event_serial.key_down || this->io_event_serial.key_up || this->io_event_serial.input_text)
               && p_widgets->flag.hovered && p_widgets->p_data->is_visible() && p_widgets->p_data->get_state() != ekg::state::disabled;
     if (hovered) {
       this->widget_id_focused = p_widgets->p_data->get_id();
@@ -167,9 +160,9 @@ void ekg::runtime::process_event() {
       first_absolute = true;
     }
 
-    p_widgets->on_post_event(sdl_event);
+    p_widgets->on_post_event(this->io_event_serial);
     if (!hovered && !p_widgets->flag.absolute) {
-      p_widgets->on_event(sdl_event);
+      p_widgets->on_event(this->io_event_serial);
     }
   }
 
@@ -177,9 +170,9 @@ void ekg::runtime::process_event() {
   ekg::hovered::id = this->widget_id_focused;
 
   if (p_widget_focused != nullptr) {
-    p_widget_focused->on_pre_event(sdl_event);
-    p_widget_focused->on_event(sdl_event);
-    p_widget_focused->on_post_event(sdl_event);
+    p_widget_focused->on_pre_event(this->io_event_serial);
+    p_widget_focused->on_event(this->io_event_serial);
+    p_widget_focused->on_post_event(this->io_event_serial);
 
     if (p_widget_focused->flag.absolute) {
       this->widget_absolute_activy = p_widget_focused;
@@ -207,16 +200,16 @@ void ekg::runtime::process_event() {
     ekg::dispatch(ekg::env::redraw);
   }
 
-  if (this->current_event_key_up) {
-    this->current_event_key_up = false;
+  if (this->io_event_serial.key_up) {
+    this->io_event_serial.key_up = false;
   }
 
-  if (this->current_event_key_down) {
-    this->current_event_key_up = false;
-  } 
+  if (this->io_event_serial.key_down) {
+    this->io_event_serial.key_up = false;
+  }
 
   if (this->current_event_key_input_) {
-    this->current_event_key_up = false;
+    this->io_event_serial.key_up = false;
   }
 }
 

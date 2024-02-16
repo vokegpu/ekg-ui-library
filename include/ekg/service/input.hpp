@@ -82,7 +82,7 @@ namespace ekg::service {
 
     bool receive(std::string_view key);
 
-    void on_event(SDL_Event &sdl_event);
+    void on_event(ekg::os::io_event_serial &sdl_event);
 
     void on_update();
   };

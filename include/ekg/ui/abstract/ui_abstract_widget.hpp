@@ -28,6 +28,7 @@
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/os/ekg_sdl.hpp"
 #include "ekg/util/io.hpp"
+#include "ekg/os/platform.hpp"
 
 namespace ekg::ui {
   class abstract_widget {
@@ -61,11 +62,11 @@ namespace ekg::ui {
 
     virtual void on_reload();
 
-    virtual void on_pre_event(SDL_Event &sdl_event);
+    virtual void on_pre_event(ekg::os::io_event_serial &io_event_serial);
 
-    virtual void on_event(SDL_Event &sdl_event);
+    virtual void on_event(ekg::os::io_event_serial &io_event_serial);
 
-    virtual void on_post_event(SDL_Event &sdl_event);
+    virtual void on_post_event(ekg::os::io_event_serial &io_event_serial);
 
     virtual void on_update();
 

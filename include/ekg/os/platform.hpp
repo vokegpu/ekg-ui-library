@@ -43,41 +43,41 @@ namespace ekg {
     hand
   };
 
-  namespace os {
-    struct io_event_serialized {
-    public:
-      bool is_text_input {};
-      std::string_view text_input {};
-
-      bool is_mouse_button_up {};
-      bool is_mouse_button_down {};
-      uint8_t mouse_button {};
-
-      bool is_mouse_motion {};
-      bool is_mouse_wheel {};
-
-      bool is_finger_up {};
-      bool is_finger_down {};
-      bool is_finger_motion {};
-
-      bool is_key_down {};
-      bool is_key_up {};
-      int32_t key {};
-    };
-
-    class platform {
-    public:
-      int32_t monitor_resolution[2] {};
-    public:
-      virtual void init() {}
-      virtual void quit() {}
-      virtual void update_monitor_resolution() {}
-      virtual void update_cursor(ekg::system_cursor system_cursor) {}
-      virtual void key_name(int32_t key, std::string_view &name) {}
-    };
-  }
-
   extern ekg::system_cursor cursor;
+}
+
+namespace ekg::os {
+  struct io_event_serial {
+  public:
+    bool is_text_input {};
+    std::string_view text_input {};
+
+    bool is_mouse_button_up {};
+    bool is_mouse_button_down {};
+    uint8_t mouse_button {};
+
+    bool is_mouse_motion {};
+    bool is_mouse_wheel {};
+
+    bool is_finger_up {};
+    bool is_finger_down {};
+    bool is_finger_motion {};
+
+    bool is_key_down {};
+    bool is_key_up {};
+    int32_t key {};
+  };
+
+  class platform {
+  public:
+    int32_t monitor_resolution[2] {};
+  public:
+    virtual void init() {}
+    virtual void quit() {}
+    virtual void update_monitor_resolution() {}
+    virtual void update_cursor(ekg::system_cursor system_cursor) {}
+    virtual void key_name(int32_t key, std::string_view &name) {}
+  };
 }
 
 #endif

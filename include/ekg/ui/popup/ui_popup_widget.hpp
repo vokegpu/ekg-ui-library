@@ -49,9 +49,9 @@ namespace ekg::ui {
   public:
     void on_reload() override;
 
-    void on_pre_event(SDL_Event &) override;
+    void on_pre_event(ekg::os::io_event_serial &io_event_serial) override;
 
-    void on_event(SDL_Event &) override;
+    void on_event(ekg::os::io_event_serial &io_event_serial) override;
 
     void on_update() override;
 

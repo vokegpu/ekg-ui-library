@@ -33,21 +33,17 @@
 #include "ekg/service/layout.hpp"
 #include "ekg/util/io.hpp"
 #include "ekg/util/gui.hpp"
-#inclide "ekg/gpu/api.hpp"
+#include "ekg/gpu/api.hpp"
 #include <unordered_map>
 
 namespace ekg {
-  /* The swap maps for prevent copies of hashes and vector. */
   struct swap {
+  public:
     static ekg::stack collect;
     static ekg::stack back;
     static ekg::stack front;
-    static std::vector<ekg::ui::abstract_widget *> buffer;
-    static std::vector<uint64_t> tooktimeanalyzingtelemtry;
-    static void refresh();
   };
 
-  /* The main runtime for run ekg. */
   class runtime {
   protected:
     void prepare_tasks();
@@ -55,10 +51,7 @@ namespace ekg {
     void prepare_ui_env();
 
     void erase(int32_t id);
-
   private:
-    /* Widget env lists and maps for tasks. */
-
     std::unordered_map<int32_t, ekg::ui::abstract_widget*> widget_map {};
     std::unordered_map<int32_t, bool> processed_widget_map {};
 
@@ -98,7 +91,7 @@ namespace ekg {
     ekg::gpu::allocator gpu_allocator {};
     ekg::timing ui_timing {};
     ekg::os::platform *p_os_platform {};
-    ekg::io_serialized_event io_serialized_event {};
+    ekg::os::io_serial_event io_serial_event {};
   public:
     ekg::ui::abstract_widget *get_fast_widget_by_id(int32_t id);
 

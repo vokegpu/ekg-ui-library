@@ -53,7 +53,7 @@ namespace ekg::ui {
 
     void on_update() override;
 
-    void on_event(SDL_Event &sdl_event) override;
+    void on_event(ekg::os::io_event_serial &io_event_serial) override;
 
     void on_draw_refresh() override;
   };

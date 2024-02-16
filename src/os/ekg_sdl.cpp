@@ -80,7 +80,7 @@ void ekg::os::sdl::get_key_name(int32_t key, std::string_view &name) {
 }
 
 void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
-  ekg::io_serialized_event &io_event_serialized {ekg::core->io_serialized_event};
+  ekg::io_event_serial &serialized {ekg::core->io_event_serial};
 
   switch (sdl_event.type) {
   case SDL_WINDOWEVENT:
@@ -98,54 +98,54 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
     break;
 
   case SDL_KEYDOWN:
-    io_event_serialized.is_key_down = true;
-    io_event_serialized.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
+    serialized.is_key_down = true;
+    serialized.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
     break;
 
   case SDL_KEYUP:
-    io_event_serialized.is_key_up = true;
-    io_event_serialized.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
+    serialized.is_key_up = true;
+    serialized.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
     break;
 
   case SDL_TEXTINPUT:
-    io_event_serialized.is_text_input = true;
-    io_event_serialized.text_input = sdl_event.text;
+    serialized.is_text_input = true;
+    serialized.text_input = sdl_event.text;
     break;
 
   case SDL_MOUSEBUTTONUP:
-    io_event_serialized.is_mouse_button_up = true;
-    io_event_serialized.mouse_button = sdl_event.button.button;
+    serialized.is_mouse_button_up = true;
+    serialized.mouse_button = sdl_event.button.button;
     break;
 
   case SDL_MOUSEBUTTONDOWN:
-    io_event_serialized.is_mouse_button_down = true;
-    io_event_serialized.mouse_button = sdl_event.button.button;
+    serialized.is_mouse_button_down = true;
+    serialized.mouse_button = sdl_event.button.button;
     break;
 
   case SDL_MOUSEWHEEL:
-    io_event_serialized.is_mouse_wheel = true;
-    io_event_serialized.mouse_wheel_x = sdl_event.wheel.x;
-    io_event_serialized.mouse_wheel_y = sdl_event.wheel.y;
-    io_event_serialized.mouse_wheel_precise_x = sdl_event.wheel.preciseX;
-    io_event_serialized.mouse_wheel_precise_y = sdl_event.wheel.preciseY;
+    serialized.is_mouse_wheel = true;
+    serialized.mouse_wheel_x = sdl_event.wheel.x;
+    serialized.mouse_wheel_y = sdl_event.wheel.y;
+    serialized.mouse_wheel_precise_x = sdl_event.wheel.preciseX;
+    serialized.mouse_wheel_precise_y = sdl_event.wheel.preciseY;
     break;
 
   case SDL_FINGERUP:
-    io_event_serialized.is_finger_up = true;
-    io_event_serialized.finger_x = sdl_event.tfinger.x;
-    io_event_serialized.finger_y = sdl_event.tfinger.y;        
+    serialized.is_finger_up = true;
+    serialized.finger_x = sdl_event.tfinger.x;
+    serialized.finger_y = sdl_event.tfinger.y;        
     break;
 
   case SDL_FINGERDOWN:
-    io_event_serialized.is_finger_down = true;
-    io_event_serialized.finger_x = sdl_event.tfinger.x;
-    io_event_serialized.finger_y = sdl_event.tfinger.y;   
+    serialized.is_finger_down = true;
+    serialized.finger_x = sdl_event.tfinger.x;
+    serialized.finger_y = sdl_event.tfinger.y;   
     break;
 
   case SDL_FINGERMOTION:
-    io_event_serialized.is_finger_motion = true;
-    io_event_serialized.finger_x = sdl_event.tfinger.x;
-    io_event_serialized.finger_y = sdl_event.tfinger.y;   
+    serialized.is_finger_motion = true;
+    serialized.finger_x = sdl_event.tfinger.x;
+    serialized.finger_y = sdl_event.tfinger.y;   
     break;
   }
 }

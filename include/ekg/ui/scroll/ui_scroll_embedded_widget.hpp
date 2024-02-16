@@ -68,9 +68,9 @@ namespace ekg::ui {
   public: // virtuals
     void on_reload();
 
-    void on_pre_event(SDL_Event &sdl_event);
+    void on_pre_event(ekg::os::io_event_serial &io_event_serial);
 
-    void on_event(SDL_Event &sdl_event);
+    void on_event(ekg::os::io_event_serial &io_event_serial);
 
     void on_update();
 

@@ -37,18 +37,13 @@ namespace ekg {
     shared = 8
   };
 
-  struct event {
-  public:
-    bool button {};
-    bool checkbox {};
-    float slider {};
-
-  };
-
   struct task {
   public:
     struct info {
-      
+    public:
+      bool button {};
+      bool checkbox {};
+      float slider {};
     };
   public:
     std::string_view tag {};
