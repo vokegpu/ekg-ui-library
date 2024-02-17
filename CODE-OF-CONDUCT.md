@@ -14,7 +14,7 @@ src ->
   sources
 ```
 
-Each new package is a namespace, except the `core` and `util` [2];  
+Each new package is a namespace, except [2] the `core` and `util` [4];  
 declarations must follow a namespace path `ekg::package::something`.
 
 Note: Some old code may not follow the code of conduct, but it is being refactored.
@@ -140,5 +140,6 @@ ekg::ui::drop_down_frame ekg::drop_down_frame(...) {
 
 # Lacunes
 - [1] The variable, function and method MUST follow: template, and default initialization value as-a-config.
-- [2] The `ekg::core` and `ekg::util` is user-programmer accessible, a fundamental part of code that do not require EKG techniques concepts. 
+- [2] The `ekg::core` and `ekg/util/*` is user-programmer accessible, a fundamental part of code that do not require EKG techniques concepts. 
 - [3] The `ekg::core` is the unique PTR wich does not has `p_` prefix. The reason, pure design, as lacune [2].
+- [4] The `ekg/util/*` package has the liberty of creating any namespace extensions without declare `ekg::util` namespace, e.g. `ekg/util/io.hpp` with an extension of `ekg::input::`.

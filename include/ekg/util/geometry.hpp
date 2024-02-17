@@ -32,6 +32,7 @@
 
 #define ekg_equals_float(x, y) ((fabsf((x) - (y))) <= FLT_EPSILON * fmaxf(1.0f, fmaxf(fabsf(x), fabsf(y))))
 #define ekg_pixel_div_2        (0.500000f)
+#define ekg_pi                 (3.141592653589793238462643383279502884)
 
 /*
  * The STL std:::min, and std::max implementation,
@@ -53,26 +54,17 @@
 #define ekg_clamp(a, b, c) ((a < b) ? b : ((a > c) ? c : a))
 
 namespace ekg {
-  extern double pi;
-
-  struct display {
-  public:
-    static float dt;
-    static int32_t width;
-    static int32_t height;
-  };
-
   enum dock {
-    none = 0,
-    free = 2 << 2,
-    top = 2 << 3,
+    none   = 0,
+    free   = 2 << 2,
+    top    = 2 << 3,
     bottom = 2 << 4,
-    right = 2 << 5,
-    left = 2 << 6,
+    right  = 2 << 5,
+    left   = 2 << 6,
     center = 2 << 7,
-    full = 2 << 8,
-    next = 2 << 9,
-    fill = 2 << 10,
+    full   = 2 << 8,
+    next   = 2 << 9,
+    fill   = 2 << 10,
     resize = 2 << 11
   };
 

@@ -26,6 +26,7 @@
 #define EKG_UI_ABSTRACT_H
 
 #include <vector>
+
 #include "ekg/util/geometry.hpp"
 #include "ekg/util/aspect.hpp"
 

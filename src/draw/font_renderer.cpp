@@ -205,7 +205,7 @@ void ekg::draw::font_renderer::reload() {
       continue;
     }
 
-    ekg::char_data &char_data {this->allocated_char_data[char_codes]};
+    ekg::glyph_char_t &char_data {this->allocated_char_data[char_codes]};
     char_data.x = offset / static_cast<float>(this->full_width);
     char_data.w = static_cast<float>(this->ft_glyph_slot->bitmap.width);
     char_data.h = static_cast<float>(this->ft_glyph_slot->bitmap.rows);
@@ -293,7 +293,7 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
       x += static_cast<float>(this->ft_vector_previous_char.x >> 6);
     }
 
-    ekg::char_data &char_data {this->allocated_char_data[char32]};
+    ekg::glyph_char_t &char_data {this->allocated_char_data[char32]};
     vertices.x = x + char_data.left;
     vertices.y = y + this->full_height - char_data.top;
 

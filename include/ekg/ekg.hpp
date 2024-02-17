@@ -52,31 +52,6 @@ namespace ekg {
    */
   extern ekg::runtime *core;
 
-  /**
-   * Shaders version should be higher than 300.
-   */
-  extern std::string glsl_version;
-
-  /**
-   * When enabled, ekg automatically find the base resolution scale by monitor.
-   */
-  extern bool autoscale;
-
-  /**
-   * The scale interval between the base scaled resolution and root size.
-   */
-  extern float scaleinterval;
-
-  /**
-   * The resolution scale base, for edit, then you need to disable 'ekg::autoscale'.
-   */
-  extern ekg::vec2 scalebase;
-
-  /**
-   * Pre-decode clipboard content.
-   */
-  extern bool pre_decode_clipboard;
-
   /** The setup and handling functions of ekg. */
 
   struct runtime_property {
@@ -109,11 +84,6 @@ namespace ekg {
    * Quit from all services and main runtime core.
    */
   void quit();
-
-  /**
-   * Poll events and sync UI events.
-   */
-  void poll_event();
 
   /**
    * Process events, tasks, services & widgets.

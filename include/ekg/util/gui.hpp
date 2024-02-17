@@ -89,21 +89,4 @@ namespace ekg {
   std::string &set(std::string &value, std::string_view result);
 }
 
-/**
- * ULTRA-DEPRECATED AND USELESS STUFFF, IM NOT SURE WHY
- * THIS EXISTS
- */
-namespace ekg {
-  /**
-   * Instead of dispatching lot of useless events like layout processing,
-   * the assert is able to check and prevent that.
-   **/
-  extern bool assert_task_flag;
-
-  /**
-   * useless life
-   */
-  float assert_task(float, float);
-}
-
 #endif

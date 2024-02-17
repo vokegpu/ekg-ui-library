@@ -60,32 +60,13 @@ void ekg::init(
   ekg::runtime *p_ekg_runtime,
   ekg::runtime_property *p_ekg_runtime_property
 ) {
+  ekg::log() << "Initialising built-in OS platform wrapper";
+
+  p_ekg_runtime->p_os_platform = p_ekg_runtime_property->p_os_platform;
+  p_ekg_runtime->p_os_platform->init(); 
+
   ekg::log() << "Initialising EKG";
 
-  if (p_ekg_runtime_property->p_sdl_win != nullptr) {
-    ekg::listener = SDL_RegisterEvents(1);
-
-    SDL_GetWindowSize(p_root, &ekg::display::width, &ekg::display::height);
-
-    /* Output SDL info. */
-
-    SDL_version sdl_version {};
-    SDL_GetVersion(&sdl_version);
-
-    ekg::log() << "SDL version: "
-               << static_cast<int32_t>(sdl_version.major)
-               << '.'
-               << static_cast<int32_t>(sdl_version.minor)
-               << '.'
-               << static_cast<int32_t>(sdl_version.patch);
-  }
-
-  /* Init OS cursor and check mouse icons. */
-
-  ekg::init_cursor();
-  ekg::log() << "Initialising OS cursor";
-
-  /* The runtime core, everything should be setup before the initialization process. */
   ekg::core = p_ekg_runtime;
   ekg::core->p_gpu_api = p_ekg_runtime_property->p_gpu_api;
   ekg::core->f_renderer_small.font_path = p_ekg_runtime_property->p_font_path;
@@ -93,18 +74,11 @@ void ekg::init(
   ekg::core->f_renderer_big.font_path = p_ekg_runtime_property->p_font_path;
   ekg::core->init();
 
-  /* First update of orthographic matrix and uniforms. */
+  ekg::log() << "Initialising built-in GPU API wrapper";
 
-  ekg::orthographic2d(
-    ekg::gpu::allocator::mat4x4orthographic,
-    0, 
-    static_cast<float>(ekg::display::width),
-    static_cast<float>(ekg::display::height),
-    0
-  );
-
-  ekg::log() << "Vendor details: ";
-  p_ekg_runtime_property->p_gpu_api->log_vendor_details();
+  p_ekg_runtime->p_gpu_api = p_ekg_runtime_property->p_gpu_api;
+  p_ekg_runtime->p_gpu_api->init();
+  p_ekg_runtime->p_gpu_api->log_vendor_details();
 }
 
 void ekg::quit() {
@@ -112,30 +86,13 @@ void ekg::quit() {
   ekg::log() << "Shutdown complete - Thank you for using EKG ;) <3";
 }
 
-void ekg::poll_event(SDL_Event &sdl_event) {
-
-}
-
 void ekg::update() {
-  if (ekg::core->must_process_event) {
-    ekg::cursor = ekg::system_cursor::arrow; // reset, due a glitch
-    ekg::core->process_event();
-    ekg::core->must_process_event = false;
+  switch (ekg::poll_io_event) {
+    case true:
+      ekg::cursor = ekg::system_cursor::arrow; // reset, due a glitch
+      ekg::core->process_event();
+      break;
   }
-
-  //if (!(
-  //    /*
-  //     * Not all events should be processed, only the requireds.
-  //     */
-  //    sdl_event.type == SDL_MOUSEBUTTONDOWN || sdl_event.type == SDL_MOUSEBUTTONUP ||
-  //    sdl_event.type == SDL_FINGERUP || sdl_event.type == SDL_FINGERDOWN ||
-  //    sdl_event.type == SDL_FINGERMOTION || sdl_event.type == SDL_MOUSEMOTION ||
-  //    sdl_event.type == SDL_KEYDOWN || sdl_event.type == SDL_KEYUP ||
-  //    sdl_event.type == SDL_WINDOWEVENT || sdl_event.type == SDL_MOUSEWHEEL ||
-  //    sdl_event.type == SDL_TEXTINPUT
-  //)) {
-  //  return;
-  //}
 
   ekg::core->process_update();
   ekg::core->p_os_platform->update_cursor(ekg::cursor);

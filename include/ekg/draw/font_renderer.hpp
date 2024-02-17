@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef EKG_DRAW_FONT_H
-#define EKG_DRAW_FONT_H
+#ifndef EKG_DRAW_FONT_RENDERER_H
+#define EKG_DRAW_FONT_RENDERER_H
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -32,7 +32,7 @@
 #include "ekg/util/geometry.hpp"
 
 namespace ekg {
-  struct char_data {
+  struct glyph_char_t {
     float x {};
     float wsize {};
     float w {};
@@ -40,55 +40,55 @@ namespace ekg {
     float top {};
     float left {};
   };
+}
 
-  namespace draw {
-    class font_renderer {
-    public:
-      static FT_Library ft_library;
-    public:
-      FT_Face ft_face {};
-      FT_GlyphSlot ft_glyph_slot {};
-      FT_Bool ft_bool_kerning {};
-      FT_UInt ft_uint_previous {};
-      FT_Vector_ ft_vector_previous_char {};
+namespace ekg::draw {
+  class font_renderer {
+  public:
+    static FT_Library ft_library;
+  public:
+    FT_Face ft_face {};
+    FT_GlyphSlot ft_glyph_slot {};
+    FT_Bool ft_bool_kerning {};
+    FT_UInt ft_uint_previous {};
+    FT_Vector_ ft_vector_previous_char {};
 
-      std::string font_path {};
-      uint32_t font_size {18};
-      uint32_t texture {};
+    std::string font_path {};
+    uint32_t font_size {18};
+    uint32_t texture {};
 
-      float full_width {};
-      float full_height {};
+    float full_width {};
+    float full_height {};
 
-      float offset_text_height {};
-      float text_height {};
+    float offset_text_height {};
+    float text_height {};
 
-      bool flag_unloaded {};
-      bool flag_first_time {true};
+    bool flag_unloaded {};
+    bool flag_first_time {true};
 
-      ekg::gpu::allocator *p_allocator {};
-      ekg::char_data allocated_char_data[256] {};
-    public:
-      float get_text_width(std::string_view);
+    ekg::gpu::allocator *p_allocator {};
+    ekg::glyph_char_t allocated_char_data[256] {};
+  public:
+    float get_text_width(std::string_view);
 
-      float get_text_width(std::string_view, int32_t &);
+    float get_text_width(std::string_view, int32_t &);
 
-      float get_text_height();
+    float get_text_height();
 
-      void set_font(const std::string &);
+    void set_font(const std::string &);
 
-      void set_size(uint32_t);
+    void set_size(uint32_t);
 
-      void reload();
+    void reload();
 
-      void bind_allocator(ekg::gpu::allocator *p_allocator_bind);
+    void bind_allocator(ekg::gpu::allocator *p_allocator_bind);
 
-      void blit(std::string_view, float, float, const ekg::vec4 &);
+    void blit(std::string_view, float, float, const ekg::vec4 &);
 
-      void init();
+    void init();
 
-      void quit();
-    };
-  }
+    void quit();
+  };
 }
 
 #endif

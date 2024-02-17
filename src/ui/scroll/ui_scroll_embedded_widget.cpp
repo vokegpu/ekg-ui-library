@@ -228,8 +228,8 @@ void ekg::ui::scroll_embedded_widget::on_event(ekg::os::io_event_serial &io_even
 }
 
 void ekg::ui::scroll_embedded_widget::on_update() {
-  this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::scroll_smooth * ekg::display::dt);
-  this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::scroll_smooth * ekg::display::dt);
+  this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::input::scroll_amount * ekg::display::dt);
+  this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::input::scroll_amount * ekg::display::dt);
 
 #if defined(ANDROID)
   this->clamp_scroll();

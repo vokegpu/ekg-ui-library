@@ -61,6 +61,18 @@ void ekg::os::sdl::init() {
 
   this->update_cursor(ekg::system_cursor::arrow);
   ekg::cursor = ekg::system_cursor::arrow;
+
+  SDL_GetWindowSize(p_root, &ekg::display::width, &ekg::display::height);
+
+  SDL_version sdl_version {};
+  SDL_GetVersion(&sdl_version);
+
+  ekg::log() << "SDL version: "
+             << static_cast<int32_t>(sdl_version.major)
+             << '.'
+             << static_cast<int32_t>(sdl_version.minor)
+             << '.'
+             << static_cast<int32_t>(sdl_version.patch);
 }
 
 void ekg::os::sdl::update_cursor(ekg::system_cursor sys_cursor) {
@@ -100,26 +112,31 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
   case SDL_KEYDOWN:
     serialized.is_key_down = true;
     serialized.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
+    ekg::poll_io_event = true;
     break;
 
   case SDL_KEYUP:
     serialized.is_key_up = true;
     serialized.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
+    ekg::poll_io_event = true;
     break;
 
   case SDL_TEXTINPUT:
     serialized.is_text_input = true;
     serialized.text_input = sdl_event.text;
+    ekg::poll_io_event = true;
     break;
 
   case SDL_MOUSEBUTTONUP:
     serialized.is_mouse_button_up = true;
     serialized.mouse_button = sdl_event.button.button;
+    ekg::poll_io_event = true;
     break;
 
   case SDL_MOUSEBUTTONDOWN:
     serialized.is_mouse_button_down = true;
     serialized.mouse_button = sdl_event.button.button;
+    ekg::poll_io_event = true;
     break;
 
   case SDL_MOUSEWHEEL:
@@ -128,24 +145,28 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
     serialized.mouse_wheel_y = sdl_event.wheel.y;
     serialized.mouse_wheel_precise_x = sdl_event.wheel.preciseX;
     serialized.mouse_wheel_precise_y = sdl_event.wheel.preciseY;
+    ekg::poll_io_event = true;
     break;
 
   case SDL_FINGERUP:
     serialized.is_finger_up = true;
     serialized.finger_x = sdl_event.tfinger.x;
     serialized.finger_y = sdl_event.tfinger.y;        
+    ekg::poll_io_event = true;
     break;
 
   case SDL_FINGERDOWN:
     serialized.is_finger_down = true;
     serialized.finger_x = sdl_event.tfinger.x;
     serialized.finger_y = sdl_event.tfinger.y;   
+    ekg::poll_io_event = true;
     break;
 
   case SDL_FINGERMOTION:
     serialized.is_finger_motion = true;
     serialized.finger_x = sdl_event.tfinger.x;
     serialized.finger_y = sdl_event.tfinger.y;   
+    ekg::poll_io_event = true;
     break;
   }
 }

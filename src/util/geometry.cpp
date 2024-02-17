@@ -24,12 +24,6 @@
 
 #include "ekg/ekg.hpp"
 
-int32_t ekg::display::width {};
-int32_t ekg::display::height {};
-
-float ekg::display::dt {};
-double ekg::pi {3.141592653589793238462643383279502884};
-
 bool ekg::operator==(const ekg::rect &l, const ekg::rect &r) {
   return ekg_equals_float(l.x, r.x) && ekg_equals_float(l.y, r.y) && ekg_equals_float(l.w, r.w) &&
          ekg_equals_float(l.h, r.h);
