@@ -56,6 +56,9 @@ namespace ekg {
     dimension = 2
   };
 
+  enum class state {
+  };
+
   namespace ui {
     struct item {
     public:

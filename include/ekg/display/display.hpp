@@ -28,11 +28,35 @@
 #include "ekg/util/geometry.hpp"
 
 namespace ekg::display {
+  /**
+   * The current display-viewport width.
+   */
   extern int32_t width;
+  
+  /**
+   * The current display-viewport height.
+   */
   extern int32_t height;
+
+  /**
+   * Delta time value, usable by the widgets to perform animations.
+   * Not automatically setted, application must set DT value.
+   */
   extern float dt;
+
+  /**
+   * The scale-base of GUI,
+   * by default value is set as 1920x1080 (full high-definition).
+   */
+  extern ekg::vec2 scale;
+
+  /**
+   * Auto-scale boolean do the GUI `ekg::scale` be set as the monitor
+   * resolution.
+   * 
+   * Smarthphones displays may need manual specifiy the scale-base.
+   */
   extern bool auto_scale;
-  extern bool scale_base;
-};
+}
 
 #endif

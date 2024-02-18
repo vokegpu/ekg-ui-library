@@ -28,4 +28,4 @@ int32_t ekg::display::width {};
 int32_t ekg::display::height {};
 float ekg::display::dt {};
 bool ekg::display::auto_scale {};
-ekg::vec2
+ekg::vec2 ekg::display::scale {1920.0f, 1080.0f};

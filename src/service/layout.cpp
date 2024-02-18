@@ -579,15 +579,14 @@ void ekg::service::layout::update_scale_factor() {
     static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height)
   };
 
-  ekg::vec2 monitor_resolution {ekg::display::scale_base};
+  ekg::vec2 monitor_resolution {ekg::display::scale};
   ekg::vec2 input_resolution {this->viewport_scale};
 
   if (ekg::display::auto_scale) {
     ekg::core->p_os_platform->update_monitor_resolution();
     monitor_resolution.x = static_cast<float>(ekg::core->p_os_platform->monitor_resolution[0]);
     monitor_resolution.y = static_cast<float>(ekg::core->p_os_platform->monitor_resolution[1]);
-
-    ekg::display::scale_base = {1920.0f, 1080.0f};
+    ekg::display::scale = {1920.0f, 1080.0f};
     input_resolution = monitor_resolution;
   }
 

@@ -256,7 +256,6 @@ void ekg::runtime::process_render() {
 void ekg::runtime::prepare_tasks() {
   ekg::log() << "Preparing internal EKG core";
 
-  this->service_handler.init_multi_thread_task_thread();
   this->service_handler.allocate() = {
       .p_tag      = "refresh",
       .p_callback = this,

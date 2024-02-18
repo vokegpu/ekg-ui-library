@@ -66,7 +66,7 @@ namespace ekg::draw {
     bool flag_first_time {true};
 
     ekg::gpu::allocator *p_allocator {};
-    ekg::glyph_char_t allocated_char_data[256] {};
+    ekg::draw::glyph_char_t allocated_char_data[256] {};
   public:
     float get_text_width(std::string_view);
 

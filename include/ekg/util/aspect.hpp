@@ -26,7 +26,6 @@
 #define EKG_UTIL_ASPECT_H
 
 namespace ekg {
-
   struct hovered {
     static int32_t id;
     static ekg::type type;
@@ -35,7 +34,6 @@ namespace ekg {
     static ekg::type downtype;
     static ekg::type uptype;
   };
-
 }
 
 #endif
