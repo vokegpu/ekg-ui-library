@@ -27,6 +27,7 @@
 
 namespace ekg {
   struct hovered {
+    publicÇ
     static int32_t id;
     static ekg::type type;
     static int32_t up;

@@ -200,18 +200,12 @@ namespace ekg {
     unselectable = 2 << 7
   };
 
-  bool file_to_string(std::string &file_content, std::string_view path);
-
   struct timing {
   public:
     uint64_t elapsed_ticks {};
     uint64_t current_ticks {};
     uint64_t ticks_going_on {};
   };
-
-  bool reach(ekg::timing &, uint64_t);
-
-  bool reset(ekg::timing &);
 
   struct flag {
     bool highlight {};
@@ -228,38 +222,44 @@ namespace ekg {
     cut = 1073741947, // SDLK_CUT
     paste = 1073741949  // SDLK_PASTE
   };
+}
 
-  namespace bitwise {
-    bool contains(uint16_t flags, uint16_t target);
+namespace ekg {
+  bool file_to_string(std::string &file_content, std::string_view path);
 
-    uint16_t &add(uint16_t &flags, uint16_t target);
+  bool reach(ekg::timing &, uint64_t);
 
-    uint16_t &remove(uint16_t &flags, uint16_t target);
-  }
+  bool reset(ekg::timing &);
+}
 
-  namespace input {
-    bool action(std::string_view action_key);
+namespace ekg::bitwise {
+  bool contains(uint16_t flags, uint16_t target);
+  uint16_t &add(uint16_t &flags, uint16_t target);
+  uint16_t &remove(uint16_t &flags, uint16_t target);
+}
 
-    bool receive(std::string_view input_key);
+namespace ekg::input {
+  bool action(std::string_view action_key);
 
-    void clipboard(ekg::clipboard clipboard_op);
+  bool receive(std::string_view input_key);
 
-    void fire(std::string_view action_key);
+  void clipboard(ekg::clipboard clipboard_op);
 
-    void bind(std::string_view action_key, std::string_view input_key);
+  void fire(std::string_view action_key);
 
-    bool motion();
+  void bind(std::string_view action_key, std::string_view input_key);
 
-    bool released();
+  bool motion();
 
-    bool pressed();
+  bool released();
 
-    bool wheel();
+  bool pressed();
 
-    bool typed();
+  bool wheel();
 
-    ekg::vec4 &interact();
-  }
+  bool typed();
+
+  ekg::vec4 &interact();
 }
 
 #endif

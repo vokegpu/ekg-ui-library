@@ -48,9 +48,9 @@ access to the `ekg::ui::abstract`.
 
 ```cpp
 // include/ui/abstract/ui_abstract.hpp
-class ekg::ui::abstract_widget {
+class abstract_widget {
 public:
-  ekg::ui::abstract_widget *p_ui {};
+  ekg::ui::abstract *p_ui {};
 };
 ```
 
