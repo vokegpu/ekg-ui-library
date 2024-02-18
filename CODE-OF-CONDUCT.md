@@ -3,7 +3,7 @@
 All headers must be inside of `include`; headers-definition are allowed but must be under [1]
 some strictly requirements. 
 
-The source code definitions must be inside of `src`, and must follow the package path, and filename case.
+The source code definitions must be inside of `src`, follow the package path, and filename case.
 
 ```
 include ->
