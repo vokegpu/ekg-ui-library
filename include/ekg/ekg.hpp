@@ -52,7 +52,7 @@ namespace ekg {
    */
   extern ekg::runtime *core;
 
-  /** The setup and handling functions of ekg. */
+  /** The setup and handling functions of ekg **/
 
   struct runtime_property {
   public:
@@ -95,7 +95,7 @@ namespace ekg {
    */
   void render();
 
-  /** The environment getters of ekg. */
+  /** The environment getters of ekg */
 
   /**
    * Get the theme service, you can load custom theme files.

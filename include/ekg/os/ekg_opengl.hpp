@@ -41,6 +41,7 @@ namespace ekg::os {
   class opengl : public ekg::gpu::api {
   protected:
     std::vector<ekg::gpu::sampler_t*> bound_sampler_list {};
+    std::string_view glsl_version {};
     
     int32_t uniform_active_texture {};
     int32_t uniform_active_tex_slot {};
@@ -53,9 +54,19 @@ namespace ekg::os {
     uint32_t vbo_array {};
     uint32_t ebo_simple_shape {};
     uint32_t pipeline_program {};
+  protected:
+    uint32_t create_pipeline_program(
+      uint32_t &program,
+      const std::unordered_map<std::string, uint32_t> &resources
+    );
   public:
-    uint32_t create_pipeline_program(uint32_t &program, const std::unordered_map<std::string, uint32_t> &resources);
-  public:
+    /**
+     * OpenGL API wrapper abstraction constructor;
+     * `set_glsl_version` must be 330 higher, if not, the version is auto-initialized as `450`.
+     * OpenGL ES 3 needs explicity set to the GLSL ES version.
+     */
+    opengl(std::string_view set_glsl_version = "#version 450");\
+  public:    
     void log_vendor_details() override;
 
     void init() override;

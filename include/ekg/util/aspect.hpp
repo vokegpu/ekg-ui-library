@@ -26,17 +26,16 @@
 #define EKG_UTIL_ASPECT_H
 
 namespace ekg {
-  enum class state {
-    enabled,
-    disabled
+
+  struct hovered {
+    static int32_t id;
+    static ekg::type type;
+    static int32_t up;
+    static int32_t down;
+    static ekg::type downtype;
+    static ekg::type uptype;
   };
 
-  enum class font {
-    small = 0, normal = 1, big = 2
-  };
-
-  extern bool debug;
-  extern float scroll_smooth;
 }
 
 #endif

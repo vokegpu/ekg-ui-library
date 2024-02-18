@@ -198,18 +198,6 @@ void ekg::runtime::process_event() {
     ekg::dispatch(ekg::env::swap);
     ekg::dispatch(ekg::env::redraw);
   }
-
-  if (this->io_event_serial.is_key_up) {
-    this->io_event_serial.is_key_up = false;
-  }
-
-  if (this->io_event_serial.is_key_down) {
-    this->io_event_serial.is_key_up = false;
-  }
-
-  if (this->current_event_key_input_) {
-    this->io_event_serial.is_key_up = false;
-  }
 }
 
 void ekg::runtime::process_update() {
@@ -262,7 +250,6 @@ void ekg::runtime::process_render() {
     this->gpu_allocator.revoke();
   }
 
-  glViewport(0, 0, ekg::display::width, ekg::display::height);
   this->gpu_allocator.draw();
 }
 

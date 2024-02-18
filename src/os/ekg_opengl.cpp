@@ -4,6 +4,40 @@
 #include <stdio.h>
 #include <unordered_map>
 
+ekg::os::opengl::opengl(std::string_view set_glsl_version) {
+  this->glsl_version = "#version 450";
+
+  if (set_glsl_version.empty()) {
+    ekg::log() << "[GPU][API] not viable glsl version, empty, must 330 higher"
+    return;
+  }
+
+  uint64_t size {set_glsl_version.size()};
+  uint8_t number_size {};
+
+  for (uint64_t it {}; it <  set_glsl_version.size(); it++) {
+    auto &a_char {set_glsl_version.at(it - size)};
+    if (a_char >= 48 && a_char <= 58) {
+      number_size++;
+    } else {
+      break;
+    }
+  }
+
+  if (number_size != 3) {
+    ekg::log() << "[GPU][API] not viable glsl version, unknown number, must `#version 330` higher";
+    return;
+  }
+
+  int32_t version {std::stoi(set_glsl_version.substr(size - number_size, number_size))};
+  if (version < 330) {
+    ekg::log() << "[GPU][API] not viable glsl version, incorrect number, must `#version 330` higher";
+    return;
+  }
+
+  this->glsl_version = set_glsl_version;
+}
+
 void ekg::os::opengl::log_vendor_details() {
   const char *p_vendor {glGetString(GL_VENDOR)};
   ekg::log() << p_vendor;
@@ -11,7 +45,7 @@ void ekg::os::opengl::log_vendor_details() {
 
 void ekg::os::opengl::init() {
   std::string_view vsh_src {
-    ekg::glsl_version + "\n"
+    this->glsl_version + "\n"
     "layout (location = 0) in vec2 aPos;\n"
     "layout (location = 1) in vec2 aTexCoord;\n"
 
@@ -40,7 +74,7 @@ void ekg::os::opengl::init() {
   };
 
   std::string_view fsh_src {
-    ekg::glsl_version + "\n"
+    this->glsl_version + "\n"
     "layout (location = 0) out vec4 vFragColor;\n"
     "uniform sampler2D uTextureSampler;\n"
 
@@ -318,10 +352,10 @@ uint64_t ekg::so::opengl::bind_sampler(ekg::gpu::sampler_t *p_sampler) {
   }
 
   /**
-   * Protected sampleres such as font, icons, and default EKG samplers,
+   * Protected samplers such as font, icons, and default EKG samplers,
    * should not overhead the glBindTexture calls,
    * this reason the active index only increase
-   * when it is a protected sampler.
+   * when THIS is a protected sampler.
    **/
   if (ekg_is_sampler_protected(p_sampler->gl_protected_active_index)) {
     glActiveTexture(

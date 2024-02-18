@@ -31,8 +31,9 @@
 #include "ekg/gpu/allocator.hpp"
 #include "ekg/util/geometry.hpp"
 
-namespace ekg {
+namespace ekg::draw {
   struct glyph_char_t {
+  public:
     float x {};
     float wsize {};
     float w {};
@@ -40,9 +41,7 @@ namespace ekg {
     float top {};
     float left {};
   };
-}
 
-namespace ekg::draw {
   class font_renderer {
   public:
     static FT_Library ft_library;

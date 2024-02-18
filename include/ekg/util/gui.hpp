@@ -33,24 +33,17 @@
 
 namespace ekg {
   enum class env {
-    refresh, swap, reload, synclayout, gc, redraw
+    refresh,
+    swap,
+    reload,
+    synclayout,
+    gc,
+    redraw
   };
 
-  void dispatch(task *p_ekg_event);
-
-  void dispatch(ekg::env env);
-
-  bool listen(event &ui_event, SDL_Event &sdl_event);
-
-  extern ekg::rect empty;
-
-  struct hovered {
-    static int32_t id;
-    static ekg::type type;
-    static int32_t up;
-    static int32_t down;
-    static ekg::type downtype;
-    static ekg::type uptype;
+  enum class state {
+    enabled,
+    disabled
   };
 
   struct stack {
@@ -61,6 +54,12 @@ namespace ekg {
   public:
     void clear();
   };
+}
+
+namespace ekg {
+  void dispatch(task *p_ekg_event);
+
+  void dispatch(ekg::env env);
 
   void reload(int32_t id);
 
