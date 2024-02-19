@@ -67,7 +67,12 @@ void ekg::ui::button_widget::on_event(ekg::os::io_event_serial &io_event_serial)
     ekg::set(this->flag.highlight, this->flag.hovered);
   }
 
-  if (pressed && !this->flag.activy && this->flag.hovered && ekg::input::action("button-activy")) {
+  if (
+      pressed &&
+      !this->flag.activy &&
+      this->flag.hovered &&
+      ekg::input::action("button-activy")
+  ) {
     ekg::set(this->flag.activy, true);
   } else if (released && this->flag.activy) {
     auto p_ui {(ekg::ui::button *) this->p_data};

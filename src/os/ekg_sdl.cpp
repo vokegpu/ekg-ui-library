@@ -88,7 +88,61 @@ void ekg::os::sdl::update_monitor_resolution() {
 }
 
 void ekg::os::sdl::get_key_name(int32_t key, std::string_view &name) {
-  name = SDL_GetKeyName(key);
+  switch (key) {
+    case SDLK_LCTRL:
+      name = "lctrl";
+      break;
+    case SDLK_RCTRL:
+      name = "rctrl";
+      break;
+    case SDLK_LSHIFT:
+      name = "lshift";
+      break;
+    case SDLK_RSHIFT:
+      name = "rshift";
+      break;
+    case SDLK_LALT:
+      name = "alt";
+      break;
+    case SDLK_RALT:
+      name = "altgr";
+      break;
+    case SDLK_TAB:
+      name = "tab";
+      break;
+    default:
+      name = SDL_GetKeyName(key);
+      break;
+  }
+}
+
+void ekg::os::sdl::get_special_key(int32_t key, ekg::special_key &special_key) {
+  switch (key) {
+    case SDLK_LCTRL:
+      special_key = ekg::special_key::left_ctrl;
+      break;
+    case SDLK_RCTRL:
+      special_key = ekg::special_key::right_ctrl;
+      break;
+    case SDLK_LSHIFT:
+      special_key = ekg::special_key::left_shift;
+      break;
+    case SDLK_RSHIFT:
+      special_key = ekg::special_key::right_shift;
+      break;
+    case SDLK_LALT:
+      special_key = ekg::special_key::left_alt;
+      break;
+    case SDLK_RALT:
+      special_key = ekg::special_key::right_alt;
+      break;
+    case SDLK_TAB:
+      special_key = ekg::special_key::tab;
+      break;
+    default:
+      special_key = ekg::special_key::unknown;
+      break;
+  }
 }
 
 void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {

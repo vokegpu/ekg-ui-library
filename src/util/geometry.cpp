@@ -198,10 +198,10 @@ void ekg::set_rect_clamped(ekg::rect &rect, float min_size) {
 }
 
 float ekg::find_min_offset(float width, float offset) {
-  /*
+  /**
    * Use initial offset to get the min possible offset.
-   * Initial offset value sometime is font height divided by 2.
-   */
+   * Initial offset value may is font height divided by 2.
+   **/
   float full_rect {width + offset};
   return static_cast<float>(static_cast<int32_t>((full_rect * 0.5f) - (width * 0.5f)));
 }

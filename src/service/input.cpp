@@ -26,15 +26,26 @@
 #include <string>
 #include <algorithm>
 
-std::unordered_map<std::string_view, std::string_view> ekg::service::input::special_keys_name_map = {
-    {"Left Shift",  "lshift"},
-    {"Right Shift", "rshift"},
-    {"Left Ctrl",   "lctrl"},
-    {"Right Ctrl",  "rctrl"},
-    {"Left Alt",    "alt"},
-    {"Right Alt",   "altgr"},
-    {"Tab",         "tab"}
-};
+void ekg::service::input::init() {
+  uint64_t it {};
+
+  /**
+   * Forced null termination at end due the necessary optmization,
+   * when changing dynamically the special key activy state.
+   * 
+   * If lshift is pressed, then the last char is set to `+`,
+   * or be `lshift+` (from `lshift\0` to `lshift+`).
+   * Unpressed special key result in `\0.
+   */
+
+  this->special_keys_sdl_map[it++] = "lshift\0",
+  this->special_keys_sdl_map[it++] = "rshift\0",
+  this->special_keys_sdl_map[it++] = "lctrl\0",
+  this->special_keys_sdl_map[it++] = "rctrl\0",
+  this->special_keys_sdl_map[it++] = "alt\0",
+  this->special_keys_sdl_map[it++] = "altgr\0",
+  this->special_keys_sdl_map[it++] = "tab\0";
+}
 
 void ekg::service::input::on_event(ekg::os::io_event_serialized &io_event_serialized) {
   this->was_pressed = false;
@@ -47,11 +58,20 @@ void ekg::service::input::on_event(ekg::os::io_event_serialized &io_event_serial
     this->was_typed = true;
   } else if (io_event_serialized.is_key_down) {
     this->was_pressed = true;
-    std::string_view key_name {SDL_GetKeyName(io_event_serialized.key)};
+
+    std::string_view key_name {};
     std::string_view string_builder {};
 
-    if (this->is_special_key(io_event_serialized.key)) {
-      string_builder += ekg::service::input::special_keys_name_map[key_name];
+    ekg::core->p_os_platform->get_key_name(
+      io_event_serialized.key,
+      key_name
+    );
+
+    ekg::special_key special_key {ekg::special_key::unknown};
+    ekg::core->get_special_key(io_event_serialized.key, special_key);
+
+    if (special_key != ekg::special_key::unknown) {
+      this->special_keys_sdl_map[io_event_serialized.key][0] = '\0';
       this->special_keys_sdl_map[io_event_serialized.key] = string_builder;
       this->special_keys_sdl_map[io_event_serialized.key] += "+";
 
@@ -76,13 +96,21 @@ void ekg::service::input::on_event(ekg::os::io_event_serialized &io_event_serial
     }
   } else if (io_event_serialized.is_key_up) {
     this->was_released = true;
-    std::string key_name {SDL_GetKeyName(io_event_serialized.key)};
+    std::string key_name {};
     std::string string_builder {};
 
-    if (this->is_special_key(io_event_serialized.key)) {
-      this->special_keys_sdl_map[io_event_serialized.key] = "";
+    ekg::core->p_os_platform->get_key_name(
+      io_event_serialized.key,
+      key_name
+    );
 
-      string_builder += ekg::service::input::special_keys_name_map[key_name];
+    ekg::special_key special_key {ekg::special_key::unknown};
+    ekg::core->get_special_key(io_event_serialized.key, special_key);
+
+    if (special_key != ekg::special_key::unknown) {
+      this->special_keys_sdl_map[io_event_serialized.key][0] = '\0';
+      string_builder += key_name;
+
       this->callback(string_builder, false);
       this->is_special_keys_released = true;
 
@@ -273,17 +301,12 @@ void ekg::service::input::bind(std::string_view input_tag, std::string_view key)
 }
 
 void ekg::service::input::unbind(std::string_view input_tag, std::string_view key) {
-  std::size_t it {};
-  bool should_unbind {};
   auto &bind_list = this->input_bind_map[key.data()];
-
-  for (it = 0; it < bind_list.size(); it++) {
-    if ((should_unbind = bind_list[it] == input_tag)) {
+  for (uint64_t it {}; it < bind_list.size(); it++) {
+    if (bind_list[it] == input_tag) {
+      bind_list.erase(bind_list.cbegin() + it);
+      break;
     }
-  }
-
-  if (should_unbind) {
-    bind_list.erase(bind_list.cbegin() + (uint64_t) it);
   }
 }
 
@@ -304,13 +327,13 @@ void ekg::service::input::callback(std::string_view key, bool callback) {
 }
 
 void ekg::service::input::complete_with_units(std::string_view &string_builder, std::string_view key_name) {
-  string_builder += this->special_keys_sdl_map[SDLK_LCTRL];
-  string_builder += this->special_keys_sdl_map[SDLK_RCTRL];
-  string_builder += this->special_keys_sdl_map[SDLK_LSHIFT];
-  string_builder += this->special_keys_sdl_map[SDLK_RSHIFT];
-  string_builder += this->special_keys_sdl_map[SDLK_LALT];
-  string_builder += this->special_keys_sdl_map[SDLK_RALT];
-  string_builder += this->special_keys_sdl_map[SDLK_TAB];
+  string_builder += this->special_keys_sdl[ekg::special_key::left_ctrl];
+  string_builder += this->special_keys_sdl[ekg::special_key::right_ctrl];
+  string_builder += this->special_keys_sdl[ekg::special_key::left_shift];
+  string_builder += this->special_keys_sdl[ekg::special_key::right_shift];
+  string_builder += this->special_keys_sdl[ekg::special_key::left_alt];
+  string_builder += this->special_keys_sdl[ekg::special_key::right_alt];
+  string_builder += this->special_keys_sdl[ekg::special_key::tab];
   string_builder += key_name;
 }
 
@@ -331,12 +354,6 @@ bool ekg::service::input::contains_unit(std::string_view label) {
 
 bool ekg::service::input::pressed(std::string_view key) {
   return this->input_register_map[key.data()];
-}
-
-bool ekg::service::input::is_special_key(int32_t sdl_key_code) {
-  return sdl_key_code == SDLK_LCTRL || sdl_key_code == SDLK_RCTRL || sdl_key_code == SDLK_LSHIFT ||
-         sdl_key_code == SDLK_RSHIFT || sdl_key_code == SDLK_LALT || sdl_key_code == SDLK_RALT ||
-         sdl_key_code == SDLK_TAB;
 }
 
 bool ekg::service::input::receive(std::string_view key) {

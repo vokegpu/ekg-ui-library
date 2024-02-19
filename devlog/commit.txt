@@ -143,3 +143,7 @@ major.minor.patch major-commit.minor-commit.patch-commit
 0.0.1.0.6.0 19/01/24
 
 -- New initialization system object-state based.
+-- New interface runtime system for platform X lib and RHI (Rendering-Hardware Interface) for GPU API.
+-- Internal code refactored, removed useless headers and not-profile conduct follow code.
+-- Added SDL runtime interface.
+-- Added OpenGL RHI (Rendering-Hardware Interface).

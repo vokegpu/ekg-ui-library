@@ -25,7 +25,7 @@
 #ifndef EKG_OS_PLATFORM_H
 #define EKG_OS_PLATFORM_H
 
-#include "ekg_sdl.hpp"
+#include <iostream>
 
 namespace ekg {
   enum class system_cursor {
@@ -41,6 +41,17 @@ namespace ekg {
     size_all,
     no,
     hand
+  };
+
+  enum class special_key {
+    left_shift,
+    right_shift,
+    left_ctrl,
+    right_ctrl,
+    alt,
+    altgr,
+    tab,
+    unknown
   };
 
   extern ekg::system_cursor cursor;
@@ -76,7 +87,8 @@ namespace ekg::os {
     virtual void quit() {}
     virtual void update_monitor_resolution() {}
     virtual void update_cursor(ekg::system_cursor system_cursor) {}
-    virtual void key_name(int32_t key, std::string_view &name) {}
+    virtual void get_key_name(int32_t key, std::string_view &name) {}
+    virtual void get_special_key(int32_t key, ekg::special_key &special_key) {}
   };
 }
 

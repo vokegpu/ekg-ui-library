@@ -34,12 +34,10 @@
 namespace ekg::service {
   class input {
   protected:
-    static std::unordered_map<std::string, const char *> special_keys_name_map;
-
     std::unordered_map<std::string, std::vector<std::string>> input_bind_map {};
     std::unordered_map<std::string, bool> input_register_map {};
     std::unordered_map<std::string, bool> input_map {};
-    std::unordered_map<int32_t, std::string> special_keys_sdl_map {};
+    std::array<7, std::string_view> special_keys_sdl {};
 
     std::vector<std::string> special_keys_unit_pressed {};
     std::vector<std::string> double_click_mouse_buttons_pressed {};
@@ -53,13 +51,6 @@ namespace ekg::service {
 
     ekg::vec4 last_finger_interact {};
     ekg::timing double_interact {};
-  protected:
-    void complete_with_units(std::string &string_builder, std::string_view key_name);
-
-    bool contains_unit(std::string_view label);
-
-    bool is_special_key(int32_t sdl_key_code);
-
   public:
     ekg::timing timing_last_interact {};
     ekg::vec4 interact {};
@@ -69,7 +60,15 @@ namespace ekg::service {
     bool has_motion {};
     bool was_wheel {};
     bool was_typed {};
+  protected:
+    void complete_with_units(std::string &string_builder, std::string_view key_name);
+
+    bool contains_unit(std::string_view label);
+
+    bool is_special_key(int32_t sdl_key_code);
   public:
+    void init();
+
     void bind(std::string_view input_tag, std::string_view key);
 
     void unbind(std::string_view input_tag, std::string_view key);
