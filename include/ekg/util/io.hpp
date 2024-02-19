@@ -39,6 +39,10 @@
 
 #define ekg_sign_item_sempahore() if (this->p_semaphore) *this->p_semaphore = true
 
+#define ekg_bitwise_contains(flags, flag) (flags & flag)
+#define ekg_bitwise_remove(flags, flag)   (flags = ~(flags & flag))
+#define ekg_bitwise_add(flags, flag)      (flags |= flag)
+
 namespace ekg {
   struct item {
   private:
@@ -232,13 +236,9 @@ namespace ekg {
   bool reset(ekg::timing &);
 }
 
-namespace ekg::bitwise {
-  bool contains(uint16_t flags, uint16_t target);
-  uint16_t &add(uint16_t &flags, uint16_t target);
-  uint16_t &remove(uint16_t &flags, uint16_t target);
-}
-
 namespace ekg::input {
+  extern float scroll_amount;
+
   bool action(std::string_view action_key);
 
   bool receive(std::string_view input_key);

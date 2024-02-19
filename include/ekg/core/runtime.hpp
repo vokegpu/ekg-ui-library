@@ -38,20 +38,23 @@
 #include "ekg/gpu/api.hpp"
 
 namespace ekg {
-  struct swap {
+  extern struct current_hovered_state {
   public:
+    int32_t id {};
+    ekg::type type {};
+    int32_t up {};
+    int32_t down {};
+    ekg::type down_type {};
+    ekg::type up_type {};
+    int32_t swap {};
+    int32_t last {};
+  } hovered;
+
+  class runtime {
+  private:
     static ekg::stack collect;
     static ekg::stack back;
     static ekg::stack front;
-  };
-
-  class runtime {
-  protected:
-    void prepare_tasks();
-
-    void prepare_ui_env();
-
-    void erase(int32_t id);
   private:
     std::unordered_map<int32_t, ekg::ui::abstract_widget*> widget_map {};
     std::unordered_map<int32_t, bool> processed_widget_map {};
@@ -64,15 +67,13 @@ namespace ekg {
     std::vector<ekg::ui::abstract_widget*> scissor_widget_list  {};
     std::vector<ekg::ui::abstract_widget*> update_widget_list {};
 
-    ekg::ui::abstract *current_bind_group {};
-    ekg::ui::abstract_widget *widget_absolute_activy {};
+    ekg::ui::abstract *p_current_ui_container {};
+    ekg::ui::abstract_widget *p_abs_activy_widget {};
 
     int32_t token_id {};
     int32_t widget_id_focused {};
     int32_t prev_widget_id_focused {};
     int32_t swap_widget_id_focused {};
-    int32_t widget_id_pressed_focused {};
-    int32_t widget_id_released_focused {};
 
     bool enable_high_priority_frequency {};
     bool should_re_batch_gui {};
@@ -91,6 +92,12 @@ namespace ekg {
     ekg::timing ui_timing {};
     ekg::os::platform *p_os_platform {};
     ekg::os::io_event_serial io_event_serial {};
+  protected:
+    void prepare_tasks();
+
+    void prepare_ui_env();
+
+    void erase(int32_t id);    
   public:
     ekg::ui::abstract_widget *get_fast_widget_by_id(int32_t id);
 

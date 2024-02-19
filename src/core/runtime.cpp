@@ -41,9 +41,11 @@
 #include "ekg/ekg.hpp"
 #include "ekg/util/gui.hpp"
 
-ekg::stack ekg::swap::collect {};
-ekg::stack ekg::swap::back {};
-ekg::stack ekg::swap::front {};
+ekg::stack ekg::runtime::collect {};
+ekg::stack ekg::runtime::back {};
+ekg::stack ekg::runtime::front {};
+
+ekg::current_hovered_state ekg::hovered {};
 
 void ekg::runtime::update_size_changed() {
   ekg::dispatch(ekg::env::redraw);
@@ -98,24 +100,26 @@ void ekg::runtime::process_event() {
   bool pressed {ekg::input::pressed()};
   bool released {ekg::input::released()};
 
-  if (pressed || released || ekg::input::motion()) {
-    this->widget_id_focused = 0;
-  }
+  ekg::hovered.id *= !(pressed || released || ekg::input::motion());
 
-  if (this->widget_absolute_activy != nullptr && this->widget_absolute_activy->flag.absolute) {
-    this->widget_absolute_activy->on_pre_event(this->io_event_serial);
-    this->widget_absolute_activy->on_event(this->io_event_serial);
-    this->widget_absolute_activy->on_post_event(this->io_event_serial);
+  if (
+      this->p_abs_activy_widget != nullptr &&
+      this->p_abs_activy_widget->flag.absolute
+    ) {
+
+    this->p_abs_activy_widget->on_pre_event(this->io_event_serial);
+    this->p_abs_activy_widget->on_event(this->io_event_serial);
+    this->p_abs_activy_widget->on_post_event(this->io_event_serial);
+
     return;
   }
 
-  this->widget_absolute_activy = nullptr;
+  this->p_abs_activy_widget = nullptr;
 
   bool hovered {};
   bool first_absolute {};
 
   ekg::ui::abstract_widget *p_widget_focused {};
-  int32_t widgets_id {};
 
   for (ekg::ui::abstract_widget *&p_widgets: this->loaded_widget_list) {
     if (p_widgets == nullptr || !p_widgets->p_data->is_alive()) {
@@ -129,8 +133,9 @@ void ekg::runtime::process_event() {
      */
     hovered = !(this->io_event_serial.is_key_down || this->io_event_serial.is_key_up || this->io_event_serial.input_text)
               && p_widgets->flag.hovered && p_widgets->p_data->is_visible() && p_widgets->p_data->get_state() != ekg::state::disabled;
+
     if (hovered) {
-      this->widget_id_focused = p_widgets->p_data->get_id();
+      ekg::hovered.id = p_widgets->p_data->get_id();
 
       p_widget_focused = p_widgets;
       first_absolute = false;
@@ -165,8 +170,7 @@ void ekg::runtime::process_event() {
     }
   }
 
-  ekg::hovered::type = ekg::type::abstract;
-  ekg::hovered::id = this->widget_id_focused;
+  ekg::hovered.type = ekg::type::abstract;
 
   if (p_widget_focused != nullptr) {
     p_widget_focused->on_pre_event(this->io_event_serial);
@@ -174,26 +178,28 @@ void ekg::runtime::process_event() {
     p_widget_focused->on_post_event(this->io_event_serial);
 
     if (p_widget_focused->flag.absolute) {
-      this->widget_absolute_activy = p_widget_focused;
+      this->p_abs_activy_widget = p_widget_focused;
     }
 
-    ekg::hovered::type = p_widget_focused->p_data->get_type();
+    ekg::hovered.type = p_widget_focused->p_data->get_type();
   }
 
   if (pressed) {
-    this->widget_id_pressed_focused = this->widget_id_focused;
-    ekg::hovered::down = this->widget_id_focused;
-    ekg::hovered::downtype = p_widget_focused != nullptr ? p_widget_focused->p_data->get_type() : ekg::type::abstract;
+    ekg::hovered.down = ekg::hovered.id;
+    ekg::hovered.down_type = p_widget_focused != nullptr ? p_widget_focused->p_data->get_type() : ekg::type::abstract;
   } else if (released) {
-    this->widget_id_released_focused = this->widget_id_focused;
-    ekg::hovered::up = this->widget_id_focused;
-    ekg::hovered::uptype = p_widget_focused != nullptr ? p_widget_focused->p_data->get_type() : ekg::type::abstract;
+    ekg::hovered.up = ekg::hovered.id;
+    ekg::hovered.down_type = p_widget_focused != nullptr ? p_widget_focused->p_data->get_type() : ekg::type::abstract;
   }
 
-  if (this->prev_widget_id_focused != this->widget_id_focused && this->widget_id_focused != 0 &&
-      (pressed || released)) {
-    this->swap_widget_id_focused = this->widget_id_focused;
-    this->prev_widget_id_focused = this->widget_id_focused;
+  if (
+      ekg::hovered.last != ekg::hovered.id &&
+      ekg::hovered.id != 0 &&
+      (pressed || released)
+    ) {
+
+    ekg::hovered.swap = ekg::hovered.id;
+    ekg::hovered.last = ekg::hovered.id;
 
     ekg::dispatch(ekg::env::swap);
     ekg::dispatch(ekg::env::redraw);
@@ -257,252 +263,250 @@ void ekg::runtime::prepare_tasks() {
   ekg::log() << "Preparing internal EKG core";
 
   this->service_handler.allocate() = {
-      .p_tag      = "refresh",
-      .p_callback = this,
-      .function   = [](void *p_callback) {
-        auto *runtime {static_cast<ekg::runtime *>(p_callback)};
-        auto &all = runtime->loaded_widget_list;
-        auto &refresh = runtime->refresh_widget_list;
-        bool should_call_gc {};
+    .p_tag      = "refresh",
+    .p_callback = this,
+    .function   = [](void *p_callback) {
+      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(p_callback)};
 
-        for (ekg::ui::abstract_widget *&p_widgets: refresh) {
-          if (p_widgets == nullptr || runtime->processed_widget_map[p_widgets->p_data->get_id()]) {
-            continue;
-          }
+      auto &all = p_runtime->loaded_widget_list;
+      auto &refresh = p_runtime->refresh_widget_list;
+      bool should_call_gc {};
 
-          if (p_widgets == nullptr || !p_widgets->p_data->is_alive()) {
-            should_call_gc = true;
-            continue;
-          }
-
-          all.push_back(p_widgets);
-          runtime->processed_widget_map[p_widgets->p_data->get_id()] = true;
+      for (ekg::ui::abstract_widget *&p_widgets: refresh) {
+        if (p_widgets == nullptr || p_runtime->processed_widget_map[p_widgets->p_data->get_id()]) {
+          continue;
         }
 
-        refresh.clear();
-        runtime->processed_widget_map.clear();
-
-        if (should_call_gc) {
-          ekg::dispatch(ekg::env::gc);
+        if (p_widgets == nullptr || !p_widgets->p_data->is_alive()) {
+          should_call_gc = true;
+          continue;
         }
+
+        all.push_back(p_widgets);
+        p_runtime->processed_widget_map[p_widgets->p_data->get_id()] = true;
       }
+
+      refresh.clear();
+      p_runtime->processed_widget_map.clear();
+
+      if (should_call_gc) {
+        ekg::dispatch(ekg::env::gc);
+      }
+    }
   };
 
   this->service_handler.allocate() = {
-      .p_tag      = "swap",
-      .p_callback = this,
-      .function   = [](void *p_callback) {
-        auto *runtime {static_cast<ekg::runtime *>(p_callback)};
-
-        if (runtime->swap_widget_id_focused == 0) {
-          return;
-        }
-
-        ekg::swap::collect.target_id = runtime->swap_widget_id_focused;
-
-        auto &all {runtime->loaded_widget_list};
-        for (ekg::ui::abstract_widget *&p_widgets: all) {
-          if (p_widgets == nullptr || p_widgets->p_data->has_parent()) {
-            continue;
-          }
-
-          ekg::swap::collect.clear();
-          ekg::push_back_stack(p_widgets, ekg::swap::collect);
-
-          if (ekg::swap::collect.target_id_found) {
-            ekg::swap::front.ordered_list.insert(
-              ekg::swap::front.ordered_list.end(),
-              ekg::swap::collect.ordered_list.begin(),
-              ekg::swap::collect.ordered_list.end()
-            );
-          } else {
-            ekg::swap::back.ordered_list.insert(
-              ekg::swap::back.ordered_list.end(),
-              ekg::swap::collect.ordered_list.begin(),
-              ekg::swap::collect.ordered_list.end()
-            );
-          }
-        }
-
-        runtime->swap_widget_id_focused = 0;
-
-        std::copy(
-          ekg::swap::back.ordered_list.begin(),
-          ekg::swap::back.ordered_list.end(),
-          all.begin()
-        );
-        
-        std::copy(
-          ekg::swap::front.ordered_list.begin(),
-          ekg::swap::front.ordered_list.end(),
-          all.begin() + ekg::swap::back.ordered_list.size()
-        );
-
-        ekg::swap::front.clear();
-        ekg::swap::back.clear();
-        ekg::swap::collect.clear();
+    .p_tag      = "swap",
+    .p_callback = this,
+    .function   = [](void *p_callback) {
+      if (ekg::hovered.swap == 0) {
+        return;
       }
+
+      ekg::runtime::collect.target_id = ekg::hovered.swap;
+
+      auto &all {p_runtime->loaded_widget_list};
+      for (ekg::ui::abstract_widget *&p_widgets: all) {
+        if (p_widgets == nullptr || p_widgets->p_data->has_parent()) {
+          continue;
+        }
+
+        ekg::runtime::collect.clear();
+        ekg::push_back_stack(p_widgets, ekg::runtime::collect);
+
+        if (ekg::runtime::collect.target_id_found) {
+          ekg::runtime::front.ordered_list.insert(
+            ekg::runtime::front.ordered_list.end(),
+            ekg::runtime::collect.ordered_list.begin(),
+            ekg::runtime::collect.ordered_list.end()
+          );
+        } else {
+          ekg::runtime::back.ordered_list.insert(
+            ekg::runtime::back.ordered_list.end(),
+            ekg::runtime::collect.ordered_list.begin(),
+            ekg::runtime::collect.ordered_list.end()
+          );
+        }
+      }
+
+      ekg::hovered.swap = 0;
+
+      std::copy(
+        ekg::runtime::back.ordered_list.begin(),
+        ekg::runtime::back.ordered_list.end(),
+        all.begin()
+      );
+      
+      std::copy(
+        ekg::runtime::front.ordered_list.begin(),
+        ekg::runtime::front.ordered_list.end(),
+        all.begin() + ekg::runtime::back.ordered_list.size()
+      );
+
+      ekg::runtime::front.clear();
+      ekg::runtime::back.clear();
+      ekg::runtime::collect.clear();
+    }
   };
 
   this->service_handler.allocate() = {
-      .p_tag      = "reload",
-      .p_callback = this,
-      .function   = [](void *p_callback) {
-        auto *runtime {static_cast<ekg::runtime *>(p_callback)};
-        auto &reload = runtime->reload_widget_list;
+    .p_tag      = "reload",
+    .p_callback = this,
+    .function   = [](void *p_callback) {
+      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(p_callback)};
+      auto &reload = p_runtime->reload_widget_list;
 
-        ekg::vec4 rect {};
+      ekg::vec4 rect {};
 
-        for (ekg::ui::abstract_widget *&p_widgets: reload) {
-          if (p_widgets == nullptr) {
-            continue;
-          }
+      for (ekg::ui::abstract_widget *&p_widgets: reload) {
+        if (p_widgets == nullptr) {
+          continue;
+        }
 
-          auto &sync_flags {p_widgets->p_data->get_sync()};
-          if (ekg::bitwise::contains(sync_flags, (uint16_t) ekg::ui_sync::reset)) {
-            ekg::bitwise::remove(sync_flags, (uint16_t) ekg::ui_sync::reset);
+        auto &sync_flags {p_widgets->p_data->get_sync()};
+        if (ekg_bitwise_contains(sync_flags, ekg::ui_sync::reset)) {
+          ekg_bitwise_remove(sync_flags, ekg::ui_sync::reset);
 
-            switch (p_widgets->p_data->get_type()) {
-              case ekg::type::frame: {
-                auto p_ui {(ekg::ui::frame *) p_widgets->p_data};
-                auto pos {p_ui->get_pos_initial()};
-                auto size {p_ui->get_size_initial()};
-                auto &rect_ui {p_ui->ui()};
+          switch (p_widgets->p_data->get_type()) {
+            case ekg::type::frame: {
+              auto p_ui {(ekg::ui::frame *) p_widgets->p_data};
+              auto pos {p_ui->get_pos_initial()};
+              auto size {p_ui->get_size_initial()};
+              auto &rect_ui {p_ui->ui()};
 
-                rect.x = pos.x;
-                rect.y = pos.y;
-                rect.z = size.x;
-                rect.w = size.y;
+              rect.x = pos.x;
+              rect.y = pos.y;
+              rect.z = size.x;
+              rect.w = size.y;
 
-                if (p_ui->widget() != rect) {
-                  p_widgets->dimension.w = size.x;
-                  p_widgets->dimension.h = size.y;
+              if (p_ui->widget() != rect) {
+                p_widgets->dimension.w = size.x;
+                p_widgets->dimension.h = size.y;
 
-                  if (p_ui->get_parent_id() != 0) {
-                    p_widgets->dimension.x = pos.x - p_widgets->p_parent->x;
-                    p_widgets->dimension.y = pos.y - p_widgets->p_parent->y;
-                  } else {
-                    p_widgets->p_parent->x = pos.x;
-                    p_widgets->p_parent->y = pos.y;
-                  }
+                if (p_ui->get_parent_id() != 0) {
+                  p_widgets->dimension.x = pos.x - p_widgets->p_parent->x;
+                  p_widgets->dimension.y = pos.y - p_widgets->p_parent->y;
+                } else {
+                  p_widgets->p_parent->x = pos.x;
+                  p_widgets->p_parent->y = pos.y;
                 }
-
-                break;
               }
 
-              default: {
-                break;
-              }
+              break;
+            }
+
+            default: {
+              break;
             }
           }
+        }
 
-          if (ekg::bitwise::contains(sync_flags, (uint16_t) ekg::ui_sync::dimension)) {
-            ekg::bitwise::remove(sync_flags, (uint16_t) ekg::ui_sync::dimension);
+        if (ekg_bitwise_contains(sync_flags, ekg::ui_sync::dimension)) {
+          ekg_bitwise_remove(sync_flags, ekg::ui_sync::dimension);
 
-            auto &rect {p_widgets->p_data->ui()};
-            switch (p_widgets->p_data->get_level()) {
-              case ekg::level::top_level: {
-                p_widgets->dimension.w = rect.w;
+          auto &rect {p_widgets->p_data->ui()};
+          switch (p_widgets->p_data->get_level()) {
+            case ekg::level::top_level: {
+              p_widgets->dimension.w = rect.w;
+              p_widgets->p_parent->x = rect.x;
+              p_widgets->p_parent->y = rect.y;
+              break;
+            }
+
+            default: {
+              p_widgets->dimension.w = rect.w;
+              p_widgets->dimension.h = rect.h;
+
+              if (p_widgets->p_data->has_parent()) {
+                p_widgets->dimension.x = rect.x - p_widgets->p_parent->x;
+                p_widgets->dimension.y = rect.y - p_widgets->p_parent->y;
+              } else {
                 p_widgets->p_parent->x = rect.x;
                 p_widgets->p_parent->y = rect.y;
-                break;
               }
 
-              default: {
-                p_widgets->dimension.w = rect.w;
-                p_widgets->dimension.h = rect.h;
-
-                if (p_widgets->p_data->has_parent()) {
-                  p_widgets->dimension.x = rect.x - p_widgets->p_parent->x;
-                  p_widgets->dimension.y = rect.y - p_widgets->p_parent->y;
-                } else {
-                  p_widgets->p_parent->x = rect.x;
-                  p_widgets->p_parent->y = rect.y;
-                }
-
-                break;
-              }
+              break;
             }
           }
-
-          p_widgets->on_reload();
         }
 
-        reload.clear();
+        p_widgets->on_reload();
       }
+
+      reload.clear();
+    }
   };
 
   this->service_handler.allocate() = {
-      .p_tag      = "synclayout",
-      .p_callback = this,
-      .function   = [](void *p_callback) {
-        auto *runtime {static_cast<ekg::runtime *>(p_callback)};
-        auto &synclayout {runtime->synclayout_widget_list};
+    .p_tag      = "synclayout",
+    .p_callback = this,
+    .function   = [](void *p_callback) {
+      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(p_callback)};
+      auto &synclayout {p_runtime->synclayout_widget_list};
 
-        for (ekg::ui::abstract_widget *&p_widgets: synclayout) {
-          if (p_widgets == nullptr || runtime->processed_widget_map[p_widgets->p_data->get_id()]) {
-            continue;
-          }
-
-          runtime->service_layout.process_scaled(p_widgets);
-          runtime->processed_widget_map[p_widgets->p_data->get_id()] = true;
+      for (ekg::ui::abstract_widget *&p_widgets: synclayout) {
+        if (p_widgets == nullptr || p_runtime->processed_widget_map[p_widgets->p_data->get_id()]) {
+          continue;
         }
 
-        synclayout.clear();
-        runtime->processed_widget_map.clear();
-        ekg::dispatch(ekg::env::redraw);
+        p_runtime->service_layout.process_scaled(p_widgets);
+        p_runtime->processed_widget_map[p_widgets->p_data->get_id()] = true;
       }
+
+      synclayout.clear();
+      p_runtime->processed_widget_map.clear();
+      ekg::dispatch(ekg::env::redraw);
+    }
   };
 
   this->service_handler.allocate() = {
-      .p_tag      = "gc",
-      .p_callback = this,
-      .function   = [](void *p_callback) {
-        auto *runtime {static_cast<ekg::runtime *>(p_callback)};
-        auto &all {runtime->loaded_widget_list};
-        auto &high_frequency {runtime->update_widget_list};
-        auto &redraw {runtime->redraw_widget_list};
-        auto &allocator {runtime->gpu_allocator};
+    .p_tag      = "gc",
+    .p_callback = this,
+    .function   = [](void *p_callback) {
+      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(p_callback)};
+      auto &all {p_runtime->loaded_widget_list};
+      auto &high_frequency {p_runtime->update_widget_list};
+      auto &redraw {p_runtime->redraw_widget_list};
+      auto &allocator {p_runtime->gpu_allocator};
 
-        redraw.clear();
-        high_frequency.clear();
+      redraw.clear();
+      high_frequency.clear();
+      std::vector<ekg::ui::abstract_widget*> new_list {};
+      int32_t element_id {};
 
-        std::vector<ekg::ui::abstract_widget*> new_list {};
-        int32_t element_id {};
-
-        for (ekg::ui::abstract_widget *&p_widgets: all) {
-          if (p_widgets == nullptr || p_widgets->p_data == nullptr) {
-            continue;
-          }
-
-          if (!p_widgets->p_data->is_alive()) {
-            element_id = p_widgets->p_data->get_id();
-
-            ekg::hovered::id *= ekg::hovered::id == element_id;
-            ekg::hovered::up *= ekg::hovered::up == element_id;
-            ekg::hovered::down *= ekg::hovered::down == element_id;
-
-            allocator.erase_scissor_by_id(p_widgets->p_data->get_id());
-
-            delete p_widgets->p_data;
-            delete p_widgets;
-
-            continue;
-          }
-
-          if (p_widgets->is_high_frequency) {
-            high_frequency.push_back(p_widgets);
-          }
-
-          if (p_widgets->p_data->is_visible()) {
-            redraw.push_back(p_widgets);
-          }
-
-          new_list.push_back(p_widgets);
+      for (ekg::ui::abstract_widget *&p_widgets: all) {
+        if (p_widgets == nullptr || p_widgets->p_data == nullptr) {
+          continue;
         }
 
-        all = new_list;
+        if (!p_widgets->p_data->is_alive()) {
+          element_id = p_widgets->p_data->get_id();
+
+          ekg::hovered.id *= ekg::hovered.id == element_id;
+          ekg::hovered.up *= ekg::hovered.up == element_id;
+          ekg::hovered.down *= ekg::hovered.down == element_id;
+
+          allocator.erase_scissor_by_id(p_widgets->p_data->get_id());
+
+          delete p_widgets->p_data;
+          delete p_widgets;
+
+          continue;
+        }
+
+        if (p_widgets->is_high_frequency) {
+          high_frequency.push_back(p_widgets);
+        }
+
+        if (p_widgets->p_data->is_visible()) {
+          redraw.push_back(p_widgets);
+        }
+
+        new_list.push_back(p_widgets);
       }
+
+      all = new_list;
+    }
   };
 }
 
@@ -601,7 +605,7 @@ void ekg::runtime::prepare_ui_env() {
 void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
   p_ui->unsafe_set_id(++this->token_id);
   
-  this->swap_widget_id_focused = p_ui->get_id();
+  ekg::hovered.swap = p_ui->get_id();
   ekg::ui::abstract_widget *p_widget_created {};
 
   bool update_layout {};
@@ -621,7 +625,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
       p_widget->p_data = p_ui;
       update_layout = true;
       p_widget_created = p_widget;
-      this->current_bind_group = p_ui;
+      this->p_current_ui_container = p_ui;
       p_ui->reset();
       break;
     }
@@ -700,8 +704,8 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
   this->do_task_reload(p_widget_created);
   p_widget_created->on_create();
 
-  if (append_group && this->current_bind_group != nullptr) {
-    this->current_bind_group->add_child(p_ui->get_id());
+  if (append_group && this->p_current_ui_container != nullptr) {
+    this->p_current_ui_container->add_child(p_ui->get_id());
   }
 
   if (update_layout) {
@@ -740,7 +744,7 @@ void ekg::runtime::do_task_refresh(ekg::ui::abstract_widget *p_widget) {
 }
 
 void ekg::runtime::end_group_flag() {
-  this->current_bind_group = nullptr;
+  this->p_current_ui_container = nullptr;
 }
 
 void ekg::runtime::erase(int32_t id) {

@@ -86,7 +86,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
               continue;
           }
 
-          if (ekg::bitwise::contains(p_item->attr, ekg::attr::unselectable)) {
+          if (ekg_bitwise_contains(p_item->attr, ekg::attr::unselectable)) {
               continue;
           }
 
@@ -96,7 +96,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
               p_item_hovered = p_item;
           }
 
-          if (p_item->component.is_hovering && !p_item->empty() && !ekg::bitwise::contains(p_item->attr, ekg::attr::category) && pressed_to_open) {
+          if (p_item->component.is_hovering && !p_item->empty() && !ekg_bitwise_contains(p_item->attr, ekg::attr::category) && pressed_to_open) {
               p_item->component.is_open = !p_item->component.is_open;
           }
 
@@ -116,10 +116,10 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
    */
   /*
       if (p_item_hovered != nullptr &&
-          !ekg::bitwise::contains(p_item_hovered->attr, ekg::attr::category) &&
-          !ekg::bitwise::contains(p_item_hovered->attr, ekg::attr::row) &&
+          !ekg_bitwise_contains(p_item_hovered->attr, ekg::attr::category) &&
+          !ekg_bitwise_contains(p_item_hovered->attr, ekg::attr::row) &&
           p_item_hovered->p_item_parent != nullptr &&
-          ekg::bitwise::contains(p_item_hovered->p_item_parent->attr, ekg::attr::row_member) &&
+          ekg_bitwise_contains(p_item_hovered->p_item_parent->attr, ekg::attr::row_member) &&
           p_item_hovered->p_item_parent->p_item_parent != nullptr &&
           p_item_hovered->p_item_parent->p_item_parent->size() > 1) {
 
@@ -139,17 +139,17 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
           if (found) {
               for (ekg::item &items : *p_item_parent_mommy) {
-                  if (ekg::bitwise::contains(items.attr, ekg::attr::row_member) && ekg::bitwise::contains(items.attr, ekg::attr::row)) {
+                  if (ekg_bitwise_contains(items.attr, ekg::attr::row_member) && ekg_bitwise_contains(items.attr, ekg::attr::row)) {
                       if (items.size() > member_index) {
                           auto &item_target {items.at(member_index)};
 
                           // check hovering state
-                          if (!ekg::bitwise::contains(item_target.attr, ekg::attr::row) && item_target.component.is_hovering != p_item_hovered->component.is_hovering) {
+                          if (!ekg_bitwise_contains(item_target.attr, ekg::attr::row) && item_target.component.is_hovering != p_item_hovered->component.is_hovering) {
                               item_target.component.is_hovering = p_item_hovered->component.is_hovering;
                           }
 
                           // check open state
-                          if (!ekg::bitwise::contains(item_target.attr, ekg::attr::row) && item_target.component.is_open != p_item_hovered->component.is_open) {
+                          if (!ekg_bitwise_contains(item_target.attr, ekg::attr::row) && item_target.component.is_open != p_item_hovered->component.is_open) {
                               item_target.component.is_open = p_item_hovered->component.is_open;
                           }
                       }
@@ -230,7 +230,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
           break;
       }
 
-      if (ekg::bitwise::contains(p_item->attr, ekg::attr::separator)) {
+      if (ekg_bitwise_contains(p_item->attr, ekg::attr::separator)) {
           ekg::draw::rect(p_item->component.rect_dimension_closed.x + rect.x,
                           p_item->component.rect_dimension_closed.y + rect.y + p_item->component.rect_dimension_closed.h + rect_opened.h - ekg_pixel_div_2,
                           p_item->component.rect_dimension_closed.w,

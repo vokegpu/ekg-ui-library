@@ -156,27 +156,36 @@ void ekg::set_dock_scaled(const ekg::rect &rect, const ekg::vec2 &offset, ekg::d
 }
 
 int32_t ekg::find_collide_dock(ekg::docker &docker, uint16_t flags, const ekg::vec4 &vec) {
-  if (ekg::bitwise::contains(flags, ekg::dock::full) && ekg::rect_collide_vec(docker.rect, vec)) {
+  if (ekg_bitwise_contains(flags, ekg::dock::full) && ekg::rect_collide_vec(docker.rect, vec)) {
     return ekg::dock::full;
   }
 
   uint16_t collided {ekg::dock::none};
 
-  collided =
-      ekg::bitwise::contains(flags, ekg::dock::left) && ekg::rect_collide_vec(docker.left, vec) ? ekg::bitwise::add(
-          collided, ekg::dock::left) : collided;
-  collided =
-      ekg::bitwise::contains(flags, ekg::dock::right) && ekg::rect_collide_vec(docker.right, vec) ? ekg::bitwise::add(
-          collided, ekg::dock::right) : collided;
-  collided =
-      ekg::bitwise::contains(flags, ekg::dock::top) && ekg::rect_collide_vec(docker.top, vec) ? ekg::bitwise::add(
-          collided, ekg::dock::top) : collided;
-  collided =
-      ekg::bitwise::contains(flags, ekg::dock::bottom) && ekg::rect_collide_vec(docker.bottom, vec) ? ekg::bitwise::add(
-          collided, ekg::dock::bottom) : collided;
-  collided =
-      ekg::bitwise::contains(flags, ekg::dock::center) && ekg::rect_collide_vec(docker.center, vec) ? ekg::bitwise::add(
-          collided, ekg::dock::center) : collided;
+  collided = (
+    ekg_bitwise_contains(flags, ekg::dock::left) &&
+    ekg::rect_collide_vec(docker.left, vec) ? ekg_bitwise_add(collided, ekg::dock::left) : collided
+  );
+
+  collided = (
+    ekg_bitwise_contains(flags, ekg::dock::right) &&
+    ekg::rect_collide_vec(docker.right, vec) ? ekg_bitwise_add(collided, ekg::dock::right) : collided
+  );
+
+  collided = (
+    ekg_bitwise_contains(flags, ekg::dock::top) &&
+    ekg::rect_collide_vec(docker.top, vec) ? ekg_bitwise_add(collided, ekg::dock::top) : collided
+  );
+
+  collided = (
+    ekg_bitwise_contains(flags, ekg::dock::bottom) &&
+    ekg::rect_collide_vec(docker.bottom, vec) ? ekg_bitwise_add(collided, ekg::dock::bottom) : collided
+  );
+  
+  collided = (
+    ekg_bitwise_contains(flags, ekg::dock::center) &&
+    ekg::rect_collide_vec(docker.center, vec) ? ekg_bitwise_add(collided, ekg::dock::center) : collided
+  );
 
   return collided;
 }

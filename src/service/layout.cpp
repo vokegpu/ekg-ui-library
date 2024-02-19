@@ -35,7 +35,7 @@ void ekg::service::layout::set_preset_mask(const ekg::vec3 &offset, ekg::axis ax
 
 void ekg::service::layout::insert_into_mask(const ekg::dock_rect &dock_rect) {
   if ((static_cast<int32_t>(dock_rect.p_rect->w == 0) || static_cast<int32_t>(dock_rect.p_rect->h) == 0) ||
-      ekg::bitwise::contains(dock_rect.dock, ekg::dock::none)) {
+      ekg_bitwise_contains(dock_rect.dock, ekg::dock::none)) {
     return;
   }
 
@@ -76,19 +76,19 @@ void ekg::service::layout::process_layout_mask() {
 
     if (axis) {
       clamped_offset = (dock_rect.p_rect->h + this->offset_mask.y) - this->offset_mask.z > 0 ? 0 : this->offset_mask.y;
-      left_or_right = ekg::bitwise::contains(dock_rect.dock, ekg::dock::left) ||
-                      ekg::bitwise::contains(dock_rect.dock, ekg::dock::right);
+      left_or_right = ekg_bitwise_contains(dock_rect.dock, ekg::dock::left) ||
+                      ekg_bitwise_contains(dock_rect.dock, ekg::dock::right);
 
-      if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::center) && !left_or_right) {
+      if (ekg_bitwise_contains(dock_rect.dock, ekg::dock::center) && !left_or_right) {
         dock_rect.p_rect->x = (v / 2) - (dock_rect.p_rect->w / 2);
         dock_rect.p_rect->y = centered_dimension - (dock_rect.p_rect->h / 2);
         this->layout_mask.w += dock_rect.p_rect->w + this->offset_mask.x;
-      } else if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::center)) {
+      } else if (ekg_bitwise_contains(dock_rect.dock, ekg::dock::center)) {
         dock_rect.p_rect->y = centered_dimension - (dock_rect.p_rect->h / 2);
       }
 
       /* when there is a opposite dock, layout should x the dock position to actual position */
-      if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::left)) {
+      if (ekg_bitwise_contains(dock_rect.dock, ekg::dock::left)) {
         if (static_cast<int32_t>(opposite) != 0) {
           this->layout_mask.w -= opposite;
         }
@@ -99,7 +99,7 @@ void ekg::service::layout::process_layout_mask() {
         uniform = dock_rect.p_rect->w + this->offset_mask.x;
       }
 
-      if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::right)) {
+      if (ekg_bitwise_contains(dock_rect.dock, ekg::dock::right)) {
         if (static_cast<int32_t>(uniform) != 0) {
           this->layout_mask.w -= uniform;
         }
@@ -111,26 +111,26 @@ void ekg::service::layout::process_layout_mask() {
         uniform = 0;
       }
 
-      if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::top)) {
+      if (ekg_bitwise_contains(dock_rect.dock, ekg::dock::top)) {
         dock_rect.p_rect->y = clamped_offset;
-      } else if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::bottom)) {
+      } else if (ekg_bitwise_contains(dock_rect.dock, ekg::dock::bottom)) {
         dock_rect.p_rect->y = this->offset_mask.z - clamped_offset - dock_rect.p_rect->h;
       }
     } else {
       clamped_offset = ekg_clamp((dock_rect.p_rect->w + this->offset_mask.x) - this->offset_mask.z, 0,
                                   this->offset_mask.x);
-      left_or_right = ekg::bitwise::contains(dock_rect.dock, ekg::dock::left) ||
-                      ekg::bitwise::contains(dock_rect.dock, ekg::dock::right);
+      left_or_right = ekg_bitwise_contains(dock_rect.dock, ekg::dock::left) ||
+                      ekg_bitwise_contains(dock_rect.dock, ekg::dock::right);
 
-      if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::center) && !left_or_right) {
+      if (ekg_bitwise_contains(dock_rect.dock, ekg::dock::center) && !left_or_right) {
         dock_rect.p_rect->y = (this->respective_mask_center) + (dock_rect.p_rect->h / 2);
         dock_rect.p_rect->x = centered_dimension - (dock_rect.p_rect->w / 2);
-      } else if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::center)) {
+      } else if (ekg_bitwise_contains(dock_rect.dock, ekg::dock::center)) {
         dock_rect.p_rect->x = centered_dimension - (dock_rect.p_rect->w / 2);
       }
 
       /* when there is a opposite dock, layout should fix the dock position to actual position */
-      if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::top)) {
+      if (ekg_bitwise_contains(dock_rect.dock, ekg::dock::top)) {
         if (static_cast<int32_t>(opposite) != 0) {
           this->layout_mask.h -= opposite;
         }
@@ -141,7 +141,7 @@ void ekg::service::layout::process_layout_mask() {
         uniform = dock_rect.p_rect->h + this->offset_mask.y;
       }
 
-      if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::bottom)) {
+      if (ekg_bitwise_contains(dock_rect.dock, ekg::dock::bottom)) {
         if (static_cast<int32_t>(uniform) != 0) {
           this->layout_mask.h -= uniform;
         }
@@ -153,11 +153,11 @@ void ekg::service::layout::process_layout_mask() {
         uniform = 0;
       }
 
-      if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::left)) {
+      if (ekg_bitwise_contains(dock_rect.dock, ekg::dock::left)) {
         dock_rect.p_rect->x = clamped_offset;
       }
 
-      if (ekg::bitwise::contains(dock_rect.dock, ekg::dock::right)) {
+      if (ekg_bitwise_contains(dock_rect.dock, ekg::dock::right)) {
         dock_rect.p_rect->x = this->offset_mask.z - clamped_offset - dock_rect.p_rect->w;
       }
     }
@@ -198,8 +198,8 @@ float ekg::service::layout::get_respective_mask_size() {
     );
 
     if (
-        ekg::bitwise::contains(dock_rect.dock, ekg::dock::center) &&
-        !(ekg::bitwise::contains(dock_rect.dock, ekg::dock::left) || ekg::bitwise::contains(dock_rect.dock, ekg::dock::right))
+        ekg_bitwise_contains(dock_rect.dock, ekg::dock::center) &&
+        !(ekg_bitwise_contains(dock_rect.dock, ekg::dock::left) || ekg_bitwise_contains(dock_rect.dock, ekg::dock::right))
       ) {
       respective_center_size += size;
       only_center_count++;
@@ -265,10 +265,10 @@ float ekg::service::layout::get_dimensional_extent(
     is_last_index = it >= size - 1 || p_widgets->p_data->get_type() == ekg::type::scroll;
 
     if (
-        (ekg::bitwise::contains(flags, flag_stop) && it != begin_and_count) || is_last_index
+        (ekg_bitwise_contains(flags, flag_stop) && it != begin_and_count) || is_last_index
       ) {
       extent -= this->min_offset;
-      n += (!ekg::bitwise::contains(flags, flag_stop) && ekg::bitwise::contains(flags, flag_ok) && is_last_index);
+      n += (!ekg_bitwise_contains(flags, flag_stop) && ekg_bitwise_contains(flags, flag_ok) && is_last_index);
 
       this->extent_data[1] = static_cast<float>(it + is_last_index);
       this->extent_data[2] = extent;
@@ -276,7 +276,7 @@ float ekg::service::layout::get_dimensional_extent(
       break;
     }
 
-    if (ekg::bitwise::contains(flags, flag_ok)) {
+    if (ekg_bitwise_contains(flags, flag_ok)) {
       n++;
       continue;
     }
@@ -419,7 +419,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
       continue;
     }
 
-    if (ekg::bitwise::contains(flags, ekg::dock::fill) && ekg::bitwise::contains(flags, ekg::dock::next)) {
+    if (ekg_bitwise_contains(flags, ekg::dock::fill) && ekg_bitwise_contains(flags, ekg::dock::next)) {
       top_rect.h += max_previous_height + this->min_offset;
       top_rect.w = 0.0f;
 
@@ -444,7 +444,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
       layout.w = dimensional_extent;
       should_reload_widget = true;
       max_previous_height = 0.0f;
-    } else if (ekg::bitwise::contains(flags, ekg::dock::fill)) {
+    } else if (ekg_bitwise_contains(flags, ekg::dock::fill)) {
       layout.x = top_rect.x + top_rect.w;
       layout.y = top_rect.y + top_rect.h;
 
@@ -465,7 +465,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
       top_rect.w += dimensional_extent + this->min_offset;
       layout.w = dimensional_extent;
       should_reload_widget = true;
-    } else if (ekg::bitwise::contains(flags, ekg::dock::next)) {
+    } else if (ekg_bitwise_contains(flags, ekg::dock::next)) {
       top_rect.h += max_previous_height + this->min_offset;
       top_rect.w = 0.0f;
 
@@ -498,7 +498,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
       );
     }
 
-    if (ekg::bitwise::contains(flags, ekg::dock::resize)) {
+    if (ekg_bitwise_contains(flags, ekg::dock::resize)) {
       should_reload_widget = true;
     }
 

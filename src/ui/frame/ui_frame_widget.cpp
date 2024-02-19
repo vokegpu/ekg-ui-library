@@ -76,23 +76,23 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
     }
 
     if (this->target_dock_resize != ekg::dock::none) {
-      if (ekg::bitwise::contains(this->target_dock_resize, ekg::dock::left)) {
+      if (ekg_bitwise_contains(this->target_dock_resize, ekg::dock::left)) {
         float diff {((interact.x - new_rect.x) - this->rect_delta.x)};
         new_rect.x = (interact.x - this->rect_delta.x);
         new_rect.w -= diff;
       }
 
-      if (ekg::bitwise::contains(this->target_dock_resize, ekg::dock::right)) {
+      if (ekg_bitwise_contains(this->target_dock_resize, ekg::dock::right)) {
         new_rect.w = this->rect_delta.w + ((interact.x - new_rect.x) - this->rect_delta.x);
       }
 
-      if (ekg::bitwise::contains(this->target_dock_resize, ekg::dock::top)) {
+      if (ekg_bitwise_contains(this->target_dock_resize, ekg::dock::top)) {
         float diff {((interact.y - new_rect.y) - this->rect_delta.y)};
         new_rect.y = (interact.y - this->rect_delta.y);
         new_rect.h -= diff;
       }
 
-      if (ekg::bitwise::contains(this->target_dock_resize, ekg::dock::bottom)) {
+      if (ekg_bitwise_contains(this->target_dock_resize, ekg::dock::bottom)) {
         new_rect.h = this->rect_delta.h + ((interact.y - new_rect.y) - this->rect_delta.y);
       }
     }
@@ -133,10 +133,10 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
   }
 
   if (shown_cursor_dock_flags) {
-    bool top {ekg::bitwise::contains(shown_cursor_dock_flags, ekg::dock::top)};
-    bool bottom {ekg::bitwise::contains(shown_cursor_dock_flags, ekg::dock::bottom)};
-    bool left {ekg::bitwise::contains(shown_cursor_dock_flags, ekg::dock::left)};
-    bool right {ekg::bitwise::contains(shown_cursor_dock_flags, ekg::dock::right)};
+    bool top {ekg_bitwise_contains(shown_cursor_dock_flags, ekg::dock::top)};
+    bool bottom {ekg_bitwise_contains(shown_cursor_dock_flags, ekg::dock::bottom)};
+    bool left {ekg_bitwise_contains(shown_cursor_dock_flags, ekg::dock::left)};
+    bool right {ekg_bitwise_contains(shown_cursor_dock_flags, ekg::dock::right)};
 
     if ((top && left) || (bottom && right)) {
       ekg::cursor = ekg::system_cursor::size_nwse;

@@ -259,20 +259,6 @@ std::ostringstream ekg::log::buffer {};
 bool ekg::log::buffered {};
 bool ekg::log::tracked {};
 
-bool ekg::bitwise::contains(uint16_t target, uint16_t flags) {
-  return target & flags;
-}
-
-uint16_t &ekg::bitwise::remove(uint16_t &target, uint16_t flags) {
-  target &= ~(flags);
-  return target;
-}
-
-uint16_t &ekg::bitwise::add(uint16_t &target, uint16_t flags) {
-  target |= flags;
-  return target;
-}
-
 bool ekg::reach(ekg::timing &timing, uint64_t ms) {
   timing.ticks_going_on = SDL_GetTicks64();
   timing.current_ticks = timing.ticks_going_on - timing.elapsed_ticks;

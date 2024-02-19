@@ -180,7 +180,7 @@ uint16_t &ekg::ui::abstract::get_sync() {
 }
 
 void ekg::ui::abstract::reset() {
-  ekg::bitwise::add(this->sync_flags, (uint16_t) ekg::ui_sync::reset);
+  ekg_bitwise_add(this->sync_flags, ekg::ui_sync::reset);
   ekg::reload(this->id);
 }
 
