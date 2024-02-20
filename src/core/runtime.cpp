@@ -208,6 +208,8 @@ void ekg::runtime::process_event() {
 
 void ekg::runtime::process_update() {
   ekg::reach(this->ui_timing, 1000) && ekg::reset(this->ui_timing);
+  ekg::timing::second = this->ui_timing.current_ticks;
+
   this->service_input.on_update();
 
   if (this->enable_high_priority_frequency) {

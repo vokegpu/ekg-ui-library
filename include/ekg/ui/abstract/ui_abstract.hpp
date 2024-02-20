@@ -69,6 +69,7 @@ namespace ekg {
     drag,
     focus,
     resize,
+    activity,
   };
 
   enum class state {

@@ -37,25 +37,25 @@ namespace ekg::service {
     ekg::vec4 frame_background {};
     ekg::vec4 frame_border {};
     ekg::vec4 frame_outline {};
-    int32_t frame_activy_offset {};
+    int32_t frame_activity_offset {};
 
     ekg::vec4 button_background {};
     ekg::vec4 button_string {};
     ekg::vec4 button_outline {};
-    ekg::vec4 button_activy {};
+    ekg::vec4 button_activity {};
     ekg::vec4 button_highlight {};
 
     ekg::vec4 checkbox_background {};
     ekg::vec4 checkbox_string {};
     ekg::vec4 checkbox_outline {};
-    ekg::vec4 checkbox_activy {};
+    ekg::vec4 checkbox_activity {};
     ekg::vec4 checkbox_highlight {};
 
     ekg::vec4 slider_string {};
     ekg::vec4 slider_background {};
     ekg::vec4 slider_outline {};
-    ekg::vec4 slider_activy {};
-    ekg::vec4 slider_activy_bar {};
+    ekg::vec4 slider_activity {};
+    ekg::vec4 slider_activity_bar {};
     ekg::vec4 slider_highlight {};
     int32_t slider_bar_thickness {};
     int32_t slider_target_thickness {};
@@ -77,7 +77,7 @@ namespace ekg::service {
 
     ekg::vec4 scrollbar_background {};
     ekg::vec4 scrollbar_highlight {};
-    ekg::vec4 scrollbar_activy {};
+    ekg::vec4 scrollbar_activity {};
     ekg::vec4 scrollbar_outline {};
     int32_t scrollbar_pixel_thickness {};
 

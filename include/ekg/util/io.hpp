@@ -206,9 +206,11 @@ namespace ekg {
 
   struct timing {
   public:
-    uint64_t elapsed_ticks {};
-    uint64_t current_ticks {};
-    uint64_t ticks_going_on {};
+    static int64_t second {};
+  public:
+    int64_t elapsed_ticks {};
+    int64_t current_ticks {};
+    int64_t ticks_going_on {};
   };
 
   struct flag {

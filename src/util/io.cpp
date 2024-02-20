@@ -259,8 +259,10 @@ std::ostringstream ekg::log::buffer {};
 bool ekg::log::buffered {};
 bool ekg::log::tracked {};
 
+int64_t ekg::timing::second {};
+
 bool ekg::reach(ekg::timing &timing, uint64_t ms) {
-  timing.ticks_going_on = SDL_GetTicks64();
+  timing.ticks_going_on = static_cast<int64_t>(SDL_GetTicks64());
   timing.current_ticks = timing.ticks_going_on - timing.elapsed_ticks;
   return timing.current_ticks > ms;
 }

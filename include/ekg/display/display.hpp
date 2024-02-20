@@ -57,6 +57,14 @@ namespace ekg::display {
    * Smarthphones displays may need manual specifiy the scale-base.
    */
   extern bool auto_scale;
+
+  /**
+   * Display latency for dispatching hover (motion)
+   * task. Default is 500.
+   * 
+   * Android must have a higher latency due the battery.
+   */
+  extern int64_t latency;
 }
 
 #endif

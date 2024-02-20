@@ -40,6 +40,7 @@ namespace ekg {
   public:
     struct info {
     public:
+      std::string_view tag {};
       int32_t id {};
       int32_t type {};
       bool button {};
