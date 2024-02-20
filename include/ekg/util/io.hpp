@@ -214,7 +214,7 @@ namespace ekg {
   struct flag {
     bool highlight {};
     bool hovered {};
-    bool activy {};
+    bool activity {};
     bool focused {};
     bool state {};
     bool extra_state {};

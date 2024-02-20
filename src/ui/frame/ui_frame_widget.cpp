@@ -31,7 +31,7 @@
 void ekg::ui::frame_widget::on_reload() {
   abstract_widget::on_reload();
   auto &rect {this->get_abs_rect()};
-  this->ui_theme_activy_offset = static_cast<float>(ekg::theme().frame_activy_offset);
+  this->ui_theme_activity_offset = static_cast<float>(ekg::theme().frame_activity_offset);
 }
 
 void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
@@ -44,17 +44,17 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
   uint16_t shown_cursor_dock_flags {};
 
   if ((drag_dock_flags != ekg::dock::none || resize_dock_flags != ekg::dock::none) && ekg::input::pressed() &&
-      this->flag.hovered && !this->flag.activy &&
-      (ekg::input::action("frame-drag-activy") || ekg::input::action("frame-resize-activy"))) {
+      this->flag.hovered && !this->flag.activity &&
+      (ekg::input::action("frame-drag-activity") || ekg::input::action("frame-resize-activity"))) {
     ekg::rect rect_visible_scissor {rect};
     ekg::draw::get_visible(this->p_data->get_id(), rect_visible_scissor);
 
-    const ekg::vec2 vec_limit_offset {this->ui_theme_activy_offset, this->ui_theme_activy_offset};
-    ekg::set_dock_scaled(rect_visible_scissor, vec_limit_offset, this->docker_activy_drag);
-    ekg::set_dock_scaled(rect_visible_scissor, vec_limit_offset / 4.0f, this->docker_activy_resize);
+    const ekg::vec2 vec_limit_offset {this->ui_theme_activity_offset, this->ui_theme_activity_offset};
+    ekg::set_dock_scaled(rect_visible_scissor, vec_limit_offset, this->docker_activity_drag);
+    ekg::set_dock_scaled(rect_visible_scissor, vec_limit_offset / 4.0f, this->docker_activity_resize);
 
-    this->target_dock_drag = ekg::find_collide_dock(this->docker_activy_drag, drag_dock_flags, interact);
-    this->target_dock_resize = ekg::find_collide_dock(this->docker_activy_resize, resize_dock_flags, interact);
+    this->target_dock_drag = ekg::find_collide_dock(this->docker_activity_drag, drag_dock_flags, interact);
+    this->target_dock_resize = ekg::find_collide_dock(this->docker_activity_resize, resize_dock_flags, interact);
 
     shown_cursor_dock_flags = this->target_dock_resize;
 
@@ -63,10 +63,10 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
     this->rect_delta.w = rect.w;
     this->rect_delta.h = rect.h;
 
-    this->flag.activy = this->target_dock_drag != ekg::dock::none || this->target_dock_resize != ekg::dock::none;
-    this->flag.absolute = this->flag.activy;
-    this->is_scissor_refresh = this->flag.activy;
-  } else if (ekg::input::motion() && this->flag.activy) {
+    this->flag.activity = this->target_dock_drag != ekg::dock::none || this->target_dock_resize != ekg::dock::none;
+    this->flag.absolute = this->flag.activity;
+    this->is_scissor_refresh = this->flag.activity;
+  } else if (ekg::input::motion() && this->flag.activity) {
     ekg::rect new_rect {rect};
     shown_cursor_dock_flags = this->target_dock_resize;
 
@@ -123,13 +123,13 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
 
       ekg::reload(this);
     }
-  } else if (resize_dock_flags != ekg::dock::none && this->flag.hovered && !this->flag.activy) {
+  } else if (resize_dock_flags != ekg::dock::none && this->flag.hovered && !this->flag.activity) {
     ekg::rect rect_visible_scissor {};
     ekg::draw::get_visible(this->p_data->get_id(), rect_visible_scissor);
 
-    const ekg::vec2 vec_limit_offset {this->ui_theme_activy_offset, this->ui_theme_activy_offset};
-    ekg::set_dock_scaled(rect_visible_scissor, vec_limit_offset / 4.0f, this->docker_activy_resize);
-    shown_cursor_dock_flags = ekg::find_collide_dock(this->docker_activy_resize, resize_dock_flags, interact);
+    const ekg::vec2 vec_limit_offset {this->ui_theme_activity_offset, this->ui_theme_activity_offset};
+    ekg::set_dock_scaled(rect_visible_scissor, vec_limit_offset / 4.0f, this->docker_activity_resize);
+    shown_cursor_dock_flags = ekg::find_collide_dock(this->docker_activity_resize, resize_dock_flags, interact);
   }
 
   if (shown_cursor_dock_flags) {
@@ -150,13 +150,13 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
   }
 
   if (ekg::input::released()) {
-    if (this->flag.activy) {
+    if (this->flag.activity) {
       this->flag.absolute = false;
     }
 
     this->target_dock_resize = ekg::dock::none;
     this->target_dock_drag = ekg::dock::none;
-    this->flag.activy = false;
+    this->flag.activity = false;
   }
 }
 
@@ -181,7 +181,7 @@ void ekg::ui::frame_widget::on_draw_refresh() {
   ekg_draw_assert_scissor();
 
   ekg::draw::rect(rect, theme.frame_background);
-  ekg::draw::rect(this->docker_activy_drag.top, theme.frame_border);
+  ekg::draw::rect(this->docker_activity_drag.top, theme.frame_border);
   ekg::draw::rect(rect, theme.frame_outline, ekg::draw_mode::outline);
 
   ekg::draw::bind_off_scissor();

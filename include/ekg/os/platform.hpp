@@ -48,8 +48,8 @@ namespace ekg {
     right_shift,
     left_ctrl,
     right_ctrl,
-    alt,
-    altgr,
+    left_alt,
+    right_alt,
     tab,
     unknown
   };

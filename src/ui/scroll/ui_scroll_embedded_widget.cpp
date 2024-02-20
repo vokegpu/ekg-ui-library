@@ -42,7 +42,7 @@ void ekg::ui::scroll_embedded_widget::reset_scroll() {
   this->scroll.y = this->scroll.w;
 }
 
-bool ekg::ui::scroll_embedded_widget::check_activy_state(bool state) {
+bool ekg::ui::scroll_embedded_widget::check_activity_state(bool state) {
   state = (state ||
            (static_cast<int32_t>(roundf(this->scroll.x)) != static_cast<int32_t>(roundf(this->scroll.z))) ||
            (static_cast<int32_t>(roundf(this->scroll.y)) != static_cast<int32_t>(roundf(this->scroll.w))));
@@ -140,9 +140,9 @@ void ekg::ui::scroll_embedded_widget::on_pre_event(ekg::os::io_event_serial &io_
     ekg::vec4 &interact {ekg::input::interact()};
     bool visible {ekg::draw::is_visible(this->widget_id, interact)};
 
-    this->flag.activy =
+    this->flag.activity =
         visible && (this->is_vertical_enabled || this->is_horizontal_enabled) && ekg::input::action("scrollbar-scroll");
-    this->flag.hovered = this->flag.activy || (visible && (ekg::rect_collide_vec(scaled_vertical_bar, interact) ||
+    this->flag.hovered = this->flag.activity || (visible && (ekg::rect_collide_vec(scaled_vertical_bar, interact) ||
                                                            ekg::rect_collide_vec(scaled_horizontal_bar, interact)));
   }
 }

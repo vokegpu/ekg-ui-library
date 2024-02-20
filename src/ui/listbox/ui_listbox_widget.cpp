@@ -72,7 +72,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
       bool was_hovered {};
       bool should_redraw {};
-      bool pressed_to_open {pressed && ekg::input::action("listbox-activy-open")};
+      bool pressed_to_open {pressed && ekg::input::action("listbox-activity-open")};
 
       for (uint64_t it {}; it < this->loaded_item_list.size(); it++) {
           auto &p_item {this->loaded_item_list.at(it)};

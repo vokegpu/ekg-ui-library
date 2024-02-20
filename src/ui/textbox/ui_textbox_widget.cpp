@@ -791,13 +791,13 @@ void ekg::ui::textbox_widget::on_pre_event(ekg::os::io_event_serial &io_event_se
   this->embedded_scroll.on_pre_event(io_event_serial);
   this->flag.absolute = (
     this->embedded_scroll.is_dragging_bar() ||
-    this->embedded_scroll.flag.activy ||
+    this->embedded_scroll.flag.activity ||
     this->flag.state
   );
 }
 
 void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
-  bool pressed {ekg::input::pressed() && ekg::input::action("textbox-activy")};
+  bool pressed {ekg::input::pressed() && ekg::input::action("textbox-activity")};
   bool released {ekg::input::released()};
   bool motion {ekg::input::motion()};
 
@@ -952,12 +952,12 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 void ekg::ui::textbox_widget::on_post_event(ekg::os::io_event_serial &io_event_serial) {
   abstract_widget::on_post_event(io_event_serial);
   this->embedded_scroll.flag.hovered = false;
-  this->embedded_scroll.flag.activy = false;
+  this->embedded_scroll.flag.activity = false;
 }
 
 void ekg::ui::textbox_widget::on_update() {
   this->embedded_scroll.on_update();
-  this->is_high_frequency = this->embedded_scroll.check_activy_state(this->flag.focused || this->flag.hovered);
+  this->is_high_frequency = this->embedded_scroll.check_activity_state(this->flag.focused || this->flag.hovered);
 }
 
 /*

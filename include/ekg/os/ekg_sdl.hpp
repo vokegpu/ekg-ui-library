@@ -47,6 +47,7 @@ namespace ekg::os {
     void update_monitor_resolution() override;
     void update_cursor(ekg::system_cursor system_cursor) override;
     void get_key_name(int32_t key, std::string_view &name) override;
+    void get_special_key(int32_t key, ekg::special_key &special_key) override;
   };
 
   void sdl_poll_event(SDL_Event &sdl_event);

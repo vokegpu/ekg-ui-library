@@ -77,9 +77,9 @@ void ekg::ui::checkbox_widget::on_event(ekg::os::io_event_serial &io_event_seria
                                                        ekg::input::interact()));
   }
 
-  if (pressed && !this->flag.activy && this->flag.hovered && ekg::input::action("checkbox-activy")) {
-    ekg::set(this->flag.activy, true);
-  } else if (released && this->flag.activy) {
+  if (pressed && !this->flag.activity && this->flag.hovered && ekg::input::action("checkbox-activity")) {
+    ekg::set(this->flag.activity, true);
+  } else if (released && this->flag.activity) {
     if (this->flag.hovered) {
       auto p_ui {(ekg::ui::checkbox *) this->p_data};
       p_ui->set_value(!p_ui->get_value());
@@ -95,7 +95,7 @@ void ekg::ui::checkbox_widget::on_event(ekg::os::io_event_serial &io_event_seria
           (uint16_t) p_ui->get_type());
     }
 
-    ekg::set(this->flag.activy, false);
+    ekg::set(this->flag.activity, false);
   }
 }
 
@@ -124,16 +124,16 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
 
   ekg::draw::rect(box, theme.checkbox_highlight);
 
-  if (this->flag.activy) {
-    ekg::draw::rect(this->flag.focused ? box : rect, theme.checkbox_activy);
+  if (this->flag.activity) {
+    ekg::draw::rect(this->flag.focused ? box : rect, theme.checkbox_activity);
   }
 
   if (p_ui->get_value()) {
-    ekg::draw::rect(box, theme.checkbox_activy);
+    ekg::draw::rect(box, theme.checkbox_activity);
   }
 
   if (p_ui->get_value() && this->flag.highlight) {
-    ekg::draw::rect(box, {theme.checkbox_activy, theme.checkbox_outline.w}, ekg::draw_mode::outline);
+    ekg::draw::rect(box, {theme.checkbox_activity, theme.checkbox_outline.w}, ekg::draw_mode::outline);
   }
 
   f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.checkbox_string);

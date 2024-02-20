@@ -195,27 +195,27 @@ void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial)
     ekg::set(this->flag.highlight, this->flag.hovered && ekg::rect_collide_vec(this->rect_bar + rect, interact));
   }
 
-  this->flag.absolute = this->flag.absolute || this->flag.activy;
+  this->flag.absolute = this->flag.absolute || this->flag.activity;
   this->flag.hovered = this->flag.hovered && this->flag.highlight;
 
   if (this->flag.state) {
     p_ui->set_value(p_ui->get_value() + (interact.w));
-  } else if (this->flag.hovered && pressed && ekg::input::action("slider-activy")) {
-    this->flag.activy = true;
+  } else if (this->flag.hovered && pressed && ekg::input::action("slider-activity")) {
+    this->flag.activity = true;
     p_ui->set_dragging(true);
     this->update_bar(interact.x, interact.y);
     this->flag.absolute = true;
   } else if (released) {
-    if (this->flag.activy) {
+    if (this->flag.activity) {
       ekg::dispatch_ui_event(
           p_ui->get_tag().empty() ? ("unknown slider id " + std::to_string(p_ui->get_id())) : p_ui->get_tag(),
           std::to_string(p_ui->get_value()), (uint16_t) p_ui->get_type());
     }
 
     this->flag.absolute = false;
-    this->flag.activy = false;
+    this->flag.activity = false;
     p_ui->set_dragging(false);
-  } else if (this->flag.activy && motion) {
+  } else if (this->flag.activity && motion) {
     this->update_bar(interact.x, interact.y);
   }
 }
@@ -236,8 +236,8 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     ekg::draw::rect(bar, theme.slider_highlight);
   }
 
-  ekg::draw::rect(this->rect_target + rect, theme.slider_activy, ekg::draw_mode::circle);
-  ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activy_bar);
+  ekg::draw::rect(this->rect_target + rect, theme.slider_activity, ekg::draw_mode::circle);
+  ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activity_bar);
 
   f_renderer.blit(this->string_value, rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.slider_string);
   ekg::draw::bind_off_scissor();

@@ -194,7 +194,7 @@ void ekg::ui::popup_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
 
   bool check_hovered {};
   bool should_destroy {};
-  bool pressed {ekg::input::pressed() && ekg::input::action("popup-activy")};
+  bool pressed {ekg::input::pressed() && ekg::input::action("popup-activity")};
   bool released {ekg::input::released()};
 
   auto p_ui {(ekg::ui::popup *) this->p_data};

@@ -41,11 +41,6 @@ namespace ekg {
     redraw
   };
 
-  enum class state {
-    enabled,
-    disabled
-  };
-
   struct stack {
   public:
     std::vector<ekg::ui::abstract_widget*> ordered_list {};

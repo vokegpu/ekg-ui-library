@@ -31,7 +31,7 @@ void ekg::service::input::init() {
 
   /**
    * Forced null termination at end due the necessary optmization,
-   * when changing dynamically the special key activy state.
+   * when changing dynamically the special key state.
    * 
    * If lshift is pressed, then the last char is set to `+`,
    * or be `lshift+` (from `lshift\0` to `lshift+`).
@@ -199,9 +199,9 @@ void ekg::service::input::on_event(ekg::os::io_event_serialized &io_event_serial
     this->callback("finger-click", false);
     this->callback("finger-click-double", false);
 
-    /*
+    /**
      * Should stop the swipe event when there is no finger touching on screen.
-     */
+     **/
     this->callback("finger-swipe", false);
     this->callback("finger-swipe-up", false);
     this->callback("finger-swipe-down", false);

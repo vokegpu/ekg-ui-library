@@ -68,7 +68,7 @@ namespace ekg {
     std::vector<ekg::ui::abstract_widget*> update_widget_list {};
 
     ekg::ui::abstract *p_current_ui_container {};
-    ekg::ui::abstract_widget *p_abs_activy_widget {};
+    ekg::ui::abstract_widget *p_abs_activity_widget {};
 
     int32_t token_id {};
     int32_t widget_id_focused {};

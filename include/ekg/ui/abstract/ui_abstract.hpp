@@ -30,6 +30,11 @@
 #include "ekg/util/geometry.hpp"
 #include "ekg/util/aspect.hpp"
 
+#define ekg_action_dispatch(should, action) \
+  if (should && this->action_register[static_cast<uint64_t>(action)] != nullptr) { \
+    ekg::core->service_handler.generate() = this->action_register[action]; \
+  } \
+
 namespace ekg {
   enum class type {
     abstract,
@@ -44,19 +49,31 @@ namespace ekg {
     listbox,
     tab,
     popup,
-    scroll
+    scroll,
   };
 
   enum class level {
-    bottom_level, top_level
+    bottom_level,
+    top_level,
   };
 
   enum class ui_sync {
     reset = 1,
-    dimension = 2
+    dimension = 2,
+  };
+
+  enum class action {
+    press,
+    release,
+    hover,
+    drag,
+    focus,
+    resize,
   };
 
   enum class state {
+    enabled,
+    disabled,
   };
 
   namespace ui {
@@ -74,6 +91,8 @@ namespace ekg {
     };
 
     class abstract {
+    protected:
+      ekg::array<6, ekg::task*> action_register {};
     protected:
       int32_t id {};
       int32_t parent_id {};

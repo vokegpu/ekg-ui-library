@@ -62,32 +62,48 @@ void ekg::ui::button_widget::on_reload() {
 void ekg::ui::button_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
   bool pressed {ekg::input::pressed()};
   bool released {ekg::input::released()};
+  bool motion {ekg::input::motion()};
 
-  if (ekg::input::motion() || pressed || released) {
+  if (motion || pressed || released) {
+    ekg_action_dispatch(
+      released && this->flag.hovered,
+      ekg::action::press
+    );
+
+    ekg_action_dispatch(
+      pressed && this->flag.hovered,
+      ekg::action::press
+    );
+
+    ekg_action_dispatch(
+      motion && this->flag.hovered,
+      ekg::action::hover
+    );
+
     ekg::set(this->flag.highlight, this->flag.hovered);
   }
 
   if (
       pressed &&
-      !this->flag.activy &&
+      !this->flag.activity &&
       this->flag.hovered &&
-      ekg::input::action("button-activy")
+      ekg::input::action("button-activity")
   ) {
-    ekg::set(this->flag.activy, true);
-  } else if (released && this->flag.activy) {
-    auto p_ui {(ekg::ui::button *) this->p_data};
+    ekg::set(this->flag.activity, true);
+
+    ekg_action_dispatch(
+      this->flag.activity,
+      ekg::action::activity
+    );
+  } else if (released && this->flag.activity) {
+    ekg_action_dispatch(
+      this->flag.hovered,
+      ekg::action::release
+    );
+
+    auto p_ui {(ekg::ui::button*) this->p_data};
     p_ui->set_value(this->flag.hovered);
-
-    auto callback {p_ui->get_callback()};
-    if (p_ui->get_value() && callback != nullptr) {
-      ekg::dispatch(callback);
-      p_ui->set_value(false);
-    }
-
-    ekg::dispatch_ui_event(
-        p_ui->get_tag().empty() ? ("unknown button id " + std::to_string(p_ui->get_id())) : p_ui->get_tag(), "callback",
-        (uint16_t) p_ui->get_type());
-    ekg::set(this->flag.activy, false);
+    ekg::set(this->flag.activity, false);
   }
 }
 
@@ -109,9 +125,9 @@ void ekg::ui::button_widget::on_draw_refresh() {
     ekg::draw::rect(rect, theme.button_highlight);
   }
 
-  if (this->flag.activy) {
-    ekg::draw::rect(rect, theme.button_activy);
-    ekg::draw::rect(rect, {theme.button_activy, theme.button_outline.w}, ekg::draw_mode::outline);
+  if (this->flag.activity) {
+    ekg::draw::rect(rect, theme.button_activity);
+    ekg::draw::rect(rect, {theme.button_activity, theme.button_outline.w}, ekg::draw_mode::outline);
   }
 
   f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.button_string);

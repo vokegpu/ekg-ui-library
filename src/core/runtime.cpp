@@ -103,18 +103,18 @@ void ekg::runtime::process_event() {
   ekg::hovered.id *= !(pressed || released || ekg::input::motion());
 
   if (
-      this->p_abs_activy_widget != nullptr &&
-      this->p_abs_activy_widget->flag.absolute
+      this->p_abs_activity_widget != nullptr &&
+      this->p_abs_activity_widget->flag.absolute
     ) {
 
-    this->p_abs_activy_widget->on_pre_event(this->io_event_serial);
-    this->p_abs_activy_widget->on_event(this->io_event_serial);
-    this->p_abs_activy_widget->on_post_event(this->io_event_serial);
+    this->p_abs_activity_widget->on_pre_event(this->io_event_serial);
+    this->p_abs_activity_widget->on_event(this->io_event_serial);
+    this->p_abs_activity_widget->on_post_event(this->io_event_serial);
 
     return;
   }
 
-  this->p_abs_activy_widget = nullptr;
+  this->p_abs_activity_widget = nullptr;
 
   bool hovered {};
   bool first_absolute {};
@@ -178,7 +178,7 @@ void ekg::runtime::process_event() {
     p_widget_focused->on_post_event(this->io_event_serial);
 
     if (p_widget_focused->flag.absolute) {
-      this->p_abs_activy_widget = p_widget_focused;
+      this->p_abs_activity_widget = p_widget_focused;
     }
 
     ekg::hovered.type = p_widget_focused->p_data->get_type();
@@ -537,19 +537,19 @@ void ekg::runtime::prepare_ui_env() {
 
   ekg::log() << "Registering user interface input bindings";
 
-  this->service_input.bind("frame-drag-activy", "mouse-1");
-  this->service_input.bind("frame-drag-activy", "finger-click");
-  this->service_input.bind("frame-resize-activy", "mouse-1");
-  this->service_input.bind("frame-resize-activy", "finger-click");
+  this->service_input.bind("frame-drag-activity", "mouse-1");
+  this->service_input.bind("frame-drag-activity", "finger-click");
+  this->service_input.bind("frame-resize-activity", "mouse-1");
+  this->service_input.bind("frame-resize-activity", "finger-click");
 
-  this->service_input.bind("button-activy", "mouse-1");
-  this->service_input.bind("button-activy", "finger-click");
+  this->service_input.bind("button-activity", "mouse-1");
+  this->service_input.bind("button-activity", "finger-click");
 
-  this->service_input.bind("checkbox-activy", "mouse-1");
-  this->service_input.bind("checkbox-activy", "finger-click");
+  this->service_input.bind("checkbox-activity", "mouse-1");
+  this->service_input.bind("checkbox-activity", "finger-click");
 
-  this->service_input.bind("popup-activy", "mouse-1");
-  this->service_input.bind("popup-activy", "finger-click");
+  this->service_input.bind("popup-activity", "mouse-1");
+  this->service_input.bind("popup-activity", "finger-click");
 
   this->service_input.bind("textbox-action-select-all", "lctrl+a");
   this->service_input.bind("textbox-action-select-all", "rctrl+a");
@@ -584,13 +584,13 @@ void ekg::runtime::prepare_ui_env() {
   this->service_input.bind("textbox-action-right", "abs-right");
   this->service_input.bind("textbox-action-left", "abs-left");
 
-  this->service_input.bind("textbox-activy", "mouse-1");
-  this->service_input.bind("textbox-activy", "finger-click");
+  this->service_input.bind("textbox-activity", "mouse-1");
+  this->service_input.bind("textbox-activity", "finger-click");
 
-  this->service_input.bind("listbox-activy-open", "mouse-1-double");
+  this->service_input.bind("listbox-activity-open", "mouse-1-double");
 
-  this->service_input.bind("slider-activy", "mouse-1");
-  this->service_input.bind("slider-activy", "finger-click");
+  this->service_input.bind("slider-activity", "mouse-1");
+  this->service_input.bind("slider-activity", "finger-click");
   this->service_input.bind("slider-bar-increase", "mouse-wheel-up");
   this->service_input.bind("slider-bar-decrease", "mouse-wheel-down");
   this->service_input.bind("slider-bar-modifier", "lctrl");
