@@ -79,8 +79,6 @@ void ekg::gpu::allocator::dispatch() {
     data.end_stride = this->end_stride_count;
   }
 
-  data.scissor_id = this->scissor_instance_id;
-
   /* flag re alloc buffers if factor changed */
 
   if (!this->factor_changed) {
@@ -149,7 +147,6 @@ void ekg::gpu::allocator::clear_current_data() {
   ekg::gpu::data_t &data {this->loaded_data_list.at(this->data_instance_index)};
   data.line_thickness = 0;
   data.active_tex_slot = 0;
-  data.scissor_id = -1;
 
   this->previous_factor = data.factor;
 }
@@ -193,9 +190,7 @@ uint32_t ekg::gpu::allocator::get_instance_scissor_id() {
   return this->scissor_instance_id;
 }
 
-void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_parent_id) {
-  auto &scissor {this->scissor_map[this->scissor_instance_id]};
-
+void ekg::gpu::allocator::sync_scissor(ekg::rect &scissor, ekg::rect &rect_child, ekg::rect *p_parent_scissor) {
   scissor.x = rect_child.x;
   scissor.y = rect_child.y;
   scissor.w = rect_child.w;
@@ -203,37 +198,30 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_par
 
   ekg::gpu::allocator::is_out_of_scissor = false;
 
-  /**
-   * The EKG rendering clipping/scissor part solution is actually very simple,
-   * each draws section contains an ID, which map for a scissor data,
-   * when batching is going on, the scissor is automatically fixed together.
-   **/
-  if (mother_parent_id) {
-    auto &mother_rect {this->scissor_map[mother_parent_id]};
-
-    if (scissor.x < mother_rect.rect.x) {
-      scissor.w -= mother_rect.rect.x - scissor.x;
-      scissor.x = mother_rect.rect.x;
+  if (p_parent_scissor) {
+    if (scissor.x < p_parent_scissor->rect.x) {
+      scissor.w -= p_parent_scissor->rect.x - scissor.x;
+      scissor.x = p_parent_scissor->rect.x;
     }
 
-    if (scissor.y < mother_rect.rect.y) {
-      scissor.h -= mother_rect.rect.y - scissor.y;
-      scissor.y = mother_rect.rect.y;
+    if (scissor.y < p_parent_scissor->rect.y) {
+      scissor.h -= p_parent_scissor->rect.y - scissor.y;
+      scissor.y = p_parent_scissor->rect.y;
     }
 
-    if (scissor.x + scissor.w > mother_rect.rect.x + mother_rect.rect.w) {
-      scissor.w -= (scissor.x + scissor.w) - (mother_rect.rect.x + mother_rect.rect.w);
+    if (scissor.x + scissor.w > p_parent_scissor->rect.x + p_parent_scissor->rect.w) {
+      scissor.w -= (scissor.x + scissor.w) - (p_parent_scissor->rect.x + p_parent_scissor->rect.w);
     }
 
-    if (scissor.y + scissor.h > mother_rect.rect.y + mother_rect.rect.h) {
-      scissor.h -= (scissor.y + scissor.h) - (mother_rect.rect.y + mother_rect.rect.h);
+    if (scissor.y + scissor.h > p_parent_scissor->rect.y + p_parent_scissor->rect.h) {
+      scissor.h -= (scissor.y + scissor.h) - (p_parent_scissor->rect.y + p_parent_scissor->rect.h);
     }
 
     ekg::gpu::allocator::is_out_of_scissor = (
-      !(scissor.x             < mother_rect.rect.x + mother_rect.rect.w &&
-        scissor.x + scissor.w > mother_rect.rect.x                      &&
-        scissor.y             < mother_rect.rect.y + mother_rect.rect.h &&
-        scissor.y + scissor.h > mother_rect.rect.y                      )
+      !(scissor.x             < p_parent_scissor->rect.x + p_parent_scissor->rect.w &&
+        scissor.x + scissor.w > p_parent_scissor->rect.x                            &&
+        scissor.y             < p_parent_scissor->rect.y + p_parent_scissor->rect.h &&
+        scissor.y + scissor.h > p_parent_scissor->rect.y)
     );
   }
 
@@ -247,14 +235,6 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &rect_child, int32_t mother_par
   data.buffer_content[9] = scissor.y;
   data.buffer_content[10] = scissor.w;
   data.buffer_content[11] = scissor.h;
-}
-
-void ekg::gpu::allocator::bind_scissor(int32_t scissor_id) {
-  this->scissor_instance_id = scissor_id;
-}
-
-void ekg::gpu::allocator::bind_off_scissor() {
-  this->scissor_instance_id = -1;
 }
 
 void ekg::gpu::allocator::push_back_geometry(

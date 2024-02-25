@@ -51,30 +51,6 @@ void ekg::draw::rect(float x, float y, float w, float h, const ekg::vec4 &color,
   ekg::core->gpu_allocator.dispatch();
 }
 
-void ekg::draw::sync_scissor(ekg::rect &child_rect, int32_t mother_parent_id) {
-  ekg::core->gpu_allocator.sync_scissor(child_rect, mother_parent_id);
-}
-
-void ekg::draw::bind_scissor(int32_t id) {
-  ekg::core->gpu_allocator.bind_scissor(id);
-}
-
-void ekg::draw::bind_off_scissor() {
-  ekg::core->gpu_allocator.bind_off_scissor();
-}
-
-bool ekg::draw::is_visible(int32_t id, ekg::vec4 &interact) {
-  ekg::rect *p_scissor {ekg::core->gpu_allocator.get_scissor_by_id(id)};
-  return scissor != nullptr &&
-         ekg::rect_collide_vec({p_scissor->x, p_scissor->y, p_scissor->w, p_scissor->h}, interact);
-}
-
-void ekg::draw::get_visible(int32_t id, ekg::rect &rect) {
-  ekg::rect *p_scissor {ekg::core->gpu_allocator.get_scissor_by_id(id)};
-  if (scissor != nullptr) {
-    rect.x = p_scissor->x;
-    rect.y = p_scissor->y;
-    rect.w = p_scissor->w;
-    rect.h = p_scissor->h;
-  }
+void ekg::draw::sync_scissor(ekg::rect &scissor, ekg::rect &rect_child, ekg::rect *p_parent_scissor) {
+  ekg::core->gpu_allocator.sync_scissor(scissor, rect_child, p_parent_scissor);
 }

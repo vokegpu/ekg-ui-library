@@ -66,11 +66,6 @@ void ekg::ui::button_widget::on_event(ekg::os::io_event_serial &io_event_serial)
 
   if (motion || pressed || released) {
     ekg_action_dispatch(
-      pressed && this->flag.hovered,
-      ekg::action::press
-    );
-
-    ekg_action_dispatch(
       motion && ekg::timing::second > ekg::display::latency && this->flag.hovered,
       ekg::action::hover
     );
@@ -84,16 +79,21 @@ void ekg::ui::button_widget::on_event(ekg::os::io_event_serial &io_event_serial)
       this->flag.hovered &&
       ekg::input::action("button-activity")
   ) {
-    ekg::set(this->flag.activity, true);
-
     ekg_action_dispatch(
-      this->flag.activity,
-      ekg::action::activity
+      true,
+      ekg::action::press
     );
+
+    ekg::set(this->flag.activity, true);
   } else if (released && this->flag.activity) {
     ekg_action_dispatch(
       this->flag.hovered,
       ekg::action::release
+    );
+
+    ekg_action_dispatch(
+      this->flag.hovered,
+      ekg::action::activity
     );
 
     auto p_ui {(ekg::ui::button*) this->p_data};
@@ -108,9 +108,7 @@ void ekg::ui::button_widget::on_draw_refresh() {
   auto &theme {ekg::theme()};
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
-  ekg::draw::bind_scissor(p_ui->get_id());
   ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
-
   ekg_draw_assert_scissor();
 
   ekg::draw::rect(rect, theme.button_background);
@@ -126,5 +124,4 @@ void ekg::ui::button_widget::on_draw_refresh() {
   }
 
   f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.button_string);
-  ekg::draw::bind_off_scissor();
 }

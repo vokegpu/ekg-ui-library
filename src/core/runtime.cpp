@@ -488,8 +488,6 @@ void ekg::runtime::prepare_tasks() {
           ekg::hovered.up *= ekg::hovered.up == element_id;
           ekg::hovered.down *= ekg::hovered.down == element_id;
 
-          allocator.erase_scissor_by_id(p_widgets->p_data->get_id());
-
           delete p_widgets->p_data;
           delete p_widgets;
 
@@ -623,7 +621,6 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
 
     case ekg::type::frame: {
       ekg::ui::frame_widget *p_widget {new ekg::ui::frame_widget()};
-      p_widget->is_scissor_refresh = true;
       p_widget->p_data = p_ui;
       update_layout = true;
       p_widget_created = p_widget;

@@ -70,11 +70,8 @@ void ekg::ui::scroll_widget::on_draw_refresh() {
   this->dimension.w = this->p_parent->w;
   this->dimension.h = this->p_parent->h;
 
-  ekg::draw::bind_scissor(this->p_data->get_id());
-  ekg::draw::sync_scissor(this->get_abs_rect(), this->p_data->get_parent_id());
-
+  ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
 
   this->scroll.on_draw_refresh();
-  ekg::draw::bind_off_scissor();
 }

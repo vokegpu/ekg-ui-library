@@ -1001,8 +1001,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   auto &theme {ekg::theme()};
   auto &allocator {ekg::core->gpu_allocator};
 
-  ekg::draw::bind_scissor(this->p_data->get_id());
-  ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
+  ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg::draw::rect(rect, theme.textbox_background);
 
   this->embedded_scroll.clamp_scroll();
@@ -1255,5 +1254,4 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   this->embedded_scroll.on_draw_refresh();
 
   ekg::draw::rect(rect, theme.textbox_outline, ekg::draw_mode::outline);
-  ekg::draw::bind_off_scissor();
 }

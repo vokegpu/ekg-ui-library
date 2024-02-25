@@ -69,30 +69,45 @@ void ekg::ui::checkbox_widget::on_reload() {
 void ekg::ui::checkbox_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
   bool pressed {ekg::input::pressed()};
   bool released {ekg::input::released()};
+  bool motion {ekg::input::motion()};
 
-  if (ekg::input::motion() || pressed || released) {
+  if (motion || pressed || released) {
     ekg::set(this->flag.highlight, this->flag.hovered);
-    ekg::set(this->flag.focused, this->flag.hovered &&
-                                 ekg::rect_collide_vec(this->rect_box + (this->dimension + *this->p_parent),
-                                                       ekg::input::interact()));
+    ekg::set(
+      this->flag.focused,
+      (
+        this->flag.hovered &&
+        ekg::rect_collide_vec(this->rect_box + (this->dimension + *this->p_parent), ekg::input::interact())
+      )
+    );
+
+    ekg_action_dispatch(
+      motion && ekg::timing::second > ekg::display::latency && this->flag.hovered,
+      ekg::action::motion
+    );
   }
 
   if (pressed && !this->flag.activity && this->flag.hovered && ekg::input::action("checkbox-activity")) {
+    ekg_action_disaptch(
+      true,
+      ekg::action::press
+    );
+
     ekg::set(this->flag.activity, true);
   } else if (released && this->flag.activity) {
+    ekg_action_disaptch(
+      this->flag.hovered,
+      ekg::action::release
+    );
+
     if (this->flag.hovered) {
+      ekg_action_disaptch(
+        true,
+        ekg::action::activity
+      );
+
       auto p_ui {(ekg::ui::checkbox *) this->p_data};
       p_ui->set_value(!p_ui->get_value());
-
-      auto p_callback {p_ui->get_callback()};
-      if (p_callback != nullptr) {
-        ekg::dispatch(p_callback);
-      }
-
-      ekg::dispatch_ui_event(
-          p_ui->get_tag().empty() ? ("unknown checkbox id " + std::to_string(p_ui->get_id())) : p_ui->get_tag(),
-          p_ui->get_value() ? "checked" : "unchecked",
-          (uint16_t) p_ui->get_type());
     }
 
     ekg::set(this->flag.activity, false);
@@ -106,9 +121,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
   auto box {this->rect_box + rect};
 
-  ekg::draw::bind_scissor(p_ui->get_id());
-  ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
-
+  ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
 
   ekg::draw::rect(rect, theme.checkbox_background);
@@ -137,5 +150,4 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
   }
 
   f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.checkbox_string);
-  ekg::draw::bind_off_scissor();
 }

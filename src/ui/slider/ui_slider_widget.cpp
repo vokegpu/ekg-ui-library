@@ -228,8 +228,8 @@ void ekg::ui::slider_widget::on_draw_refresh() {
   auto &f_renderer {ekg::f_renderer(this->font_render_size)};
   auto bar {this->rect_bar + rect}, bar_value {this->rect_bar_value + rect};;
 
-  ekg::draw::bind_scissor(p_ui->get_id());
-  ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
+  ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
+  ekg_draw_assert_scissor();
   ekg::draw::rect(bar, theme.slider_background);
 
   if (this->flag.highlight) {
@@ -240,5 +240,4 @@ void ekg::ui::slider_widget::on_draw_refresh() {
   ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activity_bar);
 
   f_renderer.blit(this->string_value, rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.slider_string);
-  ekg::draw::bind_off_scissor();
 }

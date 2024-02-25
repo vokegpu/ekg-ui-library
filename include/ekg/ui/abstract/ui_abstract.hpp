@@ -28,12 +28,7 @@
 #include <vector>
 
 #include "ekg/util/geometry.hpp"
-#include "ekg/util/aspect.hpp"
-
-#define ekg_action_dispatch(should, action) \
-  if (should && this->action_register[static_cast<uint64_t>(action)] != nullptr) { \
-    ekg::core->service_handler.generate() = this->action_register[action]; \
-  } \
+#include "ekg/core/task.hpp"
 
 namespace ekg {
   enum class type {
@@ -73,8 +68,8 @@ namespace ekg {
   };
 
   enum class state {
-    enabled,
-    disabled,
+    enable,
+    disable,
   };
 
   namespace ui {
@@ -212,10 +207,11 @@ namespace ekg {
       void destroy();
 
       /**
-       * Set the current element state,
-       * possible states:
-       * `ekg::state::enabled` element is interactive by IO inputs.
-       * `ekg::state::disabled` element is not interactive by IO inputs.
+       * Set the current element state, possibles states:
+       * enable, disable.
+       * 
+       * An eneble element is interactive by IO inputs,
+       * while an disable element not.
        */
       ekg::ui::abstract *set_state(const ekg::state &_state);
 
@@ -233,6 +229,19 @@ namespace ekg {
       uint16_t get_place_dock();
 
       uint16_t &get_sync();
+
+      /**
+       * Set a task to an action, possibles actions:
+       * press, release, hover, drag, focus, resize, activity.
+       * 
+       * Actions supports allocated PTR and PTR reference.
+       */
+      ekg::ui::abstract *set_task(ekg::task *p_task, ekg::action action);
+      
+      /**
+       * Return a task from an action.
+       */
+      ekg::task *get_task(ekg::action action);
 
       void reset();
 

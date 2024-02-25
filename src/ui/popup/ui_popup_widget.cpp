@@ -146,7 +146,7 @@ void ekg::ui::popup_widget::on_reload() {
   /* Reset scissor height if current state is invisible. */
   auto *gpu_scissor {ekg::core->gpu_allocator.get_scissor_by_id(p_ui->get_id())};
   if (!p_ui->is_visible()  && gpu_scissor != nullptr) {
-    gpu_scissor->rect[3] = this->scissor_opened_height = 0;
+    this->scissor[3] = this->scissor_opened_height = 0;
     this->is_high_frequency = false;
   } else if (p_ui->is_visible() && !this->is_high_frequency) {
     ekg::update_high_frequency(this);
@@ -318,8 +318,6 @@ void ekg::ui::popup_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
 
     std::string path_result {};
     p_popup->get_popup_path(path_result);
-    ekg::dispatch_ui_event(p_popup->p_data->get_tag().empty() ? "Unknown Popup UI" : p_popup->p_data->get_tag(),
-                           path_result, (uint16_t) p_popup->p_data->get_type());
     return;
   }
 
@@ -341,10 +339,10 @@ void ekg::ui::popup_widget::on_update() {
     this->is_high_frequency = false;
   }
 
-  gpu_scissor->rect[0] = rect.x;
-  gpu_scissor->rect[1] = rect.y;
-  gpu_scissor->rect[2] = rect.w;
-  gpu_scissor->rect[3] = this->scissor_opened_height;
+  this->scissor.x = rect.x;
+  this->scissor.y = rect.y;
+  this->scissor.w = rect.w;
+  this->scissor.h = this->scissor_opened_height;
 }
 
 void ekg::ui::popup_widget::on_draw_refresh() {
@@ -354,8 +352,7 @@ void ekg::ui::popup_widget::on_draw_refresh() {
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
   auto &item_list {p_ui->get_item_list()};
 
-  ekg::draw::bind_scissor(p_ui->get_id());
-
+  ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg::draw::rect(rect, theme.popup_background);
   ekg::draw::rect(rect, theme.popup_outline, ekg::draw_mode::outline);
 
@@ -382,6 +379,4 @@ void ekg::ui::popup_widget::on_draw_refresh() {
                     rect.y + item.rect_dimension.y + item.rect_content.y,
                     theme.popup_string);
   }
-
-  ekg::draw::bind_off_scissor();
 }

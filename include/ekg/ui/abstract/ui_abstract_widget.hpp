@@ -29,6 +29,11 @@
 #include "ekg/util/io.hpp"
 #include "ekg/os/platform.hpp"
 
+#define ekg_action_dispatch(should, action) \
+  if (should && this->p_data->get_task(action) != nullptr) { \
+    ekg::core->service_handler.generate() = *this->p_data->get_task(action); \
+  } \
+
 namespace ekg::ui {
   class abstract_widget {
   public:
@@ -39,11 +44,12 @@ namespace ekg::ui {
 
     ekg::rect *p_parent {};
     ekg::vec4 *p_scroll {};
+    ekg::rect *p_parent_scissor {};
 
+    ekg::rect scissor {};
     ekg::rect empty_parent {};
     ekg::vec4 empty_scroll {};
 
-    bool is_scissor_refresh {};
     bool is_high_frequency {};
     bool is_targeting_absolute_parent {};
   public:

@@ -30,7 +30,7 @@
 
 #include "ekg/util/geometry.hpp"
 
-#define ekg_draw_assert_scissor() if (ekg::gpu::allocator::is_out_of_scissor) { ekg::core->gpu_allocator.bind_off_scissor();  return;  }
+#define ekg_draw_assert_scissor() if (ekg::gpu::allocator::is_out_of_scissor) { return;  }
 
 namespace ekg {
   enum draw_mode {
@@ -38,22 +38,18 @@ namespace ekg {
     circle = -1,
     outline = 1
   };
+}
 
-  namespace draw {
-    void rect(const ekg::rect &rect, const ekg::vec4 &color, int32_t draw_mode = 0);
+namespace ekg::draw {
+  void rect(const ekg::rect &rect, const ekg::vec4 &color, int32_t draw_mode = 0);
 
-    void rect(float x, float y, float w, float h, const ekg::vec4 &color, int32_t draw_mode = 0);
+  void rect(float x, float y, float w, float h, const ekg::vec4 &color, int32_t draw_mode = 0);
 
-    void sync_scissor(ekg::rect &rect, int32_t id);
+  void sync_scissor(ekg::rect &rect, int32_t id);
 
-    void bind_scissor(int32_t id);
+  void bind_scissor(ekg::rect &scissor, ekg::rect &rect_child, ekg::rect *p_parent_scissor);
 
-    void bind_off_scissor();
-
-    bool is_visible(int32_t id, ekg::vec4 &interact);
-
-    void get_visible(int32_t id, ekg::rect &rect);
-  }
+  bool is_visible(int32_t id, ekg::vec4 &interact);
 }
 
 #endif

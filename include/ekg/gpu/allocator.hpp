@@ -37,7 +37,6 @@ namespace ekg::gpu {
     static bool is_out_of_scissor;
   protected:
     std::vector<ekg::gpu::data_t_t> data_list {};
-    std::unordered_map<int32_t, ekg::rect> scissor_map {};
     std::vector<float> cached_geometry_resources {};
 
     uint64_t data_instance_index {};
@@ -46,7 +45,6 @@ namespace ekg::gpu {
 
     int32_t simple_shape_index {-1};
     int32_t previous_factor {};
-    int32_t scissor_instance_id {-1};
 
     int32_t begin_stride_count {};
     int32_t end_stride_count {};
@@ -84,21 +82,6 @@ namespace ekg::gpu {
      * Get current gpu data.
      */
     uint32_t get_current_data_id();
-
-    /*
-     * Find registered scissor in allocator's batch.
-     */
-    ekg::rect *get_scissor_by_id(int32_t id);
-
-    /*
-     * Remove scissor data from memory.
-     */
-    void erase_scissor_by_id(int32_t id);
-
-    /*
-     * Get current scissor active.
-     */
-    uint32_t get_instance_scissor_id();
 
     /*
      * Bind texture for send in data.
@@ -139,17 +122,7 @@ namespace ekg::gpu {
     /*
      * Sync active scissor position.
      */
-    void sync_scissor(ekg::rect &rect, int32_t id);
-
-    /*
-     * Bind scissor using one ID for send in batch.
-     */
-    void bind_scissor(int32_t id);
-
-    /*
-     * Stop batching rectangle scissor.
-     */
-    void bind_off_scissor();
+    void sync_scissor(ekg::rect &scissor, ekg::rect &rect_child, ekg::rect *p_parent_scissor);
   };
 }
 

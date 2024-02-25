@@ -147,3 +147,4 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Internal code refactored, removed useless headers and not-profile conduct follow code.
 -- Added SDL runtime interface.
 -- Added OpenGL RHI (Rendering-Hardware Interface).
+-- Performance boost excluding mapped scissors.

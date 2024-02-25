@@ -342,6 +342,10 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
       break;
     }
 
+    case ekg::type::listbox: {
+      return 
+    }
+
     default: {
       break;
     }

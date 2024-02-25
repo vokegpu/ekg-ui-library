@@ -52,10 +52,12 @@ void ekg::ui::abstract_widget::on_pre_event(ekg::os::io_event_serial &io_event_s
     ekg::vec4 &interact {ekg::input::interact()};
     ekg::rect &rect {this->get_abs_rect()};
 
-    this->flag.hovered = ekg::rect_collide_vec(rect, interact) && (
-        this->p_data->get_level() == ekg::level::top_level ||
-        this->p_data->get_parent_id() == 0 ||
-        ekg::draw::is_visible(this->p_data->get_id(), interact));
+    this->flag.hovered = (
+      ekg::rect_collide_vec(rect, interact) && (
+      this->p_data->get_level() == ekg::level::top_level ||
+      this->p_data->get_parent_id() == 0 ||
+      ekg::rect_collide_vec(this->scissor, interact))
+    );
   }
 }
 

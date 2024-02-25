@@ -179,6 +179,14 @@ uint16_t &ekg::ui::abstract::get_sync() {
   return this->sync_flags;
 }
 
+ekg::ui::abstract *ekg::ui::abstract::set_task(ekg::task *p_task, ekg::action) {
+  this->action_register[static_cast<uint64_t>(action)] = p_task;
+}
+
+ekg::task *ekg::ui::abstract::get_task(ekg::action action) {
+  return this->action_register[action];
+}
+
 void ekg::ui::abstract::reset() {
   ekg_bitwise_add(this->sync_flags, ekg::ui_sync::reset);
   ekg::reload(this->id);
