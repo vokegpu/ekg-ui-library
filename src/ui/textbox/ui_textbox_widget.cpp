@@ -1073,9 +1073,11 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
    * dynamically calculating the amount of scroll with the size of
    * rect text height.
    */
-  this->visible_text[1] = this->embedded_scroll.scroll.y == 0.0f ? 0 :
-                          static_cast<uint64_t>(((-this->embedded_scroll.scroll.y) / this->rect_text.h) *
-                                                text_chunk_size);
+  this->visible_text[1] = (
+    this->embedded_scroll.scroll.y == 0.0f ?
+      0 :
+      static_cast<uint64_t>(((-this->embedded_scroll.scroll.y) / this->rect_text.h) * text_chunk_size)
+  );
 
   // Multiply with the current visible index for get the perfect y position.
   y = (this->text_height * static_cast<float>(this->visible_text[1]));
@@ -1132,23 +1134,42 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
       ekg::char_data &char_data {f_renderer.allocated_char_data[char32]};
       is_utf_char_last_index = utf_char_index + 1 == text_size;
 
-      if (this->find_cursor(cursor, static_cast<int64_t>(utf_char_index), static_cast<int64_t>(chunk_index),
-                            is_utf_char_last_index) &&
+      if (this->find_cursor(
+          cursor,
+          static_cast<int64_t>(utf_char_index),
+          static_cast<int64_t>(chunk_index),
+          is_utf_char_last_index
+        ) &&
           !(chunk_index > cursor.pos[0].chunk_index && chunk_index < cursor.pos[1].chunk_index)) {
         ekg::rect &select_rect {this->cursor_draw_data_list.emplace_back()};
 
         // The end of line cursor drawing require check before to addition.
-        select_rect.x = x + (char_data.wsize *
-                             static_cast<float>(is_utf_char_last_index && cursor.pos[0] == cursor.pos[1] &&
-                                                cursor.pos[0].text_index == utf_char_index + 1));
+        select_rect.x = (
+          x +
+          (
+            char_data.wsize * static_cast<float>(
+              is_utf_char_last_index &&
+              cursor.pos[0] == cursor.pos[1] &&
+              cursor.pos[0].text_index == utf_char_index + 1
+            )
+          )
+        );
+
         select_rect.y = y;
 
         // Draw the offset signal for next line selected.
-        select_rect.w = cursor.pos[0] != cursor.pos[1] ? char_data.wsize + (this->rect_cursor.w + this->rect_cursor.w) *
-                                                                           (is_utf_char_last_index &&
-                                                                            cursor.pos[1].chunk_index > chunk_index &&
-                                                                            cursor.pos[0].chunk_index == chunk_index)
-                                                       : this->rect_cursor.w;
+        select_rect.w = (
+          cursor.pos[0] != cursor.pos[1] ?
+            (
+              char_data.wsize +
+              (this->rect_cursor.w + this->rect_cursor.w) *
+              (is_utf_char_last_index && cursor.pos[1].chunk_index > chunk_index && cursor.pos[0].chunk_index == chunk_index)
+            ) :
+            (
+              this->rect_cursor.w;
+            )
+          )
+
         select_rect.h = this->text_height;
       }
 

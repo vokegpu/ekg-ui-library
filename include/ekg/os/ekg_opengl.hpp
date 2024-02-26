@@ -93,6 +93,13 @@ namespace ekg::os {
       ekg::gpu::sampler_t *p_sampler,
     ) override;
 
+    uint64_t generate_font_atlas(
+      ekg::gpu::sampler_t *p_sampler,
+      FT_Face &font_face,
+      int32_t w,
+      int32_t h,
+    ) override;
+
     bool bind_sampler(ekg::gpu::sampler_t *p_sampler) override;
   }
 }

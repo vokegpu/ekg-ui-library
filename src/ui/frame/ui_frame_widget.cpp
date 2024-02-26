@@ -48,7 +48,7 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
   bool motion {ekg::input::motion()};
 
   ekg_action_dispatch(
-    motion && ekg::timing::second > ekg::display::latency && this->flag.hovered,
+    motion && this->flag.hovered && ekg::timing::second > ekg::display::latency,
     ekg::action::motion
   );
 
@@ -84,7 +84,7 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
 
     if (this->target_dock_drag != ekg::dock::none && this->target_dock_resize == ekg::dock::none) {
       ekg_action_dispatch(
-        ekg::timing::second > ekg::display::latency && this->flag.hovered,
+        ekg::timing::second > ekg::display::latency,
         ekg::action::drag
       );
 
@@ -94,7 +94,7 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
 
     if (this->target_dock_resize != ekg::dock::none) {
       ekg_action_dispatch(
-        ekg::timing::second > ekg::display::latency && this->flag.hovered,
+        ekg::timing::second > ekg::display::latency,
         ekg::action::resize
       );
 

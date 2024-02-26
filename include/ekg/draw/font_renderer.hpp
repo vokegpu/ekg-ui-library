@@ -30,6 +30,7 @@
 
 #include "ekg/gpu/allocator.hpp"
 #include "ekg/util/geometry.hpp"
+#include "ekg/gpu/api.hpp"
 
 namespace ekg::draw {
   struct glyph_char_t {
@@ -54,7 +55,7 @@ namespace ekg::draw {
 
     std::string font_path {};
     uint32_t font_size {18};
-    uint32_t texture {};
+    ekg::sampler_t texture_sampler {};
 
     float full_width {};
     float full_height {};

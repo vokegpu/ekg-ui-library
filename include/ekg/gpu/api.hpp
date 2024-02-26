@@ -30,6 +30,9 @@
 #include <string_view>
 #include "ekg/io/geometry.hpp"
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 namespace ekg {
   enum class api {
     vulkan, opengl
@@ -39,7 +42,7 @@ namespace ekg {
     struct sampler_info {
     public:
       const char *p_tag {};
-      uint32_t offset[2] {};
+      uint32_t offset[2] {}; 
       uint32_t w {};
       uint32_t h {};
       uint32_t gl_parameter_filter[2] {};
@@ -48,7 +51,7 @@ namespace ekg {
       uint32_t gl_internal_format {};
       uint32_t gl_format {};
       uint32_t gl_type {};
-      void *p_data {};
+      std::function<void()> pre {};
     };
 
     typedef sampler_allocate_info sampler_info;
@@ -106,6 +109,15 @@ namespace ekg {
       virtual uint64_t fill_sampler(
         const ekg::gpu::sampler_fill_info *p_sampler_fill_info,
         ekg::gpu::sampler_t *p_sampler,
+      ) {};
+
+      /**
+       */
+      virtual uint64_t generate_font_atlas(
+        ekg::gpu::sampler_t *p_sampler,
+        FT_Face &font_face,
+        int32_t w,
+        int32_t h,
       ) {};
 
       virtual uint64_t bind_sampler(ekg::gpu::sampler_t *p_sampler) {};

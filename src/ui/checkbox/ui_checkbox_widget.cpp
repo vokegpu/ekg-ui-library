@@ -82,7 +82,7 @@ void ekg::ui::checkbox_widget::on_event(ekg::os::io_event_serial &io_event_seria
     );
 
     ekg_action_dispatch(
-      motion && ekg::timing::second > ekg::display::latency && this->flag.hovered,
+      motion && this->flag.hovered && ekg::timing::second > ekg::display::latency,
       ekg::action::motion
     );
   }

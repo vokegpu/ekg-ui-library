@@ -155,16 +155,16 @@ void ekg::ui::slider_widget::on_reload() {
   this->rect_target.y = this->rect_bar.y + (this->rect_bar.h / 2) - (this->rect_target.h / 2);
 
   if (centered_text && bar_axis == ekg::axis::horizontal &&
-      ekg::bitwise::contains(bar_dock_flags, ekg::dock::top | ekg::dock::bottom | ekg::dock::center)) {
+      ekg_bitwise_contains(bar_dock_flags, ekg::dock::top | ekg::dock::bottom | ekg::dock::center)) {
     float middle_size {this->dimension.h - (this->rect_target.y + this->rect_target.h)};
     middle_size /= 2;
 
     this->rect_text.x = this->rect_target.x + (this->rect_target.w / 2) - (this->rect_text.w / 2);
-    this->rect_text.y = ekg::bitwise::contains(bar_dock_flags, ekg::dock::top | ekg::dock::center) ?
-                        this->rect_target.y + this->rect_target.h + (middle_size - (this->rect_text.h / 2)) : offset +
-                                                                                                              (middle_size -
-                                                                                                               (this->rect_text.h /
-                                                                                                                2));
+    this->rect_text.y = (
+      ekg_bitwise_contains(bar_dock_flags, ekg::dock::top | ekg::dock::center) ?
+        this->rect_target.y + this->rect_target.h + (middle_size - (this->rect_text.h / 2)) :
+        offset + (middle_size - (this->rect_text.h / 2))
+    );
 
     bool text_out_dimension_left {this->rect_text.x < offset};
     this->rect_text.x = text_out_dimension_left ? offset : this->rect_text.x;
@@ -193,6 +193,11 @@ void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial)
 
   if (motion || pressed || released) {
     ekg::set(this->flag.highlight, this->flag.hovered && ekg::rect_collide_vec(this->rect_bar + rect, interact));
+
+    ekg_action_dispatch(
+      motion && this->flag.hovered && ekg::timing::second > ekg::display::latency,
+      ekg::action::hover
+    );
   }
 
   this->flag.absolute = this->flag.absolute || this->flag.activity;
@@ -201,27 +206,37 @@ void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial)
   if (this->flag.state) {
     p_ui->set_value(p_ui->get_value() + (interact.w));
   } else if (this->flag.hovered && pressed && ekg::input::action("slider-activity")) {
+    ekg_action_dispatch(
+      !this->flag.activity,
+      ekg::action::press
+    );
+
     this->flag.activity = true;
-    p_ui->set_dragging(true);
     this->update_bar(interact.x, interact.y);
     this->flag.absolute = true;
+    p_ui->set_dragging(true);
   } else if (released) {
     if (this->flag.activity) {
-      ekg::dispatch_ui_event(
-          p_ui->get_tag().empty() ? ("unknown slider id " + std::to_string(p_ui->get_id())) : p_ui->get_tag(),
-          std::to_string(p_ui->get_value()), (uint16_t) p_ui->get_type());
+      ekg_action_dispatch(
+        true,
+        ekg::action::released
+      );
     }
 
     this->flag.absolute = false;
     this->flag.activity = false;
     p_ui->set_dragging(false);
   } else if (this->flag.activity && motion) {
+    ekg_action_dispatch(
+      ekg::timing::second > ekg::display::latency,
+      ekg::action::drag
+    );
+
     this->update_bar(interact.x, interact.y);
   }
 }
 
 void ekg::ui::slider_widget::on_draw_refresh() {
-  abstract_widget::on_draw_refresh();
   auto p_ui {(ekg::ui::slider *) this->p_data};
   auto &rect {this->get_abs_rect()};
   auto &theme {ekg::theme()};
@@ -230,6 +245,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
 
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
+
   ekg::draw::rect(bar, theme.slider_background);
 
   if (this->flag.highlight) {
@@ -239,5 +255,10 @@ void ekg::ui::slider_widget::on_draw_refresh() {
   ekg::draw::rect(this->rect_target + rect, theme.slider_activity, ekg::draw_mode::circle);
   ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activity_bar);
 
-  f_renderer.blit(this->string_value, rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.slider_string);
+  f_renderer.blit(
+    this->string_value,
+    rect.x + this->rect_text.x,
+    rect.y + this->rect_text.y,
+    theme.slider_string
+  );
 }

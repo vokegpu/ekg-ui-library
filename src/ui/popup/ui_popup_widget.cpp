@@ -352,7 +352,7 @@ void ekg::ui::popup_widget::on_draw_refresh() {
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
   auto &item_list {p_ui->get_item_list()};
 
-  ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
+  ekg::draw::sync_scissor(this ->scissor, rect, this->p_parent_scissor);
   ekg::draw::rect(rect, theme.popup_background);
   ekg::draw::rect(rect, theme.popup_outline, ekg::draw_mode::outline);
 
@@ -363,20 +363,24 @@ void ekg::ui::popup_widget::on_draw_refresh() {
 
     // Draw the separator.
     if (ekg_bitwise_contains(item.attributes, ekg::attr::separator)) {
-      ekg::draw::rect(rect.x + item.rect_dimension.x,
-                      rect.y + item.rect_dimension.y + item.rect_dimension.h - ekg_pixel_div_2,
-                      item.rect_dimension.w,
-                      1.0f,
-                      theme.popup_separator);
+      ekg::draw::rect(
+        rect.x + item.rect_dimension.x,
+        rect.y + item.rect_dimension.y + item.rect_dimension.h - ekg_pixel_div_2,
+        item.rect_dimension.w,
+        1.0f,
+        theme.popup_separator
+      );
     }
 
     if (this->hovered_element == it) {
       ekg::draw::rect(item.rect_dimension + rect, theme.popup_highlight);
     }
 
-    f_renderer.blit(item.name,
-                    rect.x + item.rect_dimension.x + item.rect_content.x,
-                    rect.y + item.rect_dimension.y + item.rect_content.y,
-                    theme.popup_string);
+    f_renderer.blit(
+      item.name,
+      rect.x + item.rect_dimension.x + item.rect_content.x,
+      rect.y + item.rect_dimension.y + item.rect_content.y,
+      theme.popup_string
+    );
   }
 }

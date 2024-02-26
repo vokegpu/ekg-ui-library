@@ -176,21 +176,7 @@ void ekg::gpu::allocator::quit() {
   ekg::core->p_gpu_api->quit();
 }
 
-ekg::rect *ekg::gpu::allocator::get_scissor_by_id(int32_t id) {
-  return &this->scissor_map[id];
-}
-
-void ekg::gpu::allocator::erase_scissor_by_id(int32_t id) {
-  if (this->scissor_map.count(id)) {
-    this->scissor_map.erase(id);
-  }
-}
-
-uint32_t ekg::gpu::allocator::get_instance_scissor_id() {
-  return this->scissor_instance_id;
-}
-
-void ekg::gpu::allocator::sync_scissor(ekg::rect &scissor, ekg::rect &rect_child, ekg::rect *p_parent_scissor) {
+void ekg::gpu::allocator::p(ekg::rect &scissor, ekg::rect &rect_child, ekg::rect *p_parent_scissor) {
   scissor.x = rect_child.x;
   scissor.y = rect_child.y;
   scissor.w = rect_child.w;

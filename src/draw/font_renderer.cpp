@@ -176,63 +176,7 @@ void ekg::draw::font_renderer::reload() {
    * the cast float32 to int32 is necessary.
    */
   this->text_height += static_cast<int32_t>(this->offset_text_height);
-
-  /* Phase of getting chars metric_list. */
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-  if (this->texture != 0) {
-    glDeleteTextures(1, &this->texture);
-  }
-
-  auto internal_format {GL_RED};
-#if defined(__ANDROID__)
-  /*
-   * Android does not support GL_RED, perharps because of the GL ES version.
-   * For this reason, the format is GL_ALPHA and not GL_RED.
-   * Also both of internal format, and format is the same.
-   */
-  internal_format = GL_ALPHA;
-#endif
-
-  glGenTextures(1, &this->texture);
-  glBindTexture(GL_TEXTURE_2D, this->texture);
-  glTexImage2D(GL_TEXTURE_2D, 0, internal_format, (GLint) this->full_width, (GLint) this->full_height, 0,
-               internal_format, GL_UNSIGNED_BYTE, nullptr);
-
-  float offset {};
-  for (char32_t char_codes {}; char_codes < 256; char_codes++) {
-    if (FT_Load_Char(this->ft_face, char_codes, FT_LOAD_RENDER)) {
-      continue;
-    }
-
-    ekg::draw::glyph_char_t &char_data {this->allocated_char_data[char_codes]};
-    char_data.x = offset / static_cast<float>(this->full_width);
-    char_data.w = static_cast<float>(this->ft_glyph_slot->bitmap.width);
-    char_data.h = static_cast<float>(this->ft_glyph_slot->bitmap.rows);
-
-    char_data.left = static_cast<float>(this->ft_glyph_slot->bitmap_left);
-    char_data.top = static_cast<float>(this->ft_glyph_slot->bitmap_top);
-    char_data.wsize = static_cast<float>(static_cast<int32_t>(this->ft_glyph_slot->advance.x >> 6));
-
-    glTexSubImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(offset), 0, static_cast<GLsizei>(char_data.w),
-                    static_cast<GLsizei>(char_data.h), internal_format, GL_UNSIGNED_BYTE,
-                    this->ft_glyph_slot->bitmap.buffer);
-    offset += char_data.w;
-  }
-
-#if defined(__ANDROID__)
-  // GLES 3 does not support swizzle function, the format GL_ALPHA supply this issue.
-#else
-  GLint swizzle_format[] {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
-
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
-#endif
-
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glBindTexture(GL_TEXTURE_2D, 0);
+  ekg::core->p_gpu_api->generate_font_atlas(&this->sampler, this->ft_face, this->full_width, this->full_height);
 }
 
 void ekg::draw::font_renderer::bind_allocator(ekg::gpu::allocator *p_allocator_bind) {

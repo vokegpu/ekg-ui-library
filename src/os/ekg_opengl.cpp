@@ -280,6 +280,10 @@ uint64_t ekg::os::opengl::allocate_sampler(
     p_sampler->gl_id
   );
 
+  if (p_sampler_allocate_info->gl_unpack_alignment) {
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  }
+
   p_sampler->w = p_sampler_allocate_info->w;
   p_sampler->h = p_sampler_allocate_info->h;
 
@@ -342,7 +346,89 @@ uint64_t ekg::os::opengl::fill_sampler(
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-uint64_t ekg::so::opengl::bind_sampler(ekg::gpu::sampler_t *p_sampler) {
+uint64_t ekg::os::opengl::generate_font_atlas(
+  ekg::gpu::sampler_t *p_sampler,
+  FT_Face &font_face,
+  int32_t atlas_width,
+  int32_t atlas_height,
+) {
+
+#if defined(__ANDROID__)
+  /*
+   * Android does not support GL_RED, perharps because of the GL ES version.
+   * For this reason, the format is GL_ALPHA and not GL_RED.
+   * Also both of internal format, and format is the same.
+   */
+  internal_format = GL_ALPHA;
+#endif
+
+  if (!p_sampler->gl_id) {
+    glGenTextures(1, &p_sampler->gl_id);
+  }
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  glBindTexture(GL_TEXTURE_2D, p_sampler->gl_id);
+
+  glTexImage2D(
+    GL_TEXTURE_2D,
+    0,
+    internal_format,
+    atlas_width,
+    atlas_height,
+    0,
+    internal_format,
+    GL_UNSIGNED_BYTE,
+    nullptr
+  );
+
+  FT_GlyphSlot ft_glyph_slot {};
+  float offset {};
+
+  for (char32_t char_codes {}; char_codes < 256; char_codes++) {
+    if (FT_Load_Char(this->ft_face, char_codes, FT_LOAD_RENDER)) {
+      continue;
+    }
+
+    ekg::draw::glyph_char_t &char_data {this->allocated_char_data[char_codes]};
+    char_data.x = offset / static_cast<float>(atlas_width);
+    char_data.w = static_cast<float>(ft_glyph_slot->bitmap.width);
+    char_data.h = static_cast<float>(ft_glyph_slot->bitmap.rows);
+
+    char_data.left = static_cast<float>(ft_glyph_slot->bitmap_left);
+    char_data.top = static_cast<float>(ft_glyph_slot->bitmap_top);
+    char_data.wsize = static_cast<float>(static_cast<int32_t>(ft_glyph_slot->advance.x >> 6));
+
+    glTexSubImage2D(
+      GL_TEXTURE_2D,
+      0,
+      static_cast<GLint>(offset),
+      0,
+      static_cast<GLsizei>(char_data.w),
+      static_cast<GLsizei>(char_data.h),
+      internal_format,
+      GL_UNSIGNED_BYTE,
+      ft_glyph_slot->bitmap.buffer
+    );
+
+    offset += char_data.w;
+  }
+
+#if defined(__ANDROID__)
+  // GLES 3 does not support swizzle function, the format GL_ALPHA supply this issue.
+#else
+  GLint swizzle_format[] {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
+
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
+#endif
+
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+uint64_t ekg::os::opengl::bind_sampler(ekg::gpu::sampler_t *p_sampler) {
   uint64_t size {this->bound_sampler_list->size()};
   for (uint64_t it {}; it < this->bound_sampler_list.size(); it++) {
     ekg::gpu::sampler_t *p_in_list_sampler {this->bound_sampler_list.at(it)};

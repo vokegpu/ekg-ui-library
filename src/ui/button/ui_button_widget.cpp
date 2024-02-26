@@ -66,7 +66,7 @@ void ekg::ui::button_widget::on_event(ekg::os::io_event_serial &io_event_serial)
 
   if (motion || pressed || released) {
     ekg_action_dispatch(
-      motion && ekg::timing::second > ekg::display::latency && this->flag.hovered,
+      motion && this->flag.hovered && ekg::timing::second > ekg::display::latency,
       ekg::action::hover
     );
 
@@ -108,7 +108,7 @@ void ekg::ui::button_widget::on_draw_refresh() {
   auto &theme {ekg::theme()};
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
-  ekg::draw::sync_scissor(rect, p_ui->get_parent_id());
+  ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
 
   ekg::draw::rect(rect, theme.button_background);
