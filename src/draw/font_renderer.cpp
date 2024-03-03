@@ -176,7 +176,7 @@ void ekg::draw::font_renderer::reload() {
    * the cast float32 to int32 is necessary.
    */
   this->text_height += static_cast<int32_t>(this->offset_text_height);
-  ekg::core->p_gpu_api->generate_font_atlas(&this->sampler, this->ft_face, this->full_width, this->full_height);
+  ekg::core->p_gpu_api->generate_font_atlas(&this->sampler_texture, this->ft_face, this->full_width, this->full_height);
 }
 
 void ekg::draw::font_renderer::bind_allocator(ekg::gpu::allocator *p_allocator_bind) {

@@ -55,7 +55,7 @@ namespace ekg::draw {
 
     std::string font_path {};
     uint32_t font_size {18};
-    ekg::sampler_t texture_sampler {};
+    ekg::sampler_t sampler_texture {};
 
     float full_width {};
     float full_height {};

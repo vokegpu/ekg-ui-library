@@ -26,7 +26,6 @@
 #include "ekg/ui/textbox/ui_textbox.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
-#include "ekg/os/platform.hpp"
 #include "ekg/util/geometry.hpp"
 #include "ekg/util/text.hpp"
 
@@ -366,7 +365,7 @@ void ekg::ui::textbox_widget::process_text(
               copy_text += ekg::utf_substr(cursor_text_b, 0, cursor.pos[1].text_index);
             }
 
-            SDL_SetClipboardText(copy_text.c_str());
+            ekg::core->p_os_platform->set_clipboard_text(copy_text.c_str());
           }
 
           if (this->is_clipboard_copy) {
@@ -394,7 +393,7 @@ void ekg::ui::textbox_widget::process_text(
         );
       }
 
-      if (this->is_clipboard_paste && SDL_HasClipboardText() && !(text = SDL_GetClipboardText()).empty()) {
+      if (this->is_clipboard_paste && ekg::core->p_os_platform->has_clipboard_text() && !(text = ekg::core->p_os_platform->get_cipboard_text()).empty()) {
         direction = static_cast<int64_t>(ekg::utf_length(text));
 
         std::vector<std::string> utf_clipboard_decoded {};

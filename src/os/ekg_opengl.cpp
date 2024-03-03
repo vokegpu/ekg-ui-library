@@ -381,7 +381,7 @@ uint64_t ekg::os::opengl::generate_font_atlas(
     nullptr
   );
 
-  FT_GlyphSlot ft_glyph_slot {};
+  FT_Glyph_Slot ft_glyph_slot {};
   float offset {};
 
   for (char32_t char_codes {}; char_codes < 256; char_codes++) {

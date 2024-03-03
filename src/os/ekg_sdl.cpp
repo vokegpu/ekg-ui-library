@@ -33,6 +33,18 @@ ekg::os::sdl::sdl(SDL_Window *p_sdl_win) {
   this->p_sdl_win = p_sdl_win;
 }
 
+void ekg::os::sdl::set_clipboard_text(const char *p_text) {
+  SDL_SetClipboardText(p_text);
+}
+
+bool ekg::os::sdl::has_clipboard_text() {
+  return SDL_HasClipboardText();
+}
+
+const char *ekg::os::sdl::get_clipboard_text() {
+  return SDL_GetClipboardText();
+}
+
 void ekg::os::sdl::init() {
   this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::arrow)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
   this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::ibeam)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);

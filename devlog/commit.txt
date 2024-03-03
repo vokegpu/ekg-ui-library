@@ -1,40 +1,38 @@
-major.minor.patch major-commit.minor-commit.patch-commit
-
-0.0.1.0.0.1 10/06/23
+1.0.1 10/06/23
 
 -- Fixed bug on widgets ::set_width() setting incorrect dimension axis.
 -- Fixed bug at frame widget actions (dragging and resizing), now it calculates from visible rect.
 -- Symmetric layout processing based on scroll pixels offsets.
 
-0.0.1.0.1.0 11/06/23
+1.0.1 11/06/23
 
 -- Added theme options to switch between symmetric or non-symmetric layout processing.
 -- Building methods in the frame (soon maybe all widgets should have it).
 -- Fixed next flag height for previous height (now it uses the highest height).
 -- Added auto-scale factor and widgets resolution scaling factor-based.
 
-0.0.1.0.1.1 11/06/23
+1.0.1.1 11/06/23
 
 -- Auto-scale step interval based.
 -- Multi-cursor internal system for textbox.
 
-0.0.1.0.1.2 12/06/23
+1.0.1.2 12/06/23
 
 -- Fixed textbox erasing event when lines are empty.
 
-0.0.1.0.1.3 12/06/23
+1.0.1.3 12/06/23
 
 -- Fixed scrolling priority using parent checks for absolute widgets.
 -- Fixed textbox not scrolling.
 -- Fixed absolute widget firing other widget events (now it is clamped).
 
-0.0.1.0.1.4 15/06/23
+1.0.1.4 15/06/23
 
 -- Added real-time textbox text changing.
 -- Scroll priority between parents and children.
 -- Performance fixes (reduced draw calls).
 
-0.0.1.0.1.5 16/06/23
+1.0.1.5 16/06/23
 
 -- Fixed issue with high-frequency scrolling widgets update not stopping.
 -- Fixed scrolling clamp desync when a text is updated by UI data.
@@ -48,12 +46,12 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Fixed issue with font rendering factor & text box UI delay (textbox UI with delay to process stack reorder event).
 -- Fixed layout extent checks verifying scroll widget.
 
-0.0.1.0.1.6 20/06/23
+1.0.1.6 20/06/23
 
 -- Fixed performance using indexing rendering for simple shapes.
--- Fixed layout processing extent with next | flag interacting with scrolling widget (previous 0.0.1.0.1.5 fix made a new bug).
+-- Fixed layout processing extent with next | flag interacting with scrolling widget (previous 1.0.1.5 fix made a new bug).
 
-0.0.1.0.1.7 25/06/23
+1.0.1.7 25/06/23
 
 -- Fixed horizontal mouse pad scrolling.
 -- Fixed children's frame widget resizing.
@@ -63,7 +61,7 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Fixed scroll priority definitely.
 -- Multi-cursor textbox UI-based system (select box disabled temporarily).
 
-0.0.1.0.1.8 29/06/23
+1.0.1.8 29/06/23
 
 -- Multi-cursor selection box rendering.
 -- Fixed step scale system.
@@ -80,7 +78,7 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Added feature movements by nearest word from textbox.
 -- Added absolute input statement feature.
 
-0.0.1.0.2.0 09/07/23
+1.0.2 09/07/23
 
 -- Fixed blending state off at on render runtime call.
 -- Better alloc/realloc batching performance.
@@ -89,7 +87,7 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Added clipboard functions (paste, copy & cut).
 -- Added erase line by modifier feature (lctrl + shift + delete/backspace).
 
-0.0.1.0.3.0 02/08/23
+1.0.3 02/08/23
 
 -- Better handler performance.
 -- Added descriptors object state-based for tasks handler.
@@ -106,7 +104,7 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Added maximum lines limit for textbox.
 -- Added maximum chars per line for textbox.
 
-0.0.1.0.4.0 03/09/23
+1.0.4 03/09/23
 
 -- New open-souce license MIT for EKG distribution, please read 'vokegpu-ekg-license.txt' for more details.
 -- Fixed cursor skipping the last two chars at end of line.
@@ -126,7 +124,7 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Textbox selection signal of next line.
 -- Removing verbose popup stuff.
 
-0.0.1.0.5.0 26/09/23
+1.0.5 26/09/23
 
 -- Added item graph system.
 -- Added component to item.
@@ -140,7 +138,7 @@ major.minor.patch major-commit.minor-commit.patch-commit
 -- Fixed `ekg::log::flush` copying string buffer and not cleaning.
 -- Performance in swap frames optimized 81.87%.
 
-0.0.1.0.6.0 19/01/24
+1.0.6 19/01/24
 
 -- New initialization system object-state based.
 -- New interface runtime system for platform X lib and RHI (Rendering-Hardware Interface) for GPU API.

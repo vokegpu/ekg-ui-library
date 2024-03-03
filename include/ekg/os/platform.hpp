@@ -89,6 +89,9 @@ namespace ekg::os {
     virtual void update_cursor(ekg::system_cursor system_cursor) {}
     virtual void get_key_name(int32_t key, std::string_view &name) {}
     virtual void get_special_key(int32_t key, ekg::special_key &special_key) {}
+    virtual const char *get_clipboard_text() {};
+    virtual void set_clipboard_text(const char *p_text) {};
+    virtual bool has_clipboard_text() { return false; }
   };
 }
 

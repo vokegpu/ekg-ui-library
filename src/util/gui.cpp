@@ -25,14 +25,6 @@
 #include "ekg/ekg.hpp"
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
-ekg::rect ekg::empty {};
-int32_t   ekg::hovered::id {};
-ekg::type ekg::hovered::type {};
-int32_t   ekg::hovered::up {};
-int32_t   ekg::hovered::down {};
-ekg::type ekg::hovered::downtype {};
-ekg::type ekg::hovered::uptype {};
-
 void ekg::reload(int32_t id) {
   ekg::core->do_task_reload(ekg::core->get_fast_widget_by_id(id));
 }
