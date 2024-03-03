@@ -28,10 +28,13 @@
 #include <iostream>
 #include <stdint.h>
 #include <string_view>
-#include "ekg/io/geometry.hpp"
+#include "ekg/util/geometry.hpp"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+
+#define ekg_ok 0
+#define ekg_failed 1
 
 namespace ekg {
   enum class api {
@@ -51,11 +54,10 @@ namespace ekg {
       uint32_t gl_internal_format {};
       uint32_t gl_format {};
       uint32_t gl_type {};
-      std::function<void()> pre {};
     };
 
-    typedef sampler_allocate_info sampler_info;
-    typedef sampler_fill_info sampler_info;
+    typedef sampler_info sampler_allocate_info;
+    typedef sampler_info sampler_fill_info;
 
     struct sampler_t {
     public:
@@ -87,7 +89,7 @@ namespace ekg {
     public:
       void set_rendering_shader_fragment_source(std::string_view source);
     public:
-      virutal void log_vendor_details() {};
+      virtual void log_vendor_details() {};
       virtual void init() {};
       virtual void quit() {};
       virtual void invoke_pipeline() {};
@@ -99,17 +101,17 @@ namespace ekg {
         uint64_t loaded_gpu_data_size,
         const ekg::gpu::sampler_t *p_sampler_data,
         uint64_t loaded_sampler_data_size,
-      ) {};
+      ) { return ekg_ok; };
 
       virtual uint64_t allocate_sampler(
         const ekg::gpu::sampler_allocate_info *p_sampler_allocate_info,
         ekg::gpu::sampler_t *p_sampler,
-      ) {};
+      ) 
 
       virtual uint64_t fill_sampler(
         const ekg::gpu::sampler_fill_info *p_sampler_fill_info,
         ekg::gpu::sampler_t *p_sampler,
-      ) {};
+      ) { return ekg_ok; };
 
       /**
        */
@@ -118,9 +120,9 @@ namespace ekg {
         FT_Face &font_face,
         int32_t w,
         int32_t h,
-      ) {};
+      ) { return ekg_ok; };
 
-      virtual uint64_t bind_sampler(ekg::gpu::sampler_t *p_sampler) {};
+      virtual uint64_t bind_sampler(ekg::gpu::sampler_t *p_sampler) { return ekg_ok; };
     }
   }
 

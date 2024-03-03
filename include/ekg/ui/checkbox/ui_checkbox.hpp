@@ -27,6 +27,7 @@
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/core/task.hpp"
+#include "ekg/display/display.hpp"
 
 namespace ekg::ui {
   class checkbox : public ekg::ui::abstract {

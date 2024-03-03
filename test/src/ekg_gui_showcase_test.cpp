@@ -18,7 +18,7 @@ int32_t showcase_useless_window() {
   };
 
   SDL_Event sdl_event {};
-  SDLGL_Context sdl_gl_context {SDL_GL_CreateContext(p_sdl_win)};
+  SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(p_sdl_win)};
 
   glewExperimental = GL_TRUE;
   glewInit();
@@ -29,9 +29,9 @@ int32_t showcase_useless_window() {
     .p_os_platform = new ekg::os::sdl(p_sdl_win)
   };
 
-  auto p_frame = ekg::frame("oi", {20, 20}, {200, 200})->set_sampler(img_id);
+  auto p_frame = ekg::frame("oi", {20, 20}, {200, 200})
 
-  ekg::core::runtime runtime {};
+  ekg::runtime runtime {};
   ekg::init(&runtime, &ekg_runtime_property);
 
   ekg::input::bind("hiroodrop", "finger-click");

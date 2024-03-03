@@ -27,6 +27,23 @@
 
 #include "ekg/util/geometry.hpp"
 
+namespace ekg {
+  /**
+   * EKG does not has support to dynamic font sizes,
+   * due the performance loss while handling it.
+   * EKG provides 3 basics sizes:
+   * - Small
+   * - Normal
+   * - Big
+   * But it depends of current display scale.
+   */
+  enum class font {
+    small,
+    normal,
+    big
+  };
+}
+
 namespace ekg::display {
   /**
    * The current display-viewport width.
@@ -53,7 +70,6 @@ namespace ekg::display {
   /**
    * Auto-scale boolean do the GUI `ekg::scale` be set as the monitor
    * resolution.
-   * 
    * Smarthphones displays may need manual specifiy the scale-base.
    */
   extern bool auto_scale;
@@ -61,7 +77,6 @@ namespace ekg::display {
   /**
    * Display latency for dispatching hover (motion)
    * task. Default is 500.
-   * 
    * Android must have a higher latency due the battery.
    */
   extern int64_t latency;

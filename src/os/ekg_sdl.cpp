@@ -75,6 +75,10 @@ void ekg::os::sdl::init() {
              << static_cast<int32_t>(sdl_version.patch);
 }
 
+void ekg::os::sdl::quit() {
+  
+}
+
 void ekg::os::sdl::update_cursor(ekg::system_cursor sys_cursor) {
   SDL_SetCursor(this->loaded_system_cursor_list[static_cast<uint32_t>(sys_cursor)]);
 }

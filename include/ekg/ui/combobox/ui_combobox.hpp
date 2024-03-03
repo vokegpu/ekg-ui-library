@@ -25,8 +25,8 @@
 #ifndef EKG_UI_COMBOBOX_H
 #define EKG_UI_COMBOBOX_H
 
-#include <vector>
 #include "ekg/ui/abstract/ui_abstract.hpp"
+#include "ekg/display/display.hpp"
 
 namespace ekg::ui {
   class combobox : public ekg::ui::abstract {

@@ -268,7 +268,7 @@ uint64_t ekg::os::opengl::allocate_sampler(
   ekg::gpu::sampler_t *p_sampler,
 ) {
   if (p_sampler == nullptr) {
-    return 1;
+    return ekg_failed;
   }
 
   if (!p_sampler->gl_id) {
@@ -316,6 +316,7 @@ uint64_t ekg::os::opengl::allocate_sampler(
   );
 
   glBindTexture(GL_TEXTURE_2D, 0);
+  return ekg_ok;
 }
 
 uint64_t ekg::os::opengl::fill_sampler(
@@ -323,7 +324,7 @@ uint64_t ekg::os::opengl::fill_sampler(
   ekg::gpu::sampler_t *p_sampler,
 ) {
   if (p_sampler == nullptr || !p_sampler->gl_id) {
-    return 1;
+    return ekg_failed;
   }
 
   glBindTexture(
@@ -344,6 +345,7 @@ uint64_t ekg::os::opengl::fill_sampler(
   );
 
   glBindTexture(GL_TEXTURE_2D, 0);
+  return ekg_ok;
 }
 
 uint64_t ekg::os::opengl::generate_font_atlas(
@@ -426,6 +428,8 @@ uint64_t ekg::os::opengl::generate_font_atlas(
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glBindTexture(GL_TEXTURE_2D, 0);
+
+  return ekg_ok;
 }
 
 uint64_t ekg::os::opengl::bind_sampler(ekg::gpu::sampler_t *p_sampler) {

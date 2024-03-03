@@ -29,7 +29,7 @@
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include "ekg/service/handler.hpp"
-#include "ekg/draw/font.hpp"
+#include "ekg/draw/font_renderer.hpp"
 #include "ekg/service/theme.hpp"
 #include "ekg/service/input.hpp"
 #include "ekg/service/layout.hpp"

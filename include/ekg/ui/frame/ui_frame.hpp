@@ -25,7 +25,6 @@
 #ifndef EKG_UI_FRAME_H
 #define EKG_UI_FRAME_H
 
-#include <vector>
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/util/geometry.hpp"
 

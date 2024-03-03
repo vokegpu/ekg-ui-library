@@ -27,6 +27,7 @@
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/util/io.hpp"
+#include "ekg/display/display.hpp"
 
 namespace ekg::ui {
   class listbox : public ekg::ui::abstract {

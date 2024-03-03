@@ -265,10 +265,12 @@ void ekg::runtime::prepare_tasks() {
   ekg::log() << "Preparing internal EKG core";
 
   this->service_handler.allocate() = {
-    .p_tag      = "refresh",
-    .p_callback = this,
-    .function   = [](void *p_callback) {
-      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(p_callback)};
+    {
+      .tag    = "refresh",
+      .p_data = this
+    },
+    .function = [](ekg::info &info) {
+      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(info.p_data)};
 
       auto &all = p_runtime->loaded_widget_list;
       auto &refresh = p_runtime->refresh_widget_list;
@@ -298,9 +300,11 @@ void ekg::runtime::prepare_tasks() {
   };
 
   this->service_handler.allocate() = {
-    .p_tag      = "swap",
-    .p_callback = this,
-    .function   = [](void *p_callback) {
+    {
+      .tag    = "swap",
+      .p_data = this
+    },
+    .function = [](ekg::info &info) {
       if (ekg::hovered.swap == 0) {
         return;
       }
@@ -352,10 +356,12 @@ void ekg::runtime::prepare_tasks() {
   };
 
   this->service_handler.allocate() = {
-    .p_tag      = "reload",
-    .p_callback = this,
-    .function   = [](void *p_callback) {
-      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(p_callback)};
+    {
+      .tag    = "reload",
+      .p_data = this
+    },
+    .function = [](ekg::info &info) {
+      ekg::runtime *p_runtime {static_cast<ekg::runtime*>(info.p_data)};
       auto &reload = p_runtime->reload_widget_list;
 
       ekg::vec4 rect {};
@@ -440,10 +446,12 @@ void ekg::runtime::prepare_tasks() {
   };
 
   this->service_handler.allocate() = {
-    .p_tag      = "synclayout",
-    .p_callback = this,
-    .function   = [](void *p_callback) {
-      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(p_callback)};
+    {
+      .tag    = "synclayout",
+      .p_data = this
+    },
+    .function = [](ekg::info &info) {
+      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(info.p_data)};
       auto &synclayout {p_runtime->synclayout_widget_list};
 
       for (ekg::ui::abstract_widget *&p_widgets: synclayout) {
@@ -462,10 +470,12 @@ void ekg::runtime::prepare_tasks() {
   };
 
   this->service_handler.allocate() = {
-    .p_tag      = "gc",
-    .p_callback = this,
-    .function   = [](void *p_callback) {
-      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(p_callback)};
+    {
+      .tag    = "gc",
+      .p_data = this,
+    },
+    .function = [](ekg::info &) {
+      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(info.p_data)};
       auto &all {p_runtime->loaded_widget_list};
       auto &high_frequency {p_runtime->update_widget_list};
       auto &redraw {p_runtime->redraw_widget_list};

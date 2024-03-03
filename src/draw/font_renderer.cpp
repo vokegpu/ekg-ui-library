@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "ekg/draw/font.hpp"
+#include "ekg/draw/font_renderer.hpp"
 #include "ekg/util/text.hpp"
 #include "ekg/util/io.hpp"
 

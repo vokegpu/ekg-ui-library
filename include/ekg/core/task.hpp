@@ -29,6 +29,8 @@
 #include <functional>
 
 namespace ekg {
+  extern bool pool_io_event;
+
   enum event_type {
     unique = 0,
     alloc = 2,
@@ -36,25 +38,23 @@ namespace ekg {
     shared = 8
   };
 
-  struct task {
-  public:
-    struct info {
-    public:
-      std::string_view tag {};
-      int32_t id {};
-      int32_t type {};
-      bool button {};
-      bool checkbox {};
-      float slider {};
-      std::string_view popup {};
-      std::string_view checkbox {};
-      std::string_view combobox {};
-      void *p_data {};
-    };
+  struct info {
   public:
     std::string_view tag {};
+    int32_t id {};
+    int32_t type {};
+    bool button {};
+    bool checkbox {};
+    float slider {};
+    std::string_view popup {};
+    std::string_view combobox {};
     void *p_data {};
-    std::function<void(void*)> function {};
+  };
+
+  struct task {
+  public:
+    ekg::info info {};
+    std::function<void(ekg::info&)> function {};
   };
 }
 
