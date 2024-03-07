@@ -44,7 +44,7 @@ int32_t showcase_useless_window() {
 
   while (running) {
     while (SDL_PollEvent(&sdl_event)) {
-      ekg::os::sdl_poll_event(sdl_event);
+       ekg::os::sdl_poll_event(sdl_event);
     }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
