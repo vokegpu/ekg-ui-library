@@ -27,9 +27,11 @@
 
 #include <iostream>
 #include <functional>
+#include <cstdint>
+#include <string_view>
 
 namespace ekg {
-  extern bool pool_io_event;
+  extern bool poll_io_event;
 
   enum event_type {
     unique = 0,

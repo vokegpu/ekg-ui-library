@@ -24,4 +24,4 @@
 
 #include "ekg/core/task.hpp"
 
-bool ekg::pool_io_event {true};
+bool ekg::poll_io_event {true};

@@ -55,7 +55,7 @@ namespace ekg::draw {
 
     std::string font_path {};
     uint32_t font_size {18};
-    ekg::sampler_t sampler_texture {};
+    ekg::gpu::sampler_t sampler_texture {};
 
     float full_width {};
     float full_height {};
@@ -69,24 +69,61 @@ namespace ekg::draw {
     ekg::gpu::allocator *p_allocator {};
     ekg::draw::glyph_char_t allocated_char_data[256] {};
   public:
-    float get_text_width(std::string_view);
+    /**
+     * Return the text width.
+     * Note: font-rendering is UTF-8-based.
+     */
+    float get_text_width(std::string_view text);
 
-    float get_text_width(std::string_view, int32_t &);
+    /**
+     * Return the text width and the lines `\n`.
+     * Note: font-rendering is UTF-8-based.
+     */
+    float get_text_width(std::string_view text, int32_t &lines);
 
+    /**
+     * Return the font face height.
+     */
     float get_text_height();
 
-    void set_font(const std::string &);
+    /**
+     * Set a new font face, check FreeType docs.
+     */
+    void set_font(const std::string &font_face_path);
 
-    void set_size(uint32_t);
+    /**
+     * Set the font face height.
+     */
+    void set_size(uint32_t font_face_size);
 
+    /**
+     * Reload the font face with the new metrics and file path.
+     */
     void reload();
 
+    /**
+     * Bind an external GPU allocator, but is not recommend pass a nullptr value.
+     */
     void bind_allocator(ekg::gpu::allocator *p_allocator_bind);
 
-    void blit(std::string_view, float, float, const ekg::vec4 &);
+    /**
+     * Generate GPU data to render text on screen.
+     *
+     * Note:
+     * The positions `x` and `y` are unuscaled by DPI,
+     * there is no solution still to this issue,
+     * perhaps a pow2-based pixel position should be the way.
+     */
+    void blit(std::string_view text, float x, float y, const ekg::vec4 &color);
 
+    /**
+     * Init the internal-system of font-rendering.
+     */
     void init();
 
+    /**
+     * Quit the internal-system and free FreeType features from memory.
+     */
     void quit();
   };
 }

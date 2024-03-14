@@ -100,17 +100,17 @@ namespace ekg {
         const ekg::gpu::data_t *p_gpu_data,
         uint64_t loaded_gpu_data_size,
         const ekg::gpu::sampler_t *p_sampler_data,
-        uint64_t loaded_sampler_data_size,
-      ) { return ekg_ok; };
+        uint64_t loaded_sampler_data_size
+      ) {};
 
       virtual uint64_t allocate_sampler(
         const ekg::gpu::sampler_allocate_info *p_sampler_allocate_info,
-        ekg::gpu::sampler_t *p_sampler,
-      ) 
+        ekg::gpu::sampler_t *p_sampler
+      )  { return ekg_ok; }
 
       virtual uint64_t fill_sampler(
         const ekg::gpu::sampler_fill_info *p_sampler_fill_info,
-        ekg::gpu::sampler_t *p_sampler,
+        ekg::gpu::sampler_t *p_sampler
       ) { return ekg_ok; };
 
       /**
@@ -119,21 +119,21 @@ namespace ekg {
         ekg::gpu::sampler_t *p_sampler,
         FT_Face &font_face,
         int32_t w,
-        int32_t h,
+        int32_t h
       ) { return ekg_ok; };
 
       virtual uint64_t bind_sampler(ekg::gpu::sampler_t *p_sampler) { return ekg_ok; };
-    }
+    };
   }
 
   void allocate_sampler(
     const ekg::gpu::sampler_allocate_info *p_sampler_allocate_info,
-    ekg::gpu::sampler_t *p_sampler,
+    ekg::gpu::sampler_t *p_sampler
   );
 
   void fill_sampler(
     const ekg::gpu::sampler_fill_info *p_sampler_fill_info,
-    ekg::gpu::sampler_t *p_sampler,
+    ekg::gpu::sampler_t *p_sampler
   );
 }
 

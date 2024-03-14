@@ -44,8 +44,12 @@ void ekg::os::opengl::log_vendor_details() {
 }
 
 void ekg::os::opengl::init() {
+  std::string glsl_version {
+    this->glsl_version
+  }
+
   std::string_view vsh_src {
-    this->glsl_version + "\n"
+    glsl_version + "\n"
     "layout (location = 0) in vec2 aPos;\n"
     "layout (location = 1) in vec2 aTexCoord;\n"
 
@@ -74,7 +78,7 @@ void ekg::os::opengl::init() {
   };
 
   std::string_view fsh_src {
-    this->glsl_version + "\n"
+    glsl_version + "\n"
     "layout (location = 0) out vec4 vFragColor;\n"
     "uniform sampler2D uTextureSampler;\n"
 
