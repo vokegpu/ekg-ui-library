@@ -26,7 +26,7 @@
 #define EKG_UI_LABEL_H
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
-#include "ekg/display/display.hpp"
+#include "ekg/ui/display.hpp"
 
 namespace ekg::ui {
   class label : public ekg::ui::abstract {

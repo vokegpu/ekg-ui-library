@@ -26,7 +26,7 @@
 #define EKG_UI_SLIDER_H
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
-#include "ekg/display/display.hpp"
+#include "ekg/ui/display.hpp"
 
 namespace ekg::ui {
   class slider : public ekg::ui::abstract {

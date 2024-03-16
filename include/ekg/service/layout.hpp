@@ -71,7 +71,7 @@ namespace ekg::service {
 
     void update_scale_factor();
 
-    float get_scale_factor();
+    float get_scale_factor() const;
 
     float get_dimensional_extent(
       ekg::ui::abstract_widget *widget,

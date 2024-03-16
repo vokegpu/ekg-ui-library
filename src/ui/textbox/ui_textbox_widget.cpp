@@ -60,7 +60,7 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
 
   x = 0;
 
-  /*
+  /**
    * the cursor index text position is utf encoded,
    * not string coded, so it should start by begin
    * and not by cursor.
@@ -93,7 +93,7 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
     it += ekg::utf_check_sequence(char8, char32, utf_string, cursor_text, it) + 1;
   }
 
-  /*
+  /**
    * when the loop is finished, sometime it does not check any possible index,
    * so it is important to force at latest one.
    */
@@ -105,7 +105,7 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
   }
 }
 
-/*
+/**
  * If the cursor is not selected, then target the first cursor,
  * therefore when the cursor is selected, the code check if moving cursor is
  * enabled, then set the A & B pos based on direction.
@@ -145,7 +145,7 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
   }
 }
 
-/*
+/**
  * This method is not called all the time, the part of batching rects for rendering after,
  * works okay, but I will write a fast select rect batching.
  */
@@ -258,7 +258,7 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
     this->embedded_scroll.scroll.z -= cursor_outspace_screen.z;
   }
 
-  /*
+  /**
    * Instead of targeting the scroll using the render cursor pos, this use the current cursor chunk it.
    */
 
@@ -306,7 +306,7 @@ void ekg::ui::textbox_widget::process_text(
         break;
       }
 
-      /*
+      /**
        * Always the tab is pressed, the process should add the spaces instead of \t,
        * it is cached to prevent useless iteration.
        */
@@ -329,7 +329,7 @@ void ekg::ui::textbox_widget::process_text(
           if (cursor.pos[0] != cursor.pos[1]) {
             std::string copy_text {};
             if (cursor.pos[0].chunk_index == cursor.pos[1].chunk_index) {
-              /*
+              /**
                * For some reason the STL substr implementation actually
                * do the following addition for B (second parameter),
                * (B += A), the subtract result between cursor 1 and 0
@@ -641,7 +641,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(
       x += char_rect.w;
     }
 
-    /*
+    /**
      * If interact position is not colliding with any char in this line, then set index to the end or begin of line.
      */
     char_rect.x = rect.x;
@@ -732,7 +732,7 @@ void ekg::ui::textbox_widget::on_reload() {
   if (this->last_text_chunk_size != this->p_text_chunk_list->size()) {
     //this->widget_side_text = p_ui->get_text();
 
-    /*
+    /**
      * Generate default empty text for say to the rest of textbox,
      * that is empty and not with null lines.
      */
@@ -748,7 +748,7 @@ void ekg::ui::textbox_widget::on_reload() {
     float new_text_height_diff {
       this->text_height *
       (
-        /**
+        /***
          * before casting to float, must cast to int64_t,
          * uint64_t range is large than int64_t
          * but uint64_t can not subtract less than 0,
@@ -763,7 +763,7 @@ void ekg::ui::textbox_widget::on_reload() {
       )
     };
 
-    /*
+    /**
      * If the difference between the new and old texts,
      * is nearest of scrolling y, it should follow the scrolling.
      */
@@ -959,7 +959,7 @@ void ekg::ui::textbox_widget::on_update() {
   this->is_high_frequency = this->embedded_scroll.check_activity_state(this->flag.focused || this->flag.hovered);
 }
 
-/*
+/**
  * The find cursor method perform bloat,
  * but how the entire selection system is CPU-batched (it means not called all the render time),
  * the performance is not necessary bad.
@@ -1014,15 +1014,15 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   ekg_draw_assert_scissor();
 
   x = static_cast<float>(static_cast<int32_t>(x));
-  data.shape_rect[0] = x;
+  data.buffer_content[0] = x;
 
-  data.shape_rect[2] = static_cast<float>(ekg::concave);
-  data.shape_rect[3] = static_cast<float>(ekg::concave);
+  data.buffer_content[2] = static_cast<float>(ekg::concave);
+  data.buffer_content[3] = static_cast<float>(ekg::concave);
 
-  data.material_color[0] = color.x;
-  data.material_color[1] = color.y;
-  data.material_color[2] = color.z;
-  data.material_color[3] = color.w;
+  data.buffer_content[4] = color.x;
+  data.buffer_content[5] = color.y;
+  data.buffer_content[6] = color.z;
+  data.buffer_content[7] = color.w;
   data.factor = 1;
 
   ekg::rect vertices {};
@@ -1050,7 +1050,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   bool is_utf_char_last_index {};
   bool render_cursor {};
 
-  /*
+  /**
    * 0 == previous char wsize
    * 1 == current char wisze
    * 2 == next char wsize
@@ -1067,7 +1067,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   this->cursor_draw_data_list.clear();
   this->rect_text.h = (this->text_height * static_cast<float>(text_chunk_size));
 
-  /*
+  /**
    * This line of code check the renderable text chunk index value,
    * dynamically calculating the amount of scroll with the size of
    * rect text height.
@@ -1086,12 +1086,12 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   float rendering_text_scroller_diff {rect.y - (rect.y + this->embedded_scroll.scroll.y + visible_text_height)};
   float rendering_text_offset {((this->text_height / 2) - ((this->text_height - f_renderer.offset_text_height) / 2))};
 
-  data.shape_rect[1] = floorf(rect.y);
+  data.buffer_content[1] = floorf(rect.y);
 
   // Prevent from floating point loss in GPU.
   y = static_cast<float>(static_cast<int32_t>(floorf(-rendering_text_scroller_diff)));
 
-  /*
+  /**
    * The text iterator jump utf 8 - 16 - 32 sequences.
    * For better performance, textbox does not render texts out of rect.
    */

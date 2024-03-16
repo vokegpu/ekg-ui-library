@@ -32,10 +32,11 @@
 #endif
 
 #include <vector>
+#include <unordered_map>
 
 #include "ekg/gpu/api.hpp"
 
-#define ekg_is_sampler_protected(sampler_protected_index) sampler_protected_index > -1
+#define ekg_is_sampler_protected(sampler_protected_index) (sampler_protected_index > -1)
 
 namespace ekg::os {
   class opengl : public ekg::gpu::api {
@@ -49,15 +50,18 @@ namespace ekg::os {
     int32_t uniform_rect {};
     int32_t uniform_line_thickness {};
     int32_t uniform_scissor {};
+    int32_t uniform_viewport_height {};
+    int32_t uniform_projection {};
 
     uint32_t geometry_buffer {};
     uint32_t vbo_array {};
     uint32_t ebo_simple_shape {};
     uint32_t pipeline_program {};
+    uint8_t protected_texture_active_index {};
   protected:
-    uint32_t create_pipeline_program(
+    bool create_pipeline_program(
       uint32_t &program,
-      const std::unordered_map<std::string, uint32_t> &resources
+      const std::unordered_map<std::string_view, uint32_t> &resources
     );
   public:
     /**
@@ -65,7 +69,7 @@ namespace ekg::os {
      * `set_glsl_version` must be 330 higher, if not, the version is auto-initialized as `450`.
      * OpenGL ES 3 needs explicity set to the GLSL ES version.
      */
-    opengl(std::string_view set_glsl_version = "#version 450");\
+    explicit opengl(std::string_view set_glsl_version = "#version 450");
   public:    
     void log_vendor_details() override;
 
@@ -74,34 +78,33 @@ namespace ekg::os {
     void invoke_pipeline() override;
     void revoke_pipeline() override;
     void update_viewport(int32_t w, int32_t h) override;
-    void re_alloc_rendering_geometry(const float *p_data, uint64_t size) override;
+    void re_alloc_geometry_resources(const float *p_data, uint64_t size) override;
     
     void draw(
-      const ekg::gpu::data_t *p_gpu_data,
-      uint64_t loaded_gpu_data_size,
-      const ekg::gpu::sampler_t *p_sampler_data,
-      uint64_t loaded_sampler_data_size,
+      ekg::gpu::data_t *p_gpu_data,
+      uint64_t loaded_gpu_data_size
     ) override;
 
     uint64_t allocate_sampler(
       const ekg::gpu::sampler_allocate_info *p_sampler_allocate_info,
-      ekg::gpu::sampler_t *p_sampler,
+      ekg::gpu::sampler_t *p_sampler
     ) override;
 
     uint64_t fill_sampler(
       const ekg::gpu::sampler_fill_info *sampler_fill_info,
-      ekg::gpu::sampler_t *p_sampler,
+      ekg::gpu::sampler_t *p_sampler
     ) override;
 
     uint64_t generate_font_atlas(
       ekg::gpu::sampler_t *p_sampler,
       FT_Face &font_face,
-      int32_t w,
-      int32_t h,
+      int32_t atlas_width,
+      int32_t atlas_height,
+      ekg::draw::glyph_char_t *p_glyph_char_data
     ) override;
 
-    bool bind_sampler(ekg::gpu::sampler_t *p_sampler) override;
-  }
+    uint64_t bind_sampler(ekg::gpu::sampler_t *p_sampler) override;
+  };
 }
 
 #endif

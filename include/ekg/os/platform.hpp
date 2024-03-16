@@ -25,7 +25,8 @@
 #ifndef EKG_OS_PLATFORM_H
 #define EKG_OS_PLATFORM_H
 
-#include <iostream>
+#include <cstdint>  
+#include <string_view>
 
 namespace ekg {
   enum class system_cursor {
@@ -70,6 +71,15 @@ namespace ekg::os {
     bool is_mouse_motion {};
     bool is_mouse_wheel {};
 
+    int32_t mouse_motion_x {};
+    int32_t mouse_motion_y {};
+
+    int32_t mouse_wheel_x {};
+    int32_t mouse_wheel_y {};
+
+    float mouse_wheel_precise_x {};
+    float mouse_wheel_precise_y {};
+
     bool is_finger_up {};
     bool is_finger_down {};
     bool is_finger_motion {};
@@ -77,6 +87,12 @@ namespace ekg::os {
     bool is_key_down {};
     bool is_key_up {};
     int32_t key {};
+
+    float finger_x {};
+    float finger_y {};
+
+    float finger_dx {};
+    float finger_dy {};
   };
 
   class platform {
@@ -87,9 +103,9 @@ namespace ekg::os {
     virtual void quit() {}
     virtual void update_monitor_resolution() {}
     virtual void update_cursor(ekg::system_cursor system_cursor) {}
-    virtual void get_key_name(int32_t key, std::string_view &name) {}
+    virtual void get_key_name(int32_t key, std::string &name) {}
     virtual void get_special_key(int32_t key, ekg::special_key &special_key) {}
-    virtual const char *get_clipboard_text() {};
+    virtual const char *get_clipboard_text() { return nullptr; };
     virtual void set_clipboard_text(const char *p_text) {};
     virtual bool has_clipboard_text() { return false; }
   };

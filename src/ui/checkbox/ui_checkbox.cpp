@@ -67,7 +67,7 @@ ekg::ui::checkbox *ekg::ui::checkbox::set_place(uint16_t docks) {
 ekg::ui::checkbox *ekg::ui::checkbox::set_width(float w) {
   if (this->sync_ui.w != w) {
     this->sync_ui.w = w;
-    ekg_bitwise_add(this->sync_flags, ekg::ui_sync::dimension);
+    ekg_bitwise_add(this->sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
     ekg::reload(this->id);
     ekg::synclayout(this->parent_id);
   }

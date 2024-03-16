@@ -25,6 +25,7 @@
 #include "ekg/service/input.hpp"
 #include <string>
 #include <algorithm>
+#include "ekg/ekg.hpp"
 
 void ekg::service::input::init() {
   uint64_t it {};
@@ -38,16 +39,16 @@ void ekg::service::input::init() {
    * Unpressed special key result in `\0.
    */
 
-  this->special_keys_sdl_map[it++] = "lshift\0",
-  this->special_keys_sdl_map[it++] = "rshift\0",
-  this->special_keys_sdl_map[it++] = "lctrl\0",
-  this->special_keys_sdl_map[it++] = "rctrl\0",
-  this->special_keys_sdl_map[it++] = "alt\0",
-  this->special_keys_sdl_map[it++] = "altgr\0",
-  this->special_keys_sdl_map[it++] = "tab\0";
+  this->special_keys[it++] = "lshift\0",
+  this->special_keys[it++] = "rshift\0",
+  this->special_keys[it++] = "lctrl\0",
+  this->special_keys[it++] = "rctrl\0",
+  this->special_keys[it++] = "alt\0",
+  this->special_keys[it++] = "altgr\0",
+  this->special_keys[it++] = "tab\0";
 }
 
-void ekg::service::input::on_event(ekg::os::io_event_serialized &io_event_serialized) {
+void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized) {
   this->was_pressed = false;
   this->was_released = false;
   this->has_motion = false;
@@ -59,8 +60,8 @@ void ekg::service::input::on_event(ekg::os::io_event_serialized &io_event_serial
   } else if (io_event_serialized.is_key_down) {
     this->was_pressed = true;
 
-    std::string_view key_name {};
-    std::string_view string_builder {};
+    std::string key_name {};
+    std::string string_builder {};
 
     ekg::core->p_os_platform->get_key_name(
       io_event_serialized.key,
@@ -68,12 +69,12 @@ void ekg::service::input::on_event(ekg::os::io_event_serialized &io_event_serial
     );
 
     ekg::special_key special_key {ekg::special_key::unknown};
-    ekg::core->get_special_key(io_event_serialized.key, special_key);
+    ekg::core->p_os_platform->get_special_key(io_event_serialized.key, special_key);
 
     if (special_key != ekg::special_key::unknown) {
-      this->special_keys_sdl_map[io_event_serialized.key][0] = '\0';
-      this->special_keys_sdl_map[io_event_serialized.key] = string_builder;
-      this->special_keys_sdl_map[io_event_serialized.key] += "+";
+      this->special_keys[io_event_serialized.key][0] = '\0';
+      this->special_keys[io_event_serialized.key] = string_builder;
+      this->special_keys[io_event_serialized.key] += "+";
 
       this->callback(string_builder, true);
       this->is_special_keys_released = true;
@@ -105,10 +106,10 @@ void ekg::service::input::on_event(ekg::os::io_event_serialized &io_event_serial
     );
 
     ekg::special_key special_key {ekg::special_key::unknown};
-    ekg::core->get_special_key(io_event_serialized.key, special_key);
+    ekg::core->p_os_platform->get_special_key(io_event_serialized.key, special_key);
 
     if (special_key != ekg::special_key::unknown) {
-      this->special_keys_sdl_map[io_event_serialized.key][0] = '\0';
+      this->special_keys[io_event_serialized.key][0] = '\0';
       string_builder += key_name;
 
       this->callback(string_builder, false);
@@ -181,8 +182,8 @@ void ekg::service::input::on_event(ekg::os::io_event_serialized &io_event_serial
     ekg::reset(this->timing_last_interact);
     bool reach_double_interact {ekg::reach(this->double_interact, 500)};
 
-    this->interact.x = io_event_serialized.tfinger_x * static_cast<float>(ekg::display::width);
-    this->interact.y = io_event_serialized.tfinger_y * static_cast<float>(ekg::display::height);
+    this->interact.x = io_event_serialized.finger_x * static_cast<float>(ekg::ui::width);
+    this->interact.y = io_event_serialized.finger_y * static_cast<float>(ekg::ui::height);
 
     this->last_finger_interact.x = this->interact.x;
     this->last_finger_interact.y = this->interact.y;
@@ -206,8 +207,8 @@ void ekg::service::input::on_event(ekg::os::io_event_serialized &io_event_serial
     this->callback("finger-swipe-up", false);
     this->callback("finger-swipe-down", false);
 
-    this->interact.x = io_event_serialized.tfinger_x * static_cast<float>(ekg::display::width);
-    this->interact.y = io_event_serialized.tfinger_y * static_cast<float>(ekg::display::height);
+    this->interact.x = io_event_serialized.finger_x * static_cast<float>(ekg::ui::width);
+    this->interact.y = io_event_serialized.finger_y * static_cast<float>(ekg::ui::height);
 
     this->last_finger_interact.x = this->interact.x;
     this->last_finger_interact.y = this->interact.y;
@@ -216,11 +217,11 @@ void ekg::service::input::on_event(ekg::os::io_event_serialized &io_event_serial
     this->interact.w = 0.0f;
   } else if (io_event_serialized.is_finger_motion) {
     this->has_motion = true;
-    this->interact.x = io_event_serialized.tfinger_x * static_cast<float>(ekg::display::width);
-    this->interact.y = io_event_serialized.tfinger_y * static_cast<float>(ekg::display::height);
+    this->interact.x = io_event_serialized.finger_x * static_cast<float>(ekg::ui::width);
+    this->interact.y = io_event_serialized.finger_y * static_cast<float>(ekg::ui::height);
 
-    this->interact.z = (io_event_serialized.tfinger_dx * (static_cast<float>(ekg::display::width) / 9.0f));
-    this->interact.w = (io_event_serialized.tfinger_dy * static_cast<float>(ekg::display::height) / 9.0f);
+    this->interact.z = (io_event_serialized.finger_dx * (static_cast<float>(ekg::ui::width) / 9.0f));
+    this->interact.w = (io_event_serialized.finger_dy * static_cast<float>(ekg::ui::height) / 9.0f);
 
     float swipe_factor = 0.01f;
 
@@ -326,14 +327,14 @@ void ekg::service::input::callback(std::string_view key, bool callback) {
   }
 }
 
-void ekg::service::input::complete_with_units(std::string_view &string_builder, std::string_view key_name) {
-  string_builder += this->special_keys_sdl[ekg::special_key::left_ctrl];
-  string_builder += this->special_keys_sdl[ekg::special_key::right_ctrl];
-  string_builder += this->special_keys_sdl[ekg::special_key::left_shift];
-  string_builder += this->special_keys_sdl[ekg::special_key::right_shift];
-  string_builder += this->special_keys_sdl[ekg::special_key::left_alt];
-  string_builder += this->special_keys_sdl[ekg::special_key::right_alt];
-  string_builder += this->special_keys_sdl[ekg::special_key::tab];
+void ekg::service::input::complete_with_units(std::string &string_builder, std::string_view key_name) {
+  string_builder += this->special_keys[static_cast<uint64_t>(ekg::special_key::left_ctrl)];
+  string_builder += this->special_keys[static_cast<uint64_t>(ekg::special_key::right_ctrl)];
+  string_builder += this->special_keys[static_cast<uint64_t>(ekg::special_key::left_shift)];
+  string_builder += this->special_keys[static_cast<uint64_t>(ekg::special_key::right_shift)];
+  string_builder += this->special_keys[static_cast<uint64_t>(ekg::special_key::left_alt)];
+  string_builder += this->special_keys[static_cast<uint64_t>(ekg::special_key::right_alt)];
+  string_builder += this->special_keys[static_cast<uint64_t>(ekg::special_key::tab)];
   string_builder += key_name;
 }
 

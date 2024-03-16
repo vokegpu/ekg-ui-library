@@ -27,9 +27,11 @@
 
 #include <vector>
 #include <unordered_map>
+#include <array>
 
 #include "ekg/util/io.hpp"
 #include "ekg/util/geometry.hpp"
+#include "ekg/os/platform.hpp"
 
 namespace ekg::service {
   class input {
@@ -37,7 +39,7 @@ namespace ekg::service {
     std::unordered_map<std::string, std::vector<std::string>> input_bind_map {};
     std::unordered_map<std::string, bool> input_register_map {};
     std::unordered_map<std::string, bool> input_map {};
-    std::array<7, std::string_view> special_keys_sdl {};
+    std::array<std::string, 7> special_keys {};
 
     std::vector<std::string> special_keys_unit_pressed {};
     std::vector<std::string> double_click_mouse_buttons_pressed {};

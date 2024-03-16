@@ -36,17 +36,17 @@
 namespace ekg::os {
   class sdl : public ekg::os::platform {
   protected:
-    SDL_Cursor loaded_system_cursor_list[12] {};
+    SDL_Cursor *loaded_system_cursor_list[12] {};
     SDL_Window *p_sdl_win {};
   public:
-    sdl(SDL_Window *p_sdl_win);
+    explicit sdl(SDL_Window *p_sdl_win);
   public:
     void init() override;
     void quit() override;
 
     void update_monitor_resolution() override;
     void update_cursor(ekg::system_cursor system_cursor) override;
-    void get_key_name(int32_t key, std::string_view &name) override;
+    void get_key_name(int32_t key, std::string &name) override;
     void get_special_key(int32_t key, ekg::special_key &special_key) override;
     const char *get_clipboard_text() override;
     void set_clipboard_text(const char *p_text) override;

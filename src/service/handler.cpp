@@ -35,7 +35,7 @@ ekg::task &ekg::service::handler::generate() {
 
 void ekg::service::handler::dispatch_pre_allocated_task(uint64_t index) {
   ekg::task &task {this->pre_allocated_task_list.at(index)};
-  bool &is_dispatched {this->pre_allocated_task_dispatched_map[task.p_tag]};
+  bool &is_dispatched {this->pre_allocated_task_dispatched_map[task.info.tag]};
 
   if (!is_dispatched) {
     this->generate() = task;
@@ -46,7 +46,7 @@ void ekg::service::handler::dispatch_pre_allocated_task(uint64_t index) {
 void ekg::service::handler::on_update() {
   while (!this->task_queue.empty()) {
     ekg::task &ekg_event {this->task_queue.front()};
-    ekg_event.function(ekg_event.p_callback);
+    ekg_event.function(ekg_event.info);
     this->task_queue.pop();
   }
 

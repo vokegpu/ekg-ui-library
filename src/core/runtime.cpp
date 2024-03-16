@@ -95,7 +95,7 @@ void ekg::runtime::quit() {
 }
 
 void ekg::runtime::process_event() {
-  this->service_input.on_event(this->serialized_event_entity);
+  this->service_input.on_event(this->io_event_serial);
 
   bool pressed {ekg::input::pressed()};
   bool released {ekg::input::released()};
@@ -131,8 +131,8 @@ void ekg::runtime::process_event() {
     /**
      * Text input like textbox and keyboard events should not update stack, instead just mouse events.
      */
-    hovered = !(this->io_event_serial.is_key_down || this->io_event_serial.is_key_up || this->io_event_serial.input_text)
-              && p_widgets->flag.hovered && p_widgets->p_data->is_visible() && p_widgets->p_data->get_state() != ekg::state::disabled;
+    hovered = !(this->io_event_serial.is_key_down || this->io_event_serial.is_key_up || this->io_event_serial.is_text_input)
+              && p_widgets->flag.hovered && p_widgets->p_data->is_visible() && p_widgets->p_data->get_state() != ekg::state::disable;
 
     if (hovered) {
       ekg::hovered.id = p_widgets->p_data->get_id();
@@ -309,6 +309,7 @@ void ekg::runtime::prepare_tasks() {
         return;
       }
 
+      ekg::runtime *p_runtime {static_cast<ekg::runtime*>(info.p_data)};
       ekg::runtime::collect.target_id = ekg::hovered.swap;
 
       auto &all {p_runtime->loaded_widget_list};
@@ -372,8 +373,8 @@ void ekg::runtime::prepare_tasks() {
         }
 
         auto &sync_flags {p_widgets->p_data->get_sync()};
-        if (ekg_bitwise_contains(sync_flags, ekg::ui_sync::reset)) {
-          ekg_bitwise_remove(sync_flags, ekg::ui_sync::reset);
+        if (ekg_bitwise_contains(sync_flags, static_cast<uint16_t>(ekg::ui_sync::reset))) {
+          ekg_bitwise_remove(sync_flags, static_cast<uint16_t>(ekg::ui_sync::reset));
 
           switch (p_widgets->p_data->get_type()) {
             case ekg::type::frame: {
@@ -409,8 +410,8 @@ void ekg::runtime::prepare_tasks() {
           }
         }
 
-        if (ekg_bitwise_contains(sync_flags, ekg::ui_sync::dimension)) {
-          ekg_bitwise_remove(sync_flags, ekg::ui_sync::dimension);
+        if (ekg_bitwise_contains(sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension))) {
+          ekg_bitwise_remove(sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
 
           auto &rect {p_widgets->p_data->ui()};
           switch (p_widgets->p_data->get_level()) {
@@ -474,7 +475,7 @@ void ekg::runtime::prepare_tasks() {
       .tag    = "gc",
       .p_data = this,
     },
-    .function = [](ekg::info &) {
+    .function = [](ekg::info &info) {
       ekg::runtime *p_runtime {static_cast<ekg::runtime *>(info.p_data)};
       auto &all {p_runtime->loaded_widget_list};
       auto &high_frequency {p_runtime->update_widget_list};

@@ -82,26 +82,26 @@ void ekg::ui::checkbox_widget::on_event(ekg::os::io_event_serial &io_event_seria
     );
 
     ekg_action_dispatch(
-      motion && this->flag.hovered && ekg::timing::second > ekg::display::latency,
+      motion && this->flag.hovered && ekg::timing::second > ekg::ui::latency,
       ekg::action::motion
     );
   }
 
   if (pressed && !this->flag.activity && this->flag.hovered && ekg::input::action("checkbox-activity")) {
-    ekg_action_disaptch(
+    ekg_action_dispatch(
       true,
       ekg::action::press
     );
 
     ekg::set(this->flag.activity, true);
   } else if (released && this->flag.activity) {
-    ekg_action_disaptch(
+    ekg_action_dispatch(
       this->flag.hovered,
       ekg::action::release
     );
 
     if (this->flag.hovered) {
-      ekg_action_disaptch(
+      ekg_action_dispatch(
         true,
         ekg::action::activity
       );

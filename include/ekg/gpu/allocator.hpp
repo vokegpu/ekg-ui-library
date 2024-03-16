@@ -35,6 +35,7 @@ namespace ekg::gpu {
   class allocator {
   public:
     static bool is_out_of_scissor;
+    static float concave;
   protected:
     std::vector<ekg::gpu::data_t> data_list {};
     std::vector<float> cached_geometry_resources {};
@@ -86,7 +87,7 @@ namespace ekg::gpu {
     /*
      * Bind texture for send in data.
      */
-    void bind_texture(uint32_t);
+    void bind_texture(ekg::gpu::sampler_t *p_sampler);
 
     /*
      * Insert geometry positions here:

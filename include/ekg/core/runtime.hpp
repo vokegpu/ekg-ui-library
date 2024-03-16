@@ -121,7 +121,7 @@ namespace ekg {
 
     void quit();
 
-    void process_event(SDL_Event &sdl_event);
+    void process_event();
 
     void process_update();
 

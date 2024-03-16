@@ -22,10 +22,11 @@
  * SOFTWARE.
  */
 
-#include "ekg/display/display.hpp"
+#include "ekg/ui/display.hpp"
 
-int32_t ekg::display::width {};
-int32_t ekg::display::height {};
-float ekg::display::dt {};
-bool ekg::display::auto_scale {};
-ekg::vec2 ekg::display::scale {1920.0f, 1080.0f};
+int32_t ekg::ui::width {};
+int32_t ekg::ui::height {};
+float ekg::ui::dt {};
+bool ekg::ui::auto_scale {};
+ekg::vec2 ekg::ui::scale {1920.0f, 1080.0f};
+float ekg::ui::scale_interval {25.0f};

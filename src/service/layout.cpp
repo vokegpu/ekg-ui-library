@@ -26,6 +26,7 @@
 #include "ekg/os/platform.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
+#include "ekg/ui/display.hpp"
 
 void ekg::service::layout::set_preset_mask(const ekg::vec3 &offset, ekg::axis axis, float initial_respective_size) {
   this->dock_axis_mask = axis;
@@ -332,7 +333,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
       if (has_scroll_embedded) {
         frame->p_scroll_embedded->check_axis_states();
         is_vertical_enabled = frame->p_scroll_embedded->is_vertical_enabled;
-        initial_offset *= static_cast<float>(theme.symmetric_layout == false);
+        initial_offset *= static_cast<float>(!theme.symmetric_layout);
 
         group_rect.w -= initial_offset * static_cast<float>(is_vertical_enabled);
         group_rect.h -= initial_offset * static_cast<float>(frame->p_scroll_embedded->is_horizontal_enabled);
@@ -340,10 +341,6 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
 
       initial_offset = static_cast<float>(theme.scrollbar_pixel_thickness) * static_cast<float>(theme.symmetric_layout);
       break;
-    }
-
-    case ekg::type::listbox: {
-      return 
     }
 
     default: {
@@ -580,17 +577,17 @@ float ekg::service::layout::get_min_offset() {
 
 void ekg::service::layout::update_scale_factor() {
   this->viewport_scale = {
-    static_cast<float>(ekg::display::width), static_cast<float>(ekg::display::height)
+    static_cast<float>(ekg::ui::width), static_cast<float>(ekg::ui::height)
   };
 
-  ekg::vec2 monitor_resolution {ekg::display::scale};
+  ekg::vec2 monitor_resolution {ekg::ui::scale};
   ekg::vec2 input_resolution {this->viewport_scale};
 
-  if (ekg::display::auto_scale) {
+  if (ekg::ui::auto_scale) {
     ekg::core->p_os_platform->update_monitor_resolution();
     monitor_resolution.x = static_cast<float>(ekg::core->p_os_platform->monitor_resolution[0]);
     monitor_resolution.y = static_cast<float>(ekg::core->p_os_platform->monitor_resolution[1]);
-    ekg::display::scale = {1920.0f, 1080.0f};
+    ekg::ui::scale = {1920.0f, 1080.0f};
     input_resolution = monitor_resolution;
   }
 
@@ -606,12 +603,12 @@ void ekg::service::layout::update_scale_factor() {
    * 75  == 3
    * 100 == 4
    *
-   * Then is divided by 4 (becase the maximum scale step is 4)
+   * Then it is divided by 4 (4 is the maximum value)
    * e.g: 2/4 = 0.5f --> 3/4 = 0.75f
    **/
 
   float base_scale {
-    ekg::display::scale_base.x * ekg::display::scale_base.y
+    ekg::ui::scale.x * ekg::ui::scale.y
   };
 
   float monitor_scale {
@@ -631,12 +628,12 @@ void ekg::service::layout::update_scale_factor() {
   };
 
   factor = (
-    roundf(factor / ekg::scaleinterval) / (monitor_scale_percent / ekg::scaleinterval)
+    roundf(factor / ekg::ui::scale_interval) / (monitor_scale_percent / ekg::ui::scale_interval)
   );
 
   this->scale_factor = ekg_clamp(factor, 0.5f, 2.0f);
 }
 
-float ekg::service::layout::get_scale_factor() {
+float ekg::service::layout::get_scale_factor() const {
   return this->scale_factor;
 }

@@ -28,6 +28,7 @@
 #include <fstream>
 
 bool ekg::item::default_semaphore {};
+int64_t ekg::item::second {};
 
 ekg::item &ekg::item::operator[](uint64_t it) {
   return this->child_list.at(it);

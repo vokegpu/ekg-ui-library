@@ -27,12 +27,6 @@
 #include "ekg/util/geometry.hpp"
 
 ekg::runtime *ekg::core {};
-std::string ekg::glsl_version {"#version 450"};
-ekg::vec2 ekg::scalebase {1920.0f, 1080.0f};
-
-bool ekg::autoscale {true};
-float ekg::scaleinterval {25.0f};
-bool ekg::pre_decode_clipboard {};
 
 ekg::service::theme &ekg::theme() {
   return ekg::core->service_theme;
@@ -200,7 +194,7 @@ ekg::ui::slider *ekg::slider(std::string_view tag, float val, float min, float m
 
 ekg::ui::popup *
 ekg::popup(std::string_view tag, const std::vector<std::string> &component_list, bool interact_position) {
-  if (ekg::hovered::type == ekg::type::popup || ekg::hovered::downtype == ekg::type::popup) {
+  if (ekg::hovered.type == ekg::type::popup || ekg::hovered.down_type == ekg::type::popup) {
     return nullptr;
   }
 

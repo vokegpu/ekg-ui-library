@@ -26,6 +26,7 @@
 #define EKG_UI_ABSTRACT_H
 
 #include <vector>
+#include <array>
 
 #include "ekg/util/geometry.hpp"
 #include "ekg/core/task.hpp"
@@ -58,13 +59,14 @@ namespace ekg {
   };
 
   enum class action {
-    press,
-    release,
-    hover,
-    drag,
-    focus,
-    resize,
-    activity,
+    press = 0,
+    release = 1,
+    hover = 2,
+    drag = 3,
+    motion = 4,
+    focus = 5,
+    resize = 6,
+    activity = 7,
   };
 
   enum class state {
@@ -88,7 +90,7 @@ namespace ekg {
 
     class abstract {
     protected:
-      ekg::array<6, ekg::task*> action_register {};
+      std::array<ekg::task*, 6> action_register {};
     protected:
       int32_t id {};
       int32_t parent_id {};
@@ -249,7 +251,7 @@ namespace ekg {
 
       ekg::rect &ui();
 
-      bool has_parent();
+      bool has_parent() const;
 
       bool has_children();
     };

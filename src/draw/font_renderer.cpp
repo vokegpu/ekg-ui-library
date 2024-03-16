@@ -25,6 +25,7 @@
 #include "ekg/draw/font_renderer.hpp"
 #include "ekg/util/text.hpp"
 #include "ekg/util/io.hpp"
+#include "ekg/ekg.hpp"
 
 FT_Library ekg::draw::font_renderer::ft_library {};
 
@@ -164,11 +165,11 @@ void ekg::draw::font_renderer::reload() {
       continue;
     }
 
-    this->full_width += static_cast<float>(this->ft_glyph_slot->bitmap.width);
-    this->full_height = std::max(this->full_height, static_cast<float>(this->ft_glyph_slot->bitmap.rows));
+    this->full_width += static_cast<int32_t>(this->ft_glyph_slot->bitmap.width);
+    this->full_height = std::max(this->full_height, static_cast<int32_t>(this->ft_glyph_slot->bitmap.rows));
   }
 
-  this->text_height = this->full_height;
+  this->text_height = static_cast<float>(this->full_height);
   this->offset_text_height = (this->text_height / 6.0f) / 2.0f;
 
   /*
@@ -176,7 +177,7 @@ void ekg::draw::font_renderer::reload() {
    * the cast float32 to int32 is necessary.
    */
   this->text_height += static_cast<int32_t>(this->offset_text_height);
-  ekg::core->p_gpu_api->generate_font_atlas(&this->sampler_texture, this->ft_face, this->full_width, this->full_height);
+  ekg::core->p_gpu_api->generate_font_atlas(&this->sampler_texture, this->ft_face, this->full_width, this->full_height, this->allocated_char_data);
 }
 
 void ekg::draw::font_renderer::bind_allocator(ekg::gpu::allocator *p_allocator_bind) {
@@ -191,17 +192,17 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
   x = static_cast<float>(static_cast<int32_t>(x));
   y = static_cast<float>(static_cast<int32_t>(y - this->offset_text_height));
 
-  ekg::gpu::data &data {this->p_allocator->bind_current_data()};
+  ekg::gpu::data_t &data {this->p_allocator->bind_current_data()};
 
-  data.shape_rect[0] = x;
-  data.shape_rect[1] = y;
-  data.shape_rect[2] = static_cast<float>(ekg::concave);
-  data.shape_rect[3] = static_cast<float>(ekg::concave);
+  data.buffer_content[0] = x;
+  data.buffer_content[1] = y;
+  data.buffer_content[2] = static_cast<float>(ekg::gpu::allocator::concave);
+  data.buffer_content[3] = static_cast<float>(ekg::gpu::allocator::concave);
 
-  data.material_color[0] = color.x;
-  data.material_color[1] = color.y;
-  data.material_color[2] = color.z;
-  data.material_color[3] = color.w;
+  data.buffer_content[4] = color.x;
+  data.buffer_content[5] = color.y;
+  data.buffer_content[6] = color.z;
+  data.buffer_content[7] = color.w;
 
   ekg::rect vertices {};
   ekg::rect coordinates {};
@@ -264,7 +265,7 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     data.factor += static_cast<int32_t>(x + char32);
   }
 
-  this->p_allocator->bind_texture(this->texture);
+  this->p_allocator->bind_texture(&this->sampler_texture);
   this->p_allocator->dispatch();
 }
 

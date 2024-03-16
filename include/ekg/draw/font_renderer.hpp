@@ -33,16 +33,6 @@
 #include "ekg/gpu/api.hpp"
 
 namespace ekg::draw {
-  struct glyph_char_t {
-  public:
-    float x {};
-    float wsize {};
-    float w {};
-    float h {};
-    float top {};
-    float left {};
-  };
-
   class font_renderer {
   public:
     static FT_Library ft_library;
@@ -57,8 +47,8 @@ namespace ekg::draw {
     uint32_t font_size {18};
     ekg::gpu::sampler_t sampler_texture {};
 
-    float full_width {};
-    float full_height {};
+    int32_t full_width {};
+    int32_t full_height {};
 
     float offset_text_height {};
     float text_height {};

@@ -26,7 +26,7 @@
 #define EKG_UI_TEXTBOX_H
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
-#include "ekg/display/display.hpp"
+#include "ekg/ui/display.hpp"
 
 namespace ekg::ui {
   class textbox : public ekg::ui::abstract, public std::vector<std::string>  {

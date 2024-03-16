@@ -179,16 +179,17 @@ uint16_t &ekg::ui::abstract::get_sync() {
   return this->sync_flags;
 }
 
-ekg::ui::abstract *ekg::ui::abstract::set_task(ekg::task *p_task, ekg::action) {
+ekg::ui::abstract *ekg::ui::abstract::set_task(ekg::task *p_task, ekg::action action) {
   this->action_register[static_cast<uint64_t>(action)] = p_task;
+  return this;
 }
 
 ekg::task *ekg::ui::abstract::get_task(ekg::action action) {
-  return this->action_register[action];
+  return this->action_register[static_cast<uint64_t>(action)];
 }
 
 void ekg::ui::abstract::reset() {
-  ekg_bitwise_add(this->sync_flags, ekg::ui_sync::reset);
+  ekg_bitwise_add(this->sync_flags, static_cast<uint64_t>(ekg::ui_sync::reset));
   ekg::reload(this->id);
 }
 
@@ -197,7 +198,7 @@ ekg::ui::abstract *ekg::ui::abstract::unsafe_set_scaled_height_layout(int32_t sc
   return this;
 }
 
-bool ekg::ui::abstract::has_parent() {
+bool ekg::ui::abstract::has_parent() const {
   return this->parent_id != 0;
 }
 

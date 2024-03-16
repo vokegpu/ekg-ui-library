@@ -62,7 +62,7 @@ void ekg::os::sdl::init() {
   this->update_cursor(ekg::system_cursor::arrow);
   ekg::cursor = ekg::system_cursor::arrow;
 
-  SDL_GetWindowSize(p_root, &ekg::display::width, &ekg::display::height);
+  SDL_GetWindowSize(this->p_sdl_win, &ekg::ui::width, &ekg::ui::height);
 
   SDL_version sdl_version {};
   SDL_GetVersion(&sdl_version);
@@ -88,10 +88,10 @@ void ekg::os::sdl::update_monitor_resolution() {
   SDL_GetDisplayMode(0, 0, &sdl_display_mode);
 
   this->monitor_resolution[0] = static_cast<int32_t>(sdl_display_mode.w);
-  this->monitor_resolution[1] = static_cast<int32_t>(sdl_display_mode.h)
+  this->monitor_resolution[1] = static_cast<int32_t>(sdl_display_mode.h);
 }
 
-void ekg::os::sdl::get_key_name(int32_t key, std::string_view &name) {
+void ekg::os::sdl::get_key_name(int32_t key, std::string &name) {
   switch (key) {
     case SDLK_LCTRL:
       name = "lctrl";
@@ -150,17 +150,17 @@ void ekg::os::sdl::get_special_key(int32_t key, ekg::special_key &special_key) {
 }
 
 void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
-  ekg::io_event_serial &serialized {ekg::core->io_event_serial};
-  serialized = ekg::io_event_serial {};
+  ekg::os::io_event_serial &serialized {ekg::core->io_event_serial};
+  serialized = ekg::os::io_event_serial {};
 
   switch (sdl_event.type) {
   case SDL_WINDOWEVENT:
     switch (sdl_event.window.event) {
       case SDL_WINDOWEVENT_SIZE_CHANGED:
-        ekg::display::width = sdl_event.window.data1;
-        ekg::display::height = sdl_event.window.data2;
+        ekg::ui::width = sdl_event.window.data1;
+        ekg::ui::height = sdl_event.window.data2;
         
-        ekg::core->p_gpu_api->update_viewport(ekg::display::width, ekg::display::height);
+        ekg::core->p_gpu_api->update_viewport(ekg::ui::width, ekg::ui::height);
         ekg::core->update_size_changed();
 
         break;
@@ -182,7 +182,7 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
 
   case SDL_TEXTINPUT:
     serialized.is_text_input = true;
-    serialized.text_input = sdl_event.text;
+    serialized.text_input = sdl_event.text.text;
     ekg::poll_io_event = true;
     break;
 
@@ -224,7 +224,9 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
   case SDL_FINGERMOTION:
     serialized.is_finger_motion = true;
     serialized.finger_x = sdl_event.tfinger.x;
-    serialized.finger_y = sdl_event.tfinger.y;   
+    serialized.finger_y = sdl_event.tfinger.y;
+    serialized.finger_dx = sdl_event.tfinger.dx;
+    serialized.finger_dy = sdl_event.tfinger.dy;
     ekg::poll_io_event = true;
     break;
   }

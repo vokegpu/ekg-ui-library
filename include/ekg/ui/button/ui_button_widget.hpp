@@ -26,7 +26,7 @@
 #define UI_BUTTON_WIDGET_H
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
-#include "ekg/display/display.hpp"
+#include "ekg/ui/display.hpp"
 
 namespace ekg::ui {
   class button_widget : public ekg::ui::abstract_widget {

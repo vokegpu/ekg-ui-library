@@ -1,18 +1,18 @@
 /**
  * MIT License
- * 
+ *
  * Copyright (c) 2022-2024 Rina Wilk / vokegpu@gmail.com
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef EKG_DISPLAY_H
-#define EKG_DISPLAY_H
+#ifndef EKG_UI_DISPLAY_H
+#define EKG_UI_DISPLAY_H
 
 #include "ekg/util/geometry.hpp"
 
@@ -44,12 +44,12 @@ namespace ekg {
   };
 }
 
-namespace ekg::display {
+namespace ekg::ui {
   /**
    * The current display-viewport width.
    */
   extern int32_t width;
-  
+
   /**
    * The current display-viewport height.
    */
@@ -57,7 +57,7 @@ namespace ekg::display {
 
   /**
    * Delta time value, usable by the widgets to perform animations.
-   * Not automatically setted, application must set DT value.
+   * Not automatically set, application must set the delta-time value.
    */
   extern float dt;
 
@@ -70,9 +70,15 @@ namespace ekg::display {
   /**
    * Auto-scale boolean do the GUI `ekg::scale` be set as the monitor
    * resolution.
-   * Smarthphones displays may need manual specifiy the scale-base.
+   * Smartphones displays may need manual set the scale-base.
    */
   extern bool auto_scale;
+
+  /**
+   * The scale interval, likely delta-time but for display tiles size.
+   * Default value and recommend: 25.0f
+   */
+  extern float scale_interval;
 
   /**
    * Display latency for dispatching hover (motion)

@@ -37,7 +37,7 @@ namespace ekg::service {
   class handler {
   protected:
     std::queue<ekg::task> task_queue {};
-    std::unordered_map<const char *, bool> pre_allocated_task_dispatched_map {};
+    std::unordered_map<std::string_view, bool> pre_allocated_task_dispatched_map {};
     std::vector<ekg::task> pre_allocated_task_list {};
   public:
     ekg::task &allocate();

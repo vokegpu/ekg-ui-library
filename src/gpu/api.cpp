@@ -32,12 +32,12 @@ void ekg::allocate_sampler(
   const ekg::gpu::sampler_allocate_info *p_sampler_allocate_info,
   ekg::gpu::sampler_t *p_sampler
 ) {
-  return ekg::core->p_gpu_api->allocate_sampler(p_sampler_allocate_info, p_sampler);
+  ekg::core->p_gpu_api->allocate_sampler(p_sampler_allocate_info, p_sampler);
 }
 
 void ekg::fill_sampler(
   const ekg::gpu::sampler_fill_info *p_sampler_fill_info,
   ekg::gpu::sampler_t *p_sampler
 ) {
-  return ekg::core->p_gpu_api->fill_sampler(p_sampler_fill_info, p_sampler);
+  ekg::core->p_gpu_api->fill_sampler(p_sampler_fill_info, p_sampler);
 }

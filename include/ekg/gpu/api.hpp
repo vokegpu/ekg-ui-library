@@ -26,12 +26,14 @@
 #define EKG_GPU_BASE_IMPL_H
 
 #include <iostream>
-#include <stdint.h>
+#include <cstdint>
 #include <string_view>
-#include "ekg/util/geometry.hpp"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+
+#include "ekg/util/geometry.hpp"
+#include "ekg/draw/typography.hpp"
 
 #define ekg_ok 0
 #define ekg_failed 1
@@ -45,15 +47,16 @@ namespace ekg {
     struct sampler_info {
     public:
       const char *p_tag {};
-      uint32_t offset[2] {}; 
-      uint32_t w {};
-      uint32_t h {};
-      uint32_t gl_parameter_filter[2] {};
-      uint32_t gl_wrap_modes[2] {};
-      uint32_t gl_repeat_mode {};
-      uint32_t gl_internal_format {};
+      int32_t offset[2] {};
+      int32_t w {};
+      int32_t h {};
+      int32_t gl_parameter_filter[2] {};
+      int32_t gl_wrap_modes[2] {};
+      int32_t gl_internal_format {};
       uint32_t gl_format {};
       uint32_t gl_type {};
+      bool gl_unpack_alignment {};
+      void *p_data {};
     };
 
     typedef sampler_info sampler_allocate_info;
@@ -95,12 +98,11 @@ namespace ekg {
       virtual void invoke_pipeline() {};
       virtual void revoke_pipeline() {};
       virtual void update_viewport(int32_t w, int32_t h) {};
-      
+      virtual void re_alloc_geometry_resources(const float *p_data, uint64_t size) {};
+
       virtual void draw(
-        const ekg::gpu::data_t *p_gpu_data,
-        uint64_t loaded_gpu_data_size,
-        const ekg::gpu::sampler_t *p_sampler_data,
-        uint64_t loaded_sampler_data_size
+        ekg::gpu::data_t *p_gpu_data,
+        uint64_t loaded_gpu_data_size
       ) {};
 
       virtual uint64_t allocate_sampler(
@@ -119,7 +121,8 @@ namespace ekg {
         ekg::gpu::sampler_t *p_sampler,
         FT_Face &font_face,
         int32_t w,
-        int32_t h
+        int32_t h,
+        ekg::draw::glyph_char_t *p_glyph_char_data
       ) { return ekg_ok; };
 
       virtual uint64_t bind_sampler(ekg::gpu::sampler_t *p_sampler) { return ekg_ok; };

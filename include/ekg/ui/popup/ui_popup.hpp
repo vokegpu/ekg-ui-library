@@ -28,7 +28,7 @@
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/util/io.hpp"
-#include "ekg/display/display.hpp"
+#include "ekg/ui/display.hpp"
 
 namespace ekg::ui {
   class popup : public ekg::ui::abstract {

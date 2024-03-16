@@ -27,6 +27,7 @@
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/core/task.hpp"
+#include "ekg/ui/display.hpp"
 
 namespace ekg::ui {
   class button : public ekg::ui::abstract {
