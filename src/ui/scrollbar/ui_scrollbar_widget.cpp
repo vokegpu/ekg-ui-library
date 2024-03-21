@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-#include "ekg/ui/scroll/ui_scroll_widget.hpp"
+#include "ekg/ui/scrollbar/ui_scrollbar_widget.hpp"
 #include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
 
-void ekg::ui::scroll_widget::on_reload() {
+void ekg::ui::scrollbar_widget::on_reload() {
   this->scroll.rect_mother = this->p_parent;
   this->scroll.mother_id = this->p_data->get_parent_id();
   this->scroll.widget_id = this->p_data->get_id();
@@ -35,13 +35,13 @@ void ekg::ui::scroll_widget::on_reload() {
   this->scroll.on_reload();
 }
 
-void ekg::ui::scroll_widget::on_pre_event(ekg::os::io_event_serial &io_event_serial) {
+void ekg::ui::scrollbar_widget::on_pre_event(ekg::os::io_event_serial &io_event_serial) {
   this->scroll.on_pre_event(io_event_serial);
   this->flag.hovered = this->scroll.flag.hovered && !this->scroll.flag.activity;
   this->flag.absolute = this->scroll.is_dragging_bar() || this->scroll.flag.activity;
 }
 
-void ekg::ui::scroll_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
+void ekg::ui::scrollbar_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
   this->flag.hovered = this->scroll.flag.hovered;
   this->scroll.on_event(io_event_serial);
 
@@ -55,22 +55,22 @@ void ekg::ui::scroll_widget::on_event(ekg::os::io_event_serial &io_event_serial)
   }
 }
 
-void ekg::ui::scroll_widget::on_post_event(ekg::os::io_event_serial &io_event_serial) {
+void ekg::ui::scrollbar_widget::on_post_event(ekg::os::io_event_serial &io_event_serial) {
   ekg::ui::abstract_widget::on_post_event(io_event_serial);
   this->scroll.flag.hovered = false;
   this->scroll.flag.activity = false;
 }
 
-void ekg::ui::scroll_widget::on_update() {
+void ekg::ui::scrollbar_widget::on_update() {
   this->scroll.on_update();
   this->is_high_frequency = this->scroll.check_activity_state(this->flag.hovered || this->scroll.flag.activity);
 }
 
-void ekg::ui::scroll_widget::on_draw_refresh() {
+void ekg::ui::scrollbar_widget::on_draw_refresh() {
   this->dimension.w = this->p_parent->w;
   this->dimension.h = this->p_parent->h;
 
-  ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
+  ekg::draw::sync_scissor(this->scissor, this->get_abs_rect(), this->p_parent_scissor);
   ekg_draw_assert_scissor();
 
   this->scroll.on_draw_refresh();

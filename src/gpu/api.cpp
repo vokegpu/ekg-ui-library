@@ -24,6 +24,9 @@
 
 #include "ekg/ekg.hpp"
 
+float ekg::gpu::api::projection[16] {};
+float ekg::gpu::api::viewport[4] {};
+
 void ekg::gpu::api::set_rendering_shader_fragment_source(std::string_view source) {
   this->rendering_shader_fragment_source = source;
 }

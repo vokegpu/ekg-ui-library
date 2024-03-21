@@ -28,6 +28,7 @@
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/util/io.hpp"
 #include "ekg/os/platform.hpp"
+#include "ekg/ui/display.hpp"
 
 #define ekg_action_dispatch(should, action) \
   if (should && this->p_data->get_task(action) != nullptr) { \

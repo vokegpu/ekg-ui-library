@@ -276,6 +276,4 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
   }
 
   */
-
-  ekg::draw::bind_off_scissor();
 }

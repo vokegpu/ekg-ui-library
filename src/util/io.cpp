@@ -28,7 +28,6 @@
 #include <fstream>
 
 bool ekg::item::default_semaphore {};
-int64_t ekg::item::second {};
 
 ekg::item &ekg::item::operator[](uint64_t it) {
   return this->child_list.at(it);
@@ -261,9 +260,10 @@ bool ekg::log::buffered {};
 bool ekg::log::tracked {};
 
 int64_t ekg::timing::second {};
+int64_t ekg::timing::ticks {};
 
 bool ekg::reach(ekg::timing &timing, uint64_t ms) {
-  timing.ticks_going_on = static_cast<int64_t>(SDL_GetTicks64());
+  timing.ticks_going_on = ekg::timing::ticks;
   timing.current_ticks = timing.ticks_going_on - timing.elapsed_ticks;
   return timing.current_ticks > ms;
 }
@@ -304,13 +304,7 @@ void ekg::input::fire(std::string_view key_input) {
 }
 
 void ekg::input::clipboard(ekg::clipboard clipboard_op) {
-  SDL_Event sdl_event {};
-  sdl_event.type = SDL_KEYDOWN;
-  sdl_event.key.type = SDL_KEYDOWN;
-  sdl_event.key.keysym.sym = static_cast<uint64_t>(clipboard_op);
-  SDL_PushEvent(&sdl_event);
-
-  // should push an event to keyup the previous clipboard operator?
+  // meow
 }
 
 bool ekg::input::motion() {

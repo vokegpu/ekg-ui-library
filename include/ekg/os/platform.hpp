@@ -108,6 +108,7 @@ namespace ekg::os {
     virtual const char *get_clipboard_text() { return nullptr; };
     virtual void set_clipboard_text(const char *p_text) {};
     virtual bool has_clipboard_text() { return false; }
+    virtual uint64_t get_ticks() { return 0; }
   };
 }
 

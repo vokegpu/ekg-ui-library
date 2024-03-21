@@ -48,15 +48,13 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
   bool motion {ekg::input::motion()};
 
   ekg_action_dispatch(
-    motion && this->flag.hovered && ekg::timing::second > ekg::display::latency,
+    motion && this->flag.hovered && ekg::timing::second > ekg::ui::latency,
     ekg::action::motion
   );
 
   if ((drag_dock_flags != ekg::dock::none || resize_dock_flags != ekg::dock::none) && pressed &&
       this->flag.hovered && !this->flag.activity &&
       (ekg::input::action("frame-drag-activity") || ekg::input::action("frame-resize-activity"))) {
-    ekg::draw::get_visible(this->p_data->get_id(), this->scissor);
-
     const ekg::vec2 vec_limit_offset {this->ui_theme_activity_offset, this->ui_theme_activity_offset};
     ekg::set_dock_scaled(this->scissor, vec_limit_offset, this->docker_activity_drag);
     ekg::set_dock_scaled(this->scissor, vec_limit_offset / 4.0f, this->docker_activity_resize);
@@ -84,7 +82,7 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
 
     if (this->target_dock_drag != ekg::dock::none && this->target_dock_resize == ekg::dock::none) {
       ekg_action_dispatch(
-        ekg::timing::second > ekg::display::latency,
+        ekg::timing::second > ekg::ui::latency,
         ekg::action::drag
       );
 
@@ -94,7 +92,7 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
 
     if (this->target_dock_resize != ekg::dock::none) {
       ekg_action_dispatch(
-        ekg::timing::second > ekg::display::latency,
+        ekg::timing::second > ekg::ui::latency,
         ekg::action::resize
       );
 
@@ -143,18 +141,16 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
       ekg::reload(this);
     }
   } else if (resize_dock_flags != ekg::dock::none && this->flag.hovered && !this->flag.activity) {
-    ekg::draw::get_visible(this->p_data->get_id(), this->scissor);
-
     const ekg::vec2 vec_limit_offset {this->ui_theme_activity_offset, this->ui_theme_activity_offset};
     ekg::set_dock_scaled(this->scissor, vec_limit_offset / 4.0f, this->docker_activity_resize);
     shown_cursor_dock_flags = ekg::find_collide_dock(this->docker_activity_resize, resize_dock_flags, interact);
   }
 
   if (shown_cursor_dock_flags) {
-    bool top {ekg_bitwise_contains(shown_cursor_dock_flags, ekg::dock::top)};
-    bool bottom {ekg_bitwise_contains(shown_cursor_dock_flags, ekg::dock::bottom)};
-    bool left {ekg_bitwise_contains(shown_cursor_dock_flags, ekg::dock::left)};
-    bool right {ekg_bitwise_contains(shown_cursor_dock_flags, ekg::dock::right)};
+    bool top {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<uint16_t>(ekg::dock::top)))};
+    bool bottom {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<uint16_t>(ekg::dock::bottom)))};
+    bool left {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<uint16_t>(ekg::dock::left)))};
+    bool right {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<uint16_t>(ekg::dock::right)))};
 
     if ((top && left) || (bottom && right)) {
       ekg::cursor = ekg::system_cursor::size_nwse;
@@ -187,6 +183,7 @@ void ekg::ui::frame_widget::on_update() {
   if (this->p_scroll_embedded != nullptr) {
     this->p_scroll_embedded->clamp_scroll();
     this->p_scroll_embedded->reset_scroll();
+    this->p_scroll_embedded->scissor = this->scissor;
   }
 }
 

@@ -29,6 +29,10 @@
 
 FT_Library ekg::draw::font_renderer::ft_library {};
 
+ekg::gpu::sampler_t *ekg::draw::font_renderer::get_sampler_texture() {
+  return &this->sampler_texture;
+}
+
 float ekg::draw::font_renderer::get_text_width(std::string_view text, int32_t &lines) {
   if (text.empty()) {
     return 0.0f;

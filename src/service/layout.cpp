@@ -263,7 +263,7 @@ float ekg::service::layout::get_dimensional_extent(
     }
 
     flags = p_widgets->p_data->get_place_dock();
-    is_last_index = it >= size - 1 || p_widgets->p_data->get_type() == ekg::type::scroll;
+    is_last_index = it >= size - 1 || p_widgets->p_data->get_type() == ekg::type::scrollbar;
 
     if (
         (ekg_bitwise_contains(flags, flag_stop) && it != begin_and_count) || is_last_index
@@ -402,7 +402,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
     skip_widget = false;
 
     switch (p_widgets->p_data->get_type()) {
-      case ekg::type::scroll: {
+      case ekg::type::scrollbar: {
         skip_widget = true;
         break;
       }

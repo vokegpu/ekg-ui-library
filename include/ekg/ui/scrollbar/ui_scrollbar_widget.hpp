@@ -22,14 +22,28 @@
  * SOFTWARE.
  */
 
-#ifndef EKG_UI_SCROLL_H
-#define EKG_UI_SCROLL_H
+#ifndef EKG_UI_SCROLLBAR_WIDGET_H
+#define EKG_UI_SCROLLBAR_WIDGET_H
 
-#include "ekg/ui/abstract/ui_abstract.hpp"
+#include "ekg/ui/abstract/ui_abstract_widget.hpp"
+#include "ui_scrollbar_embedded_widget.hpp"
 
 namespace ekg::ui {
-  class scroll : public ekg::ui::abstract {
-    // I want to be a hot girl, with big boobs and a big but -><- <3
+  class scrollbar_widget : public ekg::ui::abstract_widget {
+  public:
+    ekg::ui::scrollbar_embedded_widget scroll {};
+  public:
+    void on_reload() override;
+
+    void on_pre_event(ekg::os::io_event_serial &io_event_serial) override;
+
+    void on_event(ekg::os::io_event_serial &io_event_serial) override;
+
+    void on_post_event(ekg::os::io_event_serial &io_event_serial) override;
+
+    void on_update() override;
+
+    void on_draw_refresh() override;
   };
 }
 

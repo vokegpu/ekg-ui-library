@@ -25,6 +25,7 @@
 #include <iostream>
 #include <type_traits>
 #include <vector>
+#include <cstdint>
 
 namespace rtd {
   class my_own_vector_based : public std::vector<std::string> {

@@ -393,7 +393,7 @@ void ekg::ui::textbox_widget::process_text(
         );
       }
 
-      if (this->is_clipboard_paste && ekg::core->p_os_platform->has_clipboard_text() && !(text = ekg::core->p_os_platform->get_cipboard_text()).empty()) {
+      if (this->is_clipboard_paste && ekg::core->p_os_platform->has_clipboard_text() && !(text = ekg::core->p_os_platform->get_clipboard_text()).empty()) {
         direction = static_cast<int64_t>(ekg::utf_length(text));
 
         std::vector<std::string> utf_clipboard_decoded {};
@@ -1008,7 +1008,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   float x {rect.x + this->embedded_scroll.scroll.x};
   float y {};
 
-  ekg::gpu::data &data {allocator.bind_current_data()};
+  ekg::gpu::data_t &data {allocator.bind_current_data()};
   ekg::vec4 color {theme.textbox_string};
 
   ekg_draw_assert_scissor();
@@ -1016,8 +1016,8 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   x = static_cast<float>(static_cast<int32_t>(x));
   data.buffer_content[0] = x;
 
-  data.buffer_content[2] = static_cast<float>(ekg::concave);
-  data.buffer_content[3] = static_cast<float>(ekg::concave);
+  data.buffer_content[2] = static_cast<float>(ekg::gpu::allocator::concave);
+  data.buffer_content[3] = static_cast<float>(ekg::gpu::allocator::concave);
 
   data.buffer_content[4] = color.x;
   data.buffer_content[5] = color.y;
@@ -1130,7 +1130,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         x += static_cast<float>(f_renderer.ft_vector_previous_char.x >> 6);
       }
 
-      ekg::char_data &char_data {f_renderer.allocated_char_data[char32]};
+      ekg::draw::glyph_char_t &char_data {f_renderer.allocated_char_data[char32]};
       is_utf_char_last_index = utf_char_index + 1 == text_size;
 
       if (this->find_cursor(
@@ -1165,9 +1165,9 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
               (is_utf_char_last_index && cursor.pos[1].chunk_index > chunk_index && cursor.pos[0].chunk_index == chunk_index)
             ) :
             (
-              this->rect_cursor.w;
+              this->rect_cursor.w
             )
-          )
+          );
 
         select_rect.h = this->text_height;
       }
@@ -1248,7 +1248,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     y += this->text_height;
   }
 
-  allocator.bind_texture(f_renderer.texture);
+  allocator.bind_texture(f_renderer.get_sampler_texture());
   allocator.dispatch();
 
   bool draw_cursor {this->flag.focused && !ekg::reach(ekg::core->ui_timing, 500)};
@@ -1271,6 +1271,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
   this->rect_text.h += this->text_offset + ekg_pixel_div_2;
   this->embedded_scroll.rect_child = this->rect_text;
+  this->embedded_scroll.scissor = this->scissor;
   this->embedded_scroll.on_draw_refresh();
 
   ekg::draw::rect(rect, theme.textbox_outline, ekg::draw_mode::outline);

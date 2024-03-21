@@ -30,3 +30,5 @@ float ekg::ui::dt {};
 bool ekg::ui::auto_scale {};
 ekg::vec2 ekg::ui::scale {1920.0f, 1080.0f};
 float ekg::ui::scale_interval {25.0f};
+int64_t ekg::ui::latency {500};
+float ekg::ui::scroll {0.8f};

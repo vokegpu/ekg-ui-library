@@ -86,6 +86,12 @@ namespace ekg::ui {
    * Android must have a higher latency due the battery.
    */
   extern int64_t latency;
+
+  /**
+   * The display scroll value. Default is 0.8.
+   * Note: It is a normalized acceleration speed.
+   */
+  extern float scroll;
 }
 
 #endif

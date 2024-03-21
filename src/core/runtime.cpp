@@ -35,8 +35,8 @@
 #include "ekg/ui/popup/ui_popup_widget.hpp"
 #include "ekg/ui/textbox/ui_textbox_widget.hpp"
 #include "ekg/ui/listbox/ui_listbox_widget.hpp"
-#include "ekg/ui/scroll/ui_scroll_widget.hpp"
-#include "ekg/ui/scroll/ui_scroll.hpp"
+#include "ekg/ui/scrollbar/ui_scrollbar_widget.hpp"
+#include "ekg/ui/scrollbar/ui_scrollbar.hpp"
 #include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/util/gui.hpp"
@@ -207,6 +207,7 @@ void ekg::runtime::process_event() {
 }
 
 void ekg::runtime::process_update() {
+  ekg::timing::ticks = this->p_os_platform->get_ticks();
   ekg::reach(this->ui_timing, 1000) && ekg::reset(this->ui_timing);
   ekg::timing::second = this->ui_timing.current_ticks;
 
@@ -696,8 +697,8 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
       break;
     }
 
-    case ekg::type::scroll: {
-      ekg::ui::scroll_widget *p_widget {new ekg::ui::scroll_widget()};
+    case ekg::type::scrollbar: {
+      ekg::ui::scrollbar_widget *p_widget {new ekg::ui::scrollbar_widget()};
       p_widget->p_data = p_ui;
       p_widget_created = p_widget;
       append_group = true;

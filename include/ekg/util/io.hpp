@@ -206,7 +206,15 @@ namespace ekg {
 
   struct timing {
   public:
+    /**
+     * The 1 second counter in ms.
+     */
     static int64_t second;
+
+    /**
+     * The total running ticks since the application was started.
+     */
+    static int64_t ticks;
   public:
     int64_t elapsed_ticks {};
     int64_t current_ticks {};
@@ -239,8 +247,6 @@ namespace ekg {
 }
 
 namespace ekg::input {
-  extern float scroll_amount;
-
   bool action(std::string_view action_key);
 
   bool receive(std::string_view input_key);

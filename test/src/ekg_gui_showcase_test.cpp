@@ -12,8 +12,7 @@ int32_t showcase_useless_window() {
       SDL_WINDOWPOS_CENTERED,
       1280,
       720,
-      SDL_RESIZABLE,
-      SDL_WINDOW_OPENGL
+      SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL
     )
   };
 
@@ -29,7 +28,7 @@ int32_t showcase_useless_window() {
     .p_os_platform = new ekg::os::sdl(p_sdl_win)
   };
 
-  auto p_frame = ekg::frame("oi", {20, 20}, {200, 200})
+  auto p_frame = ekg::frame("oi", {20, 20}, {200, 200});
 
   ekg::runtime runtime {};
   ekg::init(&runtime, &ekg_runtime_property);
@@ -50,13 +49,15 @@ int32_t showcase_useless_window() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.6f, 0.0f, 0.6f, 0.993f);
 
-    ekg::dt = 0.016f;
+    ekg::ui::dt = 0.016f;
     ekg::update();
     ekg::render();
 
     SDL_GL_SwapWindow(p_sdl_win);
-    SDL_Delay(16)
+    SDL_Delay(16);
   }
+
+  return 666;
 }
 
 int32_t main(int32_t, char**) {

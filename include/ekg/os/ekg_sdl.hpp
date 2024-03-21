@@ -43,7 +43,6 @@ namespace ekg::os {
   public:
     void init() override;
     void quit() override;
-
     void update_monitor_resolution() override;
     void update_cursor(ekg::system_cursor system_cursor) override;
     void get_key_name(int32_t key, std::string &name) override;
@@ -51,6 +50,7 @@ namespace ekg::os {
     const char *get_clipboard_text() override;
     void set_clipboard_text(const char *p_text) override;
     bool has_clipboard_text() override;
+    uint64_t get_ticks() override;
   };
 
   void sdl_poll_event(SDL_Event &sdl_event);

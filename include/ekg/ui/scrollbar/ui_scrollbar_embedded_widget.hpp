@@ -22,20 +22,22 @@
  * SOFTWARE.
  */
 
-#ifndef EKG_UI_SCROLL_EMBEDDED_WIDGET_H
-#define EKG_UI_SCROLL_EMBEDDED_WIDGET_H
+#ifndef EKG_UI_SCROLLBAR_EMBEDDED_WIDGET_H
+#define EKG_UI_SCROLLBAR_EMBEDDED_WIDGET_H
 
 #include "ekg/util/geometry.hpp"
 #include "ekg/util/io.hpp"
+#include "ekg/os/platform.hpp"
 
 namespace ekg::ui {
-  class scroll_embedded_widget {
+  class scrollbar_embedded_widget {
   public:
     std::vector<int32_t> child_id_list {};
     ekg::rect *rect_mother {};
     ekg::rect rect_child {};
     ekg::rect rect_dimension_sync {};
     ekg::rect last_rect_child {};
+    ekg::rect scissor {};
 
     ekg::vec4 scroll {};
     ekg::rect rect_vertical_scroll_bar {};
@@ -51,7 +53,7 @@ namespace ekg::ui {
     ekg::vec2 acceleration {};
     ekg::vec2 bar_drag {};
   public:
-    explicit scroll_embedded_widget();
+    explicit scrollbar_embedded_widget();
 
     void calculate_rect_bar_sizes();
 
@@ -59,7 +61,7 @@ namespace ekg::ui {
 
     bool is_dragging_bar();
 
-    bool check_activy_state(bool state);
+    bool check_activity_state(bool state);
 
     void reset_scroll();
 

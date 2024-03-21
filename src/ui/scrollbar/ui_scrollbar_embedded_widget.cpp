@@ -22,27 +22,27 @@
  * SOFTWARE.
  */
 
-#include "ekg/ui/scroll/ui_scroll_embedded_widget.hpp"
+#include "ekg/ui/scrollbar/ui_scrollbar_embedded_widget.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 #include "ekg/draw/draw.hpp"
 #include "ekg/os/platform.hpp"
 
-ekg::ui::scroll_embedded_widget::scroll_embedded_widget() {
+ekg::ui::scrollbar_embedded_widget::scrollbar_embedded_widget() {
   this->rect_mother = &this->rect_child;
 }
 
-void ekg::ui::scroll_embedded_widget::check_axis_states() {
+void ekg::ui::scrollbar_embedded_widget::check_axis_states() {
   this->is_vertical_enabled = this->rect_child.h > this->rect_mother->h;
   this->is_horizontal_enabled = this->rect_child.w > this->rect_mother->w;
 }
 
-void ekg::ui::scroll_embedded_widget::reset_scroll() {
+void ekg::ui::scrollbar_embedded_widget::reset_scroll() {
   this->scroll.x = this->scroll.z;
   this->scroll.y = this->scroll.w;
 }
 
-bool ekg::ui::scroll_embedded_widget::check_activity_state(bool state) {
+bool ekg::ui::scrollbar_embedded_widget::check_activity_state(bool state) {
   state = (state ||
            (static_cast<int32_t>(roundf(this->scroll.x)) != static_cast<int32_t>(roundf(this->scroll.z))) ||
            (static_cast<int32_t>(roundf(this->scroll.y)) != static_cast<int32_t>(roundf(this->scroll.w))));
@@ -54,17 +54,17 @@ bool ekg::ui::scroll_embedded_widget::check_activity_state(bool state) {
   return state;
 }
 
-bool ekg::ui::scroll_embedded_widget::is_dragging_bar() {
+bool ekg::ui::scrollbar_embedded_widget::is_dragging_bar() {
   return this->flag.state || this->flag.extra_state;
 }
 
-void ekg::ui::scroll_embedded_widget::calculate_rect_bar_sizes() {
+void ekg::ui::scrollbar_embedded_widget::calculate_rect_bar_sizes() {
   this->rect_vertical_scroll_bar.h = this->rect_mother->h;
   float offset_vertical {this->rect_child.h - this->rect_mother->h};
   this->rect_vertical_scroll_bar.h = offset_vertical;
 }
 
-void ekg::ui::scroll_embedded_widget::on_reload() {
+void ekg::ui::scrollbar_embedded_widget::on_reload() {
   if (this->mother_id == 0 && this->child_id_list.empty()) {
     this->calculate_rect_bar_sizes();
     this->check_axis_states();
@@ -104,7 +104,7 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
 
   for (int32_t &ids: this->child_id_list) {
     if ((p_widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr ||
-        p_widgets->p_data->get_type() == ekg::type::scroll) {
+        p_widgets->p_data->get_type() == ekg::type::scrollbar) {
       continue;
     }
 
@@ -129,7 +129,7 @@ void ekg::ui::scroll_embedded_widget::on_reload() {
   this->clamp_scroll();
 }
 
-void ekg::ui::scroll_embedded_widget::on_pre_event(ekg::os::io_event_serial &io_event_serial) {
+void ekg::ui::scrollbar_embedded_widget::on_pre_event(ekg::os::io_event_serial &io_event_serial) {
   if (ekg::input::pressed() || ekg::input::released() || ekg::input::motion() || ekg::input::wheel()) {
     ekg::rect scaled_vertical_bar {this->rect_vertical_scroll_bar};
     scaled_vertical_bar.y += this->rect_mother->y;
@@ -138,7 +138,7 @@ void ekg::ui::scroll_embedded_widget::on_pre_event(ekg::os::io_event_serial &io_
     scaled_horizontal_bar.x += this->rect_mother->x;
 
     ekg::vec4 &interact {ekg::input::interact()};
-    bool visible {ekg::draw::is_visible(this->widget_id, interact)};
+    bool visible {ekg::rect_collide_vec(this->scissor, interact)};
 
     this->flag.activity =
         visible && (this->is_vertical_enabled || this->is_horizontal_enabled) && ekg::input::action("scrollbar-scroll");
@@ -147,7 +147,7 @@ void ekg::ui::scroll_embedded_widget::on_pre_event(ekg::os::io_event_serial &io_
   }
 }
 
-void ekg::ui::scroll_embedded_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
+void ekg::ui::scrollbar_embedded_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
   this->check_axis_states();
 
   auto &interact {ekg::input::interact()};
@@ -227,9 +227,9 @@ void ekg::ui::scroll_embedded_widget::on_event(ekg::os::io_event_serial &io_even
   }
 }
 
-void ekg::ui::scroll_embedded_widget::on_update() {
-  this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::input::scroll_amount * ekg::display::dt);
-  this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::input::scroll_amount * ekg::display::dt);
+void ekg::ui::scrollbar_embedded_widget::on_update() {
+  this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::ui::scroll * ekg::ui::dt);
+  this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::ui::scroll * ekg::ui::dt);
 
 #if defined(ANDROID)
   this->clamp_scroll();
@@ -238,7 +238,7 @@ void ekg::ui::scroll_embedded_widget::on_update() {
   ekg::dispatch(ekg::env::redraw);
 }
 
-void ekg::ui::scroll_embedded_widget::clamp_scroll() {
+void ekg::ui::scrollbar_embedded_widget::clamp_scroll() {
   ekg::vec2 vertical_scroll_limit {0.0f, this->rect_mother->h - this->rect_child.h};
   ekg::vec2 horizontal_scroll_limit {0.0f, this->rect_mother->w - this->rect_child.w};
 
@@ -265,7 +265,7 @@ void ekg::ui::scroll_embedded_widget::clamp_scroll() {
   }
 }
 
-void ekg::ui::scroll_embedded_widget::on_draw_refresh() {
+void ekg::ui::scrollbar_embedded_widget::on_draw_refresh() {
   auto &theme {ekg::theme()};
 
   this->rect_vertical_scroll_bar.x =

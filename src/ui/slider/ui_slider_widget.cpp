@@ -195,7 +195,7 @@ void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial)
     ekg::set(this->flag.highlight, this->flag.hovered && ekg::rect_collide_vec(this->rect_bar + rect, interact));
 
     ekg_action_dispatch(
-      motion && this->flag.hovered && ekg::timing::second > ekg::display::latency,
+      motion && this->flag.hovered && ekg::timing::second > ekg::ui::latency,
       ekg::action::hover
     );
   }
@@ -219,7 +219,7 @@ void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial)
     if (this->flag.activity) {
       ekg_action_dispatch(
         true,
-        ekg::action::released
+        ekg::action::release
       );
     }
 
@@ -228,7 +228,7 @@ void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial)
     p_ui->set_dragging(false);
   } else if (this->flag.activity && motion) {
     ekg_action_dispatch(
-      ekg::timing::second > ekg::display::latency,
+      ekg::timing::second > ekg::ui::latency,
       ekg::action::drag
     );
 

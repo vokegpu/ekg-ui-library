@@ -26,7 +26,7 @@
 #define EKG_UI_FRAME_WIDGET_H
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
-#include "ekg/ui/scroll/ui_scroll_embedded_widget.hpp"
+#include "ekg/ui/scrollbar/ui_scrollbar_embedded_widget.hpp"
 
 namespace ekg::ui {
   class frame_widget : public ekg::ui::abstract_widget {
@@ -34,12 +34,12 @@ namespace ekg::ui {
     uint16_t target_dock_drag {};
     uint16_t target_dock_resize {};
 
-    ekg::ui::scroll_embedded_widget *p_scroll_embedded {};
-    ekg::docker docker_activy_drag {};
-    ekg::docker docker_activy_resize {};
+    ekg::ui::scrollbar_embedded_widget *p_scroll_embedded {};
+    ekg::docker docker_activity_drag {};
+    ekg::docker docker_activity_resize {};
     ekg::rect rect_delta {};
 
-    float ui_theme_activy_offset {};
+    float ui_theme_activity_offset {};
   public:
     void on_reload() override;
 

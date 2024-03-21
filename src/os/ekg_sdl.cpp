@@ -91,6 +91,10 @@ void ekg::os::sdl::update_monitor_resolution() {
   this->monitor_resolution[1] = static_cast<int32_t>(sdl_display_mode.h);
 }
 
+uint64_t ekg::os::sdl::get_ticks() {
+  return SDL_GetTicks64();
+}
+
 void ekg::os::sdl::get_key_name(int32_t key, std::string &name) {
   switch (key) {
     case SDLK_LCTRL:

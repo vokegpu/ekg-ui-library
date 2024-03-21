@@ -66,7 +66,7 @@ void ekg::ui::button_widget::on_event(ekg::os::io_event_serial &io_event_serial)
 
   if (motion || pressed || released) {
     ekg_action_dispatch(
-      motion && this->flag.hovered && ekg::timing::second > ekg::display::latency,
+      motion && this->flag.hovered && ekg::timing::second > ekg::ui::latency,
       ekg::action::hover
     );
 

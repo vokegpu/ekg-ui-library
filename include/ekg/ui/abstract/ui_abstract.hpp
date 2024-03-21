@@ -45,7 +45,7 @@ namespace ekg {
     listbox,
     tab,
     popup,
-    scroll,
+    scrollbar,
   };
 
   enum class level {

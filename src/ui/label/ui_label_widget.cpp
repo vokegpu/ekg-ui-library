@@ -55,16 +55,7 @@ void ekg::ui::label_widget::on_reload() {
   layout.process_layout_mask();
 
   auto &layout_mask {layout.get_layout_mask()};
-
-  ekg::assert_task_flag = false;
-  this->dimension.w = ekg::assert_task(this->dimension.w,
-                                       this->dimension.w <= text_width ? layout_mask.w : this->dimension.w);
-  this->dimension.h = ekg::assert_task(this->dimension.h, ekg_min(this->dimension.h, layout_mask.h));
-
-  if (ekg::assert_task_flag && p_ui->has_parent()) {
-    ekg::synclayout(this);
-    this->is_targeting_absolute_parent = true;
-  }
+  this->dimension.w = layout_mask.w;
 }
 
 void ekg::ui::label_widget::on_draw_refresh() {

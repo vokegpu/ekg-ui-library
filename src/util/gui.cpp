@@ -108,17 +108,6 @@ void ekg::dispatch(ekg::env env) {
   }
 }
 
-bool ekg::listen(event &ekg_event, SDL_Event &sdl_event) {
-  if (sdl_event.type == ekg::listener) {
-    event *p_ekg_event {static_cast<event *>(sdl_event.user.data1)};
-    ekg_event = *p_ekg_event;
-    delete p_ekg_event;
-    return true;
-  }
-
-  return false;
-}
-
 bool &ekg::set(bool &value, bool result) {
   if (value != result) {
     ekg::core->request_redraw_gui();
@@ -141,15 +130,4 @@ int32_t &ekg::set(int32_t &value, int32_t result) {
   }
 
   return (value = result);
-}
-
-bool ekg::assert_task_flag {};
-
-float ekg::assert_task(float val, float result) {
-  if (ekg_equals_float(val, result)) {
-    return val;
-  }
-
-  ekg::assert_task_flag = true;
-  return result;
 }

@@ -144,19 +144,18 @@ void ekg::ui::popup_widget::on_reload() {
   this->dimension.h += offset;
 
   /* Reset scissor height if current state is invisible. */
-  auto *gpu_scissor {ekg::core->gpu_allocator.get_scissor_by_id(p_ui->get_id())};
-  if (!p_ui->is_visible()  && gpu_scissor != nullptr) {
-    this->scissor[3] = this->scissor_opened_height = 0;
+  if (!p_ui->is_visible()) {
+    this->scissor.h = this->scissor_opened_height = 0;
     this->is_high_frequency = false;
   } else if (p_ui->is_visible() && !this->is_high_frequency) {
     ekg::update_high_frequency(this);
-    this->elapsed_animation_ticks = SDL_GetTicks64();
+    this->elapsed_animation_ticks = ekg::timing::ticks;
   }
 
   /* Fix screen position at space. */
   if (!p_ui->has_parent()) {
-    const float display_w {static_cast<float>(ekg::display::width)};
-    const float display_h {static_cast<float>(ekg::display::height)};
+    const float display_w {static_cast<float>(ekg::ui::width)};
+    const float display_h {static_cast<float>(ekg::ui::height)};
 
     if (this->p_parent->x < 0) {
       this->p_parent->x = 0;
@@ -253,8 +252,8 @@ void ekg::ui::popup_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
             p_popup->top_level_popup = this->top_level_popup;
 
             auto &popup_rect {p_popup->dimension};
-            const float display_w {static_cast<float>(ekg::display::width)};
-            const float display_h {static_cast<float>(ekg::display::height)};
+            const float display_w {static_cast<float>(ekg::ui::width)};
+            const float display_h {static_cast<float>(ekg::ui::height)};
 
             if (rect.x + rect.w + (popup_rect.w - popup_offset) > display_w) {
               popup_rect.x = -(popup_rect.w - popup_offset);
@@ -328,10 +327,10 @@ void ekg::ui::popup_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
 
 void ekg::ui::popup_widget::on_update() {
   auto &rect {this->get_abs_rect()};
-  auto *gpu_scissor {ekg::core->gpu_allocator.get_scissor_by_id(this->p_data->get_id())};
-
   float animation {
-      ekg::smooth(ekg::theme().popup_drop_animation_delay, SDL_GetTicks64() - this->elapsed_animation_ticks)};
+      ekg::smooth(static_cast<float>(ekg::theme().popup_drop_animation_delay), ekg::timing::ticks - this->elapsed_animation_ticks)
+  };
+
   this->scissor_opened_height = animation * this->dimension.h;
 
   if (ekg_equals_float(this->scissor_opened_height, this->dimension.h)) {

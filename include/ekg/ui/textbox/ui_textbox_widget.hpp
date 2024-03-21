@@ -26,7 +26,7 @@
 #define EKG_UI_TEXT_BOX_WIDGET_H
 
 #include <unordered_map>
-#include "ekg/ui/scroll/ui_scroll_embedded_widget.hpp"
+#include "ekg/ui/scrollbar/ui_scrollbar_embedded_widget.hpp"
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
 /* start of `ekg_textbox_clamp_text_chunk_size` macro */
@@ -112,7 +112,7 @@ namespace ekg::ui {
 
     ekg::rect rect_text {};
     ekg::rect rect_cursor {};
-    ekg::ui::scroll_embedded_widget embedded_scroll {};
+    ekg::ui::scrollbar_embedded_widget embedded_scroll {};
 
     float cursor_char_wsize[3] {};
     float text_offset {};

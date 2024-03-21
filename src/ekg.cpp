@@ -247,10 +247,10 @@ ekg::ui::listbox *ekg::listbox(std::string_view tag, const ekg::item &item, uint
   return p_ui;
 }
 
-ekg::ui::scroll *ekg::scroll(std::string_view tag) {
-  auto p_ui {new ekg::ui::scroll()};
+ekg::ui::scrollbar *ekg::scrollbar(std::string_view tag) {
+  auto p_ui {new ekg::ui::scrollbar()};
 
-  p_ui->unsafe_set_type(ekg::type::scroll);
+  p_ui->unsafe_set_type(ekg::type::scrollbar);
   ekg::core->gen_widget(p_ui);
   p_ui->set_tag(tag);
 

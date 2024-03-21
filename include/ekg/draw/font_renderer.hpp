@@ -60,6 +60,11 @@ namespace ekg::draw {
     ekg::draw::glyph_char_t allocated_char_data[256] {};
   public:
     /**
+     * Return the sampler atlas font.
+     */
+    ekg::gpu::sampler_t *get_sampler_texture();
+
+    /**
      * Return the text width.
      * Note: font-rendering is UTF-8-based.
      */
