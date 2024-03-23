@@ -112,8 +112,9 @@ void ekg::os::opengl::init() {
     "    }\n"
 
     "    if (uActiveTexture && !shouldDiscard) {"
+    "        vec4 color = vFragColor;\n"
     "        vFragColor = texture(uTextureSampler, vTexCoord);\n"
-    "        vFragColor = vec4(vFragColor.xyz - ((1.0f - uColor.xyz) - 1.0f), vFragColor.w - (1.0f - uColor.w));\n"
+    "        vFragColor = vec4(vFragColor.xyz - ((1.0f - color.xyz) - 1.0f), vFragColor.w - (1.0f - color.w));\n"
     "    }\n"
     "}"
   };
@@ -168,7 +169,7 @@ void ekg::os::opengl::init() {
   this->uniform_viewport_height = glGetUniformLocation(this->pipeline_program, "uViewportHeight");
   this->uniform_projection = glGetUniformLocation(this->pipeline_program, "uProjection");
 
-  ekg::log() << "GPU allocator initialised";
+  ekg::log() << "GPU shaders, pipeline program, and uniforms done";
 }
 
 void ekg::os::opengl::quit() {

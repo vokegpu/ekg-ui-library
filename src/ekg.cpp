@@ -68,6 +68,7 @@ void ekg::init(
   ekg::log() << "Initialising EKG";
 
   ekg::core = p_ekg_runtime;
+  ekg::core->f_renderer_small.font_path = p_ekg_runtime_property->p_font_path;
   ekg::core->f_renderer_normal.font_path = p_ekg_runtime_property->p_font_path;
   ekg::core->f_renderer_big.font_path = p_ekg_runtime_property->p_font_path;
   ekg::core->init();
