@@ -177,11 +177,18 @@ void ekg::draw::font_renderer::reload() {
   this->offset_text_height = (this->text_height / 6.0f) / 2.0f;
 
   /*
-   * A common issue with rendering overlay elements is flot32 imprecision, for this reason
+   * A common issue with rendering overlay elements, its the flot32 imprecision, for this reason
    * the cast float32 to int32 is necessary.
    */
   this->text_height += static_cast<int32_t>(this->offset_text_height);
-  ekg::core->p_gpu_api->generate_font_atlas(&this->sampler_texture, this->ft_face, this->full_width, this->full_height, this->allocated_char_data);
+
+  ekg::core->p_gpu_api->generate_font_atlas(
+    &this->sampler_texture,
+    this->ft_face,
+    this->full_width,
+    this->full_height,
+    this->allocated_char_data
+  );
 }
 
 void ekg::draw::font_renderer::bind_allocator(ekg::gpu::allocator *p_allocator_bind) {

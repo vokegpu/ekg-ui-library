@@ -95,7 +95,7 @@ namespace ekg::os {
 
     uint64_t generate_font_atlas(
       ekg::gpu::sampler_t *p_sampler,
-      FT_Face &font_face,
+      FT_Face font_face,
       int32_t atlas_width,
       int32_t atlas_height,
       ekg::draw::glyph_char_t *p_glyph_char_data

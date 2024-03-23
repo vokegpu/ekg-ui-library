@@ -84,14 +84,12 @@ void ekg::runtime::init() {
   this->prepare_ui_env();
   this->service_layout.init();
   this->service_theme.init();
-  this->p_gpu_api->init();
 }
 
 void ekg::runtime::quit() {
   this->gpu_allocator.quit();
   this->service_theme.quit();
   this->service_layout.quit();
-  this->p_gpu_api->quit();
 }
 
 void ekg::runtime::process_event() {

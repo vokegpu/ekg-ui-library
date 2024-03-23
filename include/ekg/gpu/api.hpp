@@ -119,7 +119,7 @@ namespace ekg {
        */
       virtual uint64_t generate_font_atlas(
         ekg::gpu::sampler_t *p_sampler,
-        FT_Face &font_face,
+        FT_Face font_face,
         int32_t w,
         int32_t h,
         ekg::draw::glyph_char_t *p_glyph_char_data

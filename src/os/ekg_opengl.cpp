@@ -12,11 +12,11 @@ ekg::os::opengl::opengl(std::string_view set_glsl_version) {
     return;
   }
 
-  uint64_t size {set_glsl_version.size()};
+  uint64_t size {set_glsl_version.size() - 1};
   uint8_t number_size {};
 
-  for (uint64_t it {}; it <  set_glsl_version.size(); it++) {
-    auto &a_char {set_glsl_version.at(it - size)};
+  for (uint64_t it {}; it < set_glsl_version.size(); it++) {
+    auto &a_char {set_glsl_version.at((size) - it)};
     if (a_char >= 48 && a_char <= 58) {
       number_size++;
     } else {
@@ -29,6 +29,7 @@ ekg::os::opengl::opengl(std::string_view set_glsl_version) {
     return;
   }
 
+  size += 1;
   std::string version_metadata {set_glsl_version.substr(size - number_size, number_size)};
   int32_t version {std::stoi(version_metadata)};
 
@@ -49,7 +50,7 @@ void ekg::os::opengl::init() {
     this->glsl_version
   };
 
-  std::string_view vsh_src {
+  std::string vsh_src {
     no_view_glsl_version + "\n"
     "layout (location = 0) in vec2 aPos;\n"
     "layout (location = 1) in vec2 aTexCoord;\n"
@@ -60,7 +61,7 @@ void ekg::os::opengl::init() {
     "out vec2 vTexCoord;\n"
     "out vec4 vRect;\n"
 
-    "void main() {"
+    "void main() {\n"
     "    vec2 vertex = aPos;\n"
     "    bool modalShape = uRect.z < 0.0f;\n"
 
@@ -76,7 +77,7 @@ void ekg::os::opengl::init() {
     "}"
   };
 
-  std::string_view fsh_src {
+  std::string fsh_src {
     no_view_glsl_version + "\n"
     "layout (location = 0) out vec4 vFragColor;\n"
     "uniform sampler2D uTextureSampler;\n"
@@ -89,7 +90,7 @@ void ekg::os::opengl::init() {
     "uniform float uViewportHeight;\n"
     "uniform float uContent[8];\n"
 
-    "void main() {"
+    "void main() {\n"
     "    vFragColor = vec4(uContent[0], uContent[1], uContent[2], uContent[3]);\n"
     "    vec2 fragPos = vec2(gl_FragCoord.x, uViewportHeight - gl_FragCoord.y);\n"
     "    bool shouldDiscard = (fragPos.x <= uContent[4] || fragPos.y <= uContent[5] || fragPos.x >= uContent[4] + uContent[7] || fragPos.y >= uContent[5] + uContent[6]);\n"
@@ -216,7 +217,7 @@ bool ekg::os::opengl::create_pipeline_program(uint32_t &program, const std::unor
       glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &status);
       msg.resize(status);
       glGetShaderInfoLog(shader, status, nullptr, msg.data());
-      ekg::log() << "Error: Failed to compile shader stage: \n" << msg;
+      ekg::log() << "Error: Failed to compile shader '" << p_src  << "' stage: \n" << msg;
       break;
     }
 
@@ -352,7 +353,7 @@ uint64_t ekg::os::opengl::fill_sampler(
 
 uint64_t ekg::os::opengl::generate_font_atlas(
   ekg::gpu::sampler_t *p_sampler,
-  FT_Face &font_face,
+  FT_Face font_face,
   int32_t atlas_width,
   int32_t atlas_height,
   ekg::draw::glyph_char_t *p_glyph_char_data
@@ -366,7 +367,6 @@ uint64_t ekg::os::opengl::generate_font_atlas(
    */
   internal_format = GL_ALPHA;
 #endif
-
   if (!p_sampler->gl_id) {
     glGenTextures(1, &p_sampler->gl_id);
   }
@@ -386,7 +386,7 @@ uint64_t ekg::os::opengl::generate_font_atlas(
     nullptr
   );
 
-  FT_GlyphSlot ft_glyph_slot {};
+  FT_GlyphSlot ft_glyph_slot {font_face->glyph};
   float offset {};
 
   for (char32_t char_codes {}; char_codes < 256; char_codes++) {
@@ -395,6 +395,7 @@ uint64_t ekg::os::opengl::generate_font_atlas(
     }
 
     ekg::draw::glyph_char_t &char_data {p_glyph_char_data[char_codes]};
+
     char_data.x = offset / static_cast<float>(atlas_width);
     char_data.w = static_cast<float>(ft_glyph_slot->bitmap.width);
     char_data.h = static_cast<float>(ft_glyph_slot->bitmap.rows);

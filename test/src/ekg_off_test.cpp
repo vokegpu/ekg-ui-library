@@ -106,10 +106,5 @@ public:
 };
 
 int32_t main(int32_t, char**) {
-  rtd::my_own_vector_based text_box {};
-
-  text_box.update();
-  text_box.insert(text_box.begin(), "hello");
-
   return 0;
 }

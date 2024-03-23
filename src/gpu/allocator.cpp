@@ -133,7 +133,7 @@ void ekg::gpu::allocator::draw() {
 }
 
 void ekg::gpu::allocator::init() {
-  ekg::core->p_gpu_api->init();
+  ekg::log() << "Initialising GPU allocator";
 }
 
 void ekg::gpu::allocator::clear_current_data() {
@@ -166,7 +166,7 @@ ekg::gpu::data_t *ekg::gpu::allocator::get_data_by_id(int32_t id) {
 }
 
 void ekg::gpu::allocator::quit() {
-  ekg::core->p_gpu_api->quit();
+  ekg::log() << "Quitting GPU allocator";
 }
 
 void ekg::gpu::allocator::sync_scissor(ekg::rect &scissor, ekg::rect &rect_child, ekg::rect *p_parent_scissor) {

@@ -28,10 +28,10 @@ int32_t showcase_useless_window() {
     .p_os_platform = new ekg::os::sdl(p_sdl_win)
   };
 
-  auto p_frame = ekg::frame("oi", {20, 20}, {200, 200});
-
   ekg::runtime runtime {};
   ekg::init(&runtime, &ekg_runtime_property);
+
+  auto p_frame = ekg::frame("oi", {20, 20}, {200, 200});
 
   ekg::input::bind("hiroodrop", "finger-click");
   ekg::input::bind("hiroodrop", "mouse-1");

@@ -54,29 +54,30 @@ void ekg::init(
   ekg::runtime *p_ekg_runtime,
   ekg::runtime_property *p_ekg_runtime_property
 ) {
-  ekg::log() << "Initialising built-in OS platform wrapper";
+  ekg::log() << "Initialising built-in OS platform-interface";
 
   p_ekg_runtime->p_os_platform = p_ekg_runtime_property->p_os_platform;
-  p_ekg_runtime->p_os_platform->init(); 
+  p_ekg_runtime->p_os_platform->init();
 
-  ekg::log() << "Initialising EKG";
-
-  ekg::core = p_ekg_runtime;
-  ekg::core->p_gpu_api = p_ekg_runtime_property->p_gpu_api;
-  ekg::core->f_renderer_small.font_path = p_ekg_runtime_property->p_font_path;
-  ekg::core->f_renderer_normal.font_path = p_ekg_runtime_property->p_font_path;
-  ekg::core->f_renderer_big.font_path = p_ekg_runtime_property->p_font_path;
-  ekg::core->init();
-
-  ekg::log() << "Initialising built-in GPU API wrapper";
+  ekg::log() << "Initialising built-in GPU hardware-interface";
 
   p_ekg_runtime->p_gpu_api = p_ekg_runtime_property->p_gpu_api;
   p_ekg_runtime->p_gpu_api->init();
   p_ekg_runtime->p_gpu_api->log_vendor_details();
+
+  ekg::log() << "Initialising EKG";
+
+  ekg::core = p_ekg_runtime;
+  ekg::core->f_renderer_normal.font_path = p_ekg_runtime_property->p_font_path;
+  ekg::core->f_renderer_big.font_path = p_ekg_runtime_property->p_font_path;
+  ekg::core->init();
 }
 
 void ekg::quit() {
+  ekg::core->p_os_platform->quit();
+  ekg::core->p_gpu_api->quit();
   ekg::core->quit();
+
   ekg::log() << "Shutdown complete - Thank you for using EKG ;) <3";
 }
 
