@@ -145,6 +145,7 @@ void ekg::gpu::allocator::clear_current_data() {
 
   ekg::gpu::data_t &data {this->data_list.at(this->data_instance_index)};
   data.line_thickness = 0;
+  data.sampler_index = -1;
 
   this->previous_factor = data.factor;
 }

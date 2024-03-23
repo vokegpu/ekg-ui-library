@@ -129,12 +129,19 @@ void ekg::runtime::process_event() {
     /**
      * Text input like textbox and keyboard events should not update stack, instead just mouse events.
      */
-    hovered = !(this->io_event_serial.is_key_down || this->io_event_serial.is_key_up || this->io_event_serial.is_text_input)
-              && p_widgets->flag.hovered && p_widgets->p_data->is_visible() && p_widgets->p_data->get_state() != ekg::state::disable;
+    hovered = (
+      !(
+        this->io_event_serial.is_key_down   ||
+        this->io_event_serial.is_key_up     ||
+        this->io_event_serial.is_text_input
+       )
+      && p_widgets->flag.hovered
+      && p_widgets->p_data->is_visible()
+      && p_widgets->p_data->get_state() != ekg::state::disable
+    );
 
     if (hovered) {
       ekg::hovered.id = p_widgets->p_data->get_id();
-
       p_widget_focused = p_widgets;
       first_absolute = false;
     }
@@ -156,7 +163,7 @@ void ekg::runtime::process_event() {
      *
      * scroll (frame 1)  // do not target this fired absolute widget.
      * end of e.g.
-     */
+     **/
     if (p_widgets->flag.absolute && !first_absolute) {
       p_widget_focused = p_widgets;
       first_absolute = true;

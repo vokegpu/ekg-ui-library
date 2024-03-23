@@ -31,7 +31,7 @@ int32_t showcase_useless_window() {
   ekg::runtime runtime {};
   ekg::init(&runtime, &ekg_runtime_property);
 
-  auto p_frame = ekg::frame("oi", {20, 20}, {200, 200});
+  auto frame = ekg::frame("aurora-fofa", {20, 20}, {200, 200})->set_drag(ekg::dock::top);
 
   ekg::input::bind("hiroodrop", "finger-click");
   ekg::input::bind("hiroodrop", "mouse-1");
@@ -43,7 +43,13 @@ int32_t showcase_useless_window() {
 
   while (running) {
     while (SDL_PollEvent(&sdl_event)) {
-       ekg::os::sdl_poll_event(sdl_event);
+      ekg::os::sdl_poll_event(sdl_event);
+    
+      switch (sdl_event.type) {
+      case SDL_QUIT:
+        running = false;
+        break;
+      }
     }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
