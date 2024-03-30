@@ -37,6 +37,7 @@ int32_t showcase_useless_window() {
   ekg::init(&runtime, &ekg_runtime_property);
 
   auto frame = ekg::frame("aurora-fofa", {20, 20}, {200, 200})->set_drag(ekg::dock::top);
+  ekg::label("salve akilesnunes", ekg::dock::fill);  
 
   ekg::input::bind("hiroodrop", "finger-click");
   ekg::input::bind("hiroodrop", "mouse-1");
@@ -58,7 +59,7 @@ int32_t showcase_useless_window() {
     }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.6f, 0.6f, 0.6f, 0.993f);
+    glClearColor(0.6f, 0.1f, 0.6f, 0.993f);
 
     ekg::ui::dt = 0.016f;
     ekg::update();

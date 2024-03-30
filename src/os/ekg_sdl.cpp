@@ -31,6 +31,8 @@
 
 ekg::os::sdl::sdl(SDL_Window *p_sdl_win) {
   this->p_sdl_win = p_sdl_win;
+  this->update_monitor_resolution();
+  SDL_SetWindowSize(this->p_sdl_win, this->monitor_resolution[0], this->monitor_resolution[1]);
 }
 
 void ekg::os::sdl::set_clipboard_text(const char *p_text) {

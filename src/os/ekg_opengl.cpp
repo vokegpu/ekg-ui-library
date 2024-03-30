@@ -93,7 +93,7 @@ void ekg::os::opengl::init() {
     "void main() {\n"
     "    vFragColor = vec4(uContent[0], uContent[1], uContent[2], uContent[3]);\n"
     "    vec2 fragPos = vec2(gl_FragCoord.x, uViewportHeight - gl_FragCoord.y);\n"
-    "    bool shouldDiscard = (fragPos.x <= uContent[4] || fragPos.y <= uContent[5] || fragPos.x >= uContent[4] + uContent[7] || fragPos.y >= uContent[5] + uContent[6]);\n"
+    "    bool shouldDiscard = (fragPos.x <= uContent[4] || fragPos.y <= uContent[5] || fragPos.x >= uContent[4] + uContent[6] || fragPos.y >= uContent[5] + uContent[7]);\n"
 
     "    float lineThicknessf = float(uLineThickness);\n"
     "    if (uLineThickness > 0) {"
@@ -116,7 +116,6 @@ void ekg::os::opengl::init() {
     "        vFragColor = texture(uTextureSampler, vTexCoord);\n"
     "        vFragColor = vec4(vFragColor.xyz - ((1.0f - color.xyz) - 1.0f), vFragColor.w - (1.0f - color.w));\n"
     "    }\n"
-    "    vFragColor = vec4(1.0f);\n"
     "}"
   };
 
@@ -192,7 +191,7 @@ void ekg::os::opengl::update_viewport(int32_t w, int32_t h) {
   );
 
   glUseProgram(this->pipeline_program);
-  glUniformMatrix4fv(this->uniform_projection, GL_FALSE, 1, ekg::gpu::api::projection);
+  glUniformMatrix4fv(this->uniform_projection, GL_TRUE, 0, ekg::gpu::api::projection);
   glUniform1i(this->uniform_viewport_height, ekg::gpu::api::viewport[3]);
   glUseProgram(0);
 }
@@ -455,6 +454,8 @@ uint64_t ekg::os::opengl::bind_sampler(ekg::gpu::sampler_t *p_sampler) {
    * when THIS is a protected sampler.
    **/
   if (ekg_is_sampler_protected(p_sampler->gl_protected_active_index)) {
+    std::cout << this->protected_texture_active_index << std::endl;
+
     glActiveTexture(
       GL_TEXTURE0 + this->protected_texture_active_index
     );
@@ -474,12 +475,10 @@ void ekg::os::opengl::draw(
   glUseProgram(this->pipeline_program);
   glBindVertexArray(this->vbo_array);
 
+  glDisable(GL_DEPTH_TEST);
+
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  glActiveTexture(
-    GL_TEXTURE0 + this->protected_texture_active_index
-  );
 
   int32_t previous_sampler_bound {};
   bool sampler_going_on {};
