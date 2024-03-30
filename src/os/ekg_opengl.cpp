@@ -63,7 +63,7 @@ void ekg::os::opengl::init() {
 
     "void main() {\n"
     "    vec2 vertex = aPos;\n"
-    "    bool modalShape = uRect.z < 0.0f;\n"
+    "    bool modalShape = uRect.z > 0.0f;\n"
 
     "    if (modalShape) {"
     "        vertex *= uRect.zw;"
@@ -116,6 +116,7 @@ void ekg::os::opengl::init() {
     "        vFragColor = texture(uTextureSampler, vTexCoord);\n"
     "        vFragColor = vec4(vFragColor.xyz - ((1.0f - color.xyz) - 1.0f), vFragColor.w - (1.0f - color.w));\n"
     "    }\n"
+    "    vFragColor = vec4(1.0f);\n"
     "}"
   };
 
@@ -162,7 +163,7 @@ void ekg::os::opengl::init() {
   /* reduce glGetLocation calls when rendering the batch */
   this->uniform_active_texture = glGetUniformLocation(this->pipeline_program, "uActiveTexture");
   this->uniform_active_tex_slot = glGetUniformLocation(this->pipeline_program, "uTextureSampler");
-  this->uniform_color = glGetUniformLocation(this->pipeline_program, "uColor");
+  this->uniform_content = glGetUniformLocation(this->pipeline_program, "uContent");
   this->uniform_rect = glGetUniformLocation(this->pipeline_program, "uRect");
   this->uniform_line_thickness = glGetUniformLocation(this->pipeline_program, "uLineThickness");
   this->uniform_scissor = glGetUniformLocation(this->pipeline_program, "uScissor");
@@ -192,6 +193,7 @@ void ekg::os::opengl::update_viewport(int32_t w, int32_t h) {
 
   glUseProgram(this->pipeline_program);
   glUniformMatrix4fv(this->uniform_projection, GL_FALSE, 1, ekg::gpu::api::projection);
+  glUniform1i(this->uniform_viewport_height, ekg::gpu::api::viewport[3]);
   glUseProgram(0);
 }
 
@@ -259,7 +261,7 @@ void ekg::os::opengl::re_alloc_geometry_resources(
   glBindBuffer(GL_ARRAY_BUFFER, this->geometry_buffer);
   glBufferData(
     GL_ARRAY_BUFFER,
-    sizeof(p_data),
+    sizeof(float)*size,
     p_data,
     GL_STATIC_DRAW
   );
@@ -359,7 +361,7 @@ uint64_t ekg::os::opengl::generate_font_atlas(
   int32_t atlas_height,
   ekg::draw::glyph_char_t *p_glyph_char_data
 ) {
-  int32_t internal_format {GL_RGBA};
+  int32_t internal_format {GL_RED};
 #if defined(__ANDROID__)
   /*
    * Android does not support GL_RED, perharps because of the GL ES version.
@@ -482,7 +484,7 @@ void ekg::os::opengl::draw(
   int32_t previous_sampler_bound {};
   bool sampler_going_on {};
 
-  for (uint64_t it {}; it < loaded_gpu_data_size; it++) {
+  for (uint64_t it {}; it < loaded_gpu_data_size-1; it++) {
     ekg::gpu::data_t &data {p_gpu_data[it]};
     sampler_going_on = data.sampler_index > -1;
 
@@ -515,11 +517,11 @@ void ekg::os::opengl::draw(
 
     glUniform1i(this->uniform_line_thickness, data.line_thickness);
     glUniform4fv(this->uniform_rect, GL_TRUE, data.buffer_content);
-    glUniform1fv(this->uniform_color, 8, &data.buffer_content[4]);
+    glUniform1fv(this->uniform_content, 8, &data.buffer_content[4]);
 
     switch (data.begin_stride) {
       case 0: {
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, nullptr);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void*) 0);
         break;
       }
 

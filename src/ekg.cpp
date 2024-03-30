@@ -67,10 +67,14 @@ void ekg::init(
 
   ekg::log() << "Initialising EKG";
 
+  if (FT_Init_FreeType(&ekg::draw::font_renderer::ft_library)) {
+    ekg::log() << "Error: Failed to init FreeType library";
+  }
+
   ekg::core = p_ekg_runtime;
-  ekg::core->f_renderer_small.font_path = p_ekg_runtime_property->p_font_path;
-  ekg::core->f_renderer_normal.font_path = p_ekg_runtime_property->p_font_path;
-  ekg::core->f_renderer_big.font_path = p_ekg_runtime_property->p_font_path;
+  ekg::core->f_renderer_small.set_font(p_ekg_runtime_property->p_font_path);
+  ekg::core->f_renderer_normal.set_font(p_ekg_runtime_property->p_font_path);
+  ekg::core->f_renderer_big.set_font(p_ekg_runtime_property->p_font_path);
   ekg::core->init();
 }
 

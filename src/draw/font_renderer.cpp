@@ -128,9 +128,10 @@ float ekg::draw::font_renderer::get_text_height() {
   return this->text_height;
 }
 
-void ekg::draw::font_renderer::set_font(const std::string &path) {
+void ekg::draw::font_renderer::set_font(std::string_view path) {
   if (this->font_path != path) {
     this->font_path = path;
+    this->font_face_changed = true;
     this->reload();
   }
 }
@@ -138,16 +139,28 @@ void ekg::draw::font_renderer::set_font(const std::string &path) {
 void ekg::draw::font_renderer::set_size(uint32_t size) {
   if (this->font_size != size) {
     this->font_size = size;
+    this->font_size_changed = true;
     this->reload();
   }
 }
 
 void ekg::draw::font_renderer::reload() {
-  if (!this->flag_first_time) {
-    FT_Done_Face(this->ft_face);
+  bool font_face_created {};
+
+  if (this->font_face_changed) {
+    if (!this->flag_first_time) {
+      FT_Done_Face(this->ft_face);
+    }
+
+    this->flag_unloaded = FT_New_Face(ekg::draw::font_renderer::ft_library, this->font_path.data(), 0, &this->ft_face);
+    this->font_face_changed = false;
+    font_face_created = true;
   }
 
-  this->flag_unloaded = FT_New_Face(ekg::draw::font_renderer::ft_library, this->font_path.c_str(), 0, &this->ft_face);
+  if (font_face_created && !this->font_size_changed) {
+    return;
+  }
+
   this->flag_first_time = false;
 
   if (this->flag_unloaded) {
@@ -155,7 +168,10 @@ void ekg::draw::font_renderer::reload() {
     return;
   }
 
-  FT_Set_Pixel_Sizes(this->ft_face, 0, this->font_size);
+  if (this->font_size_changed) {
+    FT_Set_Pixel_Sizes(this->ft_face, 0, this->font_size);
+    this->font_size_changed = false;
+  }
 
   /* Phase of getting bitmap texture bounds. */
   this->full_width = 0;
@@ -260,15 +276,30 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     coordinates.w = vertices.w / this->full_width;
     coordinates.h = vertices.h / this->full_height;
 
-    this->p_allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
-    this->p_allocator->push_back_geometry(vertices.x, vertices.y + vertices.h, coordinates.x,
-                                          coordinates.y + coordinates.h);
-    this->p_allocator->push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h,
-                                          coordinates.x + coordinates.w, coordinates.y + coordinates.h);
-    this->p_allocator->push_back_geometry(vertices.x + vertices.w, vertices.y + vertices.h,
-                                          coordinates.x + coordinates.w, coordinates.y + coordinates.h);
-    this->p_allocator->push_back_geometry(vertices.x + vertices.w, vertices.y, coordinates.x + coordinates.w,
-                                          coordinates.y);
+    this->p_allocator->push_back_geometry(
+      vertices.x, vertices.y, coordinates.x, coordinates.y
+    );
+
+    this->p_allocator->push_back_geometry(
+      vertices.x, vertices.y + vertices.h, coordinates.x,
+      coordinates.y + coordinates.h
+    );
+
+    this->p_allocator->push_back_geometry(
+      vertices.x + vertices.w, vertices.y + vertices.h,
+      coordinates.x + coordinates.w, coordinates.y + coordinates.h
+    );
+
+    this->p_allocator->push_back_geometry(
+      vertices.x + vertices.w, vertices.y + vertices.h,
+      coordinates.x + coordinates.w, coordinates.y + coordinates.h
+    );
+
+    this->p_allocator->push_back_geometry(
+      vertices.x + vertices.w, vertices.y, coordinates.x + coordinates.w,
+      coordinates.y
+    );
+
     this->p_allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
 
     x += char_data.wsize;

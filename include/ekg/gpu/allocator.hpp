@@ -53,6 +53,7 @@ namespace ekg::gpu {
     bool factor_changed {};
     bool simple_shape {};
     bool out_of_scissor_rect {};
+    ekg::rect scissor_instance {};
   public:
     /*
      * Init gpu allocator.

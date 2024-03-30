@@ -56,14 +56,9 @@ void ekg::runtime::update_size_changed() {
   };
 
   if (this->f_renderer_normal.font_size != font_size) {
-    this->f_renderer_small.font_size = ekg_min(font_size - 4, 4);
-    this->f_renderer_small.reload();
-
-    this->f_renderer_normal.font_size = ekg_min(font_size, 8);
-    this->f_renderer_normal.reload();
-
-    this->f_renderer_big.font_size = ekg_min(font_size + 6, 12);
-    this->f_renderer_big.reload();
+    this->f_renderer_small.set_size(ekg_min(font_size - 4, 4));
+    this->f_renderer_normal.set_size(ekg_min(font_size, 8));
+    this->f_renderer_big.set_size(ekg_min(font_size + 6, 12));
   }
 
   for (ekg::ui::abstract_widget *&p_widgets: this->loaded_widget_list) {
@@ -75,10 +70,6 @@ void ekg::runtime::update_size_changed() {
 }
 
 void ekg::runtime::init() {
-  if (FT_Init_FreeType(&ekg::draw::font_renderer::ft_library)) {
-    ekg::log() << "Error: Failed to init FreeType library";
-  }
-
   this->gpu_allocator.init();
   this->prepare_tasks();
   this->prepare_ui_env();
@@ -542,13 +533,13 @@ void ekg::runtime::do_task_reload(ekg::ui::abstract_widget *p_widget) {
 void ekg::runtime::prepare_ui_env() {
   ekg::log() << "Preparing internal user interface environment";
 
-  this->f_renderer_small.font_size = 16;
+  this->f_renderer_small.set_size(16);
   this->f_renderer_small.bind_allocator(&this->gpu_allocator);
 
-  this->f_renderer_normal.font_size = 0;
+  this->f_renderer_normal.set_size(0);
   this->f_renderer_normal.bind_allocator(&this->gpu_allocator);
 
-  this->f_renderer_big.font_size = 24;
+  this->f_renderer_big.set_size(24);
   this->f_renderer_big.bind_allocator(&this->gpu_allocator);
   this->update_size_changed();
 

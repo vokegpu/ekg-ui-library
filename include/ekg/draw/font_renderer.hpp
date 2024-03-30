@@ -43,7 +43,7 @@ namespace ekg::draw {
     FT_UInt ft_uint_previous {};
     FT_Vector_ ft_vector_previous_char {};
 
-    std::string font_path {};
+    std::string_view font_path {};
     uint32_t font_size {18};
     ekg::gpu::sampler_t sampler_texture {};
 
@@ -55,6 +55,8 @@ namespace ekg::draw {
 
     bool flag_unloaded {};
     bool flag_first_time {true};
+    bool font_face_changed {};
+    bool font_size_changed {};
 
     ekg::gpu::allocator *p_allocator {};
     ekg::draw::glyph_char_t allocated_char_data[256] {};
@@ -84,7 +86,7 @@ namespace ekg::draw {
     /**
      * Set a new font face, check FreeType docs.
      */
-    void set_font(const std::string &font_face_path);
+    void set_font(std::string_view font_face_path);
 
     /**
      * Set the font face height.

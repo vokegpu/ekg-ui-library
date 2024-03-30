@@ -29,26 +29,21 @@ bool ekg::gpu::allocator::is_out_of_scissor {};
 float ekg::gpu::allocator::concave {-2.0f};
 
 void ekg::gpu::allocator::invoke() {
-  /*
-   * Invocation segment reset the CPU-batching counters.
-   */
   this->data_instance_index = 0;
   this->begin_stride_count = 0;
   this->end_stride_count = 0;
   this->simple_shape_index = 0;
   this->cached_geometry_index = 0;
 
-  /*
-   * The first 4 vertices are used by the simple shapes,
-   * soon it is necessary to add not even one simple shape indices
-   * but everything.
-   */
+  /**
+   * inserting a simple triangle mesh,
+   * is necessary to make work the simple-shape
+   * rendering.
+   **/
   this->push_back_geometry(0.0f, 0.0f, 0.0f, 0.0f);
   this->push_back_geometry(0.0f, 1.0f, 0.0f, 1.0f);
   this->push_back_geometry(1.0f, 0.0f, 1.0f, 0.0f);
   this->push_back_geometry(1.0f, 1.0f, 1.0f, 1.0f);
-
-  /* unique shape data will break if not clear the first index. */
 
   this->clear_current_data();
   this->data_list.at(this->data_instance_index).begin_stride = this->end_stride_count;
@@ -64,7 +59,19 @@ void ekg::gpu::allocator::bind_texture(ekg::gpu::sampler_t *p_sampler) {
 void ekg::gpu::allocator::dispatch() {
   ekg::gpu::data_t &data {this->data_list.at(this->data_instance_index)};
 
-  /* if this data contains a simple rect shape scheme, save this index and reuse later */
+  /**
+   * Scissor must be synchned externally to update the scissor context  
+   **/
+
+  data.buffer_content[8] = this->scissor_instance.x;
+  data.buffer_content[9] = this->scissor_instance.y;
+  data.buffer_content[10] = this->scissor_instance.w;
+  data.buffer_content[11] = this->scissor_instance.h;
+
+  /**
+   * the point of re-using a simple shape stride makes performance a little better,
+   * due the index rendering, with only one triangle for rectangles.
+   **/
 
   this->simple_shape = (
     static_cast<int32_t>(data.buffer_content[2]) != static_cast<int32_t>(ekg::gpu::allocator::concave) &&
@@ -137,12 +144,11 @@ void ekg::gpu::allocator::init() {
 }
 
 void ekg::gpu::allocator::clear_current_data() {
-  /* allocator handle automatically the size of data */
-
   if (this->data_instance_index >= this->data_list.size()) {
     this->data_list.emplace_back();
   }
 
+  /* allocator handle automatically the size of data */
   ekg::gpu::data_t &data {this->data_list.at(this->data_instance_index)};
   data.line_thickness = 0;
   data.sampler_index = -1;
@@ -210,10 +216,10 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &scissor, ekg::rect &rect_child
   /**
    * It is much better to waste memory than CPU runtime processing.
    **/
-  data.buffer_content[8] = scissor.x;
-  data.buffer_content[9] = scissor.y;
-  data.buffer_content[10] = scissor.w;
-  data.buffer_content[11] = scissor.h;
+  this->scissor_instance.x = scissor.x;
+  this->scissor_instance.y = scissor.y;
+  this->scissor_instance.w = scissor.w;
+  this->scissor_instance.h = scissor.h;
 }
 
 void ekg::gpu::allocator::push_back_geometry(

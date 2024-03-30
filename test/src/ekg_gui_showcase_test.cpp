@@ -5,6 +5,11 @@
 int32_t showcase_useless_window() {
   SDL_Init(SDL_INIT_VIDEO);
 
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 4);
+  SDL_GL_SetSwapInterval(1);
+
   SDL_Window *p_sdl_win {
     SDL_CreateWindow(
       "Pompom",
@@ -53,7 +58,7 @@ int32_t showcase_useless_window() {
     }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.6f, 0.0f, 0.6f, 0.993f);
+    glClearColor(0.6f, 0.6f, 0.6f, 0.993f);
 
     ekg::ui::dt = 0.016f;
     ekg::update();
