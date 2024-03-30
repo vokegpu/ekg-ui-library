@@ -66,7 +66,7 @@ void ekg::os::opengl::init() {
     "    bool modalShape = uRect.z > 0.0f;\n"
 
     "    if (modalShape) {"
-    "        vertex *= uRect.zw;"
+    "        vertex *= uRect.zw;\n"
     "    }\n"
 
     "    vertex += uRect.xy;\n"
@@ -94,7 +94,6 @@ void ekg::os::opengl::init() {
     "    vFragColor = vec4(uContent[0], uContent[1], uContent[2], uContent[3]);\n"
     "    vec2 fragPos = vec2(gl_FragCoord.x, uViewportHeight - gl_FragCoord.y);\n"
     "    bool shouldDiscard = (fragPos.x <= uContent[4] || fragPos.y <= uContent[5] || fragPos.x >= uContent[4] + uContent[6] || fragPos.y >= uContent[5] + uContent[7]);\n"
-
     "    float lineThicknessf = float(uLineThickness);\n"
     "    if (uLineThickness > 0) {"
     "        vec4 outline = vec4(vRect.x + lineThicknessf, vRect.y + lineThicknessf, vRect.z - (lineThicknessf * 2.0f), vRect.w - (lineThicknessf * 2.0f));\n"
@@ -192,7 +191,7 @@ void ekg::os::opengl::update_viewport(int32_t w, int32_t h) {
 
   glUseProgram(this->pipeline_program);
   glUniformMatrix4fv(this->uniform_projection, GL_TRUE, 0, ekg::gpu::api::projection);
-  glUniform1i(this->uniform_viewport_height, ekg::gpu::api::viewport[3]);
+  glUniform1f(this->uniform_viewport_height, ekg::gpu::api::viewport[3]);
   glUseProgram(0);
 }
 
@@ -472,13 +471,12 @@ void ekg::os::opengl::draw(
   ekg::gpu::data_t *p_gpu_data,
   uint64_t loaded_gpu_data_size
 ) {
-  glUseProgram(this->pipeline_program);
-  glBindVertexArray(this->vbo_array);
-
   glDisable(GL_DEPTH_TEST);
-
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  glUseProgram(this->pipeline_program);
+  glBindVertexArray(this->vbo_array);
 
   int32_t previous_sampler_bound {};
   bool sampler_going_on {};
