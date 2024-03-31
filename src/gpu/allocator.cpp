@@ -210,8 +210,6 @@ void ekg::gpu::allocator::sync_scissor(ekg::rect &scissor, ekg::rect &rect_child
         scissor.y + scissor.h > p_parent_scissor->y)
     );
   }
-
-  ekg::gpu::data_t &data {this->data_list.at(this->data_instance_index)};
   
   /**
    * It is much better to waste memory than CPU runtime processing.

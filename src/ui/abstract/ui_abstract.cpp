@@ -34,7 +34,6 @@ ekg::ui::abstract::~abstract() {
 
 ekg::ui::abstract *ekg::ui::abstract::add_child(int32_t id) {
   bool contains {};
-  ekg::ui::abstract_widget *p_widget {};
 
   for (int32_t &ids: this->child_id_list) {
     if ((contains = ids == id)) {
@@ -42,10 +41,19 @@ ekg::ui::abstract *ekg::ui::abstract::add_child(int32_t id) {
     }
   }
 
-  if (contains == false && (p_widget = ekg::core->get_fast_widget_by_id(id)) != nullptr) {
+  ekg::ui::abstract_widget *p_child_widget {};
+  ekg::ui::abstract_widget *p_parent_widget {};
+
+  if (contains == false && (
+      (p_child_widget = ekg::core->get_fast_widget_by_id(id)) != nullptr
+      &&
+      (p_parent_widget = ekg::core->get_fast_widget_by_id(this->id)) != nullptr
+    )) {
+    p_child_widget->p_data->set_parent_id(this->id);
+    p_child_widget->p_parent = &this->rect_widget;
+    p_child_widget->p_parent_scissor = &p_parent_widget->scissor;
+  
     this->child_id_list.push_back(id);
-    p_widget->p_data->set_parent_id(this->id);
-    p_widget->p_parent = &this->rect_widget;
   }
 
   return this;

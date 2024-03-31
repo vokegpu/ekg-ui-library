@@ -37,7 +37,8 @@ int32_t showcase_useless_window() {
   ekg::init(&runtime, &ekg_runtime_property);
 
   auto frame = ekg::frame("aurora-fofa", {20, 20}, {200, 200})->set_drag(ekg::dock::top);
-  ekg::label("salve akilesnunes", ekg::dock::fill);  
+  ekg::label("salve akilesnunes", ekg::dock::fill);
+  ekg::textbox("textbox", "oii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
 
   ekg::input::bind("hiroodrop", "finger-click");
   ekg::input::bind("hiroodrop", "mouse-1");

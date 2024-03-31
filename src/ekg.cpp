@@ -91,6 +91,7 @@ void ekg::update() {
     case true:
       ekg::cursor = ekg::system_cursor::arrow; // reset, due a glitch
       ekg::core->process_event();
+      ekg::poll_io_event = false;
       break;
   }
 
