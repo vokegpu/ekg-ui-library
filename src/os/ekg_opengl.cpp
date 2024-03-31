@@ -113,7 +113,7 @@ void ekg::os::opengl::init() {
     "    if (uActiveTexture && !shouldDiscard) {"
     "        vec4 color = vFragColor;\n"
     "        vFragColor = texture(uTextureSampler, vTexCoord);\n"
-    "        //vFragColor = vec4(vFragColor.xyz - ((1.0f - color.xyz) - 1.0f), vFragColor.w - (1.0f - color.w));\n"
+    "        vFragColor = vec4(vFragColor.xyz - ((1.0f - color.xyz) - 1.0f), vFragColor.w - (1.0f - color.w));\n"
     "    }\n"
     "}"
   };

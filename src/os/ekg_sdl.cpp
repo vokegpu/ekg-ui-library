@@ -48,18 +48,18 @@ const char *ekg::os::sdl::get_clipboard_text() {
 }
 
 void ekg::os::sdl::init() {
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::arrow)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::ibeam)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::wait)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::crosshair)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR);
+  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::arrow)]      = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::ibeam)]      = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
+  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::wait)]       = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
+  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::crosshair)]  = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR);
   this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::wait_arrow)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARROW);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_nwse)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENWSE);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_nesw)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENESW);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_we)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_ns)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_all)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::no)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::hand)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_nwse)]  = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENWSE);
+  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_nesw)]  = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENESW);
+  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_we)]    = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
+  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_ns)]    = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS);
+  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_all)]   = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
+  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::no)]         = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
+  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::hand)]       = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
 
   this->update_cursor(ekg::system_cursor::arrow);
   ekg::cursor = ekg::system_cursor::arrow;
@@ -157,7 +157,6 @@ void ekg::os::sdl::get_special_key(int32_t key, ekg::special_key &special_key) {
 
 void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
   ekg::os::io_event_serial &serialized {ekg::core->io_event_serial};
-  serialized = ekg::os::io_event_serial {};
 
   switch (sdl_event.type) {
   case SDL_WINDOWEVENT:
@@ -210,6 +209,13 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
     serialized.mouse_wheel_y = sdl_event.wheel.y;
     serialized.mouse_wheel_precise_x = sdl_event.wheel.preciseX;
     serialized.mouse_wheel_precise_y = sdl_event.wheel.preciseY;
+    ekg::poll_io_event = true;
+    break;
+
+  case SDL_MOUSEMOTION:
+    serialized.is_mouse_motion = true;
+    serialized.mouse_motion_x = sdl_event.motion.x;
+    serialized.mouse_motion_y = sdl_event.motion.y;
     ekg::poll_io_event = true;
     break;
 

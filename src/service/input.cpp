@@ -57,7 +57,9 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
   if (io_event_serialized.is_text_input) {
     this->was_pressed = true;
     this->was_typed = true;
-  } else if (io_event_serialized.is_key_down) {
+  }
+
+  if (io_event_serialized.is_key_down) {
     this->was_pressed = true;
 
     std::string key_name {};
@@ -95,7 +97,9 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
         this->special_keys_unit_pressed.push_back(string_builder);
       }
     }
-  } else if (io_event_serialized.is_key_up) {
+  }
+
+  if (io_event_serialized.is_key_up) {
     this->was_released = true;
     std::string key_name {};
     std::string string_builder {};
@@ -133,7 +137,9 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
       this->callback(string_builder, true);
       this->input_released_list.push_back(string_builder);
     }
-  } else if (io_event_serialized.is_mouse_button_down) {
+  }
+
+  if (io_event_serialized.is_mouse_button_down) {
     std::string string_builder {"mouse-"};
     string_builder += std::to_string(io_event_serialized.mouse_button);
 
@@ -153,7 +159,9 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
     if (double_click_factor) {
       ekg::reset(this->double_interact);
     }
-  } else if (io_event_serialized.is_mouse_button_up) {
+  }
+
+  if (io_event_serialized.is_mouse_button_up) {
     this->was_released = true;
     std::string string_builder {"mouse-"};
 
@@ -162,11 +170,15 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
 
     this->callback(string_builder, true);
     this->input_released_list.push_back(string_builder);
-  } else if (io_event_serialized.is_mouse_motion) {
+  }
+
+  if (io_event_serialized.is_mouse_motion) {
     this->has_motion = true;
     this->interact.x = static_cast<float>(io_event_serialized.mouse_motion_x);
     this->interact.y = static_cast<float>(io_event_serialized.mouse_motion_y);
-  } else if (io_event_serialized.is_mouse_wheel) {
+  }
+
+  if (io_event_serialized.is_mouse_wheel) {
     this->callback("mouse-wheel", true);
     this->was_wheel = true;
 
@@ -177,7 +189,9 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
 
     this->interact.z = io_event_serialized.mouse_wheel_precise_x;
     this->interact.w = io_event_serialized.mouse_wheel_precise_y;
-  } else if (io_event_serialized.is_finger_down) {
+  }
+
+  if (io_event_serialized.is_finger_down) {
     this->was_pressed = true;
     ekg::reset(this->timing_last_interact);
     bool reach_double_interact {ekg::reach(this->double_interact, 500)};
@@ -194,7 +208,9 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
     if (reach_double_interact) {
       ekg::reset(this->double_interact);
     }
-  } else if (io_event_serialized.is_finger_up) {
+  }
+
+  if (io_event_serialized.is_finger_up) {
     this->was_released = true;
     this->callback("finger-hold", (this->finger_hold_event = ekg::reach(this->timing_last_interact, 750)));
     this->callback("finger-click", false);
@@ -215,7 +231,9 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
 
     this->interact.z = 0.0f;
     this->interact.w = 0.0f;
-  } else if (io_event_serialized.is_finger_motion) {
+  }
+
+  if (io_event_serialized.is_finger_motion) {
     this->has_motion = true;
     this->interact.x = io_event_serialized.finger_x * static_cast<float>(ekg::ui::width);
     this->interact.y = io_event_serialized.finger_y * static_cast<float>(ekg::ui::height);

@@ -67,7 +67,7 @@ int32_t showcase_useless_window() {
     ekg::render();
 
     SDL_GL_SwapWindow(p_sdl_win);
-    SDL_Delay(16);
+    SDL_Delay(6);
   }
 
   return 666;
