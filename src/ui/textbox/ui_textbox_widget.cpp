@@ -974,17 +974,39 @@ bool ekg::ui::textbox_widget::find_cursor(
   bool b_cursor_pos {};
 
   for (ekg::ui::textbox_widget::cursor &cursor: this->loaded_multi_cursor_list) {
-    a_cursor_pos = (utf_char_index >= cursor.pos[0].text_index ||
-                    (last_line_utf_char_index && utf_char_index + 1 >= cursor.pos[0].text_index)) &&
-                   chunk_index == cursor.pos[0].chunk_index;
-    b_cursor_pos = (((cursor.pos[0] == cursor.pos[1] && utf_char_index <= cursor.pos[1].text_index) ||
-                     utf_char_index < cursor.pos[1].text_index) ||
-                    (last_line_utf_char_index && utf_char_index + 1 < cursor.pos[1].text_index)) &&
-                   chunk_index == cursor.pos[1].chunk_index;
+    a_cursor_pos = (
+      utf_char_index >= cursor.pos[0].text_index ||
+      (
+        last_line_utf_char_index &&
+        utf_char_index + 1 >= cursor.pos[0].text_index)
+      ) && chunk_index == cursor.pos[0].chunk_index;
 
-    if ((cursor.pos[0].chunk_index != cursor.pos[1].chunk_index && (a_cursor_pos || b_cursor_pos)) ||
-        (a_cursor_pos && b_cursor_pos) ||
-        (chunk_index > cursor.pos[0].chunk_index && chunk_index < cursor.pos[1].chunk_index)) {
+    b_cursor_pos = (
+      (
+        (
+          cursor.pos[0] == cursor.pos[1] &&
+          utf_char_index <= cursor.pos[1].text_index
+        ) ||
+        utf_char_index < cursor.pos[1].text_index
+      ) ||
+        (
+          last_line_utf_char_index &&
+          utf_char_index + 1 < cursor.pos[1].text_index)
+      ) && chunk_index == cursor.pos[1].chunk_index;
+
+    if (
+        (
+          cursor.pos[0].chunk_index != cursor.pos[1].chunk_index &&
+          (a_cursor_pos || b_cursor_pos)
+        ) ||
+          (
+            a_cursor_pos && b_cursor_pos
+          ) ||
+        (
+          chunk_index > cursor.pos[0].chunk_index &&
+          chunk_index < cursor.pos[1].chunk_index
+        )
+      ) {
       target_cursor = cursor;
       return true;
     }

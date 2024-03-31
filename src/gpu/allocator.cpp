@@ -176,7 +176,11 @@ void ekg::gpu::allocator::quit() {
   ekg::log() << "Quitting GPU allocator";
 }
 
-void ekg::gpu::allocator::sync_scissor(ekg::rect &scissor, ekg::rect &rect_child, ekg::rect *p_parent_scissor) {
+void ekg::gpu::allocator::sync_scissor(
+  ekg::rect &scissor,
+  ekg::rect &rect_child,
+  ekg::rect *p_parent_scissor
+) {
   scissor.x = rect_child.x;
   scissor.y = rect_child.y;
   scissor.w = rect_child.w;
