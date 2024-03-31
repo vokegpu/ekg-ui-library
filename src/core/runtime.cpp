@@ -533,15 +533,15 @@ void ekg::runtime::do_task_reload(ekg::ui::abstract_widget *p_widget) {
 void ekg::runtime::prepare_ui_env() {
   ekg::log() << "Preparing internal user interface environment";
 
-  this->f_renderer_small.sampler_texture.gl_protected_active_index = 0;
+  this->f_renderer_small.sampler_texture.gl_protected_active_index = true;
   this->f_renderer_small.set_size(16);
   this->f_renderer_small.bind_allocator(&this->gpu_allocator);
 
-  this->f_renderer_small.sampler_texture.gl_protected_active_index = 1;
+  this->f_renderer_normal.sampler_texture.gl_protected_active_index = true;
   this->f_renderer_normal.set_size(0);
   this->f_renderer_normal.bind_allocator(&this->gpu_allocator);
 
-  this->f_renderer_small.sampler_texture.gl_protected_active_index = 2;
+  this->f_renderer_big.sampler_texture.gl_protected_active_index = true;
   this->f_renderer_big.set_size(24);
   this->f_renderer_big.bind_allocator(&this->gpu_allocator);
   this->update_size_changed();

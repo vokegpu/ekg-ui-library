@@ -113,7 +113,7 @@ void ekg::os::opengl::init() {
     "    if (uActiveTexture && !shouldDiscard) {"
     "        vec4 color = vFragColor;\n"
     "        vFragColor = texture(uTextureSampler, vTexCoord);\n"
-    "        vFragColor = vec4(vFragColor.xyz - ((1.0f - color.xyz) - 1.0f), vFragColor.w - (1.0f - color.w));\n"
+    "        //vFragColor = vec4(vFragColor.xyz - ((1.0f - color.xyz) - 1.0f), vFragColor.w - (1.0f - color.w));\n"
     "    }\n"
     "}"
   };
@@ -173,6 +173,10 @@ void ekg::os::opengl::init() {
 
 void ekg::os::opengl::quit() {
 
+}
+
+void ekg::os::opengl::pre_re_alloc() {
+  this->protected_texture_active_index = 0;
 }
 
 void ekg::os::opengl::update_viewport(int32_t w, int32_t h) {
@@ -446,21 +450,8 @@ uint64_t ekg::os::opengl::bind_sampler(ekg::gpu::sampler_t *p_sampler) {
     }
   }
 
-  /**
-   * Protected samplers such as font, icons, and default EKG samplers,
-   * should not overhead the glBindTexture calls,
-   * this reason the active index only increase
-   * when THIS is a protected sampler.
-   **/
   if (ekg_is_sampler_protected(p_sampler->gl_protected_active_index)) {
-    std::cout << this->protected_texture_active_index << std::endl;
-
-    glActiveTexture(
-      GL_TEXTURE0 + this->protected_texture_active_index
-    );
-
     p_sampler->gl_protected_active_index = this->protected_texture_active_index++;
-    glBindTexture(GL_TEXTURE_2D, p_sampler->gl_id);
   }
 
   this->bound_sampler_list.emplace_back() = p_sampler;
@@ -477,6 +468,22 @@ void ekg::os::opengl::draw(
 
   glUseProgram(this->pipeline_program);
   glBindVertexArray(this->vbo_array);
+
+  /**
+   * Protected samplers such as font, icons, and default EKG samplers,
+   * should not overhead the glBindTexture calls,
+   * this reason the active index only increase
+   * when THIS is a protected sampler.
+   **/
+  for (ekg::gpu::sampler_t *&p_sampler : this->bound_sampler_list) {
+    if (p_sampler->gl_protected_active_index == -1) continue;
+
+    glActiveTexture(
+      GL_TEXTURE0 + p_sampler->gl_protected_active_index
+    );
+
+    glBindTexture(GL_TEXTURE_2D, p_sampler->gl_id);
+  }
 
   int32_t previous_sampler_bound {};
   bool sampler_going_on {};
@@ -518,7 +525,7 @@ void ekg::os::opengl::draw(
 
     switch (data.begin_stride) {
       case 0: {
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (void*) 0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, nullptr);
         break;
       }
 

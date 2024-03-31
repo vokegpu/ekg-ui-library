@@ -97,6 +97,7 @@ namespace ekg {
       virtual void quit() {};
       virtual void invoke_pipeline() {};
       virtual void revoke_pipeline() {};
+      virtual void pre_re_alloc() {};
       virtual void update_viewport(int32_t w, int32_t h) {};
       virtual void re_alloc_geometry_resources(const float *p_data, uint64_t size) {};
 

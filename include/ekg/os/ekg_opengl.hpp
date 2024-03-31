@@ -75,6 +75,7 @@ namespace ekg::os {
 
     void init() override;
     void quit() override;
+    void pre_re_alloc() override;
     void update_viewport(int32_t w, int32_t h) override;
     void re_alloc_geometry_resources(const float *p_data, uint64_t size) override;
     
