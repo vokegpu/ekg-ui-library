@@ -87,14 +87,6 @@ void ekg::quit() {
 }
 
 void ekg::update() {
-  switch (ekg::poll_io_event) {
-    case true:
-      ekg::cursor = ekg::system_cursor::arrow; // reset, due a glitch
-      ekg::core->process_event();
-      ekg::poll_io_event = false;
-      break;
-  }
-
   ekg::core->process_update();
   ekg::core->p_os_platform->update_cursor(ekg::cursor);
   ekg::core->io_event_serial = ekg::os::io_event_serial {};

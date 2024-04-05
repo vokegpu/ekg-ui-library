@@ -242,4 +242,12 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
     ekg::poll_io_event = true;
     break;
   }
+
+  switch (ekg::poll_io_event) {
+    case true:
+      ekg::cursor = ekg::system_cursor::arrow;
+      ekg::core->process_event();
+      ekg::poll_io_event = false;
+      break;
+  }
 }

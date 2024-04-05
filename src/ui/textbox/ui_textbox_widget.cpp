@@ -800,6 +800,10 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
   bool released {ekg::input::released()};
   bool motion {ekg::input::motion()};
 
+  if (io_event_serial.text_input == "s") {
+    ekg::log() << "meow";
+  }
+
   if (this->flag.hovered) {
     ekg::cursor = ekg::system_cursor::ibeam;
   }
@@ -853,7 +857,7 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     this->flag.state = false;
   }
 
-  // @TODO  dragging scroll horizontal not working
+  // @TODO dragging scroll horizontal not working
   this->embedded_scroll.on_event(io_event_serial);
   this->flag.highlight = this->flag.hovered;
 
@@ -879,10 +883,10 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
   this->is_clipboard_copy = ekg::input::action("clipboard-copy");
 
   bool should_process_textbox {
-      this->flag.focused && (
-        (io_event_serial.is_key_down || io_event_serial.is_text_input) ||
-        (this->is_clipboard_copy || this->is_clipboard_cut || this->is_clipboard_paste)
-      )
+    this->flag.focused && (
+      (io_event_serial.is_key_down || io_event_serial.is_text_input) ||
+      (this->is_clipboard_copy || this->is_clipboard_cut || this->is_clipboard_paste)
+    )
   };
 
   if (!should_process_textbox) {
@@ -891,7 +895,12 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
   if (io_event_serial.is_text_input) {
     for (ekg::ui::textbox_widget::cursor &cursor: this->loaded_multi_cursor_list) {
-      this->process_text(cursor, io_event_serial.text_input, ekg::ui::textbox_widget::action::add_text, 1);
+      this->process_text(
+        cursor,
+        io_event_serial.text_input,
+        ekg::ui::textbox_widget::action::add_text,
+        1
+      );
     }
   } else if (io_event_serial.is_key_down && ekg::input::receive("escape")) {
     ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};

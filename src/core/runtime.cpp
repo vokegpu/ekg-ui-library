@@ -119,7 +119,7 @@ void ekg::runtime::process_event() {
 
     /**
      * Text input like textbox and keyboard events should not update stack, instead just mouse events.
-     */
+     **/
     hovered = (
       !(
         this->io_event_serial.is_key_down   ||
