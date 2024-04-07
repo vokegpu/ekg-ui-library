@@ -42,9 +42,11 @@ jobs:
 
       - name: Release Condition
         if: "!startsWith(steps.check_commit_message.outputs.message, '[release]')"
+        id: release_condition
         run: exit 0
 
       - name: Configure CMake
+        if: steps.release_condition.outcome != 'sucess'
         run: >
           cmake -B ${{ github.workspace }}/cmake-build-debug
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
