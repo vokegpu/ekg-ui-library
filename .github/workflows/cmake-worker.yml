@@ -71,7 +71,7 @@ jobs:
           -G Ninja
           -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++
           -DEKG_ENABLE_TEST=0
-          -DEKG_LINUX_NOT_FOUND_FREETYPE=0
+          -DEKG_LINUX_NOT_FOUND_FREETYPE=1
 
       - name: Build Windows-CMake
         run: |
