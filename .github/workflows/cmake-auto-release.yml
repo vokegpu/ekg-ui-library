@@ -20,8 +20,10 @@ jobs:
         c_compiler: [g++]
         include:
           - os: windows-latest
+            c_compiler: gcc
             cpp_compiler: g++
           - os: ubuntu-latest
+            c_compiler: gcc
             cpp_compiler: g++
 
     steps:
