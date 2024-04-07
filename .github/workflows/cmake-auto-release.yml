@@ -41,12 +41,12 @@ jobs:
         run: echo ::set-output name=message::$(git log --format=%B -n 1 ${{ github.sha }})
 
       - name: Release Condition
-        if: "!startsWith(steps.check_commit_message.outputs.message, '[release]')"
+        if: startsWith(steps.check_commit_message.outputs.message, '[release]')
         id: release_condition
         run: exit 0
 
       - name: Configure CMake
-        if: steps.release_condition.outcome != 'sucess'
+        if: steps.release_condition.outcome == 'success'
         run: >
           cmake -B ${{ github.workspace }}/cmake-build-debug
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
