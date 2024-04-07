@@ -67,9 +67,8 @@ jobs:
         if: startsWith(matrix.os, 'windows-')
         run: |
           git clone https://gitlab.freedesktop.org/freetype/freetype.git
-          cd freetype
-          cmake -S . -B ./cmake-build-debug -G Ninja -DCMAKE_C_COMPILER=gcc
-          cmake --build ./cmake-build-debug
+          cmake -S ./freetype -B ./freetype/cmake-build-debug -G Ninja -DCMAKE_C_COMPILER=gcc
+          cmake --build ./freetype/cmake-build-debug
 
       - name: Linux Install Libraries
         if: startsWith(matrix.os, 'ubuntu-')
