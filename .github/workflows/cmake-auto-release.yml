@@ -24,7 +24,7 @@ jobs:
           - os: ubuntu-latest
             cpp_compiler: g++
 
-    steps:    
+    steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
     
@@ -45,8 +45,10 @@ jobs:
         id: release_condition
         run: exit 0
 
+      - name: Install Ninja
+        uses: ashutoshvarma/setup-ninja@master
+
       - name: Configure CMake
-        uses: seanmiddleditch/gha-setup-ninja@v4
         run: >
           cmake -B ${{ github.workspace }}/cmake-build-debug
           -S ${{ github.workspace }}
