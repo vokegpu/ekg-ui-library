@@ -28,6 +28,13 @@ set(EKG_VERSION        1.1.0)
 message("-- Building EKG user interface library version ${EKG_VERSION}")
 project(ekg VERSION ${EKG_VERSION} DESCRIPTION "graphical user interface")
 
+# Enable if your base OS is Debian-based (e.g Ubuntu).
+# It is a common issue related by the Linux community.
+if (EKG_LINUX_NOT_FOUND_FREETYPE)
+  include_directories(/usr/include/freetype2)
+  message("-- Using var EKG_LINUX_NOT_FOUND_FREETYPE to include `/usr/include/freetype2` directly")
+endif()
+
 if (WIN32)
   set(LIBRARY_OUTPUT_PATH "../lib/windows/")
   set(PLATFORM            "windows")
@@ -35,13 +42,6 @@ elseif(ANDROID)
   set(LIBRARY_OUTPUT_PATH "${ANDROID_ABI}/")
   set(PLATFORM            "${ANDROID_ABI}")
 else()
-  # Enable if your base OS is Debian-based (e.g Ubuntu).
-  # It is a common issue related by the Linux community.
-  if (EKG_LINUX_NOT_FOUND_FREETYPE)
-      include_directories(/usr/include/freetype2)
-      message("-- Using var EKG_LINUX_NOT_FOUND_FREETYPE to include `/usr/include/freetype2` directly")
-  endif()
-
   # WSL is not detected as Linux-based OS, same you use a Linux kernel-based distribution.
   set(LIBRARY_OUTPUT_PATH "../lib/linux/")
   set(PLATFORM            "linux")

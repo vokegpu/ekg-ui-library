@@ -228,6 +228,7 @@ ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint
   p_ui->set_font_size(ekg::font::normal);
   p_ui->set_width(200);
   p_ui->emplace_back() = text;
+  p_ui->set_state(ekg::state::enable);
 
   return p_ui;
 }

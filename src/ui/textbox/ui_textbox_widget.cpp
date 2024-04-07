@@ -164,7 +164,7 @@ void ekg::ui::textbox_widget::update_ui_text_data() {
 
   this->rect_cursor.w = 2.0f;
   this->rect_cursor.h = this->text_height;
-  this->is_ui_enabled = p_ui->is_enabled();
+  this->is_ui_enabled = p_ui->get_state() == ekg::state::enable;
 
   for (int64_t chunk_index {}; chunk_index < text_chunk_size; chunk_index++) {
     this->rect_text.w = ekg_min(this->rect_text.w, f_renderer.get_text_width(this->p_text_chunk_list->at(chunk_index)));
@@ -800,10 +800,6 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
   bool released {ekg::input::released()};
   bool motion {ekg::input::motion()};
 
-  if (io_event_serial.text_input == "s") {
-    ekg::log() << "meow";
-  }
-
   if (this->flag.hovered) {
     ekg::cursor = ekg::system_cursor::ibeam;
   }
@@ -1061,7 +1057,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
   this->rect_text.x = 0.0f;
   this->rect_text.y = 0.0f;
-  this->is_ui_enabled = p_ui->is_enabled();
+  this->is_ui_enabled = p_ui->get_state() == ekg::state::enable;
 
   char32_t char32 {};
   std::string utf_string {};
