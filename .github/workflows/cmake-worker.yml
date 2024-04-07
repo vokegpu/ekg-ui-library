@@ -70,7 +70,7 @@ jobs:
           exit 0
           git clone https://gitlab.freedesktop.org/freetype/freetype.git
           cd freetype
-          cmake -S . -B ./cmake-build-debug -G Ninja -DCMAKE_C_COMPILER=gcc -DCMAKE_MAKE_PROGRAM=${{ github.workspace }}/ninja
+          cmake -S . -B ./cmake-build-debug -G Ninja -DCMAKE_C_COMPILER=gcc -DCMAKE_MAKE_PROGRAM=$GITHUB_PATH/ninja
           cmake --build ./cmake-build-debug
 
       - name: Linux Install Libraries
