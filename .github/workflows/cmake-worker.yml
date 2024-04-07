@@ -69,7 +69,7 @@ jobs:
           cmake -B ${{ github.workspace }}/cmake-build-debug
           -S ${{ github.workspace }}
           -G Ninja
-          -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++
+          -DCMAKE_CXX_COMPILER=g++
           -DEKG_ENABLE_TEST=0
           -DEKG_LINUX_NOT_FOUND_FREETYPE=1
 
