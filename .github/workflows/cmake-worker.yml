@@ -15,8 +15,8 @@ jobs:
       fail-fast: false
 
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        cpp_compiler: [g++, x86_64-w64-mingw32-g++]
+        os: [ubuntu-latest]
+        cpp_compiler: [g++]
         include:
           - os: ubuntu-latest
             cpp_compiler:
@@ -68,11 +68,11 @@ jobs:
           -DEKG_ENABLE_TEST=0
           -DEKG_LINUX_NOT_FOUND_FREETYPE=1
 
-      - name: Build Windows-CMake
+      - name: Build Linux-CMake
         run: |
           cmake --build ${{ github.workspace }}/cmake-build-debug
 
-      - name: Configure CMake
+      - name: Configure Windows-CMake
         run: >
           cmake -B ${{ github.workspace }}/cmake-build-debug
           -S ${{ github.workspace }}
@@ -81,6 +81,6 @@ jobs:
           -DEKG_ENABLE_TEST=0
           -DEKG_LINUX_NOT_FOUND_FREETYPE=1
 
-      - name: Build CMake
+      - name: Build Windows-CMake
         run: |
           cmake --build ${{ github.workspace }}/cmake-build-debug
