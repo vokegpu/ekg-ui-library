@@ -9,18 +9,10 @@ on:
 jobs:
   release:  
     name: Release
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-
-      matrix:
-        os: [ubuntu-latest]
-        cpp_compiler: [g++, x86_64-w64-mingw32-g++]
-        include:
-          - os: ubuntu-latest
-            cpp_compiler:
-              g++, x86_64-w64-mingw32-g++
 
     steps:
       - name: Checkout Repository
