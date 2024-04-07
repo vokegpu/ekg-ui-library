@@ -66,9 +66,10 @@ jobs:
       - name: Windows Install Libraries
         if: startsWith(matrix.os, 'windows-')
         run: |
+          ninja --version
           git clone https://gitlab.freedesktop.org/freetype/freetype.git
           cd freetype
-          cmake -S . -B ./cmake-build-debug -DCMAKE_C_COMPILER=gcc -G Ninja
+          cmake -S . -B ./cmake-build-debug -G Ninja -DCMAKE_C_COMPILER=gcc
           cmake --build ./cmake-build-debug
 
       - name: Linux Install Libraries
@@ -79,7 +80,7 @@ jobs:
 
           sudo apt-get update
           sudo apt-get install libfreetype6-dev
-          sudo apt-get install libsdl-dev
+          sudo apt-get install libsdl2-dev
           sudo apt-get install libglew-dev
           sudo apt-get install vulkan-sdk
           
