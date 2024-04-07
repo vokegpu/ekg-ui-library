@@ -66,7 +66,7 @@ jobs:
       - name: Windows Install Libraries
         if: startsWith(matrix.os, 'windows-')
         run: |
-          for /f "delims=" %i in ('where ninja g++') do echo %i
+          echo %PATH%
           exit 0
           git clone https://gitlab.freedesktop.org/freetype/freetype.git
           cd freetype
