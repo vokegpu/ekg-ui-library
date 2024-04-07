@@ -24,6 +24,9 @@ jobs:
         run: git rev-parse --is-inside-work-tree
         id: check_git_repo
         continue-on-error: true
+
+      - name: Configure
+        run: ./configure && cmake --version
     
       - name: Check Commit Message
         id: check_commit_message
