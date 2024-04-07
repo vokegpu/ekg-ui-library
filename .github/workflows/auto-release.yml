@@ -1,0 +1,24 @@
+name: Auto Release
+
+on:
+  push:
+    branches:
+      - version-core
+jobs:
+  release:
+    name: Release
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Check Commit Message
+        id: check_commit_message
+        run: echo ::set-output name=message::$(git log --format=%B -n 1 ${{ github.sha }})
+
+      - name: Trigger Release
+        if: startsWith(steps.check_commit_message.outputs.message, '[release]')
+        run: |
+          echo "test released..."
