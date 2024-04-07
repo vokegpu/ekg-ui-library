@@ -1,4 +1,4 @@
-name: CMkae Auto-Release
+name: CMake Worker
 
 on:
   push:
@@ -25,6 +25,9 @@ jobs:
             cpp_compiler: g++
 
     steps:
+      - name: Install ninja-build tool
+        uses: seanmiddleditch/gha-setup-ninja@v4
+    
       - name: Checkout Repository
         uses: actions/checkout@v3
     
@@ -46,7 +49,6 @@ jobs:
         run: exit 0
 
       - name: Configure CMake
-        if: steps.release_condition.outcome == 'success'
         run: >
           cmake -B ${{ github.workspace }}/cmake-build-debug
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
@@ -55,3 +57,8 @@ jobs:
           -DEKG_ENABLE_TEST=0
           -DEKG_LINUX_NOT_FOUND_FREETYPE=1
           -S ${{ github.workspace }}
+          -G Ninja
+
+      - name: Build Cmake
+        run: >
+          cmake --build ${{ github.workspace }}/cmake-build-debug     
