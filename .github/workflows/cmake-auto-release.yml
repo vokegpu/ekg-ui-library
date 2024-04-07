@@ -7,7 +7,7 @@ on:
     branches: [ "version-core" ]
 
 jobs:
-  release:
+  release:  
     name: Release
     runs-on: ${{ matrix.os }}
 
@@ -25,7 +25,7 @@ jobs:
             cpp_compiler: g++
 
     steps:
-      - name: Install ninja-build tool
+      - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@v4
     
       - name: Checkout Repository
@@ -51,13 +51,13 @@ jobs:
       - name: Configure CMake
         run: >
           cmake -B ${{ github.workspace }}/cmake-build-debug
+          -S ${{ github.workspace }}
+          -G "Ninja"
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -DEKG_ENABLE_TEST=0
           -DEKG_LINUX_NOT_FOUND_FREETYPE=1
-          -S ${{ github.workspace }}
-          -G Ninja
 
       - name: Build Cmake
         run: >
