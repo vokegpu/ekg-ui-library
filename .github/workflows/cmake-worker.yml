@@ -66,10 +66,10 @@ jobs:
       - name: Windows Install Libraries
         if: startsWith(matrix.os, 'windows-')
         run: |
-          ninja --version
           git clone https://gitlab.freedesktop.org/freetype/freetype.git
           cd freetype
-          cmake -S . -B ./cmake-build-debug -G Ninja -DCMAKE_C_COMPILER=gcc
+          ninja --version
+          cmake -S . -B ./cmake-build-debug -G Ninja -DCMAKE_C_COMPILER=gcc -DCMAKE_MAKE_PROGRAM=Ninja
           cmake --build ./cmake-build-debug
 
       - name: Linux Install Libraries
