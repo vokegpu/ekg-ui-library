@@ -62,6 +62,7 @@ jobs:
       - name: Build Linux-CMake
         run: |
           cmake --build ${{ github.workspace }}/cmake-build-debug
+          sudo rm -r -f ${{ github.workspace }}/cmake-build-debug
 
       - name: Configure Windows-CMake
         run: >
