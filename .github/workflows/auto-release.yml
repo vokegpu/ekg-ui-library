@@ -14,6 +14,17 @@ jobs:
         os: [ubuntu-latest, windows-latest]
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+    
+      - name: Check if Git is installed
+        run: gut --version
+    
+      - name: Check if directory is a Git repository
+        run: git rev-parse --is-inside-work-tree
+        id: check_git_repo
+        continue-on-error: true
+    
       - name: Check Commit Message
         id: check_commit_message
         run: echo ::set-output name=message::$(git log --format=%B -n 1 ${{ github.sha }})
