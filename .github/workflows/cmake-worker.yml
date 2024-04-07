@@ -16,11 +16,11 @@ jobs:
 
       matrix:
         os: [ubuntu-latest]
-        cpp_compiler: [g++]
+        cpp_compiler: [g++, x86_64-w64-mingw32-g++]
         include:
           - os: ubuntu-latest
             cpp_compiler:
-              g++
+              g++, x86_64-w64-mingw32-g++
 
     steps:
       - name: Checkout Repository
