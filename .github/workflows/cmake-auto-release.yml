@@ -56,6 +56,14 @@ jobs:
           -DEKG_ENABLE_TEST=0
           -DEKG_LINUX_NOT_FOUND_FREETYPE=1
 
-      - name: Build Cmake
-        run: >
-          cmake --build ${{ github.workspace }}/cmake-build-debug     
+      - name: Linux Install Libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install libsdl2-dev 
+          sudo apt-get install libfreetype6-dev
+          sudo apt-get install libglew-dev
+          sudo apt-get install vulkan-sdk
+
+      - name: Build CMake
+        run: |
+          cmake --build ${{ github.workspace }}/cmake-build-debug
