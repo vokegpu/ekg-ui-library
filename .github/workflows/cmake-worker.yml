@@ -56,6 +56,12 @@ jobs:
           -DEKG_ENABLE_TEST=0
           -DEKG_LINUX_NOT_FOUND_FREETYPE=1
 
+      - uses: libsdl-org/setup-sdl@main
+        id: sdl
+        with:
+          install-linux-dependencies: true
+          version: 2-latest
+
       - name: Linux Install Libraries
         if: startsWith(matrix.os, 'ubuntu-')
         run: |
@@ -63,11 +69,18 @@ jobs:
           sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-jammy.list http://packages.lunarg.com/vulkan/lunarg-vulkan-jammy.list
 
           sudo apt-get update
-          sudo apt-get install libsdl2-dev 
           sudo apt-get install libfreetype6-dev
           sudo apt-get install libglew-dev
           sudo apt-get install vulkan-sdk
 
+      - name: Windows Install Libraries
+        if: startsWith(matrix.os, 'windows-')
+        run: |
+          git clone https://gitlab.freedesktop.org/freetype/freetype.git
+          cd freetype
+          cmake -S . -B ./cmake-build-debug -DCMAKE_C_COMPILER=gcc -G Ninja
+          cmake --build ./cmake-build-debug
+          
       - name: Build CMake
         run: |
           cmake --build ${{ github.workspace }}/cmake-build-debug
