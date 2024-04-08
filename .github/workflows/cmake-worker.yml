@@ -49,9 +49,11 @@ jobs:
 
           wget https://github.com/libsdl-org/SDL/releases/download/release-2.30.2/SDL2-devel-2.30.2-mingw.zip
           unzip ./SDL2-devel-2.30.2-mingw.zip
-
           sudo cp -r ./SDL2-2.30.2/x86_64-w64-mingw32/* /usr/x86_64-w64-mingw32
-          sudo cp -r ${{ github.workspace }}/x86_64-w64-mingw32/* /usr/x86_64-w64-mingw32/
+
+          wget https://github.com/vokegpu/.github/releases/download/cross-platform-mingw/x86_64-w64-mingw32.zip
+          unzip ./x86_64-w64-mingw32.zip
+          sudo cp -r ./x86_64-w64-mingw32/* /usr/x86_64-w64-mingw32/
 
       - name: Configure Linux-CMake
         run: >
