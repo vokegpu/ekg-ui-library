@@ -49,15 +49,9 @@ jobs:
 
           wget https://github.com/libsdl-org/SDL/releases/download/release-2.30.2/SDL2-devel-2.30.2-mingw.zip
           unzip ./SDL2-devel-2.30.2-mingw.zip
-          sudo cp -r ./SDL2-2.30.2/x86_64-w64-mingw32/* /usr/x86_64-w64-mingw32
 
-          sudo cp -r /usr/include/GL/* /usr/x86_64-w64-mingw32/include/GL/
-          wget https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip
-          unzip ./glew-2.2.0.zip
-          cmake -S ./glew-2.2.0/build/cmake -B ./glew-cmake-build-cache -G Ninja -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc -DCMAKE_C_COMPILER_WORKS=1
-          cmake --build ./glew-cmake-build-cache
-          cd ./glew-2.2.0/lib
-          sudo cp -r * /usr/x86_64-w64-mingw32/lib
+          sudo cp -r ./SDL2-2.30.2/x86_64-w64-mingw32/* /usr/x86_64-w64-mingw32
+          sudo cp -r ${{ github.workspace }}/x86_64-w64-mingw32/* /usr/x86_64-w64-mingw32/
 
       - name: Configure Linux-CMake
         run: >
