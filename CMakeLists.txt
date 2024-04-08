@@ -35,13 +35,17 @@ if (EKG_LINUX_NOT_FOUND_FREETYPE)
   message("-- Using var EKG_LINUX_NOT_FOUND_FREETYPE to include `/usr/include/freetype2` directly")
 endif()
 
-if (WIN32)
+if (WIN32 OR EKG_FORCE_WINDOWS)
   set(LIBRARY_OUTPUT_PATH "../lib/windows/")
   set(PLATFORM            "windows")
-elseif(ANDROID)
+endif()
+
+if(ANDROID OR EKG_FORCE_ANDROID)
   set(LIBRARY_OUTPUT_PATH "${ANDROID_ABI}/")
   set(PLATFORM            "${ANDROID_ABI}")
-else()
+endif()
+
+if(LINUX OR EKG_FORCE_LINUX)
   # WSL is not detected as Linux-based OS, same you use a Linux kernel-based distribution.
   set(LIBRARY_OUTPUT_PATH "../lib/linux/")
   set(PLATFORM            "linux")
