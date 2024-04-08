@@ -50,6 +50,19 @@ jobs:
           sudo apt-get install vulkan-sdk
           sudo apt-get install mingw-w64
 
+          wget https://github.com/libsdl-org/SDL/releases/download/release-2.30.2/SDL2-devel-2.30.2-mingw.zip
+          tar -xzvf SDL2-devel-2.0.16-mingw.tar.gz
+          cd ./SDL2-2.30.2/x86_64-w64-mingw32
+          sudo cp -r * /usr/x86_64-w64-mingw32
+
+          cd ..
+          wget https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip
+          unzip ./glew-2.2.0.zip
+          cmake ./glew-2.2.0/build/cmake -G Ninja -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc -B ./glew-cmake-build-cache
+          cmake --build ./glew-cmake-build-cache
+          cd ./glew-2.2.0/lib
+          sudo cp -r * /usr/x86_64-w64-mingw32/lib
+
       - name: Configure Linux-CMake
         run: >
           cmake -B ${{ github.workspace }}/cmake-build-debug
@@ -72,7 +85,6 @@ jobs:
           -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++
           -DEKG_ENABLE_TEST=0
           -DEKG_LINUX_NOT_FOUND_FREETYPE=1
-          -DEKG_ADDITIONAL_INCLUDE=/usr/include
 
       - name: Build Windows-CMake
         run: |
