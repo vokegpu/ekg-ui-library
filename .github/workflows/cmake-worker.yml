@@ -44,11 +44,7 @@ jobs:
           sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-jammy.list http://packages.lunarg.com/vulkan/lunarg-vulkan-jammy.list
 
           sudo apt-get update
-          sudo apt-get install libfreetype6-dev
-          sudo apt-get install libsdl2-dev
-          sudo apt-get install libglew-dev
-          sudo apt-get install vulkan-sdk
-          sudo apt-get install mingw-w64
+          sudo apt-get install libfreetype6-dev vulkan-sdk libsdl2-dev libglew-dev mingw-w64 g++-mingw-w64
 
           wget https://github.com/libsdl-org/SDL/releases/download/release-2.30.2/SDL2-devel-2.30.2-mingw.zip
           unzip ./SDL2-devel-2.30.2-mingw.zip
@@ -56,7 +52,7 @@ jobs:
 
           wget https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip
           unzip ./glew-2.2.0.zip
-          cmake -S ./glew-2.2.0/build/cmake -B ./glew-cmake-build-cache -G Ninja -DCMAKE_C_COMPILER=gcc-mingw-w64-x86-64
+          cmake -S ./glew-2.2.0/build/cmake -B ./glew-cmake-build-cache -G Ninja -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc
           cmake --build ./glew-cmake-build-cache
           cd ./glew-2.2.0/lib
           sudo cp -r * /usr/x86_64-w64-mingw32/lib
@@ -80,7 +76,7 @@ jobs:
           cmake -B ${{ github.workspace }}/cmake-build-debug
           -S ${{ github.workspace }}
           -G Ninja
-          -DCMAKE_CXX_COMPILER=g++-mingw-w64-x86-64
+          -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++
           -DEKG_ENABLE_TEST=0
           -DEKG_LINUX_NOT_FOUND_FREETYPE=1
 
