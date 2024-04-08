@@ -53,7 +53,7 @@ jobs:
 
           wget https://github.com/vokegpu/.github/releases/download/cross-platform-mingw/x86_64-w64-mingw32.zip
           unzip ./x86_64-w64-mingw32.zip
-          sudo cp -r ./x86_64-w64-mingw32/* /usr/x86_64-w64-mingw32/
+          yes | sudo cp -r ./x86_64-w64-mingw32/* /usr/x86_64-w64-mingw32/
 
       - name: Configure Linux-CMake
         run: >
