@@ -35,6 +35,10 @@ if (EKG_LINUX_NOT_FOUND_FREETYPE)
   message("-- Using var EKG_LINUX_NOT_FOUND_FREETYPE to include `/usr/include/freetype2` directly")
 endif()
 
+if (DEFINED EKG_ADDITIONAL_INCLUDE)
+  include_directories(${EKG_ADDITIONAL_INCLUDE})
+endif()
+
 if (WIN32)
   set(LIBRARY_OUTPUT_PATH "../lib/windows/")
   set(PLATFORM            "windows")
