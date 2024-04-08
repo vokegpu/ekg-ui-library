@@ -52,7 +52,7 @@ jobs:
 
           wget https://github.com/nigels-com/glew/releases/download/glew-2.2.0/glew-2.2.0.zip
           unzip ./glew-2.2.0.zip
-          cmake -S ./glew-2.2.0/build/cmake -B ./glew-cmake-build-cache -G Ninja -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc
+          cmake -S ./glew-2.2.0/build/cmake -B ./glew-cmake-build-cache -G Ninja -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc -DCMAKE_C_COMPILER_WORKS=1
           cmake --build ./glew-cmake-build-cache
           cd ./glew-2.2.0/lib
           sudo cp -r * /usr/x86_64-w64-mingw32/lib
