@@ -51,7 +51,7 @@ jobs:
           sudo apt-get install mingw-w64
 
           wget https://github.com/libsdl-org/SDL/releases/download/release-2.30.2/SDL2-devel-2.30.2-mingw.zip
-          tar -xzvf SDL2-devel-2.0.16-mingw.tar.gz
+          unzip ./SDL2-devel-2.30.2-mingw.zip
           cd ./SDL2-2.30.2/x86_64-w64-mingw32
           sudo cp -r * /usr/x86_64-w64-mingw32
 
