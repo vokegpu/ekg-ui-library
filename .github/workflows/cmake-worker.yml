@@ -44,7 +44,7 @@ jobs:
           sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-jammy.list http://packages.lunarg.com/vulkan/lunarg-vulkan-jammy.list
 
           sudo apt-get update
-          sudo apt-get mingw-w64 g++-mingw-w64 mingw-w64-tools
+          sudo apt-get gcc-mingw-w64 g++-mingw-w64 mingw-w64-tools
           sudo apt-get install libfreetype6-dev vulkan-sdk libsdl2-dev libglew-dev
 
           wget https://github.com/libsdl-org/SDL/releases/download/release-2.30.2/SDL2-devel-2.30.2-mingw.zip
