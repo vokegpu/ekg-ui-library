@@ -3,23 +3,23 @@ import sys, os, zipfile, shutil
 
 def create_release_zip_file(zip_filename: str, lib_directory: str) -> str:
     zip_output: str = f"./{zip_filename}.zip"
+    to_zip_directory: str = f"./{zip_filename}/"
 
-    os.system("mkdir ./{zip_filename}/")
-    os.system("mkdir ./{zip_filename}/include")
-    os.system("mkdir ./{zip_filename}/lib")
+    os.system(f"mkdir ./{zip_filename} && cd ./{zip_filename} && mkdir ./lib")
 
     shutil.copytree("./include", f"./{zip_filename}/include/")
+    shutil.copy("./faq.txt", f"./{zip_filename}/")    
     shutil.copy("./LICENSE.md", f"./{zip_filename}/")
     shutil.copy(f"./lib/{lib_directory}/libekg.a", f"./{zip_filename}/lib/libekg.a")
 
-    print("Zipping: ", zip_filename)
+    print("zipping: ", zip_filename)
 
     with zipfile.ZipFile(zip_output, "w") as zipf:
-        for roott, dirs, files in os.walk(zip_input_content_directory_path):
+        for root, dirs, files in os.walk(to_zip_directory):
             for file in files:
                 zipf.write(
-                    os.path,join(root, file),
-                    os.path.relpath(os.path.join(root, file), zip_input_content_directory_path)
+                    os.path.join(root, file),
+                    os.path.relpath(os.path.join(root, file), to_zip_directory)
                 )
     return zip_output
 
