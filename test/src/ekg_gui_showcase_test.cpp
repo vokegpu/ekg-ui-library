@@ -70,7 +70,7 @@ int32_t showcase_useless_window() {
     SDL_Delay(6);
   }
 
-  return 666;
+  return 6666;
 }
 
 int32_t main(int32_t, char**) {
