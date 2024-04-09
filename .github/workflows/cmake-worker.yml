@@ -17,27 +17,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-    
-      - name: Check if Git is installed
-        run: git --version
-    
-      - name: Check if directory is a Git repository
-        run: git rev-parse --is-inside-work-tree
-        id: check_git_repo
-        continue-on-error: true
-    
-      - name: Commit Title
-        id: commit_title
-        run: echo ::set-output name=message::$(git log --format=%B -n 1 ${{ github.sha }})
-
-      - name: Commit Description
-        id: commit_description
-        run: echo ::set-output name=message::$(git log --format=%B -n 1 ${{ github.sha }} | sed -n '2,$p')
-
-      - name: Release Condition
-        if: startsWith(steps.commit_title.outputs.message, '[release]')
-        id: release_condition
-        run: exit 0
 
       - name: Install Ninja
         uses: ashutoshvarma/setup-ninja@master
@@ -88,8 +67,16 @@ jobs:
         run: |
           cmake --build ${{ github.workspace }}/cmake-build-debug
 
+      - name: Read Title
+        id: commit_title
+        run: echo ::set-output name=message::$(git log --format=%B -n 1 ${{ github.sha }})
+
+      - name: Read Description
+        id: commit_description
+        run: echo ::set-output name=message::$(git log --format=%B -n 1 ${{ github.sha }} | sed -n '2,$p')
+
       - name: Release if Needed
-        if: steps.check_commit_message.output == 'success'
+        if: startsWith(steps.commit_title.outputs.message, '[release]')
         run: |
           cd ./${{ github.workspace }}
-          python ./devlog/devlog.py -m ${{ steps.commit_title }} -d ${{ steps.commit_description }}
+          python ./devlog/devlog.py -m ${{ steps.commit_title.outputs.message }} -d ${{ steps.commit_description.outputs.message }}
