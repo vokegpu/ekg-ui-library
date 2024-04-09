@@ -5,7 +5,7 @@ def create_release_zip_file(zip_filename: str, lib_directory: str) -> str:
     zip_output: str = f"./{zip_filename}.zip"
     to_zip_directory: str = f"./{zip_filename}/"
 
-    os.system(f"mkdir ./{zip_filename} && cd ./{zip_filename} && mkdir ./lib")
+    os.system(f"mkdir ./{zip_filename} && cd ./{zip_filename} && mkdir ./lib && cd ..")
 
     shutil.copytree("./include", f"./{zip_filename}/include/")
     shutil.copy("./faq.txt", f"./{zip_filename}/")    
