@@ -64,6 +64,11 @@ if __name__ == "__main__":
 
 News:
 {news_descriptor}
+
+---
+
+For complete previously released logs, check [here](https://github.com/vokegpu/ekg-ui-library/blob/version-core/devlog/commit.txt).
+
 """
 
     print("making a new release")
