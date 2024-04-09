@@ -1,5 +1,5 @@
-import sys, os, zipfile, shutil
 from typing import List, Dict
+import sys, os, zipfile, shutil
 
 def create_release_zip_file(zip_filename: str, lib_directory: str) -> str:
     zip_output: str = f"./{zip_filename}.zip"
