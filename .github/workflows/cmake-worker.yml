@@ -26,12 +26,16 @@ jobs:
         id: check_git_repo
         continue-on-error: true
     
-      - name: Check Commit Message
-        id: check_commit_message
+      - name: Commit Title
+        id: commit_title
         run: echo ::set-output name=message::$(git log --format=%B -n 1 ${{ github.sha }})
 
+      - name: Commit Description
+        id: commit_description
+        run: echo ::set-output name=message::$(git log --format=%B -n 1 ${{ github.sha }} | sed -n '2,$p')
+
       - name: Release Condition
-        if: startsWith(steps.check_commit_message.outputs.message, '[release]')
+        if: startsWith(steps.commit_title.outputs.message, '[release]')
         id: release_condition
         run: exit 0
 
@@ -63,6 +67,7 @@ jobs:
           -DCMAKE_CXX_COMPILER=g++
           -DEKG_ENABLE_TEST=0
           -DEKG_LINUX_NOT_FOUND_FREETYPE=1
+          -DEKG_FORCE_LINUX=1
 
       - name: Build Linux-CMake
         run: |
@@ -77,7 +82,14 @@ jobs:
           -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++
           -DEKG_ENABLE_TEST=0
           -DEKG_LINUX_NOT_FOUND_FREETYPE=1
+          -DEKG_FORCE_WINDOWS=1
 
       - name: Build Windows-CMake
         run: |
           cmake --build ${{ github.workspace }}/cmake-build-debug
+
+      - name: Release if Needed
+        if: steps.check_commit_message.output == 'success'
+        run: |
+          cd ./${{ github.workspace }}
+          python ./devlog/devlog.py -m ${{ steps.commit_title }} -d ${{ steps.commit_description }}
