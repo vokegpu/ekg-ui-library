@@ -47,7 +47,6 @@ int32_t showcase_useless_window() {
   ekg::input::bind("hiroodrop", "b-up");
 
   bool running {true};
-
   while (running) {
     while (SDL_PollEvent(&sdl_event)) {
       ekg::os::sdl_poll_event(sdl_event);
