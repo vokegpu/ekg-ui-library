@@ -81,6 +81,6 @@ News:
 
     os.system(f'git tag -a "{tag}" -m "{metadata["-d"]}"')
     os.system(f"git push origin {tag}")
-    os.system(f'gh release create {tag} --title "EKG {version_descriptor}" --notes "{release}" --attach ./{windows}  --attach ./{linux}')
+    os.system(f'gh release create {tag} ./{windows}.zip ./{linux}.zip --latest --title "EKG {version_descriptor}" --notes "{release}"')
 
     print("ok done")
