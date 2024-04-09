@@ -8,6 +8,8 @@ def create_release_zip_file(zip_filename: str, lib_directory: str) -> str:
     shutil.copy("./LICENSE.md", f"./{zip_filename}/")
     shutil.copy(f"./lib/{lib_directory}/libekg.a", f"./{zip_filename}/lib/libekg.a")
 
+    print("Zipping: ", zip_filename)
+
     with zipfile.ZipFile(zip_output, "w") as zipf:
         for roott, dirs, files in os.walk(zip_input_content_directory_path):
             for file in files:
@@ -18,6 +20,9 @@ def create_release_zip_file(zip_filename: str, lib_directory: str) -> str:
     return zip_output
 
 if __name__ == "__main__":
+    print("initialising the most meow meow of live :3")
+    print("mumu mumu meow meow")
+
     metadata: Dict[str, str] = {"-m": "", "-d": ""}
     store: str = ""
 
@@ -29,6 +34,9 @@ if __name__ == "__main__":
         elif store:
             metadata[store] += sys.argv[it]
             metadata[store] += " "
+
+    print("reading metadata:")
+    print(metadata)
 
     file = open("./devlog/commit.txt", "r")
     content: List[str] = file.read().split("\n")
@@ -54,6 +62,9 @@ News:
 {news_descriptor}
 """
 
+    print("making a new release")
+    print(release)
+
     # Create tag and release.
     # But before pack the license and the libs files.
     
@@ -67,3 +78,5 @@ News:
     os.system(f'git tag -a "{tag}" -m "{metadata["-d"]}"')
     os.system(f"git push origin {tag}")
     os.system(f'gh release create {tag} --title "EKG {version_descriptor}" --notes "{release}" --attach ./{windows}  --attach ./{linux}')
+
+    print("ok done")
