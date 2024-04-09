@@ -75,7 +75,7 @@ For complete previously released logs, check [here](https://github.com/vokegpu/e
     print(release)
 
     # Create tag and release.
-    # But before pack the license and the libs files.
+    # But before pack/zip the faq, license, lib, and the include headers file.
     
     tag: str = version_descriptor.split(" ")[0]
     windows: str = f"ekg-ui-library-{tag}-win32"
