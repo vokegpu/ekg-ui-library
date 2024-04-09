@@ -4,6 +4,10 @@ from typing import List, Dict
 def create_release_zip_file(zip_filename: str, lib_directory: str) -> str:
     zip_output: str = f"./{zip_filename}.zip"
 
+    os.system("mkdir ./{zip_filename}/")
+    os.system("mkdir ./{zip_filename}/include")
+    os.system("mkdir ./{zip_filename}/lib")
+
     shutil.copytree("./include", f"./{zip_filename}/include/")
     shutil.copy("./LICENSE.md", f"./{zip_filename}/")
     shutil.copy(f"./lib/{lib_directory}/libekg.a", f"./{zip_filename}/lib/libekg.a")
@@ -69,8 +73,8 @@ News:
     # But before pack the license and the libs files.
     
     tag: str = version_descriptor.split(" ")[0]
-    windows: str = "ekg-ui-library-{tag}-win32"
-    linux: str = "ekg-ui-library-{tag}"
+    windows: str = f"ekg-ui-library-{tag}-win32"
+    linux: str = f"ekg-ui-library-{tag}"
 
     create_release_zip_file(windows, "windows")
     create_release_zip_file(linux, "linux")
