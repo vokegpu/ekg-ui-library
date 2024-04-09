@@ -78,5 +78,5 @@ jobs:
       - name: Release if Needed
         if: startsWith(steps.commit_title.outputs.message, '[release]')
         run: |
-          cd ./${{ github.workspace }}
+          cd ${{ github.workspace }}
           python ./devlog/devlog.py -m ${{ steps.commit_title.outputs.message }} -d ${{ steps.commit_description.outputs.message }}
