@@ -18,6 +18,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - uses: fregante/setup-git-user@v2
+    
       - name: Install Ninja
         uses: ashutoshvarma/setup-ninja@master
 
