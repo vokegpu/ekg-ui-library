@@ -281,7 +281,7 @@ void ekg::ui::textbox_widget::process_text(
   int64_t direction
 ) {
   auto p_ui {(ekg::ui::textbox *) this->p_data};
-  if (!(this->is_ui_enabled = p_ui->is_enabled()) && !(text == "clipboard" && this->is_clipboard_copy)) {
+  if (!(this->is_ui_enabled = p_ui->get_state() == ekg::state::enable) && !(text == "clipboard" && this->is_clipboard_copy)) {
     return;
   }
 

@@ -52,13 +52,6 @@ namespace ekg::ui {
      */
     bool is_must_format_text();
 
-    /**
-     * Set UI state.
-     */
-    ekg::ui::textbox *set_enabled(bool enabled);
-
-    bool is_enabled();
-
     ekg::ui::textbox *set_font_size(ekg::font font);
 
     ekg::font get_font_size();

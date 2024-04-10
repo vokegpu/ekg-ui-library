@@ -44,15 +44,6 @@ uint8_t ekg::ui::textbox::get_tab_size() {
   return this->tab_size;
 }
 
-ekg::ui::textbox *ekg::ui::textbox::set_enabled(bool state) {
-  this->enabled = state;
-  return this;
-}
-
-bool ekg::ui::textbox::is_enabled() {
-  return this->enabled;
-}
-
 ekg::ui::textbox *ekg::ui::textbox::set_place(uint16_t flags) {
   if (this->dock_flags != flags) {
     this->dock_flags = flags;
