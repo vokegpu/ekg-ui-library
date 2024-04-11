@@ -1,4 +1,5 @@
 #include <ekg/ekg.hpp>
+
 #include <ekg/os/ekg_sdl.hpp>
 #include <ekg/os/ekg_opengl.hpp>
 
@@ -364,7 +365,7 @@ int32_t showcase_useless_window() {
 
     SDL_GL_SwapWindow(app.p_sdl_win);
     if (app.vsync) {
-      SDL_Delay(60);
+      SDL_Delay(7);
     }
   }
 

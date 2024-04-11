@@ -43,8 +43,8 @@
 #include "ekg/ui/listbox/ui_listbox.hpp"
 #include "ekg/ui/scrollbar/ui_scrollbar.hpp"
 
-#define ekg_version_id "1.0.5.0"
-#define ekg_version_state "ALPHA"
+#define EKG_VERSION_ID "1.1.0"
+#define EKG_VERSION_STATE "ALPHA"
 
 namespace ekg {
   /**

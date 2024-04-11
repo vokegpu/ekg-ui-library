@@ -34,8 +34,13 @@ ekg::task &ekg::service::handler::generate() {
 }
 
 void ekg::service::handler::dispatch_pre_allocated_task(uint64_t index) {
-  ekg::task &task {this->pre_allocated_task_list.at(index)};
-  bool &is_dispatched {this->pre_allocated_task_dispatched_map[task.info.tag]};
+  ekg::task &task {
+    this->pre_allocated_task_list.at(index)
+  };
+
+  bool &is_dispatched {
+    this->pre_allocated_task_dispatched_map[task.info.tag]
+  };
 
   if (!is_dispatched) {
     this->generate() = task;
