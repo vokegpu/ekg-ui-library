@@ -302,7 +302,7 @@ void ekg::runtime::prepare_tasks() {
       .p_data = this
     },
     .function = [](ekg::info &info) {
-      if (ekg::hovered.swap == 0) {
+      if (!ekg::hovered.swap) {
         return;
       }
 

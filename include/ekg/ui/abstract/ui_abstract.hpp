@@ -90,7 +90,7 @@ namespace ekg {
 
     class abstract {
     protected:
-      std::array<ekg::task*, 6> action_register {};
+      std::array<ekg::task*, 8> action_register {};
     protected:
       int32_t id {};
       int32_t parent_id {};

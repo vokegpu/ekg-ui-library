@@ -74,12 +74,16 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
     ekg::core->p_os_platform->get_special_key(io_event_serialized.key, special_key);
 
     if (special_key != ekg::special_key::unknown) {
+      std::cout << "oi meow meow" << std::endl;
+
       this->special_keys[io_event_serialized.key][0] = '\0';
       this->special_keys[io_event_serialized.key] = string_builder;
       this->special_keys[io_event_serialized.key] += "+";
 
       this->callback(string_builder, true);
       this->is_special_keys_released = true;
+
+      std::cout << "cat" << std::endl;
     } else {
       std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
       string_builder += "abs-";
