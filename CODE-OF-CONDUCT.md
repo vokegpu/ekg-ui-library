@@ -1,4 +1,12 @@
-# Contributing
+# Overview
+
+- [Packages](###Packages)
+- [Code](###Code)
+- [UI](###UI)
+- [Immutable UI](###Immutable UI)
+- [Lacunes](#Lacunes)
+
+### Packages
 
 All headers must be inside of `include`; headers-definition are allowed but must be under [1]
 some strictly requirements. 
@@ -16,6 +24,8 @@ src ->
 
 Each new package is a namespace, except [2] the `core` and `util` [4];  
 declarations must follow a namespace path `ekg::package::something`.
+
+### Code
 
 Note: Some old code may not follow the code of conduct, but it is being refactored.
 
@@ -40,7 +50,7 @@ static_cast<t>
 #endif
 ```
 
-### UI elements
+### UI
 
 Creating UI elements requires two importants objects: `ekg::ui::abstract` and `ekg::ui::abstract_widget`.  
 The `::abstract` does not has access to the `::abstract_widget`; only `::abstract_widget` contains  
@@ -138,7 +148,22 @@ ekg::ui::drop_down_frame ekg::drop_down_frame(...) {
 
 ```
 
+### Immutable UI
+
+```cpp
+// ekg/ekg.cpp
+ekg::ui::label *imut_label(std::string_view text) {
+  ekg::ui::label *p_ui {new ekg::ui::label()};
+  
+  p_ui->unsafe_set_immutable(true);
+  p_ui->set_text(text);
+
+  return p_ui;
+}
+```
+
 # Lacunes
+
 - [1] The variable, function and method MUST follow: template, and default initialization value as-a-config.
 - [2] The `ekg::core` and `ekg/util/*` is user-programmer accessible, a fundamental part of code that do not require EKG techniques concepts. 
 - [3] The `ekg::core` is the unique PTR wich does not has `p_` prefix. The reason, pure design, as lacune [2].

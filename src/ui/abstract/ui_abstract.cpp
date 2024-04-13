@@ -48,6 +48,7 @@ ekg::ui::abstract *ekg::ui::abstract::add_child(int32_t to_insert_id) {
       &&
       (p_parent_widget = ekg::core->get_fast_widget_by_id(this->id)) != nullptr
     )) {
+
     p_child_widget->p_data->set_parent_id(this->id);
     p_child_widget->p_parent = &this->rect_widget;
     p_child_widget->p_parent_scissor = &p_parent_widget->scissor;
@@ -117,6 +118,15 @@ ekg::ui::abstract *ekg::ui::abstract::set_visible(bool state) {
 
 bool ekg::ui::abstract::is_visible() {
   return this->visible;
+}
+
+ekg::ui::abstract *ekg::ui::abstract::unsafe_set_immutable(bool is_now_immutable) {
+  this->immutable = is_now_immutable;
+  return this;
+}
+
+bool ekg::ui::abstract::is_immutable() {
+  return this->immutable;
 }
 
 void ekg::ui::abstract::destroy() {

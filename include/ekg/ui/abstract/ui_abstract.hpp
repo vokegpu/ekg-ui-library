@@ -98,6 +98,7 @@ namespace ekg {
 
       bool alive {true};
       bool visible {true};
+      bool immutable {};
 
       uint16_t dock_flags {};
       uint16_t sync_flags {};
@@ -130,6 +131,12 @@ namespace ekg {
        * not recommend to use, due the object origin be incorrect with the current set.
        */
       ekg::ui::abstract *unsafe_set_type(ekg::type enum_type);
+
+      /**
+       * Set the element out of main processor runtime,
+       * the main processor ekg::runtime does not care with immutable widgets.
+       */
+      ekg::ui::abstract *unsafe_set_immutable(bool is_now_immutable);
     public:
       /**
        * The abstract constructor.
@@ -207,6 +214,12 @@ namespace ekg {
        * Destroy the element.
        */
       void destroy();
+
+      /**
+       * Returns if the element is immutable,
+       * with-no attention to the main processor.
+       */
+      bool is_immutable();
 
       /**
        * Set the current element state, possibles states:

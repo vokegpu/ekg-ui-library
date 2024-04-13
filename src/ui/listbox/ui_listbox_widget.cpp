@@ -27,6 +27,7 @@
 #include "ekg/draw/draw.hpp"
 
 void ekg::ui::listbox_widget::process_component_template(ekg::item &parent_item) {
+  
 }
 
 void ekg::ui::listbox_widget::on_create() {

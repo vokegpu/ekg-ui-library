@@ -285,6 +285,38 @@ int32_t showcase_useless_window() {
 
   ekg::input::bind("hiroodrop", {"lctrl+b", "lctrl+lshift+v", "lshift+m"});
 
+  /*auto list = ekg::listbox(
+    "hello",
+    {
+      ekg::imut_label("oi"),
+      ekg::imut_label("meow"),
+      ekg::imut_checkbox("pompom", true);  
+    },
+    ekg::dock::fill | ekg::dock::next
+  );
+  
+  list->insert(list->begin(),
+  {
+    ekg::imut_label("oi"),
+    ekg::imut_label("meow"),
+    ekg::imut_checkbox("gato", true),
+    ekg::imut_listbox(
+      "oi", {
+        ekg::imut_label("oi")
+      }
+    )
+  });
+  
+  auto popup = ekg::popup(
+    "meow",
+    {
+      ekg::imut_label("copy"),
+      ekg::imut_label("cut"),
+      ekg::imut_label("paste")->add_property("separator"),
+      ekg::imut_label("meow"),,
+    },
+  );*/
+
   bool running {true};
   uint64_t now {};
   uint64_t last {};
