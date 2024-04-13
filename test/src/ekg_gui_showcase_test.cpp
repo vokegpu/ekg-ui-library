@@ -162,6 +162,9 @@ int32_t showcase_useless_window() {
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
     ->set_drag(ekg::dock::top);
 
+  ekg::textbox("meow", "mumu eu sou uma vaca", ekg::dock::fill | ekg::dock::next)
+    ->set_scaled_height(5);
+
   fps = ekg::label("FPS: ", ekg::dock::fill | ekg::dock::next)->set_font_size(ekg::font::big);
 
   ekg::theme().gen_default_dark_theme();
@@ -280,33 +283,36 @@ int32_t showcase_useless_window() {
   ekg::scrollbar("pompom-calc");
   ekg::pop_group();
 
-  ekg::input::bind("hiroodrop", "finger-click");
-  ekg::input::bind("hiroodrop", "mouse-1");
-  ekg::input::bind("hiroodrop", "lctrl+b");
-  ekg::input::bind("hiroodrop", "a-up");
-  ekg::input::bind("hiroodrop", "b-up");
+  ekg::input::bind("hiroodrop", {"lctrl+b", "lctrl+lshift+v", "lshift+m"});
 
   bool running {true};
   uint64_t now {};
   uint64_t last {};
+
+  SDL_Delay(10);
   
   float performance_frequency {};
   float dt {};
 
   uint64_t frame_couting {};
-  uint64_t last_frame {};
+  uint64_t last_frame {1};
 
   ekg::timing fps_timing {};
 
   while (running) {
     last = now;
     now = SDL_GetPerformanceCounter();
-    ekg::ui::dt = static_cast<float>((now - last) * 1000 / SDL_GetPerformanceFrequency());
+    ekg::ui::dt = static_cast<float>(
+      (now - last) * 1000 / SDL_GetPerformanceFrequency()
+    ) * 0.01f;
 
     if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
       last_frame = frame_couting;
+      fps->set_text(
+        "FPS: " + std::to_string(frame_couting) +
+        " DT: " + std::to_string(ekg::ui::dt)
+      );
       frame_couting = 0;
-      fps->set_text("FPS: " + std::to_string(last_frame));
     }
 
     while (SDL_PollEvent(&sdl_event)) {
@@ -354,6 +360,10 @@ int32_t showcase_useless_window() {
       }
     }
 
+    if (ekg::input::action("hiroodrop")) {
+      std::cout << "mumu sou uma vakinha" << std::endl;
+    }
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glViewport(0.0f, 0.0f, ekg::ui::width, ekg::ui::height);
@@ -365,7 +375,7 @@ int32_t showcase_useless_window() {
 
     SDL_GL_SwapWindow(app.p_sdl_win);
     if (app.vsync) {
-      SDL_Delay(7);
+      SDL_Delay(6);
     }
   }
 

@@ -192,6 +192,7 @@ void ekg::ui::frame_widget::on_draw_refresh() {
   auto &theme {ekg::theme()};
 
   if (this->p_scroll_embedded != nullptr) {
+    this->p_scroll_embedded->scissor = this->scissor;
     this->p_scroll_embedded->clamp_scroll();
   }
 

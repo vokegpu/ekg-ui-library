@@ -39,7 +39,7 @@ namespace ekg::service {
     std::unordered_map<std::string, std::vector<std::string>> input_bind_map {};
     std::unordered_map<std::string, bool> input_register_map {};
     std::unordered_map<std::string, bool> input_map {};
-    std::array<std::string, 7> special_keys {};
+    std::array<char[8], 7> special_keys {};
 
     std::vector<std::string> special_keys_unit_pressed {};
     std::vector<std::string> double_click_mouse_buttons_pressed {};

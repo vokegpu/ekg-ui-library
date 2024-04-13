@@ -35,6 +35,11 @@ ekg::os::sdl::sdl(SDL_Window *p_sdl_win) {
 
   int32_t w {}, h {};
 
+  /**
+   * Sounds an unnecessary resize, but it is invoke a complete swapchain redo,
+   * to fix the orthographic matrix needed calc.
+   */
+
   SDL_GetWindowSize(this->p_sdl_win, &w, &h);
   SDL_SetWindowSize(this->p_sdl_win, w--, h--);
   SDL_SetWindowSize(this->p_sdl_win, w++, h++);
@@ -179,37 +184,37 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
     break;
 
   case SDL_KEYDOWN:
-    serialized.is_key_down = true;
+    serialized.event_type = ekg::platform_event_type::key_down;
     serialized.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
     ekg::poll_io_event = true;
     break;
 
   case SDL_KEYUP:
-    serialized.is_key_up = true;
+    serialized.event_type = ekg::platform_event_type::key_up;
     serialized.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
     ekg::poll_io_event = true;
     break;
 
   case SDL_TEXTINPUT:
-    serialized.is_text_input = true;
+    serialized.event_type = ekg::platform_event_type::text_input;
     serialized.text_input = sdl_event.text.text;
     ekg::poll_io_event = true;
     break;
 
   case SDL_MOUSEBUTTONUP:
-    serialized.is_mouse_button_up = true;
+    serialized.event_type = ekg::platform_event_type::mouse_button_up;
     serialized.mouse_button = sdl_event.button.button;
     ekg::poll_io_event = true;
     break;
 
   case SDL_MOUSEBUTTONDOWN:
-    serialized.is_mouse_button_down = true;
+    serialized.event_type = ekg::platform_event_type::mouse_button_down;
     serialized.mouse_button = sdl_event.button.button;
     ekg::poll_io_event = true;
     break;
 
   case SDL_MOUSEWHEEL:
-    serialized.is_mouse_wheel = true;
+    serialized.event_type = ekg::platform_event_type::mouse_wheel;
     serialized.mouse_wheel_x = sdl_event.wheel.x;
     serialized.mouse_wheel_y = sdl_event.wheel.y;
     serialized.mouse_wheel_precise_x = sdl_event.wheel.preciseX;
@@ -218,28 +223,28 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
     break;
 
   case SDL_MOUSEMOTION:
-    serialized.is_mouse_motion = true;
+    serialized.event_type = ekg::platform_event_type::mouse_motion;
     serialized.mouse_motion_x = sdl_event.motion.x;
     serialized.mouse_motion_y = sdl_event.motion.y;
     ekg::poll_io_event = true;
     break;
 
   case SDL_FINGERUP:
-    serialized.is_finger_up = true;
+    serialized.event_type = ekg::platform_event_type::finger_up;
     serialized.finger_x = sdl_event.tfinger.x;
     serialized.finger_y = sdl_event.tfinger.y;        
     ekg::poll_io_event = true;
     break;
 
   case SDL_FINGERDOWN:
-    serialized.is_finger_down = true;
+    serialized.event_type = ekg::platform_event_type::finger_down;
     serialized.finger_x = sdl_event.tfinger.x;
     serialized.finger_y = sdl_event.tfinger.y;   
     ekg::poll_io_event = true;
     break;
 
   case SDL_FINGERMOTION:
-    serialized.is_finger_motion = true;
+    serialized.event_type = ekg::platform_event_type::finger_motion;
     serialized.finger_x = sdl_event.tfinger.x;
     serialized.finger_y = sdl_event.tfinger.y;
     serialized.finger_dx = sdl_event.tfinger.dx;

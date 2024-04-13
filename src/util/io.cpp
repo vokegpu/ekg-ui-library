@@ -299,6 +299,12 @@ void ekg::input::bind(std::string_view key_input, std::string_view value_input) 
   return ekg::core->service_input.bind(key_input, value_input);
 }
 
+void ekg::input::bind(std::string_view key_input, const std::vector<std::string_view> &bind_list) {
+  for (const std::string_view &bind : bind_list) {
+    ekg::input::bind(key_input, bind);
+  }
+}
+
 void ekg::input::fire(std::string_view key_input) {
   ekg::core->service_input.fire(key_input);
 }

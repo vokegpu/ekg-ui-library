@@ -147,3 +147,5 @@
 -- Added OpenGL RHI (Rendering-Hardware Interface).
 -- Performance boost excluding mapped scissors.
 -- State-based for abstract UI elements.
+-- Cross-platform API now contains a serialized event type.
+-- Keybinds and special keys, little optmized.

@@ -257,6 +257,8 @@ namespace ekg::input {
 
   void bind(std::string_view action_key, std::string_view input_key);
 
+  void bind(std::string_view action_key, const std::vector<std::string_view> &bind_list);
+
   bool motion();
 
   bool released();

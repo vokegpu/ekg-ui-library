@@ -880,7 +880,7 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
   bool should_process_textbox {
     this->flag.focused && (
-      (io_event_serial.is_key_down || io_event_serial.is_text_input) ||
+      (io_event_serial.event_type == ekg::platform_event_type::key_down || io_event_serial.event_type == ekg::platform_event_type::text_input) ||
       (this->is_clipboard_copy || this->is_clipboard_cut || this->is_clipboard_paste)
     )
   };
@@ -889,7 +889,7 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     return;
   }
 
-  if (io_event_serial.is_text_input) {
+  if (io_event_serial.event_type == ekg::platform_event_type::text_input) {
     for (ekg::ui::textbox_widget::cursor &cursor: this->loaded_multi_cursor_list) {
       this->process_text(
         cursor,
@@ -898,7 +898,7 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
         1
       );
     }
-  } else if (io_event_serial.is_key_down && ekg::input::receive("escape")) {
+  } else if (io_event_serial.event_type == ekg::platform_event_type::key_down && ekg::input::receive("escape")) {
     ekg::ui::textbox_widget::cursor main_cursor {this->loaded_multi_cursor_list.at(0)};
     main_cursor.pos[1] = main_cursor.pos[0];
 

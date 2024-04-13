@@ -39,13 +39,68 @@ void ekg::service::input::init() {
    * Unpressed special key result in `\0.
    */
 
-  this->special_keys[it++] = "lshift\0",
-  this->special_keys[it++] = "rshift\0",
-  this->special_keys[it++] = "lctrl\0",
-  this->special_keys[it++] = "rctrl\0",
-  this->special_keys[it++] = "alt\0",
-  this->special_keys[it++] = "altgr\0",
-  this->special_keys[it++] = "tab\0";
+  this->special_keys[0][0] = '\0';
+  this->special_keys[0][1] = 's';
+  this->special_keys[0][2] = 'h';
+  this->special_keys[0][3] = 'i';
+  this->special_keys[0][4] = 'f';
+  this->special_keys[0][5] = 't';
+  this->special_keys[0][6] = '+';
+  this->special_keys[0][7] = '\0';
+
+  this->special_keys[1][0] = '\0'; 
+  this->special_keys[1][1] = 's'; 
+  this->special_keys[1][2] = 'h'; 
+  this->special_keys[1][3] = 'i';
+  this->special_keys[1][4] = 'f';
+  this->special_keys[1][5] = 't';
+  this->special_keys[1][6] = '+';
+  this->special_keys[1][7] = '\0';
+
+  this->special_keys[2][0] = '\0'; 
+  this->special_keys[2][1] = 'c'; 
+  this->special_keys[2][2] = 't'; 
+  this->special_keys[2][3] = 'r';
+  this->special_keys[2][4] = 'l';
+  this->special_keys[2][5] = '+';
+  this->special_keys[2][6] = '\0';
+  this->special_keys[2][7] = '\0';
+  
+  this->special_keys[3][0] = '\0'; 
+  this->special_keys[3][1] = 'c'; 
+  this->special_keys[3][2] = 't'; 
+  this->special_keys[3][3] = 'r';
+  this->special_keys[3][4] = 'l';
+  this->special_keys[3][5] = '+';
+  this->special_keys[3][6] = '\0';
+  this->special_keys[3][7] = '\0';
+
+  this->special_keys[4][0] = '\0'; 
+  this->special_keys[4][1] = 'l'; 
+  this->special_keys[4][2] = 't'; 
+  this->special_keys[4][3] = '+';
+  this->special_keys[4][4] = '\0';
+  this->special_keys[4][5] = '\0';
+  this->special_keys[4][6] = '\0';
+  this->special_keys[4][7] = '\0';
+
+  this->special_keys[5][0] = '\0'; 
+  this->special_keys[5][1] = 'l'; 
+  this->special_keys[5][2] = 't'; 
+  this->special_keys[5][3] = 'g';
+  this->special_keys[5][4] = 'r';
+  this->special_keys[5][5] = '+';
+  this->special_keys[5][6] = '\0';
+  this->special_keys[5][7] = '\0';
+
+  this->special_keys[6][0] = '\0'; 
+  this->special_keys[6][1] = 'a'; 
+  this->special_keys[6][2] = 'b'; 
+  this->special_keys[6][3] = '+';
+  this->special_keys[6][4] = '\0';
+  this->special_keys[6][5] = '\0';
+  this->special_keys[6][6] = '\0';
+  this->special_keys[6][7] = '\0';
 }
 
 void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized) {
@@ -54,206 +109,221 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
   this->has_motion = false;
   this->was_typed = false;
 
-  if (io_event_serialized.is_text_input) {
-    this->was_pressed = true;
-    this->was_typed = true;
-  }
+  switch (io_event_serialized.event_type) {
+    case ekg::platform_event_type::text_input: {
+      this->was_pressed = true;
+      this->was_typed = true;
+      break;
+    }
 
-  if (io_event_serialized.is_key_down) {
-    this->was_pressed = true;
+    case ekg::platform_event_type::key_down: {
+      this->was_pressed = true;
 
-    std::string key_name {};
-    std::string string_builder {};
+      std::string key_name {};
+      std::string string_builder {};
 
-    ekg::core->p_os_platform->get_key_name(
-      io_event_serialized.key,
-      key_name
-    );
+      ekg::core->p_os_platform->get_key_name(
+        io_event_serialized.key,
+        key_name
+      );
 
-    ekg::special_key special_key {ekg::special_key::unknown};
-    ekg::core->p_os_platform->get_special_key(io_event_serialized.key, special_key);
+      ekg::special_key special_key {ekg::special_key::unknown};
+      ekg::core->p_os_platform->get_special_key(io_event_serialized.key, special_key);
 
-    if (special_key != ekg::special_key::unknown) {
-      std::cout << "oi meow meow" << std::endl;
+      if (special_key != ekg::special_key::unknown) {
+        this->special_keys[static_cast<uint64_t>(special_key)][0] = key_name[0];
+        string_builder += key_name;
 
-      this->special_keys[io_event_serialized.key][0] = '\0';
-      this->special_keys[io_event_serialized.key] = string_builder;
-      this->special_keys[io_event_serialized.key] += "+";
+        this->callback(string_builder, true);
+        this->is_special_keys_released = true;
+      } else {
+        std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
+        string_builder += "abs-";
+        string_builder += key_name;
 
-      this->callback(string_builder, true);
-      this->is_special_keys_released = true;
+        this->callback(string_builder, true);
+        this->input_released_list.push_back(string_builder);
 
-      std::cout << "cat" << std::endl;
-    } else {
-      std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
-      string_builder += "abs-";
-      string_builder += key_name;
+        string_builder.clear();
+        this->complete_with_units(string_builder, key_name);
+        this->callback(string_builder, true);
+        this->input_released_list.push_back(string_builder);
 
-      this->callback(string_builder, true);
-      this->input_released_list.push_back(string_builder);
-
-      string_builder.clear();
-      this->complete_with_units(string_builder, key_name);
-      this->callback(string_builder, true);
-      this->input_released_list.push_back(string_builder);
-
-      if (string_builder != key_name && !this->contains_unit(string_builder)) {
-        this->special_keys_unit_pressed.push_back(string_builder);
+        if (string_builder != key_name && !this->contains_unit(string_builder)) {
+          this->special_keys_unit_pressed.push_back(string_builder);
+        }
       }
+
+      break;
     }
-  }
 
-  if (io_event_serialized.is_key_up) {
-    this->was_released = true;
-    std::string key_name {};
-    std::string string_builder {};
+    case ekg::platform_event_type::key_up: {
+      this->was_released = true;
+      std::string key_name {};
+      std::string string_builder {};
 
-    ekg::core->p_os_platform->get_key_name(
-      io_event_serialized.key,
-      key_name
-    );
+      ekg::core->p_os_platform->get_key_name(
+        io_event_serialized.key,
+        key_name
+      );
 
-    ekg::special_key special_key {ekg::special_key::unknown};
-    ekg::core->p_os_platform->get_special_key(io_event_serialized.key, special_key);
+      ekg::special_key special_key {ekg::special_key::unknown};
+      ekg::core->p_os_platform->get_special_key(io_event_serialized.key, special_key);
 
-    if (special_key != ekg::special_key::unknown) {
-      this->special_keys[io_event_serialized.key][0] = '\0';
-      string_builder += key_name;
+      if (special_key != ekg::special_key::unknown) {
+        this->special_keys[static_cast<uint64_t>(special_key)][0] = '\0';
+        string_builder += key_name;
 
-      this->callback(string_builder, false);
-      this->is_special_keys_released = true;
+        this->callback(string_builder, false);
+        this->is_special_keys_released = true;
 
-      string_builder += "-up";
+        string_builder += "-up";
+        this->callback(string_builder, true);
+      } else {
+        std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
+        string_builder += "abs-";
+        string_builder += key_name;
+        string_builder += "-up";
+
+        this->callback(string_builder, true);
+        this->input_released_list.push_back(string_builder);
+
+        string_builder.clear();
+        this->complete_with_units(string_builder, key_name);
+        string_builder += "-up";
+
+        this->callback(string_builder, true);
+        this->input_released_list.push_back(string_builder);
+      }
+      
+      break;
+    }
+
+    case ekg::platform_event_type::mouse_button_down: {
+      std::string string_builder {"mouse-"};
+      string_builder += std::to_string(io_event_serialized.mouse_button);
+
+      this->was_pressed = true;
       this->callback(string_builder, true);
-    } else {
-      std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
-      string_builder += "abs-";
-      string_builder += key_name;
+      this->input_released_list.push_back(string_builder);
+
+      bool double_click_factor {ekg::reach(this->double_interact, 500)};
+      if (!double_click_factor) {
+        string_builder += "-double";
+        this->callback(string_builder, true);
+
+        this->double_click_mouse_buttons_pressed.push_back(string_builder);
+        this->input_released_list.push_back(string_builder);
+      }
+
+      if (double_click_factor) {
+        ekg::reset(this->double_interact);
+      }
+
+      break;
+    }
+
+    case ekg::platform_event_type::mouse_button_up: {
+      this->was_released = true;
+      std::string string_builder {"mouse-"};
+
+      string_builder += std::to_string(io_event_serialized.mouse_button);
       string_builder += "-up";
 
       this->callback(string_builder, true);
       this->input_released_list.push_back(string_builder);
-
-      string_builder.clear();
-      this->complete_with_units(string_builder, key_name);
-      string_builder += "-up";
-
-      this->callback(string_builder, true);
-      this->input_released_list.push_back(string_builder);
-    }
-  }
-
-  if (io_event_serialized.is_mouse_button_down) {
-    std::string string_builder {"mouse-"};
-    string_builder += std::to_string(io_event_serialized.mouse_button);
-
-    this->was_pressed = true;
-    this->callback(string_builder, true);
-    this->input_released_list.push_back(string_builder);
-
-    bool double_click_factor {ekg::reach(this->double_interact, 500)};
-    if (!double_click_factor) {
-      string_builder += "-double";
-      this->callback(string_builder, true);
-
-      this->double_click_mouse_buttons_pressed.push_back(string_builder);
-      this->input_released_list.push_back(string_builder);
+      break;
     }
 
-    if (double_click_factor) {
-      ekg::reset(this->double_interact);
+    case ekg::platform_event_type::mouse_motion: {
+      this->has_motion = true;
+      this->interact.x = static_cast<float>(io_event_serialized.mouse_motion_x);
+      this->interact.y = static_cast<float>(io_event_serialized.mouse_motion_y);
+      break;
     }
-  }
 
-  if (io_event_serialized.is_mouse_button_up) {
-    this->was_released = true;
-    std::string string_builder {"mouse-"};
+    case ekg::platform_event_type::mouse_wheel: {
+      this->callback("mouse-wheel", true);
+      this->was_wheel = true;
 
-    string_builder += std::to_string(io_event_serialized.mouse_button);
-    string_builder += "-up";
+      this->callback("mouse-wheel-up", io_event_serialized.mouse_wheel_y > 0);
+      this->callback("mouse-wheel-down", io_event_serialized.mouse_wheel_y < 0);
+      this->callback("mouse-wheel-right", io_event_serialized.mouse_wheel_x > 0);
+      this->callback("mouse-wheel-left", io_event_serialized.mouse_wheel_x < 0);
 
-    this->callback(string_builder, true);
-    this->input_released_list.push_back(string_builder);
-  }
-
-  if (io_event_serialized.is_mouse_motion) {
-    this->has_motion = true;
-    this->interact.x = static_cast<float>(io_event_serialized.mouse_motion_x);
-    this->interact.y = static_cast<float>(io_event_serialized.mouse_motion_y);
-  }
-
-  if (io_event_serialized.is_mouse_wheel) {
-    this->callback("mouse-wheel", true);
-    this->was_wheel = true;
-
-    this->callback("mouse-wheel-up", io_event_serialized.mouse_wheel_y > 0);
-    this->callback("mouse-wheel-down", io_event_serialized.mouse_wheel_y < 0);
-    this->callback("mouse-wheel-right", io_event_serialized.mouse_wheel_x > 0);
-    this->callback("mouse-wheel-left", io_event_serialized.mouse_wheel_x < 0);
-
-    this->interact.z = io_event_serialized.mouse_wheel_precise_x;
-    this->interact.w = io_event_serialized.mouse_wheel_precise_y;
-  }
-
-  if (io_event_serialized.is_finger_down) {
-    this->was_pressed = true;
-    ekg::reset(this->timing_last_interact);
-    bool reach_double_interact {ekg::reach(this->double_interact, 500)};
-
-    this->interact.x = io_event_serialized.finger_x * static_cast<float>(ekg::ui::width);
-    this->interact.y = io_event_serialized.finger_y * static_cast<float>(ekg::ui::height);
-
-    this->last_finger_interact.x = this->interact.x;
-    this->last_finger_interact.y = this->interact.y;
-
-    this->callback("finger-click", true);
-    this->callback("finger-click-double", !reach_double_interact);
-
-    if (reach_double_interact) {
-      ekg::reset(this->double_interact);
+      this->interact.z = io_event_serialized.mouse_wheel_precise_x;
+      this->interact.w = io_event_serialized.mouse_wheel_precise_y;
+      break;
     }
-  }
 
-  if (io_event_serialized.is_finger_up) {
-    this->was_released = true;
-    this->callback("finger-hold", (this->finger_hold_event = ekg::reach(this->timing_last_interact, 750)));
-    this->callback("finger-click", false);
-    this->callback("finger-click-double", false);
+    case ekg::platform_event_type::finger_down: {
+      this->was_pressed = true;
+      ekg::reset(this->timing_last_interact);
+      bool reach_double_interact {ekg::reach(this->double_interact, 500)};
 
-    /**
-     * Should stop the swipe event when there is no finger touching on screen.
-     **/
-    this->callback("finger-swipe", false);
-    this->callback("finger-swipe-up", false);
-    this->callback("finger-swipe-down", false);
+      this->interact.x = io_event_serialized.finger_x * static_cast<float>(ekg::ui::width);
+      this->interact.y = io_event_serialized.finger_y * static_cast<float>(ekg::ui::height);
 
-    this->interact.x = io_event_serialized.finger_x * static_cast<float>(ekg::ui::width);
-    this->interact.y = io_event_serialized.finger_y * static_cast<float>(ekg::ui::height);
+      this->last_finger_interact.x = this->interact.x;
+      this->last_finger_interact.y = this->interact.y;
 
-    this->last_finger_interact.x = this->interact.x;
-    this->last_finger_interact.y = this->interact.y;
+      this->callback("finger-click", true);
+      this->callback("finger-click-double", !reach_double_interact);
 
-    this->interact.z = 0.0f;
-    this->interact.w = 0.0f;
-  }
+      if (reach_double_interact) {
+        ekg::reset(this->double_interact);
+      }
 
-  if (io_event_serialized.is_finger_motion) {
-    this->has_motion = true;
-    this->interact.x = io_event_serialized.finger_x * static_cast<float>(ekg::ui::width);
-    this->interact.y = io_event_serialized.finger_y * static_cast<float>(ekg::ui::height);
+      break;
+    }
 
-    this->interact.z = (io_event_serialized.finger_dx * (static_cast<float>(ekg::ui::width) / 9.0f));
-    this->interact.w = (io_event_serialized.finger_dy * static_cast<float>(ekg::ui::height) / 9.0f);
+    case ekg::platform_event_type::finger_up: {
+      this->was_released = true;
+      this->callback("finger-hold", (this->finger_hold_event = ekg::reach(this->timing_last_interact, 750)));
+      this->callback("finger-click", false);
+      this->callback("finger-click-double", false);
 
-    float swipe_factor = 0.01f;
+      /**
+       * Should stop the swipe event when there is no finger touching on screen.
+       **/
+      this->callback("finger-swipe", false);
+      this->callback("finger-swipe-up", false);
+      this->callback("finger-swipe-down", false);
 
-    this->callback("finger-swipe", (this->interact.w > swipe_factor || this->interact.w < -swipe_factor) ||
-                                   (this->interact.z > swipe_factor || this->interact.z < -swipe_factor));
-    this->callback("finger-swipe-up", this->interact.w > swipe_factor);
-    this->callback("finger-swipe-down", this->interact.w < -swipe_factor);
+      this->interact.x = io_event_serialized.finger_x * static_cast<float>(ekg::ui::width);
+      this->interact.y = io_event_serialized.finger_y * static_cast<float>(ekg::ui::height);
 
-    this->finger_swipe_event = true;
-    ekg::reset(this->timing_last_interact);
+      this->last_finger_interact.x = this->interact.x;
+      this->last_finger_interact.y = this->interact.y;
+
+      this->interact.z = 0.0f;
+      this->interact.w = 0.0f;
+      break;
+    }
+
+    case ekg::platform_event_type::finger_motion: {
+      this->has_motion = true;
+      this->interact.x = io_event_serialized.finger_x * static_cast<float>(ekg::ui::width);
+      this->interact.y = io_event_serialized.finger_y * static_cast<float>(ekg::ui::height);
+
+      this->interact.z = (io_event_serialized.finger_dx * (static_cast<float>(ekg::ui::width) / 9.0f));
+      this->interact.w = (io_event_serialized.finger_dy * static_cast<float>(ekg::ui::height) / 9.0f);
+
+      float swipe_factor = 0.01f;
+
+      this->callback(
+        "finger-swipe",
+        (this->interact.w > swipe_factor || this->interact.w < -swipe_factor) ||
+        (this->interact.z > swipe_factor || this->interact.z < -swipe_factor)
+      );
+
+      this->callback("finger-swipe-up", this->interact.w > swipe_factor);
+      this->callback("finger-swipe-down", this->interact.w < -swipe_factor);
+
+      this->finger_swipe_event = true;
+      ekg::reset(this->timing_last_interact);
+      break;
+    }
   }
 
   if (this->has_motion && !this->double_click_mouse_buttons_pressed.empty()) {
@@ -283,7 +353,7 @@ void ekg::service::input::on_update() {
   this->finger_hold_event = false;
 
   if (this->is_special_keys_released) {
-    for (std::string &units: this->special_keys_unit_pressed) {
+    for (std::string &units : this->special_keys_unit_pressed) {
       this->callback(units, false);
     }
 
@@ -341,7 +411,7 @@ void ekg::service::input::callback(std::string_view key, bool callback) {
     this->input_register_callback.clear();
   }
 
-  for (std::string &binds: bind_map) {
+  for (std::string &binds : bind_map) {
     this->input_register_map[binds] = callback;
     if (callback) {
       this->input_register_callback.push_back(binds);
@@ -366,7 +436,7 @@ void ekg::service::input::fire(std::string_view key) {
 }
 
 bool ekg::service::input::contains_unit(std::string_view label) {
-  for (std::string &units: this->special_keys_unit_pressed) {
+  for (std::string &units : this->special_keys_unit_pressed) {
     if (units == label) {
       return true;
     }

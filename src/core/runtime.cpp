@@ -75,6 +75,7 @@ void ekg::runtime::init() {
   this->prepare_ui_env();
   this->service_layout.init();
   this->service_theme.init();
+  this->service_input.init();
 }
 
 void ekg::runtime::quit() {
@@ -122,9 +123,9 @@ void ekg::runtime::process_event() {
      **/
     hovered = (
       !(
-        this->io_event_serial.is_key_down   ||
-        this->io_event_serial.is_key_up     ||
-        this->io_event_serial.is_text_input
+        this->io_event_serial.event_type == ekg::platform_event_type::key_down   ||
+        this->io_event_serial.event_type == ekg::platform_event_type::key_up     ||
+        this->io_event_serial.event_type == ekg::platform_event_type::text_input
        )
       && p_widgets->flag.hovered
       && p_widgets->p_data->is_visible()

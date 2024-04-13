@@ -55,21 +55,28 @@ namespace ekg {
     unknown
   };
 
+  enum class platform_event_type {
+    text_input,
+    mouse_button_up,
+    mouse_button_down,
+    mouse_motion,
+    mouse_wheel,
+    finger_up,
+    finger_down,
+    finger_motion,
+    key_down,
+    key_up
+  };
+
   extern ekg::system_cursor cursor;
 }
 
 namespace ekg::os {
   struct io_event_serial {
   public:
-    bool is_text_input {};
+    ekg::platform_event_type event_type {};
     std::string_view text_input {};
-
-    bool is_mouse_button_up {};
-    bool is_mouse_button_down {};
     uint8_t mouse_button {};
-
-    bool is_mouse_motion {};
-    bool is_mouse_wheel {};
 
     int32_t mouse_motion_x {};
     int32_t mouse_motion_y {};
@@ -80,12 +87,6 @@ namespace ekg::os {
     float mouse_wheel_precise_x {};
     float mouse_wheel_precise_y {};
 
-    bool is_finger_up {};
-    bool is_finger_down {};
-    bool is_finger_motion {};
-
-    bool is_key_down {};
-    bool is_key_up {};
     int32_t key {};
 
     float finger_x {};
