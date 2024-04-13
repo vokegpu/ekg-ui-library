@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef EKG_CORE_EVENT_H
-#define EKG_CORE_EVENT_H
+#ifndef EKG_CORE_TASK_H
+#define EKG_CORE_TASK_H
 
 #include <iostream>
 #include <functional>

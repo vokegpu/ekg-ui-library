@@ -22,13 +22,4 @@
  * SOFTWARE.
  */
 
-#ifndef EKG_OS_WAYLAND_PROTOCOL_H
-#define EKG_OS_WAYLAND_PROTOCOL_H
-
-#include "platform.hpp"
-
-namespace ekg {
-  class wayland_protocol : public ekg::os::platform {};
-}
-
-#endif
+#include "ekg/os/ekg_wayland_server.hpp"

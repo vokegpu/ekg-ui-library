@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+#ifndef EKG_OS_VULKAN_H
+#define EKG_OS_VULKAN_H
+
 #include "ekg/gpu/api.hpp"
 
 namespace ekg::os {
@@ -29,4 +32,6 @@ namespace ekg::os {
   protected:
     // VkDescriptorPool *p_descriptor_pool {};
   };
-};
+}
+
+#endif
