@@ -73,7 +73,7 @@ void ekg::service::theme::gen_default_dark_theme() {
   this->slider_outline              = ekg::color(202, 207, 222, 0);
   this->slider_highlight            = ekg::color(44, 166, 255, 50);
   this->slider_activity_bar         = this->slider_activity;
-  this->slider_bar_thickness        = 16;
+  this->slider_bar_thickness        = 100;
   this->slider_target_thickness     = 0;
 
   /* Label */

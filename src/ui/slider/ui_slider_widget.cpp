@@ -90,8 +90,9 @@ void ekg::ui::slider_widget::on_reload() {
 
   float normalised_bar_thickness {static_cast<float>(theme.slider_bar_thickness) / 100};
   float normalised_target_thickness {static_cast<float>(theme.slider_target_thickness) / 100};
-  auto &layout {ekg::core->service_layout};
   bool centered_text {text_dock_flags == ekg::dock::center};
+
+  ekg::service::layout &layout {ekg::core->service_layout};
 
   this->dimension.w = ekg_min(this->dimension.w, text_width);
   this->dimension.h = dimension_height;
@@ -120,14 +121,14 @@ void ekg::ui::slider_widget::on_reload() {
       this->rect_bar_value.w = this->rect_bar.w * (value - min) / (max - min);
       this->rect_bar_value.h = this->rect_bar.h;
 
-      // Radius are equals to both dimension (w, h)
+      // Radius are equals to the both dimension (w, h)
       this->rect_target.w = dimension_height * normalised_target_thickness;
       this->rect_target.h = this->rect_target.w;
 
       bar_difference_size = this->rect_bar.h;
       this->rect_bar.h = ekg_min(this->rect_bar.h, this->rect_target.h);
-
       layout.set_preset_mask({offset, offset, dimension_height}, bar_axis, this->dimension.w);
+
       break;
     }
 
@@ -147,8 +148,7 @@ void ekg::ui::slider_widget::on_reload() {
   layout.process_layout_mask();
 
   auto &layout_mask {layout.get_layout_mask()};
-  this->dimension.h = layout_mask.h;
-  this->dimension.h = ekg_min(this->dimension.h, layout_mask.h);
+  this->dimension.h = ekg_min(layout_mask.h, layout_mask.h);
 
   this->rect_bar.h = bar_difference_size;
   this->rect_target.x = this->rect_bar.x + this->rect_bar_value.w - (this->rect_target.w / 2);
@@ -177,8 +177,11 @@ void ekg::ui::slider_widget::on_reload() {
 void ekg::ui::slider_widget::on_pre_event(ekg::os::io_event_serial &io_event_serial) {
   abstract_widget::on_pre_event(io_event_serial);
 
-  this->flag.state = (this->flag.hovered && ekg::input::action("slider-bar-modifier") &&
-                      (ekg::input::action("slider-bar-increase") || ekg::input::action("slider-bar-decrease")));
+  this->flag.state = (
+    this->flag.hovered && ekg::input::action("slider-bar-modifier") &&
+    (ekg::input::action("slider-bar-increase") || ekg::input::action("slider-bar-decrease"))
+  );
+
   this->flag.absolute = this->flag.state;
 }
 
@@ -192,7 +195,10 @@ void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial)
   bool motion {ekg::input::motion()};
 
   if (motion || pressed || released) {
-    ekg::set(this->flag.highlight, this->flag.hovered && ekg::rect_collide_vec(this->rect_bar + rect, interact));
+    ekg::set(
+      this->flag.highlight,
+      this->flag.hovered && ekg::rect_collide_vec(this->rect_bar + rect, interact)
+    );
 
     ekg_action_dispatch(
       motion && this->flag.hovered && ekg::timing::second > ekg::ui::latency,
@@ -246,14 +252,31 @@ void ekg::ui::slider_widget::on_draw_refresh() {
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
 
-  ekg::draw::rect(bar, theme.slider_background);
+  ekg::draw::rect(
+    bar,
+    theme.slider_background
+  );
 
   if (this->flag.highlight) {
-    ekg::draw::rect(bar, theme.slider_highlight);
+    ekg::draw::rect(
+      bar,
+      theme.slider_highlight
+    );
   }
 
-  ekg::draw::rect(this->rect_target + rect, theme.slider_activity, ekg::draw_mode::circle);
-  ekg::draw::rect(bar.x, bar.y, bar_value.w, bar_value.h, theme.slider_activity_bar);
+  ekg::draw::rect(
+    this->rect_target + rect,
+    theme.slider_activity,
+    ekg::draw_mode::circle
+  );
+
+  ekg::draw::rect(
+    bar.x,
+    bar.y,
+    bar_value.w,
+    bar_value.h,
+    theme.slider_activity_bar
+  );
 
   f_renderer.blit(
     this->string_value,

@@ -68,31 +68,3 @@ ekg::ui::listbox *ekg::ui::listbox::set_place(uint16_t dock) {
 
   return this;
 }
-
-ekg::item &ekg::ui::listbox::item() {
-  return this->metadata;
-}
-
-ekg::ui::listbox *ekg::ui::listbox::set_category_font_size(ekg::font font) {
-  if (this->category_font_size != font) {
-    this->category_font_size = font;
-  }
-
-  return this;
-}
-
-ekg::font ekg::ui::listbox::get_category_font_size() {
-  return this->category_font_size;
-}
-
-ekg::ui::listbox *ekg::ui::listbox::set_item_font_size(ekg::font font) {
-  if (this->item_font_size != font) {
-    this->item_font_size = font;
-  }
-
-  return this;
-}
-
-ekg::font ekg::ui::listbox::get_item_font_size() {
-  return this->item_font_size;
-}

@@ -37,7 +37,7 @@ ekg::ui::label *ekg::ui::label::set_place(uint16_t flags) {
 ekg::ui::label *ekg::ui::label::set_text(std::string_view string) {
   if (this->text != string) {
     this->text = string;
-    ekg::reload(this->id);
+    ekg::reload(this->immutable ? this->owner_id : this->id);
   }
 
   return this;
@@ -50,7 +50,7 @@ std::string ekg::ui::label::get_text() {
 ekg::ui::label *ekg::ui::label::set_text_align(uint16_t flags) {
   if (this->dock_text != flags) {
     this->dock_text = flags;
-    ekg::reload(this->id);
+    ekg::reload(this->immutable ? this->owner_id : this->id);
   }
 
   return this;
@@ -65,7 +65,7 @@ ekg::ui::label *ekg::ui::label::set_width(float width) {
     this->sync_ui.w = width;
 
     ekg_bitwise_add(this->sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
-    ekg::reload(this->id);
+    ekg::reload(this->immutable ? this->owner_id : this->id);
     ekg::synclayout(this->parent_id);
   }
 
@@ -80,7 +80,7 @@ ekg::ui::label *ekg::ui::label::set_scaled_height(int32_t scaled_factor_height) 
   if (this->scaled_height != scaled_factor_height) {
     this->scaled_height = scaled_factor_height;
 
-    ekg::reload(this->id);
+    ekg::reload(this->immutable ? this->owner_id : this->id);
     ekg::synclayout(this->parent_id);
   }
 
@@ -99,7 +99,7 @@ ekg::ui::label *ekg::ui::label::set_font_size(ekg::font font) {
   if (this->font_size != font) {
     this->font_size = font;
 
-    ekg::reload(this->id);
+    ekg::reload(this->immutable ? this->owner_id : this->id);
     ekg::synclayout(this->parent_id);
   }
 

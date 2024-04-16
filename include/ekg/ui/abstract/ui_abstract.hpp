@@ -94,6 +94,7 @@ namespace ekg {
     protected:
       int32_t id {};
       int32_t parent_id {};
+      int32_t owner_id {};
       std::vector<int32_t> child_id_list {};
 
       bool alive {true};

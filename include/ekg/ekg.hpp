@@ -128,6 +128,11 @@ namespace ekg {
   ekg::ui::label *label(std::string_view text, uint16_t dock = ekg::dock::none);
 
   /**
+   * Create immutable label UI.
+   */
+  ekg::ui::label *imut_label(std::string_view text, uint16_t dock = ekg::dock::none);
+
+  /**
    * Create checkbox UI.
    */
   ekg::ui::checkbox *checkbox(std::string_view text, bool checked, uint16_t dock = ekg::dock::none);
@@ -151,7 +156,7 @@ namespace ekg {
   /**
    * Create listbox UI.
    */
-  ekg::ui::listbox *listbox(std::string_view tag, const ekg::item &item, uint16_t dock = ekg::dock::none);
+  ekg::ui::listbox *listbox(std::string_view tag, std::vector<ekg::ui::abstract*> element_list, uint16_t dock = ekg::dock::none);
 
   /**
    * Create scrollbar UI.

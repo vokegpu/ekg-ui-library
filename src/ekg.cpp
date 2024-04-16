@@ -154,6 +154,22 @@ ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
   return p_ui;
 }
 
+ekg::ui::label *ekg::imut_label(std::string_view text, uint16_t dock) {
+  auto p_ui {new ekg::ui::label()};
+
+  p_ui->unsafe_set_type(ekg::type::label);
+  p_ui->unsafe_set_immutable(true);
+
+  p_ui->set_text(text);
+  p_ui->set_place(dock);
+  p_ui->set_scaled_height(1);
+  p_ui->set_font_size(ekg::font::normal);
+  p_ui->set_text_align(ekg::dock::left | ekg::dock::center);
+  p_ui->set_tag(text);
+
+  return p_ui;
+}
+
 ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, uint16_t dock) {
   auto p_ui {new ekg::ui::checkbox()};
   p_ui->unsafe_set_type(ekg::type::checkbox);
@@ -233,17 +249,20 @@ ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint
   return p_ui;
 }
 
-ekg::ui::listbox *ekg::listbox(std::string_view tag, const ekg::item &item, uint16_t dock) {
+ekg::ui::listbox *ekg::listbox(
+  std::string_view tag,
+  std::vector<ekg::ui::abstract*> element_list,
+  uint16_t dock
+) {
   auto p_ui {new ekg::ui::listbox()};
+
   p_ui->unsafe_set_type(ekg::type::listbox);
   ekg::core->gen_widget(p_ui);
 
   p_ui->set_tag(tag);
   p_ui->set_place(dock);
-  p_ui->item() = item;
   p_ui->set_scaled_height(6);
-  p_ui->set_item_font_size(ekg::font::normal);
-  p_ui->set_category_font_size(ekg::font::normal);
+  p_ui->insert(p_ui->end(), element_list.begin(), element_list.end());
 
   return p_ui;
 }

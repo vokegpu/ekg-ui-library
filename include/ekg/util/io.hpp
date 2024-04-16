@@ -40,7 +40,7 @@
 #define ekg_sign_item_sempahore() if (this->p_semaphore) *this->p_semaphore = true
 
 #define ekg_bitwise_contains(flags, flag) (flags & flag)
-#define ekg_bitwise_remove(flags, flag)   (flags = ~(flags & flag))
+#define ekg_bitwise_remove(flags, flag)   (flags &= ~flag)
 #define ekg_bitwise_add(flags, flag)      (flags |= flag)
 
 namespace ekg {

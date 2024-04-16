@@ -28,13 +28,15 @@
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/util/io.hpp"
 #include "ekg/ui/display.hpp"
+#include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
 namespace ekg::ui {
-  class listbox : public ekg::ui::abstract {
+  class listbox : public ekg::ui::abstract, public std::vector<ekg::ui::abstract*> {
   protected:
     ekg::item metadata {};
     ekg::font category_font_size {};
     ekg::font item_font_size {};
+    std::vector<ekg::ui::abstract_widget*> update_list {};
   public:
     ekg::ui::listbox *set_width(float w);
 
@@ -47,16 +49,6 @@ namespace ekg::ui {
     float get_height();
 
     ekg::ui::listbox *set_place(uint16_t dock);
-
-    ekg::item &item();
-
-    ekg::ui::listbox *set_category_font_size(ekg::font font);
-
-    ekg::font get_category_font_size();
-
-    ekg::ui::listbox *set_item_font_size(ekg::font font);
-
-    ekg::font get_item_font_size();
   };
 }
 

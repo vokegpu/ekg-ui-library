@@ -126,7 +126,7 @@ int32_t showcase_useless_window() {
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 4);
-  SDL_GL_SetSwapInterval(1);
+  SDL_GL_SetSwapInterval((app.vsync = true));
 
   app.p_sdl_win = {
     SDL_CreateWindow(
@@ -152,7 +152,10 @@ int32_t showcase_useless_window() {
   };
 
   ekg::runtime runtime {};
-  ekg::init(&runtime, &ekg_runtime_property);
+  ekg::init(
+    &runtime,
+    &ekg_runtime_property
+  );
 
   ekg::ui::label *labelresult {};
   ekg::ui::label *fps {};
@@ -162,10 +165,13 @@ int32_t showcase_useless_window() {
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
     ->set_drag(ekg::dock::top);
 
-  ekg::textbox("meow", "mumu eu sou uma vaca", ekg::dock::fill | ekg::dock::next)
+  ekg::textbox("gostosa", "oi eu sou uma vaca", ekg::dock::fill | ekg::dock::next)
     ->set_scaled_height(5);
 
-  fps = ekg::label("FPS: ", ekg::dock::fill | ekg::dock::next)->set_font_size(ekg::font::big);
+  fps = ekg::label("FPS: ", ekg::dock::fill | ekg::dock::next)
+    ->set_font_size(ekg::font::big);
+
+  ekg::slider("gostoso", 500.0f, 0.0f, 1000.0f, ekg::dock::fill | ekg::dock::next);
 
   ekg::theme().gen_default_dark_theme();
   ekg::checkbox("Light Theme", false, ekg::dock::fill | ekg::dock::next)
@@ -285,37 +291,14 @@ int32_t showcase_useless_window() {
 
   ekg::input::bind("hiroodrop", {"lctrl+b", "lctrl+lshift+v", "lshift+m"});
 
-  /*auto list = ekg::listbox(
+  auto list = ekg::listbox(
     "hello",
     {
       ekg::imut_label("oi"),
       ekg::imut_label("meow"),
-      ekg::imut_checkbox("pompom", true);  
     },
     ekg::dock::fill | ekg::dock::next
   );
-  
-  list->insert(list->begin(),
-  {
-    ekg::imut_label("oi"),
-    ekg::imut_label("meow"),
-    ekg::imut_checkbox("gato", true),
-    ekg::imut_listbox(
-      "oi", {
-        ekg::imut_label("oi")
-      }
-    )
-  });
-  
-  auto popup = ekg::popup(
-    "meow",
-    {
-      ekg::imut_label("copy"),
-      ekg::imut_label("cut"),
-      ekg::imut_label("paste")->add_property("separator"),
-      ekg::imut_label("meow"),,
-    },
-  );*/
 
   bool running {true};
   uint64_t now {};
