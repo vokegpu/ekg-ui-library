@@ -300,6 +300,25 @@ int32_t showcase_useless_window() {
     ekg::dock::fill | ekg::dock::next
   );
 
+
+  //
+  // dois tipos dee listbox:
+  // listbox com imut widgets: ok <- customizavel, importante
+  // listbox com so strings/labels: ok <- eficiente, pratic
+
+  p_lit->insert(p_lit->being(), {{"oi", "oi", "oi"}});
+
+  // push back
+  p_lit->insert_row("type");
+  p_lit->insert_row("mode");
+  p_lit->insert_row("color");
+
+  p_lit->insert_at(0, {ekg::imut_label("gato")});
+  p_lit->insert_at(1, {ekg::imut_label("woke")});
+  p_lit->insert_at(2, {ekg::imut_label("black-white")});
+
+  p_list->set_row_
+
   bool running {true};
   uint64_t now {};
   uint64_t last {};
@@ -397,6 +416,24 @@ int32_t showcase_useless_window() {
   return 6666;
 }
 
+void test_out_of_context_uis() {
+  std::vector<ekg::ui::label> label_list {
+    ekg::ui::label(),
+    ekg::ui::label(),
+    ekg::ui::label(),
+    ekg::ui::label(),
+    ekg::ui::label(),
+    ekg::ui::label(),
+    ekg::ui::label()
+  };
+
+  for (ekg::ui::label &label : label_list) {
+    label.set_text("oi meow");
+    std::cout << label.get_text() << std::endl;
+  }
+}
+
 int32_t main(int32_t, char**) {
+  test_out_of_context_uis();
   return showcase_useless_window();
 }

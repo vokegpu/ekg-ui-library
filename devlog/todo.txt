@@ -1,11 +1,53 @@
-# todos necessary
+/* listbox with with no container */
 
--- Allocator render hardware interface (RHI) + vulkan & opengl rendering.
--- Allocator std140 for replace uniforms call.
--- Remove wrapper calls to update widgets (reload, synclayout, etc).
+ui_listbox concept:
 
-# todos fixed
--- Textbox UI with delay to process stack reorder event - 0.0.1.0.1.5 16/06/23
+auto p = ekg::listbox("oi meow mumu", {"meow meoiw meowm meowm meow meow", "cazt"});
+p->insert_at(0, "meow").insert("meow").insert("meow").insert("meow");
 
-# add
-semantic alayser using lambda functions
+// meow         	// gato
+	// meow           // gato
+		// meow  				  // gato
+			// meow           // gato
+				// meow           // gato
+
+p->insert_at(1, "gato").insert("gato").insert("gato").insert("gato")
+
+// if not inserted
+// meow         	// <empty>
+	// meow           // <empty>
+		// meow  				  // <empty>
+			// meow           // <empty>
+				// meow           // <empty>
+
+// when selecting etc.
+
+/* listbox with with container */
+
+ui_listbox_container concept:
+
+auto p = ekg::listbox_cointainer("oi meow mumu", {"meow meoiw meowm meowm meow meow", "cazt"});
+p->insert_at(0, ekg::imut_label("meow")).insert(ekg::imut_label("meow")).insert(ekg::imut_label("meow")).insert(ekg::imut_label("meow"));
+
+// meow         	// gato
+	// meow           // gato
+		// meow  				  // gato
+			// meow           // gato
+				// meow           // gato
+
+p->insert_at(1, ekg::imut_label("gato")).insert(ekg::imut_label("gato")).insert(ekg::imut_label("gato")).insert(ekg::imut_label("gato"))
+
+// if not inserted
+// meow         	// <empty>
+	// meow           // <empty>
+		// meow  				  // <empty>
+			// meow           // <empty>
+				// meow           // <empty>
+
+// when selecting etc.
+
+// to disable the multi- on listbox, set a different mode:
+p->set_structure_mode(ekg::mode::multi-);
+
+
+XAU GENTE BEIJO >< mumu da vaquinha

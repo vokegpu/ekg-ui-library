@@ -31,10 +31,7 @@
 namespace ekg::ui {
   class listbox_widget : public ekg::ui::abstract_widget {
   public:
-    struct container {
-    public:
-      std::vector<ekg::item *> item_list {};
-    };
+
   public:
     bool semaphore {};
   public:
