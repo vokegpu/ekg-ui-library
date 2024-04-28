@@ -38,14 +38,10 @@ endif()
 if (WIN32 OR EKG_FORCE_WINDOWS)
   set(LIBRARY_OUTPUT_PATH "../lib/windows/")
   set(PLATFORM            "windows")
-endif()
-
-if(ANDROID OR EKG_FORCE_ANDROID)
+elif(ANDROID OR EKG_FORCE_ANDROID)
   set(LIBRARY_OUTPUT_PATH "${ANDROID_ABI}/")
   set(PLATFORM            "${ANDROID_ABI}")
-endif()
-
-if(LINUX OR EKG_FORCE_LINUX)
+elif(LINUX OR EKG_FORCE_LINUX)
   # WSL is not detected as Linux-based OS, same you use a Linux kernel-based distribution.
   set(LIBRARY_OUTPUT_PATH "../lib/linux/")
   set(PLATFORM            "linux")
