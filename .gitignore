@@ -3,7 +3,6 @@ cmake-build-debug/
 .vscode/
 .sublimetext/
 .obsidian/
-lib/
 .sublime-project.sublime-workspace
 *.sublime-workspace
 ekg-ui-library.sublime-workspace
