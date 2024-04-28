@@ -37,106 +37,18 @@
 
 #include "geometry.hpp"
 
-#define ekg_sign_item_sempahore() if (this->p_semaphore) *this->p_semaphore = true
-
 #define ekg_bitwise_contains(flags, flag) (flags & flag)
 #define ekg_bitwise_remove(flags, flag)   (flags &= ~flag)
 #define ekg_bitwise_add(flags, flag)      (flags |= flag)
 
 namespace ekg {
-  struct item {
-  private:
-    static ekg::item *p_parent_instance;
-    static bool *p_semaphore_instance;
-    static bool default_semaphore;
+  class item : public std::vector<ekg::item> {
   protected:
-    std::vector<ekg::item> child_list {};
-    ekg::component geometry_component {};
     std::string value {};
-
-    uint16_t attributes {};
-    uint16_t states {};
-    bool *p_semaphore {};
+    uint16_t attr_bits {};
   public:
-    ekg::item &at(size_t index);
-
-    ekg::item &operator[](size_t index);
-
-    ekg::item &emplace_back();
-
-    ekg::item &insert(std::string_view item_value);
-
-    ekg::item &insert(std::string_view item_value, size_t index);
-
-    ekg::item &insert(ekg::item insert_item);
-
-    ekg::item &insert(ekg::item insert_item, size_t index);
-
-    ekg::item &insert(const std::vector<ekg::item> &item_vector);
-
-    ekg::item &insert(const std::vector<ekg::item> &item_vector, size_t index);
-
-    ekg::item &set_value(size_t index, std::string_view item_value);
-
-    ekg::item &set_attr(size_t index, uint16_t attr_bits);
-
-    ekg::item &set_state(size_t index, uint16_t state_bits);
-
-    ekg::item &erase(size_t begin, size_t end);
-
-    ekg::item &erase(size_t index);
-
-    ekg::item &clear();
-
-    [[nodiscard]] bool empty() const;
-
-    [[nodiscard]] size_t size() const;
-
-    std::vector<ekg::item>::iterator begin();
-
-    std::vector<ekg::item>::iterator end();
-
-    [[nodiscard]] std::vector<ekg::item>::const_iterator cbegin() const;
-
-    [[nodiscard]] std::vector<ekg::item>::const_iterator cend() const;
-
-  public:
-    item *p_parent {};
-  public:
-    std::vector<ekg::item> &vector();
-
-    ekg::component &component();
-
-    ekg::item &set_value(std::string_view item_value);
-
-    std::string_view get_value();
-
-    ekg::item &set_attr(uint16_t attr_bits);
-
-    uint16_t get_attr();
-
-    ekg::item &set_state(uint16_t state_bits);
-
-    uint16_t get_state();
-
-    ekg::item &set_semaphore_address(bool *p_semaphore_address);
-
-    ekg::item &set_semaphore(bool signal);
-
-    bool &get_semaphore();
-
-    bool has_parent();
-
-    bool has_children();
-
-  public:
-    item();
-
-    item(std::string_view item_value);
-
-    item(std::string_view item_value, uint16_t attr_bits);
-
-  public:
+    item(std::string_view insert_value);
+    item(std::string_view insert_value, uint16_t insert_attr_bits);
     ~item();
   };
 

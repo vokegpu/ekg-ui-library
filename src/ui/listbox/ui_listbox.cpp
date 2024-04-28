@@ -68,3 +68,12 @@ ekg::ui::listbox *ekg::ui::listbox::set_place(uint16_t dock) {
 
   return this;
 }
+
+ekg::ui::listbox *ekg::ui::listbox::set_mode(ekg::mode mode) {
+  this->current_mode = mode;
+  return this;
+}
+
+ekg::mode ekg::ui::listbox::get_mode() {
+  return this->current_mode;
+}

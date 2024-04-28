@@ -251,6 +251,24 @@ ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint
 
 ekg::ui::listbox *ekg::listbox(
   std::string_view tag,
+  std::vector<ekg::item> item_list,
+  uint16_t dock
+) {
+  auto p_ui {new ekg::ui::listbox()};
+
+  p_ui->unsafe_set_type(ekg::type::listbox);
+  ekg::core->gen_widget(p_ui);
+
+  p_ui->set_tag(tag);
+  p_ui->set_place(dock);
+  p_ui->set_scaled_height(6);
+  p_ui->insert(p_ui->end(), item_list.begin(), item_list.end());
+
+  return p_ui;
+}
+
+ekg::ui::listbox *ekg::listbox_container(
+  std::string_view tag,
   std::vector<ekg::ui::abstract*> element_list,
   uint16_t dock
 ) {
@@ -262,7 +280,6 @@ ekg::ui::listbox *ekg::listbox(
   p_ui->set_tag(tag);
   p_ui->set_place(dock);
   p_ui->set_scaled_height(6);
-  p_ui->insert(p_ui->end(), element_list.begin(), element_list.end());
 
   return p_ui;
 }

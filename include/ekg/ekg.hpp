@@ -154,9 +154,14 @@ namespace ekg {
   ekg::ui::textbox *textbox(std::string_view tag, std::string_view text, uint16_t dock = ekg::dock::none);
 
   /**
-   * Create listbox UI.
+   * Create listbox container UI.
    */
-  ekg::ui::listbox *listbox(std::string_view tag, std::vector<ekg::ui::abstract*> element_list, uint16_t dock = ekg::dock::none);
+  ekg::ui::listbox *listbox_container(std::string_view tag, std::vector<ekg::ui::abstract*> element_list, uint16_t dock = ekg::dock::none);
+
+  /*
+   * Create listbox container UI.
+   */
+  ekg::ui::listbox *listbox(std::string_view tag, std::vector<ekg::item> item_list, uint16_t dock = ekg::dock::none);
 
   /**
    * Create scrollbar UI.

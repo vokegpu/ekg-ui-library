@@ -74,6 +74,11 @@ namespace ekg {
     disable,
   };
 
+  enum class mode {
+    singlecolumn,
+    multicolumn
+  };
+
   namespace ui {
     struct item {
     public:

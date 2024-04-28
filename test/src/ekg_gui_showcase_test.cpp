@@ -294,30 +294,10 @@ int32_t showcase_useless_window() {
   auto list = ekg::listbox(
     "hello",
     {
-      ekg::imut_label("oi"),
-      ekg::imut_label("meow"),
+      {ekg::item("oi"), ekg::item("oi")}
     },
     ekg::dock::fill | ekg::dock::next
   );
-
-
-  //
-  // dois tipos dee listbox:
-  // listbox com imut widgets: ok <- customizavel, importante
-  // listbox com so strings/labels: ok <- eficiente, pratic
-
-  p_lit->insert(p_lit->being(), {{"oi", "oi", "oi"}});
-
-  // push back
-  p_lit->insert_row("type");
-  p_lit->insert_row("mode");
-  p_lit->insert_row("color");
-
-  p_lit->insert_at(0, {ekg::imut_label("gato")});
-  p_lit->insert_at(1, {ekg::imut_label("woke")});
-  p_lit->insert_at(2, {ekg::imut_label("black-white")});
-
-  p_list->set_row_
 
   bool running {true};
   uint64_t now {};

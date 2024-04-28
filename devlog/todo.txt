@@ -22,6 +22,12 @@ p->insert_at(1, "gato").insert("gato").insert("gato").insert("gato")
 
 // when selecting etc.
 
+// to disable the multi-column on listbox, set a different mode:
+p->set_mode(ekg::mode::singlecolumn);
+
+// to enable
+p->set_mode(ekg::mode::multicolumn);
+
 /* listbox with with container */
 
 ui_listbox_container concept:
@@ -46,8 +52,19 @@ p->insert_at(1, ekg::imut_label("gato")).insert(ekg::imut_label("gato")).insert(
 
 // when selecting etc.
 
-// to disable the multi- on listbox, set a different mode:
-p->set_structure_mode(ekg::mode::multi-);
+// to disable the multi-column on listbox, set a different mode:
+p->set_mode(ekg::mode::singlecolumn);
 
+// to enable
+p->set_mode(ekg::mode::multicolumn);
 
-XAU GENTE BEIJO >< mumu da vaquinha
+/* item */
+
+ekg::item &a {p->item(0)};
+
+a.insert("one");
+a.insert({"two", ekg::attr::disable});
+a.at(0).set_attr(ekg::attr::disable);
+a.at(1).set_attr(ekg::attr::enable);
+
+a.insert("oi").insert("oi")
