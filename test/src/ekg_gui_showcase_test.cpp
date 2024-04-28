@@ -310,7 +310,6 @@ int32_t showcase_useless_window() {
 
   uint64_t frame_couting {};
   uint64_t last_frame {1};
-
   ekg::timing fps_timing {};
 
   while (running) {
