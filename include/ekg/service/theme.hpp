@@ -81,15 +81,12 @@ namespace ekg::service {
     ekg::vec4 scrollbar_outline {};
     int32_t scrollbar_pixel_thickness {};
 
-    ekg::vec4 listbox_item_outline {};
     ekg::vec4 listbox_item_background {};
+    ekg::vec4 listbox_item_highlight {};
     ekg::vec4 listbox_item_string {};
-    ekg::vec4 listbox_category_outline {};
-    ekg::vec4 listbox_category_background {};
-    ekg::vec4 listbox_category_string {};
-    ekg::vec4 listbox_separator {};
+    ekg::vec4 listbox_item_outline {};
     ekg::vec4 listbox_outline {};
-    ekg::vec4 listbox_highlight {};
+    ekg::vec4 listbox_background {};
 
     float min_widget_size {5};
     bool symmetric_layout {};

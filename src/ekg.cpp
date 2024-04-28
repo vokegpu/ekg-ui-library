@@ -264,6 +264,8 @@ ekg::ui::listbox *ekg::listbox(
   p_ui->set_scaled_height(6);
   p_ui->insert(p_ui->end(), item_list.begin(), item_list.end());
 
+  std::cout << "lolas meow: " << p_ui->size() << " , " << p_ui->at(0).size() << std::endl;
+
   return p_ui;
 }
 

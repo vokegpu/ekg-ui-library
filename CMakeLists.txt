@@ -71,8 +71,9 @@ if (EKG_ENABLE_TEST)
 
   add_compile_options(-O3)
   add_executable(ekg-gui-showcase-test "test/src/ekg_gui_showcase_test.cpp")
-    
+
   file(GLOB LIBRARY_PATH "./lib/${PLATFORM}/libekg.a")
+  message("-- EKG GUI test found native library on: ${LIBRARY_PATH}")
 
   if (WIN32)
     set(THIRD_PARTY_LIBRARIES mingw32 SDL2main SDL2 opengl32 glew32 freetype)

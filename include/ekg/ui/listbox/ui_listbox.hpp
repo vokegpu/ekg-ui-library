@@ -33,10 +33,13 @@
 namespace ekg::ui {
   class listbox : public ekg::ui::abstract, public std::vector<ekg::item> {
   protected:
-    ekg::font category_font_size {};
     ekg::font item_font_size {};
     ekg::mode current_mode {};
   public:
+    ekg::ui::listbox *set_item_font_size(ekg::font font_size);
+
+    ekg::font get_item_font_size();
+
     ekg::ui::listbox *set_width(float w);
 
     float get_width();
@@ -52,7 +55,7 @@ namespace ekg::ui {
     ekg::ui::listbox *set_mode(ekg::mode mode);
 
     ekg::mode get_mode();
-  };
+  };  
 }
 
 #endif

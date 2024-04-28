@@ -247,16 +247,10 @@ namespace ekg {
     uint16_t dock {};
   };
 
-  struct component {
+  struct placement {
   public:
-    ekg::rect rect_dimension {};
-    ekg::rect rect_box {};
+    ekg::rect rect {};
     ekg::rect rect_text {};
-    ekg::rect rect_dimension_closed {};
-    ekg::rect rect_dimension_opened {};
-
-    bool is_open {};
-    bool is_hovering {};
   };
 
   bool rect_collide_rect(const ekg::rect &a, const ekg::rect &b);

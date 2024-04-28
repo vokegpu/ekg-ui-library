@@ -150,3 +150,7 @@
 -- Cross-platform API now contains a serialized event type.
 -- Keybinds and special keys, little optmized.
 -- Fixed slider glitch/broken.
+-- Removed unused features-functions/methods.
+-- CMake new features and d-vars: `EKG_FORCE_WINDOWS`, `EKG_FORCE_ANDROID` and `EKG_FORCE_LINUX`.
+-- - An else-if/elif condition that first match windows, android, and linux;
+-- - or forced d-var sequentially.

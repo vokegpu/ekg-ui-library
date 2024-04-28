@@ -46,10 +46,30 @@ namespace ekg {
   protected:
     std::string value {};
     uint16_t attr_bits {};
+    ekg::placement placement {};
   public:
-    item(std::string_view insert_value);
-    item(std::string_view insert_value, uint16_t insert_attr_bits);
+    item(
+      std::string_view insert_value,
+      uint16_t insert_attr_bits = 0
+    );
+
+    item(
+      std::string_view insert_value,
+      std::vector<ekg::item> insert_item_list,
+      uint16_t insert_attr_bits = 0
+    );
+
     ~item();
+  public:
+    ekg::placement &unsafe_get_placement();
+  public:
+    void set_value(std::string_view new_value);
+    
+    std::string get_value();
+  
+    void set_attr(uint16_t bits);
+
+    uint16_t get_attr();
   };
 
   struct log {
@@ -97,23 +117,17 @@ namespace ekg {
     }
   };
 
-  /*
-   * Attributes are used by item,
-   * they can be dynamically converted by string symbols:
-   * \t separator
-   * \\ box
-   * \1 category
-   * \2 row
-   * \3 row_member
-   * \4 unselectable
-   */
   enum attr {
-    separator = 2 << 2,
-    box = 2 << 3,
-    category = 2 << 4,
-    row = 2 << 5,
-    row_member = 2 << 6,
-    unselectable = 2 << 7
+    disabled  = 2 << 1,
+    focused   = 2 << 2,
+    hovering  = 2 << 3,
+    locked    = 2 << 4,
+
+    contains_separator = 2 << 5,
+    contains_icon      = 2 << 6,
+
+    // temp
+    separator = 2 << 7
   };
 
   struct timing {

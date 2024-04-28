@@ -31,9 +31,8 @@
 namespace ekg::ui {
   class listbox_widget : public ekg::ui::abstract_widget {
   public:
-
-  public:
     bool semaphore {};
+    std::vector<ekg::item> *p_item_list {};
   public:
     void process_component_template();
   public:
@@ -47,6 +46,10 @@ namespace ekg::ui {
 
     void on_draw_refresh() override;
   };
+}
+
+namespace ekg::ui {
+  void listbox_template_rendering(ekg::item &parent, ekg::rect &ui_rect, ekg::font &item_font);
 }
 
 #endif

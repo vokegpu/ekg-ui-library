@@ -88,8 +88,8 @@ void ekg::service::theme::gen_default_dark_theme() {
 
   /* Textbox */
 
-  this->textbox_string              = ekg::color(202, 202, 202, 255);
-  this->textbox_background          = ekg::color(43, 43, 43, 255);
+  this->textbox_string              = ekg::color(141, 141, 141, 255);
+  this->textbox_background          = ekg::color(242, 242, 242, 255);
   this->textbox_outline             = ekg::color(141, 141, 141, 50);
   this->textbox_select              = ekg::color(44, 166, 255, 50);
   this->textbox_cursor              = ekg::color(202, 202, 202, 255);
@@ -107,12 +107,9 @@ void ekg::service::theme::gen_default_dark_theme() {
   this->listbox_item_outline        = ekg::color(141, 141, 141, 0);
   this->listbox_item_background     = ekg::color(85, 85, 85, 0);
   this->listbox_item_string         = ekg::color(202, 202, 202, 255);
-  this->listbox_category_background = ekg::color(85, 85, 85, 0);
-  this->listbox_category_string     = ekg::color(202, 202, 202, 255);
-  this->listbox_category_outline    = ekg::color(141, 141, 141, 50);
-  this->listbox_separator           = ekg::color(141, 141, 141, 50);
-  this->listbox_outline             = ekg::color(141, 141, 141, 50);
-  this->listbox_highlight           = ekg::color(44, 166, 255, 50);
+  this->listbox_item_highlight      = ekg::color(44, 166, 255, 50);
+  this->listbox_outline             = ekg::color(141, 141, 141, 100);
+  this->listbox_background          = ekg::color(85, 85, 85, 50);
 }
 
 void ekg::service::theme::gen_default_light_theme() {
@@ -137,7 +134,7 @@ void ekg::service::theme::gen_default_light_theme() {
   this->checkbox_highlight = ekg::color(44, 166, 255, 50);
 
   this->slider_string = ekg::color(141, 141, 141, 255);
-  this->slider_background = {204, 204, 204, 50};
+  this->slider_background = ekg::color(204, 204, 204, 50);
   this->slider_activity = ekg::color(44, 166, 255, 200);
   this->slider_outline = ekg::color(202, 207, 222, 0);
   this->slider_highlight = ekg::color(44, 166, 255, 50);
@@ -169,12 +166,9 @@ void ekg::service::theme::gen_default_light_theme() {
   this->listbox_item_background = ekg::color(204, 204, 204, 0);
   this->listbox_item_string = ekg::color(141, 141, 141, 255);
   this->listbox_item_outline = ekg::color(202, 207, 222, 0);
-  this->listbox_category_background = ekg::color(204, 204, 204, 0);
-  this->listbox_category_string = ekg::color(141, 141, 141, 255);
-  this->listbox_category_outline = ekg::color(202, 207, 222, 150);
-  this->listbox_separator = ekg::color(202, 207, 222, 150);
-  this->listbox_outline = ekg::color(202, 207, 222, 150);
-  this->listbox_highlight = ekg::color(44, 166, 255, 50);
+  this->listbox_item_highlight = ekg::color(44, 166, 255, 50);
+  this->listbox_background = ekg::color(204, 204, 204, 50);
+  this->listbox_outline = ekg::color(202, 207, 222, 100);
 }
 
 void ekg::service::theme::refresh_theme_list() {

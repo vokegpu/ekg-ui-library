@@ -25,6 +25,19 @@
 #include "ekg/ui/listbox/ui_listbox.hpp"
 #include "ekg/util/gui.hpp"
 
+ekg::ui::listbox *ekg::ui::listbox::set_item_font_size(ekg::font font_size) {
+  if (this->item_font_size != font_size) {
+    this->item_font_size = font_size;
+    ekg::reload(this->id);
+  }
+
+  return this;
+}
+
+ekg::font ekg::ui::listbox::get_item_font_size() {
+  return this->item_font_size;
+}
+
 ekg::ui::listbox *ekg::ui::listbox::set_width(float w) {
   if (this->sync_ui.w != w) {
     this->sync_ui.w = w;

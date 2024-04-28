@@ -165,6 +165,30 @@ int32_t showcase_useless_window() {
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
     ->set_drag(ekg::dock::top);
 
+  auto list = ekg::listbox(
+    "hello",
+    {
+      ekg::item(
+        "Nome",
+        {
+          ekg::item("Amanda"),
+          ekg::item("Potato"),
+          ekg::item("Astah"),
+        },
+        ekg::attr::disabled | ekg::attr::locked
+      ),
+      ekg::item(
+        "Estado",
+        {
+          ekg::item("No teto"),
+          ekg::item("Debaixo da Cama"),
+          ekg::item("Na selva")
+        }
+      )
+    },
+    ekg::dock::fill | ekg::dock::next
+  )->set_scaled_height(6);
+
   ekg::textbox("gostosa", "oi eu sou uma vaca", ekg::dock::fill | ekg::dock::next)
     ->set_scaled_height(5);
 
@@ -290,14 +314,6 @@ int32_t showcase_useless_window() {
   ekg::pop_group();
 
   ekg::input::bind("hiroodrop", {"lctrl+b", "lctrl+lshift+v", "lshift+m"});
-
-  auto list = ekg::listbox(
-    "hello",
-    {
-      {ekg::item("oi"), ekg::item("oi")}
-    },
-    ekg::dock::fill | ekg::dock::next
-  );
 
   bool running {true};
   uint64_t now {};

@@ -27,17 +27,47 @@
 
 #include <fstream>
 
-ekg::item::item(std::string_view insert_value) {
+ekg::item::item(
+  std::string_view insert_value,
+  uint16_t insert_attr_bits
+) {
   this->value = insert_value;
+  this->attr_bits = insert_attr_bits;
 }
 
-ekg::item::item(std::string_view insert_value, uint16_t insert_attr_bits) {
+ekg::item::item(
+  std::string_view insert_value,
+  std::vector<ekg::item> insert_item_list,
+  uint16_t insert_attr_bits
+) {
   this->value = insert_value;
+  this->insert(this->begin(), insert_item_list.begin(), insert_item_list.end());
   this->attr_bits = insert_attr_bits;
 }
 
 ekg::item::~item() {
   
+}
+
+ekg::placement &ekg::item::unsafe_get_placement() {
+  return this->placement;
+}
+
+
+void ekg::item::set_value(std::string_view new_value) {
+  this->value = new_value;
+}
+
+std::string ekg::item::get_value() {
+  return this->value;
+}
+
+void ekg::item::set_attr(uint16_t bits) {
+  this->attr_bits = bits;
+}
+
+uint16_t ekg::item::get_attr() {
+  return this->attr_bits;
 }
 
 std::ostringstream ekg::log::buffer {};
