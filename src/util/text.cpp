@@ -203,7 +203,7 @@ void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_rea
     return;
   }
 
-  /* if the first element is not empty, then the decode must start from it */
+  /* if the first element is empty, then the decode must start from it */
   if (utf8_read.size() == 1 && utf8_read.at(0).empty()) {
     utf8_read.clear();
   }
