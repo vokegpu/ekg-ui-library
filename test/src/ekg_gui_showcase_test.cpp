@@ -165,6 +165,25 @@ int32_t showcase_useless_window() {
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
     ->set_drag(ekg::dock::top);
 
+  ekg::button("Oi Quica Aqui pa Sair Mumu", ekg::dock::fill | ekg::dock::next)
+    ->set_text_align(ekg::dock::center)
+    ->set_font_size(ekg::font::big)
+    ->set_task(
+      new ekg::task {
+        .info = {
+          .tag = "oi bu"
+        },
+        .function = [](ekg::info &task_info) {
+          SDL_Event sdl_event_quit {};
+          sdl_event_quit.type = SDL_QUIT;
+          SDL_PushEvent(&sdl_event_quit);
+
+          ekg::log() << "task executed: " << task_info.tag;
+        }
+      },
+      ekg::action::activity
+    );
+
   auto list = ekg::listbox(
     "hello",
     {
@@ -424,7 +443,20 @@ void test_out_of_context_uis() {
 
   for (ekg::ui::label &label : label_list) {
     label.set_text("oi meow");
-    std::cout << label.get_text() << std::endl;
+    ///std::cout << label.get_text() << std::endl;
+  }
+
+  std::string vakinha_mumu {
+    "meow\nmumu\n"
+    "vakinhas gostam de bombom\n"
+    "gatinhos de leite"
+  };
+
+  std::vector<std::string> oi_eu_amo_vacas {};
+  ekg::utf_decode(vakinha_mumu, oi_eu_amo_vacas);
+
+  for (std::string &mumu : oi_eu_amo_vacas) {
+    std::cout << mumu << std::endl;
   }
 }
 

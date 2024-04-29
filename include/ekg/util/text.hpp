@@ -63,12 +63,13 @@ namespace ekg {
   );
 
   /**
-   * Returns a UTF-32 char32 based in UTF-8 sequence
+   * Returns a UTF-32 char32 based on UTF-8 sequence.
    */
   char32_t utf_string_to_char32(std::string_view string);
 
   /**
-   * Splits a text by `\n` using UTF-8 decode mode.
+   * Fast splitter specialized in `\n` or `\r\n` (non OS unix-based).
+   * UTF to sinalize the string unicode-like suggested by EKG. 
    */
   void utf_decode(std::string_view string, std::vector<std::string> &utf_decoded);
 

@@ -198,30 +198,33 @@ std::string ekg::utf_substr(std::string_view string, uint64_t offset, uint64_t s
   return "";
 }
 
-/*
- * This function has a potential memory leak issue,
- * and is very dangerous.
- */
 void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_read) {
   if (string.empty()) {
     return;
   }
 
-  std::string fragment {};
-  fragment += string;
-
   uint64_t index {};
-  while ((index = fragment.find('\n')) < fragment.size()) {
-    if (index > 0 && fragment.at(index - 1) == '\r') {
-      utf8_read.emplace_back(fragment.substr(0, index - 1));
-    } else {
-      utf8_read.emplace_back(fragment.substr(0, index));
-    }
+  uint64_t start_index {};
 
-    fragment = fragment.substr(index + 1, fragment.size());
+  while ((index = string.find('\n', start_index)) != std::string_view::npos) {
+    utf8_read.emplace_back(
+      string.substr(
+        start_index,
+        (index - start_index) - (index > 0 && string.at(index - 1) == '\r')
+      )
+    );
+
+    start_index = index + 1;
   }
 
-  if (!fragment.empty()) utf8_read.emplace_back(fragment);
+  if (!string.empty()) {
+    utf8_read.emplace_back(
+      string.substr(
+        start_index,
+        string.find('\0', start_index)
+      )
+    );
+  }
 }
 
 std::string ekg::string_float_precision(float n, int32_t precision) {
