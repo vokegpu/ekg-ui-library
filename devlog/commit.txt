@@ -155,3 +155,4 @@
 -- - An else-if/elif condition that first match windows, android, and linux;
 -- - or forced d-var sequentially.
 -- Little optmization in \n\r string decode.
+-- Fixed small pixel-escape from rendering, any non-concave draw when reached zero was forcing generate one pixel fragment, so it was rendering a small pixel.

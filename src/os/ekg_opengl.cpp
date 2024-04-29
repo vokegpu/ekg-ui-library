@@ -62,15 +62,15 @@ void ekg::os::opengl::init() {
     "out vec4 vRect;\n"
 
     "void main() {\n"
-    "vec2 vertex = aPos;\n"
+      "vec2 vertex = aPos;\n"
 
-    "if (uRect.z > 0.0f) {"
-       "vertex *= uRect.zw;\n"
-    "}\n"
+      "if (uRect.z > -1.0f && uRect.w > -1.0f) {"
+        "vertex *= uRect.zw;\n"
+      "}\n"
 
-    "vertex += uRect.xy;\n"
+      "vertex += uRect.xy;\n"
 
-    "gl_Position = uProjection * vec4(vertex, 0.0f, 1.0f);\n"
+      "gl_Position = uProjection * vec4(vertex, 0.0f, 1.0f);\n"
       "vTexCoord = aTexCoord;\n"
       "vRect = uRect;\n"
     "}\n"
@@ -99,12 +99,12 @@ void ekg::os::opengl::init() {
 
       "vec2 fragPos = vec2(gl_FragCoord.x, uViewportHeight - gl_FragCoord.y);\n"
 
-      "/** \n"
-       "* The scissoring works like swapchain-one (does not stack), of course,\n"
-       "* this scissor is a little different, the pixel-perfect precision makes\n"
-       "* a better cut of fragments. And does not require any overhead from\n"
-       "* calling command buffers to GPU rastarizer.\n"
-       "**/\n"
+      /**
+       * The scissoring works like swapchain-one (does not stack), of course,
+       * this scissor is a little different, the pixel-perfect precision makes
+       * a better cut of fragments. And does not require any overhead from
+       * calling command buffers to GPU rastarizer.
+       **/
       "bool shouldDiscard = (\n"
         "fragPos.x <= uContent[4] ||\n"
         "fragPos.y <= uContent[5] ||\n"
@@ -114,11 +114,11 @@ void ekg::os::opengl::init() {
 
       "float lineThicknessf = float(uLineThickness);\n"
 
-      "/**\n"
-       "* The pixel-perfect outline is possible on fragment shader,\n"
-       "* due the precision of fragments position, and the\n"
-       "* normalised-space.\n"
-       "**/\n"
+      /**
+       * The pixel-perfect outline is possible on fragment shader,
+       * due the precision of fragments position, and the
+       * normalised-space.
+       **/
       "if (uLineThickness > 0) {\n"
         "vec4 outline = vec4(\n"
           "vRect.x + lineThicknessf,\n"
@@ -149,24 +149,24 @@ void ekg::os::opengl::init() {
         ");\n"
       "}\n"
 
-      "/**\n"
-       "* The discard must not call `discard` keyword,\n"
-       "* discarding pixels using keyword is performanceless\n"
-       "* comparated to alpha blending equals to zero.\n"
-       "**/\n"
+      /**
+       * The discard must not call `discard` keyword,
+       * discarding pixels using keyword is performanceless
+       * comparated to alpha blending equals to zero.
+       **/
       "if (shouldDiscard) {\n"
         "vFragColor.w = 0.0f;\n"
       "} else if (uActiveTexture) {\n"
         "vec4 textureColor = texture(uTextureSampler, vTexCoord);\n"
 
-        "/**\n"
-         "* The formula I created is\n"
-         "* \n"
-         "* t(r, g, b, a) = Texture color\n"
-         "* c(x, y, z, w) = Color to blend\n"
-         "* \n"
-         "* f(t, c) = (t(r, g, b) - ((1 - c(r, g, b) - 1), t(w) - (1 - c(w)))\n"
-         "**/\n"
+        /**
+         * The formula I created is
+         *
+         * t(r, g, b, a) = Texture color
+         * c(x, y, z, w) = Color to blend
+         *
+         * f(t, c) = (t(r, g, b) - ((1 - c(r, g, b) - 1), t(w) - (1 - c(w)))
+         **/
         "vFragColor = vec4(\n"
           "textureColor.xyz - ((1.0f - vFragColor.xyz) - 1.0f),\n"
           "textureColor.w - (1.0f - vFragColor.w)\n"
