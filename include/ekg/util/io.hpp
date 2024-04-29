@@ -99,7 +99,7 @@ namespace ekg {
         return;
       }
 
-      std::cout << "\n[EKG-TRACE] " << trace << std::endl;
+      std::cout << "[EKG-TRACE] " << trace << std::endl;
       if (interrupt_runtime) {
         std::terminate();
       }
@@ -107,7 +107,11 @@ namespace ekg {
 
     explicit log() {
       ekg::log::buffered = true;
-      ekg::log::buffer << "\n[EKG-INFO] ";
+      ekg::log::buffer << "[EKG-INFO] ";
+    }
+
+    ~log() {
+      ekg::log::buffer << '\n';
     }
 
     template<typename t>

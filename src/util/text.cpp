@@ -203,6 +203,11 @@ void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_rea
     return;
   }
 
+  /* if the first element is not empty, then the decode must start from it */
+  if (utf8_read.size() == 1 && utf8_read.at(0).empty()) {
+    utf8_read.clear();
+  }
+
   uint64_t index {};
   uint64_t start_index {};
 
@@ -217,13 +222,13 @@ void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_rea
     start_index = index + 1;
   }
 
-  if (!string.empty()) {
-    utf8_read.emplace_back(
-      string.substr(
-        start_index,
-        string.find('\0', start_index)
-      )
-    );
+  if (!string.empty() &&
+      !(
+        string = string.substr(start_index, string.find('\0', start_index))
+      ).empty()
+    ) {
+    // `meow\n\0>`, so the decode wont emplace a empty string.
+    utf8_read.emplace_back(string);
   }
 }
 

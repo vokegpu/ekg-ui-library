@@ -208,7 +208,7 @@ int32_t showcase_useless_window() {
     ekg::dock::fill | ekg::dock::next
   )->set_scaled_height(6);
 
-  ekg::textbox("gostosa", "oi eu sou uma vaca", ekg::dock::fill | ekg::dock::next)
+  auto p_terminal = ekg::textbox("gostosa", {}, ekg::dock::fill | ekg::dock::next)
     ->set_scaled_height(5);
 
   fps = ekg::label("FPS: ", ekg::dock::fill | ekg::dock::next)
@@ -409,14 +409,24 @@ int32_t showcase_useless_window() {
     }
 
     if (ekg::input::action("hiroodrop")) {
-      std::cout << "mumu sou uma vakinha" << std::endl;
+      ekg::log() << "mumu sou uma vakinha";
+    }
+    
+    if (ekg::log::buffered) {
+      if (p_terminal->size() >= 100000) {
+        p_terminal->erase(p_terminal->begin(), p_terminal->end() - 10000);
+      }
+
+      std::vector<std::string> &vec {*static_cast<std::vector<std::string>*>(p_terminal)};
+      ekg::utf_decode(ekg::log::buffer.str(), vec);
     }
 
+    ekg::update();
+    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glViewport(0.0f, 0.0f, ekg::ui::width, ekg::ui::height);
 
-    ekg::update();
     ekg::render();
 
     frame_couting++;
