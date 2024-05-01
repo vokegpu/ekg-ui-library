@@ -70,6 +70,10 @@ namespace ekg {
     void set_attr(uint16_t bits);
 
     uint16_t get_attr();
+
+    void set_text_align(uint16_t dock);
+
+    uint16_t get_text_align();
   };
 
   struct log {

@@ -54,7 +54,8 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
 
   if ((drag_dock_flags != ekg::dock::none || resize_dock_flags != ekg::dock::none) && pressed &&
       this->flag.hovered && !this->flag.activity &&
-      (ekg::input::action("frame-drag-activity") || ekg::input::action("frame-resize-activity"))) {
+      (ekg::input::action("frame-drag-activity") || ekg::input::action("frame-resize-activity"))
+     ) {
     const ekg::vec2 vec_limit_offset {this->ui_theme_activity_offset, this->ui_theme_activity_offset};
     ekg::set_dock_scaled(this->scissor, vec_limit_offset, this->docker_activity_drag);
     ekg::set_dock_scaled(this->scissor, vec_limit_offset / 4.0f, this->docker_activity_resize);

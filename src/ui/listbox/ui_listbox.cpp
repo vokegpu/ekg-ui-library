@@ -90,3 +90,16 @@ ekg::ui::listbox *ekg::ui::listbox::set_mode(ekg::mode mode) {
 ekg::mode ekg::ui::listbox::get_mode() {
   return this->current_mode;
 }
+
+ekg::ui::listbox *ekg::ui::listbox::set_item_scaled_height(int32_t h) {
+  if (this->item_scaled_height != h) {
+    this->item_scaled_height = h;
+    ekg::reload(this->id);
+  }
+
+  return this;  
+}
+
+int32_t ekg::ui::listbox::get_item_scaled_height() {
+  return this->item_scaled_height;
+}

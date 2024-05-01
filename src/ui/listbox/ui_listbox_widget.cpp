@@ -26,10 +26,6 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 
-void ekg::ui::listbox_widget::process_component_template() {
-   
-}
-
 void ekg::ui::listbox_widget::on_create() {
   ekg::ui::listbox *p_ui {static_cast<ekg::ui::listbox*>(this->p_data)};
   this->p_item_list = static_cast<std::vector<ekg::item>*>(p_ui);
@@ -55,6 +51,23 @@ void ekg::ui::listbox_widget::on_reload() {
 
   this->min_size.x = ekg_min(this->min_size.x, text_height);
   this->min_size.y = ekg_min(this->min_size.y, dimension_height);
+
+  ekg::font item_font {p_ui->get_item_font_size()};
+  uint64_t arbitrary_index_pos {};
+  int32_t item_scaled_height {p_ui->get_item_scaled_height()};
+
+  for (uint64_t it {}; it < this->p_item_list->size(); it++) {
+    arbitrary_index_pos = 0;
+
+    ekg::item &item {this->p_item_list->at(it)};
+    ekg::ui::listbox_template_reload(
+      item,
+      rect,
+      item_font,
+      item_scaled_height,
+      arbitrary_index_pos
+    );
+  }
 }
 
 void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
@@ -75,21 +88,89 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
   ekg::draw::rect(rect, theme.listbox_background);
 
   ekg::font item_font {p_ui->get_item_font_size()};
+  uint64_t arbitrary_index_pos {};
 
   for (uint64_t it {}; it < this->p_item_list->size(); it++) {
-    ekg::item &item {this->p_item_list->at(it)};   
-    ekg::ui::listbox_template_rendering(item, rect, item_font);
+    arbitrary_index_pos = 0;
+
+    ekg::item &item {this->p_item_list->at(it)};
+    ekg::ui::listbox_template_render(
+      item,
+      rect,
+      item_font,
+      this->scrollbar.scroll.y,
+      arbitrary_index_pos
+    );
   }
 
   ekg::draw::rect(rect, theme.listbox_outline, ekg::draw_mode::outline);  
 }
 
-void ekg::ui::listbox_template_rendering(ekg::item &parent, ekg::rect &ui_rect, ekg::font &item_font) {
+void ekg::ui::listbox_template_reload(
+  ekg::item &parent,
+  ekg::rect &ui_rect,
+  ekg::font &item_font,
+  int32_t item_scaled_height,
+  uint64_t pos
+) {
+  ekg::service::layout &layout {ekg::core->service_layout};
   ekg::service::theme &theme {ekg::theme()};
   ekg::draw::font_renderer &f_renderer {ekg::f_renderer(item_font)};
   ekg::rect item_rect {};
 
-  for (ekg::item &item : parent) {
+  uint64_t it {};
+  int32_t text_lines {};
+
+  float text_width {};
+  float text_height {};
+
+  float dimension_offset {};
+  float offset {};
+
+  for (it = it; it < parent.size(); it++) {
+    ekg::item &item {parent.at(it)};
+    ekg::placement &placement {item.unsafe_get_placement()};
+    item_rect = ui_rect + placement.rect;
+
+    text_lines = 0;
+    text_width = f_renderer.get_text_width(item.get_value(), text_lines);
+    text_height = f_renderer.get_text_height();
+
+    dimension_offset = text_height / 2;
+    offset = ekg::find_min_offset(text_width, dimension_offset);
+
+    placement.rect.w = ekg_min(placement.rect.w, text_width);
+    placement.rect.h = (text_height + dimension_offset) * static_cast<float>(item_scaled_height);
+
+    placement.rect_text.w = text_width;
+    placement.rect_text.h = text_height * static_cast<float>(text_lines);
+
+    layout.set_preset_mask({offset, offset, placement.rect.h}, ekg::axis::horizontal, placement.rect.w);
+    layout.insert_into_mask({&placement.rect_text, placement.text_dock_flags});
+    layout.process_layout_mask();
+  }
+}
+
+void ekg::ui::listbox_template_render(
+  ekg::item &parent,
+  ekg::rect &ui_rect,
+  ekg::font &item_font,
+  float y_scroll,
+  uint64_t pos
+) {
+  ekg::service::theme &theme {ekg::theme()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(item_font)};
+  ekg::rect item_rect {};
+
+  uint64_t it {};
+  if (!pos) {
+    // do dynamic index calc based on y-scroll
+  }
+
+  pos++;
+
+  for (it = it; it < parent.size(); it++) {
+    ekg::item &item {parent.at(it)};
     ekg::placement &placement {item.unsafe_get_placement()};
     item_rect = ui_rect + placement.rect;
 
@@ -107,7 +188,8 @@ void ekg::ui::listbox_template_rendering(ekg::item &parent, ekg::rect &ui_rect, 
 
     f_renderer.blit(
       item.get_value(),
-      item_rect.x + 10.0f, item_rect.y + 10.0f,
+      item_rect.x + placement.rect_text.x,
+      item_rect.y + placement.rect_text.y,
       theme.listbox_item_string
     );
   }

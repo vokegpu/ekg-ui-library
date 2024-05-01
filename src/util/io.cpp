@@ -27,6 +27,8 @@
 
 #include <fstream>
 
+/* start of item */
+
 ekg::item::item(
   std::string_view insert_value,
   uint16_t insert_attr_bits
@@ -69,6 +71,18 @@ void ekg::item::set_attr(uint16_t bits) {
 uint16_t ekg::item::get_attr() {
   return this->attr_bits;
 }
+
+void ekg::item::set_text_align(uint16_t bits) {
+  if (this->placement.text_dock_flags != bits) {
+    this->placement.text_dock_flags = bits;
+  }
+}
+
+uint16_t ekg::item::get_text_align() {
+  return this->placement.text_dock_flags;
+}
+
+/* end of item */
 
 std::ostringstream ekg::log::buffer {};
 bool ekg::log::buffered {};

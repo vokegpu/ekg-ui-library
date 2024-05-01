@@ -156,4 +156,4 @@
 -- - or forced d-var sequentially.
 -- Little optmization in `ekg::utf_decode` (break-line string decode to a vector of strings).
 -- Fixed small pixel-escape from rendering, any non-concave draw when reached zero was forcing generate one pixel fragment, so it was rendering a small pixel.
--- Fixed UTF break-line decode `ekg::utf_decode` not emplacing back at pos 0.
+-- Fixed break-line decode: `ekg::utf_decode` was not emplacing back at 0 pos.

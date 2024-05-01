@@ -27,14 +27,13 @@
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include "ekg/util/io.hpp"
+#include "ekg/ui/scrollbar/ui_scrollbar_embedded_widget.hpp"
 
 namespace ekg::ui {
   class listbox_widget : public ekg::ui::abstract_widget {
   public:
-    bool semaphore {};
     std::vector<ekg::item> *p_item_list {};
-  public:
-    void process_component_template();
+    ekg::ui::scrollbar_embedded_widget scrollbar {};
   public:
     void on_create() override;
 
@@ -49,7 +48,21 @@ namespace ekg::ui {
 }
 
 namespace ekg::ui {
-  void listbox_template_rendering(ekg::item &parent, ekg::rect &ui_rect, ekg::font &item_font);
+  void listbox_template_reload(
+    ekg::item &parent,
+    ekg::rect &ui_rect,
+    ekg::font &item_font,
+    int32_t item_scaled_height,
+    uint64_t pos
+  );
+
+  void listbox_template_render(
+    ekg::item &parent,
+    ekg::rect &ui_rect,
+    ekg::font &item_font,
+    float y_scroll,
+    uint64_t pos
+  );
 }
 
 #endif

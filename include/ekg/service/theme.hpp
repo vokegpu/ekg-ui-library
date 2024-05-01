@@ -80,6 +80,7 @@ namespace ekg::service {
     ekg::vec4 scrollbar_activity {};
     ekg::vec4 scrollbar_outline {};
     int32_t scrollbar_pixel_thickness {};
+    float scrollbar_min_bar_size {};
 
     ekg::vec4 listbox_item_background {};
     ekg::vec4 listbox_item_highlight {};

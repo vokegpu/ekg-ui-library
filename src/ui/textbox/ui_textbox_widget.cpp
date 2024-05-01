@@ -778,8 +778,8 @@ void ekg::ui::textbox_widget::on_reload() {
     this->last_text_chunk_size = this->p_text_chunk_list->size();
   }
 
+  this->embedded_scroll.p_rect_mother = &rect;
   this->embedded_scroll.rect_child = this->rect_text;
-  this->embedded_scroll.rect_mother = &rect;
   this->embedded_scroll.widget_id = this->p_data->get_id();
   this->embedded_scroll.on_reload();
 }

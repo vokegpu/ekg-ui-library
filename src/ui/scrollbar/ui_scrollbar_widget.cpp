@@ -27,7 +27,7 @@
 #include "ekg/ekg.hpp"
 
 void ekg::ui::scrollbar_widget::on_reload() {
-  this->scroll.rect_mother = this->p_parent;
+  this->scroll.p_rect_mother = this->p_parent;
   this->scroll.mother_id = this->p_data->get_parent_id();
   this->scroll.widget_id = this->p_data->get_id();
   this->dimension.w = this->p_parent->w;

@@ -33,7 +33,7 @@ namespace ekg::ui {
   class scrollbar_embedded_widget {
   public:
     std::vector<int32_t> child_id_list {};
-    ekg::rect *rect_mother {};
+    ekg::rect *p_rect_mother {};
     ekg::rect rect_child {};
     ekg::rect rect_dimension_sync {};
     ekg::rect last_rect_child {};

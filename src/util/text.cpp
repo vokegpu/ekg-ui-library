@@ -227,7 +227,7 @@ void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_rea
         string = string.substr(start_index, string.find('\0', start_index))
       ).empty()
     ) {
-    // `meow\n\0>`, so the decode wont emplace a empty string.
+    // `meow\n\0`, so the decode wont emplace a empty string.
     utf8_read.emplace_back(string);
   }
 }
