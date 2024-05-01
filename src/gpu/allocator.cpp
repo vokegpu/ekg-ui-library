@@ -27,6 +27,7 @@
 
 bool ekg::gpu::allocator::is_out_of_scissor {};
 float ekg::gpu::allocator::concave {-2.0f};
+uint64_t ekg::gpu::allocator::current_rendering_data_count {};
 
 void ekg::gpu::allocator::invoke() {
   this->data_instance_index = 0;
@@ -127,6 +128,7 @@ void ekg::gpu::allocator::revoke() {
   }
 
   this->previous_cached_geometry_resources_size = cached_geometry_resources_size;
+  ekg::gpu::allocator::current_rendering_data_count = this->data_list.size();
 }
 
 void ekg::gpu::allocator::on_update() {

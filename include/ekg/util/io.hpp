@@ -97,6 +97,10 @@ namespace ekg {
       }
     }
 
+    static void print(std::string_view msg) {
+      std::cout << "[EKG-PRINT] " << msg << std::endl;
+    }
+
     template<typename t>
     static void trace(bool should, t trace, bool interrupt_runtime = false) {
       if (!should) {

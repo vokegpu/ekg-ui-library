@@ -53,17 +53,22 @@ void ekg::ui::listbox_widget::on_reload() {
   this->min_size.y = ekg_min(this->min_size.y, dimension_height);
 
   ekg::font item_font {p_ui->get_item_font_size()};
+  ekg::rect relative_rect {};
   uint64_t arbitrary_index_pos {};
   int32_t item_scaled_height {p_ui->get_item_scaled_height()};
 
   for (uint64_t it {}; it < this->p_item_list->size(); it++) {
     arbitrary_index_pos = 0;
+    relative_rect.x = 0;
+    relative_rect.w = this->dimension.w;
+    relative_rect.h = 0;
 
     ekg::item &item {this->p_item_list->at(it)};
     ekg::ui::listbox_template_reload(
       item,
       rect,
       item_font,
+      relative_rect,
       item_scaled_height,
       arbitrary_index_pos
     );
@@ -87,17 +92,20 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
 
   ekg::draw::rect(rect, theme.listbox_background);
 
+  ekg::rect relative_rect {};
   ekg::font item_font {p_ui->get_item_font_size()};
   uint64_t arbitrary_index_pos {};
 
   for (uint64_t it {}; it < this->p_item_list->size(); it++) {
     arbitrary_index_pos = 0;
+    relative_rect.h = 0.0f;
 
     ekg::item &item {this->p_item_list->at(it)};
     ekg::ui::listbox_template_render(
       item,
       rect,
       item_font,
+      relative_rect,
       this->scrollbar.scroll.y,
       arbitrary_index_pos
     );
@@ -110,6 +118,7 @@ void ekg::ui::listbox_template_reload(
   ekg::item &parent,
   ekg::rect &ui_rect,
   ekg::font &item_font,
+  ekg::rect &relative_rect,
   int32_t item_scaled_height,
   uint64_t pos
 ) {
@@ -139,13 +148,20 @@ void ekg::ui::listbox_template_reload(
     dimension_offset = text_height / 2;
     offset = ekg::find_min_offset(text_width, dimension_offset);
 
-    placement.rect.w = ekg_min(placement.rect.w, text_width);
+    placement.rect.w = ekg_min(relative_rect.w, text_width);
     placement.rect.h = (text_height + dimension_offset) * static_cast<float>(item_scaled_height);
 
     placement.rect_text.w = text_width;
     placement.rect_text.h = text_height * static_cast<float>(text_lines);
 
-    layout.set_preset_mask({offset, offset, placement.rect.h}, ekg::axis::horizontal, placement.rect.w);
+    layout.set_preset_mask(
+      {
+        offset, offset, placement.rect.h
+      },
+      ekg::axis::horizontal,
+      placement.rect.w
+    );
+    
     layout.insert_into_mask({&placement.rect_text, placement.text_dock_flags});
     layout.process_layout_mask();
   }
@@ -155,6 +171,7 @@ void ekg::ui::listbox_template_render(
   ekg::item &parent,
   ekg::rect &ui_rect,
   ekg::font &item_font,
+  ekg::rect &relative_rect,
   float y_scroll,
   uint64_t pos
 ) {
@@ -172,7 +189,9 @@ void ekg::ui::listbox_template_render(
   for (it = it; it < parent.size(); it++) {
     ekg::item &item {parent.at(it)};
     ekg::placement &placement {item.unsafe_get_placement()};
-    item_rect = ui_rect + placement.rect;
+
+    placement.rect.y = relative_rect.h;
+    item_rect = placement.rect + ui_rect;
 
     ekg::draw::rect(
       item_rect,
@@ -192,5 +211,13 @@ void ekg::ui::listbox_template_render(
       item_rect.y + placement.rect_text.y,
       theme.listbox_item_string
     );
+
+    ekg::draw::rect(
+      item_rect,
+      theme.listbox_item_outline,
+      ekg::draw_mode::outline
+    );
+
+    relative_rect.h += placement.rect.h;
   }
 }

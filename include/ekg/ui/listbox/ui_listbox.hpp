@@ -35,7 +35,7 @@ namespace ekg::ui {
   protected:
     ekg::font item_font_size {};
     ekg::mode current_mode {};
-    int32_t item_scaled_height {};
+    int32_t item_scaled_height {1};
   public:
     ekg::ui::listbox *set_item_font_size(ekg::font font_size);
 

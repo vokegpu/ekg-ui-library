@@ -184,6 +184,9 @@ int32_t showcase_useless_window() {
       ekg::action::activity
     );
 
+  fps = ekg::label("FPS: ", ekg::dock::fill | ekg::dock::next)
+    ->set_font_size(ekg::font::big);
+
   auto list = ekg::listbox(
     "hello",
     {
@@ -195,7 +198,7 @@ int32_t showcase_useless_window() {
           ekg::item("Astah"),
         },
         ekg::attr::disabled | ekg::attr::locked
-      ),
+      )/*,
       ekg::item(
         "Estado",
         {
@@ -203,16 +206,13 @@ int32_t showcase_useless_window() {
           ekg::item("Debaixo da Cama"),
           ekg::item("Na selva")
         }
-      )
+      )*/
     },
     ekg::dock::fill | ekg::dock::next
   )->set_scaled_height(6);
 
   auto p_terminal = ekg::textbox("gostosa", {}, ekg::dock::fill | ekg::dock::next)
-    ->set_scaled_height(5);
-
-  fps = ekg::label("FPS: ", ekg::dock::fill | ekg::dock::next)
-    ->set_font_size(ekg::font::big);
+    ->set_scaled_height(3);
 
   ekg::slider("gostoso", 500.0f, 0.0f, 1000.0f, ekg::dock::fill | ekg::dock::next);
 
@@ -358,7 +358,8 @@ int32_t showcase_useless_window() {
       last_frame = frame_couting;
       fps->set_text(
         "FPS: " + std::to_string(frame_couting) +
-        " DT: " + std::to_string(ekg::ui::dt)
+        " DT: " + std::to_string(ekg::ui::dt) +
+        " GD: " + std::to_string(ekg::gpu::allocator::current_rendering_data_count)
       );
       frame_couting = 0;
     }

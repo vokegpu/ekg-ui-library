@@ -35,6 +35,7 @@ ekg::item::item(
 ) {
   this->value = insert_value;
   this->attr_bits = insert_attr_bits;
+  this->placement.text_dock_flags = ekg::dock::left | ekg::dock::center;
 }
 
 ekg::item::item(
@@ -45,6 +46,7 @@ ekg::item::item(
   this->value = insert_value;
   this->insert(this->begin(), insert_item_list.begin(), insert_item_list.end());
   this->attr_bits = insert_attr_bits;
+  this->placement.text_dock_flags = ekg::dock::left | ekg::dock::center;
 }
 
 ekg::item::~item() {

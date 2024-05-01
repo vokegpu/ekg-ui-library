@@ -36,6 +36,7 @@ namespace ekg::gpu {
   public:
     static bool is_out_of_scissor;
     static float concave;
+    static uint64_t current_rendering_data_count;
   protected:
     std::vector<ekg::gpu::data_t> data_list {};
     std::vector<float> cached_geometry_resources {};

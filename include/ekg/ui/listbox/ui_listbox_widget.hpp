@@ -52,6 +52,7 @@ namespace ekg::ui {
     ekg::item &parent,
     ekg::rect &ui_rect,
     ekg::font &item_font,
+    ekg::rect &relative_rect,
     int32_t item_scaled_height,
     uint64_t pos
   );
@@ -60,6 +61,7 @@ namespace ekg::ui {
     ekg::item &parent,
     ekg::rect &ui_rect,
     ekg::font &item_font,
+    ekg::rect &relative_rect,
     float y_scroll,
     uint64_t pos
   );
