@@ -33,7 +33,7 @@ namespace ekg::ui {
   class listbox_widget : public ekg::ui::abstract_widget {
   public:
     std::vector<ekg::item> *p_item_list {};
-    ekg::ui::scrollbar_embedded_widget scrollbar {};
+    ekg::ui::scrollbar_embedded_widget embedded_scroll {};
   public:
     void on_create() override;
 
@@ -41,7 +41,11 @@ namespace ekg::ui {
 
     void on_update() override;
 
+    void on_post_event(ekg::os::io_event_serial &io_event_serial) override;
+    
     void on_event(ekg::os::io_event_serial &io_event_serial) override;
+
+    void on_pre_event(ekg::os::io_event_serial &io_event_serial) override;
 
     void on_draw_refresh() override;
   };

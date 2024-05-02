@@ -73,13 +73,44 @@ void ekg::ui::listbox_widget::on_reload() {
       arbitrary_index_pos
     );
   }
+
+  this->embedded_scroll.p_rect_mother = &rect;
+  this->embedded_scroll.widget_id = this->p_data->get_id();
+  this->embedded_scroll.on_reload();
+}
+
+void ekg::ui::listbox_widget::on_pre_event(ekg::os::io_event_serial &io_event_serial) {
+  abstract_widget::on_pre_event(io_event_serial);
+
+  this->embedded_scroll.on_pre_event(io_event_serial);
+  this->flag.absolute = (
+    this->embedded_scroll.is_dragging_bar() ||
+    this->embedded_scroll.flag.activity ||
+    this->flag.state
+  );
 }
 
 void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
+  bool pressed {};
+  bool released {};
+  bool motion {};
+
+  this->embedded_scroll.on_event(io_event_serial);
+
+  if ((this->flag.focused || this->flag.hovered || this->flag.absolute) && !this->is_high_frequency) {
+    ekg::update_high_frequency(this);
+  }
+}
+
+void ekg::ui::listbox_widget::on_post_event(ekg::os::io_event_serial &io_event_serial) {
+  abstract_widget::on_post_event(io_event_serial);
+  this->embedded_scroll.flag.hovered = false;
+  this->embedded_scroll.flag.activity = false;
 }
 
 void ekg::ui::listbox_widget::on_update() {
-
+  this->embedded_scroll.on_update();
+  this->is_high_frequency = this->embedded_scroll.check_activity_state(this->flag.focused || this->flag.hovered);
 }
 
 void ekg::ui::listbox_widget::on_draw_refresh() {
@@ -94,7 +125,10 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
 
   ekg::rect relative_rect {};
   ekg::font item_font {p_ui->get_item_font_size()};
+  ekg::rect relative_largest_rect {};
+
   uint64_t arbitrary_index_pos {};
+  ekg::rect scrollable_rect {rect + this->embedded_scroll.scroll};
 
   for (uint64_t it {}; it < this->p_item_list->size(); it++) {
     arbitrary_index_pos = 0;
@@ -103,13 +137,25 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
     ekg::item &item {this->p_item_list->at(it)};
     ekg::ui::listbox_template_render(
       item,
-      rect,
+      scrollable_rect,
       item_font,
       relative_rect,
-      this->scrollbar.scroll.y,
+      this->embedded_scroll.scroll.y,
       arbitrary_index_pos
     );
+
+    if (relative_rect.w > relative_largest_rect.w) {
+      relative_largest_rect.w = relative_rect.w;
+    }
+
+    if (relative_rect.h > relative_largest_rect.h) {
+      relative_largest_rect.h = relative_rect.h;
+    }
   }
+
+  this->embedded_scroll.rect_child = relative_largest_rect;
+  this->embedded_scroll.scissor = this->scissor;
+  this->embedded_scroll.on_draw_refresh();
 
   ekg::draw::rect(rect, theme.listbox_outline, ekg::draw_mode::outline);  
 }

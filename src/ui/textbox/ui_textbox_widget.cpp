@@ -730,8 +730,6 @@ void ekg::ui::textbox_widget::on_reload() {
   this->min_size.y = ekg_min(this->min_size.y, this->dimension.h);
 
   if (this->last_text_chunk_size != this->p_text_chunk_list->size()) {
-    //this->widget_side_text = p_ui->get_text();
-
     /**
      * Generate default empty text for say to the rest of textbox,
      * that is empty and not with null lines.
@@ -769,6 +767,7 @@ void ekg::ui::textbox_widget::on_reload() {
      */
     if (vertical_scroll_limit > 0 && this->embedded_scroll.scroll.w < -(vertical_scroll_limit - new_text_height_diff)) {
       this->embedded_scroll.scroll.w = -vertical_scroll_limit;
+      std::cout << "meow" << std::endl;
     }
 
     if (!this->is_high_frequency) {
