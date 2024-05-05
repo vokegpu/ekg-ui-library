@@ -34,12 +34,18 @@ namespace ekg::ui {
   class listbox : public ekg::ui::abstract, public std::vector<ekg::item> {
   protected:
     ekg::font item_font_size {};
+    ekg::font column_header_font_size {};
     ekg::mode current_mode {};
+    uint16_t column_header_dock_flags {};
     int32_t item_scaled_height {1};
   public:
     ekg::ui::listbox *set_item_font_size(ekg::font font_size);
 
     ekg::font get_item_font_size();
+
+    ekg::ui::listbox *set_column_header_font_size(ekg::font font_size);
+
+    ekg::font get_column_header_font_size();
 
     ekg::ui::listbox *set_width(float w);
 
@@ -60,6 +66,10 @@ namespace ekg::ui {
     ekg::ui::listbox *set_item_scaled_height(int32_t h);
 
     int32_t get_item_scaled_height();
+
+    ekg::ui::listbox *set_column_header_align(uint16_t dock);
+
+    uint16_t get_column_header_align(); 
   };
 }
 

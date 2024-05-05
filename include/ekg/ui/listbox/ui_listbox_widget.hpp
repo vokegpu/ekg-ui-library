@@ -63,11 +63,13 @@ namespace ekg::ui {
 
   void listbox_template_render(
     ekg::item &parent,
+    ekg::vec2 &ui_pos,
     ekg::rect &ui_rect,
     ekg::font &item_font,
     ekg::rect &relative_rect,
     float y_scroll,
-    uint64_t pos
+    uint64_t pos,
+    bool stop_rendering_items
   );
 }
 

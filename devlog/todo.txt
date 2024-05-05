@@ -70,3 +70,14 @@ a.at(1).set_attr(ekg::attr::enable);
 a.insert("oi").insert("oi")
 
 // remove `ekg::ui::item`
+
+/* DPI, UI, and Scale */
+
+The current stupid system of EKG for scalling is actually useless; the scaled height factors at each widget,
+is not really scaled by the layout, so, I want to use scaled height factor but scale with the DPI/UI scale.
+
+So 800x600 will be the same as 1920x1080 indifferent of font-size.
+How? idk, i will use the mother/parent frame as base/factor and the height font too as base.
+So the layout service will get the perfect sized DPI and scale.
+Some day I do this.
+  

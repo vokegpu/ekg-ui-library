@@ -264,6 +264,7 @@ ekg::ui::listbox *ekg::listbox(
   p_ui->set_scaled_height(6);
   p_ui->set_item_font_size(ekg::font::normal);
   p_ui->insert(p_ui->end(), item_list.begin(), item_list.end());
+  p_ui->set_column_header_align(ekg::dock::fill);
 
   return p_ui;
 }

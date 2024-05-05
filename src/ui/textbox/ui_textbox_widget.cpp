@@ -1107,8 +1107,6 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   if (this->update_ui_text) {
     this->update_ui_text_data();
     this->update_ui_text = false;
-
-    std::cout << "meow" << std::endl;
   }
 
   this->cursor_draw_data_list.clear();

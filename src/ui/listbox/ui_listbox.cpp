@@ -38,6 +38,20 @@ ekg::font ekg::ui::listbox::get_item_font_size() {
   return this->item_font_size;
 }
 
+ekg::ui::listbox *ekg::ui::listbox::set_column_header_font_size(ekg::font font_size) {
+  if (this->column_header_font_size != font_size) {
+    this->column_header_font_size = font_size;
+    ekg::reload(this->id);
+  }
+
+  return this;
+}
+
+ekg::font ekg::ui::listbox::get_column_header_font_size() {
+  return this->column_header_font_size;
+}
+
+
 ekg::ui::listbox *ekg::ui::listbox::set_width(float w) {
   if (this->sync_ui.w != w) {
     this->sync_ui.w = w;
@@ -102,4 +116,17 @@ ekg::ui::listbox *ekg::ui::listbox::set_item_scaled_height(int32_t h) {
 
 int32_t ekg::ui::listbox::get_item_scaled_height() {
   return this->item_scaled_height;
+}
+
+ekg::ui::listbox *ekg::ui::listbox::set_column_header_align(uint16_t flags) {
+  if (this->column_header_dock_flags != flags) {
+    this->column_header_dock_flags = flags;
+    ekg::reload(this->id);
+  }
+
+  return this;
+}
+
+uint16_t ekg::ui::listbox::get_column_header_align() {
+  return this->column_header_dock_flags;
 }
