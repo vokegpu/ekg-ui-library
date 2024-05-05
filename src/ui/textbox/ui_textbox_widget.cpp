@@ -738,43 +738,9 @@ void ekg::ui::textbox_widget::on_reload() {
       this->p_text_chunk_list->emplace_back();
     }
 
-    this->text_edited = true;
-    this->update_ui_text = true;
-    this->rect_text.h = (this->text_height * static_cast<float>(this->p_text_chunk_list->size()));
-
-    float vertical_scroll_limit {this->rect_text.h - rect.h};
-    float new_text_height_diff {
-      this->text_height *
-      (
-        /***
-         * before casting to float, must cast to int64_t,
-         * uint64_t range is large than int64_t
-         * but uint64_t can not subtract less than 0,
-         * otherwise it returns overflow.
-         */
-        static_cast<float>(
-          static_cast<int64_t>(
-            this->p_text_chunk_list->size()
-          ) - this->last_text_chunk_size
-        ) +
-        1.0f
-      )
-    };
-
-    /**
-     * If the difference between the new and old texts,
-     * is nearest of scrolling y, it should follow the scrolling.
-     */
-    if (vertical_scroll_limit > 0 && this->embedded_scroll.scroll.w < -(vertical_scroll_limit - new_text_height_diff)) {
-      this->embedded_scroll.scroll.w = -vertical_scroll_limit;
-      std::cout << "meow" << std::endl;
-    }
-
     if (!this->is_high_frequency) {
       ekg::update_high_frequency(this);
     }
-
-    this->last_text_chunk_size = this->p_text_chunk_list->size();
   }
 
   this->embedded_scroll.p_rect_mother = &rect;
@@ -959,6 +925,59 @@ void ekg::ui::textbox_widget::on_post_event(ekg::os::io_event_serial &io_event_s
 }
 
 void ekg::ui::textbox_widget::on_update() {
+  /**
+   * @TODO Ticking system and rendering system.
+   * 
+   * A critic issue with the rendering system and ticking system:
+   * Any modification should tell to re-draw the GUI always one text is inserted/erased from UI vector otherwise,
+   * nothing changes until one re-draw call is performed.
+   * 
+   * I think two solutions (one is too stupid):
+   * 1- Overhead the vector calls and add one atomic-semaphore to re-draw the entire GUI.
+   * 2- The stupid but operable: let the application GUI do lot of re-draw calls naturally.
+   * 
+   * The 1 is ok, I think works better than the 2, but the performance can be little reduced, due the virtuals necessary.
+   * The 2 requires the application works, and update lot of stuff concurrent to perform a smooth text update.
+   * 
+   * I will not code it for now, too much to my silly brain,
+   * Rina.
+   **/
+  uint64_t chunk_text_size {this->p_text_chunk_list->size()};
+  if (this->last_text_chunk_size != chunk_text_size) {
+    this->text_edited = true;
+    this->update_ui_text = true;
+    this->rect_text.h = (this->text_height * static_cast<float>(this->p_text_chunk_list->size()));
+
+    float vertical_scroll_limit {this->rect_text.h - this->dimension.h};
+    float new_text_height_diff {
+      this->text_height *
+      (
+        /***
+         * before casting to float, must cast to int64_t,
+         * uint64_t range is large than int64_t
+         * but uint64_t can not subtract less than 0,
+         * otherwise it returns overflow.
+         */
+        static_cast<float>(
+          static_cast<int64_t>(
+            this->p_text_chunk_list->size()
+          ) - this->last_text_chunk_size
+        ) +
+        1.0f
+      )
+    };
+
+    /**
+     * If the difference between the new and old texts,
+     * is nearest of scrolling y, it should follow the scrolling.
+     */
+    if (vertical_scroll_limit > 0 && this->embedded_scroll.scroll.w < -(vertical_scroll_limit - new_text_height_diff)) {
+      this->embedded_scroll.scroll.w = -vertical_scroll_limit;
+    }
+
+    this->last_text_chunk_size = chunk_text_size;
+  }
+
   this->embedded_scroll.on_update();
   this->is_high_frequency = this->embedded_scroll.check_activity_state(this->flag.focused || this->flag.hovered);
 }
@@ -1088,6 +1107,8 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   if (this->update_ui_text) {
     this->update_ui_text_data();
     this->update_ui_text = false;
+
+    std::cout << "meow" << std::endl;
   }
 
   this->cursor_draw_data_list.clear();

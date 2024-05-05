@@ -74,6 +74,7 @@ void ekg::ui::listbox_widget::on_reload() {
     );
   }
 
+  this->embedded_scroll.acceleration.y = (text_height * 3.0f) + (offset * 2.0f);
   this->embedded_scroll.p_rect_mother = &rect;
   this->embedded_scroll.widget_id = this->p_data->get_id();
   this->embedded_scroll.on_reload();
@@ -91,9 +92,9 @@ void ekg::ui::listbox_widget::on_pre_event(ekg::os::io_event_serial &io_event_se
 }
 
 void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
-  bool pressed {};
-  bool released {};
-  bool motion {};
+  bool pressed {ekg::input::pressed()};
+  bool released {ekg::input::released()};
+  bool motion {ekg::input::motion()};
 
   this->embedded_scroll.on_event(io_event_serial);
 
@@ -117,6 +118,8 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
   auto &rect {this->get_abs_rect()};
   auto &theme {ekg::theme()};
   auto *p_ui {static_cast<ekg::ui::listbox*>(this->p_data)};
+
+  this->embedded_scroll.clamp_scroll();
 
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();

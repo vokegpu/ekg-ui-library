@@ -387,6 +387,7 @@ int32_t showcase_useless_window() {
         " DT: " + std::to_string(ekg::ui::dt) +
         " GD: " + std::to_string(ekg::gpu::allocator::current_rendering_data_count)
       );
+
       frame_couting = 0;
     }
 
