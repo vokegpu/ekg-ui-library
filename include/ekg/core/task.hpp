@@ -43,13 +43,7 @@ namespace ekg {
   struct info {
   public:
     std::string_view tag {};
-    int32_t id {};
-    int32_t type {};
-    bool button {};
-    bool checkbox {};
-    float slider {};
-    std::string_view popup {};
-    std::string_view combobox {};
+    void *p_ui {};
     void *p_data {};
   };
 

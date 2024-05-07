@@ -161,7 +161,7 @@ int32_t showcase_useless_window() {
   ekg::ui::label *fps {};
   std::string previous_operator {};
 
-  ekg::frame("cat", {400, 400}, ekg::dock::none)
+  ekg::frame("cat", {400, 700}, ekg::dock::none)
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
     ->set_drag(ekg::dock::top);
 
@@ -224,7 +224,7 @@ int32_t showcase_useless_window() {
 
         },
         ekg::attr::disabled | ekg::attr::locked
-      )/*,
+      ),
       ekg::item(
         "Estado",
         {
@@ -232,7 +232,7 @@ int32_t showcase_useless_window() {
           ekg::item("Debaixo da Cama"),
           ekg::item("Na selva")
         }
-      )*/
+      )
     },
     ekg::dock::fill | ekg::dock::next
   )->set_scaled_height(6);
@@ -242,12 +242,48 @@ int32_t showcase_useless_window() {
 
   ekg::slider("gostoso", 500.0f, 0.0f, 1000.0f, ekg::dock::fill | ekg::dock::next);
 
+  auto p_dpi = ekg::checkbox("DPI-scale:", true, ekg::dock::next);
+  ekg::textbox("DPI", "1920x1080", ekg::dock::fill)
+    ->set_max_lines(1)
+    ->set_task(
+      new ekg::task {
+        .info = {
+          .tag = "DPI-scale"
+        },
+        .function = [](ekg::info &task_info) {
+          ekg::ui::textbox *p_ui {static_cast<ekg::ui::textbox*>(task_info.p_ui)};
+          std::string &text {p_ui->at(0)};
+
+          bool found_x {};
+          uint64_t begin {};
+          uint64_t size {text.size()};
+
+          for (uint64_t it {}; it < text.size(); it++) {
+            char &c {text.at(it)};
+
+            if (c == 'x') {
+              begin = it;
+              ekg::ui::scale.x = std::stof(text.substr(0, begin)); 
+              found_x = true;
+            }
+
+            if (it == size - 1) {
+              ekg::ui::scale.y = std::stof(text.substr(begin+1, it - begin));
+            }
+          }
+
+          ekg::log() << "updated DPI";
+        }
+      },
+      ekg::action::activity
+    );
+
   ekg::theme().gen_default_dark_theme();
   ekg::checkbox("Light Theme", false, ekg::dock::fill | ekg::dock::next)
     ->set_task(
       new ekg::task {
         .info = {
-          .tag = "theme-switcher"
+          .tag = "theme-switcher",
         },
         .function = [](ekg::info &task_info) {
           auto &theme {ekg::theme()};
@@ -388,6 +424,7 @@ int32_t showcase_useless_window() {
         " GD: " + std::to_string(ekg::gpu::allocator::current_rendering_data_count)
       );
 
+      ekg::ui::auto_scale = p_dpi->get_value();
       frame_couting = 0;
     }
 

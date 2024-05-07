@@ -32,6 +32,7 @@
 
 #define ekg_equals_float(x, y) ((fabsf((x) - (y))) <= FLT_EPSILON * fmaxf(1.0f, fmaxf(fabsf(x), fabsf(y))))
 #define ekg_pixel_div_2        (0.500000f)
+#define ekg_pixel              (1.000000f)
 #define ekg_pi                 (3.141592653589793238462643383279502884)
 
 /*

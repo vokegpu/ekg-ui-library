@@ -111,6 +111,16 @@ void ekg::ui::slider_widget::on_reload() {
 
   float bar_difference_size {};
 
+  /**
+   * @TODO
+   * The slider has a little unknown size-difference from layout align,
+   * not sure why this small layout difference happen, I think its the
+   * text width subtracted or something, but it is necessary check
+   * and out-print the values.
+   * 
+   * Some day I will rewrite this, bu! not now. 
+   **/
+
   switch (bar_axis) {
     case ekg::axis::horizontal: {
       /* we need to subtract the bar with the text size if text align is not center (center follows the target) */

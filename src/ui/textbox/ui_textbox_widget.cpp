@@ -904,6 +904,10 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
         this->process_text(cursor, "delete", ekg::ui::textbox_widget::action::erase_text, 1);
       } else if (ekg::input::action("textbox-action-break-line")) {
         this->process_text(cursor, "return", ekg::ui::textbox_widget::action::break_line, 1);
+        ekg_action_dispatch(
+          true,
+          ekg::action::activity
+        );
       } else if (ekg::input::action("textbox-action-tab")) {
         this->process_text(cursor, "\t", ekg::ui::textbox_widget::action::add_text, 1);
       } else if (this->is_clipboard_copy || this->is_clipboard_paste || this->is_clipboard_cut) {
