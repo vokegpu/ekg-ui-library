@@ -134,9 +134,10 @@ namespace ekg {
     focused   = 2 << 2,
     hovering  = 2 << 3,
     locked    = 2 << 4,
+    opened    = 2 << 5,
 
-    contains_separator = 2 << 5,
-    contains_icon      = 2 << 6,
+    contains_separator = 2 << 6,
+    contains_icon      = 2 << 7,
 
     // temp
     separator = 2 << 7

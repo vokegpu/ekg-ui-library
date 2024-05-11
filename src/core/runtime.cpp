@@ -599,7 +599,12 @@ void ekg::runtime::prepare_ui_env() {
   this->service_input.bind("textbox-activity", "mouse-1");
   this->service_input.bind("textbox-activity", "finger-click");
 
-  this->service_input.bind("listbox-activity-open", "mouse-1-double");
+  this->service_input.bind("listbox-activity-open", "mouse-1");
+  this->service_input.bind("listbox-activity-open", "finger-click");
+  this->service_input.bind("listbox-activity-select", "mouse-1-double");
+  this->service_input.bind("listbox-activity-select", "finger-hold");
+  this->service_input.bind("listbox-activity-select", "lctrl");
+  this->service_input.bind("listbox-activity-select", "rctrl");
 
   this->service_input.bind("slider-activity", "mouse-1");
   this->service_input.bind("slider-activity", "finger-click");

@@ -161,6 +161,17 @@ int32_t showcase_useless_window() {
   ekg::ui::label *fps {};
   std::string previous_operator {};
 
+  ekg::frame("mumu", {900, 300}, ekg::dock::none)
+    ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
+    ->set_drag(ekg::dock::top);
+
+  ekg::label("meow", ekg::dock::fill);
+
+  ekg::textbox("meow", "meow oi", ekg::dock::fill | ekg::dock::next)
+    ->set_scaled_height(24);
+
+  ekg::pop_group();
+
   ekg::frame("cat", {400, 700}, ekg::dock::none)
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
     ->set_drag(ekg::dock::top);

@@ -61,6 +61,21 @@ namespace ekg::ui {
     uint64_t pos
   );
 
+  void listbox_template_on_event(
+    ekg::os::io_event_serial &io_event_serial,
+    bool motion,
+    bool released,
+    bool pressed_select,
+    bool pressed_open,
+    ekg::item &parent,
+    ekg::vec2 &ui_pos,
+    ekg::rect &ui_rect,
+    ekg::rect &relative_rect,
+    float y_scroll,
+    uint64_t pos,
+    bool stop_iterating_items
+  );
+
   void listbox_template_render(
     ekg::item &parent,
     ekg::vec2 &ui_pos,
