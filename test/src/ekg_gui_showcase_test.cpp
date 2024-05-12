@@ -167,7 +167,7 @@ int32_t showcase_useless_window() {
 
   ekg::label("meow", ekg::dock::fill);
 
-  ekg::textbox("meow", "meow oi", ekg::dock::fill | ekg::dock::next)
+  auto p_terminal = ekg::textbox("meow", "meow oi", ekg::dock::fill | ekg::dock::next)
     ->set_scaled_height(24);
 
   ekg::pop_group();
@@ -205,51 +205,12 @@ int32_t showcase_useless_window() {
         "Nome",
         {
           ekg::item("Amanda"),
-          ekg::item("Potato"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-          ekg::item("Astah"),
-
         },
         ekg::attr::disabled | ekg::attr::locked
       ),
-      ekg::item(
-        "Estado",
-        {
-          ekg::item("No teto"),
-          ekg::item("Debaixo da Cama"),
-          ekg::item("Na selva")
-        }
-      )
     },
     ekg::dock::fill | ekg::dock::next
-  )->set_scaled_height(6);
-
-  auto p_terminal = ekg::textbox("gostosa", {}, ekg::dock::fill | ekg::dock::next)
-    ->set_scaled_height(3);
+  )->set_scaled_height(16);
 
   ekg::slider("gostoso", 500.0f, 0.0f, 1000.0f, ekg::dock::fill | ekg::dock::next);
 
@@ -406,10 +367,12 @@ int32_t showcase_useless_window() {
   ekg::pop_group();
 
   ekg::input::bind("hiroodrop", {"lctrl+b", "lctrl+lshift+v", "lshift+m"});
+  ekg::input::bind("meow", "lctrl+mouse-1");
 
   bool running {true};
   uint64_t now {};
   uint64_t last {};
+  uint64_t life {};
 
   SDL_Delay(10);
   
@@ -484,8 +447,8 @@ int32_t showcase_useless_window() {
       }
     }
 
-    if (ekg::input::action("hiroodrop")) {
-      ekg::log() << "mumu sou uma vakinha";
+    if (ekg::input::action("meow")) {
+      std::cout << "mumu sou uma vakinha (" << ++life << ')' << std::endl;
     }
     
     if (ekg::log::buffered) {

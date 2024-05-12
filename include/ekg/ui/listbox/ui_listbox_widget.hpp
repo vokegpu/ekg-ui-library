@@ -65,6 +65,7 @@ namespace ekg::ui {
     ekg::os::io_event_serial &io_event_serial,
     bool motion,
     bool released,
+    bool pressed_select_many,
     bool pressed_select,
     bool pressed_open,
     ekg::item &parent,

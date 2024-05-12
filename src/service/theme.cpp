@@ -105,10 +105,13 @@ void ekg::service::theme::gen_default_dark_theme() {
 
   /* Listbox */
 
-  this->listbox_item_outline        = ekg::color(141, 141, 141, 50);
+  this->listbox_item_outline        = ekg::color(141, 141, 141, 0);
   this->listbox_item_background     = ekg::color(85, 85, 85, 0);
   this->listbox_item_string         = ekg::color(202, 202, 202, 255);
   this->listbox_item_highlight      = ekg::color(44, 166, 255, 50);
+  this->listbox_item_highlight_outline = ekg::color(141, 141, 141, 0);
+  this->listbox_item_focused_outline = ekg::color(141, 141, 141, 0);
+  this->listbox_item_focused        = ekg::color(44, 166, 255, 100);
   this->listbox_outline             = ekg::color(141, 141, 141, 100);
   this->listbox_background          = ekg::color(85, 85, 85, 50);
 }

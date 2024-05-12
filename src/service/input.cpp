@@ -200,10 +200,12 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
     }
 
     case ekg::platform_event_type::mouse_button_down: {
-      std::string string_builder {"mouse-"};
-      string_builder += std::to_string(io_event_serialized.mouse_button);
+      std::string string_builder {};
+      std::string key_name {"mouse-"};
+      key_name += std::to_string(io_event_serialized.mouse_button);
 
       this->was_pressed = true;
+      this->complete_with_units(string_builder, key_name);
       this->callback(string_builder, true);
       this->input_released_list.push_back(string_builder);
 
@@ -225,9 +227,11 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
 
     case ekg::platform_event_type::mouse_button_up: {
       this->was_released = true;
-      std::string string_builder {"mouse-"};
+      std::string string_builder {};
+      std::string key_name {"mouse-"};
+      key_name += std::to_string(io_event_serialized.mouse_button);
 
-      string_builder += std::to_string(io_event_serialized.mouse_button);
+      this->complete_with_units(string_builder, key_name);
       string_builder += "-up";
 
       this->callback(string_builder, true);

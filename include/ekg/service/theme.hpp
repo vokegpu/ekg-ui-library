@@ -83,7 +83,10 @@ namespace ekg::service {
     float scrollbar_min_bar_size {};
 
     ekg::vec4 listbox_item_background {};
+    ekg::vec4 listbox_item_highlight_outline {};
     ekg::vec4 listbox_item_highlight {};
+    ekg::vec4 listbox_item_focused {};
+    ekg::vec4 listbox_item_focused_outline {};
     ekg::vec4 listbox_item_string {};
     ekg::vec4 listbox_item_outline {};
     ekg::vec4 listbox_outline {};
