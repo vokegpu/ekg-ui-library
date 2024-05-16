@@ -34,6 +34,7 @@ namespace ekg::ui {
   public:
     std::vector<ekg::item> *p_item_list {};
     ekg::ui::scrollbar_embedded_widget embedded_scroll {};
+    bool was_selected {};
   public:
     void on_create() override;
 
@@ -58,7 +59,8 @@ namespace ekg::ui {
     ekg::font &item_font,
     ekg::rect &relative_rect,
     int32_t item_scaled_height,
-    uint64_t pos
+    uint64_t pos,
+    bool &opened
   );
 
   void listbox_template_on_event(
@@ -68,13 +70,11 @@ namespace ekg::ui {
     bool pressed_select_many,
     bool pressed_select,
     bool pressed_open,
+    bool &was_selected,
     ekg::item &parent,
     ekg::vec2 &ui_pos,
     ekg::rect &ui_rect,
-    ekg::rect &relative_rect,
-    float y_scroll,
-    uint64_t pos,
-    bool stop_iterating_items
+    ekg::rect &relative_rect
   );
 
   void listbox_template_render(

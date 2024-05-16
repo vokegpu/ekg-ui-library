@@ -204,10 +204,27 @@ int32_t showcase_useless_window() {
       ekg::item(
         "Nome",
         {
-          ekg::item("Amanda"),
+          ekg::item("Anjo-Dorminhoco"),
+          ekg::item("Potato"),
+          ekg::item("Astah", {
+            ekg::item("meow"),
+            ekg::item("meow")
+          }),
+          ekg::item("Malboro"),
+          ekg::item("Leviata")
         },
         ekg::attr::disabled | ekg::attr::locked
       ),
+      ekg::item(
+        "Estado",
+        {
+          ekg::item("No Ceu"),
+          ekg::item("Brincando la fora"),
+          ekg::item("Mordendo rato"),
+          ekg::item("Mordendo a Astah"),
+          ekg::item("Correndo")
+        }
+      )
     },
     ekg::dock::fill | ekg::dock::next
   )->set_scaled_height(16);

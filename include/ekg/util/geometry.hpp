@@ -251,6 +251,8 @@ namespace ekg {
   struct placement {
   public:
     ekg::rect rect {};
+    ekg::rect rect_extent {};
+
     ekg::rect rect_text {};
     uint16_t text_dock_flags {};
   };

@@ -171,6 +171,9 @@ void ekg::service::theme::gen_default_light_theme() {
   this->listbox_item_background = ekg::color(204, 204, 204, 0);
   this->listbox_item_string = ekg::color(141, 141, 141, 255);
   this->listbox_item_outline = ekg::color(202, 207, 222, 50);
+  this->listbox_item_highlight_outline = ekg::color(202, 207, 222, 0);
+  this->listbox_item_focused_outline = ekg::color(202, 207, 222, 0);
+  this->listbox_item_focused = ekg::color(44, 166, 255, 100);
   this->listbox_item_highlight = ekg::color(44, 166, 255, 50);
   this->listbox_background = ekg::color(204, 204, 204, 50);
   this->listbox_outline = ekg::color(202, 207, 222, 100);

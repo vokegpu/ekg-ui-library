@@ -1,0 +1,9 @@
+cmake-build-debug/
+.idea/
+.vscode/
+.sublimetext/
+.obsidian/
+lib/
+.sublime-project.sublime-workspace
+*.sublime-workspace
+ekg-ui-library.sublime-workspace
