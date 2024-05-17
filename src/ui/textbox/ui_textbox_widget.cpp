@@ -761,7 +761,7 @@ void ekg::ui::textbox_widget::on_pre_event(ekg::os::io_event_serial &io_event_se
 }
 
 void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
-  bool pressed {ekg::input::pressed() && ekg::input::action("textbox-activity")};
+  bool pressed {ekg::input::action("textbox-activity")};
   bool released {ekg::input::released()};
   bool motion {ekg::input::motion()};
 

@@ -563,6 +563,9 @@ void ekg::runtime::prepare_ui_env() {
   this->service_input.bind("popup-activity", "mouse-1");
   this->service_input.bind("popup-activity", "finger-click");
 
+  this->service_input.bind("textbox-activity", "mouse-1");
+  this->service_input.bind("textbox-activity", "finger-click");
+
   this->service_input.bind("textbox-action-select-all", "lctrl+a");
   this->service_input.bind("textbox-action-select-all", "rctrl+a");
 

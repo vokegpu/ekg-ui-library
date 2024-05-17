@@ -167,6 +167,9 @@ int32_t showcase_useless_window() {
 
   ekg::label("meow", ekg::dock::fill);
 
+  auto p_meow = ekg::textbox("meow", "meow oi", ekg::dock::fill | ekg::dock::next)
+    ->set_scaled_height(3);
+
   auto p_terminal = ekg::textbox("meow", "meow oi", ekg::dock::fill | ekg::dock::next)
     ->set_scaled_height(24);
 

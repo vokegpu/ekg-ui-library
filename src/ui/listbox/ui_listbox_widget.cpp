@@ -281,6 +281,7 @@ void ekg::ui::listbox_template_reload(
   ekg::service::layout &layout {ekg::core->service_layout};
   ekg::draw::font_renderer &f_renderer {ekg::f_renderer(item_font)};
   ekg::rect item_rect {};
+  ekg::service::theme &theme {ekg::theme()};
 
   uint64_t it {};
   int32_t text_lines {};
@@ -336,6 +337,9 @@ void ekg::ui::listbox_template_reload(
     }
 
     if (!item.empty()) {
+      relative_rect.x += theme.listbox_subitem_offset_space;
+      relative_rect.w -= theme.listbox_subitem_offset_space;
+
       ekg::ui::listbox_template_reload(
         item,
         ui_rect,
@@ -345,6 +349,9 @@ void ekg::ui::listbox_template_reload(
         pos,
         opened
       );
+
+      relative_rect.x -= theme.listbox_subitem_offset_space;
+      relative_rect.w += theme.listbox_subitem_offset_space;
     }
 
     if (just_flagged_cursive_opened) {
@@ -423,7 +430,7 @@ void ekg::ui::listbox_template_on_event(
     if (!item.empty() && ekg_bitwise_contains(item.get_attr(), ekg::attr::opened)) {
       ekg::ui::listbox_template_on_event(
         io_event_serial,
-        motion,
+        motion,                                                                    
         released,
         pressed_select_many,
         pressed_select,
