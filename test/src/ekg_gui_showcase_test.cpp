@@ -146,7 +146,7 @@ int32_t showcase_useless_window() {
   glewInit();
 
   ekg::runtime_property ekg_runtime_property {
-    .p_font_path = "whitneybook.otf",
+    .p_font_path = "JetBrainsMono-Bold.ttf",
     .p_gpu_api = new ekg::os::opengl(),
     .p_os_platform = new ekg::os::sdl(app.p_sdl_win)
   };
@@ -508,7 +508,13 @@ void test_out_of_context_uis() {
     ekg::ui::label(),
     ekg::ui::label(),
     ekg::ui::label()
-  };
+  }; 
+
+  std::string_view minecraft {"ç"};
+  std::string_view listbox_can_open {"▶"};
+  std::string_view listbox_can_close {"▼"};
+
+  std::cout << "listbox: " << ekg::utf_string_to_char32(minecraft) << ", " << ekg::utf_string_to_char32(listbox_can_close) << std::endl;
 
   for (ekg::ui::label &label : label_list) {
     label.set_text("oi meow");
@@ -521,12 +527,107 @@ void test_out_of_context_uis() {
     "gatinhos de leite"
   };
 
+  std::string_view vacas {"字"};
+  std::cout << "vacas: " << ekg::utf_string_to_char32(vacas) << std::endl;
+
   std::vector<std::string> oi_eu_amo_vacas {};
   ekg::utf_decode(vakinha_mumu, oi_eu_amo_vacas);
 
   for (std::string &mumu : oi_eu_amo_vacas) {
     std::cout << mumu << std::endl;
   }
+}
+
+int32_t font_rendering_dynamic_batching() {
+  SDL_Init(SDL_INIT_VIDEO);
+
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 4);
+  SDL_GL_SetSwapInterval((app.vsync = true));
+
+  app.p_sdl_win = {
+    SDL_CreateWindow(
+      "Pompom",
+      SDL_WINDOWPOS_CENTERED,
+      SDL_WINDOWPOS_CENTERED,
+      1280,
+      720,
+      SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL
+    )
+  };
+
+  SDL_Event sdl_event {};
+  SDL_GLContext sdl_gl_context {SDL_GL_CreateContext(app.p_sdl_win)};
+
+  glewExperimental = GL_TRUE;
+  glewInit();
+
+  ekg::runtime_property ekg_runtime_property {
+    .p_font_path = "whitneybook.otf",
+    .p_gpu_api = new ekg::os::opengl(),
+    .p_os_platform = new ekg::os::sdl(app.p_sdl_win)
+  };
+
+  ekg::runtime runtime {};
+  ekg::init(
+    &runtime,
+    &ekg_runtime_property
+  );
+
+  bool running {true};
+  uint64_t now {};
+  uint64_t last {};
+  uint64_t life {};
+
+  SDL_Delay(10);
+  
+  float performance_frequency {};
+  float dt {};
+
+  uint64_t frame_couting {};
+  uint64_t last_frame {1};
+  ekg::timing fps_timing {};
+
+  while (running) {
+    last = now;
+    now = SDL_GetPerformanceCounter();
+    ekg::ui::dt = static_cast<float>(
+      (now - last) * 1000 / SDL_GetPerformanceFrequency()
+    ) * 0.01f;
+
+    if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
+      last_frame = frame_couting;
+      frame_couting = 0;
+    }
+
+    while (SDL_PollEvent(&sdl_event)) {
+      ekg::os::sdl_poll_event(sdl_event);
+    
+      switch (sdl_event.type) {
+      case SDL_QUIT:
+        running = false;
+        break;
+      }
+    }
+
+    ekg::update();
+    
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glViewport(0.0f, 0.0f, ekg::ui::width, ekg::ui::height);
+
+    ekg::render();
+
+    frame_couting++;
+
+    SDL_GL_SwapWindow(app.p_sdl_win);
+    if (app.vsync) {
+      SDL_Delay(6);
+    }
+  }
+
+  return 0;
 }
 
 int32_t main(int32_t, char**) {

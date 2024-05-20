@@ -28,6 +28,8 @@
 #include <iostream>
 #include <cstdint>
 #include <string_view>
+#include <vector>
+#include <unordered_map>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -123,7 +125,8 @@ namespace ekg {
         FT_Face font_face,
         int32_t w,
         int32_t h,
-        ekg::draw::glyph_char_t *p_glyph_char_data
+        std::vector<char32_t> &loaded_sampler_generate_list,
+        std::unordered_map<char32_t, ekg::draw::glyph_char_t> &mapped_glyph_char_data
       ) { return ekg_ok; };
 
       virtual uint64_t bind_sampler(ekg::gpu::sampler_t *p_sampler) { return ekg_ok; };

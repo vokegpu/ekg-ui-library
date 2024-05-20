@@ -72,9 +72,16 @@ void ekg::init(
   }
 
   ekg::core = p_ekg_runtime;
+
+  ekg::core->f_renderer_small.init();
   ekg::core->f_renderer_small.set_font(p_ekg_runtime_property->p_font_path);
+
+  ekg::core->f_renderer_normal.init();
   ekg::core->f_renderer_normal.set_font(p_ekg_runtime_property->p_font_path);
+
+  ekg::core->f_renderer_big.init();
   ekg::core->f_renderer_big.set_font(p_ekg_runtime_property->p_font_path);
+
   ekg::core->init();
 }
 

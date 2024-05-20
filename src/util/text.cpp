@@ -87,6 +87,8 @@ std::string ekg::utf_char32_to_string(char32_t char32) {
 
 char32_t ekg::utf_string_to_char32(std::string_view string) {
   char32_t char32 {};
+
+  uint64_t it {};
   uint8_t bytes_read {};
   uint8_t char8 {static_cast<uint8_t>(string.at(0))};
 
@@ -95,21 +97,22 @@ char32_t ekg::utf_string_to_char32(std::string_view string) {
     bytes_read = 1;
   } else if (char8 <= 0xDF) {
     char32 = char8 & 0x1F;
+    char32 = (char32 << 6) | (string.at(++it) & 0x3F);
     bytes_read = 2;
   } else if (char8 <= 0xEF) {
     char32 = char8 & 0x0F;
+    char32 = (char32 << 6) | (string.at(++it) & 0x3F);
+    char32 = (char32 << 6) | (string.at(++it) & 0x3F);
     bytes_read = 3;
   } else {
     char32 = char8 & 0x07;
+    char32 = (char32 << 6) | (string.at(++it) & 0x3F);
+    char32 = (char32 << 6) | (string.at(++it) & 0x3F);
+    char32 = (char32 << 6) | (string.at(++it) & 0x3F);
     bytes_read = 4;
   }
 
-  for (uint8_t it {1}; it < bytes_read; ++it) {
-    char8 = static_cast<uint8_t>(string.at(it));
-    char32 = (char32 << 6) | (char8 & 0x3F);
-  }
-
-  return char32 > 512 ? 32 : char32;
+  return char32;
 }
 
 uint64_t ekg::utf_length(std::string_view utf_string) {

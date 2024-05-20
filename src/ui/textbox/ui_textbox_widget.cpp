@@ -620,7 +620,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(
 
       char_rect.x = x;
       char_rect.y = y;
-      char_rect.w = (f_renderer.allocated_char_data[char32].wsize) / 2;
+      char_rect.w = (f_renderer.mapped_glyph_char_data[char32].wsize) / 2;
       char_rect.h = this->text_height + 1.0f;
 
       if (ekg::rect_collide_vec_precisely(char_rect, interact)) {
@@ -709,6 +709,10 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(
 
 void ekg::ui::textbox_widget::on_create() {
   this->p_text_chunk_list = static_cast<ekg::ui::textbox*>(this->p_data);
+
+  ekg::ui::textbox *p_ui {(ekg::ui::textbox *) this->p_data};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  f_renderer.init();
 }
 
 void ekg::ui::textbox_widget::on_reload() {
@@ -1179,8 +1183,13 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         x += static_cast<float>(f_renderer.ft_vector_previous_char.x >> 6);
       }
 
-      ekg::draw::glyph_char_t &char_data {f_renderer.allocated_char_data[char32]};
+      ekg::draw::glyph_char_t &char_data {f_renderer.mapped_glyph_char_data[char32]};
       is_utf_char_last_index = utf_char_index + 1 == text_size;
+
+      if (!char_data.was_sampled) {
+        f_renderer.loaded_sampler_generate_list.emplace_back(char32);
+        char_data.was_sampled = true;
+      }
 
       if (this->find_cursor(
           cursor,
@@ -1297,6 +1306,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     y += this->text_height;
   }
 
+  f_renderer.flush();
   allocator.bind_texture(f_renderer.get_sampler_texture());
   allocator.dispatch();
 

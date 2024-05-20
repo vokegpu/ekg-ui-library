@@ -99,7 +99,8 @@ namespace ekg::os {
       FT_Face font_face,
       int32_t atlas_width,
       int32_t atlas_height,
-      ekg::draw::glyph_char_t *p_glyph_char_data
+      std::vector<char32_t> &loaded_sampler_generate_list,
+      std::unordered_map<char32_t, ekg::draw::glyph_char_t> &mapped_glyph_char_data
     ) override;
 
     uint64_t bind_sampler(ekg::gpu::sampler_t *p_sampler) override;

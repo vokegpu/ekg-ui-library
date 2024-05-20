@@ -25,6 +25,7 @@
 #ifndef EKG_DRAW_FONT_RENDERER_H
 #define EKG_DRAW_FONT_RENDERER_H
 
+#include <unordered_map>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -59,7 +60,9 @@ namespace ekg::draw {
     bool font_size_changed {};
 
     ekg::gpu::allocator *p_allocator {};
-    ekg::draw::glyph_char_t allocated_char_data[256] {};
+    std::unordered_map<char32_t, ekg::draw::glyph_char_t> mapped_glyph_char_data {};
+    std::vector<char32_t> loaded_sampler_generate_list {};
+    uint64_t last_sampler_generate_list_size {};
   public:
     /**
      * Return the sampler atlas font.
@@ -122,6 +125,11 @@ namespace ekg::draw {
      * Quit the internal-system and free FreeType features from memory.
      */
     void quit();
+
+    /**
+     * flush new glyph(s) to re-generate texture atlas and map for the GPU-side.
+     **/
+    void flush();
   };
 }
 

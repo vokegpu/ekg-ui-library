@@ -418,7 +418,8 @@ uint64_t ekg::os::opengl::generate_font_atlas(
   FT_Face font_face,
   int32_t atlas_width,
   int32_t atlas_height,
-  ekg::draw::glyph_char_t *p_glyph_char_data
+  std::vector<char32_t> &loaded_sampler_generate_list,
+  std::unordered_map<char32_t, ekg::draw::glyph_char_t> &mapped_glyph_char_data
 ) {
   int32_t internal_format {GL_RED};
 #if defined(__ANDROID__)
@@ -449,14 +450,16 @@ uint64_t ekg::os::opengl::generate_font_atlas(
   );
 
   FT_GlyphSlot ft_glyph_slot {font_face->glyph};
+  FT_ULong c {};
   float offset {};
 
-  for (char32_t char_codes {}; char_codes < 256; char_codes++) {
-    if (FT_Load_Char(font_face, char_codes, FT_LOAD_RENDER)) {
+  for (char32_t &char32 : loaded_sampler_generate_list) {
+    c = FT_Get_Char_Index(font_face, char32);
+    if (FT_Load_Glyph(font_face, c, FT_LOAD_RENDER)) {
       continue;
     }
 
-    ekg::draw::glyph_char_t &char_data {p_glyph_char_data[char_codes]};
+    ekg::draw::glyph_char_t &char_data {mapped_glyph_char_data[char32]};
 
     char_data.x = offset / static_cast<float>(atlas_width);
     char_data.w = static_cast<float>(ft_glyph_slot->bitmap.width);
@@ -479,6 +482,7 @@ uint64_t ekg::os::opengl::generate_font_atlas(
     );
 
     offset += char_data.w;
+    char_data.was_sampled = true;
   }
 
 #if defined(__ANDROID__)

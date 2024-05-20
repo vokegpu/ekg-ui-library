@@ -34,6 +34,7 @@ namespace ekg::draw {
     float h {};
     float top {};
     float left {};
+    bool was_sampled {};
   };
 }
 
