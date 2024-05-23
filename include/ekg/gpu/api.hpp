@@ -118,11 +118,10 @@ namespace ekg {
         ekg::gpu::sampler_t *p_sampler
       ) { return ekg_ok; };
 
-      /**
-       */
       virtual uint64_t generate_font_atlas(
         ekg::gpu::sampler_t *p_sampler,
-        FT_Face font_face,
+        ekg::draw::font_face_t *p_font_face_text,
+        ekg::draw::font_face_t *p_font_face_emoji,
         int32_t w,
         int32_t h,
         std::vector<char32_t> &loaded_sampler_generate_list,

@@ -54,18 +54,18 @@ void ekg::init(
   ekg::runtime *p_ekg_runtime,
   ekg::runtime_property *p_ekg_runtime_property
 ) {
-  ekg::log() << "Initialising built-in OS platform-interface";
+  ekg::log() << "Initializing built-in OS platform-interface";
 
   p_ekg_runtime->p_os_platform = p_ekg_runtime_property->p_os_platform;
   p_ekg_runtime->p_os_platform->init();
 
-  ekg::log() << "Initialising built-in GPU hardware-interface";
+  ekg::log() << "Initializing built-in GPU hardware-interface";
 
   p_ekg_runtime->p_gpu_api = p_ekg_runtime_property->p_gpu_api;
   p_ekg_runtime->p_gpu_api->init();
   p_ekg_runtime->p_gpu_api->log_vendor_details();
 
-  ekg::log() << "Initialising EKG";
+  ekg::log() << "Initializing EKG";
 
   if (FT_Init_FreeType(&ekg::draw::font_renderer::ft_library)) {
     ekg::log() << "Error: Failed to init FreeType library";
@@ -75,12 +75,15 @@ void ekg::init(
 
   ekg::core->f_renderer_small.init();
   ekg::core->f_renderer_small.set_font(p_ekg_runtime_property->p_font_path);
+  ekg::core->f_renderer_small.set_font_emoji(p_ekg_runtime_property->p_font_path_emoji);
 
   ekg::core->f_renderer_normal.init();
   ekg::core->f_renderer_normal.set_font(p_ekg_runtime_property->p_font_path);
+  ekg::core->f_renderer_normal.set_font_emoji(p_ekg_runtime_property->p_font_path_emoji);
 
   ekg::core->f_renderer_big.init();
   ekg::core->f_renderer_big.set_font(p_ekg_runtime_property->p_font_path);
+  ekg::core->f_renderer_big.set_font_emoji(p_ekg_runtime_property->p_font_path_emoji);
 
   ekg::core->init();
 }

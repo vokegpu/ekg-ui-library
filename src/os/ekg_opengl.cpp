@@ -415,7 +415,8 @@ uint64_t ekg::os::opengl::fill_sampler(
 
 uint64_t ekg::os::opengl::generate_font_atlas(
   ekg::gpu::sampler_t *p_sampler,
-  FT_Face font_face,
+  ekg::draw::font_face_t *p_font_face_text,
+  ekg::draw::font_face_t *p_font_face_emoji,
   int32_t atlas_width,
   int32_t atlas_height,
   std::vector<char32_t> &loaded_sampler_generate_list,
@@ -449,13 +450,33 @@ uint64_t ekg::os::opengl::generate_font_atlas(
     nullptr
   );
 
-  FT_GlyphSlot ft_glyph_slot {font_face->glyph};
+  FT_GlyphSlot ft_glyph_slot {};
+  FT_Face ft_face {};
   FT_ULong c {};
+
+  uint64_t flags {};
   float offset {};
 
   for (char32_t &char32 : loaded_sampler_generate_list) {
-    c = FT_Get_Char_Index(font_face, char32);
-    if (FT_Load_Glyph(font_face, c, FT_LOAD_RENDER)) {
+    flags = FT_LOAD_RENDER;
+
+    switch (char32 < 256 || !p_font_face_emoji->font_face_loaded) {
+      case true: {
+        ft_face = p_font_face_text->ft_face;
+        ft_glyph_slot = p_font_face_text->ft_face->glyph;
+        break;
+      }
+
+      default: {
+        ft_face = p_font_face_emoji->ft_face;
+        ft_glyph_slot = p_font_face_emoji->ft_face->glyph;
+        flags |= (FT_LOAD_COLOR | FT_LOAD_DEFAULT) * FT_HAS_COLOR(ft_face);
+
+        break;
+      }
+    }
+
+    if (FT_Load_Char(ft_face, char32, flags)) {
       continue;
     }
 
@@ -490,8 +511,8 @@ uint64_t ekg::os::opengl::generate_font_atlas(
 #else
   GLint swizzle_format[] {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
 
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
 #endif
 

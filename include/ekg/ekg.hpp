@@ -57,6 +57,7 @@ namespace ekg {
   struct runtime_property {
   public:
     const char *p_font_path {};
+    const char *p_font_path_emoji {""};
     ekg::gpu::api *p_gpu_api {};
     ekg::os::platform *p_os_platform {};
   };

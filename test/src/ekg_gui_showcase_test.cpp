@@ -147,6 +147,7 @@ int32_t showcase_useless_window() {
 
   ekg::runtime_property ekg_runtime_property {
     .p_font_path = "JetBrainsMono-Bold.ttf",
+    .p_font_path_emoji = "NotoColorEmoji.ttf",
     .p_gpu_api = new ekg::os::opengl(),
     .p_os_platform = new ekg::os::sdl(app.p_sdl_win)
   };

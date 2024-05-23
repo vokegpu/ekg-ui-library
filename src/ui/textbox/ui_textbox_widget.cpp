@@ -596,13 +596,17 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(
   uint64_t chunk_index {};
   uint64_t it {};
 
+  FT_Face ft_face {};
+  FT_UInt ft_uint_previous {};
+  FT_Vector_ ft_vector_previous_char {};
+
   y += (this->text_height * static_cast<float>(this->visible_text[1]));
   for (chunk_index = this->visible_text[1]; chunk_index < text_chunk_size; chunk_index++) {
     std::string &text {this->p_text_chunk_list->at(chunk_index)};
 
     x = rect.x + this->rect_cursor.w + this->embedded_scroll.scroll.x;
     utf_char_index = 0;
-    f_renderer.ft_uint_previous = 0;
+    ft_uint_previous = 0;
     is_index_chunk_at_end = chunk_index == text_chunk_size - 1;
 
     if (y > rect.y + rect.h) {
@@ -613,9 +617,9 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(
       char8 = static_cast<uint8_t>(text.at(it));
       it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
 
-      if (f_renderer.ft_bool_kerning && f_renderer.ft_uint_previous) {
-        FT_Get_Kerning(f_renderer.ft_face, f_renderer.ft_uint_previous, char32, 0, &f_renderer.ft_vector_previous_char);
-        x += static_cast<float>(f_renderer.ft_vector_previous_char.x >> 6);
+      if (f_renderer.ft_bool_kerning && ft_uint_previous) {
+        FT_Get_Kerning(ft_face, ft_uint_previous, char32, 0, &ft_vector_previous_char);
+        x += static_cast<float>(ft_vector_previous_char.x >> 6);
       }
 
       char_rect.x = x;
@@ -637,7 +641,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(
       }
 
       utf_char_index++;
-      f_renderer.ft_uint_previous = char32;
+      ft_uint_previous = char32;
       x += char_rect.w;
     }
 
@@ -1097,6 +1101,10 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   uint64_t it {};
   uint64_t text_chunk_size {this->p_text_chunk_list->size()};
 
+  FT_Face ft_face {};
+  FT_UInt ft_uint_previous {};
+  FT_Vector_ ft_vector_previous_char {};
+
   bool optimize_batching {};
   bool do_not_fill_line {};
   bool draw_additional_selected_last_char {};
@@ -1152,7 +1160,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     std::string &text {this->p_text_chunk_list->at(chunk_index)};
 
     x = this->rect_cursor.w;
-    f_renderer.ft_uint_previous = 0;
+    ft_uint_previous = 0;
     utf_char_index = 0;
     do_not_fill_line = false;
 
@@ -1178,9 +1186,21 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
       char8 = static_cast<uint8_t>(text.at(it));
       it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
 
-      if (f_renderer.ft_bool_kerning && f_renderer.ft_uint_previous) {
-        FT_Get_Kerning(f_renderer.ft_face, f_renderer.ft_uint_previous, char32, 0, &f_renderer.ft_vector_previous_char);
-        x += static_cast<float>(f_renderer.ft_vector_previous_char.x >> 6);
+      switch (char32 < 256 || !f_renderer.font_face_emoji.font_face_loaded) {
+        case true: {
+          ft_face = f_renderer.font_face_text.ft_face;
+          break;
+        }
+
+        default: {
+          ft_face = f_renderer.font_face_emoji.ft_face;
+          break;
+        }
+      }
+
+      if (f_renderer.ft_bool_kerning && ft_uint_previous) {
+        FT_Get_Kerning(ft_face, ft_uint_previous, char32, 0, &ft_vector_previous_char);
+        x += static_cast<float>(ft_vector_previous_char.x >> 6);
       }
 
       ekg::draw::glyph_char_t &char_data {f_renderer.mapped_glyph_char_data[char32]};
@@ -1290,7 +1310,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         break;
       }
 
-      f_renderer.ft_uint_previous = char32;
+      ft_uint_previous = char32;
       x += char_data.wsize;
       utf_char_index++;
     }

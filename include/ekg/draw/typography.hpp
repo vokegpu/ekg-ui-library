@@ -25,6 +25,10 @@
 #ifndef EKG_DRAW_TYPOGRAPHY_H
 #define EKG_DRAW_TYPOGRAPHY_H
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include <cstdint>
+
 namespace ekg::draw {
   struct glyph_char_t {
   public:
@@ -34,8 +38,24 @@ namespace ekg::draw {
     float h {};
     float top {};
     float left {};
+    float kerning {};
     bool was_sampled {};
   };
+
+  struct font_face_t {
+  public:
+    FT_Face ft_face {};
+    FT_GlyphSlot ft_glyph_slot {};
+    std::string_view font_path {};
+    bool font_face_changed {};
+    bool font_face_loaded {};
+  };
+
+  bool reload_font_face(
+    ekg::draw::font_face_t *p_font_face,
+    bool font_size_changed,
+    uint32_t font_size
+  );
 }
 
 #endif

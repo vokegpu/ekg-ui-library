@@ -33,7 +33,7 @@ namespace ekg {
   /**
    * Returns a UTF string by `char32` converting
    * the UTF-32 unique char into a sequence of UTF-8
-   * chars.* 
+   * chars.
    */
   std::string utf_char32_to_string(char32_t char32);
 

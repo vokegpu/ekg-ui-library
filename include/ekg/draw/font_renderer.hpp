@@ -26,8 +26,6 @@
 #define EKG_DRAW_FONT_RENDERER_H
 
 #include <unordered_map>
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 #include "ekg/gpu/allocator.hpp"
 #include "ekg/util/geometry.hpp"
@@ -38,11 +36,11 @@ namespace ekg::draw {
   public:
     static FT_Library ft_library;
   public:
-    FT_Face ft_face {};
-    FT_GlyphSlot ft_glyph_slot {};
+    ekg::draw::font_face_t font_face_text {};
+    ekg::draw::font_face_t font_face_emoji {};
+
     FT_Bool ft_bool_kerning {};
     FT_UInt ft_uint_previous {};
-    FT_Vector_ ft_vector_previous_char {};
 
     std::string_view font_path {};
     uint32_t font_size {18};
@@ -85,6 +83,11 @@ namespace ekg::draw {
      * Return the font face height.
      */
     float get_text_height();
+
+    /**
+     * Set a new font face for emoji, check FreeType docs.
+     */
+    void set_font_emoji(std::string_view font_face_emoji_path);
 
     /**
      * Set a new font face, check FreeType docs.
