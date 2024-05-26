@@ -80,7 +80,7 @@ void ekg::os::opengl::init() {
 
   std::string fsh_src {
     no_view_glsl_version + "\n"
-    "layout (location = 0) out vec4 vFragColor;\n"
+    "layout (location = 0) out vec4 aFragColor;\n"
     "uniform sampler2D uTextureSampler;\n"
 
     "in vec2 vTexCoord;\n"
@@ -93,7 +93,7 @@ void ekg::os::opengl::init() {
     "uniform float uContent[8];\n"
 
     "void main() {\n"
-      "vFragColor = vec4(\n"
+      "aFragColor = vec4(\n"
         "uContent[0],\n"
         "uContent[1],\n"
         "uContent[2],\n"
@@ -147,7 +147,7 @@ void ekg::os::opengl::init() {
         ");\n"
 
         "float dist = (diff.x * diff.x + diff.y * diff.y);\n"
-        "vFragColor.w = (\n"
+        "aFragColor.w = (\n"
           "1.0f - smoothstep(0.0, radius * radius, dot(dist, dist))\n"
         ");\n"
       "}\n"
@@ -158,7 +158,7 @@ void ekg::os::opengl::init() {
        * comparated to alpha blending equals to zero.
        **/
       "if (shouldDiscard) {\n"
-        "vFragColor.w = 0.0f;\n"
+        "aFragColor.w = 0.0f;\n"
       "} else {\n"
         "vec4 textureColor;\n"
         "switch (uActiveTexture) {\n"
@@ -173,19 +173,19 @@ void ekg::os::opengl::init() {
              *
              * f(t, c) = (t(r, g, b) - ((1 - c(r, g, b) - 1), t(w) - (1 - c(w)))
              **/
-            "vFragColor = vec4(\n"
-              "textureColor.xyz - ((1.0f - vFragColor.xyz) - 1.0f),\n"
-              "textureColor.w - (1.0f - vFragColor.w)\n"
+            "aFragColor = vec4(\n"
+              "textureColor.xyz - ((1.0f - aFragColor.xyz) - 1.0f),\n"
+              "textureColor.w - (1.0f - aFragColor.w)\n"
             ");\n"
             "break;\n"
           "case 2:\n"
             "textureColor = texture(uTextureSampler, vPos);\n"
 
-            "vFragColor = vec4(\n"
+            "aFragColor = vec4(\n"
               "textureColor.xyz,\n"
-              "textureColor.w - (1.0f - vFragColor.w)\n"
+              "textureColor.w - (1.0f - aFragColor.w)\n"
             ");\n"
-            "vFragColor = textureColor;\n"
+            "aFragColor = textureColor;\n"
             "break;\n"
           "}\n"
       "}\n"
@@ -369,20 +369,20 @@ uint64_t ekg::os::opengl::allocate_sampler(
   p_sampler->w = p_sampler_allocate_info->w;
   p_sampler->h = p_sampler_allocate_info->h;
 
-  if (p_sampler_allocate_info->gl_parameter_filter[0]) {
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, p_sampler_allocate_info->gl_parameter_filter[0]);
-  }
-
-  if (p_sampler_allocate_info->gl_parameter_filter[1]) {
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, p_sampler_allocate_info->gl_parameter_filter[1]);
-  }
-
   if (p_sampler_allocate_info->gl_wrap_modes[0]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, p_sampler_allocate_info->gl_wrap_modes[0]);
   }
 
   if (p_sampler_allocate_info->gl_wrap_modes[1]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, p_sampler_allocate_info->gl_wrap_modes[1]);
+  }
+
+  if (p_sampler_allocate_info->gl_parameter_filter[0]) {
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, p_sampler_allocate_info->gl_parameter_filter[0]);
+  }
+
+  if (p_sampler_allocate_info->gl_parameter_filter[1]) {
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, p_sampler_allocate_info->gl_parameter_filter[1]);
   }
 
   glTexImage2D(
@@ -396,6 +396,10 @@ uint64_t ekg::os::opengl::allocate_sampler(
     p_sampler_allocate_info->gl_type,
     p_sampler_allocate_info->p_data
   );
+
+  if (p_sampler_allocate_info->gl_generate_mipmap) {
+    glGenerateMipmap(GL_TEXTURE_2D);
+  }
 
   glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -530,13 +534,13 @@ uint64_t ekg::os::opengl::generate_font_atlas(
 #else
   GLint swizzle_format[] {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
 
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
 #endif
 
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glBindTexture(GL_TEXTURE_2D, 0);
 
   return ekg_ok;
@@ -607,14 +611,15 @@ void ekg::os::opengl::draw(
 
         switch (ekg_is_sampler_protected(p_sampler->gl_protected_active_index)) {
         case true:
-            glUniform1i(this->uniform_active_tex_slot, p_sampler->gl_protected_active_index);
-            glUniform1i(this->uniform_active_texture, 1);
-            break;
-          case false:
-            glUniform1i(this->uniform_active_tex_slot, this->protected_texture_active_index);
-            glUniform1i(this->uniform_active_texture, 2);
-            glBindTexture(GL_TEXTURE_2D, p_sampler->gl_id);
-            break;
+          glUniform1i(this->uniform_active_tex_slot, p_sampler->gl_protected_active_index);
+          glUniform1i(this->uniform_active_texture, 1);
+          break;
+        case false:
+          glBindTexture(GL_TEXTURE_2D, p_sampler->gl_id);
+
+          glUniform1i(this->uniform_active_tex_slot, this->protected_texture_active_index);
+          glUniform1i(this->uniform_active_texture, 2);
+          break;
       }
 
       previous_sampler_bound = data.sampler_index;

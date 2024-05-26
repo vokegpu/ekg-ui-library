@@ -3,7 +3,7 @@
 #include <ekg/os/ekg_opengl.hpp>
 #include "application.hpp"
 
-//#define application_enable_stb_image_test
+#define application_enable_stb_image_test
 #ifdef application_enable_stb_image_test
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
@@ -166,55 +166,6 @@ int32_t showcase_useless_window() {
   ekg::ui::label *fps {};
   std::string previous_operator {};
 
-  #ifdef application_enable_stb_image_test
-  
-  ekg::gpu::sampler_allocate_info gato_all_info {
-    .p_tag = "./joao_das_galaxias_cat.png",
-  };
-
-  gato_all_info.p_data = {
-    stbi_load(
-      gato_all_info.p_tag,
-      &gato_all_info.w,
-      &gato_all_info.h,
-      &gato_all_info.gl_internal_format,
-      0
-    )
-  };
-
-  if (!gato_all_info.p_data) {
-    ekg::log() << "failed to meow";
-  }
-
-  gato_all_info.gl_wrap_modes[0] = GL_CLAMP;
-  gato_all_info.gl_wrap_modes[1] = GL_CLAMP;
-  gato_all_info.gl_parameter_filter[0] = GL_LINEAR;
-  gato_all_info.gl_parameter_filter[1] = GL_LINEAR;
-  gato_all_info.gl_internal_format = GL_RGB;
-  gato_all_info.gl_format = GL_RGBA;
-  gato_all_info.gl_format = GL_UNSIGNED_BYTE;
-
-  ekg::gpu::sampler_t gato {};
-  auto result = ekg::allocate_sampler(
-    &gato_all_info,
-    &gato
-  );
-
-  ekg::log() << gato_all_info.p_tag
-             << " status: " << result
-             << "; w, h, c [" << gato.w << ", " << gato.h << ", " << gato_all_info.gl_internal_format << "]";
-
-  auto p_gato_frame = ekg::frame("foto-de-gato-fofo-amo-vc", {400, 400}, ekg::dock::none)
-    ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
-    ->set_drag(ekg::dock::top)
-    ->set_layer(&gato, ekg::layer::background);
-
-  auto p_gato_layer = p_gato_frame->get_layer(ekg::layer::background);
-  ekg::log() << "MEOW: " << p_gato_layer->p_tag;
-
-  ekg::pop_group();
-  #endif
-
   ekg::frame("mumu", {900, 300}, ekg::dock::none)
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
     ->set_drag(ekg::dock::top);
@@ -226,7 +177,7 @@ int32_t showcase_useless_window() {
 
   ekg::pop_group();
 
-  ekg::frame("cat", {400, 700}, ekg::dock::none)
+  auto p_calculator_frame = ekg::frame("cat", {400, 700}, ekg::dock::none)
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
     ->set_drag(ekg::dock::top);
 
@@ -439,6 +390,50 @@ int32_t showcase_useless_window() {
 
   ekg::input::bind("hiroodrop", {"lctrl+b", "lctrl+lshift+v", "lshift+m"});
   ekg::input::bind("meow", "lctrl+mouse-1");
+
+  #ifdef application_enable_stb_image_test
+  
+  ekg::gpu::sampler_allocate_info gato_all_info {
+    .p_tag = "./joao_das_galaxias_cat.png",
+  };
+
+  gato_all_info.p_data = {
+    stbi_load(
+      gato_all_info.p_tag,
+      &gato_all_info.w,
+      &gato_all_info.h,
+      &gato_all_info.gl_internal_format,
+      0
+    )
+  };
+
+  gato_all_info.gl_wrap_modes[0] = GL_REPEAT;
+  gato_all_info.gl_wrap_modes[1] = GL_REPEAT;
+  gato_all_info.gl_parameter_filter[0] = GL_LINEAR;
+  gato_all_info.gl_parameter_filter[1] = GL_LINEAR;
+  gato_all_info.gl_internal_format = GL_RGB;
+  gato_all_info.gl_format = GL_RGB;
+  gato_all_info.gl_type = GL_UNSIGNED_BYTE;
+  gato_all_info.gl_generate_mipmap = GL_TRUE;
+
+  ekg::gpu::sampler_t gato {};
+  auto result = ekg::allocate_sampler(
+    &gato_all_info,
+    &gato
+  );
+
+  auto p_gato_frame = ekg::frame("foto-de-gato-fofo-amo-vc", {400, 400}, ekg::dock::none)
+    ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
+    ->set_drag(ekg::dock::top)
+    ->set_layer(&gato, ekg::layer::background);
+
+  p_calculator_frame->set_layer(&gato, ekg::layer::background);
+
+  auto p_gato_layer = p_gato_frame->get_layer(ekg::layer::background);
+  ekg::log() << "MEOW: " << p_gato_layer->p_tag;
+
+  ekg::pop_group();
+  #endif
 
   bool running {true};
   uint64_t now {};

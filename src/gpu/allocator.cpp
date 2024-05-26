@@ -146,7 +146,7 @@ void ekg::gpu::allocator::draw() {
 }
 
 void ekg::gpu::allocator::init() {
-  ekg::log() << "Initialising GPU allocator";
+  ekg::log() << "Initializing GPU allocator";
 }
 
 void ekg::gpu::allocator::clear_current_data() {

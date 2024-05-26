@@ -58,6 +58,7 @@ namespace ekg {
       uint32_t gl_format {};
       uint32_t gl_type {};
       bool gl_unpack_alignment {};
+      bool gl_generate_mipmap {};
       void *p_data {};
     };
 
