@@ -124,25 +124,25 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
 
-  ekg::draw::rect(rect, theme.checkbox_background);
+  ekg::draw::rect(rect, theme.checkbox_background, ekg::draw_mode::filled);
   ekg::draw::rect(rect, theme.checkbox_outline, ekg::draw_mode::outline);
 
   if (this->flag.highlight) {
-    ekg::draw::rect(rect, theme.checkbox_highlight);
+    ekg::draw::rect(rect, theme.checkbox_highlight, ekg::draw_mode::filled);
   }
 
   if (this->flag.focused && !p_ui->get_value()) {
-    ekg::draw::rect(box, theme.checkbox_highlight);
+    ekg::draw::rect(box, theme.checkbox_highlight, ekg::draw_mode::filled);
   }
 
-  ekg::draw::rect(box, theme.checkbox_highlight);
+  ekg::draw::rect(box, theme.checkbox_highlight, ekg::draw_mode::filled);
 
   if (this->flag.activity) {
-    ekg::draw::rect(this->flag.focused ? box : rect, theme.checkbox_activity);
+    ekg::draw::rect(this->flag.focused ? box : rect, theme.checkbox_activity, ekg::draw_mode::filled);
   }
 
   if (p_ui->get_value()) {
-    ekg::draw::rect(box, theme.checkbox_activity);
+    ekg::draw::rect(box, theme.checkbox_activity, ekg::draw_mode::filled);
   }
 
   if (p_ui->get_value() && this->flag.highlight) {

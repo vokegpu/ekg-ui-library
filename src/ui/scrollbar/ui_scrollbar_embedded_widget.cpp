@@ -318,7 +318,8 @@ void ekg::ui::scrollbar_embedded_widget::on_draw_refresh() {
     this->p_rect_mother->y + this->rect_vertical_scroll_bar.y,
     this->rect_vertical_scroll_bar.w,
     this->rect_vertical_scroll_bar.h,
-    theme.scrollbar_background
+    theme.scrollbar_background,
+    ekg::draw_mode::filled
   );
 
   this->rect_horizontal_scroll_bar.x = (
@@ -349,6 +350,7 @@ void ekg::ui::scrollbar_embedded_widget::on_draw_refresh() {
     this->rect_horizontal_scroll_bar.y,
     this->rect_horizontal_scroll_bar.w,
     this->rect_horizontal_scroll_bar.h,
-    theme.scrollbar_background
+    theme.scrollbar_background,
+    ekg::draw_mode::filled
   );
 }

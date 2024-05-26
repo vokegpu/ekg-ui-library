@@ -205,6 +205,15 @@ ekg::task *ekg::ui::abstract::get_task(ekg::action action) {
   return this->action_register[static_cast<uint64_t>(action)];
 }
 
+ekg::ui::abstract *ekg::ui::abstract::set_layer(ekg::gpu::sampler_t *p_sampler, ekg::layer layer) {
+  this->layer_surfaces[static_cast<uint64_t>(layer)] = p_sampler;
+  return this;
+}
+
+ekg::gpu::sampler_t *ekg::ui::abstract::get_layer(ekg::layer layer) {
+  return this->layer_surfaces[static_cast<uint64_t>(layer)];
+}
+
 void ekg::ui::abstract::reset() {
   ekg_bitwise_add(this->sync_flags, static_cast<uint64_t>(ekg::ui_sync::reset));
   ekg::reload(this->id);

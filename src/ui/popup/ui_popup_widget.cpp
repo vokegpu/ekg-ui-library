@@ -352,7 +352,7 @@ void ekg::ui::popup_widget::on_draw_refresh() {
   auto &item_list {p_ui->get_item_list()};
 
   ekg::draw::sync_scissor(this ->scissor, rect, this->p_parent_scissor);
-  ekg::draw::rect(rect, theme.popup_background);
+  ekg::draw::rect(rect, theme.popup_background, ekg::draw_mode::filled);
   ekg::draw::rect(rect, theme.popup_outline, ekg::draw_mode::outline);
 
   ekg::rect button_rect {};
@@ -367,12 +367,13 @@ void ekg::ui::popup_widget::on_draw_refresh() {
         rect.y + item.rect_dimension.y + item.rect_dimension.h - ekg_pixel_div_2,
         item.rect_dimension.w,
         1.0f,
-        theme.popup_separator
+        theme.popup_separator,
+        ekg::draw_mode::filled
       );
     }
 
     if (this->hovered_element == it) {
-      ekg::draw::rect(item.rect_dimension + rect, theme.popup_highlight);
+      ekg::draw::rect(item.rect_dimension + rect, theme.popup_highlight, ekg::draw_mode::filled);
     }
 
     f_renderer.blit(

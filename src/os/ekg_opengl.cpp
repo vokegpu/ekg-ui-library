@@ -59,6 +59,7 @@ void ekg::os::opengl::init() {
     "uniform vec4 uRect;\n"
 
     "out vec2 vTexCoord;\n"
+    "out vec2 vPos;\n"
     "out vec4 vRect;\n"
 
     "void main() {\n"
@@ -73,6 +74,7 @@ void ekg::os::opengl::init() {
       "gl_Position = uProjection * vec4(vertex, 0.0f, 1.0f);\n"
       "vTexCoord = aTexCoord;\n"
       "vRect = uRect;\n"
+      "vPos = aPos;\n"
     "}\n"
   };
 
@@ -82,10 +84,11 @@ void ekg::os::opengl::init() {
     "uniform sampler2D uTextureSampler;\n"
 
     "in vec2 vTexCoord;\n"
+    "in vec2 vPos;\n"
     "in vec4 vRect;\n"
 
     "uniform int uLineThickness;\n"
-    "uniform bool uActiveTexture;\n"
+    "uniform int uActiveTexture;\n"
     "uniform float uViewportHeight;\n"
     "uniform float uContent[8];\n"
 
@@ -156,21 +159,35 @@ void ekg::os::opengl::init() {
        **/
       "if (shouldDiscard) {\n"
         "vFragColor.w = 0.0f;\n"
-      "} else if (uActiveTexture) {\n"
-        "vec4 textureColor = texture(uTextureSampler, vTexCoord);\n"
+      "} else {\n"
+        "vec4 textureColor;\n"
+        "switch (uActiveTexture) {\n"
+          "case 1:\n"
+            "textureColor = texture(uTextureSampler, vTexCoord);\n"
 
-        /**
-         * The formula I created is
-         *
-         * t(r, g, b, a) = Texture color
-         * c(x, y, z, w) = Color to blend
-         *
-         * f(t, c) = (t(r, g, b) - ((1 - c(r, g, b) - 1), t(w) - (1 - c(w)))
-         **/
-        "vFragColor = vec4(\n"
-          "textureColor.xyz - ((1.0f - vFragColor.xyz) - 1.0f),\n"
-          "textureColor.w - (1.0f - vFragColor.w)\n"
-        ");\n"
+            /**
+             * The formula I created is
+             *
+             * t(r, g, b, a) = Texture color
+             * c(x, y, z, w) = Color to blend
+             *
+             * f(t, c) = (t(r, g, b) - ((1 - c(r, g, b) - 1), t(w) - (1 - c(w)))
+             **/
+            "vFragColor = vec4(\n"
+              "textureColor.xyz - ((1.0f - vFragColor.xyz) - 1.0f),\n"
+              "textureColor.w - (1.0f - vFragColor.w)\n"
+            ");\n"
+            "break;\n"
+          "case 2:\n"
+            "textureColor = texture(uTextureSampler, vPos);\n"
+
+            "vFragColor = vec4(\n"
+              "textureColor.xyz,\n"
+              "textureColor.w - (1.0f - vFragColor.w)\n"
+            ");\n"
+            "vFragColor = textureColor;\n"
+            "break;\n"
+          "}\n"
       "}\n"
     "}\n"
   };
@@ -381,6 +398,8 @@ uint64_t ekg::os::opengl::allocate_sampler(
   );
 
   glBindTexture(GL_TEXTURE_2D, 0);
+
+  p_sampler->p_tag = p_sampler_allocate_info->p_tag;
   return ekg_ok;
 }
 
@@ -567,6 +586,8 @@ void ekg::os::opengl::draw(
     glBindTexture(GL_TEXTURE_2D, p_sampler->gl_id);
   }
 
+  glActiveTexture(GL_TEXTURE0 + this->protected_texture_active_index);
+
   int32_t previous_sampler_bound {};
   bool sampler_going_on {};
 
@@ -586,18 +607,19 @@ void ekg::os::opengl::draw(
 
         switch (ekg_is_sampler_protected(p_sampler->gl_protected_active_index)) {
         case true:
-          glUniform1i(this->uniform_active_tex_slot, p_sampler->gl_protected_active_index);
-          glUniform1i(this->uniform_active_texture, true);
-          break;
+            glUniform1i(this->uniform_active_tex_slot, p_sampler->gl_protected_active_index);
+            glUniform1i(this->uniform_active_texture, 1);
+            break;
           case false:
-          glUniform1i(this->uniform_active_tex_slot, this->protected_texture_active_index);
-          glBindTexture(GL_TEXTURE_2D, p_sampler->gl_id);
-          break;
+            glUniform1i(this->uniform_active_tex_slot, this->protected_texture_active_index);
+            glUniform1i(this->uniform_active_texture, 2);
+            glBindTexture(GL_TEXTURE_2D, p_sampler->gl_id);
+            break;
       }
 
       previous_sampler_bound = data.sampler_index;
     } else if (!sampler_going_on && previous_sampler_bound > -1) {
-      glUniform1i(this->uniform_active_texture, false);
+      glUniform1i(this->uniform_active_texture, 0);
       previous_sampler_bound = -1;
     }
 

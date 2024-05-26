@@ -37,6 +37,8 @@
     ekg::core->service_handler.generate() = *p_ekg_action_dispatch_task; \
   } \
 
+#define ekg_layer(layer) (this->p_data->get_layer(layer))
+
 namespace ekg::ui {
   class abstract_widget {
   public:

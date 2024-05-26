@@ -242,20 +242,64 @@ void ekg::runtime::request_redraw_gui() {
 void ekg::runtime::process_render() {
   if (this->should_re_batch_gui) {
     this->should_re_batch_gui = false;
-
     auto &all {this->loaded_widget_list};
+
+    /**
+     * The allocator starts here,
+     * the GPU data instance and geometry resource are "cleared"
+     * and reseted here.
+     **/
     this->gpu_allocator.invoke();
 
     for (ekg::ui::abstract_widget *&p_widgets : all) {
-      if (p_widgets != nullptr && p_widgets->p_data->is_alive() &&
-          p_widgets->p_data->is_visible()) {
+      if (p_widgets != nullptr && p_widgets->p_data->is_alive() && p_widgets->p_data->is_visible()) {
+        /**
+         * The allocator is used here,
+         * each time this statement is called theres one GPU data,
+         * being allocated/filled.
+         * 
+         * The order of rendering depends on which functions are invoke first.
+         * 
+         * E.g:
+         *  gpu-data-group-1 (on_draw_refresh())
+         *  gpu-data-group-2
+         *  gpu-data-group-3
+         * 
+         * `gpu-data-group-3` is always hovering all the previous GPU data groups.
+         **/
         p_widgets->on_draw_refresh();
       }
     }
 
+    /**
+     * The allocator does not need to be called all the time,
+     * cause it is require more CPU-side calls and GPU-communication/synchronization.
+     * 
+     * The use of the word "revoke" means that the `invoked signal` ended with a
+     * possible `revoke`, i.e all the generated/populated/filled GPU-data is processed and
+     * converted to a geometry GPU-buffer. Removing all the unnecessary GPU-data.
+     **/
     this->gpu_allocator.revoke();
   }
 
+  /**
+   * The allocator draws each GPU-data now serialized.
+   * There is two type concept of draw:
+   * 
+   * 1- A concave shape does not have a rectangle form, and can render text(s) and
+   * batched quad(s) at once.
+   * 2- A convex shape have a unique form: rectangle.
+   * 
+   * The convex form is rendered one per one draw call. It is stupid I know, but with this is possible add cool effects.
+   * While concave have the possibility of rendering a lot of shapes at once, is not viable to add many custom effects.
+   * 
+   * The native GPU API calls are apart from allocator, depends on current GPU API selected.
+   * Rendering-hardware interface also known as RHI implements different each GPU API.
+   * OpenGL 3/4/ES 3, Vulkan, MoltenVK, DirectX11/12.
+   * May differ the features.
+   * 
+   * But check the code allocator inside code comments.
+   **/
   this->gpu_allocator.draw();
 }
 

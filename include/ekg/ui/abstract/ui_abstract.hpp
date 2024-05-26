@@ -30,6 +30,7 @@
 
 #include "ekg/util/geometry.hpp"
 #include "ekg/core/task.hpp"
+#include "ekg/gpu/api.hpp"
 
 namespace ekg {
   enum class type {
@@ -69,9 +70,13 @@ namespace ekg {
     activity = 7,
   };
 
+  enum class layer {
+    background = 0
+  };
+
   enum class state {
     enable,
-    disable,
+    disable
   };
 
   enum class mode {
@@ -96,6 +101,7 @@ namespace ekg {
     class abstract {
     protected:
       std::array<ekg::task*, 8> action_register {};
+      std::array<ekg::gpu::sampler_t*, 1> layer_surfaces {};
     protected:
       int32_t id {};
       int32_t parent_id {};
@@ -263,6 +269,17 @@ namespace ekg {
        * Return a task from an action.
        */
       ekg::task *get_task(ekg::action action);
+
+      /**
+       * Set one drawing layer with a sampler.
+       * You must initialize and fill the sampler with pixels data before to use.
+       */
+      ekg::ui::abstract *set_layer(ekg::gpu::sampler_t *p_sampler, ekg::layer layer);
+
+      /**
+       * Get a sampler from the element layers.
+       */
+      ekg::gpu::sampler_t *get_layer(ekg::layer layer);
 
       void reset();
 

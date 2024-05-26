@@ -200,7 +200,22 @@ void ekg::ui::frame_widget::on_draw_refresh() {
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
 
-  ekg::draw::rect(rect, theme.frame_background);
-  ekg::draw::rect(this->docker_activity_drag.top, theme.frame_border);
-  ekg::draw::rect(rect, theme.frame_outline, ekg::draw_mode::outline);
+  ekg::draw::rect(
+    rect,
+    theme.frame_background,
+    ekg::draw_mode::filled,
+    ekg_layer(ekg::layer::background)
+  );
+
+  ekg::draw::rect(
+    this->docker_activity_drag.top,
+    theme.frame_border,
+    ekg::draw_mode::filled
+  );
+
+  ekg::draw::rect(
+    rect,
+    theme.frame_outline,
+    ekg::draw_mode::outline
+  );
 }

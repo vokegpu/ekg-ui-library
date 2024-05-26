@@ -29,6 +29,7 @@
 #include <iostream>
 
 #include "ekg/util/geometry.hpp"
+#include "ekg/gpu/api.hpp"
 
 #define ekg_draw_assert_scissor() if (ekg::gpu::allocator::is_out_of_scissor) { return;  }
 
@@ -41,9 +42,25 @@ namespace ekg {
 }
 
 namespace ekg::draw {
-  void rect(const ekg::rect &rect, const ekg::vec4 &color, int32_t draw_mode = 0);
-  void rect(float x, float y, float w, float h, const ekg::vec4 &color, int32_t draw_mode = 0);
-  void sync_scissor(ekg::rect &scissor, ekg::rect &rect_child, ekg::rect *p_parent_scissor);
+  void rect(
+    const ekg::rect &rect,
+    const ekg::vec4 &color,
+    int32_t draw_mode,
+    ekg::gpu::sampler_t *p_sampler = nullptr
+  );
+
+  void rect(
+    float x, float y, float w, float h,
+    const ekg::vec4 &color,
+    int32_t draw_mode,
+    ekg::gpu::sampler_t *p_sampler = nullptr
+  );
+
+  void sync_scissor(
+    ekg::rect &scissor,
+    ekg::rect &rect_child,
+    ekg::rect *p_parent_scissor
+  );
 }
 
 #endif

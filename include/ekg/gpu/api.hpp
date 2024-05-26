@@ -132,12 +132,12 @@ namespace ekg {
     };
   }
 
-  void allocate_sampler(
+  uint64_t allocate_sampler(
     const ekg::gpu::sampler_allocate_info *p_sampler_allocate_info,
     ekg::gpu::sampler_t *p_sampler
   );
 
-  void fill_sampler(
+  uint64_t fill_sampler(
     const ekg::gpu::sampler_fill_info *p_sampler_fill_info,
     ekg::gpu::sampler_t *p_sampler
   );

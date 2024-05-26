@@ -1058,7 +1058,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   auto &allocator {ekg::core->gpu_allocator};
 
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
-  ekg::draw::rect(rect, theme.textbox_background);
+  ekg::draw::rect(rect, theme.textbox_background, ekg::draw_mode::filled);
 
   this->embedded_scroll.clamp_scroll();
 
@@ -1338,12 +1338,12 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     switch (static_cast<int32_t>(cursor_rect.w)) {
       case 2:
         if (draw_cursor) {
-          ekg::draw::rect(cursor_rect, theme.textbox_cursor);
+          ekg::draw::rect(cursor_rect, theme.textbox_cursor, ekg::draw_mode::filled);
         }
 
         break;
       default:
-        ekg::draw::rect(cursor_rect, theme.textbox_select);
+        ekg::draw::rect(cursor_rect, theme.textbox_select, ekg::draw_mode::filled);
         break;
     }
   }

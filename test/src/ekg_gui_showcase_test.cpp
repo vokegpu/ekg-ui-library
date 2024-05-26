@@ -1,9 +1,13 @@
 #include <ekg/ekg.hpp>
-
 #include <ekg/os/ekg_sdl.hpp>
 #include <ekg/os/ekg_opengl.hpp>
-
 #include "application.hpp"
+
+//#define application_enable_stb_image_test
+#ifdef application_enable_stb_image_test
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
+#endif
 
 application app {};
 
@@ -162,14 +166,60 @@ int32_t showcase_useless_window() {
   ekg::ui::label *fps {};
   std::string previous_operator {};
 
+  #ifdef application_enable_stb_image_test
+  
+  ekg::gpu::sampler_allocate_info gato_all_info {
+    .p_tag = "./joao_das_galaxias_cat.png",
+  };
+
+  gato_all_info.p_data = {
+    stbi_load(
+      gato_all_info.p_tag,
+      &gato_all_info.w,
+      &gato_all_info.h,
+      &gato_all_info.gl_internal_format,
+      0
+    )
+  };
+
+  if (!gato_all_info.p_data) {
+    ekg::log() << "failed to meow";
+  }
+
+  gato_all_info.gl_wrap_modes[0] = GL_CLAMP;
+  gato_all_info.gl_wrap_modes[1] = GL_CLAMP;
+  gato_all_info.gl_parameter_filter[0] = GL_LINEAR;
+  gato_all_info.gl_parameter_filter[1] = GL_LINEAR;
+  gato_all_info.gl_internal_format = GL_RGB;
+  gato_all_info.gl_format = GL_RGBA;
+  gato_all_info.gl_format = GL_UNSIGNED_BYTE;
+
+  ekg::gpu::sampler_t gato {};
+  auto result = ekg::allocate_sampler(
+    &gato_all_info,
+    &gato
+  );
+
+  ekg::log() << gato_all_info.p_tag
+             << " status: " << result
+             << "; w, h, c [" << gato.w << ", " << gato.h << ", " << gato_all_info.gl_internal_format << "]";
+
+  auto p_gato_frame = ekg::frame("foto-de-gato-fofo-amo-vc", {400, 400}, ekg::dock::none)
+    ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
+    ->set_drag(ekg::dock::top)
+    ->set_layer(&gato, ekg::layer::background);
+
+  auto p_gato_layer = p_gato_frame->get_layer(ekg::layer::background);
+  ekg::log() << "MEOW: " << p_gato_layer->p_tag;
+
+  ekg::pop_group();
+  #endif
+
   ekg::frame("mumu", {900, 300}, ekg::dock::none)
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
     ->set_drag(ekg::dock::top);
 
   ekg::label("meow", ekg::dock::fill);
-
-  auto p_meow = ekg::textbox("meow", "meow oi", ekg::dock::fill | ekg::dock::next)
-    ->set_scaled_height(3);
 
   auto p_terminal = ekg::textbox("meow", "meow oi", ekg::dock::fill | ekg::dock::next)
     ->set_scaled_height(24);

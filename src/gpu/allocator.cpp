@@ -53,6 +53,10 @@ void ekg::gpu::allocator::invoke() {
 }
 
 void ekg::gpu::allocator::bind_texture(ekg::gpu::sampler_t *p_sampler) {
+  if (p_sampler == nullptr) {
+    return;
+  }
+
   ekg::gpu::data_t &data {this->data_list.at(this->data_instance_index)};
   data.sampler_index = ekg::core->p_gpu_api->bind_sampler(p_sampler);
 }
