@@ -1,6 +1,7 @@
 # Welcome 🐈
 
 EKG purpose is simplicity way to create fency reitaned high-performance GUIs, always looking for low-specs.  
+This readme is not updated. Soon.
 
 [Check documentation here!](https://vokegpu.github.io/ekg-docs/)
 
