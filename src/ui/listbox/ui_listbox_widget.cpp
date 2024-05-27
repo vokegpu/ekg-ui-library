@@ -231,7 +231,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
 
-  ekg::draw::rect(rect, theme.listbox_background, ekg::draw_mode::filled);
+  ekg::draw::rect(rect, theme.listbox_background, ekg::draw_mode::filled, ekg_layer(ekg::layer::background));
 
   ekg::rect relative_rect {};
   ekg::font item_font {p_ui->get_item_font_size()};
@@ -248,6 +248,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
     ekg::placement &placement {item.unsafe_get_placement()};
 
     ekg::ui::listbox_template_render(
+      p_ui,
       item,
       ui_pos,
       scrollable_rect,
@@ -446,6 +447,7 @@ void ekg::ui::listbox_template_on_event(
 }
 
 void ekg::ui::listbox_template_render(
+  ekg::ui::listbox *&p_data,
   ekg::item &parent,
   ekg::vec2 &ui_pos,
   ekg::rect &ui_rect,
@@ -480,20 +482,22 @@ void ekg::ui::listbox_template_render(
       ekg::draw::rect(
         item_rect,
         theme.listbox_item_background,
-        ekg::draw_mode::filled
+        ekg::draw_mode::filled,
+        ekg_layer(ekg::layer::sub_background)
       );
 
       if (ekg_bitwise_contains(flags, ekg::attr::hovering)) {
         ekg::draw::rect(
           item_rect,
           theme.listbox_item_highlight,
-          ekg::draw_mode::filled
+          ekg::draw_mode::filled,
+          ekg_layer(ekg::layer::highlight)
         );
 
         ekg::draw::rect(
           item_rect,
           theme.listbox_item_highlight_outline,
-          ekg::draw_mode::filled
+          ekg::draw_mode::outline
         );
       }
 
@@ -501,7 +505,8 @@ void ekg::ui::listbox_template_render(
         ekg::draw::rect(
           item_rect,
           theme.listbox_item_focused,
-          ekg::draw_mode::filled
+          ekg::draw_mode::filled,
+          ekg_layer(ekg::layer::activity)
         );
 
         ekg::draw::rect(
@@ -527,6 +532,7 @@ void ekg::ui::listbox_template_render(
 
     if (!item.empty() && ekg_bitwise_contains(flags, ekg::attr::opened)) {
       ekg::ui::listbox_template_render(
+        p_data,
         item,
         ui_pos,
         ui_rect,

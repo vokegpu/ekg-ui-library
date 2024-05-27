@@ -111,17 +111,47 @@ void ekg::ui::button_widget::on_draw_refresh() {
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
 
-  ekg::draw::rect(rect, theme.button_background, ekg::draw_mode::filled);
-  ekg::draw::rect(rect, theme.button_outline, ekg::draw_mode::outline);
+  ekg::draw::rect(
+    rect,
+    theme.button_background,
+    ekg::draw_mode::filled,
+    ekg_layer(ekg::layer::background)
+  );
 
   if (this->flag.highlight) {
-    ekg::draw::rect(rect, theme.button_highlight, ekg::draw_mode::filled);
+    ekg::draw::rect(
+      rect,
+      theme.button_highlight,
+      ekg::draw_mode::filled,
+      ekg_layer(ekg::layer::highlight)
+    );
   }
 
   if (this->flag.activity) {
-    ekg::draw::rect(rect, theme.button_activity, ekg::draw_mode::filled);
-    ekg::draw::rect(rect, {theme.button_activity, theme.button_outline.w}, ekg::draw_mode::outline);
+    ekg::draw::rect(
+      rect,
+      theme.button_activity,
+      ekg::draw_mode::filled,
+      ekg_layer(ekg::layer::activity)
+    );
+
+    ekg::draw::rect(
+      rect,
+      ekg::vec4 {theme.button_activity, theme.button_outline.w},
+      ekg::draw_mode::outline
+    );
   }
 
-  f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, theme.button_string);
+  f_renderer.blit(
+    p_ui->get_text(),
+    rect.x + this->rect_text.x,
+    rect.y + this->rect_text.y,
+    theme.button_string
+  );
+  
+  ekg::draw::rect(
+    rect,
+    theme.button_outline,
+    ekg::draw_mode::outline
+  );
 }

@@ -1058,7 +1058,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   auto &allocator {ekg::core->gpu_allocator};
 
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
-  ekg::draw::rect(rect, theme.textbox_background, ekg::draw_mode::filled);
+  ekg::draw::rect(rect, theme.textbox_background, ekg::draw_mode::filled, ekg_layer(ekg::layer::background));
 
   this->embedded_scroll.clamp_scroll();
 

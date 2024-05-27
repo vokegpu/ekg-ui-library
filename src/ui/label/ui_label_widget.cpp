@@ -62,9 +62,19 @@ void ekg::ui::label_widget::on_draw_refresh() {
   auto p_ui {(ekg::ui::label *) this->p_data};
   auto &rect {this->get_abs_rect()};
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  auto &theme {ekg::theme()};
 
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
 
-  f_renderer.blit(p_ui->get_text(), rect.x + this->rect_text.x, rect.y + this->rect_text.y, ekg::theme().label_string);
+  ekg::draw::rect(rect, theme.label_background, ekg::draw_mode::filled, ekg_layer(ekg::layer::background));
+
+  f_renderer.blit(
+    p_ui->get_text(),
+    rect.x + this->rect_text.x,
+    rect.y + this->rect_text.y,
+    ekg::theme().label_string
+  );
+
+  ekg::draw::rect(rect, theme.label_outline, ekg::draw_mode::outline);
 }

@@ -265,21 +265,24 @@ void ekg::ui::slider_widget::on_draw_refresh() {
   ekg::draw::rect(
     bar,
     theme.slider_background,
-    ekg::draw_mode::filled
+    ekg::draw_mode::filled,
+    ekg_layer(ekg::layer::background)
   );
 
   if (this->flag.highlight) {
     ekg::draw::rect(
       bar,
       theme.slider_highlight,
-      ekg::draw_mode::filled
+      ekg::draw_mode::filled,
+      ekg_layer(ekg::layer::highlight)
     );
   }
 
   ekg::draw::rect(
     this->rect_target + rect,
     theme.slider_activity,
-    ekg::draw_mode::circle
+    ekg::draw_mode::circle,
+    ekg_layer(ekg::layer::activity)
   );
 
   ekg::draw::rect(
@@ -288,7 +291,8 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     bar_value.w,
     bar_value.h,
     theme.slider_activity_bar,
-    ekg::draw_mode::filled
+    ekg::draw_mode::filled,
+    ekg_layer(ekg::layer::activity)
   );
 
   f_renderer.blit(

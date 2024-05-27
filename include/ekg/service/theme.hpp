@@ -61,6 +61,8 @@ namespace ekg::service {
     int32_t slider_target_thickness {};
 
     ekg::vec4 label_string {};
+    ekg::vec4 label_outline {};
+    ekg::vec4 label_background {};
 
     ekg::vec4 popup_string {};
     ekg::vec4 popup_background {};

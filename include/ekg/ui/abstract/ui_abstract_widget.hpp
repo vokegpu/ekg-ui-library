@@ -37,7 +37,12 @@
     ekg::core->service_handler.generate() = *p_ekg_action_dispatch_task; \
   } \
 
-#define ekg_layer(layer) (this->p_data->get_layer(layer))
+/**
+ * `self->`p_data->get_layer(layer)
+ * the reason for `self->` be removed, due some widgets like:
+ * listbox which perform recursive iterations.
+ **/
+#define ekg_layer(layer) (p_data->get_layer(layer))
 
 namespace ekg::ui {
   class abstract_widget {

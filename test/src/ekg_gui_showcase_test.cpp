@@ -11,6 +11,59 @@
 
 application app {};
 
+template<typename t>
+bool create_sampler(
+  std::string_view sampler_name,
+  std::unordered_map<std::string_view, ekg::gpu::sampler_t> &loaded_sampler_map
+) {
+  #ifndef application_enable_stb_image_test
+  return false;
+  #else
+  ekg::gpu::sampler_allocate_info sampler_alloc_info {
+    .p_tag = sampler_name.data()
+  };
+
+  sampler_alloc_info.p_data = {
+    static_cast<t>(
+      stbi_load(
+        sampler_name.data(),
+        &sampler_alloc_info.w,
+        &sampler_alloc_info.h,
+        &sampler_alloc_info.gl_internal_format,
+        0
+      )
+    )
+  };
+
+  if (!sampler_alloc_info.p_data) {
+    ekg::log() << "Failed to load '" << sampler_name << "' sampler ><!";
+    return false;
+  }
+
+  int32_t truly_png_or_no {GL_RGB};
+  if (sampler_alloc_info.gl_internal_format == 4) {
+    truly_png_or_no = GL_RGBA;
+  }
+
+  sampler_alloc_info.gl_wrap_modes[0] = GL_REPEAT;
+  sampler_alloc_info.gl_wrap_modes[1] = GL_REPEAT;
+  sampler_alloc_info.gl_parameter_filter[0] = GL_LINEAR;
+  sampler_alloc_info.gl_parameter_filter[1] = GL_LINEAR;
+  sampler_alloc_info.gl_internal_format = truly_png_or_no;
+  sampler_alloc_info.gl_format = truly_png_or_no;
+  sampler_alloc_info.gl_type = GL_UNSIGNED_BYTE;
+  sampler_alloc_info.gl_generate_mipmap = GL_TRUE;
+
+  ekg::gpu::sampler_t &sampler {loaded_sampler_map[sampler_name]};
+  ekg::allocate_sampler(
+    &sampler_alloc_info,
+    &sampler
+  );
+
+  return true;
+  #endif
+}
+
 std::string checkcalc(std::string_view text, std::string_view operatortext) {
   std::string result {};
   result += text.substr(text.size() - 1, 1);
@@ -392,42 +445,18 @@ int32_t showcase_useless_window() {
   ekg::input::bind("meow", "lctrl+mouse-1");
 
   #ifdef application_enable_stb_image_test
-  
-  ekg::gpu::sampler_allocate_info gato_all_info {
-    .p_tag = "./joao_das_galaxias_cat.png",
-  };
 
-  gato_all_info.p_data = {
-    stbi_load(
-      gato_all_info.p_tag,
-      &gato_all_info.w,
-      &gato_all_info.h,
-      &gato_all_info.gl_internal_format,
-      0
-    )
-  };
-
-  gato_all_info.gl_wrap_modes[0] = GL_REPEAT;
-  gato_all_info.gl_wrap_modes[1] = GL_REPEAT;
-  gato_all_info.gl_parameter_filter[0] = GL_LINEAR;
-  gato_all_info.gl_parameter_filter[1] = GL_LINEAR;
-  gato_all_info.gl_internal_format = GL_RGB;
-  gato_all_info.gl_format = GL_RGB;
-  gato_all_info.gl_type = GL_UNSIGNED_BYTE;
-  gato_all_info.gl_generate_mipmap = GL_TRUE;
-
-  ekg::gpu::sampler_t gato {};
-  auto result = ekg::allocate_sampler(
-    &gato_all_info,
-    &gato
-  );
+  std::unordered_map<std::string_view, ekg::gpu::sampler_t> loaded_sampler_map {};
+  create_sampler<unsigned char*>("./cow.png", loaded_sampler_map);
+  create_sampler<unsigned char*>("./joao_das_galaxias_cat.png", loaded_sampler_map);
 
   auto p_gato_frame = ekg::frame("foto-de-gato-fofo-amo-vc", {400, 400}, ekg::dock::none)
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
     ->set_drag(ekg::dock::top)
-    ->set_layer(&gato, ekg::layer::background);
+    ->set_layer(&loaded_sampler_map["./joao_das_galaxias_cat.png"], ekg::layer::background);
 
-  p_calculator_frame->set_layer(&gato, ekg::layer::background);
+  p_calculator_frame->set_layer(&loaded_sampler_map["./cow.png"], ekg::layer::background);
+  p_terminal->set_layer(&loaded_sampler_map["./joao_das_galaxias_cat.png"], ekg::layer::background);
 
   auto p_gato_layer = p_gato_frame->get_layer(ekg::layer::background);
   ekg::log() << "MEOW: " << p_gato_layer->p_tag;

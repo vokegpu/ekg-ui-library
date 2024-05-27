@@ -71,7 +71,10 @@ namespace ekg {
   };
 
   enum class layer {
-    background = 0
+    background = 0,
+    sub_background = 1,
+    highlight = 2,
+    activity = 3
   };
 
   enum class state {
@@ -101,7 +104,7 @@ namespace ekg {
     class abstract {
     protected:
       std::array<ekg::task*, 8> action_register {};
-      std::array<ekg::gpu::sampler_t*, 1> layer_surfaces {};
+      std::array<ekg::gpu::sampler_t*, 4> layer_surfaces {};
     protected:
       int32_t id {};
       int32_t parent_id {};

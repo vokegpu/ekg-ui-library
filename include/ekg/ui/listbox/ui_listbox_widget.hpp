@@ -28,6 +28,7 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include "ekg/util/io.hpp"
 #include "ekg/ui/scrollbar/ui_scrollbar_embedded_widget.hpp"
+#include "ekg/ui/listbox/ui_listbox.hpp"
 
 namespace ekg::ui {
   class listbox_widget : public ekg::ui::abstract_widget {
@@ -78,6 +79,7 @@ namespace ekg::ui {
   );
 
   void listbox_template_render(
+    ekg::ui::listbox *&p_data,
     ekg::item &parent,
     ekg::vec2 &ui_pos,
     ekg::rect &ui_rect,
