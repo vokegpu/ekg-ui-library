@@ -162,28 +162,26 @@ void ekg::os::opengl::init() {
       "} else {\n"
         "vec4 textureColor;\n"
         "switch (uActiveTexture) {\n"
-          "case 1:\n"
-            "textureColor = texture(uTextureSampler, vTexCoord);\n"
-
+          "case 1:\n"           
             /**
-             * The formula I created is
-             *
-             * t(r, g, b, a) = Texture color
-             * c(x, y, z, w) = Color to blend
-             *
-             * f(t, c) = (t(r, g, b) - ((1 - c(r, g, b) - 1), t(w) - (1 - c(w)))
+             * The sampler used here is the font,
+             * and this sampler is GL_BGRA mapped.
+             * 
+             * Instead of doing swizzling on CPU-side, here is actually the best place.
              **/
+            "textureColor = texture(uTextureSampler, vTexCoord).aaar;\n"
+
             "aFragColor = vec4(\n"
-              "textureColor.xyz - ((1.0f - aFragColor.xyz) - 1.0f),\n"
-              "textureColor.w - (1.0f - aFragColor.w)\n"
+              "textureColor.rgb * aFragColor.rgb,\n"
+              "textureColor.a - (1.0f - aFragColor.a)\n"
             ");\n"
             "break;\n"
           "case 2:\n"
             "textureColor = texture(uTextureSampler, vPos);\n"
 
             "aFragColor = vec4(\n"
-              "textureColor.xyz,\n"
-              "textureColor.w - (1.0f - aFragColor.w)\n"
+              "textureColor.rgb,\n"
+              "textureColor.a - (1.0f - aFragColor.a)\n"
             ");\n"
             "aFragColor = textureColor;\n"
             "break;\n"
@@ -445,7 +443,7 @@ uint64_t ekg::os::opengl::generate_font_atlas(
   std::vector<char32_t> &loaded_sampler_generate_list,
   std::unordered_map<char32_t, ekg::draw::glyph_char_t> &mapped_glyph_char_data
 ) {
-  int32_t internal_format {GL_RED};
+  int32_t internal_format {GL_RGBA};
 #if defined(__ANDROID__)
   /*
    * Android does not support GL_RED, perharps because of the GL ES version.
@@ -461,14 +459,27 @@ uint64_t ekg::os::opengl::generate_font_atlas(
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   glBindTexture(GL_TEXTURE_2D, p_sampler->gl_id);
 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+#if defined(__ANDROID__)
+  // GLES 3 does not support swizzle function, the format GL_ALPHA supply this issue.
+#else
+  GLint swizzle_format[] {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
+  //glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
+#endif
+
   glTexImage2D(
     GL_TEXTURE_2D,
     0,
-    internal_format,
+    GL_RGBA,
     atlas_width,
     atlas_height,
     0,
-    internal_format,
+    GL_RGBA,
     GL_UNSIGNED_BYTE,
     nullptr
   );
@@ -481,7 +492,7 @@ uint64_t ekg::os::opengl::generate_font_atlas(
   float offset {};
 
   for (char32_t &char32 : loaded_sampler_generate_list) {
-    flags = FT_LOAD_RENDER;
+    flags = 0;
 
     switch (char32 < 256 || !p_font_face_emoji->font_face_loaded) {
       case true: {
@@ -493,13 +504,13 @@ uint64_t ekg::os::opengl::generate_font_atlas(
       default: {
         ft_face = p_font_face_emoji->ft_face;
         ft_glyph_slot = p_font_face_emoji->ft_face->glyph;
-        flags |= (FT_LOAD_COLOR | FT_LOAD_DEFAULT) * FT_HAS_COLOR(ft_face);
+        flags = FT_LOAD_COLOR;
 
         break;
       }
     }
 
-    if (FT_Load_Char(ft_face, char32, flags)) {
+    if (FT_Load_Char(ft_face, char32, FT_LOAD_RENDER | FT_LOAD_COLOR | FT_LOAD_DEFAULT)) {
       continue;
     }
 
@@ -520,7 +531,7 @@ uint64_t ekg::os::opengl::generate_font_atlas(
       0,
       static_cast<GLsizei>(char_data.w),
       static_cast<GLsizei>(char_data.h),
-      internal_format,
+      flags == FT_LOAD_COLOR ? GL_BGRA : GL_RED,
       GL_UNSIGNED_BYTE,
       ft_glyph_slot->bitmap.buffer
     );
@@ -529,18 +540,6 @@ uint64_t ekg::os::opengl::generate_font_atlas(
     char_data.was_sampled = true;
   }
 
-#if defined(__ANDROID__)
-  // GLES 3 does not support swizzle function, the format GL_ALPHA supply this issue.
-#else
-  GLint swizzle_format[] {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
-#endif
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glBindTexture(GL_TEXTURE_2D, 0);
 
   return ekg_ok;

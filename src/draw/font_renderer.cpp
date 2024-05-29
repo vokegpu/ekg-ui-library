@@ -220,7 +220,7 @@ void ekg::draw::font_renderer::reload() {
       }
     }
 
-    if (FT_Load_Char(ft_face, char32, FT_LOAD_RENDER)) {
+    if (FT_Load_Char(ft_face, char32, FT_LOAD_RENDER | FT_LOAD_DEFAULT | FT_LOAD_COLOR)) {
       continue;
     }
 

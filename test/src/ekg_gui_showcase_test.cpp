@@ -3,7 +3,7 @@
 #include <ekg/os/ekg_opengl.hpp>
 #include "application.hpp"
 
-#define application_enable_stb_image_test
+//#define application_enable_stb_image_test
 #ifdef application_enable_stb_image_test
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
@@ -78,6 +78,39 @@ std::string checkcalc(std::string_view text, std::string_view operatortext) {
   }
 
   return result;
+}
+
+bool load_ttf_emoji(ekg::gpu::sampler_t *p_sampler) {
+  ekg::gpu::sampler_allocate_info sampler_alloc_info {
+    .p_tag = "meow"
+  };
+
+  ekg::draw::font_renderer f_renderer {ekg::f_renderer(ekg::font::normal)};
+  ekg::draw::font_face_t &typography_font_face {f_renderer.font_face_emoji};
+
+  FT_Load_Char(
+    typography_font_face.ft_face,
+    ekg::utf_string_to_char32("😇"),
+    FT_LOAD_RENDER | FT_LOAD_COLOR | FT_LOAD_DEFAULT
+  );
+
+  sampler_alloc_info.w = static_cast<int32_t>(typography_font_face.ft_face->glyph->bitmap.width);
+  sampler_alloc_info.h = static_cast<int32_t>(typography_font_face.ft_face->glyph->bitmap.rows);
+
+  sampler_alloc_info.gl_wrap_modes[0] = GL_REPEAT;
+  sampler_alloc_info.gl_wrap_modes[1] = GL_REPEAT;
+  sampler_alloc_info.gl_parameter_filter[0] = GL_LINEAR;
+  sampler_alloc_info.gl_parameter_filter[1] = GL_LINEAR;
+  sampler_alloc_info.gl_internal_format = GL_RGBA;
+  sampler_alloc_info.gl_format = GL_BGRA;
+  sampler_alloc_info.gl_type = GL_UNSIGNED_BYTE;
+  //sampler_alloc_info.gl_generate_mipmap = GL_TRUE;
+  sampler_alloc_info.p_data = typography_font_face.ft_face->glyph->bitmap.buffer;
+
+  return ekg::allocate_sampler(
+    &sampler_alloc_info,
+    p_sampler
+  );
 }
 
 std::string resultcalc(std::string_view text) {
@@ -204,7 +237,7 @@ int32_t showcase_useless_window() {
 
   ekg::runtime_property ekg_runtime_property {
     .p_font_path = "JetBrainsMono-Bold.ttf",
-    .p_font_path_emoji = "NotoColorEmoji.ttf",
+    .p_font_path_emoji = "openmojicolor.ttf",
     .p_gpu_api = new ekg::os::opengl(),
     .p_os_platform = new ekg::os::sdl(app.p_sdl_win)
   };
@@ -443,6 +476,14 @@ int32_t showcase_useless_window() {
 
   ekg::input::bind("hiroodrop", {"lctrl+b", "lctrl+lshift+v", "lshift+m"});
   ekg::input::bind("meow", "lctrl+mouse-1");
+
+  ekg::gpu::sampler_t ttf_cow_sampler {};
+  load_ttf_emoji(&ttf_cow_sampler);
+
+  auto p_cow_ttf_frame = ekg::frame("meow", {200, 200}, {400, 400})
+    ->set_drag(ekg::dock::top)
+    ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right)
+    ->set_layer(&ttf_cow_sampler, ekg::layer::background);
 
   #ifdef application_enable_stb_image_test
 
