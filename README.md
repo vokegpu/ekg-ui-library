@@ -2,9 +2,7 @@
 
 EKG is a reitaned UI-toolkit/UI library to create fancy high-perfmance GUIs. Always looking for low-specs hardware.
 
-The EKG rendering engine implements multi-API(s) (OpenGL, OpenGL ES3, Vulkan, etc) support, and OS platform support (Android, Windows and Linux),  
-EKG does not require implement on a SDL application, instead you can implement on any supported platform (SDL, GLFW, Win32, Wayland, etc).  
-Because of interface oriented concepts. The graphics engine is implemented over a RHI-like (Rendering Hardware-Interface-like), and the OS platform also is an interface.
+The EKG rendering engine implements multi-API(s) (OpenGL, OpenGL ES3, Vulkan, etc) support, and OS platform support (Android, Windows and Linux), EKG does not require implement on a SDL application, instead you can implement on any supported platform (SDL, GLFW, Win32, Wayland, etc). Because of interface oriented concepts. The graphics engine is implemented over a RHI-like (Rendering Hardware-Interface-like), and the OS platform also is an interface.
 
 EKG implements some object-state based concepts, like in the initialization process and sampler creation, due the Khronos API high-performance Vulkan support.
 
@@ -28,7 +26,7 @@ You are able to integrate GLFW, Win32, Wayland, or any window layer library, [co
 The EKG supports natively two APIs: OpenGL, and ~~Vulkan~~. Vulkan is not supported yet, but soon.  
 You are able to integrate Metal or DirectX 11 and DirectX 12, [contributing here](/include/os).
 
-Bassically, this way is deprecated but is usable. Soon EKG must implement a second native library code to separate GPU APIs implementations.  
+Basically, this way is deprecated but is usable. Soon EKG must implement a second native library code to separate GPU APIs implementations.  
 Instead of compiling everything and linking all required libs (Vulkan and OpenGL).
 
 Be sure you compile together all these three libs:  
@@ -145,7 +143,7 @@ ekg::slider("dragging the life", 0.0f, 0.0f, 666.0f, ekg::dock::fill)
 ekg::checkbox("checkbox like a 🐈‍⬛", true, ekg::dock::fill | ekg::dock::next);
 ekg::scrollbar("scrollbar omg");
 
-// not necessary unless you create a second frame that you does not want to dockenize on it.
+// not necessary unless you create a second frame that you do not want to dockenize on it.
 ekg::pop_group(); 
 ```
 
@@ -153,8 +151,7 @@ ekg::pop_group();
 
 # Action Inputs and Tasks
 
-The EKG is task-event-based then any widget-activity (activity here means activating the purpose of a widget, like  
-a button press or a slider bar etc). You can link tasks to these activities using self-built methods on widget.
+The EKG is task-event-based then any widget-activity (activity here means activating the purpose of a widget, like a button press or a slider bar etc). You can link tasks to these activities using the `set_task` method in widget.
 
 ```cpp
 ekg::button("inputs example meow", ekg::dock::fill)
@@ -171,7 +168,7 @@ ekg::button("inputs example meow", ekg::dock::fill)
   );
 ```
 
-This example print outputs the name of task on terminal.
+This example print outputs the name of task in terminal.
 
 @copyright 2024 - Rina Wilk - VokeGpu
 ```
