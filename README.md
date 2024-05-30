@@ -8,26 +8,25 @@ EKG implements some object-state based concepts, like in the initialization proc
 
 The [official documentation](https://vokegpu.github.io/ekg-docs/) is not done yet.
 
-[showcase clip](https://github.com/gamedevs-do-apocalipse/gamedevs-do-apocalipse/assets/37088203/5f0cd227-e50d-495c-81a7-76e6155305eb)  
-Background song: GUNNM OST
-
-![Image Text](/splash/splash-shocase-3.0-light-theme.png?raw=true)
-![Calc](/splash/splash-calc-showcase.png?raw=true)
+![Image Text](/splash/showcase-cow.png?raw=true)
+![Calc](/splash/calculator.png?raw=true)
 
 Check the [development updates here](https://github.com/orgs/gamedevs-do-apocalipse/discussions/5).  
 EKG is recognised as an open-source project by [JetBrains](https://www.jetbrains.com/) 🖤  
 <a href="https://www.jetbrains.com"> <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_square.png" width="100" height="100" alt="JetBrains Black Box Logo logo."> <a/>
 
+Please before cloning EKG, insert `--depth 1` flag, or you will clone almost 1gb (yeah this is bizzare, soon EKG MUST fix it filtering the repository).
+
 # Get Started 🐈‍⬛
 
-For first, EKG does not need be implement only on SDL application, but there is only one OS platform implemented: SDL2.  
-You are able to integrate GLFW, Win32, Wayland, or any window layer library, [contributing here](/include/os).
+For first, EKG does not need be implement only on SDL application, but there is only one OS platform implemented: SDL2;
+you are able to integrate GLFW, Win32, Wayland, or any window layer library, [contributing here](/include/os).
 
-The EKG supports natively two APIs: OpenGL, and ~~Vulkan~~. Vulkan is not supported yet, but soon.  
-You are able to integrate Metal or DirectX 11 and DirectX 12, [contributing here](/include/os).
+The EKG supports natively two APIs: OpenGL, and ~~Vulkan~~. Vulkan is not supported yet, but soon;
+you are able to integrate Metal or DirectX 11 and DirectX 12, [contributing here](/include/os).
 
-Basically, this way is deprecated but is usable. Soon EKG must implement a second native library code to separate GPU APIs implementations.  
-Instead of compiling everything and linking all required libs (Vulkan and OpenGL).
+Basically, this way is deprecated but is usable. Instead of compiling everything and linking all required libs (Vulkan and OpenGL).  
+Soon EKG must implement a second native library code to separate GPU APIs implementations,
 
 Be sure you compile together all these three libs:  
 [GLEW](https://glew.sourceforge.net/)/[Vulkan](https://www.vulkan.org/)/GLES3, [SDL2](https://www.libsdl.org/), and [Freetype](https://freetype.org/).
@@ -158,9 +157,13 @@ ekg::button("inputs example meow", ekg::dock::fill)
   ->set_task(
     new ekg::task {
       .info = {
-        .tag = "inputs example meow"
+        .tag = "inputs example meow",
+        .p_data = nullptr // you can pass any address ptr
       },
       .function = [](ekg::info &info) {
+        auto p_void = info.p_data;
+        auto p_ui = info.p_ui; // a `void *ptr` pointing to widget ui.
+
         std::cout << info.tag << std::endl;
       }
     },
@@ -170,5 +173,6 @@ ekg::button("inputs example meow", ekg::dock::fill)
 
 This example print outputs the name of task in terminal.
 
+---
+
 @copyright 2024 - Rina Wilk - VokeGpu
-```
