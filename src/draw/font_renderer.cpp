@@ -239,7 +239,8 @@ void ekg::draw::font_renderer::reload() {
     this->full_width,
     this->full_height,
     this->loaded_sampler_generate_list,
-    this->mapped_glyph_char_data
+    this->mapped_glyph_char_data,
+    this->non_swizzlable_range
   );
 }
 
@@ -259,7 +260,7 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
 
   data.buffer_content[0] = x;
   data.buffer_content[1] = y;
-  data.buffer_content[2] = static_cast<float>(ekg::gpu::allocator::concave);
+  data.buffer_content[2] = static_cast<float>(-this->non_swizzlable_range);
   data.buffer_content[3] = static_cast<float>(ekg::gpu::allocator::concave);
 
   data.buffer_content[4] = color.x;

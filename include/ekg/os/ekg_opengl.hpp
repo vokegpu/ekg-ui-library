@@ -101,7 +101,8 @@ namespace ekg::os {
       int32_t atlas_width,
       int32_t atlas_height,
       std::vector<char32_t> &loaded_sampler_generate_list,
-      std::unordered_map<char32_t, ekg::draw::glyph_char_t> &mapped_glyph_char_data
+      std::unordered_map<char32_t, ekg::draw::glyph_char_t> &mapped_glyph_char_data,
+      float &non_swizzlable_range
     ) override;
 
     uint64_t bind_sampler(ekg::gpu::sampler_t *p_sampler) override;

@@ -1073,7 +1073,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   x = static_cast<float>(static_cast<int32_t>(x));
   data.buffer_content[0] = x;
 
-  data.buffer_content[2] = static_cast<float>(ekg::gpu::allocator::concave);
+  data.buffer_content[2] = static_cast<float>(-f_renderer.non_swizzlable_range);
   data.buffer_content[3] = static_cast<float>(ekg::gpu::allocator::concave);
 
   data.buffer_content[4] = color.x;

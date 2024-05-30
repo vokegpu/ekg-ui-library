@@ -90,7 +90,7 @@ bool load_ttf_emoji(ekg::gpu::sampler_t *p_sampler) {
 
   FT_Load_Char(
     typography_font_face.ft_face,
-    ekg::utf_string_to_char32("😇"),
+    ekg::utf_string_to_char32("🐄"),
     FT_LOAD_RENDER | FT_LOAD_COLOR | FT_LOAD_DEFAULT
   );
 
@@ -236,7 +236,7 @@ int32_t showcase_useless_window() {
   glewInit();
 
   ekg::runtime_property ekg_runtime_property {
-    .p_font_path = "JetBrainsMono-Bold.ttf",
+    .p_font_path = "whitneybook.otf",
     .p_font_path_emoji = "openmojicolor.ttf",
     .p_gpu_api = new ekg::os::opengl(),
     .p_os_platform = new ekg::os::sdl(app.p_sdl_win)

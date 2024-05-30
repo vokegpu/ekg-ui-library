@@ -163,16 +163,27 @@ void ekg::os::opengl::init() {
         "vec4 textureColor;\n"
         "switch (uActiveTexture) {\n"
           "case 1:\n"           
+            "textureColor = texture(uTextureSampler, vTexCoord);\n"
+
             /**
-             * The sampler used here is the font,
-             * and this sampler is GL_BGRA mapped.
+             * The sampler used here is the font, and this sampler needs swizzled mapped,
+             * instead of doing swizzling on CPU-side, here is actually the best place.
+             * Due the necessity of put swizzle for ttf text fonts, the emojis must not swizzle.
+             * The non swizzable range masterfully fix it.
              * 
-             * Instead of doing swizzling on CPU-side, here is actually the best place.
+             * vRect.z is negative, because any concave rendering shape does not have a fixed
+             * dimension size. So the rendering engine re-uses the Rect width to calculate
+             * when must stop the GPU-side swizzle.
              **/
-            "textureColor = texture(uTextureSampler, vTexCoord).aaar;\n"
+            "float non_swizzlable_range = -vRect.z;\n"
+
+            "if (vTexCoord.x < non_swizzlable_range) {\n"
+              "textureColor = textureColor.aaar;\n"
+              "textureColor = vec4(textureColor.rgb * aFragColor.rgb, textureColor.a);\n"
+            "}\n"
 
             "aFragColor = vec4(\n"
-              "textureColor.rgb * aFragColor.rgb,\n"
+              "textureColor.rgb,\n"
               "textureColor.a - (1.0f - aFragColor.a)\n"
             ");\n"
             "break;\n"
@@ -441,7 +452,8 @@ uint64_t ekg::os::opengl::generate_font_atlas(
   int32_t atlas_width,
   int32_t atlas_height,
   std::vector<char32_t> &loaded_sampler_generate_list,
-  std::unordered_map<char32_t, ekg::draw::glyph_char_t> &mapped_glyph_char_data
+  std::unordered_map<char32_t, ekg::draw::glyph_char_t> &mapped_glyph_char_data,
+  float &non_swizzlable_range
 ) {
   int32_t internal_format {GL_RGBA};
 #if defined(__ANDROID__)
@@ -464,13 +476,6 @@ uint64_t ekg::os::opengl::generate_font_atlas(
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-#if defined(__ANDROID__)
-  // GLES 3 does not support swizzle function, the format GL_ALPHA supply this issue.
-#else
-  GLint swizzle_format[] {GL_ZERO, GL_ZERO, GL_ZERO, GL_RED};
-  //glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle_format);
-#endif
 
   glTexImage2D(
     GL_TEXTURE_2D,
@@ -498,6 +503,7 @@ uint64_t ekg::os::opengl::generate_font_atlas(
       case true: {
         ft_face = p_font_face_text->ft_face;
         ft_glyph_slot = p_font_face_text->ft_face->glyph;
+        non_swizzlable_range = offset;
         break;
       }
 
@@ -541,6 +547,8 @@ uint64_t ekg::os::opengl::generate_font_atlas(
   }
 
   glBindTexture(GL_TEXTURE_2D, 0);
+
+  non_swizzlable_range = non_swizzlable_range / static_cast<float>(atlas_width);
 
   return ekg_ok;
 }

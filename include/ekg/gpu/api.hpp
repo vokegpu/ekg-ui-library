@@ -126,7 +126,8 @@ namespace ekg {
         int32_t w,
         int32_t h,
         std::vector<char32_t> &loaded_sampler_generate_list,
-        std::unordered_map<char32_t, ekg::draw::glyph_char_t> &mapped_glyph_char_data
+        std::unordered_map<char32_t, ekg::draw::glyph_char_t> &mapped_glyph_char_data,
+        float &non_swizzlable_range
       ) { return ekg_ok; };
 
       virtual uint64_t bind_sampler(ekg::gpu::sampler_t *p_sampler) { return ekg_ok; };

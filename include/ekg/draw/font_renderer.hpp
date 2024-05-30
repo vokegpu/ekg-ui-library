@@ -51,6 +51,7 @@ namespace ekg::draw {
 
     float offset_text_height {};
     float text_height {};
+    float non_swizzlable_range {};
 
     bool flag_unloaded {};
     bool flag_first_time {true};
