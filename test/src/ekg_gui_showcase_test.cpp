@@ -505,6 +505,25 @@ int32_t showcase_useless_window() {
   ekg::pop_group();
   #endif
 
+  ekg::frame("meow", ekg::vec2(200, 200), ekg::vec2(200, 200))
+    ->set_drag(ekg::dock::top)
+    ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
+
+  ekg::label("ekg sampler gui?", ekg::dock::fill);
+  ekg::button("click here bu", ekg::dock::fill | ekg::dock::next);
+
+  ekg::textbox("meow", "🐄 EKG 🐈", ekg::dock::fill | ekg::dock::next)
+    ->set_scaled_height(3);
+
+  ekg::label("meow", ekg::dock::next);
+  ekg::slider("dragging the life", 0.0f, 0.0f, 666.0f, ekg::dock::fill)
+    ->set_text_align(ekg::dock::center);
+
+  ekg::checkbox("checkbox like a 🐈‍⬛", true, ekg::dock::fill | ekg::dock::next);
+  ekg::scrollbar("scrollbar omg");
+
+  ekg::pop_group(); 
+
   bool running {true};
   uint64_t now {};
   uint64_t last {};

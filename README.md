@@ -1,10 +1,12 @@
 # 🐄 EKG 🐈
 
-EKG is a reitaned UI-toolkit/UI library to create fancy high-perfmance GUIs. Always looking for low-specs hardware.  
-The EKG rendering engine implements multi-API(s) (OpenGL, OpenGL ES3, Vulkan, etc) support, and OS platform support (Android, Windows and Linux),  
-EKG does not require implement on a SDL application, instead you can implement on any supported platform (SDL, GLFW, Win32, Wayland, etc).
+EKG is a reitaned UI-toolkit/UI library to create fancy high-perfmance GUIs. Always looking for low-specs hardware.
 
-EKG implements some object-state based concepts, like in the initialization process and sampler creation, due the Khorons API high-performance Vulkan support.
+The EKG rendering engine implements multi-API(s) (OpenGL, OpenGL ES3, Vulkan, etc) support, and OS platform support (Android, Windows and Linux),  
+EKG does not require implement on a SDL application, instead you can implement on any supported platform (SDL, GLFW, Win32, Wayland, etc).  
+Because of interface oriented concepts. The graphics engine is implemented over a RHI-like (Rendering Hardware-Interface-like), and the OS platform also is an interface.
+
+EKG implements some object-state based concepts, like in the initialization process and sampler creation, due the Khronos API high-performance Vulkan support.
 
 The [official documentation](https://vokegpu.github.io/ekg-docs/) is not done yet.
 
@@ -97,13 +99,18 @@ int32_t main(int32_t, char**) {
     }
 
     /**
-     * Note: These next functions are aside from platform interfacec implementation,
+     * Note: These next functions are aside from platform interface implementation,
      * only events poll is necessary an interface.
      **/
 
-    // You are able to add multi-thread support to EKG
-    // invoking this function on a different thread.
-    // But I do not recommend it.
+    // The delta time (framerate interval time between new and old frame loop).
+    ekg::ui::dt = 0.016f; // you need to calculate by yourself.
+
+    /**
+     * You are able to add multi-thread support to EKG
+     * invoking this function on a different thread.
+     * But I do not recommend it.
+     **/
     ekg::update();
 
     // Now on rendering loop section you must invoke EKG render function.
@@ -114,10 +121,57 @@ int32_t main(int32_t, char**) {
 
 # UI Elements Creation and Configuration
 
-Bassically 
+The EKG is not an immediate UI library, then you need to build once widgets and tasks,  
+you can create widgets on the application initialization or any other place at once.
 
-EKG source code provides a demo application called Pompom under `test/build/OS` folder.
+Building widgets support builder-concept, so you have free to customize a lot the widget. 
 
+```cpp
+
+ekg::frame("meow", ekg::vec2(200, 200), ekg::vec2(200, 200))
+  ->set_drag(ekg::dock::top)
+  ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
+
+ekg::label("ekg sampler gui?", ekg::dock::fill);
+ekg::button("click here bu", ekg::dock::fill | ekg::dock::next);
+
+ekg::textbox("meow", "🐄 EKG 🐈", ekg::dock::fill | ekg::dock::next)
+  ->set_scaled_height(3);
+
+ekg::label("meow", ekg::dock::next);
+ekg::slider("dragging the life", 0.0f, 0.0f, 666.0f, ekg::dock::fill)
+  ->set_text_align(ekg::dock::center);
+
+ekg::checkbox("checkbox like a 🐈‍⬛", true, ekg::dock::fill | ekg::dock::next);
+ekg::scrollbar("scrollbar omg");
+
+// not necessary unless you create a second frame that you does not want to dockenize on it.
+ekg::pop_group(); 
 ```
+
+![showcase-sampler-gui](/splash/ekg-sampler-gui.png?raw=true)
+
+# Action Inputs and Tasks
+
+The EKG is task-event-based then any widget-activity (activity here means activating the purpose of a widget, like  
+a button press or a slider bar etc). You can link tasks to these activities using self-built methods on widget.
+
+```cpp
+ekg::button("inputs example meow", ekg::dock::fill)
+  ->set_task(
+    new ekg::task {
+      .info = {
+        .tag = "inputs example meow"
+      },
+      .function = [](ekg::info &info) {
+        std::cout << info.tag << std::endl;
+      }
+    },
+    ekg::action::activity
+  );
+```
+
+This example print outputs the name of task on terminal.
+
 @copyright 2024 - Rina Wilk - VokeGpu
 ```
