@@ -1,17 +1,18 @@
-# Welcome 🐈
+# 🐄 EKG 🐈
 
-EKG purpose is simplicity way to create fency reitaned high-performance GUIs, always looking for low-specs.  
-This readme is not updated. Soon.
+EKG is a reitaned UI-toolkit/UI library to create fancy high-perfmance GUIs. Always looking for low-specs hardware.  
+The EKG rendering engine implements multi-API(s) (OpenGL, OpenGL ES3, Vulkan, etc) support, and OS platform support (Android, Windows and Linux),  
+EKG does not require implement on a SDL application, instead you can implement on any supported platform (SDL, GLFW, Win32, Wayland, etc).
 
-[Check documentation here!](https://vokegpu.github.io/ekg-docs/)
+EKG implements some object-state based concepts, like in the initialization process and sampler creation, due the Khorons API high-performance Vulkan support.
 
----
+The [official documentation](https://vokegpu.github.io/ekg-docs/) is not done yet.
+
+[showcase clip](https://github.com/gamedevs-do-apocalipse/gamedevs-do-apocalipse/assets/37088203/5f0cd227-e50d-495c-81a7-76e6155305eb)  
+Background song: GUNNM OST
 
 ![Image Text](/splash/splash-shocase-3.0-light-theme.png?raw=true)
 ![Calc](/splash/splash-calc-showcase.png?raw=true)
-
-[showcase clip](https://github.com/gamedevs-do-apocalipse/gamedevs-do-apocalipse/assets/37088203/5f0cd227-e50d-495c-81a7-76e6155305eb)  
-Background song: GUNNM OST 
 
 Check the [development updates here](https://github.com/orgs/gamedevs-do-apocalipse/discussions/5).  
 EKG is recognised as an open-source project by [JetBrains](https://www.jetbrains.com/) 🖤  
@@ -19,7 +20,14 @@ EKG is recognised as an open-source project by [JetBrains](https://www.jetbrains
 
 # Get Started 🐈‍⬛
 
-The EKG supports natively two APIs: OpenGL, and ~~Vulkan~~. Vulkan is not supported yet, but soon.
+For first, EKG does not need be implement only on SDL application, but there is only one OS platform implemented: SDL2.  
+You are able to integrate GLFW, Win32, Wayland, or any window layer library, [contributing here](/include/os).
+
+The EKG supports natively two APIs: OpenGL, and ~~Vulkan~~. Vulkan is not supported yet, but soon.  
+You are able to integrate Metal or DirectX 11 and DirectX 12, [contributing here](/include/os).
+
+Bassically, this way is deprecated but is usable. Soon EKG must implement a second native library code to separate GPU APIs implementations.  
+Instead of compiling everything and linking all required libs (Vulkan and OpenGL).
 
 Be sure you compile together all these three libs:  
 [GLEW](https://glew.sourceforge.net/)/[Vulkan](https://www.vulkan.org/)/GLES3, [SDL2](https://www.libsdl.org/), and [Freetype](https://freetype.org/).
@@ -35,7 +43,7 @@ add_executable(your-project-name ekg SDL2main SDL2 freetype glew32)
 cxx ... -lekg -lSDL2main -lSDL2 -lfreetype -lglew32
 ```
 
-C++ compiler(s) support: GCC, MinGW32, MinGW64, Clang  
+C++ compiler(s) support: GCC, MinGW, Clang  
 C++ std version: 17
   
 Library output path:   
@@ -43,117 +51,72 @@ Library output path:
 `lib/linux/libekg.a` Linux x86_x64  
 `ANDROID_ABI/libekg.a` Android armeabi-v7a arm64-v8a x86 x86_64  
 
-# Example
+Initializing EKG for SDL and OpenGL is simple.
 
-EKG source code provides a demo application called Pompom under `test/build/OS` folder.
-
-```c++
+```cpp
 #include <ekg/ekg.hpp>
+#include <ekg/os/ekg_opengl.hpp>
+#include <ekg/os/ekg_sdl.hpp>
 
 int32_t main(int32_t, char**) {
-  // create SDL2 window and OpenGL context.
-  //... init ekg.
+  // initialize SDL window
+  // initialize OpenGL context and GLEW
+
+  /**
+   * Runtime property is object-state based,
+   * because of Vulkan support, but it does not require a large configutarion template.
+   * 
+   * The font rendering requires some explains:
+   * - EKG font rendering is "maximum" optimized to fast rendering, so Kanjis or any char
+   * far from 256 unicode value does not have a decent implementation.
+   * - Only Emojis chars are implemented on font rendering.
+   * 
+   * Soon EKG should add Kanji and some chars support, but for now, only emoji and text is ok.
+   * You can read more about how EKG font rendering works here: <yet no link> 
+   **/
+  ekg::runtime_property ekg_runtime_property {
+    .p_font_path = "./local_font.ttf.otf",
+    .p_font_path_emoji = "./local_optional_emoji_support.ttf.otf",
+    .p_gpu_api = new ekg::os::opengl(), // check documentation for Vulkan initialization (not done yet :c)
+    .p_os_platform = new ekg::os::sdl(p_sdl_win)
+  };
+
   ekg::runtime ekg_runtime {};
-  ekg::init(&ekg_runtime, sdl_window, "./font.ttf");
-  
-  // create GUI elements here or somewhere in the code, but once tick.
-  ekg::frame("fps frame", {20, 20}, {200, 200});
-  auto label_fps = ekg::label("fps", ekg::dock::fill)->set_text_align(ekg::dock::center);
-  
-  /*
-   * mainloop of your application/game.
-   */
-  while (running) {
-    // reduce CPU ticks and sync_flags with refresh rate...
-    while (SDL_PollEvents(sdl_event)) {
-      // handle the events here.
-      // remember to poll ekg reset events:
-      ekg::poll_event(sdl_event);
+  ekg::init(&ekg_runtime, ekg_runtime_property);
+
+  // now EKG is initialized and done to be used.
+
+  while (running_loop) {
+    while (SDL_PollEvent(&sdl_event)) {
+      /**
+       * The EKG for SDL is different from other(s) platform implementations.
+       * Each platform may perform with some "overheads", as in the case of GLFW.
+       * GLFW does not have a loop-statement place like SDL to poll events.
+       **/
+      ekg::os::sdl_poll_event(&sdl_event);
     }
-    
-    if (/* check timing each 1s to update display fps */) {
-      display_fps = frames_elapsed;
-      frames_elapsed = 0;
-      label_fps->set_text(std::to_string(display_fps));
-    }
-    
-    // remember to set delta time ticks of ekg.
-    // this is very important to UI animations. 
-    ekg::dt = 0.016f; // running 60 fps -> t = 1000 / 60 -> dt = t / 100;
-    
-    // the update section (it comes before render segment).
+
+    /**
+     * Note: These next functions are aside from platform interfacec implementation,
+     * only events poll is necessary an interface.
+     **/
+
+    // You are able to add multi-thread support to EKG
+    // invoking this function on a different thread.
+    // But I do not recommend it.
     ekg::update();
-    
-    // now you can clear the buffers using OpenGL and enable render section of ekg.
-    // ...
+
+    // Now on rendering loop section you must invoke EKG render function.
     ekg::render();
   }
-  
-  return 0;
 }
 ```
 
-A simple example for creating textbox(s), buttons, and more widgets!
+# UI Elements Creation and Configuration
 
-```cpp
-auto frame = ekg::frame("lê rect", {20, 20}, {400, 400});
+Bassically 
 
-frame->set_drag(ekg::dock::top);
-frame->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
-
-ekg::button("pompom click!!", ekg::dock::fill);
-ekg::slider("pompok number!!", 0.34f, 0.11f, 0.934f, ekg::dock::fill | ekg::dock::next)->set_precision(4);
-ekg::textbox("Lê textbox", "hiii", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
-
-ekg::label("RGB:", ekg::dock::next);
-
-auto r = ekg::slider("red", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
-auto g = ekg::slider("green", 0.69f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
-auto b = ekg::slider("blue", 1.0f, 0.0f, 1.0f, ekg::dock::fill)->set_precision(2);
-
-ekg::scroll("scroll minecraft");
-ekg::popgroup();
-```
-
-![Image Text](/splash/clean-white-theme-showcase-code-6.png?raw=true)
-
-Here how to create popup(s)!
-
-```cpp
-while (SDL_PollEvent(&sdlevent)) {
-  ekg::task(sdl_event);
-
-  if (ekg::input::released() && ekg::input::receive("mouse-3-up")) {
-    // \t  add line separator
-    auto main = ekg::popup("file", {"\tAdd", "Cut", "Copy", "\tPaste", "\tSelect All", "Actions"});
-    auto three = ekg::popup("file-add", {"Cube", "Plane", "Sphere", "Hexagon", "Hexagon"});
-    auto hexagon = ekg::popup("file-add-hexagon", {"Tree D", "Plane", "Double Pairs Daggers"});
-    auto game = ekg::popup("file-actions", {"Reload Clock", "Flush"});
-  
-    if (main) { // not null
-      main->link("Add", three);
-      main->link("Actions", game);
-      three->link("Hexagon", hexagon);
-    }
-  }
-}
-```
-
-![Image Text](/splash/ekg-2-showcase-popup.png?raw=true)
-
----
-
-# Widgets
-
-At total, there is 40% of the widgets done:
-- Button
-- Checkbox
-- Frame
-- Label
-- Popup
-- Scroll
-- Slider/ProgressBar
-- Textbox/Entryfield
+EKG source code provides a demo application called Pompom under `test/build/OS` folder.
 
 ```
 @copyright 2024 - Rina Wilk - VokeGpu

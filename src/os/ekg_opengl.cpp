@@ -179,7 +179,10 @@ void ekg::os::opengl::init() {
 
             "if (vTexCoord.x < non_swizzlable_range) {\n"
               "textureColor = textureColor.aaar;\n"
-              "textureColor = vec4(textureColor.rgb * aFragColor.rgb, textureColor.a);\n"
+              "textureColor = vec4(\n"
+                "textureColor.rgb * aFragColor.rgb,\n"
+                "textureColor.a\n"
+              ");\n"
             "}\n"
 
             "aFragColor = vec4(\n"
