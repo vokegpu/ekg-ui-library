@@ -1,54 +1,24 @@
 # 🐄 EKG 🐈
 
-EKG is a reitaned UI-toolkit/UI library to create fancy high-perfmance GUIs. Always looking for low-specs hardware.
+EKG is a reitaned UI-toolkit/UI library to create fancy high-perfmance GUIs, always looking for low-specs hardware.
 
-The EKG rendering engine implements multi-API(s) (OpenGL, OpenGL ES3, Vulkan, etc) support, and OS platform support (Android, Windows and Linux), EKG does not require implement on a SDL application, instead you can implement on any supported platform (SDL, GLFW, Win32, Wayland, etc). Because of interface oriented concepts. The graphics engine is implemented over a RHI-like (Rendering Hardware-Interface-like), and the OS platform also is an interface.
-
-EKG implements some object-state based concepts, like in the initialization process and sampler creation, due the Khronos API high-performance Vulkan support.
-
-The [official documentation](https://vokegpu.github.io/ekg-docs/) is not done yet.
-
-![Image Text](/splash/showcase-cow.png?raw=true)
-![Calc](/splash/calculator.png?raw=true)
-
-Check the [development updates here](https://github.com/orgs/gamedevs-do-apocalipse/discussions/5).  
-EKG is recognised as an open-source project by [JetBrains](https://www.jetbrains.com/) 🖤  
-<a href="https://www.jetbrains.com"> <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_square.png" width="100" height="100" alt="JetBrains Black Box Logo logo."> <a/>
+Documentation: [here](https://vokegpu.github.io/ekg-docs/).  
+Development updates: [here](https://github.com/orgs/gamedevs-do-apocalipse/discussions/5).
 
 Please before cloning EKG, insert `--depth 1` flag, or you will clone almost 1gb (yeah this is bizzare, soon EKG MUST fix it filtering the repository).
 
-# Get Started 🐈‍⬛
+![Image Text](/splash/showcase-cow.png?raw=true)
 
-For first, EKG does not need be implement only on SDL application, but there is only one OS platform implemented: SDL2;
-you are able to integrate GLFW, Win32, Wayland, or any window layer library, [contributing here](/include/os).
+EKG is recognised as an open-source project by [JetBrains](https://www.jetbrains.com/) 🖤  
+<a href="https://www.jetbrains.com"> <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_square.png" width="100" height="100" alt="JetBrains Black Box Logo logo."> <a/>
 
-The EKG supports natively two APIs: OpenGL, and ~~Vulkan~~. Vulkan is not supported yet, but soon;
-you are able to integrate Metal or DirectX 11 and DirectX 12, [contributing here](/include/os).
+# Rendering & Platform Support
 
-Basically, this way is deprecated but is usable. Instead of compiling everything and linking all required libs (Vulkan and OpenGL).  
-Soon EKG must implement a second native library code to separate GPU APIs implementations,
+The graphics engine is implemented over a RHI-like (Rendering Hardware-Interface-like); supporting multi-API(s) (OpenGL, OpenGL ES3, Vulkan, etc). EKG implements some object-state based concepts, like in the initialization process and sampler creation, due the Khronos API high-performance Vulkan support.
 
-Be sure you compile together all these three libs:  
-[GLEW](https://glew.sourceforge.net/)/[Vulkan](https://www.vulkan.org/)/GLES3, [SDL2](https://www.libsdl.org/), and [Freetype](https://freetype.org/).
+The OS (Android, Windows and Linux) platform (SDL, GLFW, Win32, Wayland, etc) support also used an interace.
 
-The order of the linker is important too, be sure you link EKG before the required libs.
-[If you are on Android NDK](https://github.com/vokegpu/pompom), please replace GLEW with GLES3.
-
-```
-# cmake example
-add_executable(your-project-name ekg SDL2main SDL2 freetype glew32)
-
-# makefile example
-cxx ... -lekg -lSDL2main -lSDL2 -lfreetype -lglew32
-```
-
-C++ compiler(s) support: GCC, MinGW, Clang  
-C++ std version: 17
-  
-Library output path:   
-`lib/win32/libekg.a` Windows x86_x64  
-`lib/linux/libekg.a` Linux x86_x64  
-`ANDROID_ABI/libekg.a` Android armeabi-v7a arm64-v8a x86 x86_64  
+# Getting Started 🐈‍⬛
 
 Initializing EKG for SDL and OpenGL is simple.
 
@@ -172,6 +142,39 @@ ekg::button("inputs example meow", ekg::dock::fill)
 ```
 
 This example print outputs the name of task in terminal.
+
+# Linking & Building
+
+For first, EKG does not need be implement only on SDL application, but there is only one OS platform implemented: SDL2;
+you are able to integrate GLFW, Win32, Wayland, or any window layer library, [contributing here](/include/os).
+
+The EKG supports natively two APIs: OpenGL, and ~~Vulkan~~. Vulkan is not supported yet, but soon;
+you are able to integrate Metal or DirectX 11 and DirectX 12, [contributing here](/include/os).
+
+Basically, this way is deprecated but is usable. Instead of compiling everything and linking all required libs (Vulkan and OpenGL).  
+Soon EKG must implement a second native library code to separate GPU APIs implementations,
+
+Be sure you compile together all these three libs:  
+[GLEW](https://glew.sourceforge.net/)/[Vulkan](https://www.vulkan.org/)/GLES3, [SDL2](https://www.libsdl.org/), and [Freetype](https://freetype.org/).
+
+The order of the linker is important too, be sure you link EKG before the required libs.
+[If you are on Android NDK](https://github.com/vokegpu/pompom), please replace GLEW with GLES3.
+
+```
+# cmake example
+add_executable(your-project-name ekg SDL2main SDL2 freetype glew32)
+
+# makefile example``eu 
+cxx ... -lekg -lSDL2main -lSDL2 -lfreetype -lglew32
+```
+
+C++ compiler(s) support: GCC, MinGW, Clang  
+C++ std version: 17
+  
+Library output path:   
+`lib/win32/libekg.a` Windows x86_x64  
+`lib/linux/libekg.a` Linux x86_x64  
+`ANDROID_ABI/libekg.a` Android armeabi-v7a arm64-v8a x86 x86_64  
 
 ---
 

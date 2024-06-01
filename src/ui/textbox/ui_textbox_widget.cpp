@@ -1338,12 +1338,21 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     switch (static_cast<int32_t>(cursor_rect.w)) {
       case 2:
         if (draw_cursor) {
-          ekg::draw::rect(cursor_rect, theme.textbox_cursor, ekg::draw_mode::filled);
+          ekg::draw::rect(
+            cursor_rect,
+            theme.textbox_cursor,
+            ekg::draw_mode::filled
+          );
         }
 
         break;
       default:
-        ekg::draw::rect(cursor_rect, theme.textbox_select, ekg::draw_mode::filled, ekg_layer(ekg::layer::highlight));
+        ekg::draw::rect(
+          cursor_rect,
+          theme.textbox_select,
+          ekg::draw_mode::filled,
+          ekg_layer(ekg::layer::highlight)
+        );
         break;
     }
   }

@@ -8,6 +8,13 @@
 	"settings":
 	{
 		"tab_size": 2,
+		"LSP": {
+    	"clangd": {
+      	"initializationOptions": {
+      		"clangd.compile-commands-dir": "./cmake-build-debug"
+      	}
+      }
+   	}
 	},
 	"build_systems":
 	[
