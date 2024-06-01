@@ -34,7 +34,8 @@ The OS (Android, Windows and Linux) platform (SDL, GLFW, Win32, Wayland, etc) su
 | Win32 | Not implemented. | ? |
 | Wayland | Not implemented. | ? |
 
-I can not implement everything alone, so, if you want
+I can not implement everything alone, so, if you want contribute writing these APIs and platform, be welcome.  
+Check the [code of conduct](CODE-OF-CONDUCT.md) and 🖤!
 
 # Getting Started 🐈‍⬛
 
@@ -189,7 +190,7 @@ EKG used some std 17 features, so the minimum std version is 17, note: you must 
 
 If you can not compile because of `freetype not found`, insert flag `-DEKG_LINUX_NOT_FOUND_FREETYPE=1`; the CMake build file will force an include.
 
-If you want to build the test programs insert `-DEKG_ENABLE_TEST=1`.
+If you want to build test programs insert `-DEKG_ENABLE_TEST=1`.
 
 ```bash
 cmake -S . -B ./cmake-build-debug -G Ninja
