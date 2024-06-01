@@ -16,7 +16,25 @@ EKG is recognised as an open-source project by [JetBrains](https://www.jetbrains
 
 The graphics engine is implemented over a RHI-like (Rendering Hardware-Interface-like); supporting multi-API(s) (OpenGL, OpenGL ES3, Vulkan, etc). EKG implements some object-state based concepts, like in the initialization process and sampler creation, due the Khronos API high-performance Vulkan support.
 
-The OS (Android, Windows and Linux) platform (SDL, GLFW, Win32, Wayland, etc) support also used an interace.
+| Name | Support |
+| --- | --- |
+| OpenGL | Stable, minimum version required 3.3 with [GLEW](https://glew.sourceforge.net/). |
+| OpenGL ES | Stable, minimum version required ES 3 with [NDK](https://github.com/android/ndk), [see more](https://github.com/vokegpu/pompom). |
+| Vulkan | Not implemented. |
+| Metal | Not implemented, maybe implemented with [MoltenVK](https://github.com/KhronosGroup/MoltenVK). |
+| DirectX 12 | Not implemented, perharps not even be implemented. |
+| DirectX 11 | Not implemented, perharps not even be implemented. |
+
+The OS (Android, Windows and Linux) platform (SDL, GLFW, Win32, Wayland, etc) support also used an interface.
+
+| Name | Support | OS |
+| --- | --- | --- |
+| SDL | Stable [SDL2](https://www.libsdl.org/). | Windows, Linux & Android |
+| GLFW | Not implemented. | ? |
+| Win32 | Not implemented. | ? |
+| Wayland | Not implemented. | ? |
+
+I can not implement everything alone, so, if you want
 
 # Getting Started 🐈‍⬛
 
@@ -143,38 +161,45 @@ ekg::button("inputs example meow", ekg::dock::fill)
 
 This example print outputs the name of task in terminal.
 
-# Linking & Building
+# Linking
 
-For first, EKG does not need be implement only on SDL application, but there is only one OS platform implemented: SDL2;
-you are able to integrate GLFW, Win32, Wayland, or any window layer library, [contributing here](/include/os).
+* Warning: Instead of compiling everything and linking all required libs (Vulkan and OpenGL); soon EKG must implement a second native library code to separate GPU APIs implementations 
+but for now EKG requires link the platform and API libraries together. 
 
-The EKG supports natively two APIs: OpenGL, and ~~Vulkan~~. Vulkan is not supported yet, but soon;
-you are able to integrate Metal or DirectX 11 and DirectX 12, [contributing here](/include/os).
+First [download](https://github.com/vokegpu/ekg-ui-library/releases) the latest release and [FreeType2](https://freetype.org/), also order of the linker is important too, be sure you link EKG before the required libs.   
+Let see for SDL2 and OpenGL with GLEW.
 
-Basically, this way is deprecated but is usable. Instead of compiling everything and linking all required libs (Vulkan and OpenGL).  
-Soon EKG must implement a second native library code to separate GPU APIs implementations,
-
-Be sure you compile together all these three libs:  
-[GLEW](https://glew.sourceforge.net/)/[Vulkan](https://www.vulkan.org/)/GLES3, [SDL2](https://www.libsdl.org/), and [Freetype](https://freetype.org/).
-
-The order of the linker is important too, be sure you link EKG before the required libs.
-[If you are on Android NDK](https://github.com/vokegpu/pompom), please replace GLEW with GLES3.
-
-```
-# cmake example
+```bash
+# cmake
 add_executable(your-project-name ekg SDL2main SDL2 freetype glew32)
 
-# makefile example``eu 
+# make
 cxx ... -lekg -lSDL2main -lSDL2 -lfreetype -lglew32
 ```
 
-C++ compiler(s) support: GCC, MinGW, Clang  
-C++ std version: 17
-  
-Library output path:   
-`lib/win32/libekg.a` Windows x86_x64  
-`lib/linux/libekg.a` Linux x86_x64  
-`ANDROID_ABI/libekg.a` Android armeabi-v7a arm64-v8a x86 x86_64  
+# Building
+
+| Toolchain | Support | OS |
+| --- | --- | --- |
+| GCC | Stable | Arch & Ubuntu |
+| MinGW | Stable | Windows |
+| Clang | Untested | ? |
+
+EKG used some std 17 features, so the minimum std version is 17, note: you must use [CMake](https://cmake.org/download/) with [Ninja](https://github.com/ninja-build/ninja) to generate makefiles. 
+
+If you can not compile because of `freetype not found`, insert flag `-DEKG_LINUX_NOT_FOUND_FREETYPE=1`; the CMake build file will force an include.
+
+If you want to build the test programs insert `-DEKG_ENABLE_TEST=1`.
+
+```bash
+cmake -S . -B ./cmake-build-debug -G Ninja
+cmake --build ./cmake-build-debug
+```
+Build output folder tree:
+
+* `./lib/windows/` for windows x86_64.
+* `./lib/linux/` for any Linux kernel-based OS.
+* `ANDROID_ABI/` Android armeabi-v7a arm64-v8a x86 x86_64.
 
 ---
 
