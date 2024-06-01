@@ -167,8 +167,8 @@ This example print outputs the name of task in terminal.
 * Warning: Instead of compiling everything and linking all required libs (Vulkan and OpenGL); soon EKG must implement a second native library code to separate GPU APIs implementations 
 but for now EKG requires link the platform and API libraries together. 
 
-First [download](https://github.com/vokegpu/ekg-ui-library/releases) the latest release and [FreeType2](https://freetype.org/), also order of the linker is important too, be sure you link EKG before the required libs.   
-Let see for SDL2 and OpenGL with GLEW.
+First [download](https://github.com/vokegpu/ekg-ui-library/releases) the latest release and [FreeType2](https://freetype.org/).  
+Let see for SDL2 and OpenGL with GLEW, note: the order link is important, be sure you are linking EKG first.
 
 ```bash
 # cmake
@@ -187,7 +187,6 @@ cxx ... -lekg -lSDL2main -lSDL2 -lfreetype -lglew32
 | Clang | Untested | ? |
 
 EKG used some std 17 features, so the minimum std version is 17, note: you must use [CMake](https://cmake.org/download/) with [Ninja](https://github.com/ninja-build/ninja) to generate makefiles. 
-
 If you can not compile because of `freetype not found`, insert flag `-DEKG_LINUX_NOT_FOUND_FREETYPE=1`; the CMake build file will force an include.
 
 If you want to build test programs insert `-DEKG_ENABLE_TEST=1`.
