@@ -186,7 +186,8 @@ cxx ... -lekg -lSDL2main -lSDL2 -lfreetype -lglew32
 | MinGW | Stable | Windows |
 | Clang | Untested | ? |
 
-EKG used some std 17 features, so the minimum std version is 17, note: you must use [CMake](https://cmake.org/download/) with [Ninja](https://github.com/ninja-build/ninja) to generate makefiles. 
+EKG used some std 17 features, so the minimum std version is 17, note: you must use [CMake](https://cmake.org/download/) with [Ninja](https://github.com/ninja-build/ninja) to generate makefiles.
+
 If you can not compile because of `freetype not found`, insert flag `-DEKG_LINUX_NOT_FOUND_FREETYPE=1`; the CMake build file will force an include.
 
 If you want to build test programs insert `-DEKG_ENABLE_TEST=1`.
