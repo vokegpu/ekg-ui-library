@@ -485,6 +485,8 @@ int32_t showcase_useless_window() {
     ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right)
     ->set_layer(&ttf_cow_sampler, ekg::layer::background);
 
+  p_terminal->set_layer(&ttf_cow_sampler, ekg::layer::background);
+
   #ifdef application_enable_stb_image_test
 
   std::unordered_map<std::string_view, ekg::gpu::sampler_t> loaded_sampler_map {};
