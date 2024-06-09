@@ -37,7 +37,7 @@ ekg::os::sdl::sdl(SDL_Window *p_sdl_win) {
 
   /**
    * Sounds an unnecessary resize, but it is invoke a complete swapchain redo,
-   * to fix the orthographic matrix needed calc.
+   * to fix the orthographic matrix neededs calc.
    */
 
   SDL_GetWindowSize(this->p_sdl_win, &w, &h);
@@ -58,18 +58,18 @@ const char *ekg::os::sdl::get_clipboard_text() {
 }
 
 void ekg::os::sdl::init() {
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::arrow)]      = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::ibeam)]      = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::wait)]       = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::crosshair)]  = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::wait_arrow)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARROW);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_nwse)]  = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENWSE);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_nesw)]  = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENESW);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_we)]    = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_ns)]    = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::size_all)]   = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::no)]         = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
-  this->loaded_system_cursor_list[static_cast<uint32_t>(ekg::system_cursor::hand)]       = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::arrow)]      = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::ibeam)]      = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
+  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::wait)]       = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
+  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::crosshair)]  = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR);
+  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::wait_arrow)] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARROW);
+  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::size_nwse)]  = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENWSE);
+  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::size_nesw)]  = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENESW);
+  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::size_we)]    = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
+  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::size_ns)]    = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS);
+  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::size_all)]   = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEALL);
+  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::no)]         = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NO);
+  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::hand)]       = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
 
   this->update_cursor(ekg::system_cursor::arrow);
   ekg::cursor = ekg::system_cursor::arrow;
@@ -92,7 +92,7 @@ void ekg::os::sdl::quit() {
 }
 
 void ekg::os::sdl::update_cursor(ekg::system_cursor sys_cursor) {
-  SDL_SetCursor(this->loaded_system_cursor_list[static_cast<uint32_t>(sys_cursor)]);
+  SDL_SetCursor(this->loaded_system_cursor_list[static_cast<uint64_t>(sys_cursor)]);
 }
 
 void ekg::os::sdl::update_monitor_resolution() {
@@ -107,8 +107,8 @@ uint64_t ekg::os::sdl::get_ticks() {
   return SDL_GetTicks64();
 }
 
-void ekg::os::sdl::get_key_name(int32_t key, std::string &name) {
-  switch (key) {
+void ekg::os::sdl::get_key_name(io_key &key, std::string &name) {
+  switch (key.key) {
     case SDLK_LCTRL:
       name = "lctrl";
       break;
@@ -131,13 +131,13 @@ void ekg::os::sdl::get_key_name(int32_t key, std::string &name) {
       name = "tab";
       break;
     default:
-      name = SDL_GetKeyName(key);
+      name = SDL_GetKeyName(key.key);
       break;
   }
 }
 
-void ekg::os::sdl::get_special_key(int32_t key, ekg::special_key &special_key) {
-  switch (key) {
+void ekg::os::sdl::get_special_key(io_key &key, ekg::special_key &special_key) {
+  switch (key.key) {
     case SDLK_LCTRL:
       special_key = ekg::special_key::left_ctrl;
       break;
@@ -185,13 +185,13 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
 
   case SDL_KEYDOWN:
     serialized.event_type = ekg::platform_event_type::key_down;
-    serialized.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
+    serialized.key.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
     ekg::poll_io_event = true;
     break;
 
   case SDL_KEYUP:
     serialized.event_type = ekg::platform_event_type::key_up;
-    serialized.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
+    serialized.key.key = static_cast<int32_t>(sdl_event.key.keysym.sym);
     ekg::poll_io_event = true;
     break;
 

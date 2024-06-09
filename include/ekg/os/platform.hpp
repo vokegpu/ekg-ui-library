@@ -72,6 +72,12 @@ namespace ekg {
 }
 
 namespace ekg::os {
+  struct io_key {
+  public:
+    int32_t key {};
+    int32_t scancode {};
+  };
+
   struct io_event_serial {
   public:
     ekg::platform_event_type event_type {};
@@ -87,7 +93,7 @@ namespace ekg::os {
     float mouse_wheel_precise_x {};
     float mouse_wheel_precise_y {};
 
-    int32_t key {};
+    io_key key {};
 
     float finger_x {};
     float finger_y {};
@@ -104,8 +110,8 @@ namespace ekg::os {
     virtual void quit() {}
     virtual void update_monitor_resolution() {}
     virtual void update_cursor(ekg::system_cursor system_cursor) {}
-    virtual void get_key_name(int32_t key, std::string &name) {}
-    virtual void get_special_key(int32_t key, ekg::special_key &special_key) {}
+    virtual void get_key_name(io_key &key, std::string &name) {}
+    virtual void get_special_key(io_key &key, ekg::special_key &special_key) {}
     virtual const char *get_clipboard_text() { return nullptr; };
     virtual void set_clipboard_text(const char *p_text) {};
     virtual bool has_clipboard_text() { return false; }

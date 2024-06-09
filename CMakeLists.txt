@@ -70,7 +70,7 @@ if(LINUX OR EKG_FORCE_LINUX)
   )
 
   install(
-    DIRECTORY ./include DESTINATION /usr/include
+    DIRECTORY ./include DESTINATION /usr
   )
 
   message("-- EKG install on Linux ok!")
