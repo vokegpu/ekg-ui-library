@@ -33,7 +33,7 @@ project(ekg VERSION ${EKG_VERSION} DESCRIPTION "graphical user interface")
 if (EKG_LINUX_NOT_FOUND_FREETYPE)
   include_directories(/usr/include/freetype2)
   message("-- Using var EKG_LINUX_NOT_FOUND_FREETYPE to include `/usr/include/freetype2` directly")
-endif()
+endif() 
 
 if (WIN32 OR EKG_FORCE_WINDOWS)
   set(LIBRARY_OUTPUT_PATH "../lib/windows/")
@@ -62,6 +62,19 @@ endif()
 add_library(ekg STATIC ${SOURCE_FILES})
 
 message("-- EKG native library building done")
+
+if(LINUX OR EKG_FORCE_LINUX)
+  install(
+    TARGETS ekg
+    LIBRARY DESTINATION /usr/lib
+  )
+
+  install(
+    DIRECTORY ./include DESTINATION /usr/include
+  )
+
+  message("-- EKG install on Linux ok!")
+endif()
 
 if (EKG_ENABLE_TEST)
   message("-- EKG tests enabled")

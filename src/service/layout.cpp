@@ -88,7 +88,7 @@ void ekg::service::layout::process_layout_mask() {
         dock_rect.p_rect->y = centered_dimension - (dock_rect.p_rect->h / 2);
       }
 
-      /* when there is a opposite dock, layout should x the dock position to actual position */
+      /* when there is a opposite dock, layout should dock position to actual position */
       if (ekg_bitwise_contains(dock_rect.dock, ekg::dock::left)) {
         if (static_cast<int32_t>(opposite) != 0) {
           this->layout_mask.w -= opposite;
