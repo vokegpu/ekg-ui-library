@@ -628,6 +628,11 @@ void ekg::runtime::prepare_ui_env() {
   this->service_input.bind("textbox-action-modifier", "lctrl");
   this->service_input.bind("textbox-action-modifier", "rctrl");
 
+  this->service_input.bind("textbox-action-up", "abs-up");
+  this->service_input.bind("textbox-action-down", "abs-down");
+  this->service_input.bind("textbox-action-right", "abs-right");
+  this->service_input.bind("textbox-action-left", "abs-left");
+
   this->service_input.bind("clipboard-copy", "lctrl+c");
   this->service_input.bind("clipboard-copy", "rctrl+c");
   this->service_input.bind("clipboard-copy", "copy");
@@ -637,11 +642,6 @@ void ekg::runtime::prepare_ui_env() {
   this->service_input.bind("clipboard-cut", "lctrl+x");
   this->service_input.bind("clipboard-cut", "rctrl+x");
   this->service_input.bind("clipboard-cut", "cut");
-
-  this->service_input.bind("textbox-action-up", "abs-up");
-  this->service_input.bind("textbox-action-down", "abs-down");
-  this->service_input.bind("textbox-action-right", "abs-right");
-  this->service_input.bind("textbox-action-left", "abs-left");
 
   this->service_input.bind("listbox-activity-open", "mouse-1-double");
   this->service_input.bind("listbox-activity-open", "finger-hold");

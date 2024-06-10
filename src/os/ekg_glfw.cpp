@@ -75,6 +75,195 @@ void ekg::os::glfw::get_key_name(io_key &key, std::string &name) {
     case GLFW_KEY_TAB:
       name = "tab";
       break;
+    case GLFW_KEY_ESCAPE:
+      name = "ESCAPE";
+      break;
+    case GLFW_KEY_ENTER:
+      name = "return";
+      break;
+    case GLFW_KEY_BACKSPACE:
+      name = "BACKSPACE";
+      break;
+    case GLFW_KEY_INSERT:
+      name = "INSERT";
+      break;
+    case GLFW_KEY_DELETE:
+      name = "DELETE";
+      break;
+    case GLFW_KEY_RIGHT:
+      name = "RIGHT";
+      break;
+    case GLFW_KEY_LEFT:
+      name = "LEFT";
+      break;
+    case GLFW_KEY_DOWN:
+      name = "DOWN";
+      break;
+    case GLFW_KEY_UP:
+      name = "UP";
+      break;
+    case GLFW_KEY_PAGE_UP:
+      name = "PAGE_UP";
+      break;
+    case GLFW_KEY_PAGE_DOWN:
+      name = "PAGE_DOWN";
+      break;
+    case GLFW_KEY_HOME:
+      name = "HOME";
+      break;
+    case GLFW_KEY_END:
+      name = "END";
+      break;
+    case GLFW_KEY_CAPS_LOCK:
+      name = "CAPS_LOCK";
+      break;
+    case GLFW_KEY_SCROLL_LOCK:
+      name = "SCROLL_LOCK";
+      break;
+    case GLFW_KEY_NUM_LOCK:
+      name = "NUM_LOCK";
+      break;
+    case GLFW_KEY_PRINT_SCREEN:
+      name = "PRINT_SCREEN";
+      break;
+    case GLFW_KEY_PAUSE:
+      name = "PAUSE";
+      break;
+    case GLFW_KEY_F1:
+      name = "F1";
+      break;
+    case GLFW_KEY_F2:
+      name = "F2";
+      break;
+    case GLFW_KEY_F3:
+      name = "F3";
+      break;
+    case GLFW_KEY_F4:
+      name = "F4";
+      break;
+    case GLFW_KEY_F5:
+      name = "F5";
+      break;
+    case GLFW_KEY_F6:
+      name = "F6";
+      break;
+    case GLFW_KEY_F7:
+      name = "F7";
+      break;
+    case GLFW_KEY_F8:
+      name = "F8";
+      break;
+    case GLFW_KEY_F9:
+      name = "F9";
+      break;
+    case GLFW_KEY_F10:
+      name = "F10";
+      break;
+    case GLFW_KEY_F11:
+      name = "F11";
+      break;
+    case GLFW_KEY_F12:
+      name = "F12";
+      break;
+    case GLFW_KEY_F13:
+      name = "F13";
+      break;
+    case GLFW_KEY_F14:
+      name = "F14";
+      break;
+    case GLFW_KEY_F15:
+      name = "F15";
+      break;
+    case GLFW_KEY_F16:
+      name = "F16";
+      break;
+    case GLFW_KEY_F17:
+      name = "F17";
+      break;
+    case GLFW_KEY_F18:
+      name = "F18";
+      break;
+    case GLFW_KEY_F19:
+      name = "F19";
+      break;
+    case GLFW_KEY_F20:
+      name = "F20";
+      break;
+    case GLFW_KEY_F21:
+      name = "F21";
+      break;
+    case GLFW_KEY_F22:
+      name = "F22";
+      break;
+    case GLFW_KEY_F23:
+      name = "F23";
+      break;
+    case GLFW_KEY_F24:
+      name = "F24";
+      break;
+    case GLFW_KEY_F25:
+      name = "F25";
+      break;
+    case GLFW_KEY_KP_0:
+      name = "KP_0";
+      break;
+    case GLFW_KEY_KP_1:
+      name = "KP_1";
+      break;
+    case GLFW_KEY_KP_2:
+      name = "KP_2";
+      break;
+    case GLFW_KEY_KP_3:
+      name = "KP_3";
+      break;
+    case GLFW_KEY_KP_4:
+      name = "KP_4";
+      break;
+    case GLFW_KEY_KP_5:
+      name = "KP_5";
+      break;
+    case GLFW_KEY_KP_6:
+      name = "KP_6";
+      break;
+    case GLFW_KEY_KP_7:
+      name = "KP_7";
+      break;
+    case GLFW_KEY_KP_8:
+      name = "KP_8";
+      break;
+    case GLFW_KEY_KP_9:
+      name = "KP_9";
+      break;
+    case GLFW_KEY_KP_DECIMAL:
+      name = "KP_DECIMAL";
+      break;
+    case GLFW_KEY_KP_DIVIDE:
+      name = "KP_DIVIDE";
+      break;
+    case GLFW_KEY_KP_MULTIPLY:
+      name = "KP_MULTIPLY";
+      break;
+    case GLFW_KEY_KP_SUBTRACT:
+      name = "KP_SUBTRACT";
+      break;
+    case GLFW_KEY_KP_ADD:
+      name = "KP_ADD";
+      break;
+    case GLFW_KEY_KP_ENTER:
+      name = "return";
+      break;
+    case GLFW_KEY_KP_EQUAL:
+      name = "KP_EQUAL";
+      break;
+    case GLFW_KEY_LEFT_SUPER:
+      name = "LEFT_SUPER";
+      break;
+    case GLFW_KEY_RIGHT_SUPER:
+      name = "RIGHT_SUPER";
+      break;
+    case GLFW_KEY_MENU:
+      name = "MENU";
+      break;
     default:
       const char *p_key_name {glfwGetKeyName(key.key, key.scancode)};
       if (p_key_name) {
@@ -156,7 +345,7 @@ void ekg::os::glfw_char_callback(uint32_t codepoint) {
   ekg::os::io_event_serial &serialized {ekg::core->io_event_serial};
   serialized.event_type = ekg::platform_event_type::text_input;
 
-  // idk it seems pretty much a workarround, predictable crash if codepoint
+  // idk it seems pretty much a workaround, predictable crash if codepoint
   // is larger than 127 (overflow)
   const char c [1] {static_cast<char>(codepoint)};
   serialized.text_input = (c);
@@ -169,9 +358,17 @@ void ekg::os::glfw_char_callback(uint32_t codepoint) {
 
 void ekg::os::glfw_key_callback(int32_t key, int32_t scancode, int32_t action, int32_t mods) {
   ekg::os::io_event_serial &serialized {ekg::core->io_event_serial};
+  std::string a {};
 
   switch (action) {
   case GLFW_PRESS:
+    serialized.event_type = ekg::platform_event_type::key_down;
+    serialized.key.key = key;
+    serialized.key.scancode = scancode;
+    ekg::poll_io_event = true;
+    break;
+  
+  case GLFW_REPEAT:
     serialized.event_type = ekg::platform_event_type::key_down;
     serialized.key.key = key;
     serialized.key.scancode = scancode;
@@ -186,13 +383,9 @@ void ekg::os::glfw_key_callback(int32_t key, int32_t scancode, int32_t action, i
     break;
   }
 
-  switch (ekg::poll_io_event) {
-    case true:
-      ekg::cursor = ekg::system_cursor::arrow;
-      ekg::core->process_event();
-      ekg::poll_io_event = false;
-      break;
-  }
+  ekg::cursor = ekg::system_cursor::arrow;
+  ekg::core->process_event();
+  ekg::poll_io_event = false;
 }
 
 void ekg::os::glfw_mouse_button_callback(int32_t button, int32_t action, int32_t mods) {
@@ -227,13 +420,9 @@ void ekg::os::glfw_mouse_button_callback(int32_t button, int32_t action, int32_t
     break;
   }
 
-  switch (ekg::poll_io_event) {
-    case true:
-      ekg::cursor = ekg::system_cursor::arrow;
-      ekg::core->process_event();
-      ekg::poll_io_event = false;
-      break;
-  }
+  ekg::cursor = ekg::system_cursor::arrow;
+  ekg::core->process_event();
+  ekg::poll_io_event = false;
 }
 
 void ekg::os::glfw_cursor_pos_callback(double x, double y) {
