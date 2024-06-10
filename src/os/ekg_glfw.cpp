@@ -28,7 +28,7 @@ void ekg::os::glfw::init() {
   this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::size_we)]    = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
   this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::size_ns)]    = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
   this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::size_all)]   = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
-  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::no)]         = glfwCreateStandardCursor(GLFW_NOT_ALLOWED_CURSOR);
+  this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::no)]         = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
   this->loaded_system_cursor_list[static_cast<uint64_t>(ekg::system_cursor::hand)]       = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
 }
 
