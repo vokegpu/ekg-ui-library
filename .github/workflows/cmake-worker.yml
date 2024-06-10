@@ -36,7 +36,7 @@ jobs:
           unzip ./SDL2-devel-2.30.2-mingw.zip
           sudo cp -r ./SDL2-2.30.2/x86_64-w64-mingw32/* /usr/x86_64-w64-mingw32
 
-          wget https://github.com/vokegpu/.github/releases/download/cross/x86_64-w64-mingw32.zip
+          wget https://github.com/vokegpu/.github/releases/download/cross-platform-mingw/x86_64-w64-mingw32.zip
           unzip ./x86_64-w64-mingw32.zip
           yes | sudo cp -r ./x86_64-w64-mingw32/* /usr/x86_64-w64-mingw32/
 
