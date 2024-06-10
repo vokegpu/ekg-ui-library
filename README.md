@@ -30,12 +30,14 @@ The OS (Android, Windows and Linux) platform (SDL, GLFW, Win32, Wayland, etc) su
 | Name | Support | OS |
 | --- | --- | --- |
 | SDL | Stable [SDL2](https://www.libsdl.org/). | Windows, Linux & Android |
-| GLFW | Not implemented. | ? |
+| GLFW | Stable [GLFW3](https://www.glfw.org/), [see more](https://github.com/vokegpu/ekg-demos/blob/main/GLFW/src/application.cpp). | Windows & Linux |
 | Win32 | Not implemented. | ? |
 | Wayland | Not implemented. | ? |
 
 I can not implement everything alone, so, if you want contribute writing these APIs and platform, be welcome.  
 Check the [code of conduct](CODE-OF-CONDUCT.md) and 🖤!
+
+See more about [EKG-demos](https://github.com/vokegpu/ekg-demos/).
 
 # Getting Started 🐈‍⬛
 
