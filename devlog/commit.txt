@@ -158,3 +158,10 @@
 -- Fixed small pixel-escape from rendering, any non-concave draw when reached zero was forcing generate one pixel fragment, so it was rendering a small pixel.
 -- Fixed break-line decode: `ekg::utf_decode` was not emplacing back at 0 pos.
 -- Added column header font size and align for listbox.
+-- GLFW3 interface support.
+-- New key cross-interface for IO serialized events.
+-- Sampler GPU object working.
+-- Each widget with layer-system, now you can insert GPU samplers to each layer of a widget. 
+-- Each widget with action task when an interaction is fired.
+-- Emoji(s) support on font rendering.
+-- Dynamic glyph char data, now EKG can render any type of char increasing the amount of mapped UTF-32 chars code.
