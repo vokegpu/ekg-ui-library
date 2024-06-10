@@ -76,7 +76,10 @@ void ekg::os::glfw::get_key_name(io_key &key, std::string &name) {
       name = "tab";
       break;
     default:
-      name = glfwGetKeyName(key.key, key.scancode);
+      const char *p_key_name {glfwGetKeyName(key.key, key.scancode)};
+      if (p_key_name) {
+        name = glfwGetKeyName(key.key, key.scancode);
+      }
       break;
   }
 }
@@ -152,7 +155,11 @@ void ekg::os::glfw_scroll_callback(double dx, double dy) {
 void ekg::os::glfw_char_callback(uint32_t codepoint) {
   ekg::os::io_event_serial &serialized {ekg::core->io_event_serial};
   serialized.event_type = ekg::platform_event_type::text_input;
-  serialized.text_input = glfwGetKeyName(codepoint, 0);
+
+  // idk it seems pretty much a workarround, predictable crash if codepoint
+  // is larger than 127 (overflow)
+  const char c [1] {static_cast<char>(codepoint)};
+  serialized.text_input = (c);
 
   ekg::poll_io_event = true;
   ekg::cursor = ekg::system_cursor::arrow;

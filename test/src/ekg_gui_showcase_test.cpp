@@ -564,8 +564,8 @@ int32_t showcase_useless_window() {
     while (SDL_PollEvent(&sdl_event)) {
       ekg::os::sdl_poll_event(sdl_event);
     
-      if (sdl_event.type == SDL_MOUSEBUTTONDOWN) {
-        std::cout << (int32_t) sdl_event.button.button << std::endl;
+      if (sdl_event.type == SDL_KEYDOWN) {
+        std::cout << SDL_GetKeyName(sdl_event.key.keysym.sym) << std::endl;
       }
 
       switch (sdl_event.type) {
