@@ -99,7 +99,7 @@ void ekg::quit() {
 void ekg::update() {
   ekg::core->process_update();
   ekg::core->p_os_platform->update_cursor(ekg::cursor);
-  ekg::core->io_event_serial = ekg::os::io_event_serial {};
+  ekg::core->io_event_serial.event_type = ekg::platform_event_type::none;
 }
 
 void ekg::render() {

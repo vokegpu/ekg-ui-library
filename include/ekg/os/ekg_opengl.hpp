@@ -58,7 +58,7 @@ namespace ekg::os {
     uint32_t ebo_simple_shape {};
     uint32_t pipeline_program {};
     uint8_t protected_texture_active_index {};
-  protected:
+  public:
     bool create_pipeline_program(
       uint32_t &program,
       const std::unordered_map<std::string_view, uint32_t> &resources

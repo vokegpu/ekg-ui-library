@@ -29,6 +29,7 @@ namespace ekg::os {
     uint64_t get_ticks() override;
   };
 
+  void glfw_window_size_callback(int32_t w, int32_t h);
   void glfw_char_callback(uint32_t codepoint);
   void glfw_key_callback(int32_t key, int32_t scancode, int32_t action, int32_t mods);
   void glfw_cursor_pos_callback(double x, double y);

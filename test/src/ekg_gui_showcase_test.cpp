@@ -90,7 +90,7 @@ bool load_ttf_emoji(ekg::gpu::sampler_t *p_sampler) {
 
   FT_Load_Char(
     typography_font_face.ft_face,
-    ekg::utf_string_to_char32("🐄"),
+    ekg::utf_string_to_char32("🐈"),
     FT_LOAD_RENDER | FT_LOAD_COLOR | FT_LOAD_DEFAULT
   );
 
@@ -540,6 +540,8 @@ int32_t showcase_useless_window() {
   uint64_t last_frame {1};
   ekg::timing fps_timing {};
 
+  ekg::input::bind("amovc", "mouse-3");
+
   while (running) {
     last = now;
     now = SDL_GetPerformanceCounter();
@@ -562,6 +564,10 @@ int32_t showcase_useless_window() {
     while (SDL_PollEvent(&sdl_event)) {
       ekg::os::sdl_poll_event(sdl_event);
     
+      if (sdl_event.type == SDL_MOUSEBUTTONDOWN) {
+        std::cout << (int32_t) sdl_event.button.button << std::endl;
+      }
+
       switch (sdl_event.type) {
       case SDL_QUIT: {
         running = false;
@@ -604,7 +610,7 @@ int32_t showcase_useless_window() {
       }
     }
 
-    if (ekg::input::action("meow")) {
+    if (ekg::input::action("amovc")) {
       std::cout << "mumu sou uma vakinha (" << ++life << ')' << std::endl;
     }
     
@@ -726,6 +732,24 @@ int32_t font_rendering_dynamic_batching() {
   uint64_t last_frame {1};
   ekg::timing fps_timing {};
 
+  uint32_t vao {};
+  glCreateVertexArrays(1, &vao);
+
+  uint32_t gbuffer {};
+  glGenBuffers(1, &gbuffer);
+
+  //glBindVertexArray(vao);
+  glBindBuffer(GL_ARRAY_BUFFER, gbuffer);
+
+  float g[] {
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    0.0f, 1.0f
+  };
+
+  glBufferData(GL_ARRAY_BUFFER, sizeof(g), g, GL_STATIC_DRAW);
+  glBindVertexArray(0);
+
   while (running) {
     last = now;
     now = SDL_GetPerformanceCounter();
@@ -751,11 +775,13 @@ int32_t font_rendering_dynamic_batching() {
     ekg::update();
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClearColor(1.0f, 0.1f, 0.1f, 1.0f);
     glViewport(0.0f, 0.0f, ekg::ui::width, ekg::ui::height);
 
     ekg::render();
 
+    glBindBuffer(GL_ARRAY_BUFFER, gbuffer);
+    glDrawArrays(GL_STATIC_DRAW, 0, 3);
     frame_couting++;
 
     SDL_GL_SwapWindow(app.p_sdl_win);

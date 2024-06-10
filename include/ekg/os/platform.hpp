@@ -56,6 +56,7 @@ namespace ekg {
   };
 
   enum class platform_event_type {
+    none,
     text_input,
     mouse_button_up,
     mouse_button_down,

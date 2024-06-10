@@ -127,6 +127,14 @@ uint64_t ekg::os::glfw::get_ticks() {
   return static_cast<uint64_t>(glfwGetTime() * 1000);
 }
 
+void ekg::os::glfw_window_size_callback(int32_t w, int32_t h) {
+  ekg::ui::width = w;
+  ekg::ui::height = h;
+        
+  ekg::core->p_gpu_api->update_viewport(ekg::ui::width, ekg::ui::height);
+  ekg::core->update_size_changed();
+}
+
 void ekg::os::glfw_scroll_callback(double dx, double dy) {
   ekg::os::io_event_serial &serialized {ekg::core->io_event_serial};
   serialized.event_type = ekg::platform_event_type::mouse_wheel;
@@ -183,16 +191,31 @@ void ekg::os::glfw_key_callback(int32_t key, int32_t scancode, int32_t action, i
 void ekg::os::glfw_mouse_button_callback(int32_t button, int32_t action, int32_t mods) {
   ekg::os::io_event_serial &serialized {ekg::core->io_event_serial};
 
+  /**
+   * The mouse button number on GLFW is different from SDL2,
+   * but EKG is mainly SDL-based; then the `mouse_button`
+   * will convert to SDL code sequences:
+   * 
+   * (converted) (glfw original button code)
+   * 1 0
+   * 2 2
+   * 3 1
+   * 4 3
+   * 5 4
+   * ... 
+   **/
+
   switch (action) {
   case GLFW_PRESS:
-    serialized.event_type = ekg::platform_event_type::mouse_button_up;
-    serialized.mouse_button = button;
+    serialized.event_type = ekg::platform_event_type::mouse_button_down;
+    serialized.mouse_button = (1 + (button == 1) + button - (1 * (button == 2)));
     ekg::poll_io_event = true;
+
     break;
 
   case GLFW_RELEASE:
     serialized.event_type = ekg::platform_event_type::mouse_button_up;
-    serialized.mouse_button = button;
+    serialized.mouse_button = (1 + (button == 1) + button - (1 * (button == 2)));
     ekg::poll_io_event = true;
     break;
   }
