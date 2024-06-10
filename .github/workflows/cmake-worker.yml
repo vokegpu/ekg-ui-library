@@ -30,13 +30,13 @@ jobs:
 
           sudo apt-get update
           sudo apt-get install gcc-mingw-w64 g++-mingw-w64 mingw-w64-tools mingw-w64-x86-64-dev
-          sudo apt-get install libfreetype6-dev vulkan-sdk libsdl2-dev libglew-dev libopengl-dev libglx-dev libgl1-mesa-dev
+          sudo apt-get install libfreetype6-dev vulkan-sdk libsdl2-dev libglew-dev libopengl-dev libglx-dev libgl1-mesa-dev libglfw3-dev
 
           wget https://github.com/libsdl-org/SDL/releases/download/release-2.30.2/SDL2-devel-2.30.2-mingw.zip
           unzip ./SDL2-devel-2.30.2-mingw.zip
           sudo cp -r ./SDL2-2.30.2/x86_64-w64-mingw32/* /usr/x86_64-w64-mingw32
 
-          wget https://github.com/vokegpu/.github/releases/download/cross-platform-mingw/x86_64-w64-mingw32.zip
+          wget https://github.com/vokegpu/.github/releases/download/cross/x86_64-w64-mingw32.zip
           unzip ./x86_64-w64-mingw32.zip
           yes | sudo cp -r ./x86_64-w64-mingw32/* /usr/x86_64-w64-mingw32/
 
