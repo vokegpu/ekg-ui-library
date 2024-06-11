@@ -35,7 +35,7 @@ The OS (Android, Windows and Linux) platform (SDL, GLFW, Win32, Wayland, etc) su
 | Wayland | Not implemented. | ? |
 
 I can not implement everything alone, so, if you want contribute writing these APIs and platform, be welcome.  
-Check the [code of conduct](CODE-OF-CONDUCT.md) and 🖤!
+Check the [code of conduct](CODE-OF-CONDUCT.md) and 🖤 !
 
 See more about [EKG-demos](https://github.com/vokegpu/ekg-demos/).
 
