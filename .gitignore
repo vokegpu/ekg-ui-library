@@ -1,4 +1,5 @@
-cmake-build-debug/
+test/cmake-build-debug
+/cmake-build-debug
 .idea/
 .vscode/
 .sublimetext/

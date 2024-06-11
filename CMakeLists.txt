@@ -33,7 +33,7 @@ project(ekg VERSION ${EKG_VERSION} DESCRIPTION "graphical user interface")
 if (EKG_LINUX_NOT_FOUND_FREETYPE)
   include_directories(/usr/include/freetype2)
   message("-- Using var EKG_LINUX_NOT_FOUND_FREETYPE to include `/usr/include/freetype2` directly")
-endif() 
+endif()
 
 if (WIN32 OR EKG_FORCE_WINDOWS)
   set(LIBRARY_OUTPUT_PATH "../lib/windows/")
@@ -74,52 +74,4 @@ if(LINUX OR EKG_FORCE_LINUX)
   )
 
   message("-- EKG install on Linux ok!")
-endif()
-
-if (EKG_ENABLE_TEST)
-  message("-- EKG tests enabled")
-  message("-- EKG GUI showcase test building")
-
-  project(ekg-gui-showcase-test)
-
-  if (WIN32)
-    set(EXECUTABLE_OUTPUT_PATH ../test/build/windows/)
-  else()
-    set(EXECUTABLE_OUTPUT_PATH ../test/build/linux/)
-  endif()
-
-  add_compile_options(-O3)
-  add_executable(ekg-gui-showcase-test "test/src/ekg_gui_showcase_test.cpp")
-
-  file(GLOB LIBRARY_PATH "./lib/${PLATFORM}/libekg.a")
-  message("-- EKG GUI test found native library on: ${LIBRARY_PATH}")
-
-  if (WIN32)
-    set(THIRD_PARTY_LIBRARIES mingw32 SDL2main SDL2 opengl32 glew32 freetype)
-  else()
-    set(THIRD_PARTY_LIBRARIES SDL2main SDL2 GL GLEW freetype)
-  endif()
-
-  target_link_libraries(
-    ekg-gui-showcase-test
-    ${LIBRARY_PATH}
-    ${THIRD_PARTY_LIBRARIES}
-    -static-libgcc -static-libstdc++    
-  )
-
-  message("-- EKG GUI showcase test building done")
-  message("-- EKG off test building")
-
-  project(ekg-off-test)
-
-  add_compile_options(-O3)
-  add_executable(ekg-off-test "test/src/ekg_off_test.cpp")
-
-  target_link_libraries(
-    ekg-off-test
-    -static-libgcc
-    -static-libstdc++
-  )
-
-  message("-- EKG off test building done")
 endif()
