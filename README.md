@@ -18,8 +18,8 @@ The graphics engine is implemented over a RHI-like (Rendering Hardware-Interface
 
 | Name | Support |
 | --- | --- |
-| OpenGL | Stable, minimum version required 3.3 with [GLEW](https://glew.sourceforge.net/). |
-| OpenGL ES | Stable, minimum version required ES 3 with [NDK](https://github.com/android/ndk), [see more](https://github.com/vokegpu/pompom). |
+| OpenGL | Stable, minimum version required 3.3 with [GLEW](https://glew.sourceforge.net/), [example project](https://github.com/vokegpu/ekg-ui-library/blob/version-core/test/). |
+| OpenGL ES | Stable, minimum version required ES 3 with [NDK](https://github.com/android/ndk), [example project](https://github.com/vokegpu/pompom). |
 | Vulkan | Not implemented. |
 | Metal | Not implemented, maybe implemented with [MoltenVK](https://github.com/KhronosGroup/MoltenVK). |
 | DirectX 12 | Not implemented, perharps not even be implemented. |
@@ -29,8 +29,8 @@ The OS (Android, Windows and Linux) platform (SDL, GLFW, Win32, Wayland, etc) su
 
 | Name | Support | OS |
 | --- | --- | --- |
-| SDL | Stable [SDL2](https://www.libsdl.org/). | Windows, Linux & Android |
-| GLFW | Stable [GLFW3](https://www.glfw.org/), [see more](https://github.com/vokegpu/ekg-demos/blob/main/GLFW/src/application.cpp). | Windows & Linux |
+| SDL | Stable [SDL2](https://www.libsdl.org/), [example code](https://github.com/vokegpu/ekg-ui-library/blob/version-core/test/src/ekg_gui_showcase_test.cpp). | Windows, Linux & Android |
+| GLFW | Stable [GLFW3](https://www.glfw.org/), [example code](https://github.com/vokegpu/ekg-demos/blob/main/GLFW/src/application.cpp). | Windows & Linux |
 | Win32 | Not implemented. | ? |
 | Wayland | Not implemented. | ? |
 
