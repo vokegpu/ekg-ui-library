@@ -28,11 +28,11 @@
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/core/task.hpp"
 #include "ekg/ui/display.hpp"
+#include "ekg/util/io.hpp"
 
 namespace ekg::ui {
-  class button : public ekg::ui::abstract {
+  class button : public ekg::ui::abstract, public ekg::value_t<bool> {
   protected:
-    bool value {};
     uint16_t dock_text {};
 
     std::string text {};
@@ -62,10 +62,6 @@ namespace ekg::ui {
     ekg::ui::button *set_text(std::string_view text);
 
     std::string_view get_text();
-
-    ekg::ui::button *set_value(bool state);
-
-    bool get_value();
 
     ekg::ui::button *set_text_align(uint16_t dock);
 

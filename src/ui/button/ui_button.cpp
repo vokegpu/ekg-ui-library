@@ -25,19 +25,6 @@
 #include "ekg/ui/button/ui_button.hpp"
 #include "ekg/util/gui.hpp"
 
-ekg::ui::button *ekg::ui::button::set_value(bool state) {
-  if (this->value != state) {
-    this->value = state;
-    ekg::reload(this->id);
-  }
-
-  return this;
-}
-
-bool ekg::ui::button::get_value() {
-  return this->value;
-}
-
 ekg::ui::button *ekg::ui::button::set_text(std::string_view new_text) {
   if (this->text != new_text) {
     this->text = new_text;

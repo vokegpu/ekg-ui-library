@@ -107,7 +107,9 @@ void ekg::ui::checkbox_widget::on_event(ekg::os::io_event_serial &io_event_seria
       );
 
       auto p_ui {(ekg::ui::checkbox *) this->p_data};
-      p_ui->set_value(!p_ui->get_value());
+      if (p_ui->set_value(!p_ui->get_value())) {
+        ekg::reload(this);
+      }
     }
 
     ekg::set(this->flag.activity, false);
@@ -120,6 +122,10 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
   auto &theme {ekg::theme()};
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
   auto box {this->rect_box + rect};
+
+  if (p_ui) {
+    ekg::reload(this);
+  }
 
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();

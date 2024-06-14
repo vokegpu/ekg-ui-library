@@ -28,11 +28,11 @@
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/core/task.hpp"
 #include "ekg/ui/display.hpp"
+#include "ekg/util/io.hpp"
 
 namespace ekg::ui {
-  class checkbox : public ekg::ui::abstract {
+  class checkbox : public ekg::ui::abstract, public ekg::value_t<bool> {
   protected:
-    bool value {};
     uint16_t dock_text {}, dock_box {};
     std::string text {};
     ekg::font font_size {};
@@ -61,10 +61,6 @@ namespace ekg::ui {
     ekg::ui::checkbox *set_text(std::string_view text);
 
     std::string_view get_text();
-
-    ekg::ui::checkbox *set_value(bool state);
-
-    bool get_value();
 
     ekg::ui::checkbox *set_text_align(uint16_t dock);
 

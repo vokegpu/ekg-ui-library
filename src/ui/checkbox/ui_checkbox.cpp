@@ -112,19 +112,6 @@ std::string_view ekg::ui::checkbox::get_text() {
   return this->text;
 }
 
-ekg::ui::checkbox *ekg::ui::checkbox::set_value(bool val) {
-  if (this->value != val) {
-    this->value = val;
-    ekg::dispatch(ekg::env::redraw);
-  }
-
-  return this;
-}
-
-bool ekg::ui::checkbox::get_value() {
-  return this->value;
-}
-
 ekg::ui::checkbox *ekg::ui::checkbox::set_text_align(uint16_t docks) {
   if (this->dock_text != docks) {
     this->dock_text = docks;

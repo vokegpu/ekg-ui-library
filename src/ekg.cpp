@@ -154,7 +154,7 @@ ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
   p_ui->unsafe_set_type(ekg::type::label);
   ekg::core->gen_widget(p_ui);
 
-  p_ui->set_text(text);
+  p_ui->set_value(std::string(text));
   p_ui->set_place(dock);
   p_ui->set_scaled_height(1);
   p_ui->set_font_size(ekg::font::normal);
@@ -170,7 +170,7 @@ ekg::ui::label *ekg::imut_label(std::string_view text, uint16_t dock) {
   p_ui->unsafe_set_type(ekg::type::label);
   p_ui->unsafe_set_immutable(true);
 
-  p_ui->set_text(text);
+  p_ui->set_value(std::string(text));
   p_ui->set_place(dock);
   p_ui->set_scaled_height(1);
   p_ui->set_font_size(ekg::font::normal);

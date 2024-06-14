@@ -97,7 +97,10 @@ void ekg::ui::button_widget::on_event(ekg::os::io_event_serial &io_event_serial)
     );
 
     auto p_ui {(ekg::ui::button*) this->p_data};
-    p_ui->set_value(this->flag.hovered);
+    if (p_ui->set_value(this->flag.hovered)) {
+      ekg::reload(this);
+    }
+
     ekg::set(this->flag.activity, false);
   }
 }
@@ -107,6 +110,10 @@ void ekg::ui::button_widget::on_draw_refresh() {
   auto &rect {this->get_abs_rect()};
   auto &theme {ekg::theme()};
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+
+  if (p_ui) {
+    ekg::reload(this);
+  }
 
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();

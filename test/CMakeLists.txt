@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.9)
+
 message("-- EKG tests enabled")
 message("-- EKG GUI showcase test building")
 
@@ -17,6 +19,8 @@ else()
   set(PLATFORM               "linux")
   set(EXECUTABLE_OUTPUT_PATH ../bin/)
 endif()
+
+include_directories(../include)
 
 add_compile_options(-O3)
 add_executable(ekg-gui-showcase-test "src/ekg_gui_showcase_test.cpp")

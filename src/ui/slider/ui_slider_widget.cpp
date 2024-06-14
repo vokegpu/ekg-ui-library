@@ -56,7 +56,9 @@ void ekg::ui::slider_widget::update_bar(float x, float y) {
     factor = (factor / dimension_factor) * (max - min) + min;
   }
 
-  p_ui->set_value(factor);
+  if (p_ui->set_value(factor)) {
+    ekg::reload(this);
+  }
 }
 
 void ekg::ui::slider_widget::on_reload() {
@@ -220,7 +222,9 @@ void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial)
   this->flag.hovered = this->flag.hovered && this->flag.highlight;
 
   if (this->flag.state) {
-    p_ui->set_value(p_ui->get_value() + (interact.w));
+    if (p_ui->set_value(p_ui->get_value() + interact.w)) {
+      ekg::reload(this);
+    }
   } else if (this->flag.hovered && pressed && ekg::input::action("slider-activity")) {
     ekg_action_dispatch(
       !this->flag.activity,
@@ -258,6 +262,10 @@ void ekg::ui::slider_widget::on_draw_refresh() {
   auto &theme {ekg::theme()};
   auto &f_renderer {ekg::f_renderer(this->font_render_size)};
   auto bar {this->rect_bar + rect}, bar_value {this->rect_bar_value + rect};;
+
+  if (p_ui) {
+    ekg::reload(this);
+  }
 
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();

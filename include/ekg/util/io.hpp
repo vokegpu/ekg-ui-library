@@ -129,6 +129,47 @@ namespace ekg {
     }
   };
 
+  template<typename t>
+  struct value_t {
+  protected:
+    bool changed {};
+  public:
+    t self {};
+    t *p_value {};
+  public:
+    value_t<t>() {
+      this->p_value = &this->self;
+    }
+
+    value_t<t> *transfer_ownership(t *p_address) {
+      this->p_value = p_address;
+      return this;
+    }
+
+    value_t<t> *reset_ownership() {
+      this->p_value = &this->self;
+      return this;
+    }
+
+    operator bool() {
+      return this->changed;
+    }
+  public:
+    value_t<t> *set_value(t val) {
+      this->changed = *this->p_value != val;
+      *this->p_value = val;
+      return this;
+    }
+
+    t get_value() {
+      return *this->p_value;
+    }
+
+    bool was_changed() {
+      return this->changed;
+    }
+  };
+
   enum attr {
     disabled  = 2 << 1,
     focused   = 2 << 2,
@@ -139,7 +180,7 @@ namespace ekg {
     contains_separator = 2 << 6,
     contains_icon      = 2 << 7,
 
-    // temp
+    // legacy compatibility
     separator = 2 << 7
   };
 

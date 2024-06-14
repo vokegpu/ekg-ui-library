@@ -135,20 +135,6 @@ uint16_t ekg::ui::slider::get_text_align() {
   return this->text_flags;
 }
 
-ekg::ui::slider *ekg::ui::slider::set_value(float val) {
-  val = ekg_clamp(val, this->minimum_value, this->maximum_value);
-  if (this->value != val) {
-    this->value = val;
-    ekg::reload(this->id);
-  }
-
-  return this;
-}
-
-float ekg::ui::slider::get_value() {
-  return this->value;
-}
-
 ekg::ui::slider *ekg::ui::slider::set_value_min(float val_min) {
   if (this->minimum_value != val_min) {
     this->minimum_value = val_min;

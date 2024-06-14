@@ -319,9 +319,11 @@ void ekg::runtime::prepare_tasks() {
       bool should_call_gc {};
 
       for (ekg::ui::abstract_widget *&p_widgets: refresh) {
-        if (p_widgets == nullptr || p_runtime->processed_widget_map[p_widgets->p_data->get_id()]) {
+        if (p_widgets == nullptr || !p_widgets->was_refreshed) {
           continue;
         }
+
+        p_widgets->was_refreshed = false;
 
         if (p_widgets == nullptr || !p_widgets->p_data->is_alive()) {
           should_call_gc = true;
@@ -329,11 +331,9 @@ void ekg::runtime::prepare_tasks() {
         }
 
         all.push_back(p_widgets);
-        p_runtime->processed_widget_map[p_widgets->p_data->get_id()] = true;
       }
 
       refresh.clear();
-      p_runtime->processed_widget_map.clear();
 
       if (should_call_gc) {
         ekg::dispatch(ekg::env::gc);
@@ -410,9 +410,11 @@ void ekg::runtime::prepare_tasks() {
       ekg::vec4 rect {};
 
       for (ekg::ui::abstract_widget *&p_widgets: reload) {
-        if (p_widgets == nullptr) {
+        if (p_widgets == nullptr || !p_widgets->was_reloaded) {
           continue;
         }
+
+        p_widgets->was_reloaded = false;
 
         auto &sync_flags {p_widgets->p_data->get_sync()};
         if (ekg_bitwise_contains(sync_flags, static_cast<uint16_t>(ekg::ui_sync::reset))) {
@@ -498,16 +500,15 @@ void ekg::runtime::prepare_tasks() {
       auto &synclayout {p_runtime->synclayout_widget_list};
 
       for (ekg::ui::abstract_widget *&p_widgets: synclayout) {
-        if (p_widgets == nullptr || p_runtime->processed_widget_map[p_widgets->p_data->get_id()]) {
+        if (p_widgets == nullptr || !p_widgets->was_syncedlayout) {
           continue;
         }
 
+        p_widgets->was_syncedlayout = false;
         p_runtime->service_layout.process_scaled(p_widgets);
-        p_runtime->processed_widget_map[p_widgets->p_data->get_id()] = true;
       }
 
       synclayout.clear();
-      p_runtime->processed_widget_map.clear();
       ekg::dispatch(ekg::env::redraw);
     }
   };
@@ -569,9 +570,10 @@ ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(int32_t id) {
 }
 
 void ekg::runtime::do_task_reload(ekg::ui::abstract_widget *p_widget) {
-  if (p_widget != nullptr) {
+  if (p_widget != nullptr && !p_widget->was_reloaded) {
     this->reload_widget_list.emplace_back(p_widget);
     ekg::dispatch(ekg::env::reload);
+    p_widget->was_reloaded = true;
   }
 }
 
@@ -777,31 +779,29 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
 }
 
 void ekg::runtime::do_task_synclayout(ekg::ui::abstract_widget *p_widget) {
-  if (p_widget == nullptr) {
-    return;
-  }
+  if (p_widget != nullptr && !p_widget->was_syncedlayout) {
+    bool is_group {p_widget->p_data->get_type() == ekg::type::frame};
+    bool check_parent {is_group == false && p_widget->p_data->has_parent()};
 
-  bool is_group {p_widget->p_data->get_type() == ekg::type::frame};
-  bool check_parent {is_group == false && p_widget->p_data->has_parent()};
+    if (check_parent) {
+      p_widget = this->get_fast_widget_by_id(p_widget->p_data->get_parent_id());
+    }
 
-  if (check_parent) {
-    p_widget = this->get_fast_widget_by_id(p_widget->p_data->get_parent_id());
-  }
-
-  if (p_widget != nullptr) {
-    this->synclayout_widget_list.emplace_back(p_widget);
-    ekg::dispatch(ekg::env::synclayout);
+    if (p_widget != nullptr) {
+      this->synclayout_widget_list.emplace_back(p_widget);
+      ekg::dispatch(ekg::env::synclayout);
+      p_widget->was_syncedlayout = true;
+    }
   }
 }
 
 void ekg::runtime::do_task_refresh(ekg::ui::abstract_widget *p_widget) {
-  if (p_widget == nullptr) {
-    return;
+  if (p_widget != nullptr && !p_widget->was_refreshed) {
+    this->refresh_widget_list.emplace_back(p_widget);
+    ekg::dispatch(ekg::env::refresh);
+    ekg::dispatch(ekg::env::redraw);
+    p_widget->was_refreshed = true;
   }
-
-  this->refresh_widget_list.emplace_back(p_widget);
-  ekg::dispatch(ekg::env::refresh);
-  ekg::dispatch(ekg::env::redraw);
 }
 
 void ekg::runtime::end_group_flag() {

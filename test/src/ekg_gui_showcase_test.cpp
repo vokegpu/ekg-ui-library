@@ -248,20 +248,41 @@ int32_t showcase_useless_window() {
     &ekg_runtime_property
   );
 
+  ekg::frame("meow", ekg::vec2(700, 200), ekg::vec2(200, 200))
+    ->set_drag(ekg::dock::top)
+    ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
+
+  ekg::label("UI internal tweaks", ekg::dock::fill);
+
+  auto p_app_vsync = ekg::checkbox("Application Vsync", app.vsync, ekg::dock::fill | ekg::next);
+
+  p_app_vsync->transfer_ownership(&app.vsync);
+  p_app_vsync->set_task(
+    new ekg::task {
+      .info = {
+        .tag = "turn vsync"
+      },
+      .function = [](ekg::info &task_info) {
+        auto p_ui = static_cast<ekg::ui::checkbox*>(task_info.p_ui);
+        SDL_GL_SetSwapInterval(p_ui->get_value());
+      }
+    },
+    ekg::action::activity
+  );
+
+  ekg::label("DPI tiling:", ekg::dock::next);
+  auto p_dpi_tiling = ekg::slider("DPI tiling", 4.0f, 1.0f, 50.0f, ekg::dock::fill);
+  p_dpi_tiling->transfer_ownership(&ekg::ui::dpi_tiling);
+
+  auto p_terminal = ekg::textbox("meow", "meow oi", ekg::dock::fill | ekg::dock::next)
+    ->set_scaled_height(4);
+
+  ekg::scrollbar("scrollbar omg");
+  ekg::pop_group();
+
   ekg::ui::label *labelresult {};
   ekg::ui::label *fps {};
   std::string previous_operator {};
-
-  ekg::frame("mumu", {900, 300}, ekg::dock::none)
-    ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
-    ->set_drag(ekg::dock::top);
-
-  ekg::label("meow", ekg::dock::fill);
-
-  auto p_terminal = ekg::textbox("meow", "meow oi", ekg::dock::fill | ekg::dock::next)
-    ->set_scaled_height(24);
-
-  ekg::pop_group();
 
   auto p_calculator_frame = ekg::frame("cat", {400, 700}, ekg::dock::none)
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
@@ -507,25 +528,6 @@ int32_t showcase_useless_window() {
   ekg::pop_group();
   #endif
 
-  ekg::frame("meow", ekg::vec2(200, 200), ekg::vec2(200, 200))
-    ->set_drag(ekg::dock::top)
-    ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
-
-  ekg::label("ekg sampler gui?", ekg::dock::fill);
-  ekg::button("click here bu", ekg::dock::fill | ekg::dock::next);
-
-  ekg::textbox("meow", "🐄 EKG 🐈", ekg::dock::fill | ekg::dock::next)
-    ->set_scaled_height(3);
-
-  ekg::label("meow", ekg::dock::next);
-  ekg::slider("dragging the life", 0.0f, 0.0f, 666.0f, ekg::dock::fill)
-    ->set_text_align(ekg::dock::center);
-
-  ekg::checkbox("checkbox like a 🐈‍⬛", true, ekg::dock::fill | ekg::dock::next);
-  ekg::scrollbar("scrollbar omg");
-
-  ekg::pop_group(); 
-
   bool running {true};
   uint64_t now {};
   uint64_t last {};
@@ -551,7 +553,7 @@ int32_t showcase_useless_window() {
 
     if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
       last_frame = frame_couting;
-      fps->set_text(
+      fps->set_value(
         "FPS: " + std::to_string(frame_couting) +
         " DT: " + std::to_string(ekg::ui::dt) +
         " GD: " + std::to_string(ekg::gpu::allocator::current_rendering_data_count)
@@ -563,10 +565,6 @@ int32_t showcase_useless_window() {
 
     while (SDL_PollEvent(&sdl_event)) {
       ekg::os::sdl_poll_event(sdl_event);
-    
-      if (sdl_event.type == SDL_KEYDOWN) {
-        std::cout << SDL_GetKeyName(sdl_event.key.keysym.sym) << std::endl;
-      }
 
       switch (sdl_event.type) {
       case SDL_QUIT: {
@@ -577,15 +575,15 @@ int32_t showcase_useless_window() {
       default: {
         if (ekg::listen(event, sdl_event)) {
           if (event.tag == "calculator-assign") {
-            labelresult->set_text(resultcalc(labelresult->get_text()));
+            labelresult->set_value(resultcalc(labelresult->get_text()));
           } else if (event.tag == "calculator-cls") {
-            labelresult->set_text("0");
+            labelresult->set_value("0");
           } else if (event.tag == "calculator-addition") {
-            labelresult->set_text(checkcalc(labelresult->get_text(), "+"));
+            labelresult->set_value(checkcalc(labelresult->get_text(), "+"));
           } else if (event.tag == "calculator-subtract") {
-            labelresult->set_text(checkcalc(labelresult->get_text(), "-"));
+            labelresult->set_value(checkcalc(labelresult->get_text(), "-"));
           } else if (event.tag == "calculator-multiply") {
-            labelresult->set_text(checkcalc(labelresult->get_text(), "*"));
+            labelresult->set_value(checkcalc(labelresult->get_text(), "*"));
           } else if (event.tag == "calculator-erase") {
             std::string text {labelresult->get_text()};
           if (text.size() <= 1) {
@@ -594,13 +592,13 @@ int32_t showcase_useless_window() {
             text = text.substr(0, text.size() - 1);
           }
 
-          labelresult->set_text(text);
+          labelresult->set_value(text);
         } else {
           std::string number {};
           for (uint32_t i {}; i < 10; i++) {
             number = std::to_string(i);
             if (event.tag == number) {
-              labelresult->set_text(labelresult->get_text() == "0" ? number : labelresult->get_text() + number);
+              labelresult->set_value(labelresult->get_text() == "0" ? number : labelresult->get_text() + number);
               break;
             }
           }
@@ -660,7 +658,7 @@ void test_out_of_context_uis() {
   std::cout << "listbox: " << ekg::utf_string_to_char32(minecraft) << ", " << ekg::utf_string_to_char32(listbox_can_close) << std::endl;
 
   for (ekg::ui::label &label : label_list) {
-    label.set_text("oi meow");
+    //label.set_value("oi meow");
     ///std::cout << label.get_text() << std::endl;
   }
 
@@ -776,7 +774,7 @@ int32_t font_rendering_dynamic_batching() {
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1.0f, 0.1f, 0.1f, 1.0f);
-    glViewport(0.0f, 0.0f, ekg::ui::width, ekg::ui::height);
+    glViewport(ekg::ui::width, ekg::ui::height, ekg::ui::width, ekg::ui::height);
 
     ekg::render();
 

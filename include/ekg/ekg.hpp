@@ -32,6 +32,7 @@
 #include "ekg/util/text.hpp"
 #include "ekg/gpu/api.hpp"
 #include "ekg/os/platform.hpp"
+#include "ekg/ui/display.hpp"
 
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/ui/label/ui_label.hpp"

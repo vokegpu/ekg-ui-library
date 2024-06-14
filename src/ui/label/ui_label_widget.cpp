@@ -34,7 +34,7 @@ void ekg::ui::label_widget::on_reload() {
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
   auto scaled_height {p_ui->get_scaled_height()};
 
-  float text_width {f_renderer.get_text_width(p_ui->get_text(), scaled_height)};
+  float text_width {f_renderer.get_text_width(p_ui->get_value(), scaled_height)};
   float text_height {f_renderer.get_text_height()};
 
   float dimension_offset {text_height / 2};
@@ -64,17 +64,30 @@ void ekg::ui::label_widget::on_draw_refresh() {
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
   auto &theme {ekg::theme()};
 
+  if (p_ui) {
+    ekg::reload(this);
+  }
+
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
 
-  ekg::draw::rect(rect, theme.label_background, ekg::draw_mode::filled, ekg_layer(ekg::layer::background));
-
-  f_renderer.blit(
-    p_ui->get_text(),
-    rect.x + this->rect_text.x,
-    rect.y + this->rect_text.y,
-    ekg::theme().label_string
+  ekg::draw::rect(
+    rect,
+    theme.label_background,
+    ekg::draw_mode::filled, 
+    ekg_layer(ekg::layer::background)
   );
 
-  ekg::draw::rect(rect, theme.label_outline, ekg::draw_mode::outline);
+  f_renderer.blit(
+    p_ui->get_value(),
+    rect.x + this->rect_text.x,
+    rect.y + this->rect_text.y,
+    theme.label_string
+  );
+
+  ekg::draw::rect(
+    rect,
+    theme.label_outline,
+    ekg::draw_mode::outline
+  );
 }

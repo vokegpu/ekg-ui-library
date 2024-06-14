@@ -34,19 +34,6 @@ ekg::ui::label *ekg::ui::label::set_place(uint16_t flags) {
   return this;
 }
 
-ekg::ui::label *ekg::ui::label::set_text(std::string_view string) {
-  if (this->text != string) {
-    this->text = string;
-    ekg::reload(this->immutable ? this->owner_id : this->id);
-  }
-
-  return this;
-}
-
-std::string ekg::ui::label::get_text() {
-  return this->text;
-}
-
 ekg::ui::label *ekg::ui::label::set_text_align(uint16_t flags) {
   if (this->dock_text != flags) {
     this->dock_text = flags;

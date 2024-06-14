@@ -27,11 +27,11 @@
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/ui/display.hpp"
+#include "ekg/util/io.hpp"
 
 namespace ekg::ui {
-  class slider : public ekg::ui::abstract {
+  class slider : public ekg::ui::abstract, public ekg::value_t<float> {
   protected:
-    float value {};
     float minimum_value {};
     float maximum_value {};
 
@@ -75,10 +75,6 @@ namespace ekg::ui {
     int32_t get_scaled_height();
 
     float get_height();
-
-    ekg::ui::slider *set_value(float val);
-
-    float get_value();
 
     ekg::ui::slider *set_value_min(float min);
 

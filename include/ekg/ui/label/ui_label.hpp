@@ -27,11 +27,11 @@
 
 #include "ekg/ui/abstract/ui_abstract.hpp"
 #include "ekg/ui/display.hpp"
+#include "ekg/util/io.hpp"
 
 namespace ekg::ui {
-  class label : public ekg::ui::abstract {
+  class label : public ekg::ui::abstract, public ekg::value_t<std::string> {
   protected:
-    std::string text {};
     uint16_t dock_text {};
     ekg::font font_size {};
   public:

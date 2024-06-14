@@ -92,6 +92,13 @@ namespace ekg::ui {
    * Note: It is a normalized acceleration speed.
    */
   extern float scroll;
+
+  /**
+   * The technology algorithm used here needs a tiling size to fix
+   * the DPI pixel inperfect.
+   * Default: 2.0f
+   */
+  extern float dpi_tiling;
 }
 
 #endif
