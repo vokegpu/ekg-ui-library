@@ -99,6 +99,11 @@ namespace ekg::ui {
    * Default: 2.0f
    */
   extern float dpi_tiling;
+
+  /**
+   * Redraw the entire GUI.
+   **/
+  extern bool redraw;
 }
 
 #endif

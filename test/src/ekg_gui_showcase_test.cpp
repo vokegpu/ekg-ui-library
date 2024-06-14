@@ -567,44 +567,9 @@ int32_t showcase_useless_window() {
       ekg::os::sdl_poll_event(sdl_event);
 
       switch (sdl_event.type) {
-      case SDL_QUIT: {
+      case SDL_QUIT:
         running = false;
         break;
-      }
-      /*
-      default: {
-        if (ekg::listen(event, sdl_event)) {
-          if (event.tag == "calculator-assign") {
-            labelresult->set_value(resultcalc(labelresult->get_text()));
-          } else if (event.tag == "calculator-cls") {
-            labelresult->set_value("0");
-          } else if (event.tag == "calculator-addition") {
-            labelresult->set_value(checkcalc(labelresult->get_text(), "+"));
-          } else if (event.tag == "calculator-subtract") {
-            labelresult->set_value(checkcalc(labelresult->get_text(), "-"));
-          } else if (event.tag == "calculator-multiply") {
-            labelresult->set_value(checkcalc(labelresult->get_text(), "*"));
-          } else if (event.tag == "calculator-erase") {
-            std::string text {labelresult->get_text()};
-          if (text.size() <= 1) {
-            text = "0";
-          } else {
-            text = text.substr(0, text.size() - 1);
-          }
-
-          labelresult->set_value(text);
-        } else {
-          std::string number {};
-          for (uint32_t i {}; i < 10; i++) {
-            number = std::to_string(i);
-            if (event.tag == number) {
-              labelresult->set_value(labelresult->get_text() == "0" ? number : labelresult->get_text() + number);
-              break;
-            }
-          }
-        }
-      }
-      */
       }
     }
 

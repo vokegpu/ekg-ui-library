@@ -123,7 +123,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
   auto box {this->rect_box + rect};
 
-  if (p_ui) {
+  if (p_ui->was_changed()) {
     ekg::reload(this);
   }
 

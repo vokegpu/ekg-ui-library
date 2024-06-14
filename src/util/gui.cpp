@@ -99,7 +99,7 @@ void ekg::dispatch(task *p_event) {
 void ekg::dispatch(ekg::env env) {
   switch (env) {
     case ekg::env::redraw:
-      ekg::core->request_redraw_gui();
+      ekg::ui::redraw = true;
       break;
     default:
       ekg::core->service_handler.dispatch_pre_allocated_task(static_cast<uint64_t>(env));
@@ -109,7 +109,7 @@ void ekg::dispatch(ekg::env env) {
 
 bool &ekg::set(bool &value, bool result) {
   if (value != result) {
-    ekg::core->request_redraw_gui();
+    ekg::ui::redraw = true;
   }
 
   return (value = result);
@@ -117,7 +117,7 @@ bool &ekg::set(bool &value, bool result) {
 
 std::string &ekg::set(std::string &value, std::string_view result) {
   if (value != result) {
-    ekg::core->request_redraw_gui();
+    ekg::ui::redraw = true;
   }
 
   return (value = result);

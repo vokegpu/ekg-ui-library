@@ -64,7 +64,7 @@ void ekg::ui::label_widget::on_draw_refresh() {
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
   auto &theme {ekg::theme()};
 
-  if (p_ui) {
+  if (p_ui->was_changed()) {
     ekg::reload(this);
   }
 

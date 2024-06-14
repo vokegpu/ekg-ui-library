@@ -263,7 +263,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
   auto &f_renderer {ekg::f_renderer(this->font_render_size)};
   auto bar {this->rect_bar + rect}, bar_value {this->rect_bar_value + rect};;
 
-  if (p_ui) {
+  if (p_ui->was_changed()) {
     ekg::reload(this);
   }
 

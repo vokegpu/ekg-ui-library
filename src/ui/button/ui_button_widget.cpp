@@ -111,7 +111,7 @@ void ekg::ui::button_widget::on_draw_refresh() {
   auto &theme {ekg::theme()};
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
-  if (p_ui) {
+  if (p_ui->was_changed()) {
     ekg::reload(this);
   }
 

@@ -36,6 +36,7 @@
 #endif
 
 #include "geometry.hpp"
+#include "ekg/ui/display.hpp"
 
 #define ekg_bitwise_contains(flags, flag) (flags & flag)
 #define ekg_bitwise_remove(flags, flag)   (flags &= ~flag)
@@ -158,6 +159,11 @@ namespace ekg {
     value_t<t> *set_value(t val) {
       this->changed = *this->p_value != val;
       *this->p_value = val;
+
+      if (this->changed) {
+        ekg::ui::redraw = true;
+      }
+
       return this;
     }
 
@@ -166,7 +172,9 @@ namespace ekg {
     }
 
     bool was_changed() {
-      return this->changed;
+      bool was {this->changed};
+      this->changed = false;
+      return was;
     }
   };
 

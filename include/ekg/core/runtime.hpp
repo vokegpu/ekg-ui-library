@@ -76,7 +76,6 @@ namespace ekg {
     int32_t swap_widget_id_focused {};
 
     bool enable_high_priority_frequency {};
-    bool should_re_batch_gui {};
   public:
     ekg::service::input service_input {};
     ekg::service::theme service_theme {};
@@ -110,8 +109,6 @@ namespace ekg {
     void do_task_refresh(ekg::ui::abstract_widget *widget);
 
     void set_update_high_frequency(ekg::ui::abstract_widget *widget);
-
-    void request_redraw_gui();
 
     void end_group_flag();
 

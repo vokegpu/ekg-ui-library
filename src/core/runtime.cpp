@@ -235,13 +235,10 @@ void ekg::runtime::process_update() {
   ekg::log::flush();
 }
 
-void ekg::runtime::request_redraw_gui() {
-  this->should_re_batch_gui = true;
-}
-
 void ekg::runtime::process_render() {
-  if (this->should_re_batch_gui) {
-    this->should_re_batch_gui = false;
+  if (ekg::ui::redraw) {
+    ekg::ui::redraw = false;
+
     auto &all {this->loaded_widget_list};
 
     /**

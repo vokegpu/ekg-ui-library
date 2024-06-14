@@ -167,3 +167,4 @@
 -- Dynamic glyph char data, now EKG can render any type of char increasing the amount of mapped UTF-32 chars code.
 -- Ownership valuable memory address mapping to literal any-widget content.
 -- Tiling layout DPI system.
+-- Performance improved, new redraw entire GUI flag way: moved to ekg::ui::display.
