@@ -18,21 +18,21 @@ The graphics engine is implemented over a RHI-like (Rendering Hardware-Interface
 
 | Name | Support |
 | --- | --- |
-| OpenGL | stable, minimum version required 3.3 with [GLEW](https://glew.sourceforge.net/), [example project](https://github.com/vokegpu/ekg-demos/blob/SDL/src/applicationc.cpp) |
-| OpenGL ES | stable, minimum version required ES 3 with [NDK](https://github.com/android/ndk), [example project](https://github.com/vokegpu/pompom) |
-| Vulkan | not implemented |
-| Metal | not implemented, maybe implemented with [MoltenVK](https://github.com/KhronosGroup/MoltenVK) |
-| DirectX 12 | not implemented, perharps not even be implemented |
-| DirectX 11 | not implemented, perharps not even be implemented |
+| OpenGL | Stable, minimum version required 3.3 with [GLEW](https://glew.sourceforge.net/), [example project](https://github.com/vokegpu/ekg-demos/blob/SDL/src/applicationc.cpp) |
+| OpenGL ES | Stable, minimum version required ES 3 with [NDK](https://github.com/android/ndk), [example project](https://github.com/vokegpu/pompom) |
+| Vulkan | Not implemented |
+| Metal | Not implemented, maybe implemented with [MoltenVK](https://github.com/KhronosGroup/MoltenVK) |
+| DirectX 12 | Not implemented, perharps not even be implemented |
+| DirectX 11 | Not implemented, perharps not even be implemented |
 
 The OS (Android, Windows and Linux) platform (SDL, GLFW, Win32, Wayland, etc) support also used an interface.
 
 | Name | Support | OS |
 | --- | --- | --- |
-| [SDL](https://www.libsdl.org/) | [stable example code](https://github.com/vokegpu/ekg-demos/blob/SDL/src/application.cpp) | linux, windows & android |
-| [GLFW](https://www.glfw.org/) | [stable example code](https://github.com/vokegpu/ekg-demos/blob/main/GLFW/src/application.cpp) | linux & windows |
-| Win32 | not implemeneted | n/a |
-| Wayland | not implemented | n/a |
+| [SDL](https://www.libsdl.org/) | [stable example code](https://github.com/vokegpu/ekg-demos/blob/SDL/src/application.cpp) | Linux, Windows & Android |
+| [GLFW](https://www.glfw.org/) | [stable example code](https://github.com/vokegpu/ekg-demos/blob/main/GLFW/src/application.cpp) | Linux & Windows |
+| Win32 | Not implemeneted | ? |
+| Wayland | Not implemented | ? |
 
 I can not implement everything alone, so, if you want contribute writing these APIs and platform, be welcome.  
 Check the [code of conduct](CODE-OF-CONDUCT.md) and 🖤 !
