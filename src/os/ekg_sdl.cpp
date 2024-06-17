@@ -174,7 +174,7 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
       case SDL_WINDOWEVENT_SIZE_CHANGED:
         ekg::ui::width = sdl_event.window.data1;
         ekg::ui::height = sdl_event.window.data2;
-        
+
         ekg::core->p_gpu_api->update_viewport(ekg::ui::width, ekg::ui::height);
         ekg::core->update_size_changed();
 
