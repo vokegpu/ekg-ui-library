@@ -671,6 +671,7 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
 
   bool update_layout {};
   bool append_group {};
+  bool switch_groups {};
 
   switch (p_ui->get_type()) {
     case ekg::type::abstract: {
@@ -685,8 +686,15 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
       p_widget->p_data = p_ui;
       update_layout = true;
       p_widget_created = p_widget;
-      this->p_current_ui_container = p_ui;
       p_ui->reset();
+
+      if (p_widget->p_data->get_place_dock() == ekg::dock::none) {
+        this->p_current_ui_container = p_ui;
+      } else {
+        append_group = true;
+        switch_groups = true;
+      }
+
       break;
     }
 
@@ -766,6 +774,10 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
 
   if (append_group && this->p_current_ui_container != nullptr) {
     this->p_current_ui_container->add_child(p_ui->get_id());
+
+    if (switch_groups) {
+      this->p_current_ui_container = p_widget_created->p_data;
+    }
   }
 
   if (update_layout) {
@@ -803,6 +815,16 @@ void ekg::runtime::do_task_refresh(ekg::ui::abstract_widget *p_widget) {
 
 void ekg::runtime::end_group_flag() {
   this->p_current_ui_container = nullptr;
+}
+
+void ekg::runtime::end_group_parent_flag() {
+  ekg::ui::abstract_widget *p_parent_widget {};
+  if (
+      this->p_current_ui_container != nullptr &&
+      (p_parent_widget = this->get_fast_widget_by_id(this->p_current_ui_container->get_parent_id())) != nullptr
+    ) {
+    this->p_current_ui_container = p_parent_widget->p_data;
+  }
 }
 
 void ekg::runtime::erase(int32_t id) {

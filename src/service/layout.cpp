@@ -311,9 +311,16 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
 
   if (p_widget_parent->is_targeting_absolute_parent) {
     p_widget_parent->is_targeting_absolute_parent = false;
-    this->process_scaled(ekg::find_absolute_parent_master(p_widget_parent));
+
+    if (p_widget_parent->p_abs_parent_widget) {
+      this->process_scaled(p_widget_parent->p_abs_parent_widget);
+    } else {
+      this->process_scaled(p_widget_parent);
+    }
+
     return;
   }
+
 
   float group_top_offset {this->min_offset};
   ekg::rect group_rect {p_widget_parent->dimension};
@@ -527,23 +534,12 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
     it++;
   }
 
-  if (has_scroll_embedded && !is_vertical_enabled) {
-    switch (type) {
-      case ekg::type::frame: {
-        auto frame {(ekg::ui::frame_widget *) p_widget_parent};
-        has_scroll_embedded = frame->p_scroll_embedded != nullptr;
+  if (has_scroll_embedded && !is_vertical_enabled && type == ekg::type::frame) {
+    ekg::ui::frame_widget *p_frame {(ekg::ui::frame_widget *) p_widget_parent};
+    has_scroll_embedded = p_frame->p_scroll_embedded != nullptr;
 
-        if (has_scroll_embedded && !is_vertical_enabled &&
-            frame->p_scroll_embedded->is_vertical_enabled) {
-          this->process_scaled(p_widget_parent);
-        }
-
-        break;
-      }
-
-      default: {
-        break;
-      }
+    if (has_scroll_embedded && !is_vertical_enabled && p_frame->p_scroll_embedded->is_vertical_enabled) {
+      this->process_scaled(p_widget_parent);
     }
   }
 }
@@ -553,18 +549,7 @@ void ekg::service::layout::init() {
   this->min_height = ekg::core->f_renderer_normal.get_text_height();
   this->min_fill_width = this->min_height;
 
-  /*
-   * Same as font.cpp:
-   * A common issue with rendering overlay elements is flot32 imprecision, for this reason
-   * the cast float32 to int32 is necessary.
-   * Extra:
-   * I am totally wrong about this imprecision, I guess, the possible solution for this
-   * big bizzare calculations, is, uses a scale-based position and size, the horrible part
-   * of implementing it, is the unknown LOGIC.
-   * god, do not read this.
-   */
-  this->min_offset = (this->min_height / 6.0f) / 2.0f;
-  this->min_offset = static_cast<int32_t>(this->min_offset);
+  this->min_offset = 2.0f;
 }
 
 void ekg::service::layout::quit() {

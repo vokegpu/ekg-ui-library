@@ -25,7 +25,6 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include "ekg/util/gui.hpp"
 #include "ekg/draw/draw.hpp"
-#include "ekg/layout/tile.hpp"
 
 ekg::ui::abstract_widget::abstract_widget() {
   this->p_parent = &this->empty_parent;
@@ -95,6 +94,6 @@ ekg::rect &ekg::ui::abstract_widget::get_abs_rect() {
     (this->p_data->widget() = (this->dimension + *this->p_parent + *this->p_scroll))
   };
 
-  return ekg::layout::tile_transform(rect);
+  return rect;
 }
     

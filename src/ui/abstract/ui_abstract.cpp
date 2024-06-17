@@ -43,6 +43,26 @@ ekg::ui::abstract *ekg::ui::abstract::add_child(int32_t to_insert_id) {
   ekg::ui::abstract_widget *p_child_widget {};
   ekg::ui::abstract_widget *p_parent_widget {};
 
+  /**
+   * Each widget must be correctly connected between:
+   * Absolute parent, parent, & child.
+   * 
+   * The absolute parent is the first widget container, normally the frame widget,
+   * any widget must be linked with the absolute parent widget address, making fast
+   * the access during any-internal operations.
+   * 
+   * Parent is that widget, which will insert a child widget on own children ID list;
+   * if the parent widget does not contains an absolute parent widget, then it turns an
+   * absolute parent widget.
+   * 
+   * The child widget is the inserted one.
+   * 
+   * ---
+   * 
+   * The point of having triple ptr(s) make the possibility of handling all entire
+   * GUI without overhead calls to find widgets.
+   **/
+
   if (contains == false && (
       (p_child_widget = ekg::core->get_fast_widget_by_id(to_insert_id)) != nullptr
       &&
@@ -52,6 +72,12 @@ ekg::ui::abstract *ekg::ui::abstract::add_child(int32_t to_insert_id) {
     p_child_widget->p_data->set_parent_id(this->id);
     p_child_widget->p_parent = &this->rect_widget;
     p_child_widget->p_parent_scissor = &p_parent_widget->scissor;
+
+    if (p_parent_widget->p_abs_parent_widget != nullptr) {
+      p_child_widget->p_abs_parent_widget = p_parent_widget->p_abs_parent_widget;
+    } else {
+      p_child_widget->p_abs_parent_widget = p_parent_widget;
+    }
 
     this->child_id_list.push_back(to_insert_id);
   }

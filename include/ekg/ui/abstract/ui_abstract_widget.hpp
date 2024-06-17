@@ -48,6 +48,8 @@ namespace ekg::ui {
   class abstract_widget {
   public:
     ekg::ui::abstract *p_data {};
+    ekg::ui::abstract_widget *p_abs_parent_widget {};
+
     ekg::flag flag {};
     ekg::rect dimension {};
     ekg::vec2 min_size {};

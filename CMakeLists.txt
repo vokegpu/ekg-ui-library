@@ -50,7 +50,6 @@ endif()
 message("-- Generating EKG ${PLATFORM} native library")
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
-include_directories(include/)
 
 if (EKG_ENABLE_DEBUG)
   message("-- EKG debug mode on")
@@ -59,6 +58,7 @@ elseif()
   add_compile_options(-O3)
 endif()
 
+include_directories(./include)
 add_library(ekg STATIC ${SOURCE_FILES})
 
 message("-- EKG native library building done")

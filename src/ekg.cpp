@@ -108,14 +108,15 @@ void ekg::render() {
 
 ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_position, const ekg::vec2 &size) {
   auto p_ui {new ekg::ui::frame()};
+
   p_ui->set_tag(tag);
   p_ui->unsafe_set_type(ekg::type::frame);
+  p_ui->set_place(ekg::dock::none);
   ekg::core->gen_widget(p_ui);
 
   p_ui->set_pos_initial(initial_position.x, initial_position.y);
   p_ui->set_size_initial(size.x, size.y);
   p_ui->ui() = {initial_position.x, initial_position.y, size.x, size.y};
-  p_ui->set_place(ekg::dock::none);
 
   return p_ui;
 }
@@ -125,11 +126,11 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &size, uint16_t
 
   p_ui->set_tag(tag);
   p_ui->unsafe_set_type(ekg::type::frame);
+  p_ui->set_place(dock);
   ekg::core->gen_widget(p_ui);
 
   p_ui->set_size_initial(size.x, size.y);
   p_ui->ui() = {0.0f, 0.0f, size.x, size.y};
-  p_ui->set_place(dock);
 
   return p_ui;
 }
@@ -308,4 +309,8 @@ ekg::ui::scrollbar *ekg::scrollbar(std::string_view tag) {
 
 void ekg::pop_group() {
   ekg::core->end_group_flag();
+}
+
+void ekg::pop_group_parent() {
+  ekg::core->end_group_parent_flag();
 }

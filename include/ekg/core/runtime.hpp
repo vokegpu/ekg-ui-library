@@ -112,6 +112,8 @@ namespace ekg {
 
     void end_group_flag();
 
+    void end_group_parent_flag();
+
     void update_size_changed();
 
     void init();

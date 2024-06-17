@@ -168,3 +168,4 @@
 -- Ownership valuable memory address mapping to literal any-widget content.
 -- Tiling layout DPI system.
 -- Performance improved, new redraw entire GUI flag way: moved to ekg::ui::display.
+-- New top-level frame feature, now you can have a top-level frame which bypass the drag action, dragging the top-level frame instead of low-level frame.

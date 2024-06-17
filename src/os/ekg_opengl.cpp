@@ -671,3 +671,7 @@ void ekg::os::opengl::draw(
 
   glUseProgram(0);
 }
+
+ekg::os::opengl *ekg::os::get_opengl() {
+  return static_cast<ekg::os::opengl*>(ekg::core->p_gpu_api);
+}

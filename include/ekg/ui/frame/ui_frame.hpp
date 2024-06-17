@@ -37,6 +37,7 @@ namespace ekg::ui {
     ekg::rect rect_initial {};
     std::string tag {};
     ekg::vec2 scale_factor {};
+    uint32_t top_level_frame_id {};
   public:
     ekg::ui::frame *set_place(uint16_t dock);
 
@@ -83,6 +84,31 @@ namespace ekg::ui {
     ekg::ui::frame *set_height(float h);
 
     float get_height();
+
+    /**
+     * Make automatically the parent ID as a top-level frame.\n
+     * By calling `set_top_level_frame_id` with the `parent_id`.
+     **/
+    ekg::ui::frame *make_parent_top_level();
+
+    /**
+     * Set the top-level frame.\n
+     * A top-level frame bypass the drag action in the current frame,
+     * dragging the top-level frame instead of currentt frame.
+     **/
+    ekg::ui::frame *set_top_level_frame(ekg::ui::frame *p_frame);
+
+    /**
+     * Set the top-level frame.\n
+     * A top-level frame bypass the drag action in the current frame,
+     * dragging the top-level frame instead of currentt frame.
+     **/
+    ekg::ui::frame *set_top_level_frame_id(uint32_t frame_id);
+
+    /**
+     * Get the top-level frame.
+     **/
+    uint32_t get_top_level_frame_id();
   };
 }
 

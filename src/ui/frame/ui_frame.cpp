@@ -24,6 +24,8 @@
 
 #include "ekg/ui/frame/ui_frame.hpp"
 #include "ekg/util/gui.hpp"
+#include "ekg/ui/frame/ui_frame_widget.hpp"
+#include "ekg/ekg.hpp"
 
 ekg::ui::frame *ekg::ui::frame::set_place(uint16_t _dock) {
   if (this->dock_flags != _dock) {
@@ -170,4 +172,41 @@ ekg::ui::frame *ekg::ui::frame::set_height(float h) {
 
 float ekg::ui::frame::get_height() {
   return this->rect_widget.h;
+}
+
+ekg::ui::frame *ekg::ui::frame::set_top_level_frame_id(uint32_t frame_id) {
+  if (this->top_level_frame_id != frame_id) {
+    this->top_level_frame_id = frame_id;
+
+    ekg::ui::abstract_widget *p_widget_low_level {ekg::core->get_fast_widget_by_id(this->id)};
+    ekg::ui::abstract_widget *p_widget_top_level {ekg::core->get_fast_widget_by_id(frame_id)};
+
+    if (
+        p_widget_low_level != nullptr &&
+        p_widget_top_level != nullptr &&
+        p_widget_top_level->p_data != nullptr &&
+        p_widget_top_level->p_data->get_type() == ekg::type::frame
+      ) {  
+      ekg::ui::frame_widget *p_frame_widget_low_level {static_cast<ekg::ui::frame_widget*>(p_widget_low_level)};
+      ekg::ui::frame_widget *p_frame_widget_top_level {static_cast<ekg::ui::frame_widget*>(p_widget_top_level)};
+      p_frame_widget_low_level->p_frame_widget_top_level = p_frame_widget_top_level;
+    }
+  }
+
+  return this;
+}
+ekg::ui::frame *ekg::ui::frame::make_parent_top_level() {
+  return this->set_top_level_frame_id(this->parent_id);
+}
+
+ekg::ui::frame *ekg::ui::frame::set_top_level_frame(ekg::ui::frame *p_frame) {
+  if (p_frame != nullptr) {
+    this->set_top_level_frame_id(p_frame->get_id());
+  }
+
+  return this;
+}
+
+uint32_t ekg::ui::frame::get_top_level_frame_id() {
+  return this->top_level_frame_id;
 }

@@ -35,6 +35,13 @@ void ekg::ui::frame_widget::on_reload() {
 }
 
 void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
+  if (this->p_frame_widget_top_level != nullptr && this->p_frame_widget_top_level->target_dock_drag != ekg::dock::none) {
+    this->p_frame_widget_top_level->on_event(io_event_serial);
+    this->target_dock_drag = this->p_frame_widget_top_level->target_dock_drag;
+    this->flag = this->p_frame_widget_top_level->flag;
+    return;
+  }
+
   auto &interact {ekg::input::interact()};
   auto p_ui {(ekg::ui::frame *) this->p_data};
   auto &rect {this->get_abs_rect()};
@@ -73,6 +80,12 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
     this->flag.activity = this->target_dock_drag != ekg::dock::none || this->target_dock_resize != ekg::dock::none;
     this->flag.absolute = this->flag.activity;
   
+    if (this->p_frame_widget_top_level != nullptr && this->target_dock_drag != ekg::dock::none) {
+      this->p_frame_widget_top_level->rect_delta = this->rect_delta;
+      this->p_frame_widget_top_level->flag = this->flag;
+      this->p_frame_widget_top_level->target_dock_drag = this->target_dock_drag;
+    }
+
     ekg_action_dispatch(
       true,
       ekg::action::press

@@ -174,6 +174,12 @@ namespace ekg {
    * Stop collecting UIs to group.
    */
   void pop_group();
+
+  /**
+   * Stop UIs collection to group but instead of complete stop,
+   * backward to the parent of bound group.
+   **/
+  void pop_group_parent();
 }
 
 #endif

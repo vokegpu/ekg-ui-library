@@ -26,7 +26,7 @@
 
 int32_t ekg::ui::width {};
 int32_t ekg::ui::height {};
-float ekg::ui::dt {};
+float ekg::ui::dt {1.0f};
 bool ekg::ui::auto_scale {true};
 ekg::vec2 ekg::ui::scale {1920.0f, 1080.0f};
 float ekg::ui::scale_interval {25.0f};

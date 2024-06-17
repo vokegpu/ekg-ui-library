@@ -107,6 +107,12 @@ namespace ekg::os {
 
     uint64_t bind_sampler(ekg::gpu::sampler_t *p_sampler) override;
   };
+
+  /**
+   * Return the current GPU API used as OpenGL.\n
+   * Note: Using this function in incompatible rendering context causes problems.
+   **/
+  ekg::os::opengl *get_opengl();
 }
 
 #endif

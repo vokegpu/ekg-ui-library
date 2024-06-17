@@ -11,6 +11,111 @@
 
 application app {};
 
+laboratory::shape::shape() {
+  std::string_view vsh {
+    "#version 450\n"
+
+    "layout (location = 0) in vec2 aPos;\n"
+    "uniform mat4 uMatrixProjection;\n"
+    "uniform vec4 uRect;\n"
+
+    "void main() {\n"
+      "gl_Position = uMatrixProjection * vec4((aPos * uRect.zw) + uRect.xy, 0.0f, 1.0f);\n"
+    "}\n"
+  };
+
+  std::string_view fsh {
+    "#version 450\n"
+
+    "layout (location = 0) out vec4 aFragColor;\n"
+    "uniform vec4 uColor;\n"
+
+    "void main() {\n"
+      "aFragColor = uColor;\n"
+    "}\n"
+  };
+
+  this->program = glCreateProgram();
+  ekg::os::opengl *p_opengl_api {ekg::os::get_opengl()};
+
+  p_opengl_api->create_pipeline_program(
+    this->program,
+    {
+      {vsh, GL_VERTEX_SHADER},
+      {fsh, GL_FRAGMENT_SHADER}
+    }
+  );
+
+  glGenVertexArrays(1, &this->buffer_collection);
+  glGenBuffers(1, &this->gbuffer);
+
+  glBindVertexArray(this->buffer_collection);
+  glBindBuffer(GL_ARRAY_BUFFER, this->gbuffer);
+
+  float geometry[12] {
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+    1.0f, 1.0f,
+    0.0f, 1.0f,
+    0.0f, 0.0f
+  };
+
+  glBufferData(GL_ARRAY_BUFFER, sizeof(geometry), geometry, GL_STATIC_DRAW);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  // end the collection
+  glBindVertexArray(0);
+
+  this->uniform_matrix_projection = glGetUniformLocation(this->program, "uMatrixProjection");
+  this->uniform_rect = glGetUniformLocation(this->program, "uRect");
+  this->uniform_color = glGetUniformLocation(this->program, "uColor");
+
+  std::cout << "[laboratory] initialized arbitrary shapee meow ><" << std::endl;
+}
+
+void laboratory::shape::invoke() {
+  glDisable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glUseProgram(this->program);
+  glBindVertexArray(this->buffer_collection);
+}
+
+void laboratory::shape::revoke() {
+  glDisable(GL_BLEND);
+  glBindVertexArray(0);
+  glUseProgram(0);
+}
+
+void laboratory::shape::on_resize() {
+  ekg::ortho(
+    this->mat4x4_projection,
+    0.0f,
+    static_cast<float>(ekg::ui::width),
+    static_cast<float>(ekg::ui::height),
+    0.0f
+  );
+
+  glProgramUniformMatrix4fv(
+    this->program,
+    this->uniform_matrix_projection,
+    1,
+    GL_FALSE,
+    this->mat4x4_projection
+  );
+
+  std::cout << "[laboratory] arbitrary on_resize called meow >< " << std::endl;
+}
+
+void laboratory::shape::draw(const ekg::rect &rect, const ekg::vec4 &color) {
+  glUniform4f(this->uniform_rect, rect.x, rect.y, rect.w, rect.h);
+  glUniform4f(this->uniform_color, color.x, color.y, color.z, color.w);
+  glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
 template<typename t>
 bool create_sampler(
   std::string_view sampler_name,
@@ -248,11 +353,20 @@ int32_t showcase_useless_window() {
     &ekg_runtime_property
   );
 
-  ekg::frame("meow", ekg::vec2(700, 200), ekg::vec2(200, 200))
+  ekg::frame("tweaks-window", ekg::vec2(700, 200), ekg::vec2(200, 200))
     ->set_drag(ekg::dock::top)
     ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-  ekg::label("UI internal tweaks", ekg::dock::fill);
+  ekg::frame("tweaks-tob-bar", ekg::vec2(10.0f, 50.0f), ekg::dock::fill)
+    ->set_drag(ekg::dock::full)
+    ->make_parent_top_level();
+  ekg::button("-", ekg::dock::none);
+  ekg::button("[]", ekg::dock::none);
+  ekg::button("x", ekg::dock::none);
+  ekg::pop_group_parent();
+
+  ekg::frame("tweaks-content", ekg::vec2(700, 200), ekg::dock::fill | ekg::dock::next);
+  ekg::label("UI internal tweaks", ekg::dock::fill | ekg::dock::next);
 
   auto p_app_vsync = ekg::checkbox("Application Vsync", app.vsync, ekg::dock::fill | ekg::next);
 
@@ -284,7 +398,7 @@ int32_t showcase_useless_window() {
   ekg::ui::label *fps {};
   std::string previous_operator {};
 
-  auto p_calculator_frame = ekg::frame("cat", {400, 700}, ekg::dock::none)
+  auto p_calculator_frame = ekg::frame("frame-cat", {400, 700}, ekg::dock::none)
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
     ->set_drag(ekg::dock::top);
 
@@ -410,7 +524,7 @@ int32_t showcase_useless_window() {
   buselesstop1->set_scaled_height(2);
   buselesstop1->set_text_align(ekg::dock::center);
 
-  auto buselesstop2 = ekg::button("", ekg::dock::fill);
+  auto buselesstop2 = ekg::button("", ekg::dock::none);
   buselesstop2->set_scaled_height(2);
   buselesstop2->set_text_align(ekg::dock::center);
 
@@ -644,7 +758,7 @@ void test_out_of_context_uis() {
   }
 }
 
-int32_t font_rendering_dynamic_batching() {
+int32_t laboratory_testing() {
   SDL_Init(SDL_INIT_VIDEO);
 
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -695,23 +809,23 @@ int32_t font_rendering_dynamic_batching() {
   uint64_t last_frame {1};
   ekg::timing fps_timing {};
 
-  uint32_t vao {};
-  glCreateVertexArrays(1, &vao);
+  laboratory::shape shape {};
+  std::vector<ekg::rect> rects {};
 
-  uint32_t gbuffer {};
-  glGenBuffers(1, &gbuffer);
+  bool dragging {};
+  float prev_pos {10.2f};
+  float scale {2.0f};
 
-  //glBindVertexArray(vao);
-  glBindBuffer(GL_ARRAY_BUFFER, gbuffer);
+  for (uint64_t it {}; it < 10; it++) {
+    ekg::rect &rect {rects.emplace_back()};
+    rect.x = prev_pos;
+    rect.y = 10.0f;
+    rect.w = 50.0f;
+    rect.h = 50.0f;
 
-  float g[] {
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    0.0f, 1.0f
-  };
-
-  glBufferData(GL_ARRAY_BUFFER, sizeof(g), g, GL_STATIC_DRAW);
-  glBindVertexArray(0);
+    prev_pos += rect.w + scale;
+    std::cout << prev_pos << std::endl;
+  }
 
   while (running) {
     last = now;
@@ -727,24 +841,50 @@ int32_t font_rendering_dynamic_batching() {
 
     while (SDL_PollEvent(&sdl_event)) {
       ekg::os::sdl_poll_event(sdl_event);
-    
-      switch (sdl_event.type) {
-      case SDL_QUIT:
+
+      if (sdl_event.type == SDL_QUIT) {
         running = false;
-        break;
+      }
+
+      if (sdl_event.type == SDL_WINDOWEVENT && sdl_event.window.event == SDL_WINDOWEVENT_RESIZED) {
+        shape.on_resize();
+      }
+
+      if (sdl_event.type == SDL_MOUSEBUTTONDOWN) {
+        dragging = true;
+      } else if (sdl_event.type == SDL_MOUSEBUTTONUP) {
+        dragging = false;
+      }
+
+      if (sdl_event.type == SDL_MOUSEMOTION && dragging) {
+        prev_pos = sdl_event.motion.x;
+
+        for (uint64_t it {}; it < 10; it++) {
+          ekg::rect &rect {rects.at(it)};
+          rect.x = prev_pos;
+          rect.y = sdl_event.motion.y;
+          rect.w = 50.0f + ((sdl_event.motion.y + (it * scale)) * 0.1f);
+          rect.h = 50.0f;
+
+          prev_pos += rect.w + scale;
+          std::cout << prev_pos << std::endl;
+        }
       }
     }
 
     ekg::update();
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(1.0f, 0.1f, 0.1f, 1.0f);
-    glViewport(ekg::ui::width, ekg::ui::height, ekg::ui::width, ekg::ui::height);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glViewport(0.0f, 0.0f, ekg::ui::width, ekg::ui::height);
 
     ekg::render();
 
-    glBindBuffer(GL_ARRAY_BUFFER, gbuffer);
-    glDrawArrays(GL_STATIC_DRAW, 0, 3);
+    shape.invoke();
+    for (ekg::rect &rect : rects) {
+      shape.draw(rect, {1.0f, 1.0f, 1.0f, 1.0f});
+    }
+    shape.revoke();
     frame_couting++;
 
     SDL_GL_SwapWindow(app.p_sdl_win);
@@ -757,6 +897,5 @@ int32_t font_rendering_dynamic_batching() {
 }
 
 int32_t main(int32_t, char**) {
-  test_out_of_context_uis();
   return showcase_useless_window();
 }
