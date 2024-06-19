@@ -56,6 +56,7 @@ if (EKG_ENABLE_DEBUG)
   add_compile_options(-g)
 elseif()
   add_compile_options(-O3)
+  
 endif()
 
 include_directories(./include)

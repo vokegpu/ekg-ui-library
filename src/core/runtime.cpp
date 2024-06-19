@@ -40,6 +40,7 @@
 #include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/util/gui.hpp"
+#include "ekg/layout/docknize.hpp"
 
 ekg::stack ekg::runtime::collect {};
 ekg::stack ekg::runtime::back {};
@@ -502,7 +503,7 @@ void ekg::runtime::prepare_tasks() {
         }
 
         p_widgets->was_syncedlayout = false;
-        p_runtime->service_layout.process_scaled(p_widgets);
+        ekg::layout::docknize(p_widgets);
       }
 
       synclayout.clear();

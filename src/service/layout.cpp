@@ -404,7 +404,7 @@ void ekg::service::layout::process_scaled(ekg::ui::abstract_widget *p_widget_par
       continue;
     }
 
-    auto &layout {p_widgets->dimension};
+    ekg::rect &layout {p_widgets->dimension};
     flags = p_widgets->p_data->get_place_dock();
     skip_widget = false;
 
