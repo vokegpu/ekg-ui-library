@@ -94,8 +94,6 @@ void ekg::ui::slider_widget::on_reload() {
   float normalised_target_thickness {static_cast<float>(theme.slider_target_thickness) / 100};
   bool centered_text {text_dock_flags == ekg::dock::center};
 
-  ekg::service::layout &layout {ekg::core->service_layout};
-
   this->dimension.w = ekg_min(this->dimension.w, text_width);
   this->dimension.h = dimension_height;
 
@@ -112,6 +110,7 @@ void ekg::ui::slider_widget::on_reload() {
   this->rect_text.h = text_height;
 
   float bar_difference_size {};
+  ekg::layout::mask &mask {ekg::core->mask};
 
   /**
    * @TODO
@@ -139,7 +138,7 @@ void ekg::ui::slider_widget::on_reload() {
 
       bar_difference_size = this->rect_bar.h;
       this->rect_bar.h = ekg_min(this->rect_bar.h, this->rect_target.h);
-      layout.set_preset_mask({offset, offset, dimension_height}, bar_axis, this->dimension.w);
+      mask.preset({offset, offset, dimension_height}, bar_axis, this->dimension.w);
 
       break;
     }
@@ -152,14 +151,14 @@ void ekg::ui::slider_widget::on_reload() {
 
   this->font_render_size = ekg::font::small;
   if (!centered_text) {
-    layout.insert_into_mask({&this->rect_text, text_dock_flags});
+    mask.insert({&this->rect_text, text_dock_flags});
     this->font_render_size = ekg::font::normal;
   }
 
-  layout.insert_into_mask({&this->rect_bar, bar_dock_flags});
-  layout.process_layout_mask();
+  mask.insert({&this->rect_bar, bar_dock_flags});
+  mask.docknize();
 
-  auto &layout_mask {layout.get_layout_mask()};
+  ekg::rect &layout_mask {mask.get_rect()};
   this->dimension.h = ekg_min(layout_mask.h, layout_mask.h);
 
   this->rect_bar.h = bar_difference_size;

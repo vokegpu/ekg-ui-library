@@ -1,3 +1,4 @@
+
 1.0.1 10/06/23
 
 -- Fixed bug on widgets ::set_width() setting incorrect dimension axis.
@@ -169,3 +170,5 @@
 -- Tiling layout DPI system.
 -- Performance improved, new redraw entire GUI flag way: moved to ekg::ui::display.
 -- New top-level frame feature, now you can have a top-level frame which bypass the drag action, dragging the top-level frame instead of low-level frame.
+-- Fixed fill pixel imperfect sizes.
+-- Removed trash layout service.

@@ -21,6 +21,39 @@ namespace ekg::layout {
   };
 
   /**
+   * The between rects from widgets can be docknized
+   * and return a rect mask (the bouding limits of docknization action).
+   * 
+   * The use is simple:
+   * set a preset,
+   * insert dock rects (rect with dock),
+   * docknize,
+   * get the rect mask.
+   **/
+  struct mask {
+  public:
+    struct rect {
+    public:
+      ekg::rect *p_rect {};
+      uint16_t flags {};
+    };
+  protected:
+    float respective_all {};
+    float respective_center {};
+    ekg::axis axis {};
+    ekg::vec3 offset {};
+    std::vector<ekg::layout::mask::rect> dock_rect_list {};
+    ekg::rect mask {};
+  public:
+    void preset(const ekg::vec3 &mask_offset, ekg::axis mask_axis, float initial_respective_size = 0.0f);
+    void insert(const ekg::layout::mask::rect &dock_rect);
+    void docknize();
+
+    float get_respective_size();
+    ekg::rect &get_rect();
+  };
+
+  /**
    * Obtain the remain extent size, from the latest widget index.
    **/
   void extentnize(

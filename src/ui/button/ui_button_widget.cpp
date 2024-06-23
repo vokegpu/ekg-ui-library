@@ -49,12 +49,12 @@ void ekg::ui::button_widget::on_reload() {
   this->rect_text.w = text_width;
   this->rect_text.h = text_height;
 
-  auto &layout {ekg::core->service_layout};
-  layout.set_preset_mask({offset, offset, this->dimension.h}, ekg::axis::horizontal, this->dimension.w);
-  layout.insert_into_mask({&this->rect_text, p_ui->get_text_align()});
-  layout.process_layout_mask();
+  ekg::layout::mask &mask {ekg::core->mask};
+  mask.preset({offset, offset, this->dimension.h}, ekg::axis::horizontal, this->dimension.w);
+  mask.insert({&this->rect_text, p_ui->get_text_align()});
+  mask.docknize();
 
-  auto &layout_mask {layout.get_layout_mask()};
+  ekg::rect &layout_mask {mask.get_rect()};
   this->dimension.w = (int32_t) (this->dimension.w <= text_width ? layout_mask.w : this->dimension.w);
   this->dimension.h = ekg_min(this->dimension.h, layout_mask.h);
 }

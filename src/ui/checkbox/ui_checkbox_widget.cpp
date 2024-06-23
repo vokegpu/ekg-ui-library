@@ -54,14 +54,13 @@ void ekg::ui::checkbox_widget::on_reload() {
   this->rect_text.w = text_width;
   this->rect_text.h = text_height;
 
-  auto &layout {ekg::core->service_layout};
-  ekg::core->service_layout.set_preset_mask({offset, offset, dimension_height}, ekg::axis::horizontal,
-                                            this->dimension.w);
-  layout.insert_into_mask({&this->rect_box, p_ui->get_box_align()});
-  layout.insert_into_mask({&this->rect_text, p_ui->get_text_align()});
-  layout.process_layout_mask();
+  ekg::layout::mask &mask {ekg::core->mask};
+  mask.preset({offset, offset, dimension_height}, ekg::axis::horizontal, this->dimension.w);
+  mask.insert({&this->rect_box, p_ui->get_box_align()});
+  mask.insert({&this->rect_text, p_ui->get_text_align()});
+  mask.docknize();
 
-  auto &layout_mask {layout.get_layout_mask()};
+  ekg::rect &layout_mask {mask.get_rect()};
   this->dimension.w = this->dimension.w <= text_width ? layout_mask.w : this->dimension.w;
   this->dimension.h = ekg_min(this->dimension.h, layout_mask.h);
 }

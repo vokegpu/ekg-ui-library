@@ -32,10 +32,10 @@
 #include "ekg/draw/font_renderer.hpp"
 #include "ekg/service/theme.hpp"
 #include "ekg/service/input.hpp"
-#include "ekg/service/layout.hpp"
 #include "ekg/util/io.hpp"
 #include "ekg/util/gui.hpp"
 #include "ekg/gpu/api.hpp"
+#include "ekg/layout/docknize.hpp"
 
 namespace ekg {
   extern struct current_hovered_state {
@@ -80,17 +80,19 @@ namespace ekg {
     ekg::service::input service_input {};
     ekg::service::theme service_theme {};
     ekg::service::handler service_handler {};
-    ekg::service::layout service_layout {};
-
+  public:
     ekg::draw::font_renderer f_renderer_small {};
     ekg::draw::font_renderer f_renderer_normal {};
     ekg::draw::font_renderer f_renderer_big {};
 
+    ekg::timing ui_timing {};
+    ekg::os::io_event_serial io_event_serial {};
+
+    ekg::os::platform *p_os_platform {};
     ekg::gpu::api *p_gpu_api {};
     ekg::gpu::allocator gpu_allocator {};
-    ekg::timing ui_timing {};
-    ekg::os::platform *p_os_platform {};
-    ekg::os::io_event_serial io_event_serial {};
+
+    ekg::layout::mask mask {};
   protected:
     void prepare_tasks();
 

@@ -398,7 +398,7 @@ int32_t showcase_useless_window() {
   ekg::ui::label *fps {};
   std::string previous_operator {};
 
-  auto p_calculator_frame = ekg::frame("frame-cat", {400, 700}, ekg::dock::none)
+  auto p_calculator_frame = ekg::frame("frame-cat", {400, 900}, ekg::dock::none)
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
     ->set_drag(ekg::dock::top);
 
@@ -524,7 +524,7 @@ int32_t showcase_useless_window() {
   buselesstop1->set_scaled_height(2);
   buselesstop1->set_text_align(ekg::dock::center);
 
-  auto buselesstop2 = ekg::button("", ekg::dock::none);
+  auto buselesstop2 = ekg::button("", ekg::dock::fill);
   buselesstop2->set_scaled_height(2);
   buselesstop2->set_text_align(ekg::dock::center);
 
@@ -616,7 +616,7 @@ int32_t showcase_useless_window() {
   load_ttf_emoji(&ttf_cow_sampler);
 
   auto p_cow_ttf_frame = ekg::frame("meow", {200, 200}, {400, 400})
-    ->set_drag(ekg::dock::top)
+    ->set_drag(ekg::dock::full)
     ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right)
     ->set_layer(&ttf_cow_sampler, ekg::layer::background);
 
@@ -795,6 +795,8 @@ int32_t laboratory_testing() {
     &ekg_runtime_property
   );
 
+  ekg::theme().gen_default_dark_theme();
+
   bool running {true};
   uint64_t now {};
   uint64_t last {};
@@ -809,23 +811,21 @@ int32_t laboratory_testing() {
   uint64_t last_frame {1};
   ekg::timing fps_timing {};
 
-  laboratory::shape shape {};
-  std::vector<ekg::rect> rects {};
-
-  bool dragging {};
   float prev_pos {10.2f};
   float scale {2.0f};
 
-  for (uint64_t it {}; it < 10; it++) {
-    ekg::rect &rect {rects.emplace_back()};
-    rect.x = prev_pos;
-    rect.y = 10.0f;
-    rect.w = 50.0f;
-    rect.h = 50.0f;
+  ekg::frame("m", {400, 400})
+    ->set_drag(ekg::dock::full)
+    ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
+  
+  ekg::button("Sample", ekg::dock::fill | ekg::dock::next);
+  ekg::button("Sample", ekg::dock::fill | ekg::dock::next);
+  ekg::button("Z", ekg::dock::fill | ekg::dock::next);
+  ekg::button("A", ekg::dock::none)->set_width(50.0f);
+  ekg::button("B", ekg::dock::fill);
+  ekg::button("C", ekg::dock::fill);
 
-    prev_pos += rect.w + scale;
-    std::cout << prev_pos << std::endl;
-  }
+  ekg::pop_group();
 
   while (running) {
     last = now;
@@ -845,31 +845,6 @@ int32_t laboratory_testing() {
       if (sdl_event.type == SDL_QUIT) {
         running = false;
       }
-
-      if (sdl_event.type == SDL_WINDOWEVENT && sdl_event.window.event == SDL_WINDOWEVENT_RESIZED) {
-        shape.on_resize();
-      }
-
-      if (sdl_event.type == SDL_MOUSEBUTTONDOWN) {
-        dragging = true;
-      } else if (sdl_event.type == SDL_MOUSEBUTTONUP) {
-        dragging = false;
-      }
-
-      if (sdl_event.type == SDL_MOUSEMOTION && dragging) {
-        prev_pos = sdl_event.motion.x;
-
-        for (uint64_t it {}; it < 10; it++) {
-          ekg::rect &rect {rects.at(it)};
-          rect.x = prev_pos;
-          rect.y = sdl_event.motion.y;
-          rect.w = 50.0f + ((sdl_event.motion.y + (it * scale)) * 0.1f);
-          rect.h = 50.0f;
-
-          prev_pos += rect.w + scale;
-          std::cout << prev_pos << std::endl;
-        }
-      }
     }
 
     ekg::update();
@@ -879,13 +854,6 @@ int32_t laboratory_testing() {
     glViewport(0.0f, 0.0f, ekg::ui::width, ekg::ui::height);
 
     ekg::render();
-
-    shape.invoke();
-    for (ekg::rect &rect : rects) {
-      shape.draw(rect, {1.0f, 1.0f, 1.0f, 1.0f});
-    }
-    shape.revoke();
-    frame_couting++;
 
     SDL_GL_SwapWindow(app.p_sdl_win);
     if (app.vsync) {

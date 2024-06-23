@@ -37,7 +37,7 @@ void ekg::ui::listbox_widget::on_reload() {
 
   ekg::draw::font_renderer &f_renderer_item {ekg::f_renderer(p_ui->get_item_font_size())};
   ekg::draw::font_renderer &f_renderer_column_header {ekg::f_renderer(p_ui->get_column_header_font_size())};
-  ekg::service::layout &layout {ekg::core->service_layout};
+  ekg::layout::mask &mask {ekg::core->mask};
 
   float text_height {f_renderer_item.get_text_height()};
   float dimension_offset {text_height / 2};
@@ -112,7 +112,7 @@ void ekg::ui::listbox_widget::on_reload() {
     placement.rect_text.w = text_width;
     placement.rect_text.h = text_height * static_cast<float>(text_lines);
 
-    layout.set_preset_mask(
+    mask.preset(
       {
         offset, offset, placement.rect.h
       },
@@ -120,8 +120,8 @@ void ekg::ui::listbox_widget::on_reload() {
       placement.rect.w
     );
     
-    layout.insert_into_mask({&placement.rect_text, placement.text_dock_flags});
-    layout.process_layout_mask();
+    mask.insert({&placement.rect_text, placement.text_dock_flags});
+    mask.docknize();
 
     relative_rect.x += relative_rect.w;
 
@@ -279,7 +279,7 @@ void ekg::ui::listbox_template_reload(
   uint64_t pos,
   bool &opened
 ) {
-  ekg::service::layout &layout {ekg::core->service_layout};
+  ekg::layout::mask &mask {ekg::core->mask};
   ekg::draw::font_renderer &f_renderer {ekg::f_renderer(item_font)};
   ekg::rect item_rect {};
   ekg::service::theme &theme {ekg::theme()};
@@ -318,7 +318,7 @@ void ekg::ui::listbox_template_reload(
     placement.rect_text.w = text_width;
     placement.rect_text.h = text_height * static_cast<float>(text_lines);
 
-    layout.set_preset_mask(
+    mask.preset(
       {
         offset, offset, placement.rect.h
       },
@@ -326,8 +326,8 @@ void ekg::ui::listbox_template_reload(
       placement.rect.w
     );
     
-    layout.insert_into_mask({&placement.rect_text, placement.text_dock_flags});
-    layout.process_layout_mask();
+    mask.insert({&placement.rect_text, placement.text_dock_flags});
+    mask.docknize();
 
     placement.rect_extent.y = placement.rect.h;
     just_flagged_cursive_opened = opened;

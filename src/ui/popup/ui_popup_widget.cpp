@@ -91,7 +91,7 @@ void ekg::ui::popup_widget::on_reload() {
   auto p_ui {(ekg::ui::popup *) this->p_data};
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
   auto &item_list {p_ui->get_item_list()};
-  auto &layout {ekg::core->service_layout};
+  ekg::layout::mask &mask {ekg::core->mask};
 
   float max_width {};
   float text_width {};
@@ -116,7 +116,7 @@ void ekg::ui::popup_widget::on_reload() {
   float size {(text_height + dimension_offset) * static_cast<float>(p_ui->get_scaled_height())};
 
   ekg::vec3 layout_offset {offset, offset, text_height + dimension_offset};
-  auto &layout_mask {layout.get_layout_mask()};
+  ekg::rect &layout_mask {mask.get_rect()};
 
   this->dimension.w = ekg_min(this->dimension.w, max_width + dimension_offset);
   this->dimension.h = offset;
@@ -130,9 +130,9 @@ void ekg::ui::popup_widget::on_reload() {
 
     layout_offset.z = items.rect_dimension.h;
 
-    layout.set_preset_mask(layout_offset, ekg::axis::horizontal, this->dimension.w);
-    layout.insert_into_mask({&items.rect_content, text_dock_flags});
-    layout.process_layout_mask();
+    mask.preset(layout_offset, ekg::axis::horizontal, this->dimension.w);
+    mask.insert({&items.rect_content, text_dock_flags});
+    mask.docknize();
 
     // Process the popup height based in layout mask.
     this->dimension.h += layout_mask.h;

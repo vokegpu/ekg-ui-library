@@ -96,4 +96,3 @@ ekg::rect &ekg::ui::abstract_widget::get_abs_rect() {
 
   return rect;
 }
-    

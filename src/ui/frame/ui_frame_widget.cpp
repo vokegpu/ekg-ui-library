@@ -81,6 +81,14 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
     this->flag.absolute = this->flag.activity;
   
     if (this->p_frame_widget_top_level != nullptr && this->target_dock_drag != ekg::dock::none) {
+      /**
+       * We need to calculate the delta based on top-level frame
+       * and not the low-level frame. So the drag is perfect.
+       **/
+      ekg::rect &top_level_frame_rect {this->p_frame_widget_top_level->get_abs_rect()};
+      this->rect_delta.x = interact.x - top_level_frame_rect.x;
+      this->rect_delta.y = interact.y - top_level_frame_rect.y;
+
       this->p_frame_widget_top_level->rect_delta = this->rect_delta;
       this->p_frame_widget_top_level->flag = this->flag;
       this->p_frame_widget_top_level->target_dock_drag = this->target_dock_drag;

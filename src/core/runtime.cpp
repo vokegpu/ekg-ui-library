@@ -40,7 +40,7 @@
 #include "ekg/draw/draw.hpp"
 #include "ekg/ekg.hpp"
 #include "ekg/util/gui.hpp"
-#include "ekg/layout/docknize.hpp"
+#include "ekg/layout/scale.hpp"
 
 ekg::stack ekg::runtime::collect {};
 ekg::stack ekg::runtime::back {};
@@ -49,11 +49,10 @@ ekg::stack ekg::runtime::front {};
 ekg::current_hovered_state ekg::hovered {};
 
 void ekg::runtime::update_size_changed() {
-  ekg::dispatch(ekg::env::redraw);
+  ekg::layout::scale_calculate();
 
-  this->service_layout.update_scale_factor();
   uint32_t font_size {
-    static_cast<uint32_t>(ekg_clamp(static_cast<int32_t>(18.0f * this->service_layout.get_scale_factor()), 0, 256))
+    static_cast<uint32_t>(ekg_clamp(static_cast<int32_t>(18.0f * ekg::layout::scale_factor), 0, 256))
   };
 
   if (this->f_renderer_normal.font_size != font_size) {
@@ -68,13 +67,14 @@ void ekg::runtime::update_size_changed() {
       this->do_task_synclayout(p_widgets);
     }
   }
+
+  ekg::dispatch(ekg::env::redraw);
 }
 
 void ekg::runtime::init() {
   this->gpu_allocator.init();
   this->prepare_tasks();
   this->prepare_ui_env();
-  this->service_layout.init();
   this->service_theme.init();
   this->service_input.init();
 }
@@ -82,7 +82,6 @@ void ekg::runtime::init() {
 void ekg::runtime::quit() {
   this->gpu_allocator.quit();
   this->service_theme.quit();
-  this->service_layout.quit();
 }
 
 void ekg::runtime::process_event() {
