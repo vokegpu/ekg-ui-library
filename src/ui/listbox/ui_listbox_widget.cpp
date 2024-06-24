@@ -27,13 +27,11 @@
 #include "ekg/draw/draw.hpp"
 
 void ekg::ui::listbox_widget::on_create() {
-  ekg::ui::listbox *p_ui {static_cast<ekg::ui::listbox*>(this->p_data)};
-  this->p_item_list = static_cast<std::vector<ekg::item>*>(p_ui);
 }
 
 void ekg::ui::listbox_widget::on_reload() {
-  auto *p_ui {(ekg::ui::listbox *) this->p_data};
-  auto &rect {this->get_abs_rect()};
+  ekg::ui::listbox *p_ui {static_cast<ekg::ui::listbox*>(this->p_data)};
+  ekg::rect &rect {this->get_abs_rect()};
 
   ekg::draw::font_renderer &f_renderer_item {ekg::f_renderer(p_ui->get_item_font_size())};
   ekg::draw::font_renderer &f_renderer_column_header {ekg::f_renderer(p_ui->get_column_header_font_size())};
@@ -58,16 +56,16 @@ void ekg::ui::listbox_widget::on_reload() {
 
   float text_width {};
   int32_t text_lines {};
-  uint64_t items_header_size {this->p_item_list->size()};
+  uint64_t items_header_size {p_ui->p_value->size()};
 
   text_height = f_renderer_column_header.get_text_height();
   bool opened {};
+  ekg::mode mode {p_ui->get_mode()};
 
   for (uint64_t it {}; it < items_header_size; it++) {
     relative_rect.y = 0.0f;
-    arbitrary_index_pos = 0;
 
-    ekg::item &item {this->p_item_list->at(it)};
+    ekg::item &item {p_ui->p_value->at(it)};
     ekg::placement &placement {item.unsafe_get_placement()};
 
     text_lines = 0;
@@ -92,8 +90,9 @@ void ekg::ui::listbox_widget::on_reload() {
         item_font,
         relative_rect,
         item_scaled_height,
-        arbitrary_index_pos,
-        opened
+        it,
+        opened,
+        mode
       );
     } else {
       ekg::ui::listbox_template_reload(
@@ -102,8 +101,9 @@ void ekg::ui::listbox_widget::on_reload() {
         item_font,
         relative_rect,
         item_scaled_height,
-        arbitrary_index_pos,
-        opened
+        it,
+        opened,
+        mode
       );
 
       // do here <bla>
@@ -181,10 +181,10 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
   ekg::ui::listbox *p_ui {static_cast<ekg::ui::listbox*>(this->p_data)};
   ekg::mode mode {p_ui->get_mode()};
 
-  for (uint64_t it {}; it < this->p_item_list->size(); it++) {
+  for (uint64_t it {}; it < p_ui->p_value->size(); it++) {
     relative_rect.y = 0.0f;
 
-    ekg::item &item {this->p_item_list->at(it)};
+    ekg::item &item {p_ui->p_value->at(it)};
     ekg::ui::listbox_template_on_event(
       io_event_serial,
       motion,
@@ -226,9 +226,9 @@ void ekg::ui::listbox_widget::on_update() {
 }
 
 void ekg::ui::listbox_widget::on_draw_refresh() {
-  auto &rect {this->get_abs_rect()};
-  auto &theme {ekg::theme()};
-  auto *p_ui {static_cast<ekg::ui::listbox*>(this->p_data)};
+  ekg::rect &rect {this->get_abs_rect()};
+  ekg::ui::listbox *p_ui {static_cast<ekg::ui::listbox*>(this->p_data)};
+  ekg::service::theme &theme {ekg::theme()};
 
   this->embedded_scroll.clamp_scroll();
 
@@ -245,10 +245,10 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
   bool stop_rendering_items {};
   ekg::vec2 ui_pos {rect.x, rect.y};
 
-  for (uint64_t it {}; it < this->p_item_list->size(); it++) {
+  for (uint64_t it {}; it < p_ui->p_value->size(); it++) {
     arbitrary_index_pos = 0;
 
-    ekg::item &item {this->p_item_list->at(it)};
+    ekg::item &item {p_ui->p_value->at(it)};
     ekg::placement &placement {item.unsafe_get_placement()};
 
     ekg::ui::listbox_template_render(
@@ -280,8 +280,9 @@ void ekg::ui::listbox_template_reload(
   ekg::font &item_font,
   ekg::rect &relative_rect,
   int32_t item_scaled_height,
-  uint64_t pos,
-  bool &opened
+  uint64_t header_index,
+  bool &opened,
+  ekg::mode mode
 ) {
   ekg::layout::mask &mask {ekg::core->mask};
   ekg::draw::font_renderer &f_renderer {ekg::f_renderer(item_font)};
@@ -298,6 +299,10 @@ void ekg::ui::listbox_template_reload(
 
   float dimension_offset {};
   float offset {};
+
+  bool first_index_if_multicolumn_enabled {
+    header_index == 0 && mode == ekg::mode::multicolumn
+  };
 
   for (it = it; it < parent.size(); it++) {
     ekg::item &item {parent.at(it)};
@@ -342,8 +347,8 @@ void ekg::ui::listbox_template_reload(
     }
 
     if (!item.empty()) {
-      relative_rect.x += theme.listbox_subitem_offset_space;
-      relative_rect.w -= theme.listbox_subitem_offset_space;
+      relative_rect.x += theme.listbox_subitem_offset_space * first_index_if_multicolumn_enabled;
+      relative_rect.w -= theme.listbox_subitem_offset_space * first_index_if_multicolumn_enabled;
 
       ekg::ui::listbox_template_reload(
         item,
@@ -351,12 +356,13 @@ void ekg::ui::listbox_template_reload(
         item_font,
         relative_rect,
         item_scaled_height,
-        pos,
-        opened
+        header_index,
+        opened,
+        mode
       );
 
-      relative_rect.x -= theme.listbox_subitem_offset_space;
-      relative_rect.w += theme.listbox_subitem_offset_space;
+      relative_rect.x -= theme.listbox_subitem_offset_space * first_index_if_multicolumn_enabled;
+      relative_rect.w += theme.listbox_subitem_offset_space * first_index_if_multicolumn_enabled;
     }
 
     if (just_flagged_cursive_opened) {

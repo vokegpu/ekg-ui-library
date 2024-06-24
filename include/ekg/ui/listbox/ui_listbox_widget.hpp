@@ -33,7 +33,6 @@
 namespace ekg::ui {
   class listbox_widget : public ekg::ui::abstract_widget {
   public:
-    std::vector<ekg::item> *p_item_list {};
     ekg::ui::scrollbar_embedded_widget embedded_scroll {};
     bool was_selected {};
   public:
@@ -60,8 +59,9 @@ namespace ekg::ui {
     ekg::font &item_font,
     ekg::rect &relative_rect,
     int32_t item_scaled_height,
-    uint64_t pos,
-    bool &opened
+    uint64_t header_index,
+    bool &opened,
+    ekg::mode mode
   );
 
   void listbox_template_on_event(

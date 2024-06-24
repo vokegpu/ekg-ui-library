@@ -173,3 +173,4 @@
 -- Fixed fill pixel imperfect sizes.
 -- Removed trash layout service.
 -- Fixed pixel imperfect on scrolling and on all places.
+-- Moved `std::vector<t>` extends to `ekg::value_t<t>` in listbox and textbox. 

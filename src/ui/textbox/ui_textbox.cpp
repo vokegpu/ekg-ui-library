@@ -55,9 +55,9 @@ ekg::ui::textbox *ekg::ui::textbox::set_place(uint16_t flags) {
 
 std::string ekg::ui::textbox::get_text() {
   if (this->must_format_text) {
-    uint64_t text_chunk_size {this->size()};
-    for (uint64_t it {}; it < this->size(); it++) {
-      this->formatted_text += this->at(it);
+    uint64_t text_chunk_size {this->p_value->size()};
+    for (uint64_t it {}; it < this->p_value->size(); it++) {
+      this->formatted_text += this->p_value->at(it);
       this->formatted_text += '\n' && (it + 1 == text_chunk_size);
     }
 

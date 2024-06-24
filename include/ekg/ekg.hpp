@@ -163,7 +163,11 @@ namespace ekg {
   /*
    * Create listbox container UI.
    */
-  ekg::ui::listbox *listbox(std::string_view tag, std::vector<ekg::item> item_list, uint16_t dock = ekg::dock::none);
+  ekg::ui::listbox *listbox(
+    std::string_view tag,
+    ekg::item item_list,
+    uint16_t dock = ekg::dock::none
+  );
 
   /**
    * Create scrollbar UI.

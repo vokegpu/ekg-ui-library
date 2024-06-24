@@ -107,7 +107,7 @@ void ekg::render() {
 }
 
 ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_position, const ekg::vec2 &size) {
-  auto p_ui {new ekg::ui::frame()};
+  ekg::ui::frame *p_ui {new ekg::ui::frame()};
 
   p_ui->set_tag(tag);
   p_ui->unsafe_set_type(ekg::type::frame);
@@ -122,7 +122,7 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_positi
 }
 
 ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &size, uint16_t dock) {
-  auto p_ui {new ekg::ui::frame()};
+  ekg::ui::frame *p_ui {new ekg::ui::frame()};
 
   p_ui->set_tag(tag);
   p_ui->unsafe_set_type(ekg::type::frame);
@@ -136,7 +136,7 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &size, uint16_t
 }
 
 ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
-  auto p_ui {new ekg::ui::button()};
+  ekg::ui::button *p_ui {new ekg::ui::button()};
   p_ui->unsafe_set_type(ekg::type::button);
   ekg::core->gen_widget(p_ui);
 
@@ -151,7 +151,7 @@ ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
 }
 
 ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
-  auto p_ui {new ekg::ui::label()};
+  ekg::ui::label *p_ui {new ekg::ui::label()};
   p_ui->unsafe_set_type(ekg::type::label);
   ekg::core->gen_widget(p_ui);
 
@@ -166,7 +166,7 @@ ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
 }
 
 ekg::ui::label *ekg::imut_label(std::string_view text, uint16_t dock) {
-  auto p_ui {new ekg::ui::label()};
+  ekg::ui::label *p_ui {new ekg::ui::label()};
 
   p_ui->unsafe_set_type(ekg::type::label);
   p_ui->unsafe_set_immutable(true);
@@ -182,7 +182,7 @@ ekg::ui::label *ekg::imut_label(std::string_view text, uint16_t dock) {
 }
 
 ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, uint16_t dock) {
-  auto p_ui {new ekg::ui::checkbox()};
+  ekg::ui::checkbox *p_ui {new ekg::ui::checkbox()};
   p_ui->unsafe_set_type(ekg::type::checkbox);
   ekg::core->gen_widget(p_ui);
 
@@ -199,7 +199,7 @@ ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, uint16_t doc
 }
 
 ekg::ui::slider *ekg::slider(std::string_view tag, float val, float min, float max, uint16_t dock) {
-  auto p_ui {new ekg::ui::slider()};
+  ekg::ui::slider *p_ui {new ekg::ui::slider()};
   p_ui->unsafe_set_type(ekg::type::slider);
   ekg::core->gen_widget(p_ui);
 
@@ -225,12 +225,12 @@ ekg::popup(std::string_view tag, const std::vector<std::string> &component_list,
     return nullptr;
   }
 
-  auto p_ui {new ekg::ui::popup()};
+  ekg::ui::popup *p_ui {new ekg::ui::popup()};
   p_ui->unsafe_set_type(ekg::type::popup);
   ekg::core->gen_widget(p_ui);
 
   if (interact_position) {
-    auto &interact {ekg::input::interact()};
+    ekg::vec4 &interact {ekg::input::interact()};
     p_ui->set_pos(interact.x, interact.y);
   }
 
@@ -245,7 +245,7 @@ ekg::popup(std::string_view tag, const std::vector<std::string> &component_list,
 }
 
 ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint16_t dock) {
-  auto p_ui {new ekg::ui::textbox()};
+  ekg::ui::textbox *p_ui {new ekg::ui::textbox()};
   p_ui->unsafe_set_type(ekg::type::textbox);
   ekg::core->gen_widget(p_ui);
 
@@ -254,7 +254,7 @@ ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint
   p_ui->set_scaled_height(1);
   p_ui->set_font_size(ekg::font::normal);
   p_ui->set_width(200);
-  p_ui->emplace_back() = text;
+  p_ui->p_value->emplace_back() = text;
   p_ui->set_state(ekg::state::enable);
 
   return p_ui;
@@ -262,11 +262,10 @@ ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint
 
 ekg::ui::listbox *ekg::listbox(
   std::string_view tag,
-  std::vector<ekg::item> item_list,
+  ekg::item item_list,
   uint16_t dock
 ) {
-  auto p_ui {new ekg::ui::listbox()};
-
+  ekg::ui::listbox *p_ui {new ekg::ui::listbox()};
   p_ui->unsafe_set_type(ekg::type::listbox);
   ekg::core->gen_widget(p_ui);
 
@@ -274,7 +273,7 @@ ekg::ui::listbox *ekg::listbox(
   p_ui->set_place(dock);
   p_ui->set_scaled_height(6);
   p_ui->set_item_font_size(ekg::font::normal);
-  p_ui->insert(p_ui->end(), item_list.begin(), item_list.end());
+  p_ui->set_value(item_list);
   p_ui->set_column_header_align(ekg::dock::fill);
 
   return p_ui;
@@ -285,7 +284,7 @@ ekg::ui::listbox *ekg::listbox_container(
   std::vector<ekg::ui::abstract*> element_list,
   uint16_t dock
 ) {
-  auto p_ui {new ekg::ui::listbox()};
+  ekg::ui::listbox *p_ui {new ekg::ui::listbox()};
 
   p_ui->unsafe_set_type(ekg::type::listbox);
   ekg::core->gen_widget(p_ui);
@@ -298,7 +297,7 @@ ekg::ui::listbox *ekg::listbox_container(
 }
 
 ekg::ui::scrollbar *ekg::scrollbar(std::string_view tag) {
-  auto p_ui {new ekg::ui::scrollbar()};
+  ekg::ui::scrollbar *p_ui {new ekg::ui::scrollbar()};
 
   p_ui->unsafe_set_type(ekg::type::scrollbar);
   ekg::core->gen_widget(p_ui);

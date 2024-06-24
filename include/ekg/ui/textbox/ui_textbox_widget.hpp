@@ -31,7 +31,7 @@
 
 /* start of `ekg_textbox_clamp_text_chunk_size` macro */
 #define ekg_textbox_clamp_text_chunk_size(text_chunk_list, max_size) \
-  if (this->p_text_chunk_list->size() > max_size) this->p_text_chunk_list->erase(this->p_text_chunk_list->begin() + max_size, this->p_text_chunk_list->end())
+  if (p_ui->p_value->size() > max_size) p_ui->p_value->erase(p_ui->p_value->begin() + max_size, p_ui->p_value->end())
 /* end of `ekg_textbox_clamp_text_chunk_size` macro */
 
 /* start of `ekg_textbox_clamp_text_chunk_size` macro */
@@ -41,7 +41,7 @@
 
 /* start of `ekg_textbox_get_cursor_text` macro */
 #define ekg_textbox_get_cursor_text(cursor) \
-  this->p_text_chunk_list->at(cursor.chunk_index)
+  p_ui->p_value->at(cursor.chunk_index)
 /* end of `ekg_textbox_clamp_line` macro */
 
 namespace ekg::ui {
@@ -100,7 +100,6 @@ namespace ekg::ui {
       ekg::ui::textbox_widget::cursor_pos pos[4] {};
     };
   public:
-    std::vector<std::string> *p_text_chunk_list {};
     std::vector<ekg::rect> cursor_draw_data_list {};
     std::vector<uint64_t> text_utf_char_index_list {};
     uint64_t last_text_chunk_size {};

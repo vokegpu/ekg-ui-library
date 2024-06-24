@@ -1,7 +1,7 @@
 #include "ekg/ekg.hpp"
 #include "ekg/layout/scale.hpp"
 
-float ekg::layout::scale_factor {};
+float ekg::layout::scale_factor {1.0f};
 
 void ekg::layout::scale_calculate() {
   ekg::vec2 monitor_resolution {ekg::ui::scale};

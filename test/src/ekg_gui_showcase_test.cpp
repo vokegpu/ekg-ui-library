@@ -438,40 +438,72 @@ int32_t showcase_useless_window() {
   fps = ekg::label("FPS: ", ekg::dock::fill | ekg::dock::next)
     ->set_font_size(ekg::font::big);
 
+  ekg::item content = ekg::item {
+    ekg::item(
+      "Nome",
+      {
+        ekg::item("Anjo-Dorminhoco"),
+        ekg::item("Potato"),
+        ekg::item("Astah", {
+          ekg::item("meow"),
+          ekg::item("meow")
+        }),
+        ekg::item("Malboro"),
+        ekg::item("Leviata")
+      },
+      ekg::attr::disabled | ekg::attr::locked
+    ),
+    ekg::item(
+      "Estado",
+      {
+        ekg::item("No Ceu"),
+        ekg::item("Brincando la fora"),
+        ekg::item("Mordendo rato", {
+          ekg::item("meow"),
+          ekg::item("meow")
+        }),
+        ekg::item("Mordendo a Astah"),
+        ekg::item("Correndo")
+      }
+    ),
+    ekg::item(
+      "Cor",
+      {
+        ekg::item("Azul"),
+        ekg::item("Azul"),
+        ekg::item("Azul", {
+          ekg::item("meow?"),
+          ekg::item("meow?")
+        }),
+        ekg::item("Azul"),
+        ekg::item("Azul")
+      }
+    ),
+    ekg::item(
+      "Cachorro",
+      {
+        ekg::item("Au"),
+      ekg::item("A"),
+        ekg::item("J", {
+          ekg::item("K?"),
+          ekg::item("L?")
+        }),
+        ekg::item("Meow"),
+        ekg::item("Oi")
+      }
+    )
+  };
+
   auto list = ekg::listbox(
     "hello",
-    {
-      ekg::item(
-        "Nome",
-        {
-          ekg::item("Anjo-Dorminhoco"),
-          ekg::item("Potato"),
-          ekg::item("Astah", {
-            ekg::item("meow"),
-            ekg::item("meow")
-          }),
-          ekg::item("Malboro"),
-          ekg::item("Leviata")
-        },
-        ekg::attr::disabled | ekg::attr::locked
-      ),
-      ekg::item(
-        "Estado",
-        {
-          ekg::item("No Ceu"),
-          ekg::item("Brincando la fora"),
-          ekg::item("Mordendo rato"),
-          ekg::item("Mordendo a Astah"),
-          ekg::item("Correndo")
-        }
-      )
-    },
+    content,
     ekg::dock::fill | ekg::dock::next
   )
   ->set_scaled_height(16)
   ->set_mode(ekg::mode::multicolumn);
 
-  ekg::slider("gostoso", 500.0f, 0.0f, 1000.0f, ekg::dock::fill | ekg::dock::next);
+  ekg::slider("meow1", 0.5f, 0.0f, 1.0f, ekg::dock::fill | ekg::dock::next)
+    ->transfer_ownership(&ekg::theme().frame_background.w);
 
   auto p_dpi = ekg::checkbox("DPI-scale:", true, ekg::dock::next);
   ekg::textbox("DPI", "1920x1080", ekg::dock::fill)
@@ -483,7 +515,7 @@ int32_t showcase_useless_window() {
         },
         .function = [](ekg::info &task_info) {
           ekg::ui::textbox *p_ui {static_cast<ekg::ui::textbox*>(task_info.p_ui)};
-          std::string &text {p_ui->at(0)};
+          std::string &text {p_ui->p_value->at(0)};
 
           bool found_x {};
           uint64_t begin {};
@@ -708,12 +740,11 @@ int32_t showcase_useless_window() {
     }
     
     if (ekg::log::buffered) {
-      if (p_terminal->size() >= 100000) {
-        p_terminal->erase(p_terminal->begin(), p_terminal->end() - 10000);
+      if (p_terminal->p_value->size() >= 100000) {
+        p_terminal->p_value->erase(p_terminal->p_value->begin(), p_terminal->p_value->end() - 10000);
       }
 
-      std::vector<std::string> &vec {*static_cast<std::vector<std::string>*>(p_terminal)};
-      ekg::utf_decode(ekg::log::buffer.str(), vec);
+      ekg::utf_decode(ekg::log::buffer.str(), p_terminal->get_value());
     }
 
     ekg::update();

@@ -49,6 +49,8 @@ namespace ekg {
     uint16_t attr_bits {};
     ekg::placement placement {};
   public:
+    explicit item() = default;
+
     item(
       std::string_view insert_value,
       uint16_t insert_attr_bits = 0
@@ -59,6 +61,11 @@ namespace ekg {
       std::vector<ekg::item> insert_item_list,
       uint16_t insert_attr_bits = 0
     );
+
+    /**
+     * Idk my brain buuuobmbobm obmormobmmbrmfdf
+     **/
+    item(std::initializer_list<ekg::item> __l) : std::vector<ekg::item>(__l) {};
 
     ~item();
   public:
@@ -167,7 +174,7 @@ namespace ekg {
       return this;
     }
 
-    t get_value() {
+    t &get_value() {
       return *this->p_value;
     }
 
