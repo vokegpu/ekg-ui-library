@@ -172,3 +172,4 @@
 -- New top-level frame feature, now you can have a top-level frame which bypass the drag action, dragging the top-level frame instead of low-level frame.
 -- Fixed fill pixel imperfect sizes.
 -- Removed trash layout service.
+-- Fixed pixel imperfect on scrolling and on all places.

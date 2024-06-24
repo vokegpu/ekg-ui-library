@@ -31,6 +31,8 @@
 #include "ekg/util/geometry.hpp"
 #include "ekg/gpu/api.hpp"
 
+#define FT_CONFIG_OPTION_USE_PNG
+
 namespace ekg::draw {
   class font_renderer {
   public:

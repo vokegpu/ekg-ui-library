@@ -75,7 +75,8 @@ namespace ekg::ui {
     ekg::item &parent,
     ekg::vec2 &ui_pos,
     ekg::rect &ui_rect,
-    ekg::rect &relative_rect
+    ekg::rect &relative_rect,
+    ekg::mode mode
   );
 
   void listbox_template_render(

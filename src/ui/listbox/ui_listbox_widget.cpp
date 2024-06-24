@@ -178,6 +178,9 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
   ekg::rect scrollable_rect {rect + this->embedded_scroll.scroll};
   ekg::vec2 ui_pos {rect.x, rect.y};
 
+  ekg::ui::listbox *p_ui {static_cast<ekg::ui::listbox*>(this->p_data)};
+  ekg::mode mode {p_ui->get_mode()};
+
   for (uint64_t it {}; it < this->p_item_list->size(); it++) {
     relative_rect.y = 0.0f;
 
@@ -193,7 +196,8 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
       item,
       ui_pos,
       scrollable_rect,
-      relative_rect
+      relative_rect,
+      mode
     );
 
     relative_rect.x += relative_rect.w;
@@ -375,7 +379,8 @@ void ekg::ui::listbox_template_on_event(
   ekg::item &parent,
   ekg::vec2 &ui_pos,
   ekg::rect &ui_rect,
-  ekg::rect &relative_rect
+  ekg::rect &relative_rect,
+  ekg::mode mode
 ) {
   ekg::vec4 &interact {ekg::input::interact()};
   ekg::rect item_rect {};
@@ -383,14 +388,22 @@ void ekg::ui::listbox_template_on_event(
   bool hovering {};
   uint16_t flags {};
   bool contains_flag {};
+  bool multicolumn {mode == ekg::mode::multicolumn};
 
   for (uint64_t it {}; it < parent.size(); it++) {
     ekg::item &item {parent.at(it)};
     ekg::placement &placement {item.unsafe_get_placement()};
 
     item_rect = placement.rect + ui_rect;
-    flags = item.get_attr();
 
+    switch (mode) {
+    case ekg::mode::multicolumn:
+      item_rect.w = ui_rect.w;
+      item_rect.x = ui_rect.x;
+      break;
+    }
+
+    flags = item.get_attr();
     hovering = ekg::rect_collide_vec(item_rect, interact);
 
     if (!ekg_bitwise_contains(flags, ekg::attr::hovering) && hovering) {
@@ -440,7 +453,8 @@ void ekg::ui::listbox_template_on_event(
         item,
         ui_pos,
         ui_rect,
-        relative_rect
+        relative_rect,
+        mode
       );
     }
   }

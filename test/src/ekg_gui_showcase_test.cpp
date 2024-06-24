@@ -193,6 +193,11 @@ bool load_ttf_emoji(ekg::gpu::sampler_t *p_sampler) {
   ekg::draw::font_renderer f_renderer {ekg::f_renderer(ekg::font::normal)};
   ekg::draw::font_face_t &typography_font_face {f_renderer.font_face_emoji};
 
+  // 🏳️‍⚧️
+  // 🐈
+  // 🐮
+  // 🤓
+
   FT_Load_Char(
     typography_font_face.ft_face,
     ekg::utf_string_to_char32("🐈"),
@@ -340,9 +345,13 @@ int32_t showcase_useless_window() {
   glewExperimental = GL_TRUE;
   glewInit();
 
+  /**
+   * For somee reason noto emoji does work :c
+   **/
+
   ekg::runtime_property ekg_runtime_property {
-    .p_font_path = "whitneybook.otf",
-    .p_font_path_emoji = "openmojicolor.ttf",
+    .p_font_path = "Arial.ttf",
+    .p_font_path_emoji = "twemoji.ttf",
     .p_gpu_api = new ekg::os::opengl(),
     .p_os_platform = new ekg::os::sdl(app.p_sdl_win)
   };
@@ -360,6 +369,7 @@ int32_t showcase_useless_window() {
   ekg::frame("tweaks-tob-bar", ekg::vec2(10.0f, 50.0f), ekg::dock::fill)
     ->set_drag(ekg::dock::full)
     ->make_parent_top_level();
+
   ekg::button("-", ekg::dock::none);
   ekg::button("[]", ekg::dock::none);
   ekg::button("x", ekg::dock::none);
@@ -402,7 +412,11 @@ int32_t showcase_useless_window() {
     ->set_resize(ekg::dock::right | ekg::dock::bottom | ekg::dock::left)
     ->set_drag(ekg::dock::top);
 
-  ekg::button("Oi Quica Aqui pa Sair Mumu", ekg::dock::fill | ekg::dock::next)
+  // 🏳️‍⚧️
+  // 🐈
+  // 🐮
+
+  ekg::button("🏳️‍⚧️ 🐈 🐮 Oi Quica Aqui pa Sair Mumu", ekg::dock::fill | ekg::dock::next)
     ->set_text_align(ekg::dock::center)
     ->set_font_size(ekg::font::big)
     ->set_task(
@@ -453,7 +467,9 @@ int32_t showcase_useless_window() {
       )
     },
     ekg::dock::fill | ekg::dock::next
-  )->set_scaled_height(16);
+  )
+  ->set_scaled_height(16)
+  ->set_mode(ekg::mode::multicolumn);
 
   ekg::slider("gostoso", 500.0f, 0.0f, 1000.0f, ekg::dock::fill | ekg::dock::next);
 

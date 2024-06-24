@@ -94,5 +94,20 @@ ekg::rect &ekg::ui::abstract_widget::get_abs_rect() {
     (this->p_data->widget() = (this->dimension + *this->p_parent + *this->p_scroll))
   };
 
+  /**
+   * As pointed here: ekg/layout/docknize -> ekg::layout::docknize -> fill property
+   * 
+   * The pixel imperfect is easy fixed with an int32_t cast.
+   * I do not care anymore about incorrect quads aligned,
+   * too stupid.
+   * 
+   * - Rina.
+   **/
+
+  rect.x = static_cast<int32_t>(rect.x);
+  rect.y = static_cast<int32_t>(rect.y);
+  rect.w = static_cast<int32_t>(rect.w);
+  rect.h = static_cast<int32_t>(rect.h);
+
   return rect;
 }
