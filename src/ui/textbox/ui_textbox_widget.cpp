@@ -34,7 +34,6 @@ void ekg::ui::textbox_widget::check_nearest_word(ekg::ui::textbox_widget::cursor
     return;
   }
 
-
   ekg::ui::textbox_widget::cursor_pos &target_cursor_pos {
     cursor.pos[3] == cursor.pos[0] ? cursor.pos[0] : cursor.pos[1]
   };

@@ -25,6 +25,8 @@
 #ifndef EKG_H
 #define EKG_H
 
+#pragma STDC FENV_ACCESS ON
+
 #include "ekg/core/runtime.hpp"
 #include "ekg/core/task.hpp"
 #include "ekg/util/gui.hpp"

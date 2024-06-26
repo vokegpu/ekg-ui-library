@@ -494,6 +494,8 @@ int32_t showcase_useless_window() {
     )
   };
 
+  content.erase(content.begin() + 1, content.end());
+
   auto list = ekg::listbox(
     "hello",
     content,

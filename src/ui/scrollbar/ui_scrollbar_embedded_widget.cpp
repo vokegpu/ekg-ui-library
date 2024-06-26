@@ -85,7 +85,7 @@ void ekg::ui::scrollbar_embedded_widget::on_reload() {
 
   switch (p_mother_widget->p_data->get_type()) {
     case ekg::type::frame: {
-      ekg::ui::frame_widget *frame {(ekg::ui::frame_widget *) p_mother_widget};
+      ekg::ui::frame_widget *frame {(ekg::ui::frame_widget*) p_mother_widget};
       frame->p_scroll_embedded = this;
       break;
     }
@@ -306,7 +306,7 @@ void ekg::ui::scrollbar_embedded_widget::on_draw_refresh() {
 
   this->rect_vertical_scroll_bar.h = (
     this->p_rect_mother->h - (
-      out_of_mother_height <= 0.0f ? this->p_rect_mother->h : ekg_max(out_of_mother_height, this->p_rect_mother->h - theme.scrollbar_min_bar_size)
+      static_cast<int32_t>(out_of_mother_height) < 0 ? this->p_rect_mother->h : ekg_max(out_of_mother_height, this->p_rect_mother->h - theme.scrollbar_min_bar_size)
     )
   );
 
@@ -338,7 +338,7 @@ void ekg::ui::scrollbar_embedded_widget::on_draw_refresh() {
 
   this->rect_horizontal_scroll_bar.w = (
     this->p_rect_mother->w - (
-      out_of_mother_width <= 0.0f ? this->p_rect_mother->w : ekg_max(out_of_mother_width, this->p_rect_mother->w - theme.scrollbar_min_bar_size)
+      static_cast<int32_t>(out_of_mother_width) < 0 ? this->p_rect_mother->w : ekg_max(out_of_mother_width, this->p_rect_mother->w - theme.scrollbar_min_bar_size)
     )
   );
 

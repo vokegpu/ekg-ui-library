@@ -35,6 +35,7 @@ namespace ekg::ui {
   public:
     ekg::ui::scrollbar_embedded_widget embedded_scroll {};
     bool was_selected {};
+    ekg::item item_rendering_cache {};
   public:
     void on_create() override;
 
@@ -60,12 +61,15 @@ namespace ekg::ui {
     ekg::rect &relative_rect,
     int32_t item_scaled_height,
     uint64_t header_index,
+    uint64_t &arbitrary_index_pos,
     bool &opened,
     ekg::mode mode
   );
 
   void listbox_template_on_event(
     ekg::os::io_event_serial &io_event_serial,
+    uint64_t arbitrary_index_pos,
+    ekg::item &rendering_cache,
     bool motion,
     bool released,
     bool pressed_select_many,
@@ -77,18 +81,6 @@ namespace ekg::ui {
     ekg::rect &ui_rect,
     ekg::rect &relative_rect,
     ekg::mode mode
-  );
-
-  void listbox_template_render(
-    ekg::ui::listbox *&p_data,
-    ekg::item &parent,
-    ekg::vec2 &ui_pos,
-    ekg::rect &ui_rect,
-    ekg::font &item_font,
-    ekg::rect &relative_rect,
-    float y_scroll,
-    uint64_t pos,
-    bool stop_rendering_items
   );
 }
 

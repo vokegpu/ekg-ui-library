@@ -57,6 +57,7 @@ void ekg::ui::listbox_widget::on_reload() {
   float text_width {};
   int32_t text_lines {};
   uint64_t items_header_size {p_ui->p_value->size()};
+  uint64_t old_cache_size {};
 
   text_height = f_renderer_column_header.get_text_height();
   bool opened {};
@@ -79,6 +80,7 @@ void ekg::ui::listbox_widget::on_reload() {
     }
 
     relative_rect.w = placement.rect.w;
+    arbitrary_index_pos = 0;
 
     if (
         ekg_bitwise_contains(column_header_dock_flags, ekg::dock::top) ||
@@ -91,6 +93,7 @@ void ekg::ui::listbox_widget::on_reload() {
         relative_rect,
         item_scaled_height,
         it,
+        arbitrary_index_pos,
         opened,
         mode
       );
@@ -102,11 +105,24 @@ void ekg::ui::listbox_widget::on_reload() {
         relative_rect,
         item_scaled_height,
         it,
+        arbitrary_index_pos,
         opened,
         mode
       );
 
       // do here <bla>
+    }
+
+    if (it >= this->item_rendering_cache.size()) {
+      this->item_rendering_cache.emplace_back().resize(arbitrary_index_pos);
+    } else {
+      ekg::item &rendering_cache {this->item_rendering_cache.at(it)};
+
+      if (arbitrary_index_pos < rendering_cache.size()) {
+        rendering_cache.erase(rendering_cache.begin() + arbitrary_index_pos + 1, rendering_cache.end());
+      } else {
+        rendering_cache.resize(arbitrary_index_pos);
+      }
     }
 
     placement.rect_text.w = text_width;
@@ -180,13 +196,19 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
   ekg::ui::listbox *p_ui {static_cast<ekg::ui::listbox*>(this->p_data)};
   ekg::mode mode {p_ui->get_mode()};
+  uint64_t arbitrary_index_pos {};
 
   for (uint64_t it {}; it < p_ui->p_value->size(); it++) {
     relative_rect.y = 0.0f;
+    arbitrary_index_pos = 0;
 
+    ekg::item &rendering_cache {this->item_rendering_cache.at(it)};
     ekg::item &item {p_ui->p_value->at(it)};
+
     ekg::ui::listbox_template_on_event(
       io_event_serial,
+      arbitrary_index_pos,
+      rendering_cache,
       motion,
       released,
       pressed_select_many,
@@ -209,6 +231,10 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     if (relative_rect.y > relative_largest_rect.h) {
       relative_largest_rect.h = relative_rect.y;
     }
+
+    for (ekg::item &itemms : rendering_cache) {
+      std::cout << itemms.get_value() << std::endl;
+    }
   }
 
   this->embedded_scroll.rect_child = relative_largest_rect;
@@ -229,6 +255,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
   ekg::rect &rect {this->get_abs_rect()};
   ekg::ui::listbox *p_ui {static_cast<ekg::ui::listbox*>(this->p_data)};
   ekg::service::theme &theme {ekg::theme()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_item_font_size())};
 
   this->embedded_scroll.clamp_scroll();
 
@@ -237,34 +264,78 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
 
   ekg::draw::rect(rect, theme.listbox_background, ekg::draw_mode::filled, ekg_layer(ekg::layer::background));
 
-  ekg::rect relative_rect {};
-  ekg::font item_font {p_ui->get_item_font_size()};
-
-  uint64_t arbitrary_index_pos {};
   ekg::rect scrollable_rect {rect + this->embedded_scroll.scroll};
-  bool stop_rendering_items {};
-  ekg::vec2 ui_pos {rect.x, rect.y};
+  ekg::rect item_rect {};
 
-  for (uint64_t it {}; it < p_ui->p_value->size(); it++) {
-    arbitrary_index_pos = 0;
+  float top_place {scrollable_rect.y - rect.h};
+  float bottom_place {scrollable_rect.y + rect.h};
+  uint16_t flags {};
 
-    ekg::item &item {p_ui->p_value->at(it)};
-    ekg::placement &placement {item.unsafe_get_placement()};
+  for (uint64_t it_header {}; it_header < this->item_rendering_cache.size(); it_header++) {
+    ekg::item &item_header {this->item_rendering_cache.at(it_header)};
 
-    ekg::ui::listbox_template_render(
-      p_ui,
-      item,
-      ui_pos,
-      scrollable_rect,
-      item_font,
-      relative_rect,
-      this->embedded_scroll.scroll.y,
-      arbitrary_index_pos,
-      stop_rendering_items
-    );
+    for (uint64_t it_item {}; it_item < item_header.size(); it_item++) {
+      ekg::item &item {item_header.at(it_item)};
+      ekg::placement &placement {item.unsafe_get_placement()};
 
-    if (stop_rendering_items) {
-      break;
+      item_rect = placement.rect + scrollable_rect;
+      if (item_rect.y > top_place) {
+        flags = item.get_attr();
+
+        ekg::draw::rect(
+          item_rect,
+          theme.listbox_item_background,
+          ekg::draw_mode::filled,
+          ekg_layer(ekg::layer::sub_background)
+        );
+
+        if (ekg_bitwise_contains(flags, ekg::attr::hovering)) {
+          ekg::draw::rect(
+            item_rect,
+            theme.listbox_item_highlight,
+            ekg::draw_mode::filled,
+            ekg_layer(ekg::layer::highlight)
+          );
+
+          ekg::draw::rect(
+            item_rect,
+            theme.listbox_item_highlight_outline,
+            ekg::draw_mode::outline
+          );
+        }
+
+        if (ekg_bitwise_contains(flags, ekg::attr::focused)) {
+          ekg::draw::rect(
+            item_rect,
+            theme.listbox_item_focused,
+            ekg::draw_mode::filled,
+            ekg_layer(ekg::layer::activity)
+          );
+
+          ekg::draw::rect(
+            item_rect,
+            theme.listbox_item_highlight_outline,
+            ekg::draw_mode::outline
+          );
+        }
+
+        f_renderer.blit(
+          item.get_value(),
+          item_rect.x + placement.rect_text.x,
+          item_rect.y + placement.rect_text.y,
+          theme.listbox_item_string
+        );
+
+        ekg::draw::rect(
+          item_rect,
+          theme.listbox_item_outline,
+          ekg::draw_mode::outline
+        );
+      }
+
+      if (item_rect.y + item_rect.h > bottom_place) {
+        break;
+      }
     }
   }
 
@@ -281,6 +352,7 @@ void ekg::ui::listbox_template_reload(
   ekg::rect &relative_rect,
   int32_t item_scaled_height,
   uint64_t header_index,
+  uint64_t &arbitrary_index_pos,
   bool &opened,
   ekg::mode mode
 ) {
@@ -346,6 +418,8 @@ void ekg::ui::listbox_template_reload(
       opened = true;
     }
 
+    arbitrary_index_pos++;
+
     if (!item.empty()) {
       relative_rect.x += theme.listbox_subitem_offset_space * first_index_if_multicolumn_enabled;
       relative_rect.w -= theme.listbox_subitem_offset_space * first_index_if_multicolumn_enabled;
@@ -357,6 +431,7 @@ void ekg::ui::listbox_template_reload(
         relative_rect,
         item_scaled_height,
         header_index,
+        arbitrary_index_pos,
         opened,
         mode
       );
@@ -376,6 +451,8 @@ void ekg::ui::listbox_template_reload(
 
 void ekg::ui::listbox_template_on_event(
   ekg::os::io_event_serial &io_event_serial,
+  uint64_t arbitrary_index_pos,
+  ekg::item &rendering_cache,
   bool motion,
   bool released,
   bool pressed_select_many,
@@ -395,6 +472,7 @@ void ekg::ui::listbox_template_on_event(
   uint16_t flags {};
   bool contains_flag {};
   bool multicolumn {mode == ekg::mode::multicolumn};
+  uint64_t rendering_cache_size {rendering_cache.size()};
 
   for (uint64_t it {}; it < parent.size(); it++) {
     ekg::item &item {parent.at(it)};
@@ -447,9 +525,16 @@ void ekg::ui::listbox_template_on_event(
     placement.rect.y = relative_rect.y;
     relative_rect.y += placement.rect.h + ekg_pixel;
 
+    if (arbitrary_index_pos < rendering_cache_size) {
+      rendering_cache.at(arbitrary_index_pos) = item;
+      arbitrary_index_pos++;
+    }
+
     if (!item.empty() && ekg_bitwise_contains(item.get_attr(), ekg::attr::opened)) {
       ekg::ui::listbox_template_on_event(
         io_event_serial,
+        arbitrary_index_pos,
+        rendering_cache,
         motion,                                                                    
         released,
         pressed_select_many,
@@ -462,111 +547,6 @@ void ekg::ui::listbox_template_on_event(
         relative_rect,
         mode
       );
-    }
-  }
-}
-
-void ekg::ui::listbox_template_render(
-  ekg::ui::listbox *&p_data,
-  ekg::item &parent,
-  ekg::vec2 &ui_pos,
-  ekg::rect &ui_rect,
-  ekg::font &item_font,
-  ekg::rect &relative_rect,
-  float y_scroll,
-  uint64_t pos,
-  bool stop_rendering_items
-) {
-  ekg::service::theme &theme {ekg::theme()};
-  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(item_font)};
-  ekg::rect item_rect {};
-
-  float bottom_place {ui_pos.y + ui_rect.h};
-  uint16_t flags {};
-
-  uint64_t it {};
-  if (!pos) {
-    // do dynamic index calc based on y-scroll
-  }
-
-  pos++;
-
-  for (it = it; it < parent.size(); it++) {
-    ekg::item &item {parent.at(it)};
-    ekg::placement &placement {item.unsafe_get_placement()};
-
-    item_rect = placement.rect + ui_rect;
-    if (item_rect.y > ui_pos.y - item_rect.h) {
-      flags = item.get_attr();
-
-      ekg::draw::rect(
-        item_rect,
-        theme.listbox_item_background,
-        ekg::draw_mode::filled,
-        ekg_layer(ekg::layer::sub_background)
-      );
-
-      if (ekg_bitwise_contains(flags, ekg::attr::hovering)) {
-        ekg::draw::rect(
-          item_rect,
-          theme.listbox_item_highlight,
-          ekg::draw_mode::filled,
-          ekg_layer(ekg::layer::highlight)
-        );
-
-        ekg::draw::rect(
-          item_rect,
-          theme.listbox_item_highlight_outline,
-          ekg::draw_mode::outline
-        );
-      }
-
-      if (ekg_bitwise_contains(flags, ekg::attr::focused)) {
-        ekg::draw::rect(
-          item_rect,
-          theme.listbox_item_focused,
-          ekg::draw_mode::filled,
-          ekg_layer(ekg::layer::activity)
-        );
-
-        ekg::draw::rect(
-          item_rect,
-          theme.listbox_item_highlight_outline,
-          ekg::draw_mode::outline
-        );
-      }
-
-      f_renderer.blit(
-        item.get_value(),
-        item_rect.x + placement.rect_text.x,
-        item_rect.y + placement.rect_text.y,
-        theme.listbox_item_string
-      );
-
-      ekg::draw::rect(
-        item_rect,
-        theme.listbox_item_outline,
-        ekg::draw_mode::outline
-      );
-    }
-
-    if (!item.empty() && ekg_bitwise_contains(flags, ekg::attr::opened)) {
-      ekg::ui::listbox_template_render(
-        p_data,
-        item,
-        ui_pos,
-        ui_rect,
-        item_font,
-        relative_rect,
-        y_scroll,
-        pos,
-        stop_rendering_items
-      );
-    }
-
-    if (item_rect.y + item_rect.h > bottom_place) {
-      stop_rendering_items = true;
-      break;
     }
   }
 }

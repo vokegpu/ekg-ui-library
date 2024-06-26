@@ -12,5 +12,6 @@ compile_commands = "cmake-build-debug/compile_commands.json"
 
 homepage = "docs/homepage.md"
 paths = [
-  "docs/gettingstarted.md"
+  "docs/gettingstarted.md",
+  "docs/devlog.md"
 ]
