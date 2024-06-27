@@ -68,7 +68,7 @@ namespace ekg::ui {
 
   void listbox_template_on_event(
     ekg::os::io_event_serial &io_event_serial,
-    uint64_t arbitrary_index_pos,
+    uint64_t &arbitrary_index_pos,
     ekg::item &rendering_cache,
     bool motion,
     bool released,

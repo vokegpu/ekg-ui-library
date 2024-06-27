@@ -57,6 +57,13 @@ ekg::placement &ekg::item::unsafe_get_placement() {
   return this->placement;
 }
 
+void ekg::item::unsafe_set_visible_count(uint64_t count) {
+  this->visible_count = count;
+}
+
+uint64_t ekg::item::get_visible_count() {
+  return this->visible_count;
+}
 
 void ekg::item::set_value(std::string_view new_value) {
   this->value = new_value;

@@ -48,6 +48,7 @@ namespace ekg {
     std::string value {};
     uint16_t attr_bits {};
     ekg::placement placement {};
+    uint64_t visible_count {};
   public:
     explicit item() = default;
 
@@ -69,7 +70,17 @@ namespace ekg {
 
     ~item();
   public:
+    /**
+     * Get the item-placement used for rendering.
+     * Unsafe due the return as reference, bypassing the rendering states.
+     **/
     ekg::placement &unsafe_get_placement();
+
+    /**
+     * Set the visible count used in rendering cache.
+     * Unsafe due the performanceless if visible count is higher than the truly-visible.
+     **/
+    void unsafe_set_visible_count(uint64_t count);
   public:
     void set_value(std::string_view new_value);
     
@@ -82,6 +93,12 @@ namespace ekg {
     void set_text_align(uint16_t dock);
 
     uint16_t get_text_align();
+
+    /**
+     * Get the amount of visible items.
+     * Note: Reserved purpose-only for rendering cache.
+     **/
+    uint64_t get_visible_count();
   };
 
   struct log {

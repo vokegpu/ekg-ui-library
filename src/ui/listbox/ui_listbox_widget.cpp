@@ -222,6 +222,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
       mode
     );
 
+    rendering_cache.unsafe_set_visible_count(arbitrary_index_pos);
     relative_rect.x += relative_rect.w;
 
     if (relative_rect.x > relative_largest_rect.w) {
@@ -230,10 +231,6 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
     if (relative_rect.y > relative_largest_rect.h) {
       relative_largest_rect.h = relative_rect.y;
-    }
-
-    for (ekg::item &itemms : rendering_cache) {
-      std::cout << itemms.get_value() << std::endl;
     }
   }
 
@@ -274,7 +271,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
   for (uint64_t it_header {}; it_header < this->item_rendering_cache.size(); it_header++) {
     ekg::item &item_header {this->item_rendering_cache.at(it_header)};
 
-    for (uint64_t it_item {}; it_item < item_header.size(); it_item++) {
+    for (uint64_t it_item {}; it_item < item_header.get_visible_count(); it_item++) {
       ekg::item &item {item_header.at(it_item)};
       ekg::placement &placement {item.unsafe_get_placement()};
 
@@ -451,7 +448,7 @@ void ekg::ui::listbox_template_reload(
 
 void ekg::ui::listbox_template_on_event(
   ekg::os::io_event_serial &io_event_serial,
-  uint64_t arbitrary_index_pos,
+  uint64_t &arbitrary_index_pos,
   ekg::item &rendering_cache,
   bool motion,
   bool released,
@@ -526,7 +523,7 @@ void ekg::ui::listbox_template_on_event(
     relative_rect.y += placement.rect.h + ekg_pixel;
 
     if (arbitrary_index_pos < rendering_cache_size) {
-      rendering_cache.at(arbitrary_index_pos) = item;
+      rendering_cache[arbitrary_index_pos] = item;
       arbitrary_index_pos++;
     }
 
