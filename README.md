@@ -1,6 +1,6 @@
 # 🐄 EKG 🐈
 
-EKG is a reitaned UI-toolkit/UI library to create fancy high-perfmance GUIs, always looking for low-specs hardware.
+EKG is a retained UI-toolkit/UI library to create fancy high-perfmance GUIs, always looking for low-specs hardware.
 
 Documentation: [here](https://docs.hdoc.io/vokegpu/ekg/)  
 Development updates: [here](https://github.com/orgs/gamedevs-do-apocalipse/discussions/5)
