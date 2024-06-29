@@ -170,7 +170,7 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
   bool should_reload_widget {};
   bool skip_widget {};
   float max_previous_height {};
-  
+
   ekg::layout::extent::h = {};
   ekg::rect h_extent_backup {};
   ekg::rect v_extent_backup {};
@@ -185,8 +185,9 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
 
     // @TODO Prevent useless scrolling reload.
     p_widgets->on_reload();
+    type = p_widgets->p_data->get_type();
 
-    if (p_widgets->p_data->get_type() == ekg::type::scrollbar) {
+    if (type == ekg::type::scrollbar) {
       it++;
       continue;
     }
@@ -303,6 +304,19 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
     prev_widget_layout = layout;
     prev_flags = flags;
     it++;
+
+    switch (type) {
+    case ekg::type::listbox:
+      /**
+       * Stupid hack to update the listbox rendedring-items cache.
+       * But I will change it soon.
+       **/
+      p_widgets->flag.hovered = true;
+      p_widgets->on_event(ekg::core->io_event_serial);
+      p_widgets->flag.hovered = false;
+
+      break;
+    }
   }
 
   if (has_scroll_embedded && !is_vertical_enabled && type == ekg::type::frame) {

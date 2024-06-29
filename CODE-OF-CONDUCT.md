@@ -63,14 +63,15 @@ public:
   ekg::ui::abstract *p_ui {};
 };
 ```
-
+For set the value-type of widget, you must extends the class with `ekg::value_t<t>`.  
 E.g. creating a drop down frame UI element:
 - Each setter method, must return the element instance (buildable pattern)
+
 
 ```cpp
 // include/ui/frame ui_drop_down_frame.hpp
 namespace ekg::ui {...
-class drop_down_frame : public ekg::ui::abstract {
+class drop_down_frame : public ekg::ui::abstract, public ekg::value_t<std::string> {
 public:
   ...
 
@@ -84,6 +85,8 @@ class drop_down_frame_widget : public ekg::ui::abstract_widget {
 public:
 };
 ```
+
+With `ekg::value_t<t>` extends you are able to transfer ownership and store on other place, like: `p_widget->p_data->get_value()`. 
 
 Registering the widget requires two fundamental steps: 
 - Insert the type at enum `ekg::type::drop_down_frame`

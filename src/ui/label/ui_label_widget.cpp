@@ -29,10 +29,10 @@
 void ekg::ui::label_widget::on_reload() {
   abstract_widget::on_reload();
 
-  auto p_ui {(ekg::ui::label *) this->p_data};
-  auto &rect {this->get_abs_rect()};
-  auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
-  auto scaled_height {p_ui->get_scaled_height()};
+  ekg::ui::label *p_ui {static_cast<ekg::ui::label*>(this->p_data)};
+  ekg::rect &rect {this->get_abs_rect()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  int32_t scaled_height {p_ui->get_scaled_height()};
 
   float text_width {f_renderer.get_text_width(p_ui->get_value(), scaled_height)};
   float text_height {f_renderer.get_text_height()};
@@ -59,10 +59,10 @@ void ekg::ui::label_widget::on_reload() {
 }
 
 void ekg::ui::label_widget::on_draw_refresh() {
-  auto p_ui {(ekg::ui::label *) this->p_data};
-  auto &rect {this->get_abs_rect()};
-  auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
-  auto &theme {ekg::theme()};
+  ekg::ui::label *p_ui {static_cast<ekg::ui::label*>(this->p_data)};
+  ekg::rect &rect {this->get_abs_rect()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  ekg::service::theme &theme {ekg::theme()};
 
   if (p_ui->was_changed()) {
     ekg::reload(this);

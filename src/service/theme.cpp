@@ -105,15 +105,21 @@ void ekg::service::theme::gen_default_dark_theme() {
 
   /* Listbox */
 
-  this->listbox_item_outline        = ekg::color(141, 141, 141, 0);
-  this->listbox_item_background     = ekg::color(85, 85, 85, 0);
-  this->listbox_item_string         = ekg::color(202, 202, 202, 255);
-  this->listbox_item_highlight      = ekg::color(44, 166, 255, 50);
+  this->listbox_header_background      = ekg::color(85, 85, 85, 255);
+  this->listbox_header_highlight       = ekg::color(44, 166, 255, 50);
+  this->listbox_header_outline         = ekg::color(141, 141, 141, 100);
+  this->listbox_header_string          = ekg::color(202, 202, 202, 255);
+
+  this->listbox_item_outline           = ekg::color(141, 141, 141, 0);
+  this->listbox_item_background        = ekg::color(85, 85, 85, 0);
+  this->listbox_item_string            = ekg::color(202, 202, 202, 255);
+  this->listbox_item_highlight         = ekg::color(44, 166, 255, 50);
   this->listbox_item_highlight_outline = ekg::color(141, 141, 141, 0);
-  this->listbox_item_focused_outline = ekg::color(141, 141, 141, 0);
-  this->listbox_item_focused        = ekg::color(44, 166, 255, 100);
-  this->listbox_outline             = ekg::color(141, 141, 141, 100);
-  this->listbox_background          = ekg::color(85, 85, 85, 50);
+  this->listbox_item_focused_outline   = ekg::color(141, 141, 141, 0);
+  this->listbox_item_focused           = ekg::color(44, 166, 255, 100);
+
+  this->listbox_outline                = ekg::color(141, 141, 141, 100);
+  this->listbox_background             = ekg::color(85, 85, 85, 50);
 }
 
 void ekg::service::theme::gen_default_light_theme() {
@@ -167,6 +173,11 @@ void ekg::service::theme::gen_default_light_theme() {
   this->scrollbar_highlight = ekg::color(44, 166, 255, 50);
   this->scrollbar_pixel_thickness = 5;
   this->scrollbar_min_bar_size = 30.0f;
+
+  this->listbox_header_background      = ekg::color(204, 204, 204, 255);
+  this->listbox_header_highlight       = ekg::color(44, 166, 255, 50);
+  this->listbox_header_outline         = ekg::color(202, 207, 222, 50);
+  this->listbox_header_string          = ekg::color(141, 141, 141, 255);
 
   this->listbox_item_background = ekg::color(204, 204, 204, 0);
   this->listbox_item_string = ekg::color(141, 141, 141, 255);

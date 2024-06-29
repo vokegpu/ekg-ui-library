@@ -366,7 +366,10 @@ int32_t showcase_useless_window() {
     ->set_drag(ekg::dock::top)
     ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
 
-  ekg::frame("tweaks-tob-bar", ekg::vec2(10.0f, 50.0f), ekg::dock::fill)
+  auto p_terminal = ekg::textbox("meow", "meow oi", ekg::dock::fill | ekg::dock::next)
+    ->set_scaled_height(12);
+
+  ekg::frame("tweaks-tob-bar", ekg::vec2(10.0f, 50.0f), ekg::dock::fill | ekg::dock::next)
     ->set_drag(ekg::dock::full)
     ->make_parent_top_level();
 
@@ -397,9 +400,6 @@ int32_t showcase_useless_window() {
   ekg::label("DPI tiling:", ekg::dock::next);
   auto p_dpi_tiling = ekg::slider("DPI tiling", 4.0f, 1.0f, 50.0f, ekg::dock::fill);
   p_dpi_tiling->transfer_ownership(&ekg::ui::dpi_tiling);
-
-  auto p_terminal = ekg::textbox("meow", "meow oi", ekg::dock::fill | ekg::dock::next)
-    ->set_scaled_height(4);
 
   ekg::scrollbar("scrollbar omg");
   ekg::pop_group();
@@ -494,7 +494,7 @@ int32_t showcase_useless_window() {
     )
   };
 
-  content.erase(content.begin() + 1, content.end());
+  //content.erase(content.begin() + 1, content.end());
 
   auto list = ekg::listbox(
     "hello",
@@ -671,6 +671,7 @@ int32_t showcase_useless_window() {
     ->set_layer(&ttf_cow_sampler, ekg::layer::background);
 
   p_terminal->set_layer(&ttf_cow_sampler, ekg::layer::background);
+  p_terminal->set_layer(&ttf_cow_sampler, ekg::layer::highlight);
 
   #ifdef application_enable_stb_image_test
 
@@ -743,7 +744,10 @@ int32_t showcase_useless_window() {
     
     if (ekg::log::buffered) {
       if (p_terminal->p_value->size() >= 100000) {
-        p_terminal->p_value->erase(p_terminal->p_value->begin(), p_terminal->p_value->end() - 10000);
+        p_terminal->p_value->erase(
+          p_terminal->p_value->begin(),
+          p_terminal->p_value->end() - 10000
+        );
       }
 
       ekg::utf_decode(ekg::log::buffer.str(), p_terminal->get_value());

@@ -42,7 +42,6 @@ void ekg::ui::listbox_widget::on_reload() {
   float offset {ekg::find_min_offset(text_height, dimension_offset)};
 
   this->dimension.h = (text_height + dimension_offset) * static_cast<float>(p_ui->get_scaled_height());
-
   this->min_size.x = ekg_min(this->min_size.x, text_height);
   this->min_size.y = ekg_min(this->min_size.y, text_height);
 
@@ -72,12 +71,20 @@ void ekg::ui::listbox_widget::on_reload() {
     text_lines = 0;
     text_width = f_renderer_column_header.get_text_width(item.get_value(), text_lines);
 
-    placement.rect.w = ekg_min(placement.rect.w, text_width);
+    if (ekg_bitwise_contains(column_header_dock_flags, ekg::dock::fill)) {
+      /**
+       * Check for the note in `ekg/layout/docknize.hpp`::docknize widgets function,
+       * for understand the reason of integer 32bits casting here.
+       **/      
+      placement.rect.w = static_cast<int32_t>((this->dimension.w - items_header_size) / items_header_size);
+    } else {
+      placement.rect.w = ekg_min(placement.rect.w, text_width);
+    }
+
     placement.rect.h = (text_height + dimension_offset) * static_cast<float>(item_scaled_height);
 
-    if (ekg_bitwise_contains(column_header_dock_flags, ekg::dock::fill)) {
-      placement.rect.w = this->dimension.w / items_header_size;
-    }
+    placement.rect.x = relative_rect.x;
+    placement.rect.y = relative_rect.y;
 
     relative_rect.w = placement.rect.w;
     arbitrary_index_pos = 0;
@@ -86,6 +93,9 @@ void ekg::ui::listbox_widget::on_reload() {
         ekg_bitwise_contains(column_header_dock_flags, ekg::dock::top) ||
         !ekg_bitwise_contains(column_header_dock_flags, ekg::dock::bottom)
        ) {
+
+      relative_rect.y += placement.rect.h + ekg_pixel;
+
       ekg::ui::listbox_template_reload(
         item,
         rect,
@@ -139,7 +149,7 @@ void ekg::ui::listbox_widget::on_reload() {
     mask.insert({&placement.rect_text, placement.text_dock_flags});
     mask.docknize();
 
-    relative_rect.x += relative_rect.w;
+    relative_rect.x += relative_rect.w + ekg_pixel;
 
     if (relative_rect.x > relative_largest_rect.w) {
       relative_largest_rect.w = relative_rect.x;
@@ -163,8 +173,7 @@ void ekg::ui::listbox_widget::on_pre_event(ekg::os::io_event_serial &io_event_se
   this->embedded_scroll.on_pre_event(io_event_serial);
   this->flag.absolute = (
     this->embedded_scroll.is_dragging_bar() ||
-    this->embedded_scroll.flag.activity ||
-    this->flag.state
+    this->embedded_scroll.flag.activity ||    this->flag.state
   );
 }
 
@@ -203,7 +212,27 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     arbitrary_index_pos = 0;
 
     ekg::item &rendering_cache {this->item_rendering_cache.at(it)};
-    ekg::item &item {p_ui->p_value->at(it)};
+    ekg::item &item_header {p_ui->p_value->at(it)};
+
+    /**
+     * Do not copy all the content by simple one reason:
+     * Copying the the major header from `p_value` to rendering cache element,
+     * erase ALL reserved memory from reload, re-reserving is performanceless here.
+     * 
+     * Passing only necessary stuff (attributes, value, etc). 
+     **/
+
+    rendering_cache.unsafe_get_placement() = item_header.unsafe_get_placement();
+    rendering_cache.set_value(item_header.get_value());
+    rendering_cache.set_attr(item_header.get_attr());
+    rendering_cache.set_text_align(item_header.get_text_align());
+
+    ekg::placement &placement_header {item_header.unsafe_get_placement()};
+
+    placement_header.rect.x = relative_rect.x;
+    placement_header.rect.y = relative_rect.y;
+
+    relative_rect.y += placement_header.rect.h + ekg_pixel;
 
     ekg::ui::listbox_template_on_event(
       io_event_serial,
@@ -215,7 +244,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
       pressed_select,
       pressed_open,
       this->was_selected,
-      item,
+      item_header,
       ui_pos,
       scrollable_rect,
       relative_rect,
@@ -223,7 +252,9 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     );
 
     rendering_cache.unsafe_set_visible_count(arbitrary_index_pos);
-    relative_rect.x += relative_rect.w;
+
+    relative_rect.w = placement_header.rect.w;
+    relative_rect.x += relative_rect.w + ekg_pixel;
 
     if (relative_rect.x > relative_largest_rect.w) {
       relative_largest_rect.w = relative_rect.x;
@@ -270,6 +301,46 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
 
   for (uint64_t it_header {}; it_header < this->item_rendering_cache.size(); it_header++) {
     ekg::item &item_header {this->item_rendering_cache.at(it_header)};
+    ekg::placement &placement_header {item_header.unsafe_get_placement()};
+
+    item_rect = placement_header.rect + scrollable_rect;
+    flags = item_header.get_attr();
+
+    ekg::draw::rect(
+      item_rect,
+      theme.listbox_header_background,
+      ekg::draw_mode::filled,
+      ekg_layer(ekg::layer::background)
+    );
+
+    if (ekg_bitwise_contains(flags, ekg::attr::hovering)) {
+      ekg::draw::rect(
+        item_rect,
+        theme.listbox_header_highlight,
+        ekg::draw_mode::filled,
+        ekg_layer(ekg::layer::highlight)
+      );
+
+      ekg::draw::rect(
+        item_rect,
+        theme.listbox_header_highlight_outline,
+        ekg::draw_mode::outline,
+        ekg_layer(ekg::layer::highlight)
+      );
+    }
+
+    f_renderer.blit(
+      item_header.get_value(),
+      item_rect.x + placement_header.rect_text.x,
+      item_rect.y + placement_header.rect_text.y,
+      theme.listbox_header_string
+    );
+
+    ekg::draw::rect(
+      item_rect,
+      theme.listbox_header_outline,
+      ekg::draw_mode::outline
+    );
 
     for (uint64_t it_item {}; it_item < item_header.get_visible_count(); it_item++) {
       ekg::item &item {item_header.at(it_item)};
@@ -403,7 +474,7 @@ void ekg::ui::listbox_template_reload(
       ekg::axis::horizontal,
       placement.rect.w
     );
-    
+
     mask.insert({&placement.rect_text, placement.text_dock_flags});
     mask.docknize();
 
