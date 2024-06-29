@@ -36,6 +36,9 @@ namespace ekg::ui {
     ekg::ui::scrollbar_embedded_widget embedded_scroll {};
     bool was_selected {};
     ekg::item item_rendering_cache {};
+    ekg::rect rect_content_abs {};
+    ekg::rect rect_content_place {};
+    float column_header_height {};
   public:
     void on_create() override;
 

@@ -494,7 +494,11 @@ int32_t showcase_useless_window() {
     )
   };
 
-  //content.erase(content.begin() + 1, content.end());
+  for (uint64_t it {}; it < content.size(); it++) {
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+  }
 
   auto list = ekg::listbox(
     "hello",

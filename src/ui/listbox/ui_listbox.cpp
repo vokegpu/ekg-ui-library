@@ -68,21 +68,6 @@ float ekg::ui::listbox::get_width() {
   return this->rect_widget.w;
 }
 
-ekg::ui::listbox *ekg::ui::listbox::set_scaled_height(int32_t h) {
-  if (this->scaled_height != h) {
-    this->scaled_height = h;
-
-    ekg::reload(this->id);
-    ekg::synclayout(this->parent_id);
-  }
-
-  return this;
-}
-
-int32_t ekg::ui::listbox::get_scaled_height() {
-  return this->scaled_height;
-}
-
 float ekg::ui::listbox::get_height() {
   return this->rect_widget.h;
 }
@@ -105,13 +90,41 @@ ekg::mode ekg::ui::listbox::get_mode() {
   return this->current_mode;
 }
 
+ekg::ui::listbox *ekg::ui::listbox::set_scaled_height(int32_t h) {
+  if (this->scaled_height != h) {
+    this->scaled_height = h;
+    ekg::reload(this->id);
+  }
+
+  return this;
+}
+
+int32_t ekg::ui::listbox::get_scaled_height() {
+  return this->scaled_height;
+}
+
+ekg::ui::listbox *ekg::ui::listbox::set_column_header_scaled_height(int32_t h) {
+  if (this->column_header_scaled_height != h) {
+    this->column_header_scaled_height = h;
+
+    ekg::reload(this->id);
+    ekg::synclayout(this->parent_id);
+  }
+
+  return this;
+}
+
+int32_t ekg::ui::listbox::get_column_header_scaled_height() {
+  return this->column_header_scaled_height;
+}
+
 ekg::ui::listbox *ekg::ui::listbox::set_item_scaled_height(int32_t h) {
   if (this->item_scaled_height != h) {
     this->item_scaled_height = h;
     ekg::reload(this->id);
   }
 
-  return this;  
+  return this;
 }
 
 int32_t ekg::ui::listbox::get_item_scaled_height() {

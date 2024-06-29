@@ -36,7 +36,9 @@ namespace ekg::ui {
     ekg::font item_font_size {};
     ekg::font column_header_font_size {};
     ekg::mode current_mode {};
+
     uint16_t column_header_dock_flags {};
+    int32_t column_header_scaled_height {1};
     int32_t item_scaled_height {1};
   public:
     ekg::ui::listbox *set_item_font_size(ekg::font font_size);
@@ -62,6 +64,10 @@ namespace ekg::ui {
     ekg::ui::listbox *set_mode(ekg::mode mode);
 
     ekg::mode get_mode();
+
+    ekg::ui::listbox *set_column_header_scaled_height(int32_t h);
+
+    int32_t get_column_header_scaled_height();
   
     ekg::ui::listbox *set_item_scaled_height(int32_t h);
 

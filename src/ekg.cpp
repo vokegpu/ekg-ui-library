@@ -273,6 +273,7 @@ ekg::ui::listbox *ekg::listbox(
   p_ui->set_place(dock);
   p_ui->set_scaled_height(6);
   p_ui->set_item_font_size(ekg::font::normal);
+  p_ui->set_column_header_font_size(ekg::font::normal);
   p_ui->set_value(item_list);
   p_ui->set_column_header_align(ekg::dock::fill);
 
