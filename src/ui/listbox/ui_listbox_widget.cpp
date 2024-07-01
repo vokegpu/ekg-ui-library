@@ -64,6 +64,8 @@ void ekg::ui::listbox_widget::on_reload() {
 
   bool opened {};
   ekg::mode mode {p_ui->get_mode()};
+  bool is_multicolumn {mode == ekg::mode::multicolumn};
+  float header_relative_x {};
 
   for (uint64_t it {}; it < items_header_size; it++) {
     relative_rect.y = 0.0f;
@@ -87,7 +89,7 @@ void ekg::ui::listbox_widget::on_reload() {
     relative_rect.w = placement.rect.w;
     placement.rect.h = (text_height + dimension_offset) * static_cast<float>(column_header_scaled_height);
 
-    placement.rect.x = relative_rect.x;
+    placement.rect.x = header_relative_x + (is_multicolumn || it == 0);
     placement.rect.y = relative_rect.y;
 
     arbitrary_index_pos = 0;
@@ -151,7 +153,11 @@ void ekg::ui::listbox_widget::on_reload() {
     mask.insert({&placement.rect_text, placement.text_dock_flags});
     mask.docknize();
 
-    relative_rect.x += relative_rect.w + ekg_pixel;
+    /**
+     * The offset-between must be disabled if multicolumn is enabled.
+     **/
+    header_relative_x += relative_rect.w + ekg_pixel;
+    relative_rect.x += relative_rect.w + !is_multicolumn;
 
     if (relative_rect.x > relative_largest_rect.w) {
       relative_largest_rect.w = relative_rect.x;
@@ -174,7 +180,7 @@ void ekg::ui::listbox_widget::on_pre_event(ekg::os::io_event_serial &io_event_se
   this->embedded_scroll.on_pre_event(io_event_serial);
   this->flag.absolute = (
     this->embedded_scroll.is_dragging_bar() ||
-    this->embedded_scroll.flag.activity ||    this->flag.state
+    this->embedded_scroll.flag.activity || this->flag.state
   );
 }
 
@@ -298,13 +304,23 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
   this->rect_content_abs = this->rect_content_place + rect;
   this->embedded_scroll.clamp_scroll();
 
-  ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
+  ekg::draw::sync_scissor(
+    this->scissor,
+    rect,
+    this->p_parent_scissor
+  );
   ekg_draw_assert_scissor();
 
-  ekg::draw::rect(rect, theme.listbox_background, ekg::draw_mode::filled, ekg_layer(ekg::layer::background));
+  ekg::draw::rect(
+    rect,
+    theme.listbox_background,
+    ekg::draw_mode::filled,
+    ekg_layer(ekg::layer::background)
+  );
 
   ekg::rect scrollable_rect {this->rect_content_abs + this->embedded_scroll.scroll};
   ekg::rect item_rect {};
+  ekg::rect scissor_store {};
 
   float top_place {this->rect_content_abs.y};
   float bottom_place {this->rect_content_abs.y + this->rect_content_abs.h};
@@ -327,7 +343,11 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
 
     /* fix scissor to draw the header */
 
-    ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
+    ekg::draw::sync_scissor(
+      this->scissor,
+      rect,
+      this->p_parent_scissor
+    );
 
     ekg::draw::rect(
       item_rect,
@@ -374,14 +394,27 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
 
     /* fix scissor to draw items */
 
-    ekg::draw::sync_scissor(this->scissor, this->rect_content_abs, this->p_parent_scissor);
+    ekg::draw::sync_scissor(
+      this->scissor,
+      this->rect_content_abs,
+      this->p_parent_scissor
+    );
+
+    scissor_store = this->scissor;
 
     for (uint64_t it_item {visible_begin_index}; it_item < visible_count; it_item++) {
       ekg::item &item {item_header.at(it_item)};
       ekg::placement &placement {item.unsafe_get_placement()};
 
       item_rect = placement.rect + scrollable_rect;
+      item_rect.w = placement_header.rect.w;
       flags = item.get_attr();
+
+      ekg::draw::sync_scissor(
+        this->scissor,
+        item_rect,
+        &scissor_store
+      );
 
       ekg::draw::rect(
         item_rect,
@@ -439,6 +472,12 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
     }
   }
 
+  ekg::draw::sync_scissor(
+    this->scissor,
+    rect,
+    this->p_parent_scissor
+  );
+
   this->embedded_scroll.scissor = this->scissor;
   this->embedded_scroll.on_draw_refresh();
 
@@ -473,7 +512,7 @@ void ekg::ui::listbox_template_reload(
   float offset {};
 
   bool first_index_if_multicolumn_enabled {
-    header_index == 0 && mode == ekg::mode::multicolumn
+    mode == ekg::mode::multicolumn && header_index == 0
   };
 
   for (it = it; it < parent.size(); it++) {

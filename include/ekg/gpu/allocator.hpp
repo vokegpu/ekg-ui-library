@@ -125,7 +125,11 @@ namespace ekg::gpu {
     /*
      * Sync active scissor position.
      */
-    void sync_scissor(ekg::rect &scissor, ekg::rect &rect_child, ekg::rect *p_parent_scissor);
+    void sync_scissor(
+      ekg::rect &scissor,
+      ekg::rect &rect_child,
+      ekg::rect *p_parent_scissor
+    );
   };
 }
 
