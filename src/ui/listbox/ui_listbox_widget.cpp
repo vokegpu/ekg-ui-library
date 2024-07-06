@@ -81,7 +81,8 @@ void ekg::ui::listbox_widget::on_reload() {
        * Check for the note in `ekg/layout/docknize.hpp`::docknize widgets function,
        * for understand the reason of integer 32bits casting here.
        **/
-      placement.rect.w = static_cast<int32_t>((this->dimension.w - items_header_size) / items_header_size);
+      placement.rect.w = static_cast<int32_t>(
+        (this->dimension.w - static_cast<int32_t>(items_header_size)) / static_cast<int32_t>(items_header_size));
     } else {
       placement.rect.w = ekg_min(placement.rect.w, text_width);
     }
@@ -149,7 +150,7 @@ void ekg::ui::listbox_widget::on_reload() {
       ekg::axis::horizontal,
       placement.rect.w
     );
-    
+
     mask.insert({&placement.rect_text, placement.text_dock_flags});
     mask.docknize();
 
@@ -272,7 +273,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     }
   }
 
-  relative_largest_rect.h += largest_rendering_cache_size;
+  relative_largest_rect.h;
   this->embedded_scroll.rect_child = relative_largest_rect;
 }
 
@@ -322,6 +323,9 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
   ekg::rect item_rect {};
   ekg::rect scissor_store {};
 
+  scrollable_rect.x = static_cast<int32_t>(scrollable_rect.x);
+  scrollable_rect.y = static_cast<int32_t>(scrollable_rect.y);
+
   float top_place {this->rect_content_abs.y};
   float bottom_place {this->rect_content_abs.y + this->rect_content_abs.h};
 
@@ -340,6 +344,9 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
 
     item_rect = placement_header.rect + rect;
     flags = item_header.get_attr();
+
+    item_rect.x = static_cast<int32_t>(item_rect.x);
+    item_rect.y = static_cast<int32_t>(item_rect.y);
 
     /* fix scissor to draw the header */
 
@@ -407,7 +414,6 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
       ekg::placement &placement {item.unsafe_get_placement()};
 
       item_rect = placement.rect + scrollable_rect;
-      item_rect.w = placement_header.rect.w;
       flags = item.get_attr();
 
       ekg::draw::sync_scissor(
@@ -511,8 +517,16 @@ void ekg::ui::listbox_template_reload(
   float dimension_offset {text_height / 2};
   float offset {};
 
+  bool first_index {
+    header_index == 0
+  };
+
   bool first_index_if_multicolumn_enabled {
-    mode == ekg::mode::multicolumn && header_index == 0
+    mode == ekg::mode::multicolumn && first_index
+  };
+
+  float additional_offset_if_multicolumn_enabled {
+    (theme.listbox_subitem_offset_space + ekg_pixel) * first_index_if_multicolumn_enabled
   };
 
   for (it = it; it < parent.size(); it++) {
@@ -530,7 +544,7 @@ void ekg::ui::listbox_template_reload(
     placement.rect.x = relative_rect.x;
     placement.rect.y = relative_rect.y;
 
-    placement.rect.w = ekg_min(relative_rect.w, text_width);
+    placement.rect.w = relative_rect.w;
     placement.rect.h = (text_height + dimension_offset) * static_cast<float>(item_scaled_height);
 
     placement.rect_text.w = text_width;
@@ -557,8 +571,8 @@ void ekg::ui::listbox_template_reload(
     arbitrary_index_pos++;
 
     if (!item.empty()) {
-      relative_rect.x += theme.listbox_subitem_offset_space * first_index_if_multicolumn_enabled;
-      relative_rect.w -= theme.listbox_subitem_offset_space * first_index_if_multicolumn_enabled;
+      relative_rect.x += additional_offset_if_multicolumn_enabled;
+      relative_rect.w -= additional_offset_if_multicolumn_enabled;
 
       ekg::ui::listbox_template_reload(
         item,
@@ -572,8 +586,8 @@ void ekg::ui::listbox_template_reload(
         mode
       );
 
-      relative_rect.x -= theme.listbox_subitem_offset_space * first_index_if_multicolumn_enabled;
-      relative_rect.w += theme.listbox_subitem_offset_space * first_index_if_multicolumn_enabled;
+      relative_rect.x -= additional_offset_if_multicolumn_enabled;
+      relative_rect.w += additional_offset_if_multicolumn_enabled;
     }
 
     if (just_flagged_cursive_opened) {
@@ -581,7 +595,7 @@ void ekg::ui::listbox_template_reload(
     }
 
     relative_rect.y -= (relative_rect.y - placement.rect.y) * !opened;
-    relative_rect.y += placement.rect.h + ekg_pixel;
+    relative_rect.y += placement.rect.h;
   }
 }
 
@@ -660,7 +674,7 @@ void ekg::ui::listbox_template_on_event(
 
     placement.rect.y = relative_rect.y;
     relative_rect.h = placement.rect.h;
-    relative_rect.y += placement.rect.h + ekg_pixel;
+    relative_rect.y += placement.rect.h;
 
     if (arbitrary_index_pos < rendering_cache_size) {
       rendering_cache[arbitrary_index_pos] = item;

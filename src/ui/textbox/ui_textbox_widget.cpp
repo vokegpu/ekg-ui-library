@@ -1054,23 +1054,33 @@ bool ekg::ui::textbox_widget::find_cursor(
 
 void ekg::ui::textbox_widget::on_draw_refresh() {
   ekg::ui::textbox *p_ui {(ekg::ui::textbox*) this->p_data};
-  auto &rect {this->get_abs_rect()};
-  auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
-  auto &theme {ekg::theme()};
-  auto &allocator {ekg::core->gpu_allocator};
-
-  ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
-  ekg::draw::rect(rect, theme.textbox_background, ekg::draw_mode::filled, ekg_layer(ekg::layer::background));
+  ekg::rect &rect {this->get_abs_rect()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  ekg::service::theme &theme {ekg::theme()};
+  ekg::gpu::allocator &allocator {ekg::core->gpu_allocator};
 
   this->embedded_scroll.clamp_scroll();
 
   float x {rect.x + this->embedded_scroll.scroll.x};
   float y {};
 
-  ekg::gpu::data_t &data {allocator.bind_current_data()};
-  ekg::vec4 color {theme.textbox_string};
+  ekg::draw::sync_scissor(
+    this->scissor,
+    rect,
+    this->p_parent_scissor
+  );
 
   ekg_draw_assert_scissor();
+
+  ekg::draw::rect(
+    rect,
+    theme.textbox_background,
+    ekg::draw_mode::filled,
+    ekg_layer(ekg::layer::background)
+  );
+
+  ekg::gpu::data_t &data {allocator.bind_current_data()};
+  ekg::vec4 color {theme.textbox_string};
 
   x = static_cast<float>(static_cast<int32_t>(x));
   data.buffer_content[0] = x;
