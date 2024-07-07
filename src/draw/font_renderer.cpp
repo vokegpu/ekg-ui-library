@@ -228,9 +228,8 @@ void ekg::draw::font_renderer::reload() {
     this->full_height = std::max(this->full_height, static_cast<int32_t>(ft_glyph_slot->bitmap.rows));
   }
 
-  this->text_height = static_cast<float>(this->full_height);
-  this->offset_text_height = (this->text_height / 6.0f) / 2.0f;
-  this->text_height += static_cast<int32_t>(this->offset_text_height);
+  this->text_height = static_cast<float>(this->font_size);
+  this->offset_text_height = static_cast<int32_t>(this->text_height / 6) / 2;
 
   ekg::core->p_gpu_api->generate_font_atlas(
     &this->sampler_texture,

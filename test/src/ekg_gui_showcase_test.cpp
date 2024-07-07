@@ -349,6 +349,20 @@ int32_t showcase_useless_window() {
    * For somee reason noto emoji does work :c
    **/
 
+  /*
+   * whitneybook
+   * meow: 19
+   * meow: 25
+   * meow: 15
+   */
+
+  /*
+   * arial
+   * meow: 18
+   * meow: 24
+   * meow: 14
+   */
+
   ekg::runtime_property ekg_runtime_property {
     .p_font_path = "Arial.ttf",
     .p_font_path_emoji = "twemoji.ttf",
@@ -416,7 +430,7 @@ int32_t showcase_useless_window() {
   // 🐈
   // 🐮
 
-  ekg::button("🏳️‍⚧️ 🐈 🐮 Oi Quica Aqui pa Sair Mumu", ekg::dock::fill | ekg::dock::next)
+  ekg::button("🏳️‍⚧️ 🐈 🐮 Oi Quica Aqui pa Sai🐈🐈🐈rMumu", ekg::dock::fill | ekg::dock::next)
     ->set_text_align(ekg::dock::center)
     ->set_font_size(ekg::font::big)
     ->set_task(
@@ -483,7 +497,7 @@ int32_t showcase_useless_window() {
       "Cachorro",
       {
         ekg::item("Au"),
-      ekg::item("A"),
+        ekg::item("A"),
         ekg::item("J", {
           ekg::item("K?"),
           ekg::item("L?")
@@ -506,7 +520,7 @@ int32_t showcase_useless_window() {
     ekg::dock::fill | ekg::dock::next
   )
   ->set_scaled_height(16)
-  ->set_mode(ekg::mode::multicolumn);
+  ->set_mode(ekg::mode::singlecolumn);
 
   ekg::slider("meow1", 0.5f, 0.0f, 1.0f, ekg::dock::fill | ekg::dock::next)
     ->set_precision(2)

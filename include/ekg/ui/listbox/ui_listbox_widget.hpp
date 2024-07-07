@@ -39,6 +39,7 @@ namespace ekg::ui {
     ekg::rect rect_content_abs {};
     ekg::rect rect_content_place {};
     float column_header_height {};
+    bool must_update_items {};
   public:
     void on_create() override;
 

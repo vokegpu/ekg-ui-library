@@ -27,6 +27,7 @@
 #include "ekg/draw/draw.hpp"
 
 void ekg::ui::listbox_widget::on_create() {
+  this->must_update_items = true;
 }
 
 void ekg::ui::listbox_widget::on_reload() {
@@ -65,8 +66,10 @@ void ekg::ui::listbox_widget::on_reload() {
   bool opened {};
   ekg::mode mode {p_ui->get_mode()};
   bool is_multicolumn {mode == ekg::mode::multicolumn};
-  float header_relative_x {};
+  float scaled_width {rect.w};
+  float header_relative_x {ekg_pixel};
 
+  this->must_update_items = true;
   for (uint64_t it {}; it < items_header_size; it++) {
     relative_rect.y = 0.0f;
 
@@ -82,7 +85,8 @@ void ekg::ui::listbox_widget::on_reload() {
        * for understand the reason of integer 32bits casting here.
        **/
       placement.rect.w = static_cast<int32_t>(
-        (this->dimension.w - static_cast<int32_t>(items_header_size)) / static_cast<int32_t>(items_header_size));
+        (scaled_width) / static_cast<int32_t>(items_header_size)
+      );
     } else {
       placement.rect.w = ekg_min(placement.rect.w, text_width);
     }
@@ -90,7 +94,7 @@ void ekg::ui::listbox_widget::on_reload() {
     relative_rect.w = placement.rect.w;
     placement.rect.h = (text_height + dimension_offset) * static_cast<float>(column_header_scaled_height);
 
-    placement.rect.x = header_relative_x + (is_multicolumn || it == 0);
+    placement.rect.x = header_relative_x;
     placement.rect.y = relative_rect.y;
 
     arbitrary_index_pos = 0;
@@ -99,22 +103,11 @@ void ekg::ui::listbox_widget::on_reload() {
         ekg_bitwise_contains(column_header_dock_flags, ekg::dock::top) ||
         !ekg_bitwise_contains(column_header_dock_flags, ekg::dock::bottom)
        ) {
-
       this->rect_content_place.y = placement.rect.h + ekg_pixel;
       this->column_header_height = placement.rect.h + ekg_pixel;
+    }
 
-      ekg::ui::listbox_template_reload(
-        item,
-        rect,
-        item_font,
-        relative_rect,
-        item_scaled_height,
-        it,
-        arbitrary_index_pos,
-        opened,
-        mode
-      );
-    } else {
+    if (this->must_update_items) {
       ekg::ui::listbox_template_reload(
         item,
         rect,
@@ -154,10 +147,7 @@ void ekg::ui::listbox_widget::on_reload() {
     mask.insert({&placement.rect_text, placement.text_dock_flags});
     mask.docknize();
 
-    /**
-     * The offset-between must be disabled if multicolumn is enabled.
-     **/
-    header_relative_x += relative_rect.w + ekg_pixel;
+    header_relative_x += placement.rect.w + ekg_pixel;
     relative_rect.x += relative_rect.w + !is_multicolumn;
 
     if (relative_rect.x > relative_largest_rect.w) {
@@ -173,6 +163,7 @@ void ekg::ui::listbox_widget::on_reload() {
   this->embedded_scroll.p_rect_mother = &this->rect_content_abs;
   this->embedded_scroll.widget_id = this->p_data->get_id();
   this->embedded_scroll.on_reload();
+  this->must_update_items = false;
 }
 
 void ekg::ui::listbox_widget::on_pre_event(ekg::os::io_event_serial &io_event_serial) {
@@ -517,16 +508,12 @@ void ekg::ui::listbox_template_reload(
   float dimension_offset {text_height / 2};
   float offset {};
 
-  bool first_index {
-    header_index == 0
+  bool should_apply_offset_by_column_based {
+    (mode == ekg::mode::multicolumn && header_index == 0) || mode == ekg::mode::singlecolumn
   };
 
-  bool first_index_if_multicolumn_enabled {
-    mode == ekg::mode::multicolumn && first_index
-  };
-
-  float additional_offset_if_multicolumn_enabled {
-    (theme.listbox_subitem_offset_space + ekg_pixel) * first_index_if_multicolumn_enabled
+  float additional_offset_by_column_based {
+    (theme.listbox_subitem_offset_space + ekg_pixel) * should_apply_offset_by_column_based
   };
 
   for (it = it; it < parent.size(); it++) {
@@ -571,8 +558,8 @@ void ekg::ui::listbox_template_reload(
     arbitrary_index_pos++;
 
     if (!item.empty()) {
-      relative_rect.x += additional_offset_if_multicolumn_enabled;
-      relative_rect.w -= additional_offset_if_multicolumn_enabled;
+      relative_rect.x += additional_offset_by_column_based;
+      relative_rect.w -= additional_offset_by_column_based;
 
       ekg::ui::listbox_template_reload(
         item,
@@ -586,8 +573,8 @@ void ekg::ui::listbox_template_reload(
         mode
       );
 
-      relative_rect.x -= additional_offset_if_multicolumn_enabled;
-      relative_rect.w += additional_offset_if_multicolumn_enabled;
+      relative_rect.x -= additional_offset_by_column_based;
+      relative_rect.w += additional_offset_by_column_based;
     }
 
     if (just_flagged_cursive_opened) {
