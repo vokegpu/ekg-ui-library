@@ -30,6 +30,7 @@
 #include <vector>
 #include <cstdint>
 #include <map>
+#include <memory>
 
 #if defined(__ANDROID__)
 #include <android/log.h>
@@ -49,6 +50,8 @@ namespace ekg {
     uint16_t attr_bits {};
     ekg::placement placement {};
     uint64_t visible_count {};
+    bool *p_semaphore {nullptr};
+    ekg::item *p_addressed {};
   public:
     explicit item() = default;
 
@@ -70,6 +73,24 @@ namespace ekg {
 
     ~item();
   public:
+    /**
+     * Set the addressed item which point to the primordial item.
+     * Unsafe due the nullptr crash possibility.
+     **/
+    void unsafe_set_addressed(ekg::item *p_set_addressed);
+
+    /**
+     * Get the primordial item, used in rendering cache.
+     **/
+    ekg::item *unsafe_get_addressed();
+
+    /**
+     * Set the semaphore used in rendering-cache, to invoke changes on
+     * widget rendering.
+     * Unsafe by the performance directly effect.
+     **/
+    void unsafe_set_semaphore(bool *p_set_semaphore);
+
     /**
      * Get the item-placement used for rendering.
      * Unsafe due the return as reference, bypassing the rendering states.

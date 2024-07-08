@@ -61,13 +61,15 @@ namespace ekg::ui {
   void listbox_template_reload(
     ekg::item &parent,
     ekg::rect &ui_rect,
+    ekg::rect &header_rect,
     ekg::font &item_font,
     ekg::rect &relative_rect,
     int32_t item_scaled_height,
     uint64_t header_index,
     uint64_t &arbitrary_index_pos,
     bool &opened,
-    ekg::mode mode
+    ekg::mode mode,
+    bool *p_semaphore
   );
 
   void listbox_template_on_event(

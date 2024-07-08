@@ -512,6 +512,15 @@ int32_t showcase_useless_window() {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
   }
 
   auto list = ekg::listbox(

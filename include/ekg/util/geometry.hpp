@@ -255,6 +255,7 @@ namespace ekg {
 
     ekg::rect rect_text {};
     uint16_t text_dock_flags {};
+    float offset {};
   };
 
   bool rect_collide_rect(const ekg::rect &a, const ekg::rect &b);

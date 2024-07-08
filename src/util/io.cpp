@@ -50,11 +50,25 @@ ekg::item::item(
 }
 
 ekg::item::~item() {
-  
+  if (this->p_semaphore != nullptr) {
+    *this->p_semaphore = true; 
+  }
+}
+
+void ekg::item::unsafe_set_addressed(ekg::item *p_set_addressed) {
+  this->p_addressed = p_set_addressed; 
+}
+
+ekg::item *ekg::item::unsafe_get_addressed() {
+  return this->p_addressed;
 }
 
 ekg::placement &ekg::item::unsafe_get_placement() {
   return this->placement;
+}
+
+void ekg::item::unsafe_set_semaphore(bool *p_set_semaphore) {
+  this->p_semaphore = p_set_semaphore;
 }
 
 void ekg::item::unsafe_set_visible_count(uint64_t count) {
