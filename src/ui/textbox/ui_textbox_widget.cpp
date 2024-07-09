@@ -1145,11 +1145,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
    * dynamically calculating the amount of scroll with the size of
    * rect text height.
    */
-  this->visible_text[1] = (
-    this->embedded_scroll.scroll.y == 0.0f ?
-      0 :
-      static_cast<uint64_t>(((-this->embedded_scroll.scroll.y) / this->rect_text.h) * text_chunk_size)
-  );
+  this->visible_text[1] = ekg::get_index_by_scroll(this->embedded_scroll.scroll.y, this->rect_text.h, text_chunk_size);
 
   // Multiply with the current visible index for get the perfect y position.
   y = (this->text_height * static_cast<float>(this->visible_text[1]));

@@ -258,6 +258,12 @@ namespace ekg {
     float offset {};
   };
 
+  /**
+   * Get a index n-size by scroll amount.
+   * Note: You must have a compatible scroll-size with the n-index-size.
+   **/
+  uint64_t get_index_by_scroll(float scroll, float dimension, uint64_t size);
+
   bool rect_collide_rect(const ekg::rect &a, const ekg::rect &b);
   bool rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec);
   bool rect_collide_vec_precisely(const ekg::rect &rect, const ekg::vec4 &vec);

@@ -217,6 +217,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
   ekg::ui::listbox *p_ui {static_cast<ekg::ui::listbox*>(this->p_data)};
   ekg::mode mode {p_ui->get_mode()};
+
   uint64_t arbitrary_index_pos {};
   uint64_t largest_rendering_cache_size {};
 
@@ -283,6 +284,101 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     this->embedded_scroll.rect_child = relative_largest_rect;
     break;
   case false:
+    ekg::rect scrollable_rect {this->rect_content_abs + this->embedded_scroll.scroll};
+    ekg::rect item_rect {};
+    ekg::mode mode {p_ui->get_mode()};
+    ekg::vec4 &interact {ekg::input::interact()};
+
+    scrollable_rect.x = static_cast<int32_t>(scrollable_rect.x);
+    scrollable_rect.y = static_cast<int32_t>(scrollable_rect.y);
+
+    float top_place {this->rect_content_abs.y};
+    float bottom_place {this->rect_content_abs.y + this->rect_content_abs.h};
+    float header_relative_x {};
+
+    uint16_t flags {};
+    uint64_t visible_begin_index {};
+    uint64_t visible_count {};
+
+    bool hovering {};
+    bool contains_flag {};
+    bool scroll_on_top {this->embedded_scroll.scroll.y == 0.0f};
+    float scrolling_cropy {
+      ((-this->embedded_scroll.scroll.y) / this->embedded_scroll.rect_child.h)
+    };
+
+    for (uint64_t it_header {}; it_header < this->item_rendering_cache.size(); it_header++) {
+      ekg::item &item_header {this->item_rendering_cache.at(it_header)};
+      ekg::placement &placement_header {item_header.unsafe_get_placement()};
+
+      item_rect = placement_header.rect + rect;
+      flags = item_header.get_attr();
+
+      item_rect.x = static_cast<int32_t>(item_rect.x);
+      item_rect.y = static_cast<int32_t>(item_rect.y);
+
+      visible_count = item_header.get_visible_count();
+      visible_begin_index = (
+        scroll_on_top ?
+          0 :
+          static_cast<uint64_t>(scrolling_cropy * visible_count)
+      );
+
+      for (uint64_t it_item {visible_begin_index}; it_item < visible_count; it_item++) {
+        ekg::item &item {item_header.at(it_item)};
+        ekg::placement &placement {item.unsafe_get_placement()};
+
+        placement.rect.w = placement_header.rect.w - (placement.offset * 2.0f);
+        placement.rect.x = header_relative_x + placement.offset;
+
+        item_rect = placement.rect + scrollable_rect;
+        flags = item.get_attr();
+
+        switch (mode) {
+        case ekg::mode::multicolumn:
+          item_rect.w = rect.w;
+          item_rect.x = rect.x;
+          break;
+        }
+
+        flags = item.get_attr();
+        hovering = ekg::rect_collide_vec(item_rect, interact);
+
+        if (!ekg_bitwise_contains(flags, ekg::attr::hovering) && hovering) {
+          ekg_bitwise_add(flags, ekg::attr::hovering);
+          item.set_attr(flags);
+        } else if (ekg_bitwise_contains(flags, ekg::attr::hovering) && !hovering) {
+          ekg_bitwise_remove(flags, ekg::attr::hovering);
+          item.set_attr(flags);
+        }
+
+        if (hovering && pressed_select_many) {
+          contains_flag = static_cast<bool>(ekg_bitwise_contains(flags, ekg::attr::focused));
+          ekg_bitwise_remove(flags, ekg::attr::focused * contains_flag);
+          ekg_bitwise_add(flags, ekg::attr::focused * !contains_flag);
+          item.set_attr(flags);
+        } else if (pressed_select && hovering && !ekg_bitwise_contains(flags, ekg::attr::focused)) {
+          ekg_bitwise_add(flags, ekg::attr::focused);
+          item.set_attr(flags);
+        } else if (!hovering && pressed_select && ekg_bitwise_contains(flags, ekg::attr::focused)) {
+          ekg_bitwise_remove(flags, ekg::attr::focused);
+          item.set_attr(flags);
+        }
+
+        if (ekg_bitwise_contains(flags, ekg::attr::focused)) {
+          was_selected = true;
+        }
+
+        item.unsafe_get_addressed()->set_attr(item.get_attr()); 
+
+        if (item_rect.y + item_rect.h > bottom_place) {
+          break;
+        }
+      }
+
+      header_relative_x += placement_header.rect.w;
+    }
+    
     break;
   }
 }
@@ -658,31 +754,10 @@ void ekg::ui::listbox_template_on_event(
     flags = item.get_attr();
     hovering = ekg::rect_collide_vec(item_rect, interact);
 
-    if (!ekg_bitwise_contains(flags, ekg::attr::hovering) && hovering) {
-      ekg_bitwise_add(flags, ekg::attr::hovering);
-      item.set_attr(flags);
-    } else if (ekg_bitwise_contains(flags, ekg::attr::hovering) && !hovering) {
-      ekg_bitwise_remove(flags, ekg::attr::hovering);
-      item.set_attr(flags);
-    }
-
     if (!item.empty() && hovering && pressed_open) {
       contains_flag = static_cast<bool>(ekg_bitwise_contains(flags, ekg::attr::opened));
       ekg_bitwise_remove(flags, ekg::attr::opened * contains_flag);
       ekg_bitwise_add(flags, ekg::attr::opened * !contains_flag);
-      item.set_attr(flags);
-    }
-
-    if (hovering && pressed_select_many) {
-      contains_flag = static_cast<bool>(ekg_bitwise_contains(flags, ekg::attr::focused));
-      ekg_bitwise_remove(flags, ekg::attr::focused * contains_flag);
-      ekg_bitwise_add(flags, ekg::attr::focused * !contains_flag);
-      item.set_attr(flags);
-    } else if (pressed_select && hovering && !ekg_bitwise_contains(flags, ekg::attr::focused)) {
-      ekg_bitwise_add(flags, ekg::attr::focused);
-      item.set_attr(flags);
-    } else if (!hovering && pressed_select && ekg_bitwise_contains(flags, ekg::attr::focused)) {
-      ekg_bitwise_remove(flags, ekg::attr::focused);
       item.set_attr(flags);
     }
 

@@ -175,3 +175,6 @@
 -- Fixed pixel imperfect on scrolling and on all places.
 -- Moved `std::vector<t>` extends to `ekg::value_t<t>` in listbox and textbox.
 -- Fixed pixel-unuscaled from font face size, now the text height is set to the specified font face size.
+-- Listbox performance increase for resize & events (highlight, press, open etc).
+-- Removed useless text width condition of button for set the width.
+-- Listbox highlight optmized.

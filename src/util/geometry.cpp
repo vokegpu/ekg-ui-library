@@ -87,6 +87,10 @@ bool ekg::rect_collide_rect(const ekg::rect &a, const ekg::rect &b) {
          a.y < b.y + b.h && a.x + a.w > b.y;
 }
 
+uint64_t ekg::get_index_by_scroll(float scroll, float dimension, uint64_t size) {
+  return scroll == 0.0f ?  0 : static_cast<uint64_t>(((-scroll) / dimension) * size);
+}
+
 void ekg::ortho(float *p_matrix, float left, float right, float bottom, float top) {
   const float depth_near = -1.0f;
   const float depth_far = 1.0f;
