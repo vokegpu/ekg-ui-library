@@ -24,7 +24,7 @@ void ekg::layout::extentnize(
     case ekg::axis::horizontal: {
       uint16_t flags {};
       int32_t ids {};
-      int64_t n {};
+      int64_t flag_ok_count {};
       int64_t it {begin_and_count};
 
       if (
@@ -39,8 +39,13 @@ void ekg::layout::extentnize(
       ekg::layout::extent::h.x = static_cast<float>(it);
       ekg::ui::abstract_widget *p_widgets {};
       std::vector<int32_t> &child_id_list {p_widget->p_data->get_child_id_list()};
+
       uint64_t size {child_id_list.size()};
+      uint64_t latest_index {size - (!child_id_list.empty())};
+
+      bool is_scrollbar {};
       bool is_last_index {};
+      bool is_ok_flag {};
 
       /**
        * The last index does not check if contains a next flag,
@@ -59,29 +64,43 @@ void ekg::layout::extentnize(
         }
 
         flags = p_widgets->p_data->get_place_dock();
-        is_last_index = it >= size - 1 || p_widgets->p_data->get_type() == ekg::type::scrollbar;
+        is_scrollbar = p_widgets->p_data->get_type() == ekg::type::scrollbar;
+        is_last_index = it == latest_index;
 
         if (
-            (ekg_bitwise_contains(flags, flag_stop) && it != begin_and_count) || is_last_index
+            (ekg_bitwise_contains(flags, flag_stop) && it != begin_and_count) || is_last_index || is_scrollbar
           ) {
           extent -= ekg::layout::offset;
-          n += (!ekg_bitwise_contains(flags, flag_stop) && ekg_bitwise_contains(flags, flag_ok) && is_last_index);
+          flag_ok_count += (
+            (is_ok_flag = (!ekg_bitwise_contains(flags, flag_stop) && ekg_bitwise_contains(flags, flag_ok) && is_last_index))
+          );
+
+          /**
+           * Basically if the container/frame mother ends with any non flag ok (ekg::dock::fill)
+           * it MUST add the width size to extend.
+           * But the point is the scrollbar, he is not docknized here, then just bypass with `!is_scrollbar`.
+           *
+           * :blush:
+           **/
+          extent += (
+            (p_widgets->dimension.w + ekg::layout::offset) * (is_last_index && !ekg_bitwise_contains(flags, flag_ok) && !is_scrollbar)
+          );
 
           ekg::layout::extent::h.y = static_cast<float>(it + is_last_index);
           ekg::layout::extent::h.w = extent;
-          ekg::layout::extent::h.h = static_cast<float>(n == 0 ? 1 : n);
+          ekg::layout::extent::h.h = static_cast<float>(flag_ok_count == 0 ? 1 : flag_ok_count);
           break;
         }
 
         if (ekg_bitwise_contains(flags, flag_ok)) {
-          n++;
+          flag_ok_count++;
           continue;
         }
 
         extent += p_widgets->dimension.w + ekg::layout::offset;
       }
 
-      begin_and_count = n == 0 ? 1 : n;
+      begin_and_count = flag_ok_count == 0 ? 1 : flag_ok_count;
       break;
     }
 

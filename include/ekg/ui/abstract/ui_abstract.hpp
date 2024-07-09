@@ -293,6 +293,8 @@ namespace ekg {
       bool has_parent() const;
 
       bool has_children();
+    public:
+      operator int32_t();
     };
   }
 }

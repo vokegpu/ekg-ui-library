@@ -320,6 +320,48 @@ std::string resultcalc(std::string_view text) {
   return result;
 }
 
+#define create_ui(ui) (this->widgets.emplace_back() = ui)
+
+struct message_gui {
+public:
+  std::vector<std::string> message_content {};
+  std::vector<std::string> message_send_content {};
+  std::vector<ekg::ui::abstract*> widgets {};
+  bool must_send {};
+public:
+  message_gui() {
+    create_ui(
+      ekg::frame("message-gui", {700, 600}, {400, 400})
+        ->set_drag(ekg::dock::top)
+    );
+
+    create_ui(
+      ekg::label("Message >< of uwu mumu meow", ekg::dock::fill | ekg::dock::next)
+        ->set_text_align(ekg::dock::center)
+    );
+
+    create_ui(
+      ekg::textbox("message-content", "type:",  ekg::dock::fill | ekg::dock::next)
+        ->set_scaled_height(6)
+        ->set_state(ekg::state::disable)
+    );
+
+    create_ui(
+      ekg::textbox("Send", "meow", ekg::dock::fill | ekg::dock::next)
+    );
+
+    create_ui(
+      ekg::button("message-send", ekg::dock::none)
+    );
+  }
+
+  ~message_gui() {
+    for (ekg::ui::abstract *p_widgets : this->widgets) {
+      p_widgets->destroy();
+    }
+  }
+};
+
 int32_t showcase_useless_window() {
   SDL_Init(SDL_INIT_VIDEO);
 
@@ -721,6 +763,8 @@ int32_t showcase_useless_window() {
   ekg::pop_group();
   #endif
 
+  message_gui msg_gui {};
+
   bool running {true};
   uint64_t now {};
   uint64_t last {};
@@ -895,18 +939,7 @@ int32_t laboratory_testing() {
   float prev_pos {10.2f};
   float scale {2.0f};
 
-  ekg::frame("m", {400, 400})
-    ->set_drag(ekg::dock::full)
-    ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right);
-  
-  ekg::button("Sample", ekg::dock::fill | ekg::dock::next);
-  ekg::button("Sample", ekg::dock::fill | ekg::dock::next);
-  ekg::button("Z", ekg::dock::fill | ekg::dock::next);
-  ekg::button("A", ekg::dock::none)->set_width(50.0f);
-  ekg::button("B", ekg::dock::fill);
-  ekg::button("C", ekg::dock::fill);
-
-  ekg::pop_group();
+  message_gui message_gui {};
 
   while (running) {
     last = now;

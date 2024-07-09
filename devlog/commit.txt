@@ -178,3 +178,4 @@
 -- Listbox performance increase for resize & events (highlight, press, open etc).
 -- Removed useless text width condition of button for set the width.
 -- Listbox highlight optmized.
+-- Fixed a glitch where the latest widget was not adding the extent if widget did not have flag ok --- ekg::dock::next ---.

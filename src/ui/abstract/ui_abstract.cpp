@@ -257,3 +257,7 @@ bool ekg::ui::abstract::has_parent() const {
 bool ekg::ui::abstract::has_children() {
   return !this->child_id_list.empty();
 }
+
+ekg::ui::abstract::operator int32_t() {
+  return this->id;
+}
