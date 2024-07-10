@@ -58,7 +58,7 @@ int32_t main(int32_t, char**) {
    * 
    * The font rendering requires some explains:
    * - EKG font rendering is "maximum" optimized to fast rendering, so Kanjis or any char
-   * far from 256 unicode value does not have a decent implementation.
+   * far from 256 unicode value does not have a decent implementation (still).
    * - Only Emojis chars are implemented on font rendering.
    * 
    * Soon EKG should add Kanji and some chars support, but for now, only emoji and text is ok.
