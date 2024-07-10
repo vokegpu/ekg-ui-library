@@ -31,7 +31,7 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 
 namespace ekg::ui {
-  class listbox : public ekg::ui::abstract, public ekg::value_t<ekg::item> {
+  class listbox : public ekg::ui::abstract, public ekg::value_t<ekg::item, ekg::ui::listbox> {
   protected:
     ekg::font item_font_size {};
     ekg::font column_header_font_size {};

@@ -30,7 +30,7 @@
 #include "ekg/util/io.hpp"
 
 namespace ekg::ui {
-  class slider : public ekg::ui::abstract, public ekg::value_t<float> {
+  class slider : public ekg::ui::abstract, public ekg::value_t<float, ekg::ui::slider> {
   protected:
     float minimum_value {};
     float maximum_value {};

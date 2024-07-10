@@ -608,6 +608,8 @@ void ekg::runtime::prepare_ui_env() {
 
   this->service_input.bind("textbox-activity", "mouse-1");
   this->service_input.bind("textbox-activity", "finger-click");
+  this->service_input.bind("textbox-action-activity", "return");
+  this->service_input.bind("textbox-action-activity", "keypad enter");
 
   this->service_input.bind("textbox-action-select-all", "lctrl+a");
   this->service_input.bind("textbox-action-select-all", "rctrl+a");
@@ -621,8 +623,10 @@ void ekg::runtime::prepare_ui_env() {
 
   this->service_input.bind("textbox-action-delete-left", "abs-backspace");
   this->service_input.bind("textbox-action-delete-right", "abs-delete");
-  this->service_input.bind("textbox-action-break-line", "abs-return");
-  this->service_input.bind("textbox-action-break-line", "abs-keypad enter");
+  this->service_input.bind("textbox-action-break-line", "return");
+  this->service_input.bind("textbox-action-break-line", "keypad enter");
+  this->service_input.bind("textbox-action-break-line", "lshift+return");
+  this->service_input.bind("textbox-action-break-line", "rshift+return");
   this->service_input.bind("textbox-action-tab", "tab");
   this->service_input.bind("textbox-action-modifier", "lctrl");
   this->service_input.bind("textbox-action-modifier", "rctrl");

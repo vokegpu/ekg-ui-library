@@ -175,33 +175,41 @@ namespace ekg {
     }
   };
 
-  template<typename t>
+  template<typename t, typename s>
   struct value_t {
   protected:
     bool changed {};
+  protected:
+    s *p_mommy_s {};
   public:
     t self {};
     t *p_value {};
   public:
-    value_t<t>() {
+    value_t<t, s>() {
       this->p_value = &this->self;
-    }
-
-    value_t<t> *transfer_ownership(t *p_address) {
-      this->p_value = p_address;
-      return this;
-    }
-
-    value_t<t> *reset_ownership() {
-      this->p_value = &this->self;
-      return this;
     }
 
     operator bool() {
       return this->changed;
     }
   public:
-    value_t<t> *set_value(t val) {
+    void registry(s *p_mommy) {
+      if (this->p_mommy_s == nullptr) {
+        this->p_mommy_s = p_mommy;
+      }
+    }
+
+    s *transfer_ownership(t *p_address) {
+      this->p_value = p_address;
+      return this->p_mommy_s;
+    }
+
+    s *reset_ownership() {
+      this->p_value = &this->self;
+      return this->p_mommy_s;
+    }
+
+    s *set_value(t val) {
       this->changed = *this->p_value != val;
       *this->p_value = val;
 
@@ -209,7 +217,7 @@ namespace ekg {
         ekg::ui::redraw = true;
       }
 
-      return this;
+      return this->p_mommy_s;
     }
 
     t &get_value() {

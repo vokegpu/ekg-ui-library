@@ -324,14 +324,44 @@ std::string resultcalc(std::string_view text) {
 
 struct message_gui {
 public:
-  std::vector<std::string> message_content {};
-  std::vector<std::string> message_send_content {};
+  std::vector<std::string> msg_content {};
+  std::vector<std::string> msg_send_content {};
   std::vector<ekg::ui::abstract*> widgets {};
   bool must_send {};
+  ekg::task task {};
+public:
+  static void send(message_gui *p_msg_gui) {
+    if (p_msg_gui->msg_send_content.empty()) {
+      return;
+    }
+
+    p_msg_gui->msg_send_content.at(0) = "[meow]: " + p_msg_gui->msg_send_content.at(0);
+    std::string &latest_msg {
+      p_msg_gui->msg_send_content.at(p_msg_gui->msg_send_content.size() - 1)
+    };
+
+    p_msg_gui->msg_content.insert(
+      p_msg_gui->msg_content.end(),
+      p_msg_gui->msg_send_content.begin(),
+      p_msg_gui->msg_send_content.end() - latest_msg.empty()
+    );
+
+    p_msg_gui->msg_send_content.clear();
+    p_msg_gui->msg_send_content.emplace_back();
+  }
 public:
   message_gui() {
+    task.info = {
+      .tag = "msg-send meow meowmeow",
+      .p_data = this
+    };
+
+    task.function = [](ekg::info &info) {
+      message_gui::send(static_cast<message_gui*>(info.p_data));
+    };
+
     create_ui(
-      ekg::frame("message-gui", {700, 600}, {400, 400})
+      ekg::frame("message-gui", {700, 600}, {400, 250})
         ->set_drag(ekg::dock::top)
     );
 
@@ -343,15 +373,20 @@ public:
     create_ui(
       ekg::textbox("message-content", "type:",  ekg::dock::fill | ekg::dock::next)
         ->set_scaled_height(6)
+        ->transfer_ownership(&this->msg_content)
         ->set_state(ekg::state::disable)
     );
 
     create_ui(
       ekg::textbox("Send", "meow", ekg::dock::fill | ekg::dock::next)
+        ->transfer_ownership(&this->msg_send_content)
+        ->set_task(&this->task, ekg::action::activity)
     );
 
     create_ui(
-      ekg::button("message-send", ekg::dock::none)
+      ekg::button("Enter", ekg::dock::none)
+        ->set_width(100)
+        ->set_task(&this->task, ekg::action::activity)
     );
   }
 
@@ -437,25 +472,24 @@ int32_t showcase_useless_window() {
   ekg::frame("tweaks-content", ekg::vec2(700, 200), ekg::dock::fill | ekg::dock::next);
   ekg::label("UI internal tweaks", ekg::dock::fill | ekg::dock::next);
 
-  auto p_app_vsync = ekg::checkbox("Application Vsync", app.vsync, ekg::dock::fill | ekg::next);
-
-  p_app_vsync->transfer_ownership(&app.vsync);
-  p_app_vsync->set_task(
-    new ekg::task {
-      .info = {
-        .tag = "turn vsync"
+  ekg::checkbox("Application Vsync", app.vsync, ekg::dock::fill | ekg::next)
+    ->transfer_ownership(&app.vsync)
+    ->set_task(
+      new ekg::task {
+        .info = {
+          .tag = "turn vsync"
+        },
+        .function = [](ekg::info &task_info) {
+          auto p_ui = static_cast<ekg::ui::checkbox*>(task_info.p_ui);
+          SDL_GL_SetSwapInterval(p_ui->get_value());
+        }
       },
-      .function = [](ekg::info &task_info) {
-        auto p_ui = static_cast<ekg::ui::checkbox*>(task_info.p_ui);
-        SDL_GL_SetSwapInterval(p_ui->get_value());
-      }
-    },
-    ekg::action::activity
-  );
+      ekg::action::activity
+    );
 
   ekg::label("DPI tiling:", ekg::dock::next);
-  auto p_dpi_tiling = ekg::slider("DPI tiling", 4.0f, 1.0f, 50.0f, ekg::dock::fill);
-  p_dpi_tiling->transfer_ownership(&ekg::ui::dpi_tiling);
+  ekg::slider("DPI tiling", 4.0f, 1.0f, 50.0f, ekg::dock::fill)
+    ->transfer_ownership(&ekg::ui::dpi_tiling);
 
   ekg::scrollbar("scrollbar omg");
   ekg::pop_group();
@@ -571,7 +605,7 @@ int32_t showcase_useless_window() {
     ekg::dock::fill | ekg::dock::next
   )
   ->set_scaled_height(16)
-  ->set_mode(ekg::mode::singlecolumn);
+  ->set_mode(ekg::mode::multicolumn);
 
   ekg::slider("meow1", 0.5f, 0.0f, 1.0f, ekg::dock::fill | ekg::dock::next)
     ->set_precision(2)

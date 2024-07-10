@@ -123,6 +123,7 @@ namespace ekg::ui {
     bool is_ui_enabled {};
     bool is_action_modifier_enable {};
     bool is_action_select_enable {};
+    bool was_typed {};
 
     bool is_clipboard_copy {};
     bool is_clipboard_cut {};
@@ -131,6 +132,7 @@ namespace ekg::ui {
     int64_t total_utf_chars {};
     std::string cached_tab_size {};
     uint64_t visible_text[4] {};
+    uint64_t latest_size_until_refresh {};
   public:
     bool find_cursor(
       ekg::ui::textbox_widget::cursor &target_cursor,

@@ -31,7 +31,7 @@
 #include "ekg/util/io.hpp"
 
 namespace ekg::ui {
-  class button : public ekg::ui::abstract, public ekg::value_t<bool> {
+  class button : public ekg::ui::abstract, public ekg::value_t<bool, ekg::ui::button> {
   protected:
     uint16_t dock_text {};
 

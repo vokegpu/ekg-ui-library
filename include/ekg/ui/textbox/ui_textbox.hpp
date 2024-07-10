@@ -30,7 +30,7 @@
 #include "ekg/util/io.hpp"
 
 namespace ekg::ui {
-  class textbox : public ekg::ui::abstract, public ekg::value_t<std::vector<std::string>>  {
+  class textbox : public ekg::ui::abstract, public ekg::value_t<std::vector<std::string>, ekg::ui::textbox>  {
   protected:
     ekg::font font_size {};
     std::string formatted_text {};

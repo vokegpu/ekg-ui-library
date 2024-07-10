@@ -686,8 +686,10 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(
     cursor.pos[3] = cursor.pos[0];
   } else {
     if (checked) {
-      it = (text_index < cursor.pos[2].text_index && chunk_index == cursor.pos[2].chunk_index) ||
-           (chunk_index < cursor.pos[2].chunk_index) ? 0 : 1;
+      it = (
+        ((text_index < cursor.pos[2].text_index && chunk_index == cursor.pos[2].chunk_index) || (chunk_index < cursor.pos[2].chunk_index))
+        ? 0 : 1
+      );
 
       cursor.pos[it].chunk_index = static_cast<int64_t>(chunk_index);
       cursor.pos[it].text_index = static_cast<int64_t>(text_index);
@@ -862,6 +864,8 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     return;
   }
 
+  this->was_typed = true;
+
   if (io_event_serial.event_type == ekg::platform_event_type::text_input) {
     for (ekg::ui::textbox_widget::cursor &cursor: this->loaded_multi_cursor_list) {
       this->process_text(
@@ -910,12 +914,16 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
         this->process_text(cursor, "backspace", ekg::ui::textbox_widget::action::erase_text, -1);
       } else if (ekg::input::action("textbox-action-delete-right")) {
         this->process_text(cursor, "delete", ekg::ui::textbox_widget::action::erase_text, 1);
-      } else if (ekg::input::action("textbox-action-break-line")) {
-        this->process_text(cursor, "return", ekg::ui::textbox_widget::action::break_line, 1);
+      } else if (this->p_data->get_task(ekg::action::activity) != nullptr && ekg::input::action("textbox-action-activity")) {
         ekg_action_dispatch(
           true,
           ekg::action::activity
         );
+
+        this->was_typed = false;
+        break;
+      } else if (ekg::input::action("textbox-action-break-line")) {
+        this->process_text(cursor, "return", ekg::ui::textbox_widget::action::break_line, 1);
       } else if (ekg::input::action("textbox-action-tab")) {
         this->process_text(cursor, "\t", ekg::ui::textbox_widget::action::add_text, 1);
       } else if (this->is_clipboard_copy || this->is_clipboard_paste || this->is_clipboard_cut) {
@@ -1101,6 +1109,41 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   this->rect_text.y = 0.0f;
   this->is_ui_enabled = p_ui->get_state() == ekg::state::enable;
 
+  uint64_t text_chunk_size {p_ui->p_value->size()};
+  if (!text_chunk_size) {
+    p_ui->p_value->emplace_back();
+    text_chunk_size++;
+  }
+
+  if (!this->was_typed) {
+    for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
+      if (
+          this->latest_size_until_refresh != text_chunk_size ||
+          (
+
+            /**
+             * Check if the cursors are bouding the widget,
+             * if the text is modified with no-input.
+             **/
+
+            (
+              (cursor.pos[0].chunk_index > text_chunk_size) ||
+              (cursor.pos[0].chunk_index < text_chunk_size && cursor.pos[0].text_index > p_ui->p_value->at(cursor.pos[0].chunk_index).size())
+            ) ||
+            (
+              (cursor.pos[0] != cursor.pos[1]) &&
+              (cursor.pos[1].chunk_index < text_chunk_size && cursor.pos[1].text_index > p_ui->p_value->at(cursor.pos[1].chunk_index).size())
+            )
+          )
+        ) {
+        this->check_cursor_text_bounding(cursor, true);
+      }
+    }
+  }
+
+  this->latest_size_until_refresh = text_chunk_size;
+  this->was_typed = false;
+
   char32_t char32 {};
   std::string utf_string {};
   uint8_t char8 {};
@@ -1109,9 +1152,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
   uint64_t text_size {};
   uint64_t utf_char_index {};
-
   uint64_t it {};
-  uint64_t text_chunk_size {p_ui->p_value->size()};
 
   FT_Face ft_face {};
   FT_UInt ft_uint_previous {};
@@ -1145,7 +1186,11 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
    * dynamically calculating the amount of scroll with the size of
    * rect text height.
    */
-  this->visible_text[1] = ekg::get_index_by_scroll(this->embedded_scroll.scroll.y, this->rect_text.h, text_chunk_size);
+  this->visible_text[1] = ekg::get_index_by_scroll(
+    this->embedded_scroll.scroll.y,
+    this->rect_text.h,
+    text_chunk_size
+  );
 
   // Multiply with the current visible index for get the perfect y position.
   y = (this->text_height * static_cast<float>(this->visible_text[1]));

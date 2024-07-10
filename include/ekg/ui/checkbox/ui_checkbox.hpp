@@ -31,7 +31,7 @@
 #include "ekg/util/io.hpp"
 
 namespace ekg::ui {
-  class checkbox : public ekg::ui::abstract, public ekg::value_t<bool> {
+  class checkbox : public ekg::ui::abstract, public ekg::value_t<bool, ekg::ui::checkbox> {
   protected:
     uint16_t dock_text {}, dock_box {};
     std::string text {};

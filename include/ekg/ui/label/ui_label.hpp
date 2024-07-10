@@ -30,7 +30,7 @@
 #include "ekg/util/io.hpp"
 
 namespace ekg::ui {
-  class label : public ekg::ui::abstract, public ekg::value_t<std::string> {
+  class label : public ekg::ui::abstract, public ekg::value_t<std::string, ekg::ui::label> {
   protected:
     uint16_t dock_text {};
     ekg::font font_size {};

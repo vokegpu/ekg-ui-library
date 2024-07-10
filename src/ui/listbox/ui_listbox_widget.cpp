@@ -170,8 +170,6 @@ void ekg::ui::listbox_widget::on_reload() {
     }
   }
 
-  std::cout << "rendering-cache amount: " << arbitrary_index_pos << std::endl;
-
   this->embedded_scroll.acceleration.y = (text_height * 3.0f) + (offset * 2.0f);
   this->embedded_scroll.p_rect_mother = &this->rect_content_abs;
   this->embedded_scroll.widget_id = this->p_data->get_id();
@@ -204,7 +202,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
   if ((!motion && !released && !pressed_select && !pressed_open && !pressed_select_many) ||
       (!this->flag.hovered && !this->was_selected)) {
-    return;    
+    return;
   }
 
   ekg::rect &rect {this->get_abs_rect()};
@@ -520,7 +518,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
       ekg::item &item {item_header.at(it_item)};
       ekg::placement &placement {item.unsafe_get_placement()};
 
-      placement.rect.w = placement_header.rect.w - (placement.offset * 2.0f);
+      placement.rect.w = placement_header.rect.w - placement.offset;
       placement.rect.x = header_relative_x + placement.offset;
 
       item_rect = placement.rect + scrollable_rect;

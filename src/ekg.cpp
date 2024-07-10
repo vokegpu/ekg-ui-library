@@ -137,6 +137,7 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &size, uint16_t
 
 ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
   ekg::ui::button *p_ui {new ekg::ui::button()};
+  p_ui->registry(p_ui);
   p_ui->unsafe_set_type(ekg::type::button);
   ekg::core->gen_widget(p_ui);
 
@@ -152,6 +153,7 @@ ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
 
 ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
   ekg::ui::label *p_ui {new ekg::ui::label()};
+  p_ui->registry(p_ui);
   p_ui->unsafe_set_type(ekg::type::label);
   ekg::core->gen_widget(p_ui);
 
@@ -167,6 +169,7 @@ ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
 
 ekg::ui::label *ekg::imut_label(std::string_view text, uint16_t dock) {
   ekg::ui::label *p_ui {new ekg::ui::label()};
+  p_ui->registry(p_ui);
 
   p_ui->unsafe_set_type(ekg::type::label);
   p_ui->unsafe_set_immutable(true);
@@ -183,6 +186,7 @@ ekg::ui::label *ekg::imut_label(std::string_view text, uint16_t dock) {
 
 ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, uint16_t dock) {
   ekg::ui::checkbox *p_ui {new ekg::ui::checkbox()};
+  p_ui->registry(p_ui);
   p_ui->unsafe_set_type(ekg::type::checkbox);
   ekg::core->gen_widget(p_ui);
 
@@ -200,6 +204,7 @@ ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, uint16_t doc
 
 ekg::ui::slider *ekg::slider(std::string_view tag, float val, float min, float max, uint16_t dock) {
   ekg::ui::slider *p_ui {new ekg::ui::slider()};
+  p_ui->registry(p_ui);
   p_ui->unsafe_set_type(ekg::type::slider);
   ekg::core->gen_widget(p_ui);
 
@@ -246,6 +251,7 @@ ekg::popup(std::string_view tag, const std::vector<std::string> &component_list,
 
 ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint16_t dock) {
   ekg::ui::textbox *p_ui {new ekg::ui::textbox()};
+  p_ui->registry(p_ui);
   p_ui->unsafe_set_type(ekg::type::textbox);
   ekg::core->gen_widget(p_ui);
 
@@ -266,6 +272,7 @@ ekg::ui::listbox *ekg::listbox(
   uint16_t dock
 ) {
   ekg::ui::listbox *p_ui {new ekg::ui::listbox()};
+  p_ui->registry(p_ui);
   p_ui->unsafe_set_type(ekg::type::listbox);
   ekg::core->gen_widget(p_ui);
 
@@ -286,6 +293,7 @@ ekg::ui::listbox *ekg::listbox_container(
   uint16_t dock
 ) {
   ekg::ui::listbox *p_ui {new ekg::ui::listbox()};
+  p_ui->registry(p_ui);
 
   p_ui->unsafe_set_type(ekg::type::listbox);
   ekg::core->gen_widget(p_ui);
@@ -299,7 +307,6 @@ ekg::ui::listbox *ekg::listbox_container(
 
 ekg::ui::scrollbar *ekg::scrollbar(std::string_view tag) {
   ekg::ui::scrollbar *p_ui {new ekg::ui::scrollbar()};
-
   p_ui->unsafe_set_type(ekg::type::scrollbar);
   ekg::core->gen_widget(p_ui);
   p_ui->set_tag(tag);
