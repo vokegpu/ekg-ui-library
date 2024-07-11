@@ -587,17 +587,26 @@ int32_t showcase_useless_window() {
   for (uint64_t it {}; it < content.size(); it++) {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
   }
+
+  ekg::button("Dead-allocate the instance of life", ekg::dock::fill | ekg::dock::next)
+    ->set_task(
+      new ekg::task {
+        .info = {
+          .tag = "oi eu amo pastel com beijinho",
+          .p_data = &content
+        },
+        .function = [](ekg::info &info) {
+          auto &content = *static_cast<ekg::item*>(info.p_data);
+          for (uint64_t it {}; it < content.size(); it++) {
+            content.at(it).erase(content.at(it).begin(), content.at(it).begin() + 1); // remove first element or meow
+          }
+
+          std::cout << info.tag << std::endl;
+        }
+      },
+    ekg::action::activity
+  );
 
   auto list = ekg::listbox(
     "hello",
@@ -605,7 +614,8 @@ int32_t showcase_useless_window() {
     ekg::dock::fill | ekg::dock::next
   )
   ->set_scaled_height(16)
-  ->set_mode(ekg::mode::multicolumn);
+  ->set_mode(ekg::mode::multicolumn)
+  ->transfer_ownership(&content);
 
   ekg::slider("meow1", 0.5f, 0.0f, 1.0f, ekg::dock::fill | ekg::dock::next)
     ->set_precision(2)

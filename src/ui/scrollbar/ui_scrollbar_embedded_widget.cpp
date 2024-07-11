@@ -293,13 +293,18 @@ void ekg::ui::scrollbar_embedded_widget::clamp_scroll() {
 }
 
 void ekg::ui::scrollbar_embedded_widget::on_draw_refresh() {
+  if (!this->is_horizontal_enabled && !this->is_vertical_enabled) {
+    this->rect_vertical_scroll_bar.w = 0.0f;
+    this->rect_horizontal_scroll_bar.h = 0.0f;
+    return;
+  }
+
   ekg::service::theme &theme {ekg::theme()};
 
+  this->rect_vertical_scroll_bar.w = static_cast<float>(theme.scrollbar_pixel_thickness * this->is_vertical_enabled);
   this->rect_vertical_scroll_bar.x = (
-    this->p_rect_mother->x + this->p_rect_mother->w - static_cast<float>(theme.scrollbar_pixel_thickness)
+    this->p_rect_mother->x + this->p_rect_mother->w - this->rect_vertical_scroll_bar.w
   );
-
-  this->rect_vertical_scroll_bar.w = static_cast<float>(theme.scrollbar_pixel_thickness);
 
   float out_of_mother_height {(this->rect_child.h - this->p_rect_mother->h)};
   float y_pos_factor {abs(this->scroll.y) / out_of_mother_height};
@@ -321,17 +326,10 @@ void ekg::ui::scrollbar_embedded_widget::on_draw_refresh() {
     ekg::draw_mode::filled
   );
 
-  this->rect_horizontal_scroll_bar.x = (
-    this->p_rect_mother->x + this->p_rect_mother->w - static_cast<float>(theme.scrollbar_pixel_thickness)
-  );
-
-  this->rect_horizontal_scroll_bar.w = static_cast<float>(theme.scrollbar_pixel_thickness);
-
+  this->rect_horizontal_scroll_bar.h = static_cast<float>(theme.scrollbar_pixel_thickness * this->is_horizontal_enabled);
   this->rect_horizontal_scroll_bar.y = (
-    this->p_rect_mother->y + this->p_rect_mother->h - static_cast<float>(theme.scrollbar_pixel_thickness)
+    this->p_rect_mother->y + this->p_rect_mother->h - this->rect_horizontal_scroll_bar.h
   );
-
-  this->rect_horizontal_scroll_bar.h = static_cast<float>(theme.scrollbar_pixel_thickness);
 
   float out_of_mother_width {(this->rect_child.w - this->p_rect_mother->w)};
   float x_pos_factor {abs(this->scroll.x) / out_of_mother_width};

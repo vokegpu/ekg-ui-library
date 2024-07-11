@@ -1115,7 +1115,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
     text_chunk_size++;
   }
 
-  if (!this->was_typed) {
+  if (!this->was_typed && this->flag.focused) {
     for (ekg::ui::textbox_widget::cursor &cursor : this->loaded_multi_cursor_list) {
       if (
           this->latest_size_until_refresh != text_chunk_size ||

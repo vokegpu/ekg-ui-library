@@ -67,7 +67,7 @@ void ekg::ui::listbox_widget::on_reload() {
   ekg::mode mode {p_ui->get_mode()};
   bool is_multicolumn {mode == ekg::mode::multicolumn};
   float scaled_width {rect.w};
-  float header_relative_x {ekg_pixel};
+  float header_relative_x {};
 
   for (uint64_t it {}; it < items_header_size; it++) {
     relative_rect.y = 0.0f;
@@ -137,12 +137,6 @@ void ekg::ui::listbox_widget::on_reload() {
       }
     }
 
-    ekg::item &rendering_cache {this->item_rendering_cache.at(it)};
-    rendering_cache.unsafe_get_placement() = item.unsafe_get_placement();
-    rendering_cache.set_value(item.get_value());
-    rendering_cache.set_attr(item.get_attr());
-    rendering_cache.set_text_align(item.get_text_align());
-
     placement.rect.x = header_relative_x; // rect was used to get the right aligned offset
     placement.rect_text.w = text_width;
     placement.rect_text.h = text_height * static_cast<float>(text_lines);
@@ -158,6 +152,12 @@ void ekg::ui::listbox_widget::on_reload() {
     mask.insert({&placement.rect_text, placement.text_dock_flags});
     mask.docknize();
 
+    ekg::item &rendering_cache {this->item_rendering_cache.at(it)};
+    rendering_cache.unsafe_get_placement() = item.unsafe_get_placement();
+    rendering_cache.set_value(item.get_value());
+    rendering_cache.set_attr(item.get_attr());
+    rendering_cache.set_text_align(item.get_text_align());
+
     header_relative_x += placement.rect.w + ekg_pixel;
     relative_rect.x += relative_rect.w + !is_multicolumn;
 
@@ -165,10 +165,16 @@ void ekg::ui::listbox_widget::on_reload() {
       relative_largest_rect.w = relative_rect.x;
     }
 
-    if (relative_rect.y > relative_largest_rect.h) {
-      relative_largest_rect.h = relative_rect.y;
+    /* get the largest visible size to scroll use as rect! */
+
+    this->rect_content_place.h = arbitrary_index_pos * relative_rect.h; 
+    if (this->rect_content_place.h > relative_largest_rect.h) {
+      relative_largest_rect.h = this->rect_content_place.h;
     }
   }
+
+  relative_largest_rect.h += this->embedded_scroll.rect_horizontal_scroll_bar.h;
+  this->embedded_scroll.rect_child = relative_largest_rect;
 
   this->embedded_scroll.acceleration.y = (text_height * 3.0f) + (offset * 2.0f);
   this->embedded_scroll.p_rect_mother = &this->rect_content_abs;
@@ -200,8 +206,11 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     ekg::update_high_frequency(this);
   }
 
-  if ((!motion && !released && !pressed_select && !pressed_open && !pressed_select_many) ||
-      (!this->flag.hovered && !this->was_selected)) {
+  if (
+      (!motion && !released && !pressed_select && !pressed_open && !pressed_select_many) ||
+      (!this->flag.hovered && !this->was_selected) ||
+      (this->flag.absolute || this->embedded_scroll.flag.hovered || this->must_update_items)
+    ) {
     return;
   }
 
@@ -218,6 +227,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
   uint64_t arbitrary_index_pos {};
   uint64_t largest_rendering_cache_size {};
+  float header_relative_x {};
 
   switch (pressed_open) {
   case true:
@@ -227,21 +237,22 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
       ekg::item &rendering_cache {this->item_rendering_cache.at(it)};
       ekg::item &item_header {p_ui->p_value->at(it)};
+      ekg::placement &placement_header {item_header.unsafe_get_placement()};
+
+      placement_header.rect.x = header_relative_x;
 
       /**
-      * Do not copy all the content by simple one reason:
-      * Copying the the major header from `p_value` to rendering cache element,
-      * erase ALL reserved memory from reload, re-reserving is performanceless here.
-      * 
-      * Passing only necessary stuff (attributes, value, etc). 
-      **/
+       * Do not copy all the content by simple one reason:
+       * Copying the the major header from `p_value` to rendering cache element,
+       * erase ALL reserved memory from reload, re-reserving is performanceless here.
+       * 
+       * Passing only necessary stuff (attributes, value, etc). 
+       **/
 
-      rendering_cache.unsafe_get_placement() = item_header.unsafe_get_placement();
+      rendering_cache.unsafe_get_placement() = placement_header;
       rendering_cache.set_value(item_header.get_value());
       rendering_cache.set_attr(item_header.get_attr());
       rendering_cache.set_text_align(item_header.get_text_align());
-
-      ekg::placement &placement_header {item_header.unsafe_get_placement()};
 
       ekg::ui::listbox_template_on_event(
         io_event_serial,
@@ -264,6 +275,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
       relative_rect.w = placement_header.rect.w;
       relative_rect.x += relative_rect.w + ekg_pixel;
+      header_relative_x = relative_rect.x;
 
       if (relative_rect.x > relative_largest_rect.w) {
         relative_largest_rect.w = relative_rect.x;
@@ -278,7 +290,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
       }
     }
 
-    relative_largest_rect.h;
+    relative_largest_rect.h += this->embedded_scroll.rect_horizontal_scroll_bar.h;
     this->embedded_scroll.rect_child = relative_largest_rect;
     break;
   case false:
@@ -292,7 +304,6 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
     float top_place {this->rect_content_abs.y};
     float bottom_place {this->rect_content_abs.y + this->rect_content_abs.h};
-    float header_relative_x {};
 
     uint16_t flags {};
     uint64_t visible_begin_index {};
@@ -367,7 +378,8 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
           was_selected = true;
         }
 
-        item.unsafe_get_addressed()->set_attr(item.get_attr()); 
+        item.unsafe_get_addressed()->set_attr(item.get_attr());
+        item.unsafe_get_addressed()->unsafe_get_placement() = item.unsafe_get_placement();
 
         if (item_rect.y + item_rect.h > bottom_place) {
           break;
@@ -398,11 +410,15 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
   ekg::service::theme &theme {ekg::theme()};
   ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_item_font_size())};
 
+  if (this->must_update_items) {
+    ekg::reload(this);
+  }
+
   /* The header offset transformed to content place! */
 
   this->rect_content_place.x = 0.0f;
-  this->rect_content_place.h = rect.h - this->rect_content_place.y;
-  this->rect_content_place.w = rect.w;
+  this->rect_content_place.h = rect.h - this->rect_content_place.y - this->embedded_scroll.rect_horizontal_scroll_bar.h;
+  this->rect_content_place.w = rect.w - this->embedded_scroll.rect_vertical_scroll_bar.w;
 
   /* Insert the absolute rect position to the place, the content abs is addressed to scrollbar! */
 
@@ -594,6 +610,12 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
     this->p_parent_scissor
   );
 
+  /* instead of rendering the scroll content with a reduced borders, we re-clamp value to the widget abs-rect boundings */
+
+  this->rect_content_abs.h = rect.h - this->rect_content_place.y;
+  this->rect_content_abs.x = rect.x;
+  this->rect_content_abs.w = rect.w;
+
   this->embedded_scroll.scissor = this->scissor;
   this->embedded_scroll.on_draw_refresh();
 
@@ -778,7 +800,7 @@ void ekg::ui::listbox_template_on_event(
         io_event_serial,
         arbitrary_index_pos,
         rendering_cache,
-        motion,                                            
+        motion,
         released,
         pressed_select_many,
         pressed_select,

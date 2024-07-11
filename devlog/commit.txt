@@ -179,3 +179,5 @@
 -- Removed useless text width condition of button for set the width.
 -- Listbox highlight optmized.
 -- Fixed a glitch where the latest widget was not adding the extent if widget did not have flag ok --- ekg::dock::next ---.
+-- Fixed scrollbar embedded not excluding if was not enable a scroll direction.
+-- Fixed listbox headers together when a item was open.
