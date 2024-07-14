@@ -51,6 +51,7 @@ namespace ekg {
   public:
     ekg::info info {};
     std::function<void(ekg::info&)> function {};
+    bool is_dispatched {};
   };
 }
 

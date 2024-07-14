@@ -25,35 +25,30 @@
 #include "ekg/service/handler.hpp"
 #include "ekg/util/io.hpp"
 
-ekg::task &ekg::service::handler::allocate() {
+ekg::task *&ekg::service::handler::allocate() {
   return this->pre_allocated_task_list.emplace_back();
 }
 
-ekg::task &ekg::service::handler::generate() {
-  return this->task_queue.emplace();
+void ekg::service::handler::dispatch(ekg::task *p_task) {
+  this->task_queue.push(p_task);
 }
 
 void ekg::service::handler::dispatch_pre_allocated_task(uint64_t index) {
-  ekg::task &task {
+  ekg::task *&p_task {
     this->pre_allocated_task_list.at(index)
   };
 
-  bool &is_dispatched {
-    this->pre_allocated_task_dispatched_map[task.info.tag]
-  };
-
-  if (!is_dispatched) {
-    this->generate() = task;
-    is_dispatched = true;
+  if (!p_task->is_dispatched) {
+    this->task_queue.push(p_task);
+    p_task->is_dispatched = true;
   }
 }
 
 void ekg::service::handler::on_update() {
   while (!this->task_queue.empty()) {
-    ekg::task &ekg_event {this->task_queue.front()};
-    ekg_event.function(ekg_event.info);
+    ekg::task *p_ekg_event {this->task_queue.front()};
+    p_ekg_event->function(p_ekg_event->info);
+    p_ekg_event->is_dispatched = false;
     this->task_queue.pop();
   }
-
-  this->pre_allocated_task_dispatched_map.clear();
 }

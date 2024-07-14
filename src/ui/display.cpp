@@ -31,6 +31,6 @@ bool ekg::ui::auto_scale {true};
 ekg::vec2 ekg::ui::scale {1920.0f, 1080.0f};
 float ekg::ui::scale_interval {25.0f};
 int64_t ekg::ui::latency {500};
-float ekg::ui::scroll {3.0f};
+float ekg::ui::scroll {32.0f};
 float ekg::ui::dpi_tiling {2.0f};
 bool ekg::ui::redraw {true};

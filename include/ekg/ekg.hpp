@@ -54,6 +54,7 @@ namespace ekg {
    * The runtime core of ekg.
    */
   extern ekg::runtime *core;
+  extern bool running;
 
   /** The setup and handling functions of ekg **/
 

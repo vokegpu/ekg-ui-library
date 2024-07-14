@@ -1,6 +1,8 @@
 #include <ekg/ekg.hpp>
 #include <ekg/os/ekg_sdl.hpp>
 #include <ekg/os/ekg_opengl.hpp>
+#include <thread>
+#include <chrono>
 #include "application.hpp"
 
 //#define application_enable_stb_image_test
@@ -107,7 +109,7 @@ void laboratory::shape::on_resize() {
     this->mat4x4_projection
   );
 
-  std::cout << "[laboratory] arbitrary on_resize called meow >< " << std::endl;
+  std::cout << "[laboratory] arbitrary on_resize called >< " << std::endl;
 }
 
 void laboratory::shape::draw(const ekg::rect &rect, const ekg::vec4 &color) {
@@ -397,6 +399,18 @@ public:
   }
 };
 
+void multithreading_update(uint64_t *p_async_fps, ekg::runtime *p_ekg_runtime) {
+  uint64_t fps {};
+  while (ekg::running) {
+    if (*p_async_fps) {
+      fps = 1000 / *p_async_fps;
+    }
+
+    p_ekg_runtime->service_handler.on_update();
+    std::this_thread::sleep_for(std::chrono::microseconds(16));
+  }
+}
+
 int32_t showcase_useless_window() {
   SDL_Init(SDL_INIT_VIDEO);
 
@@ -506,7 +520,7 @@ int32_t showcase_useless_window() {
   // 🐈
   // 🐮
 
-  ekg::button("🏳️‍⚧️ 🐈 🐮 Oi Quica Aqui pa Sai🐈🐈🐈rMumu", ekg::dock::fill | ekg::dock::next)
+  ekg::button("🐈 oi me pressiona mwm 🐮", ekg::dock::fill | ekg::dock::next)
     ->set_text_align(ekg::dock::center)
     ->set_font_size(ekg::font::big)
     ->set_task(
@@ -819,18 +833,30 @@ int32_t showcase_useless_window() {
   float performance_frequency {};
   float dt {};
 
-  uint64_t frame_couting {};
+  uint64_t frame_couting {1};
   uint64_t last_frame {1};
   ekg::timing fps_timing {};
 
   ekg::input::bind("amovc", "mouse-3");
 
+  bool multithreading {false};
+  std::thread update_thread {};
+
+  if (multithreading) {
+    update_thread = std::thread(multithreading_update, &last_frame, &runtime);
+  }
+
   while (running) {
+    /*
     last = now;
     now = SDL_GetPerformanceCounter();
     ekg::ui::dt = static_cast<float>(
       (now - last) * 1000 / SDL_GetPerformanceFrequency()
     ) * 0.01f;
+    */
+
+    // idk my smol brain
+    ekg::ui::dt = 1.0f / last_frame;
 
     if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
       last_frame = frame_couting;
@@ -885,6 +911,13 @@ int32_t showcase_useless_window() {
     }
   }
 
+  if (multithreading) {
+    ekg::running = false;
+    update_thread.join();
+  }
+
+  ekg::quit();
+
   return 6666;
 }
 
@@ -933,7 +966,7 @@ int32_t laboratory_testing() {
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 4);
-  SDL_GL_SetSwapInterval((app.vsync = true));
+  SDL_GL_SetSwapInterval((app.vsync = false));
 
   app.p_sdl_win = {
     SDL_CreateWindow(

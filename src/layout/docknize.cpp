@@ -323,19 +323,6 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
     prev_widget_layout = layout;
     prev_flags = flags;
     it++;
-
-    switch (type) {
-    case ekg::type::listbox:
-      /**
-       * Stupid hack to update the listbox rendedring-items cache.
-       * But I will change it soon.
-       **/
-      p_widgets->flag.hovered = true;
-      p_widgets->on_event(ekg::core->io_event_serial);
-      p_widgets->flag.hovered = false;
-
-      break;
-    }
   }
 
   if (has_scroll_embedded && !is_vertical_enabled && type == ekg::type::frame) {

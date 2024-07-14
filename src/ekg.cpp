@@ -27,6 +27,7 @@
 #include "ekg/util/geometry.hpp"
 
 ekg::runtime *ekg::core {};
+bool ekg::running {};
 
 ekg::service::theme &ekg::theme() {
   return ekg::core->service_theme;
@@ -72,6 +73,7 @@ void ekg::init(
   }
 
   ekg::core = p_ekg_runtime;
+  ekg::running = true;
 
   ekg::core->f_renderer_small.init();
   ekg::core->f_renderer_small.set_font(p_ekg_runtime_property->p_font_path);
@@ -92,6 +94,7 @@ void ekg::quit() {
   ekg::core->p_os_platform->quit();
   ekg::core->p_gpu_api->quit();
   ekg::core->quit();
+  ekg::running = false;
 
   ekg::log() << "Shutdown complete - Thank you for using EKG ;) <3";
 }

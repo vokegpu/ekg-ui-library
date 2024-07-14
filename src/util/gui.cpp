@@ -92,8 +92,11 @@ void ekg::update_high_frequency(ekg::ui::abstract_widget *p_widget) {
   ekg::core->set_update_high_frequency(p_widget);
 }
 
-void ekg::dispatch(task *p_event) {
-  ekg::core->service_handler.generate() = *p_event;
+void ekg::dispatch(task *p_task) {
+  if (!p_task->is_dispatched) {
+    ekg::core->service_handler.dispatch(p_task);
+    //p_task->is_dispatched = true;
+  }
 }
 
 void ekg::dispatch(ekg::env env) {

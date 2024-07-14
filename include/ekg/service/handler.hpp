@@ -36,16 +36,13 @@
 namespace ekg::service {
   class handler {
   protected:
-    std::queue<ekg::task> task_queue {};
-    std::unordered_map<std::string_view, bool> pre_allocated_task_dispatched_map {};
-    std::vector<ekg::task> pre_allocated_task_list {};
+    std::queue<ekg::task*> task_queue {};
+    std::vector<ekg::task*> pre_allocated_task_list {};
   public:
-    ekg::task &allocate();
-
-    ekg::task &generate();
+    ekg::task *&allocate();
 
     void dispatch_pre_allocated_task(uint64_t index);
-
+    void dispatch(ekg::task *p_task);
     void on_update();
   };
 }

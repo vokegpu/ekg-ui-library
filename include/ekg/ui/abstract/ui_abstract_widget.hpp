@@ -34,7 +34,7 @@
   if (should && this->p_data->get_task(action) != nullptr) { \
     ekg::task *p_ekg_action_dispatch_task {this->p_data->get_task(action)}; \
     p_ekg_action_dispatch_task->info.p_ui = static_cast<void*>(this->p_data); \
-    ekg::core->service_handler.generate() = *p_ekg_action_dispatch_task; \
+    ekg::dispatch(p_ekg_action_dispatch_task); \
   } \
 
 /**

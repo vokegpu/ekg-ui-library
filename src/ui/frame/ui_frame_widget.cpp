@@ -158,9 +158,10 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
       if (this->target_dock_resize != ekg::dock::none) {
         this->is_targeting_absolute_parent = true;
         ekg::synclayout(this);
+        ekg::reload(this);
       }
 
-      ekg::reload(this);
+      ekg::ui::redraw = true;
     }
   } else if (resize_dock_flags != ekg::dock::none && this->flag.hovered && !this->flag.activity) {
     const ekg::vec2 vec_limit_offset {this->ui_theme_activity_offset, this->ui_theme_activity_offset};

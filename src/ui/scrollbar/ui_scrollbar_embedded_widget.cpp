@@ -230,9 +230,11 @@ void ekg::ui::scrollbar_embedded_widget::on_event(ekg::os::io_event_serial &io_e
       scaled_bar.y = interact.y - this->bar_drag.y;
       scaled_bar.y -= this->p_rect_mother->y;
 
-      this->scroll.w =
-          -ekg_clamp(scaled_bar.y / (this->p_rect_mother->h - this->rect_vertical_scroll_bar.h), 0.0f, 1.0f) *
-          (this->rect_child.h - this->p_rect_mother->h);
+      this->scroll.w = (
+        (-ekg_clamp(scaled_bar.y / (this->p_rect_mother->h - this->rect_vertical_scroll_bar.h), 0.0f, 1.0f)) *
+        (this->rect_child.h - this->p_rect_mother->h)
+      );
+
       this->scroll.y = this->scroll.w;
     }
 
@@ -241,9 +243,11 @@ void ekg::ui::scrollbar_embedded_widget::on_event(ekg::os::io_event_serial &io_e
       scaled_bar.x = interact.x - this->bar_drag.x;
       scaled_bar.x -= this->p_rect_mother->x;
 
-      this->scroll.z =
-          -ekg_clamp(scaled_bar.x / (this->p_rect_mother->w - this->rect_horizontal_scroll_bar.w), 0.0f, 1.0f) *
-          (this->rect_child.w - this->p_rect_mother->w);
+      this->scroll.z = (
+        (-ekg_clamp(scaled_bar.x / (this->p_rect_mother->w - this->rect_horizontal_scroll_bar.w), 0.0f, 1.0f)) *
+        (this->rect_child.w - this->p_rect_mother->w)
+      );
+
       this->scroll.x = this->scroll.z;
     }
   }
@@ -258,9 +262,9 @@ void ekg::ui::scrollbar_embedded_widget::on_update() {
   this->scroll.x = ekg::lerp(this->scroll.x, this->scroll.z, ekg::ui::scroll * ekg::ui::dt);
   this->scroll.y = ekg::lerp(this->scroll.y, this->scroll.w, ekg::ui::scroll * ekg::ui::dt);
 
-#if defined(ANDROID)
+  #if defined(ANDROID)
   this->clamp_scroll();
-#endif
+  #endif
 
   ekg::dispatch(ekg::env::redraw);
 }

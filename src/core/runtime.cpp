@@ -211,10 +211,9 @@ void ekg::runtime::process_update() {
   this->service_input.on_update();
 
   if (this->enable_high_priority_frequency) {
-    auto &update = this->update_widget_list;
     size_t counter {};
 
-    for (ekg::ui::abstract_widget *&p_widgets: update) {
+    for (ekg::ui::abstract_widget *&p_widgets: this->update_widget_list) {
       if (p_widgets == nullptr || !p_widgets->is_high_frequency) {
         ++counter;
         continue;
@@ -223,23 +222,19 @@ void ekg::runtime::process_update() {
       p_widgets->on_update();
     }
 
-    if (counter == update.size()) {
+    if (counter == this->update_widget_list.size()) {
       this->enable_high_priority_frequency = false;
-      update.clear();
+      this->update_widget_list.clear();
     }
   }
 
   this->service_handler.on_update();
-  this->gpu_allocator.on_update();
-
   ekg::log::flush();
 }
 
 void ekg::runtime::process_render() {
   if (ekg::ui::redraw) {
     ekg::ui::redraw = false;
-
-    auto &all {this->loaded_widget_list};
 
     /**
      * The allocator starts here,
@@ -248,7 +243,7 @@ void ekg::runtime::process_render() {
      **/
     this->gpu_allocator.invoke();
 
-    for (ekg::ui::abstract_widget *&p_widgets : all) {
+    for (ekg::ui::abstract_widget *&p_widgets : this->loaded_widget_list) {
       if (p_widgets != nullptr && p_widgets->p_data->is_alive() && p_widgets->p_data->is_visible()) {
         /**
          * The allocator is used here,
@@ -303,19 +298,15 @@ void ekg::runtime::process_render() {
 void ekg::runtime::prepare_tasks() {
   ekg::log() << "Preparing internal EKG core";
 
-  this->service_handler.allocate() = {
+  this->service_handler.allocate() = new ekg::task {
     {
       .tag    = "refresh",
-      .p_data = this
+      .p_data = nullptr
     },
-    .function = [](ekg::info &info) {
-      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(info.p_data)};
-
-      auto &all = p_runtime->loaded_widget_list;
-      auto &refresh = p_runtime->refresh_widget_list;
+    .function = [this](ekg::info &info) {
       bool should_call_gc {};
 
-      for (ekg::ui::abstract_widget *&p_widgets: refresh) {
+      for (ekg::ui::abstract_widget *&p_widgets : this->refresh_widget_list) {
         if (p_widgets == nullptr || !p_widgets->was_refreshed) {
           continue;
         }
@@ -327,10 +318,10 @@ void ekg::runtime::prepare_tasks() {
           continue;
         }
 
-        all.push_back(p_widgets);
+        this->loaded_widget_list.push_back(p_widgets);
       }
 
-      refresh.clear();
+      this->refresh_widget_list.clear();
 
       if (should_call_gc) {
         ekg::dispatch(ekg::env::gc);
@@ -338,21 +329,19 @@ void ekg::runtime::prepare_tasks() {
     }
   };
 
-  this->service_handler.allocate() = {
+  this->service_handler.allocate() = new ekg::task {
     {
       .tag    = "swap",
-      .p_data = this
+      .p_data = nullptr
     },
-    .function = [](ekg::info &info) {
+    .function = [this](ekg::info &info) {
       if (!ekg::hovered.swap) {
         return;
       }
 
-      ekg::runtime *p_runtime {static_cast<ekg::runtime*>(info.p_data)};
       ekg::runtime::collect.target_id = ekg::hovered.swap;
 
-      auto &all {p_runtime->loaded_widget_list};
-      for (ekg::ui::abstract_widget *&p_widgets: all) {
+      for (ekg::ui::abstract_widget *&p_widgets: this->loaded_widget_list) {
         if (p_widgets == nullptr || p_widgets->p_data->has_parent()) {
           continue;
         }
@@ -380,13 +369,13 @@ void ekg::runtime::prepare_tasks() {
       std::copy(
         ekg::runtime::back.ordered_list.begin(),
         ekg::runtime::back.ordered_list.end(),
-        all.begin()
+        this->loaded_widget_list.begin()
       );
       
       std::copy(
         ekg::runtime::front.ordered_list.begin(),
         ekg::runtime::front.ordered_list.end(),
-        all.begin() + ekg::runtime::back.ordered_list.size()
+        this->loaded_widget_list.begin() + ekg::runtime::back.ordered_list.size()
       );
 
       ekg::runtime::front.clear();
@@ -395,18 +384,15 @@ void ekg::runtime::prepare_tasks() {
     }
   };
 
-  this->service_handler.allocate() = {
+  this->service_handler.allocate() = new ekg::task {
     {
       .tag    = "reload",
-      .p_data = this
+      .p_data = nullptr
     },
-    .function = [](ekg::info &info) {
-      ekg::runtime *p_runtime {static_cast<ekg::runtime*>(info.p_data)};
-      auto &reload = p_runtime->reload_widget_list;
-
+    .function = [this](ekg::info &info) {
       ekg::vec4 rect {};
 
-      for (ekg::ui::abstract_widget *&p_widgets: reload) {
+      for (ekg::ui::abstract_widget *&p_widgets : this->reload_widget_list) {
         if (p_widgets == nullptr || !p_widgets->was_reloaded) {
           continue;
         }
@@ -483,20 +469,17 @@ void ekg::runtime::prepare_tasks() {
         p_widgets->on_reload();
       }
 
-      reload.clear();
+      this->reload_widget_list.clear();
     }
   };
 
-  this->service_handler.allocate() = {
+  this->service_handler.allocate() = new ekg::task {
     {
       .tag    = "synclayout",
-      .p_data = this
+      .p_data = nullptr
     },
-    .function = [](ekg::info &info) {
-      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(info.p_data)};
-      auto &synclayout {p_runtime->synclayout_widget_list};
-
-      for (ekg::ui::abstract_widget *&p_widgets: synclayout) {
+    .function = [this](ekg::info &info) {
+      for (ekg::ui::abstract_widget *&p_widgets: this->synclayout_widget_list) {
         if (p_widgets == nullptr || !p_widgets->was_syncedlayout) {
           continue;
         }
@@ -505,29 +488,22 @@ void ekg::runtime::prepare_tasks() {
         ekg::layout::docknize(p_widgets);
       }
 
-      synclayout.clear();
+      this->synclayout_widget_list.clear();
       ekg::dispatch(ekg::env::redraw);
     }
   };
 
-  this->service_handler.allocate() = {
+  this->service_handler.allocate() = new ekg::task {
     {
       .tag    = "gc",
-      .p_data = this,
+      .p_data = nullptr,
     },
-    .function = [](ekg::info &info) {
-      ekg::runtime *p_runtime {static_cast<ekg::runtime *>(info.p_data)};
-      auto &all {p_runtime->loaded_widget_list};
-      auto &high_frequency {p_runtime->update_widget_list};
-      auto &redraw {p_runtime->redraw_widget_list};
-      auto &allocator {p_runtime->gpu_allocator};
-
-      redraw.clear();
-      high_frequency.clear();
+    .function = [this](ekg::info &info) {
+      this->update_widget_list.clear();
       std::vector<ekg::ui::abstract_widget*> new_list {};
       int32_t element_id {};
 
-      for (ekg::ui::abstract_widget *&p_widgets: all) {
+      for (ekg::ui::abstract_widget *&p_widgets: this->loaded_widget_list) {
         if (p_widgets == nullptr || p_widgets->p_data == nullptr) {
           continue;
         }
@@ -535,9 +511,12 @@ void ekg::runtime::prepare_tasks() {
         if (!p_widgets->p_data->is_alive()) {
           element_id = p_widgets->p_data->get_id();
 
-          ekg::hovered.id *= ekg::hovered.id == element_id;
-          ekg::hovered.up *= ekg::hovered.up == element_id;
-          ekg::hovered.down *= ekg::hovered.down == element_id;
+          /**
+           * Reset the hovered states if the current being deleted is hovered.
+           **/
+          ekg::hovered.id *= ekg::hovered.id != element_id;
+          ekg::hovered.up *= ekg::hovered.up != element_id;
+          ekg::hovered.down *= ekg::hovered.down != element_id;
 
           delete p_widgets->p_data;
           delete p_widgets;
@@ -546,17 +525,13 @@ void ekg::runtime::prepare_tasks() {
         }
 
         if (p_widgets->is_high_frequency) {
-          high_frequency.push_back(p_widgets);
-        }
-
-        if (p_widgets->p_data->is_visible()) {
-          redraw.push_back(p_widgets);
+          this->update_widget_list.push_back(p_widgets);
         }
 
         new_list.push_back(p_widgets);
       }
 
-      all = new_list;
+      this->loaded_widget_list = new_list;
     }
   };
 }

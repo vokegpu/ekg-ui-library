@@ -1122,8 +1122,8 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
           (
 
             /**
-             * Check if the cursors are bouding the widget,
-             * if the text is modified with no-input.
+             * Check if the cursors are bounding correctly the text,
+             * then reset the cursors position.
              **/
 
             (

@@ -59,6 +59,7 @@ namespace ekg::ui {
 
 namespace ekg::ui {
   void listbox_template_reload(
+    ekg::item &rendering_cache,
     ekg::item &parent,
     ekg::rect &ui_rect,
     ekg::rect &header_rect,
@@ -67,7 +68,8 @@ namespace ekg::ui {
     int32_t item_scaled_height,
     uint64_t header_index,
     uint64_t &arbitrary_index_pos,
-    bool &opened,
+    uint64_t &rendering_cache_arbitrary_index_pos,
+    uint64_t &latest_opened_arbitrary_index_pos,
     ekg::mode mode,
     bool *p_semaphore
   );

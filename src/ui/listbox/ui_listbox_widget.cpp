@@ -51,6 +51,10 @@ void ekg::ui::listbox_widget::on_reload() {
   ekg::rect relative_largest_rect {};
 
   uint64_t arbitrary_index_pos {};
+  uint64_t highest_arbitrary_index_pos {};
+  uint64_t latest_opened_arbitrary_index_pos {};
+  uint64_t rendering_cache_arbitrary_index_pos {};
+
   int32_t item_scaled_height {p_ui->get_item_scaled_height()};
   int32_t column_header_scaled_height {p_ui->get_column_header_scaled_height()};
   uint16_t column_header_dock_flags {p_ui->get_column_header_align()};
@@ -63,7 +67,6 @@ void ekg::ui::listbox_widget::on_reload() {
   text_height = f_renderer_column_header.get_text_height();
   dimension_offset = text_height / 2;
 
-  bool opened {};
   ekg::mode mode {p_ui->get_mode()};
   bool is_multicolumn {mode == ekg::mode::multicolumn};
   float scaled_width {rect.w};
@@ -97,6 +100,7 @@ void ekg::ui::listbox_widget::on_reload() {
     placement.rect.y = relative_rect.y;
 
     arbitrary_index_pos = 0;
+    rendering_cache_arbitrary_index_pos = 0;
 
     if (
         ekg_bitwise_contains(column_header_dock_flags, ekg::dock::top) ||
@@ -107,7 +111,13 @@ void ekg::ui::listbox_widget::on_reload() {
     }
 
     if (this->must_update_items) {
+      if (it >= this->item_rendering_cache.size()) {
+        this->item_rendering_cache.emplace_back();
+      }
+
+      ekg::item &rendering_cache {this->item_rendering_cache.at(it)};
       ekg::ui::listbox_template_reload(
+        rendering_cache,
         item,
         rect,
         placement.rect,
@@ -116,25 +126,22 @@ void ekg::ui::listbox_widget::on_reload() {
         item_scaled_height,
         it,
         arbitrary_index_pos,
-        opened,
+        rendering_cache_arbitrary_index_pos,
+        latest_opened_arbitrary_index_pos,
         mode,
         &this->must_update_items
       );
     
-      if (it >= this->item_rendering_cache.size()) {
-        this->item_rendering_cache.emplace_back().resize(arbitrary_index_pos);
+      if (arbitrary_index_pos < rendering_cache.size()) {
+        rendering_cache.erase(
+          rendering_cache.begin() + arbitrary_index_pos + 1,
+          rendering_cache.end()
+        );
       } else {
-        ekg::item &rendering_cache {this->item_rendering_cache.at(it)};
-
-        if (arbitrary_index_pos < rendering_cache.size()) {
-          rendering_cache.erase(
-            rendering_cache.begin() + arbitrary_index_pos + 1,
-            rendering_cache.end()
-          );
-        } else {
-          rendering_cache.resize(arbitrary_index_pos);
-        }
+        rendering_cache.resize(arbitrary_index_pos);
       }
+
+      rendering_cache.unsafe_set_visible_count(rendering_cache_arbitrary_index_pos);
     }
 
     placement.rect.x = header_relative_x; // rect was used to get the right aligned offset
@@ -167,14 +174,18 @@ void ekg::ui::listbox_widget::on_reload() {
 
     /* get the largest visible size to scroll use as rect! */
 
-    this->rect_content_place.h = arbitrary_index_pos * relative_rect.h; 
-    if (this->rect_content_place.h > relative_largest_rect.h) {
-      relative_largest_rect.h = this->rect_content_place.h;
+    if (arbitrary_index_pos > highest_arbitrary_index_pos) {
+      highest_arbitrary_index_pos = arbitrary_index_pos;
     }
   }
 
-  relative_largest_rect.h += this->embedded_scroll.rect_horizontal_scroll_bar.h;
-  this->embedded_scroll.rect_child = relative_largest_rect;
+  if (this->must_update_items) {
+    relative_largest_rect.h = (
+      (highest_arbitrary_index_pos * relative_rect.h) + this->embedded_scroll.rect_horizontal_scroll_bar.h + ekg_pixel 
+    );
+
+    this->embedded_scroll.rect_child = relative_largest_rect;
+  }
 
   this->embedded_scroll.acceleration.y = (text_height * 3.0f) + (offset * 2.0f);
   this->embedded_scroll.p_rect_mother = &this->rect_content_abs;
@@ -226,7 +237,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
   ekg::mode mode {p_ui->get_mode()};
 
   uint64_t arbitrary_index_pos {};
-  uint64_t largest_rendering_cache_size {};
+  uint64_t highest_arbitrary_index_pos {};
   float header_relative_x {};
 
   switch (pressed_open) {
@@ -283,14 +294,15 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
       /* get the largest visible size to scroll use as rect! */
 
-      this->rect_content_place.h = arbitrary_index_pos * relative_rect.h; 
-      if (this->rect_content_place.h > relative_largest_rect.h) {
-        relative_largest_rect.h = this->rect_content_place.h;
-        largest_rendering_cache_size = arbitrary_index_pos;
+      if (arbitrary_index_pos > highest_arbitrary_index_pos) {
+        highest_arbitrary_index_pos = arbitrary_index_pos;
       }
     }
 
-    relative_largest_rect.h += this->embedded_scroll.rect_horizontal_scroll_bar.h;
+    relative_largest_rect.h = (
+      (highest_arbitrary_index_pos * relative_rect.h) + this->embedded_scroll.rect_horizontal_scroll_bar.h + ekg_pixel
+    );
+
     this->embedded_scroll.rect_child = relative_largest_rect;
     break;
   case false:
@@ -623,6 +635,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
 }
 
 void ekg::ui::listbox_template_reload(
+  ekg::item &rendering_cache,
   ekg::item &parent,
   ekg::rect &ui_rect,
   ekg::rect &header_rect,
@@ -631,7 +644,8 @@ void ekg::ui::listbox_template_reload(
   int32_t item_scaled_height,
   uint64_t header_index,
   uint64_t &arbitrary_index_pos,
-  bool &opened,
+  uint64_t &rendering_cache_arbitrary_index_pos,
+  uint64_t &latest_opened_arbitrary_index_pos,
   ekg::mode mode,
   bool *p_semaphore
 ) {
@@ -643,7 +657,10 @@ void ekg::ui::listbox_template_reload(
   uint64_t it {};
   int32_t text_lines {};
   uint16_t flags {};
-  bool just_flagged_cursive_opened {}; 
+
+  bool is_empty {};
+  bool is_major_column {rendering_cache_arbitrary_index_pos == 0};
+  bool is_opened_flagged {};
 
   float text_width {};
   float text_height {f_renderer.get_text_height()};
@@ -658,6 +675,8 @@ void ekg::ui::listbox_template_reload(
   float additional_offset_by_column_based {
     (theme.listbox_subitem_offset_space + ekg_pixel) * should_apply_offset_by_column_based
   };
+
+  std::cout << "reload being called for no-reaosn ??" << std::endl;
 
   for (it = it; it < parent.size(); it++) {
     ekg::item &item {parent.at(it)};
@@ -693,20 +712,30 @@ void ekg::ui::listbox_template_reload(
     mask.insert({&placement.rect_text, placement.text_dock_flags});
     mask.docknize();
 
-    just_flagged_cursive_opened = opened;
+    is_empty = item.empty();
+    if (is_major_column || latest_opened_arbitrary_index_pos) {
+      if (rendering_cache_arbitrary_index_pos >= rendering_cache.size()) {
+        rendering_cache.emplace_back();
+      }
 
-    if (!opened && ekg_bitwise_contains(flags, ekg::attr::opened)) {
-      just_flagged_cursive_opened = true;
-      opened = true;
+      rendering_cache[rendering_cache_arbitrary_index_pos].unsafe_get_placement() = placement;
+      rendering_cache[rendering_cache_arbitrary_index_pos].set_value(item.get_value());
+      rendering_cache[rendering_cache_arbitrary_index_pos].set_attr(item.get_attr());
+      rendering_cache[rendering_cache_arbitrary_index_pos].set_text_align(item.get_text_align());
+      rendering_cache[rendering_cache_arbitrary_index_pos].unsafe_set_addressed(&item);
+      rendering_cache_arbitrary_index_pos++;
     }
 
+    is_opened_flagged = ekg_bitwise_contains(flags, ekg::attr::opened);
+    latest_opened_arbitrary_index_pos = is_opened_flagged;
     arbitrary_index_pos++;
 
-    if (!item.empty()) {
+    if (!is_empty) {
       relative_rect.x += additional_offset_by_column_based;
       relative_rect.w -= additional_offset_by_column_based;
 
       ekg::ui::listbox_template_reload(
+        rendering_cache,
         item,
         ui_rect,
         header_rect,
@@ -715,7 +744,8 @@ void ekg::ui::listbox_template_reload(
         item_scaled_height,
         header_index,
         arbitrary_index_pos,
-        opened,
+        rendering_cache_arbitrary_index_pos,
+        latest_opened_arbitrary_index_pos,
         mode,
         p_semaphore
       );
@@ -724,11 +754,11 @@ void ekg::ui::listbox_template_reload(
       relative_rect.w += additional_offset_by_column_based;
     }
 
-    if (just_flagged_cursive_opened) {
-      opened = false;
+    if (is_opened_flagged) {
+      latest_opened_arbitrary_index_pos = 0;
     }
 
-    relative_rect.y -= (relative_rect.y - placement.rect.y) * !opened;
+    relative_rect.y -= (relative_rect.y - placement.rect.y) * !is_opened_flagged;
     relative_rect.y += placement.rect.h;
   }
 }
@@ -790,7 +820,10 @@ void ekg::ui::listbox_template_on_event(
     relative_rect.y += placement.rect.h;
 
     if (arbitrary_index_pos < rendering_cache_size) {
-      rendering_cache[arbitrary_index_pos] = item;
+      rendering_cache[arbitrary_index_pos].unsafe_get_placement() = placement;
+      rendering_cache[arbitrary_index_pos].set_value(item.get_value());
+      rendering_cache[arbitrary_index_pos].set_attr(item.get_attr());
+      rendering_cache[arbitrary_index_pos].set_text_align(item.get_text_align());
       rendering_cache[arbitrary_index_pos].unsafe_set_addressed(&item);
       arbitrary_index_pos++;
     }
