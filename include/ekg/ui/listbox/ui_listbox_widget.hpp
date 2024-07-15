@@ -69,7 +69,7 @@ namespace ekg::ui {
     uint64_t header_index,
     uint64_t &arbitrary_index_pos,
     uint64_t &rendering_cache_arbitrary_index_pos,
-    uint64_t &latest_opened_arbitrary_index_pos,
+    bool &opened,
     ekg::mode mode,
     bool *p_semaphore
   );

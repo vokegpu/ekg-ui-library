@@ -52,7 +52,6 @@ void ekg::ui::listbox_widget::on_reload() {
 
   uint64_t arbitrary_index_pos {};
   uint64_t highest_arbitrary_index_pos {};
-  uint64_t latest_opened_arbitrary_index_pos {};
   uint64_t rendering_cache_arbitrary_index_pos {};
 
   int32_t item_scaled_height {p_ui->get_item_scaled_height()};
@@ -69,6 +68,8 @@ void ekg::ui::listbox_widget::on_reload() {
 
   ekg::mode mode {p_ui->get_mode()};
   bool is_multicolumn {mode == ekg::mode::multicolumn};
+  bool opened {};
+
   float scaled_width {rect.w};
   float header_relative_x {};
 
@@ -127,7 +128,7 @@ void ekg::ui::listbox_widget::on_reload() {
         it,
         arbitrary_index_pos,
         rendering_cache_arbitrary_index_pos,
-        latest_opened_arbitrary_index_pos,
+        opened,
         mode,
         &this->must_update_items
       );
@@ -174,8 +175,8 @@ void ekg::ui::listbox_widget::on_reload() {
 
     /* get the largest visible size to scroll use as rect! */
 
-    if (arbitrary_index_pos > highest_arbitrary_index_pos) {
-      highest_arbitrary_index_pos = arbitrary_index_pos;
+    if (rendering_cache_arbitrary_index_pos > highest_arbitrary_index_pos) {
+      highest_arbitrary_index_pos = rendering_cache_arbitrary_index_pos;
     }
   }
 
@@ -645,7 +646,7 @@ void ekg::ui::listbox_template_reload(
   uint64_t header_index,
   uint64_t &arbitrary_index_pos,
   uint64_t &rendering_cache_arbitrary_index_pos,
-  uint64_t &latest_opened_arbitrary_index_pos,
+  bool &opened,
   ekg::mode mode,
   bool *p_semaphore
 ) {
@@ -659,7 +660,7 @@ void ekg::ui::listbox_template_reload(
   uint16_t flags {};
 
   bool is_empty {};
-  bool is_major_column {rendering_cache_arbitrary_index_pos == 0};
+  bool is_major_column {arbitrary_index_pos == 0};
   bool is_opened_flagged {};
 
   float text_width {};
@@ -675,8 +676,6 @@ void ekg::ui::listbox_template_reload(
   float additional_offset_by_column_based {
     (theme.listbox_subitem_offset_space + ekg_pixel) * should_apply_offset_by_column_based
   };
-
-  std::cout << "reload being called for no-reaosn ??" << std::endl;
 
   for (it = it; it < parent.size(); it++) {
     ekg::item &item {parent.at(it)};
@@ -712,8 +711,9 @@ void ekg::ui::listbox_template_reload(
     mask.insert({&placement.rect_text, placement.text_dock_flags});
     mask.docknize();
 
-    is_empty = item.empty();
-    if (is_major_column || latest_opened_arbitrary_index_pos) {
+    relative_rect.h = placement.rect.h;
+
+    if (is_major_column || opened) {
       if (rendering_cache_arbitrary_index_pos >= rendering_cache.size()) {
         rendering_cache.emplace_back();
       }
@@ -727,7 +727,9 @@ void ekg::ui::listbox_template_reload(
     }
 
     is_opened_flagged = ekg_bitwise_contains(flags, ekg::attr::opened);
-    latest_opened_arbitrary_index_pos = is_opened_flagged;
+    is_empty = item.empty();
+
+    opened = is_opened_flagged;
     arbitrary_index_pos++;
 
     if (!is_empty) {
@@ -745,7 +747,7 @@ void ekg::ui::listbox_template_reload(
         header_index,
         arbitrary_index_pos,
         rendering_cache_arbitrary_index_pos,
-        latest_opened_arbitrary_index_pos,
+        opened,
         mode,
         p_semaphore
       );
@@ -755,7 +757,7 @@ void ekg::ui::listbox_template_reload(
     }
 
     if (is_opened_flagged) {
-      latest_opened_arbitrary_index_pos = 0;
+      opened = 0;
     }
 
     relative_rect.y -= (relative_rect.y - placement.rect.y) * !is_opened_flagged;
