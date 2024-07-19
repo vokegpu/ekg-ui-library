@@ -551,7 +551,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
 
     ekg::draw::sync_scissor(
       this->scissor,
-      rect,
+      item_rect,
       this->p_parent_scissor
     );
 
