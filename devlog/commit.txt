@@ -183,3 +183,4 @@
 -- Fixed listbox headers together when a item was open.
 -- Fixed the unscrollable listbox when starts for the first time.
 -- Fixed listbox being resized breaking the horizontal scroll (due the size calculations be wrong).
+-- Added horizontal resize feature to listbox.

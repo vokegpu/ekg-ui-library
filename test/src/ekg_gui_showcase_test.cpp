@@ -627,6 +627,7 @@ int32_t showcase_useless_window() {
     content,
     ekg::dock::fill | ekg::dock::next
   )
+  ->set_column_header_align(ekg::dock::none)
   ->set_scaled_height(16)
   ->set_mode(ekg::mode::multicolumn)
   ->transfer_ownership(&content);

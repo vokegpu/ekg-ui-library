@@ -38,8 +38,16 @@ namespace ekg::ui {
     ekg::item item_rendering_cache {};
     ekg::rect rect_content_abs {};
     ekg::rect rect_content_place {};
+    ekg::rect rect_header_delta {};
+    ekg::rect rect_header_target {};
     float column_header_height {};
     bool must_update_items {};
+
+    ekg::rect targeting_header {};
+    int32_t targeting_header_to_resize {};
+    int32_t targeting_header_to_drag {};
+    int32_t target_resizing {-1};
+    int32_t target_dragging {-1};
   public:
     void on_create() override;
 
