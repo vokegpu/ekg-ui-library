@@ -182,3 +182,4 @@
 -- Fixed scrollbar embedded not excluding if was not enable a scroll direction.
 -- Fixed listbox headers together when a item was open.
 -- Fixed the unscrollable listbox when starts for the first time.
+-- Fixed listbox being resized breaking the horizontal scroll (due the size calculations be wrong).

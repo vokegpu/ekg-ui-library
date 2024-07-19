@@ -457,8 +457,9 @@ void ekg::ui::textbox_widget::process_text(
         int64_t cursor_dir[2] {direction, 0};
 
         if (this->is_action_select_enable) {
-          cursor_dir[0] = direction < 0 ? (-cursor.pos[0].text_index) :
-                          (static_cast<int64_t>(ekg::utf_length(cursor_text_a)) - cursor.pos[0].text_index);
+          cursor_dir[0] = (
+            direction < 0 ? (-cursor.pos[0].text_index) : (static_cast<int64_t>(ekg::utf_length(cursor_text_a)) - cursor.pos[0].text_index)
+          );
         } else {
           this->check_nearest_word(cursor, cursor_dir[0], cursor_dir[1]);
         }
@@ -1291,14 +1292,14 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         select_rect.w = (
           cursor.pos[0] != cursor.pos[1] ?
             (
-              char_data.wsize +
+              (char_data.wsize) +
               (this->rect_cursor.w + this->rect_cursor.w) *
               (is_utf_char_last_index && cursor.pos[1].chunk_index > chunk_index && cursor.pos[0].chunk_index == chunk_index)
             ) :
             (
               this->rect_cursor.w
             )
-          );
+        );
 
         select_rect.h = this->text_height;
       }

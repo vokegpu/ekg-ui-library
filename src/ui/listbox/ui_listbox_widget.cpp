@@ -186,6 +186,8 @@ void ekg::ui::listbox_widget::on_reload() {
     );
 
     this->embedded_scroll.rect_child = relative_largest_rect;
+  } else {
+    this->embedded_scroll.rect_child.w = relative_largest_rect.w;
   }
 
   this->embedded_scroll.acceleration.y = (text_height * 3.0f) + (offset * 2.0f);
@@ -236,6 +238,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
   ekg::ui::listbox *p_ui {static_cast<ekg::ui::listbox*>(this->p_data)};
   ekg::mode mode {p_ui->get_mode()};
+  bool is_multicolumn {mode == ekg::mode::multicolumn};
 
   uint64_t arbitrary_index_pos {};
   uint64_t highest_arbitrary_index_pos {};
@@ -286,8 +289,8 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
       rendering_cache.unsafe_set_visible_count(arbitrary_index_pos);
 
       relative_rect.w = placement_header.rect.w;
-      relative_rect.x += relative_rect.w + ekg_pixel;
-      header_relative_x = relative_rect.x;
+      header_relative_x += relative_rect.w + ekg_pixel;
+      relative_rect.x += relative_rect.w + !is_multicolumn;
 
       if (relative_rect.x > relative_largest_rect.w) {
         relative_largest_rect.w = relative_rect.x;
