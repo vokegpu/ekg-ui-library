@@ -202,6 +202,9 @@ void ekg::ui::listbox_widget::on_pre_event(ekg::os::io_event_serial &io_event_se
 
   this->embedded_scroll.on_pre_event(io_event_serial);
 
+  /**
+   * We do not want the scroll to interfere with some header target action.
+   **/
   if (!this->flag.extra_state) {
     this->flag.absolute = (
       this->embedded_scroll.is_dragging_bar() ||
@@ -216,26 +219,50 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
   bool pressed_select {ekg::input::action("listbox-activity-select")};
   bool released {ekg::input::released()};
   bool motion {ekg::input::motion()};
-  bool is_some_targeting_header {this->flag.extra_state};
+
+  bool is_some_header_targeted {
+    this->flag.extra_state
+  };
 
   this->embedded_scroll.on_event(io_event_serial);
 
-  if ((this->flag.focused || this->flag.hovered || (this->flag.absolute && !is_some_targeting_header)) && !this->is_high_frequency) {
+  if ((this->flag.focused || this->flag.hovered || (this->flag.absolute && !is_some_header_targeted)) && !this->is_high_frequency) {
     ekg::update_high_frequency(this);
   }
 
-  if ((this->target_resizing != -1 || this->target_dragging != -1) && released) {
+  if (is_some_header_targeted && released) {
     this->target_resizing = -1;
     this->target_dragging = -1;
     this->flag.extra_state = false;
     this->flag.absolute = false;
+    is_some_header_targeted = false;
   }
 
   if (
+      /**
+       * This one checks if an unnecessary operation is going on,
+       * if all input actions are not flagged, there is no reason to waste calls.
+       **/
       (!motion && !released && !pressed_select && !pressed_open && !pressed_select_many) ||
-      ((!this->flag.hovered && !is_some_targeting_header) && !this->was_selected) ||
+      /**
+       * If input interact position is not colliding with the listbox,
+       * there is no reason to waste calls; but with exception of absolute flag,
+       * because when a header is targeted the absolute flag is set to true,
+       * but if the interact position is out of listbox boudings, it must keep
+       * process the header targeted (drag or resize).
+       **/
+      ((!this->flag.hovered && !is_some_header_targeted) && !this->was_selected) ||
+      /**
+       * Also stop the process if scroll bar is hovered or if there is an update
+       * items. 
+       **/
       (this->embedded_scroll.flag.hovered || this->must_update_items) ||
-      (this->flag.absolute && !is_some_targeting_header)
+      /**
+       * The absolute flag is also used to do scrolling (when dragging the scroll bar)
+       * then we must stop the process instead of waste calls; but with exception of
+       * header target, must not stop like previously said.
+       **/
+      (this->flag.absolute && !is_some_header_targeted)
     ) {
     return;
   }
@@ -260,7 +287,11 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
   uint64_t highest_arbitrary_index_pos {};
   float header_relative_x {};
 
-  switch (pressed_open || this->flag.extra_state || ((this->targeting_header_to_resize != -1 || this->targeting_header_to_drag != -1) && pressed_select)) {
+  is_some_header_targeted = (
+    is_some_header_targeted || ((this->targeting_header_to_resize != -1 || this->targeting_header_to_drag != -1) && pressed_select)
+  );
+
+  switch (pressed_open || is_some_header_targeted) {
   case true:
     for (uint64_t it {}; it < p_ui->p_value->size(); it++) {
       relative_rect.y = 0.0f;
@@ -275,13 +306,11 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
       if (this->targeting_header_to_resize == it && this->target_resizing == -1) {
         this->target_resizing = this->targeting_header_to_resize;
         this->rect_header_delta.x = (this->targeting_header.x + this->targeting_header.w) - interact.x;
-        this->flag.absolute = true;
         ekg::ui::redraw = true;
-        ekg::cursor = ekg::system_cursor::size_we;
       }
 
-      if (this->target_resizing == it && motion) {
-        placement_header.rect.w = ekg_min((interact.x + this->rect_header_delta.x) - placement_header.rect.x, placement_header.rect.h);
+      if (this->target_resizing == it) {
+        placement_header.rect.w = ekg_min((interact.x + this->rect_header_delta.x) - this->targeting_header.x, placement_header.rect.h);
         ekg::cursor = ekg::system_cursor::size_we;
         ekg::ui::redraw = true;
         this->flag.absolute = true;
@@ -362,7 +391,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
     float top_place {this->rect_content_abs.y};
     float bottom_place {this->rect_content_abs.y + this->rect_content_abs.h};
-    float between_headers_action_size {ekg_pixel * 4};
+    float between_headers_target_resize {ekg_pixel * 4};
 
     uint16_t flags {};
     uint64_t visible_begin_index {};
@@ -391,8 +420,8 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
       item_rect.y = static_cast<int32_t>(item_rect.y + this->embedded_scroll.scroll.x);
 
       delta_rect = item_rect;
-      delta_rect.x = delta_rect.x + delta_rect.w - between_headers_action_size + ekg_pixel;
-      delta_rect.w = between_headers_action_size;
+      delta_rect.x = delta_rect.x + delta_rect.w - between_headers_target_resize + ekg_pixel;
+      delta_rect.w = between_headers_target_resize;
 
       must = (
         !this->flag.extra_state && ekg::rect_collide_vec(delta_rect, interact)

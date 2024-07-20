@@ -184,3 +184,4 @@
 -- Fixed the unscrollable listbox when starts for the first time.
 -- Fixed listbox being resized breaking the horizontal scroll (due the size calculations be wrong).
 -- Added horizontal resize feature to listbox.
+-- Solved the "tchup tchup" on listbox header target (imagine a extra-offset added for no reason on header resize).
