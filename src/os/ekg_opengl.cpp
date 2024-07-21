@@ -271,6 +271,11 @@ void ekg::os::opengl::update_viewport(int32_t w, int32_t h) {
   ekg::gpu::api::viewport[2] = static_cast<float>(w);
   ekg::gpu::api::viewport[3] = static_cast<float>(h);
 
+  ekg::ui::viewport.x = ekg::gpu::api::viewport[0];
+  ekg::ui::viewport.y = ekg::gpu::api::viewport[1];
+  ekg::ui::viewport.w = ekg::gpu::api::viewport[2];
+  ekg::ui::viewport.h = ekg::gpu::api::viewport[3];
+
   ekg::ortho(
     ekg::gpu::api::projection,
     0,

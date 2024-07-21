@@ -29,21 +29,41 @@
 #include "ekg/util/io.hpp"
 #include "ekg/ui/scrollbar/ui_scrollbar_embedded_widget.hpp"
 #include "ekg/ui/listbox/ui_listbox.hpp"
+#include "ekg/service/theme.hpp"
+#include "ekg/draw/font_renderer.hpp"
 
 namespace ekg::ui {
   class listbox_widget : public ekg::ui::abstract_widget {
   public:
+    void render_item(
+      ekg::item &item_header,
+      ekg::placement &placement_header,
+      ekg::rect widget_absolute_rect_scissor,
+      ekg::rect scrollable_rect,
+      ekg::rect content_scissor_bounding,
+      float header_relative_x,
+      float bottom_place,
+      float scrolling_cropy,
+      bool scroll_on_top,
+      bool is_header_targeted,
+      bool is_column_header_top,
+      ekg::draw::font_renderer &f_renderer
+    );
+  public:
     ekg::ui::scrollbar_embedded_widget embedded_scroll {};
-    bool was_selected {};
     ekg::item item_rendering_cache {};
     ekg::rect rect_content_abs {};
     ekg::rect rect_content_place {};
     ekg::rect rect_header_delta {};
     ekg::rect rect_header_target {};
+    ekg::rect rect_targeting_header {};
+    ekg::rect rect_current_dragging_targeted_header {};
+
     float column_header_height {};
+    bool was_hovered {};
+    bool was_selected {};
     bool must_update_items {};
 
-    ekg::rect targeting_header {};
     int32_t targeting_header_to_resize {};
     int32_t targeting_header_to_drag {};
     int32_t target_resizing {-1};

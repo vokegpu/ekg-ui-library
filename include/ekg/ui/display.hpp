@@ -56,6 +56,11 @@ namespace ekg::ui {
   extern int32_t height;
 
   /**
+   * Current pipeline viewport (note may be diff in Vulkan).
+   **/
+  extern ekg::rect viewport;
+
+  /**
    * Delta time value, usable by the widgets to perform animations.
    * Not automatically set, application must set the delta-time value.
    */

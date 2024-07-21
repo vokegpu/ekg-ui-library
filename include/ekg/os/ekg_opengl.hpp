@@ -67,7 +67,7 @@ namespace ekg::os {
     /**
      * OpenGL API wrapper abstraction constructor;
      * `set_glsl_version` must be 330 higher, if not, the version is auto-initialized as `450`.
-     * OpenGL ES 3 needs explicity set to the GLSL ES version.
+     * OpenGL ES 3 needs explicit set to the GLSL ES version.
      */
     explicit opengl(std::string_view set_glsl_version = "#version 450");
   public:    

@@ -49,6 +49,10 @@
 #define EKG_VERSION_ID "1.1.0"
 #define EKG_VERSION_STATE "ALPHA"
 
+#define EKG_FONT_SMALL_SIZE(font_size) (ekg_min(font_size - 4, 4))
+#define EKG_FONT_NORMAL_SIZE(font_size) (ekg_min(font_size, 8))
+#define EKG_FONT_BIG_SIZE(font_size) (ekg_min(font_size + 6, 12))
+
 namespace ekg {
   /**
    * The runtime core of ekg.

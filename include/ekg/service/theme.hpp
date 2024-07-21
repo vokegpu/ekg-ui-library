@@ -98,6 +98,9 @@ namespace ekg::service {
     ekg::vec4 listbox_item_outline {};
     ekg::vec4 listbox_outline {};
     ekg::vec4 listbox_background {};
+    ekg::vec4 listbox_line_separator {};
+    ekg::vec4 listbox_drag_background {};
+    ekg::vec4 listbox_drag_outline {};
     float listbox_subitem_offset_space {4.0f};
 
     float min_widget_size {5};

@@ -56,9 +56,9 @@ void ekg::runtime::update_size_changed() {
   };
 
   if (this->f_renderer_normal.font_size != font_size) {
-    this->f_renderer_small.set_size(ekg_min(font_size - 4, 4));
-    this->f_renderer_normal.set_size(ekg_min(font_size, 8));
-    this->f_renderer_big.set_size(ekg_min(font_size + 6, 12));
+    this->f_renderer_small.set_size(EKG_FONT_SMALL_SIZE(font_size));
+    this->f_renderer_normal.set_size(EKG_FONT_NORMAL_SIZE(font_size));
+    this->f_renderer_big.set_size(EKG_FONT_BIG_SIZE(font_size));
   }
 
   for (ekg::ui::abstract_widget *&p_widgets: this->loaded_widget_list) {

@@ -34,3 +34,4 @@ int64_t ekg::ui::latency {500};
 float ekg::ui::scroll {32.0f};
 float ekg::ui::dpi_tiling {2.0f};
 bool ekg::ui::redraw {true};
+ekg::rect ekg::ui::viewport {};

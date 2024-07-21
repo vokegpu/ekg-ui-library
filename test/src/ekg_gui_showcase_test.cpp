@@ -601,6 +601,17 @@ int32_t showcase_useless_window() {
   for (uint64_t it {}; it < content.size(); it++) {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
   }
 
   ekg::button("Dead-allocate the instance of life", ekg::dock::fill | ekg::dock::next)

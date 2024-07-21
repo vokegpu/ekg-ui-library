@@ -110,6 +110,7 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
 
       new_rect.x = interact.x - this->rect_delta.x;
       new_rect.y = interact.y - this->rect_delta.y;
+      ekg::cursor = ekg::system_cursor::size_all;
     }
 
     if (this->target_dock_resize != ekg::dock::none) {
