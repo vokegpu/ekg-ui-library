@@ -58,6 +58,7 @@ namespace ekg::ui {
     ekg::rect rect_header_target {};
     ekg::rect rect_targeting_header {};
     ekg::rect rect_current_dragging_targeted_header {};
+    ekg::rect rect_original_dragging_targeted_header {};
 
     float column_header_height {};
     bool was_hovered {};
@@ -68,6 +69,7 @@ namespace ekg::ui {
     int32_t targeting_header_to_drag {};
     int32_t target_resizing {-1};
     int32_t target_dragging {-1};
+    int32_t latest_target_dragging {-1};
   public:
     void on_create() override;
 

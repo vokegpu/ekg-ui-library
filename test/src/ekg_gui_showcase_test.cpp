@@ -202,7 +202,7 @@ bool load_ttf_emoji(ekg::gpu::sampler_t *p_sampler) {
 
   FT_Load_Char(
     typography_font_face.ft_face,
-    ekg::utf_string_to_char32("🐈"),
+    ekg::utf_string_to_char32("🐮"),
     FT_LOAD_RENDER | FT_LOAD_COLOR | FT_LOAD_DEFAULT
   );
 
@@ -544,9 +544,9 @@ int32_t showcase_useless_window() {
 
   ekg::item content = ekg::item {
     ekg::item(
-      "Nome",
+      "😊 Nome",
       {
-        ekg::item("Anjo-Dorminhoco"),
+        ekg::item("🤭 Anjo-Dorminhoco"),
         ekg::item("Potato"),
         ekg::item("Astah", {
           ekg::item("meow"),
@@ -640,7 +640,7 @@ int32_t showcase_useless_window() {
   )
   ->set_column_header_align(ekg::dock::none)
   ->set_scaled_height(16)
-  ->set_mode(ekg::mode::multicolumn)
+  ->set_mode(ekg::mode::singlecolumn)
   ->transfer_ownership(&content);
 
   ekg::slider("meow1", 0.5f, 0.0f, 1.0f, ekg::dock::fill | ekg::dock::next)

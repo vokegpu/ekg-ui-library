@@ -36,14 +36,19 @@ namespace ekg::gpu {
   public:
     static bool is_out_of_scissor;
     static float concave;
+    static bool high_priority;
     static uint64_t current_rendering_data_count;
   protected:
     std::vector<ekg::gpu::data_t> data_list {};
-    std::vector<float> cached_geometry_resources {};
+    std::vector<float> geometry_resource_list {};
 
+    std::vector<ekg::gpu::data_t> high_priority_data_list {};
+    std::vector<float> high_priority_geometry_resource_list {};
+
+    uint64_t high_priority_data_instance_index {};
     uint64_t data_instance_index {};
-    uint64_t previous_cached_geometry_resources_size {};
-    uint64_t cached_geometry_index {};
+    uint64_t geometry_resource_index {};
+    uint64_t previous_geometry_resource_list_size {};
 
     int32_t simple_shape_index {-1};
     int32_t previous_factor {};

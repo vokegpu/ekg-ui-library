@@ -69,3 +69,11 @@ void ekg::draw::sync_scissor(
 ) {
   ekg::core->gpu_allocator.sync_scissor(scissor, rect_child, p_parent_scissor);
 }
+
+void ekg::draw::enable_high_priority() {
+  ekg::gpu::allocator::high_priority = true;
+}
+
+void ekg::draw::disable_high_priority() {
+  ekg::gpu::allocator::high_priority = false;
+}

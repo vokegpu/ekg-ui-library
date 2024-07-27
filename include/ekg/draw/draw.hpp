@@ -61,6 +61,19 @@ namespace ekg::draw {
     ekg::rect &rect_child,
     ekg::rect *p_parent_scissor
   );
+
+  /**
+   * Enable high-priority:
+   * Instead of sending the currrent GPU data to the current index,
+   * the data is reserved to the end of rendering plus high priority.
+   **/
+  void enable_high_priority();
+
+  /**
+   * Disable high-priority:
+   * Send the current GPU data to the current index.
+   **/
+  void disable_high_priority();
 }
 
 #endif
