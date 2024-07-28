@@ -44,7 +44,7 @@ namespace ekg::ui {
       float header_relative_x,
       float bottom_place,
       float scrolling_cropy,
-      bool scroll_on_top,
+      bool is_scroll_on_top,
       bool is_header_targeted,
       bool is_column_header_top,
       ekg::draw::font_renderer &f_renderer
@@ -70,6 +70,7 @@ namespace ekg::ui {
     int32_t target_resizing {-1};
     int32_t target_dragging {-1};
     int32_t latest_target_dragging {-1};
+    int32_t target_drag_set_index {-1};
   public:
     void on_create() override;
 
@@ -78,7 +79,7 @@ namespace ekg::ui {
     void on_update() override;
 
     void on_post_event(ekg::os::io_event_serial &io_event_serial) override;
-    
+
     void on_event(ekg::os::io_event_serial &io_event_serial) override;
 
     void on_pre_event(ekg::os::io_event_serial &io_event_serial) override;

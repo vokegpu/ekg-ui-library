@@ -26,6 +26,8 @@
 #include "ekg/ekg.hpp"
 #include "ekg/draw/draw.hpp"
 
+#include <algorithm>
+
 void ekg::ui::listbox_widget::on_create() {
   this->must_update_items = true;
 }
@@ -285,6 +287,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
   ekg::rect delta_rect {};
   ekg::rect item_rect {};
   ekg::vec4 &interact {ekg::input::interact()};
+  ekg::vec4 point {};
 
   ekg::ui::listbox *p_ui {static_cast<ekg::ui::listbox*>(this->p_data)};
   ekg::mode mode {p_ui->get_mode()};
@@ -300,6 +303,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
   uint16_t flags {};
   uint64_t visible_begin_index {};
   uint64_t visible_count {};
+  uint64_t size {};
 
   float header_relative_x {};
   float bottom_place {this->rect_content_abs.y + this->rect_content_abs.h};
@@ -310,8 +314,47 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
   switch (pressed_open || is_some_header_targeted || this->latest_target_dragging != -1) {
   case true:
+    size = p_ui->p_value->size();
     ekg::ui::redraw = true;
-    for (uint64_t it {}; it < p_ui->p_value->size(); it++) {
+
+    if (this->latest_target_dragging != -1) {
+      uint64_t set_header_new_index {static_cast<uint64_t>(this->latest_target_dragging)};
+
+      point.x = ekg_clamp(interact.x, rect.x, rect.x + rect.w);
+      point.y = ekg_clamp(interact.y, rect.y, rect.y + this->rect_original_dragging_targeted_header.h);
+
+      for (uint64_t it {}; it < size; it++) {
+        ekg::item &item_header {p_ui->p_value->at(it)};
+        ekg::placement &placement_header {item_header.unsafe_get_placement()};
+
+        item_rect = placement_header.rect + rect;
+        item_rect.x = static_cast<int32_t>(item_rect.x + this->embedded_scroll.scroll.x);
+        item_rect.y = static_cast<int32_t>(item_rect.y);
+
+        item_rect.x += (item_rect.w /= 2.0f);
+        if (ekg::rect_collide_vec(item_rect, point)) {
+          set_header_new_index = it + (it + 1 != size);
+          break;
+        }
+
+        item_rect.x -= item_rect.w;
+        if (ekg::rect_collide_vec(item_rect, point)) {
+          set_header_new_index = it;
+          break;
+        }
+      }
+
+      if (set_header_new_index != this->latest_target_dragging) {
+        std::swap(
+          p_ui->p_value->at(this->latest_target_dragging),
+          p_ui->p_value->at(set_header_new_index)
+        );
+      }
+
+      this->latest_target_dragging = -1;
+    }
+
+    for (uint64_t it {}; it < size; it++) {
       relative_rect.y = 0.0f;
       arbitrary_index_pos = 0;
 
@@ -346,10 +389,6 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
         ekg::cursor = ekg::system_cursor::size_all;
         ekg::ui::redraw = true;
         this->flag.absolute = true;
-      }
-
-      if (this->latest_target_dragging == it) {
-        this->latest_target_dragging = -1;
       }
 
       is_dragging_or_resizing = (
@@ -432,7 +471,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     break;
   case false:
     ekg::ui::redraw = true;
-    bool scroll_on_top {this->embedded_scroll.scroll.y == 0.0f};
+    bool is_scroll_on_top {this->embedded_scroll.scroll.y == 0.0f};
 
     float between_headers_target_resize {ekg_pixel * 4};
     float scrolling_cropy {
@@ -481,7 +520,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
       visible_count = item_header.get_visible_count();
       visible_begin_index = (
-        scroll_on_top ?
+        is_scroll_on_top ?
           0 :
           static_cast<uint64_t>(scrolling_cropy * visible_count)
       );
@@ -619,8 +658,6 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
   float previous_header_relative_x {};
 
   uint16_t flags {p_ui->get_column_header_align()};
-  uint64_t visible_begin_index {};
-  uint64_t visible_count {};
   uint64_t rendering_cache_size {this->item_rendering_cache.size()};
 
   bool must_stop_rendering {};
@@ -631,14 +668,12 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
     !ekg_bitwise_contains(flags, ekg::dock::bottom)
   };
 
-  bool scroll_on_top {this->embedded_scroll.scroll.y == 0.0f};
+  bool is_scroll_on_top {this->embedded_scroll.scroll.y == 0.0f};
   float scrolling_cropy {
     ((-this->embedded_scroll.scroll.y) / this->embedded_scroll.rect_child.h)
   };
 
   for (uint64_t it_header {}; it_header < rendering_cache_size; it_header++) {
-
-
     ekg::item &item_header {this->item_rendering_cache.at(it_header)};
     ekg::placement &placement_header {item_header.unsafe_get_placement()};
 
@@ -659,7 +694,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
       header_relative_x,
       bottom_place,
       scrolling_cropy,
-      scroll_on_top,
+      is_scroll_on_top,
       is_header_targeted,
       is_column_header_top,
       f_renderer
@@ -701,7 +736,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
       header_relative_x,
       bottom_place,
       scrolling_cropy,
-      scroll_on_top,
+      is_scroll_on_top,
       is_header_targeted,
       is_column_header_top,
       f_renderer
@@ -720,7 +755,7 @@ void ekg::ui::listbox_widget::render_item(
   float header_relative_x,
   float bottom_place,
   float scrolling_cropy,
-  bool scroll_on_top,
+  bool is_scroll_on_top,
   bool is_header_targeted,
   bool is_column_header_top,
   ekg::draw::font_renderer &f_renderer
@@ -836,7 +871,7 @@ void ekg::ui::listbox_widget::render_item(
 
   uint64_t visible_count {item_header.get_visible_count()};
   uint64_t visible_begin_index {
-    scroll_on_top ?
+    is_scroll_on_top ?
     0 :
     static_cast<uint64_t>(scrolling_cropy * visible_count)
   };
