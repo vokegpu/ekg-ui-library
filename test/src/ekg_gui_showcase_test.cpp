@@ -564,7 +564,15 @@ int32_t showcase_useless_window() {
         ekg::item("Brincando la fora"),
         ekg::item("Mordendo rato", {
           ekg::item("meow"),
-          ekg::item("meow")
+          ekg::item("🐈", {
+            ekg::item("🐈"),
+            ekg::item("🐈"),
+            ekg::item("🐈", {
+              ekg::item("🐈"),
+              ekg::item("🐈"),
+              ekg::item("🐈")
+            })
+          })
         }),
         ekg::item("Mordendo a Astah"),
         ekg::item("Correndo")

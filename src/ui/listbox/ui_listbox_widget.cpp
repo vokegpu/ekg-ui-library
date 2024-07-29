@@ -321,24 +321,18 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
       uint64_t set_header_new_index {static_cast<uint64_t>(this->latest_target_dragging)};
 
       point.x = ekg_clamp(interact.x, rect.x, rect.x + rect.w);
-      point.y = ekg_clamp(interact.y, rect.y, rect.y + this->rect_original_dragging_targeted_header.h);
 
       for (uint64_t it {}; it < size; it++) {
         ekg::item &item_header {p_ui->p_value->at(it)};
         ekg::placement &placement_header {item_header.unsafe_get_placement()};
-
+        
         item_rect = placement_header.rect + rect;
+        point.y = ekg_clamp(interact.y, item_rect.y, item_rect.y + this->rect_original_dragging_targeted_header.h);
+
         item_rect.x = static_cast<int32_t>(item_rect.x + this->embedded_scroll.scroll.x);
         item_rect.y = static_cast<int32_t>(item_rect.y);
 
-        item_rect.x += (item_rect.w /= 2.0f);
-        if (ekg::rect_collide_vec(item_rect, point)) {
-          set_header_new_index = it + (it + 1 != size);
-          break;
-        }
-
-        item_rect.x -= item_rect.w;
-        if (ekg::rect_collide_vec(item_rect, point)) {
+        if (ekg::rect_collide_vec(item_rect, point) && this->latest_target_dragging != it) {
           set_header_new_index = it;
           break;
         }
