@@ -373,7 +373,6 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
       if (this->targeting_header_to_drag == it && this->target_dragging == -1 && this->target_resizing == -1) {
         this->target_dragging = this->targeting_header_to_drag;
         this->rect_header_delta.x = interact.x - this->rect_targeting_header.x;
-        this->rect_header_delta.y = interact.y - this->rect_targeting_header.y;
         this->rect_original_dragging_targeted_header = this->rect_targeting_header;
       }
 
@@ -675,7 +674,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
     is_header_targeted = this->target_dragging == static_cast<int32_t>(it_header);
 
     if (is_header_targeted) {
-      header_relative_x += placement_header.rect.w;
+      header_relative_x += placement_header.rect.w + ekg_pixel;
       continue;
     }
 
@@ -694,7 +693,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
       f_renderer
     );
 
-    header_relative_x += placement_header.rect.w;
+    header_relative_x += placement_header.rect.w + ekg_pixel;
   }
 
   ekg::draw::sync_scissor(
@@ -712,7 +711,11 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
   this->embedded_scroll.scissor = this->scissor;
   this->embedded_scroll.on_draw_refresh();
 
-  ekg::draw::rect(rect, theme.listbox_outline, ekg::draw_mode::outline);
+  ekg::draw::rect(
+    rect,
+    theme.listbox_outline,
+    ekg::draw_mode::outline
+  );
 
   if (this->target_dragging != -1 && this->target_dragging < rendering_cache_size) {
     ekg::item &item_header {this->item_rendering_cache.at(this->target_dragging)};
@@ -738,6 +741,11 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
 
     ekg::draw::disable_high_priority();
   }
+}
+
+void ekg::ui::listbox_extent_align(ekg::rect &rect) {
+  rect.x -= ekg_pixel;
+  rect.w += ekg_pixel;
 }
 
 void ekg::ui::listbox_widget::render_item(
@@ -766,12 +774,6 @@ void ekg::ui::listbox_widget::render_item(
     item_rect = targeted_rect;
     item_rect.h = rect.h;
 
-    ekg::draw::sync_scissor(
-      this->scissor,
-      item_rect,
-      &ekg::ui::viewport
-    );
-
     ekg::draw::rect(
       item_rect,
       theme.listbox_drag_background,
@@ -786,22 +788,17 @@ void ekg::ui::listbox_widget::render_item(
     );
 
     item_rect = targeted_rect;
-    ekg::draw::sync_scissor(
-      this->scissor,
-      item_rect,
-      &ekg::ui::viewport
-    );
   } else {
     item_rect = placement_header.rect + rect;
     item_rect.x = static_cast<int32_t>(item_rect.x + this->embedded_scroll.scroll.x);
     item_rect.y = static_cast<int32_t>(item_rect.y);
-
-    ekg::draw::sync_scissor(
-      this->scissor,
-      item_rect,
-      &widget_absolute_rect_scissor
-    );
   }
+
+  ekg::draw::sync_scissor(
+    this->scissor,
+    item_rect,
+    &widget_absolute_rect_scissor
+  );
 
   ekg::draw::rect(
     item_rect,
@@ -839,27 +836,11 @@ void ekg::ui::listbox_widget::render_item(
     ekg::draw_mode::outline
   );
 
-  if (is_header_targeted) {
-    item_rect.x = targeted_rect.x;
-    item_rect.y = (
-      targeted_rect.y + (targeted_rect.h * is_column_header_top)
-    );
-
-    item_rect.w = targeted_rect.w;
-    item_rect.h = rect.h - targeted_rect.h;
-
-    ekg::draw::sync_scissor(
-      this->scissor,
-      item_rect,
-      &ekg::ui::viewport
-    );
-  } else {
-    ekg::draw::sync_scissor(
-      this->scissor,
-      this->rect_content_abs,
-      this->p_parent_scissor
-    );
-  }
+  ekg::draw::sync_scissor(
+    this->scissor,
+    this->rect_content_abs,
+    this->p_parent_scissor
+  );
 
   content_scissor_bounding = this->scissor;
 
@@ -880,25 +861,24 @@ void ekg::ui::listbox_widget::render_item(
     flags = item.get_attr();
 
     if (is_header_targeted) {
+      item_rect = placement.rect + scrollable_rect;
       item_rect.x = targeted_rect.x + placement.offset;
-      item_rect.y = (
-        targeted_rect.y + (targeted_rect.h * is_column_header_top) + placement.rect.y + this->embedded_scroll.scroll.y
-      );
-
-      item_rect.w = placement.rect.w;
-      item_rect.h = placement.rect.h;
-      must_stop_rendering = relative_height > rect.h - (targeted_rect.h * is_column_header_top);
     } else {
       placement.rect.x = header_relative_x + placement.offset;
       item_rect = placement.rect + scrollable_rect;
-      must_stop_rendering = item_rect.y + item_rect.h > bottom_place;
-
-      ekg::draw::sync_scissor(
-        this->scissor,
-        item_rect,
-        &content_scissor_bounding
-      );
     }
+
+    ekg::draw::sync_scissor(
+      this->scissor,
+      item_rect,
+      &content_scissor_bounding
+    );
+
+
+    must_stop_rendering = item_rect.y + item_rect.h > bottom_place;
+
+    item_rect.x -= ekg_pixel + ekg_pixel;
+    item_rect.w += ekg_pixel + ekg_pixel;
 
     ekg::draw::rect(
       item_rect,

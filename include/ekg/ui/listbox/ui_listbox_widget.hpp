@@ -89,6 +89,8 @@ namespace ekg::ui {
 }
 
 namespace ekg::ui {
+  void listbox_extent_align(ekg::rect &rect);
+
   void listbox_template_reload(
     ekg::item &rendering_cache,
     ekg::item &parent,
