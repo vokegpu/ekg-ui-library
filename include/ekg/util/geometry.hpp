@@ -36,7 +36,7 @@
 #define ekg_pi                 (3.141592653589793238462643383279502884)
 
 /*
- * The STL std:::min, and std::max implementation,
+ * The STL std:::min and std::max implementation,
  * are not suitable to perform the required comparions inside of EKG
  * without making the code confuse.
  * 
@@ -263,6 +263,12 @@ namespace ekg {
    * Note: You must have a compatible scroll-size with the n-index-size.
    **/
   uint64_t get_index_by_scroll(float scroll, float dimension, uint64_t size);
+
+  /**
+   * Get a index n-size by normalized-scroll amount.
+   * Note: You must have a compatible scroll-size with the n-index-size.
+   **/
+  uint64_t get_index_by_normalized_scroll(float normalized, uint64_t size);
 
   bool rect_collide_rect(const ekg::rect &a, const ekg::rect &b);
   bool rect_collide_vec(const ekg::rect &rect, const ekg::vec4 &vec);

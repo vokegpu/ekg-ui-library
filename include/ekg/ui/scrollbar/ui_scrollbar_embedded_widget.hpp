@@ -66,6 +66,16 @@ namespace ekg::ui {
     void reset_scroll();
 
     void check_axis_states();
+
+    /**
+     * Returns the normalized vertical value, based in child-height.
+     **/
+    float get_normalized_vertical_scroll();
+
+    /**
+     * Returns the normalized horizontal value, based in child-width.
+     **/
+    float get_normalized_horizontal_scroll();
   public: // virtuals
     void on_reload();
 

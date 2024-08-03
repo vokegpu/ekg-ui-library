@@ -41,10 +41,8 @@ namespace ekg::ui {
       ekg::rect widget_absolute_rect_scissor,
       ekg::rect scrollable_rect,
       ekg::rect content_scissor_bounding,
-      float header_relative_x,
       float bottom_place,
-      float scrolling_cropy,
-      bool is_scroll_on_top,
+      float normalized_horizontal_scroll,
       bool is_header_targeted,
       bool is_column_header_top,
       ekg::draw::font_renderer &f_renderer
@@ -61,6 +59,8 @@ namespace ekg::ui {
     ekg::rect rect_original_dragging_targeted_header {};
 
     float column_header_height {};
+    float header_relative_x {};
+
     bool was_hovered {};
     bool was_selected {};
     bool must_update_items {};

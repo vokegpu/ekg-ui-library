@@ -609,6 +609,7 @@ int32_t showcase_useless_window() {
   for (uint64_t it {}; it < content.size(); it++) {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    /*content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
@@ -618,8 +619,7 @@ int32_t showcase_useless_window() {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());*/
   }
 
   ekg::button("Dead-allocate the instance of life", ekg::dock::fill | ekg::dock::next)
@@ -690,6 +690,24 @@ int32_t showcase_useless_window() {
       },
       ekg::action::activity
     );
+
+  ekg::vec3 clear_color {};
+
+  ekg::label("Clear Color: ", ekg::dock::next );
+  ekg::slider("clear-color-red", 0.0f, 0.0f, 1.0f, ekg::dock::fill)
+    ->set_precision(5)
+    ->transfer_ownership(&clear_color.x)
+    ->set_text_align(ekg::dock::center);
+
+  ekg::slider("clear-color-green", 0.0f, 0.0f, 1.0f, ekg::dock::fill)
+    ->set_precision(5)
+    ->transfer_ownership(&clear_color.y)
+    ->set_text_align(ekg::dock::center);
+
+  ekg::slider("clear-color-blue", 0.0f, 0.0f, 1.0f, ekg::dock::fill)
+    ->set_precision(5)
+    ->transfer_ownership(&clear_color.z)
+    ->set_text_align(ekg::dock::center);
 
   ekg::theme().gen_default_dark_theme();
   ekg::checkbox("Light Theme", false, ekg::dock::fill | ekg::dock::next)
@@ -918,7 +936,7 @@ int32_t showcase_useless_window() {
     ekg::update();
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.0f);
     glViewport(0.0f, 0.0f, ekg::ui::width, ekg::ui::height);
 
     ekg::render();

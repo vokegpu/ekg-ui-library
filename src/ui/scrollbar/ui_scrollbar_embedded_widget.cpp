@@ -28,6 +28,14 @@
 #include "ekg/draw/draw.hpp"
 #include "ekg/os/platform.hpp"
 
+float ekg::ui::scrollbar_embedded_widget::get_normalized_horizontal_scroll() {
+  return ((-this->scroll.x) / this->rect_child.w);
+}
+
+float ekg::ui::scrollbar_embedded_widget::get_normalized_vertical_scroll() {
+  return ((-this->scroll.y) / this->rect_child.h);
+}
+
 ekg::ui::scrollbar_embedded_widget::scrollbar_embedded_widget() {
   this->p_rect_mother = &this->rect_child;
 }

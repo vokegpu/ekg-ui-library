@@ -1,76 +1,3 @@
-/* listbox with with no container */
-
-ui_listbox concept:
-
-auto p = ekg::listbox("oi meow mumu", {"meow meoiw meowm meowm meow meow", "cazt"});
-p->insert_at(0, "meow").insert("meow").insert("meow").insert("meow");
-
-// meow         	// gato
-	// meow           // gato
-		// meow  				  // gato
-			// meow           // gato
-				// meow           // gato
-
-p->insert_at(1, "gato").insert("gato").insert("gato").insert("gato")
-
-// if not inserted
-// meow         	// <empty>
-	// meow           // <empty>
-		// meow  				  // <empty>
-			// meow           // <empty>
-				// meow           // <empty>
-
-// when selecting etc.
-
-// to disable the multi-column on listbox, set a different mode:
-p->set_mode(ekg::mode::singlecolumn);
-
-// to enable
-p->set_mode(ekg::mode::multicolumn);
-
-/* listbox with with container */
-
-ui_listbox_container concept:
-
-auto p = ekg::listbox_cointainer("oi meow mumu", {"meow meoiw meowm meowm meow meow", "cazt"});
-p->insert_at(0, ekg::imut_label("meow")).insert(ekg::imut_label("meow")).insert(ekg::imut_label("meow")).insert(ekg::imut_label("meow"));
-
-// meow         	// gato
-	// meow           // gato
-		// meow  				  // gato
-			// meow           // gato
-				// meow           // gato
-
-p->insert_at(1, ekg::imut_label("gato")).insert(ekg::imut_label("gato")).insert(ekg::imut_label("gato")).insert(ekg::imut_label("gato"))
-
-// if not inserted
-// meow         	// <empty>
-	// meow           // <empty>
-		// meow  				  // <empty>
-			// meow           // <empty>
-				// meow           // <empty>
-
-// when selecting etc.
-
-// to disable the multi-column on listbox, set a different mode:
-p->set_mode(ekg::mode::singlecolumn);
-
-// to enable
-p->set_mode(ekg::mode::multicolumn);
-
-/* item */
-
-ekg::item &a {p->item(0)};
-
-a.insert("one");
-a.insert({"two", ekg::attr::disable});
-a.at(0).set_attr(ekg::attr::disable);
-a.at(1).set_attr(ekg::attr::enable);
-
-a.insert("oi").insert("oi")
-
-// remove `ekg::ui::item`
-
 /* DPI, UI, and Scale */
 
 The current stupid system of EKG for scalling is actually useless; the scaled height factors at each widget,
@@ -80,4 +7,13 @@ So 800x600 will be the same as 1920x1080 indifferent of font-size.
 How? idk, i will use the mother/parent frame as base/factor and the height font too as base.
 So the layout service will get the perfect sized DPI and scale.
 Some day I do this.
-  
+
+/* Slider must be rewrite the part of docking text value! */
+
+Slider contains a glitch were you can drag with no maximum limit.
+
+/* Textbox is not updating newer text! */
+
+stupid ticking glitch.
+
+/* stupid scorlling glitch */
