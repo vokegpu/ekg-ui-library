@@ -519,6 +519,7 @@ int32_t showcase_useless_window() {
   // 🏳️‍⚧️
   // 🐈
   // 🐮
+  // 🤭
 
   ekg::button("🐈 oi me pressiona mwm 🐮", ekg::dock::fill | ekg::dock::next)
     ->set_text_align(ekg::dock::center)
@@ -546,8 +547,8 @@ int32_t showcase_useless_window() {
     ekg::item(
       "😊 Nome",
       {
-        ekg::item("🤭 Anjo-Dorminhoco"),
-        ekg::item("Potato"),
+        ekg::item("🤭"),
+        ekg::item("🐈 Potato"),
         ekg::item("Astah", {
           ekg::item("meow"),
           ekg::item("meow")
@@ -562,13 +563,13 @@ int32_t showcase_useless_window() {
       {
         ekg::item("No Ceu"),
         ekg::item("Brincando la fora"),
-        ekg::item("Mordendo rato", {
+        ekg::item("🐈 ", {
           ekg::item("meow"),
           ekg::item("🐈", {
-            ekg::item("🐈"),
+            ekg::item("Brincando la fora"),
             ekg::item("🐈"),
             ekg::item("🐈", {
-              ekg::item("🐈"),
+              ekg::item("Brincando la fora"),
               ekg::item("🐈"),
               ekg::item("🐈")
             })

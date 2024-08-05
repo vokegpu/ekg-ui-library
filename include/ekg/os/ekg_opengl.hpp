@@ -37,6 +37,9 @@
 #include "ekg/gpu/api.hpp"
 
 #define ekg_is_sampler_protected(sampler_protected_index) (sampler_protected_index > -1)
+#define EKG_DISABLE_TEXTURE 0
+#define EKG_ENABLE_TEXTURE_PROTECTED 1
+#define EKG_ENABLE_TEXTURE 2
 
 namespace ekg::os {
   class opengl : public ekg::gpu::api {

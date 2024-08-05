@@ -147,7 +147,6 @@ void ekg::ui::listbox_widget::on_reload() {
       rendering_cache.unsafe_set_visible_count(rendering_cache_arbitrary_index_pos);
     }
 
-    placement.rect.x = this->header_relative_x; // rect was used to get the right aligned offset
     placement.rect_text.w = text_width;
     placement.rect_text.h = text_height * static_cast<float>(text_lines);
 
@@ -169,7 +168,7 @@ void ekg::ui::listbox_widget::on_reload() {
     rendering_cache.set_text_align(item.get_text_align());
 
     this->header_relative_x += placement.rect.w + ekg_pixel;
-    relative_rect.x += relative_rect.w + !is_multicolumn;
+    relative_rect.x += relative_rect.w + ekg_pixel;
 
     if (relative_rect.x > relative_largest_rect.w) {
       relative_largest_rect.w = relative_rect.x;
@@ -832,6 +831,14 @@ void ekg::ui::listbox_widget::render_item(
       item_rect = placement.rect + scrollable_rect;
     }
 
+    /**
+     * The point of adding one pixel on width, fix the rendering of
+     * offset between headers space. The header is not the same
+     * size of items for highlight & select, so the item must be
+     * complete filled and not remains the offset header.
+     **/
+    item_rect.w += ekg_pixel;
+
     ekg::draw::sync_scissor(
       this->scissor,
       item_rect,
@@ -839,9 +846,6 @@ void ekg::ui::listbox_widget::render_item(
     );
 
     must_stop_rendering = item_rect.y + item_rect.h > bottom_place;
-
-    item_rect.x -= ekg_pixel + ekg_pixel;
-    item_rect.w += ekg_pixel + ekg_pixel;
 
     ekg::draw::rect(
       item_rect,
@@ -987,7 +991,7 @@ void ekg::ui::listbox_template_reload(
     placement.rect.x = relative_rect.x;
     placement.rect.y = relative_rect.y;
 
-    placement.rect.w = relative_rect.w;
+    placement.rect.w = relative_rect.w - placement.offset;
     placement.rect.h = (text_height + dimension_offset) * static_cast<float>(item_scaled_height);
 
     placement.rect_text.w = text_width;
@@ -1027,7 +1031,7 @@ void ekg::ui::listbox_template_reload(
 
     if (!is_empty) {
       relative_rect.x += additional_offset_by_column_based;
-      relative_rect.w -= additional_offset_by_column_based;
+      //relative_rect.w -= additional_offset_by_column_based;
 
       ekg::ui::listbox_template_reload(
         rendering_cache,
@@ -1046,7 +1050,7 @@ void ekg::ui::listbox_template_reload(
       );
 
       relative_rect.x -= additional_offset_by_column_based;
-      relative_rect.w += additional_offset_by_column_based;
+      //relative_rect.w += additional_offset_by_column_based;
     }
 
     if (is_opened_flagged) {

@@ -43,6 +43,7 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text, int32_t &l
   FT_Face ft_face {};
   FT_UInt ft_uint_previous {};
   FT_Vector ft_vector_previous_char {};
+  FT_GlyphSlot ft_glyph_slot {};
 
   float text_width {};
   float largest_text_width {};
@@ -58,7 +59,6 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text, int32_t &l
   for (uint64_t it {}; it < text_size; it++) {
     char8 = static_cast<uint8_t>(text.at(it));
     it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);
-
     break_text = char8 == '\n';
     if (break_text || (r_n_break_text = (char8 == '\r' && it < text_size && text.at(it + 1) == '\n'))) {
       it += static_cast<uint64_t>(r_n_break_text);
@@ -68,22 +68,27 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text, int32_t &l
       continue;
     }
 
-    if (this->ft_bool_kerning && ft_uint_previous) {
-      switch (char32 < 256 || !this->font_face_emoji.font_face_loaded) {
-        case true: {
+    switch (char32 < 256 || !this->font_face_emoji.font_face_loaded) {
+      case true: {
         ft_face = this->font_face_text.ft_face;
+        ft_glyph_slot = this->font_face_text.ft_face->glyph;
         break;
       }
 
       default: {
         ft_face = this->font_face_emoji.ft_face;
+        ft_glyph_slot = this->font_face_emoji.ft_face->glyph;
         break;
       }
     }
 
+    if (this->ft_bool_kerning && ft_uint_previous) {
       FT_Get_Kerning(ft_face, ft_uint_previous, char32, 0, &ft_vector_previous_char);
       text_width += static_cast<float>(ft_vector_previous_char.x >> 6);
     }
+
+    ekg::draw::glyph_char_t &char_data {this->mapped_glyph_char_data[char32]};
+    ekg_validate_sample_state_and_get_wsize();
 
     ft_uint_previous = char32;
     text_width += this->mapped_glyph_char_data[char32].wsize;
@@ -102,6 +107,7 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
   FT_Vector ft_vec {};
   FT_UInt ft_uint_previous {};
   FT_Vector ft_vector_previous_char {};
+  FT_GlyphSlot ft_glyph_slot {};
 
   float text_width {};
   float largest_text_width {};
@@ -126,25 +132,30 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
       continue;
     }
 
-    if (this->ft_bool_kerning && ft_uint_previous) {
-      switch (char32 < 256 || !this->font_face_emoji.font_face_loaded) {
-        case true: {
-          ft_face = this->font_face_text.ft_face;
-          break;
-        }
-
-        default: {
-          ft_face = this->font_face_emoji.ft_face;
-          break;
-        }
+    switch (char32 < 256 || !this->font_face_emoji.font_face_loaded) {
+      case true: {
+        ft_face = this->font_face_text.ft_face;
+        ft_glyph_slot = this->font_face_text.ft_face->glyph;
+        break;
       }
 
+      default: {
+        ft_face = this->font_face_emoji.ft_face;
+        ft_glyph_slot = this->font_face_emoji.ft_face->glyph;
+        break;
+      }
+    }
+
+    if (this->ft_bool_kerning && ft_uint_previous) {
       FT_Get_Kerning(ft_face, ft_uint_previous, char32, 0, &ft_vector_previous_char);
       text_width += static_cast<float>(ft_vector_previous_char.x >> 6);
     }
 
+    ekg::draw::glyph_char_t &char_data {this->mapped_glyph_char_data[char32]};
+    ekg_validate_sample_state_and_get_wsize();
+
     ft_uint_previous = char32;
-    text_width += this->mapped_glyph_char_data[char32].wsize;
+    text_width += char_data.wsize;
   }
 
   largest_text_width = ekg_min(largest_text_width, text_width);
@@ -224,7 +235,16 @@ void ekg::draw::font_renderer::reload() {
       continue;
     }
 
-    this->full_width += static_cast<int32_t>(ft_glyph_slot->bitmap.width);
+    ekg::draw::glyph_char_t &char_data {this->mapped_glyph_char_data[char32]};
+
+    char_data.w = static_cast<float>(ft_glyph_slot->bitmap.width);
+    char_data.h = static_cast<float>(ft_glyph_slot->bitmap.rows);
+
+    char_data.left = static_cast<float>(ft_glyph_slot->bitmap_left);
+    char_data.top = static_cast<float>(ft_glyph_slot->bitmap_top);
+    char_data.wsize = static_cast<float>(static_cast<int32_t>(ft_glyph_slot->advance.x >> 6));
+
+    this->full_width += static_cast<int32_t>(char_data.w);
     this->full_height = std::max(this->full_height, static_cast<int32_t>(ft_glyph_slot->bitmap.rows));
   }
 

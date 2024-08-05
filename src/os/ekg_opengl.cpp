@@ -529,14 +529,7 @@ uint64_t ekg::os::opengl::generate_font_atlas(
     }
 
     ekg::draw::glyph_char_t &char_data {mapped_glyph_char_data[char32]};
-
     char_data.x = offset / static_cast<float>(atlas_width);
-    char_data.w = static_cast<float>(ft_glyph_slot->bitmap.width);
-    char_data.h = static_cast<float>(ft_glyph_slot->bitmap.rows);
-
-    char_data.left = static_cast<float>(ft_glyph_slot->bitmap_left);
-    char_data.top = static_cast<float>(ft_glyph_slot->bitmap_top);
-    char_data.wsize = static_cast<float>(static_cast<int32_t>(ft_glyph_slot->advance.x >> 6));
 
     glTexSubImage2D(
       GL_TEXTURE_2D,
@@ -627,19 +620,19 @@ void ekg::os::opengl::draw(
         switch (ekg_is_sampler_protected(p_sampler->gl_protected_active_index)) {
         case true:
           glUniform1i(this->uniform_active_tex_slot, p_sampler->gl_protected_active_index);
-          glUniform1i(this->uniform_active_texture, 1);
+          glUniform1i(this->uniform_active_texture, EKG_ENABLE_TEXTURE_PROTECTED);
           break;
         case false:
           glBindTexture(GL_TEXTURE_2D, p_sampler->gl_id);
 
           glUniform1i(this->uniform_active_tex_slot, this->protected_texture_active_index);
-          glUniform1i(this->uniform_active_texture, 2);
+          glUniform1i(this->uniform_active_texture, EKG_ENABLE_TEXTURE);
           break;
       }
 
       previous_sampler_bound = data.sampler_index;
     } else if (!sampler_going_on && previous_sampler_bound > -1) {
-      glUniform1i(this->uniform_active_texture, 0);
+      glUniform1i(this->uniform_active_texture, EKG_DISABLE_TEXTURE);
       previous_sampler_bound = -1;
     }
 

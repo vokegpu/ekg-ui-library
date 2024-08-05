@@ -33,6 +33,26 @@
 
 #define FT_CONFIG_OPTION_USE_PNG
 
+/**
+ * EKG font-renderer may work ok to capture new glyph(s) on rendering,
+ * but with some tests noticed zero wsize, which broken some widgets;
+ * for solving it, easy validate the sample state and load once the char
+ * when width is being calculated.
+ * 
+ * The point of making it a macro:
+ * i wamt
+ **/
+#define ekg_validate_sample_state_and_get_wsize() \
+if (!char_data.was_sampled) { \
+  if (FT_Load_Char(ft_face, char32, FT_LOAD_RENDER | FT_LOAD_DEFAULT | FT_LOAD_COLOR)) { \
+    continue; \
+  } \
+\
+  char_data.wsize = static_cast<float>(static_cast<int32_t>(ft_glyph_slot->advance.x >> 6)); \
+  this->loaded_sampler_generate_list.emplace_back(char32); \
+  char_data.was_sampled = true; \
+}
+
 namespace ekg::draw {
   class font_renderer {
   public:
@@ -113,12 +133,7 @@ namespace ekg::draw {
     void bind_allocator(ekg::gpu::allocator *p_allocator_bind);
 
     /**
-     * Generate GPU data to render text on screen.
-     *
-     * Note:
-     * The positions `x` and `y` are unuscaled by DPI,
-     * there is no solution still to this issue,
-     * perhaps a pow2-based pixel position should be the way.
+     * Generate GPU data to draw text on screen.
      */
     void blit(std::string_view text, float x, float y, const ekg::vec4 &color);
 
