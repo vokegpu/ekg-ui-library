@@ -142,3 +142,12 @@ ekg::ui::textbox *ekg::ui::textbox::set_max_chars_per_line(uint64_t chars_per_li
 uint64_t ekg::ui::textbox::get_max_chars_per_line() {
   return this->max_chars_per_line;
 }
+
+ekg::ui::textbox *ekg::ui::textbox::set_typing_state(ekg::state state) {
+  this->typing_state = state;
+  return this;
+}
+
+ekg::state ekg::ui::textbox::get_typing_state() {
+  return this->typing_state;
+}

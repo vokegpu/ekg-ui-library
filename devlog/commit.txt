@@ -187,3 +187,4 @@
 -- Solved the "tchup tchup" on listbox header target (imagine a extra-offset added for no reason on header resize).
 -- Fixed a bug where the index header dragged is the same as the original (same it hover some header).
 -- Fixed a bug where the glyph that is not sampled returns wsize zero, which broken some widgets when is being calculated text width, now EKG get-once a wsize and map the new glyph on width calculation section (the rendering is also used to map the new glyph yet).
+-- Added typing state for textbox, instead of using state directly.

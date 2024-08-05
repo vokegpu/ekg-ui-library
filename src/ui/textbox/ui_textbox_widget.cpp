@@ -165,7 +165,7 @@ void ekg::ui::textbox_widget::update_ui_text_data() {
 
   this->rect_cursor.w = 2.0f;
   this->rect_cursor.h = this->text_height;
-  this->is_ui_enabled = p_ui->get_state() == ekg::state::enable;
+  this->is_ui_enabled = p_ui->get_typing_state() == ekg::state::enable;
 
   for (int64_t chunk_index {}; chunk_index < text_chunk_size; chunk_index++) {
     this->rect_text.w = ekg_min(this->rect_text.w, f_renderer.get_text_width(p_ui->p_value->at(chunk_index)));
@@ -236,10 +236,14 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
   auto &rect {this->get_abs_rect()};
 
   const ekg::vec2 cursor_pos {
+    (
       rect.x + this->embedded_scroll.scroll.x +
-      (f_renderer.get_text_width(ekg::utf_substr(current_cursor_text, 0, cursor.text_index))),
+      f_renderer.get_text_width(ekg::utf_substr(current_cursor_text, 0, cursor.text_index))
+    ),
+    (
       rect.y + this->embedded_scroll.scroll.y + this->text_offset +
       (static_cast<float>(cursor.chunk_index) * this->text_height)
+    )
   };
 
   const ekg::vec4 cursor_outspace_screen {
@@ -253,9 +257,11 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
   if (cursor_outspace_screen.x > 0.0f &&
       (x < 0 || cursor_outspace_screen.x > this->cursor_char_wsize[0] + this->rect_cursor.w)) {
     this->embedded_scroll.scroll.z += cursor_outspace_screen.x;
-  } else if (cursor_outspace_screen.z > 0.0f && (x > 0 || cursor_outspace_screen.z >
-                                                          this->cursor_char_wsize[1] + this->cursor_char_wsize[2] +
-                                                          this->rect_cursor.w)) {
+  } else if (
+    (
+      (cursor_outspace_screen.z > 0.0f) &&
+      (x > 0 || cursor_outspace_screen.z > this->cursor_char_wsize[1] + this->cursor_char_wsize[2] + this->rect_cursor.w)
+    )) {
     this->embedded_scroll.scroll.z -= cursor_outspace_screen.z;
   }
 
@@ -282,7 +288,7 @@ void ekg::ui::textbox_widget::process_text(
   int64_t direction
 ) {
   ekg::ui::textbox *p_ui {(ekg::ui::textbox*) this->p_data};
-  if (!(this->is_ui_enabled = p_ui->get_state() == ekg::state::enable) && !(text == "clipboard" && this->is_clipboard_copy)) {
+  if (!(this->is_ui_enabled = p_ui->get_typing_state() == ekg::state::enable) && !(text == "clipboard" && this->is_clipboard_copy)) {
     return;
   }
 
@@ -774,7 +780,7 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
   bool pressed {ekg::input::action("textbox-activity")};
   bool released {ekg::input::released()};
   bool motion {ekg::input::motion()};
-  ekg::ui::textbox*p_ui {static_cast<ekg::ui::textbox*>(this->p_data)};
+  ekg::ui::textbox *p_ui {static_cast<ekg::ui::textbox*>(this->p_data)};
 
   if (this->flag.hovered) {
     ekg::cursor = ekg::system_cursor::ibeam;
@@ -1108,7 +1114,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
   this->rect_text.x = 0.0f;
   this->rect_text.y = 0.0f;
-  this->is_ui_enabled = p_ui->get_state() == ekg::state::enable;
+  this->is_ui_enabled = p_ui->get_typing_state() == ekg::state::enable;
 
   uint64_t text_chunk_size {p_ui->p_value->size()};
   if (!text_chunk_size) {
@@ -1416,5 +1422,9 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   this->embedded_scroll.scissor = this->scissor;
   this->embedded_scroll.on_draw_refresh();
 
-  ekg::draw::rect(rect, theme.textbox_outline, ekg::draw_mode::outline);
+  ekg::draw::rect(
+    rect,
+    theme.textbox_outline,
+    ekg::draw_mode::outline
+  );
 }

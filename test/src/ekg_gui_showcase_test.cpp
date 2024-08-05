@@ -376,7 +376,7 @@ public:
       ekg::textbox("message-content", "type:",  ekg::dock::fill | ekg::dock::next)
         ->set_scaled_height(6)
         ->transfer_ownership(&this->msg_content)
-        ->set_state(ekg::state::disable)
+        ->set_typing_state(ekg::state::disable)
     );
 
     create_ui(
@@ -518,10 +518,10 @@ int32_t showcase_useless_window() {
 
   // 🏳️‍⚧️
   // 🐈
-  // 🐮
+  // 🐮 
   // 🤭
 
-  ekg::button("🐈 oi me pressiona mwm 🐮", ekg::dock::fill | ekg::dock::next)
+  ekg::button("🐈 oi me pressiona 🤭 mwm 🐮", ekg::dock::fill | ekg::dock::next)
     ->set_text_align(ekg::dock::center)
     ->set_font_size(ekg::font::big)
     ->set_task(

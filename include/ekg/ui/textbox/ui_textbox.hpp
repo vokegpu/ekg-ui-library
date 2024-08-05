@@ -34,8 +34,8 @@ namespace ekg::ui {
   protected:
     ekg::font font_size {};
     std::string formatted_text {};
-    bool enabled {};
     bool must_format_text {};
+    ekg::state typing_state {};
     uint8_t tab_size {4};
 
     uint64_t max_lines {UINT32_MAX};
@@ -87,6 +87,17 @@ namespace ekg::ui {
     ekg::ui::textbox *set_max_lines(uint64_t lines);
 
     uint64_t get_max_lines();
+
+    /**
+     * Set enabled/disabled typing state.
+     * Textbox will not accept-type response until typing state is enabled.
+     **/
+    ekg::ui::textbox *set_typing_state(ekg::state state);
+
+    /**
+     * Returns typing state: enabled/disabled.
+     **/
+    ekg::state get_typing_state();
   };
 }
 
