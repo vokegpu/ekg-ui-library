@@ -29,10 +29,10 @@
 void ekg::ui::checkbox_widget::on_reload() {
   abstract_widget::on_reload();
 
-  auto p_ui {(ekg::ui::checkbox *) this->p_data};
-  auto &rect {this->get_abs_rect()};
-  auto scaled_height {p_ui->get_scaled_height()};
-  auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  ekg::ui::checkbox *p_ui {(ekg::ui::checkbox *) this->p_data};
+  ekg::rect &rect {this->get_abs_rect()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  int32_t scaled_height {p_ui->get_scaled_height()};
 
   float text_width {f_renderer.get_text_width(p_ui->get_text())};
   float text_height {f_renderer.get_text_height()};
@@ -105,7 +105,7 @@ void ekg::ui::checkbox_widget::on_event(ekg::os::io_event_serial &io_event_seria
         ekg::action::activity
       );
 
-      auto p_ui {(ekg::ui::checkbox *) this->p_data};
+      ekg::ui::checkbox *p_ui {(ekg::ui::checkbox *) this->p_data};
       if (p_ui->set_value(!p_ui->get_value())) {
         ekg::reload(this);
       }
@@ -116,11 +116,11 @@ void ekg::ui::checkbox_widget::on_event(ekg::os::io_event_serial &io_event_seria
 }
 
 void ekg::ui::checkbox_widget::on_draw_refresh() {
-  auto p_ui {(ekg::ui::checkbox *) this->p_data};
-  auto &rect {this->get_abs_rect()};
-  auto &theme {ekg::theme()};
-  auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
-  auto box {this->rect_box + rect};
+  ekg::ui::checkbox *p_ui {(ekg::ui::checkbox *) this->p_data};
+  ekg::rect &rect {this->get_abs_rect()};
+  ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  ekg::rect box {this->rect_box + rect};
 
   if (p_ui->was_changed()) {
     ekg::reload(this);
@@ -131,7 +131,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
 
   ekg::draw::rect(
     rect,
-    theme.checkbox_background,
+    theme_scheme.checkbox_background,
     ekg::draw_mode::filled,
     ekg_layer(ekg::layer::background)
   );
@@ -139,7 +139,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
   if (this->flag.highlight) {
     ekg::draw::rect(
       rect,
-      theme.checkbox_highlight,
+      theme_scheme.checkbox_highlight,
       ekg::draw_mode::filled,
       ekg_layer(ekg::layer::highlight)
     );
@@ -148,7 +148,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
   if (this->flag.focused && !p_ui->get_value()) {
     ekg::draw::rect(
       box,
-      theme.checkbox_highlight,
+      theme_scheme.checkbox_highlight,
       ekg::draw_mode::filled,
       ekg_layer(ekg::layer::highlight)
     );
@@ -156,7 +156,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
 
   ekg::draw::rect(
     box,
-    theme.checkbox_highlight,
+    theme_scheme.checkbox_highlight,
     ekg::draw_mode::filled,
     ekg_layer(ekg::layer::highlight)
   );
@@ -164,7 +164,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
   if (this->flag.activity) {
     ekg::draw::rect(
       this->flag.focused ? box : rect,
-      theme.checkbox_activity,
+      theme_scheme.checkbox_activity,
       ekg::draw_mode::filled,
       ekg_layer(ekg::layer::activity)
     );
@@ -173,7 +173,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
   if (p_ui->get_value()) {
     ekg::draw::rect(
       box,
-      theme.checkbox_activity,
+      theme_scheme.checkbox_activity,
       ekg::draw_mode::filled,
       ekg_layer(ekg::layer::activity)
     );
@@ -182,7 +182,7 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
   if (p_ui->get_value() && this->flag.highlight) {
     ekg::draw::rect(
       box,
-      ekg::vec4 {theme.checkbox_activity, theme.checkbox_outline.w},
+      ekg::vec4 {theme_scheme.checkbox_activity, theme_scheme.checkbox_outline.w},
       ekg::draw_mode::outline
     );
   }
@@ -191,12 +191,12 @@ void ekg::ui::checkbox_widget::on_draw_refresh() {
     p_ui->get_text(),
     rect.x + this->rect_text.x,
     rect.y + this->rect_text.y,
-    theme.checkbox_string
+    theme_scheme.checkbox_string
   );
 
   ekg::draw::rect(
     rect,
-    theme.checkbox_outline,
+    theme_scheme.checkbox_outline,
     ekg::draw_mode::outline
   );
 }

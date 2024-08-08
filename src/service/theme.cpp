@@ -4,7 +4,7 @@
  * Copyright (c) 2022-2024 Rina Wilk / vokegpu@gmail.com
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
+ * of this software and associated documentation files (the "Software"); to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -25,199 +25,161 @@
 #include "ekg/service/theme.hpp"
 #include "ekg/util/io.hpp"
 
-std::string ekg::service::theme::get_current_theme_name() {
-  return this->current_theme;
+void ekg::service::theme::add(ekg::service::theme_scheme_t theme) {
+  this->theme_scheme_map[theme.name] = theme;
+}
+
+bool ekg::service::theme::set_current_theme_scheme(std::string_view name) {
+  if (this->current_theme_scheme.name == name) {
+    return true;
+  }
+
+  if (!this->theme_scheme_map.count(name)) {
+    ekg::log() << "Failed to find theme '" << name << "' with this name!";
+    return false;
+  }
+
+  this->current_theme_scheme = this->theme_scheme_map[name];
+  return true;
+}
+
+ekg::service::theme_scheme_t &ekg::service::theme::get_current_theme_scheme() {
+  return this->current_theme_scheme;
 }
 
 void ekg::service::theme::init() {
-  ekg::log() << "Initialising default theme";
-  this->gen_default_light_theme();
-}
+  ekg::log() << "Initialising default themes!";
 
-void ekg::service::theme::quit() {
+  ekg::service::theme_scheme_t dark_theme_scheme {
+    .name = "dark",
+    .author = "Rina Wilk",
+    .description = "Pasted dark-theme... mwm",
+  };
 
-}
+  dark_theme_scheme.symmetric_layout = true;
+  dark_theme_scheme.frame_background = ekg::color(43, 43, 43, 255);
+  dark_theme_scheme.frame_border = ekg::color(190, 190, 190, 0);
+  dark_theme_scheme.frame_outline = ekg::color(30, 40, 60, 100);
+  dark_theme_scheme.frame_activity_offset = 18;
+  dark_theme_scheme.button_background = ekg::color(85, 85, 85, 50);
+  dark_theme_scheme.button_string = ekg::color(202, 202, 202, 255);
+  dark_theme_scheme.button_outline = ekg::color(202, 207, 222, 0);
+  dark_theme_scheme.button_activity = ekg::color(44, 166, 255, 100);
+  dark_theme_scheme.button_highlight = ekg::color(44, 166, 255, 50);
+  dark_theme_scheme.checkbox_background = ekg::color(85, 85, 85, 0);
+  dark_theme_scheme.checkbox_string = ekg::color(202, 202, 202, 255);
+  dark_theme_scheme.checkbox_outline = ekg::color(202, 207, 222, 0);
+  dark_theme_scheme.checkbox_activity = ekg::color(44, 166, 255, 200);
+  dark_theme_scheme.checkbox_highlight = ekg::color(44, 166, 255, 50);
+  dark_theme_scheme.slider_background = ekg::color(85, 85, 85, 50);
+  dark_theme_scheme.slider_string = ekg::color(202, 202, 202, 255);
+  dark_theme_scheme.slider_outline = ekg::color(202, 207, 222, 0);
+  dark_theme_scheme.slider_activity = ekg::color(44, 166, 255, 200);
+  dark_theme_scheme.slider_highlight = ekg::color(44, 166, 255, 50);
+  dark_theme_scheme.slider_activity_bar = ekg::color(44, 166, 255, 200);
+  dark_theme_scheme.slider_bar_thickness = 100;
+  dark_theme_scheme.slider_target_thickness = 0;
+  dark_theme_scheme.label_string = ekg::color(202, 202, 202, 255);
+  dark_theme_scheme.popup_background = ekg::color(43, 43, 43, 255);
+  dark_theme_scheme.popup_string = ekg::color(202, 202, 202, 255);
+  dark_theme_scheme.popup_outline = ekg::color(43, 43, 43, 0);
+  dark_theme_scheme.popup_highlight = ekg::color(44, 166, 255, 50);
+  dark_theme_scheme.popup_separator = ekg::color(141, 141, 141, 50);
+  dark_theme_scheme.popup_drop_animation_delay = 120;
+  dark_theme_scheme.textbox_background = ekg::color(242, 242, 242, 255);
+  dark_theme_scheme.textbox_string = ekg::color(141, 141, 141, 255);
+  dark_theme_scheme.textbox_outline = ekg::color(141, 141, 141, 50);
+  dark_theme_scheme.textbox_cursor = ekg::color(202, 202, 202, 255);
+  dark_theme_scheme.textbox_select = ekg::color(44, 166, 255, 50);
+  dark_theme_scheme.scrollbar_background = ekg::color(85, 85, 85, 255);
+  dark_theme_scheme.scrollbar_outline = ekg::color(202, 207, 222, 150);
+  dark_theme_scheme.scrollbar_activity = ekg::color(44, 166, 255, 200);
+  dark_theme_scheme.scrollbar_highlight = ekg::color(44, 166, 255, 50);
+  dark_theme_scheme.scrollbar_pixel_thickness = 5;
+  dark_theme_scheme.scrollbar_min_bar_size = 30.0f;
+  dark_theme_scheme.listbox_header_background = ekg::color(85, 85, 85, 255);
+  dark_theme_scheme.listbox_item_highlight_outline = ekg::color(141, 141, 141, 0);
+  dark_theme_scheme.listbox_header_highlight = ekg::color(44, 166, 255, 50);
+  dark_theme_scheme.listbox_header_outline = ekg::color(141, 141, 141, 100);
+  dark_theme_scheme.listbox_header_string = ekg::color(202, 202, 202, 255);
+  dark_theme_scheme.listbox_item_outline = ekg::color(141, 141, 141, 0);
+  dark_theme_scheme.listbox_item_background = ekg::color(85, 85, 85, 0);
+  dark_theme_scheme.listbox_item_string = ekg::color(202, 202, 202, 255);
+  dark_theme_scheme.listbox_item_highlight = ekg::color(44, 166, 255, 50);
+  dark_theme_scheme.listbox_item_focused_outline = ekg::color(141, 141, 141, 0);
+  dark_theme_scheme.listbox_item_focused = ekg::color(44, 166, 255, 100);
+  dark_theme_scheme.listbox_line_separator = ekg::color(141, 141, 141, 100);
+  dark_theme_scheme.listbox_outline = ekg::color(141, 141, 141, 100);
+  dark_theme_scheme.listbox_background = ekg::color(85, 85, 85, 50);
+  dark_theme_scheme.listbox_drag_outline = ekg::color(141, 141, 141, 100);
+  dark_theme_scheme.listbox_drag_background = ekg::color(85, 85, 85, 50);
 
-void ekg::service::theme::gen_default_dark_theme() {
-  this->current_theme = "dark";
-  this->symmetric_layout = true;
+  this->add(dark_theme_scheme);
 
-  /* Frame */
+  ekg::service::theme_scheme_t light_theme_scheme {
+    .name = "light",
+    .author = "Rina Wilk",
+    .description = "Pasted light-theme... moow",
+  };
 
-  this->frame_background            = ekg::color(43, 43, 43, 255);
-  this->frame_border                = ekg::color(190, 190, 190, 0);
-  this->frame_outline               = ekg::color(30, 40, 60, 100);
-  this->frame_activity_offset       = 18;
+  light_theme_scheme.symmetric_layout = true;
+  light_theme_scheme.frame_background = ekg::color(242, 242, 242, 255);
+  light_theme_scheme.frame_border = ekg::color(190, 190, 190, 0);
+  light_theme_scheme.frame_outline = ekg::color(202, 207, 222, 150);
+  light_theme_scheme.frame_activity_offset = 18;
+  light_theme_scheme.button_string = ekg::color(141, 141, 141, 255);
+  light_theme_scheme.button_background = ekg::color(204, 204, 204, 50);
+  light_theme_scheme.button_activity = ekg::color(44, 166, 255, 100);
+  light_theme_scheme.button_outline = ekg::color(202, 207, 222, 0);
+  light_theme_scheme.button_highlight = ekg::color(44, 166, 255, 50);
+  light_theme_scheme.checkbox_string = ekg::color(141, 141, 141, 255);
+  light_theme_scheme.checkbox_background = ekg::color(204, 204, 204, 0);
+  light_theme_scheme.checkbox_activity = ekg::color(44, 166, 255, 200);
+  light_theme_scheme.checkbox_outline = ekg::color(202, 207, 222, 0);
+  light_theme_scheme.checkbox_highlight = ekg::color(44, 166, 255, 50);
+  light_theme_scheme.slider_string = ekg::color(141, 141, 141, 255);
+  light_theme_scheme.slider_background = ekg::color(204, 204, 204, 50);
+  light_theme_scheme.slider_activity = ekg::color(44, 166, 255, 200);
+  light_theme_scheme.slider_outline = ekg::color(202, 207, 222, 0);
+  light_theme_scheme.slider_highlight = ekg::color(44, 166, 255, 50);
+  light_theme_scheme.slider_activity_bar = ekg::color(44, 166, 255, 200);
+  light_theme_scheme.slider_bar_thickness = 16;
+  light_theme_scheme.slider_target_thickness = 0;
+  light_theme_scheme.label_string = ekg::color(141, 141, 141, 255);
+  light_theme_scheme.popup_string = ekg::color(141, 141, 141, 255);
+  light_theme_scheme.popup_background = ekg::color(242, 242, 242, 255);
+  light_theme_scheme.popup_outline = ekg::color(30, 40, 60, 0);
+  light_theme_scheme.popup_highlight = ekg::color(206, 225, 239, 255);
+  light_theme_scheme.popup_separator = ekg::color(202, 207, 222, 150);
+  light_theme_scheme.popup_drop_animation_delay = 120,
+  light_theme_scheme.textbox_string = ekg::color(141, 141, 141, 255);
+  light_theme_scheme.textbox_background = ekg::color(242, 242, 242, 255);
+  light_theme_scheme.textbox_outline = ekg::color(202, 207, 222, 150);
+  light_theme_scheme.textbox_select = ekg::color(44, 166, 255, 50);
+  light_theme_scheme.textbox_cursor = ekg::color(141, 141, 141, 255);
+  light_theme_scheme.scrollbar_background = ekg::color(202, 202, 202, 255);
+  light_theme_scheme.scrollbar_outline = ekg::color(202, 207, 222, 150);
+  light_theme_scheme.scrollbar_activity = ekg::color(44, 166, 255, 200);
+  light_theme_scheme.scrollbar_highlight = ekg::color(44, 166, 255, 50);
+  light_theme_scheme.scrollbar_pixel_thickness = 5;
+  light_theme_scheme.scrollbar_min_bar_size = 30.0f;
+  light_theme_scheme.listbox_header_background = ekg::color(204, 204, 204, 255);
+  light_theme_scheme.listbox_header_highlight = ekg::color(44, 166, 255, 50);
+  light_theme_scheme.listbox_header_outline = ekg::color(202, 207, 222, 50);
+  light_theme_scheme.listbox_header_string = ekg::color(141, 141, 141, 255);
+  light_theme_scheme.listbox_item_background = ekg::color(204, 204, 204, 0);
+  light_theme_scheme.listbox_item_string = ekg::color(141, 141, 141, 255);
+  light_theme_scheme.listbox_item_outline = ekg::color(202, 207, 222, 50);
+  light_theme_scheme.listbox_item_highlight_outline = ekg::color(202, 207, 222, 0);
+  light_theme_scheme.listbox_item_focused_outline = ekg::color(202, 207, 222, 0);
+  light_theme_scheme.listbox_item_focused = ekg::color(44, 166, 255, 100);
+  light_theme_scheme.listbox_item_highlight = ekg::color(44, 166, 255, 50);
+  light_theme_scheme.listbox_line_separator = ekg::color(202, 207, 222, 100);
+  light_theme_scheme.listbox_background = ekg::color(204, 204, 204, 50);
+  light_theme_scheme.listbox_drag_background = ekg::color(204, 204, 204, 50);
+  light_theme_scheme.listbox_drag_outline = ekg::color(202, 207, 222, 100);
+  light_theme_scheme.listbox_outline = ekg::color(202, 207, 222, 100);
 
-  /* Button */
-
-  this->button_string               = ekg::color(202, 202, 202, 255);
-  this->button_background           = ekg::color(85, 85, 85, 50);
-  this->button_activity             = ekg::color(44, 166, 255, 100);
-  this->button_outline              = ekg::color(202, 207, 222, 0);
-  this->button_highlight            = ekg::color(44, 166, 255, 50);
-
-  /* Checkbox */
-
-  this->checkbox_string             = ekg::color(202, 202, 202, 255);
-  this->checkbox_background         = ekg::color(85, 85, 85, 0);
-  this->checkbox_activity           = ekg::color(44, 166, 255, 200);
-  this->checkbox_outline            = ekg::color(202, 207, 222, 0);
-  this->checkbox_highlight          = ekg::color(44, 166, 255, 50);
-
-  /* Slider */
-
-  this->slider_string               = ekg::color(202, 202, 202, 255);
-  this->slider_background           = ekg::color(85, 85, 85, 50);
-  this->slider_activity             = ekg::color(44, 166, 255, 200);
-  this->slider_outline              = ekg::color(202, 207, 222, 0);
-  this->slider_highlight            = ekg::color(44, 166, 255, 50);
-  this->slider_activity_bar         = this->slider_activity;
-  this->slider_bar_thickness        = 100;
-  this->slider_target_thickness     = 0;
-
-  /* Label */
-
-  this->label_string                = ekg::color(202, 202, 202, 255);
-  this->popup_string                = ekg::color(202, 202, 202, 255);
-  this->popup_background            = ekg::color(43, 43, 43, 255);
-  this->popup_outline               = ekg::color(43, 43, 43, 0);
-  this->popup_highlight             = ekg::color(44, 166, 255, 50);
-  this->popup_separator             = ekg::color(141, 141, 141, 50);
-  this->popup_drop_animation_delay  = 120;
-
-  /* Textbox */
-
-  this->textbox_string              = ekg::color(141, 141, 141, 255);
-  this->textbox_background          = ekg::color(242, 242, 242, 255);
-  this->textbox_outline             = ekg::color(141, 141, 141, 50);
-  this->textbox_select              = ekg::color(44, 166, 255, 50);
-  this->textbox_cursor              = ekg::color(202, 202, 202, 255);
-
-  /* Scrollbar */
-
-  this->scrollbar_background        = ekg::color(85, 85, 85, 255);
-  this->scrollbar_outline           = ekg::color(202, 207, 222, 150);
-  this->scrollbar_activity          = ekg::color(44, 166, 255, 200);
-  this->scrollbar_highlight         = ekg::color(44, 166, 255, 50);
-  this->scrollbar_pixel_thickness   = 5;
-  this->scrollbar_min_bar_size      = 30.0f;
-
-  /* Listbox */
-
-  this->listbox_header_background      = ekg::color(85, 85, 85, 255);
-  this->listbox_header_highlight       = ekg::color(44, 166, 255, 50);
-  this->listbox_header_outline         = ekg::color(141, 141, 141, 100);
-  this->listbox_header_string          = ekg::color(202, 202, 202, 255);
-
-  this->listbox_item_outline           = ekg::color(141, 141, 141, 0);
-  this->listbox_item_background        = ekg::color(85, 85, 85, 0);
-  this->listbox_item_string            = ekg::color(202, 202, 202, 255);
-  this->listbox_item_highlight         = ekg::color(44, 166, 255, 50);
-  this->listbox_item_highlight_outline = ekg::color(141, 141, 141, 0);
-  this->listbox_item_focused_outline   = ekg::color(141, 141, 141, 0);
-  this->listbox_item_focused           = ekg::color(44, 166, 255, 100);
-  this->listbox_line_separator         = ekg::color(141, 141, 141, 100);
-
-  this->listbox_outline                = ekg::color(141, 141, 141, 100);
-  this->listbox_background             = ekg::color(85, 85, 85, 50);
-  this->listbox_drag_outline           = ekg::color(141, 141, 141, 100);
-  this->listbox_drag_background        = ekg::color(85, 85, 85, 50);
-}
-
-void ekg::service::theme::gen_default_light_theme() {
-  this->current_theme = "light";
-  this->symmetric_layout = true;
-
-  this->frame_background = ekg::color(242, 242, 242, 255);
-  this->frame_border = ekg::color(190, 190, 190, 0);
-  this->frame_outline = ekg::color(202, 207, 222, 150);
-  this->frame_activity_offset = 18;
-
-  this->button_string = ekg::color(141, 141, 141, 255);
-  this->button_background = ekg::color(204, 204, 204, 50);
-  this->button_activity = ekg::color(44, 166, 255, 100);
-  this->button_outline = ekg::color(202, 207, 222, 0);
-  this->button_highlight = ekg::color(44, 166, 255, 50);
-
-  this->checkbox_string = ekg::color(141, 141, 141, 255);
-  this->checkbox_background = ekg::color(204, 204, 204, 0);
-  this->checkbox_activity = ekg::color(44, 166, 255, 200);
-  this->checkbox_outline = ekg::color(202, 207, 222, 0);
-  this->checkbox_highlight = ekg::color(44, 166, 255, 50);
-
-  this->slider_string = ekg::color(141, 141, 141, 255);
-  this->slider_background = ekg::color(204, 204, 204, 50);
-  this->slider_activity = ekg::color(44, 166, 255, 200);
-  this->slider_outline = ekg::color(202, 207, 222, 0);
-  this->slider_highlight = ekg::color(44, 166, 255, 50);
-  this->slider_activity_bar = this->slider_activity;
-  this->slider_bar_thickness = 16;
-  this->slider_target_thickness = 0;
-
-  this->label_string = ekg::color(141, 141, 141, 255);
-
-  this->popup_string = ekg::color(141, 141, 141, 255);
-  this->popup_background = ekg::color(242, 242, 242, 255);
-  this->popup_outline = ekg::color(30, 40, 60, 0);
-  this->popup_highlight = ekg::color(206, 225, 239, 255);
-  this->popup_separator = ekg::color(202, 207, 222, 150);
-  this->popup_drop_animation_delay = 120;
-
-  this->textbox_string = ekg::color(141, 141, 141, 255);
-  this->textbox_background = ekg::color(242, 242, 242, 255);
-  this->textbox_outline = ekg::color(202, 207, 222, 150);
-  this->textbox_select = ekg::color(44, 166, 255, 50);
-  this->textbox_cursor = ekg::color(141, 141, 141, 255);
-
-  this->scrollbar_background = ekg::color(202, 202, 202, 255);
-  this->scrollbar_outline = ekg::color(202, 207, 222, 150);
-  this->scrollbar_activity = ekg::color(44, 166, 255, 200);
-  this->scrollbar_highlight = ekg::color(44, 166, 255, 50);
-  this->scrollbar_pixel_thickness = 5;
-  this->scrollbar_min_bar_size = 30.0f;
-
-  this->listbox_header_background      = ekg::color(204, 204, 204, 255);
-  this->listbox_header_highlight       = ekg::color(44, 166, 255, 50);
-  this->listbox_header_outline         = ekg::color(202, 207, 222, 50);
-  this->listbox_header_string          = ekg::color(141, 141, 141, 255);
-
-  this->listbox_item_background = ekg::color(204, 204, 204, 0);
-  this->listbox_item_string = ekg::color(141, 141, 141, 255);
-  this->listbox_item_outline = ekg::color(202, 207, 222, 50);
-  this->listbox_item_highlight_outline = ekg::color(202, 207, 222, 0);
-  this->listbox_item_focused_outline = ekg::color(202, 207, 222, 0);
-  this->listbox_item_focused = ekg::color(44, 166, 255, 100);
-  this->listbox_item_highlight = ekg::color(44, 166, 255, 50);
-  this->listbox_line_separator = ekg::color(202, 207, 222, 100);
-  this->listbox_background = ekg::color(204, 204, 204, 50);
-  this->listbox_drag_background = ekg::color(204, 204, 204, 50);
-  this->listbox_drag_outline = ekg::color(202, 207, 222, 100);
-  this->listbox_outline = ekg::color(202, 207, 222, 100);
-}
-
-void ekg::service::theme::refresh_theme_list() {
-  ekg::log() << "Analysing files for themes";
-
-  this->loaded_theme_list.clear();
-
-  /**
-   * Note: do not use filesystem, it is not compatible with the recently version of NDK SDK.
-   **/
-}
-
-void ekg::service::theme::load_theme(const std::string &theme) {
-  bool keep_load_theme {};
-
-  for (std::string &themes: this->loaded_theme_list) {
-    keep_load_theme = themes == theme;
-
-    if (keep_load_theme) {
-      break;
-    }
-  }
-
-  if (keep_load_theme) {
-    // todo add theme load.
-  }
+  this->add(light_theme_scheme);
+  this->set_current_theme_scheme("dark");
 }

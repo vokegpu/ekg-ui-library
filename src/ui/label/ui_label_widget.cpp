@@ -62,7 +62,7 @@ void ekg::ui::label_widget::on_draw_refresh() {
   ekg::ui::label *p_ui {static_cast<ekg::ui::label*>(this->p_data)};
   ekg::rect &rect {this->get_abs_rect()};
   ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
-  ekg::service::theme &theme {ekg::theme()};
+  ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
 
   if (p_ui->was_changed()) {
     ekg::reload(this);
@@ -73,7 +73,7 @@ void ekg::ui::label_widget::on_draw_refresh() {
 
   ekg::draw::rect(
     rect,
-    theme.label_background,
+    theme_scheme.label_background,
     ekg::draw_mode::filled, 
     ekg_layer(ekg::layer::background)
   );
@@ -82,12 +82,12 @@ void ekg::ui::label_widget::on_draw_refresh() {
     p_ui->get_value(),
     rect.x + this->rect_text.x,
     rect.y + this->rect_text.y,
-    theme.label_string
+    theme_scheme.label_string
   );
 
   ekg::draw::rect(
     rect,
-    theme.label_outline,
+    theme_scheme.label_outline,
     ekg::draw_mode::outline
   );
 }

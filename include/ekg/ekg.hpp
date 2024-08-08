@@ -112,6 +112,11 @@ namespace ekg {
   ekg::service::theme &theme();
 
   /**
+   * Get the current theme scheme, from theme service.
+   **/
+  ekg::service::theme_scheme_t &current_theme_scheme();
+
+  /**
    * Get font renderer based on scaled sizes.
    */
   ekg::draw::font_renderer &f_renderer(ekg::font font);

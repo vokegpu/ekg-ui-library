@@ -70,7 +70,7 @@ void ekg::ui::slider_widget::on_reload() {
   auto text_dock_flags {p_ui->get_text_align()};
   auto bar_dock_flags {p_ui->get_bar_align()};
   auto bar_axis {p_ui->get_bar_axis()};
-  auto &theme {ekg::theme()};
+  auto &theme_scheme {ekg::current_theme_scheme()};
   auto value_precision {p_ui->get_precision()};
 
   float text_height {f_renderer.get_text_height()};
@@ -90,8 +90,8 @@ void ekg::ui::slider_widget::on_reload() {
   float offset {ekg::find_min_offset(text_width, dimension_offset)};
   float dimension_height {(text_height + dimension_offset) * static_cast<float>(p_ui->get_scaled_height())};
 
-  float normalised_bar_thickness {static_cast<float>(theme.slider_bar_thickness) / 100};
-  float normalised_target_thickness {static_cast<float>(theme.slider_target_thickness) / 100};
+  float normalised_bar_thickness {static_cast<float>(theme_scheme.slider_bar_thickness) / 100};
+  float normalised_target_thickness {static_cast<float>(theme_scheme.slider_target_thickness) / 100};
   bool centered_text {text_dock_flags == ekg::dock::center};
 
   this->dimension.w = ekg_min(this->dimension.w, text_width);
@@ -258,7 +258,7 @@ void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial)
 void ekg::ui::slider_widget::on_draw_refresh() {
   auto p_ui {(ekg::ui::slider *) this->p_data};
   auto &rect {this->get_abs_rect()};
-  auto &theme {ekg::theme()};
+  auto &theme_scheme {ekg::current_theme_scheme()};
   auto &f_renderer {ekg::f_renderer(this->font_render_size)};
   auto bar {this->rect_bar + rect}, bar_value {this->rect_bar_value + rect};;
 
@@ -271,7 +271,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
 
   ekg::draw::rect(
     bar,
-    theme.slider_background,
+    theme_scheme.slider_background,
     ekg::draw_mode::filled,
     ekg_layer(ekg::layer::background)
   );
@@ -279,7 +279,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
   if (this->flag.highlight) {
     ekg::draw::rect(
       bar,
-      theme.slider_highlight,
+      theme_scheme.slider_highlight,
       ekg::draw_mode::filled,
       ekg_layer(ekg::layer::highlight)
     );
@@ -287,7 +287,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
 
   ekg::draw::rect(
     this->rect_target + rect,
-    theme.slider_activity,
+    theme_scheme.slider_activity,
     ekg::draw_mode::circle,
     ekg_layer(ekg::layer::activity)
   );
@@ -297,7 +297,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     bar.y,
     bar_value.w,
     bar_value.h,
-    theme.slider_activity_bar,
+    theme_scheme.slider_activity_bar,
     ekg::draw_mode::filled,
     ekg_layer(ekg::layer::activity)
   );
@@ -306,6 +306,6 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     this->string_value,
     rect.x + this->rect_text.x,
     rect.y + this->rect_text.y,
-    theme.slider_string
+    theme_scheme.slider_string
   );
 }

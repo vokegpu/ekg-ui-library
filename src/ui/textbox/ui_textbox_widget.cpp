@@ -152,8 +152,8 @@ void ekg::ui::textbox_widget::move_target_cursor(ekg::ui::textbox_widget::cursor
  */
 void ekg::ui::textbox_widget::update_ui_text_data() {
   ekg::ui::textbox *p_ui {(ekg::ui::textbox*) this->p_data};
-  auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
-  auto &rect {this->get_abs_rect()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  ekg::rect &rect {this->get_abs_rect()};
 
   this->rect_text.w = 0.0f;
   this->total_utf_chars = 0;
@@ -232,8 +232,8 @@ void ekg::ui::textbox_widget::move_cursor(ekg::ui::textbox_widget::cursor_pos &c
   }
 
   std::string &current_cursor_text {ekg_textbox_get_cursor_text(cursor)};
-  auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
-  auto &rect {this->get_abs_rect()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  ekg::rect &rect {this->get_abs_rect()};
 
   const ekg::vec2 cursor_pos {
     (
@@ -578,8 +578,8 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(
   }
 
   ekg::ui::textbox *p_ui {(ekg::ui::textbox*) this->p_data};
-  auto &rect {this->get_abs_rect()};
-  auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  ekg::rect &rect {this->get_abs_rect()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
   float x {};
   float y {rect.y + this->embedded_scroll.scroll.y + this->text_offset};
@@ -729,10 +729,10 @@ void ekg::ui::textbox_widget::on_create() {
 
 void ekg::ui::textbox_widget::on_reload() {
   ekg::ui::textbox *p_ui {(ekg::ui::textbox*) this->p_data};
-  auto &rect {this->get_abs_rect()};
-  auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
-  auto scaled_height {p_ui->get_scaled_height()};
+  ekg::rect &rect {this->get_abs_rect()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
+  int32_t scaled_height {p_ui->get_scaled_height()};
   float text_width {f_renderer.get_text_width(p_ui->get_tag())};
   float dimension_offset {this->text_height / 2};
 
@@ -791,11 +791,11 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     ekg::set(this->flag.focused, this->flag.hovered);
     ekg::reset(ekg::core->ui_timing);
 
-    auto &main_cursor {this->loaded_multi_cursor_list.at(0)};
+    ekg::ui::textbox_widget::cursor &main_cursor {this->loaded_multi_cursor_list.at(0)};
     ekg::ui::textbox_widget::cursor clicked_pos {};
     this->check_cursor_text_bounding(clicked_pos, true);
 
-    auto &interact {ekg::input::interact()};
+    ekg::vec4 &interact {ekg::input::interact()};
     this->cursor_delta.x = interact.x;
     this->cursor_delta.y = interact.y;
 
@@ -819,7 +819,7 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
     this->flag.state = this->flag.hovered;
   } else if (this->flag.state && motion && !this->embedded_scroll.is_dragging_bar()) {
-    auto &interact {ekg::input::interact()};
+    ekg::vec4 &interact {ekg::input::interact()};
     ekg::vec2 diff {
       interact.x - this->cursor_delta.x,
       interact.y - this->cursor_delta.y
@@ -1071,7 +1071,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   ekg::ui::textbox *p_ui {(ekg::ui::textbox*) this->p_data};
   ekg::rect &rect {this->get_abs_rect()};
   ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
-  ekg::service::theme &theme {ekg::theme()};
+  ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
   ekg::gpu::allocator &allocator {ekg::core->gpu_allocator};
 
   this->embedded_scroll.clamp_scroll();
@@ -1089,13 +1089,13 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
   ekg::draw::rect(
     rect,
-    theme.textbox_background,
+    theme_scheme.textbox_background,
     ekg::draw_mode::filled,
     ekg_layer(ekg::layer::background)
   );
 
   ekg::gpu::data_t &data {allocator.bind_current_data()};
-  ekg::vec4 color {theme.textbox_string};
+  ekg::vec4 color {theme_scheme.textbox_string};
 
   x = static_cast<float>(static_cast<int32_t>(x));
   data.buffer_content[0] = x;
@@ -1400,7 +1400,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
         if (draw_cursor) {
           ekg::draw::rect(
             cursor_rect,
-            theme.textbox_cursor,
+            theme_scheme.textbox_cursor,
             ekg::draw_mode::filled
           );
         }
@@ -1409,7 +1409,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
       default:
         ekg::draw::rect(
           cursor_rect,
-          theme.textbox_select,
+          theme_scheme.textbox_select,
           ekg::draw_mode::filled,
           ekg_layer(ekg::layer::highlight)
         );
@@ -1424,7 +1424,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
 
   ekg::draw::rect(
     rect,
-    theme.textbox_outline,
+    theme_scheme.textbox_outline,
     ekg::draw_mode::outline
   );
 }

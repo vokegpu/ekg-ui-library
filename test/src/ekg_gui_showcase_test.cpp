@@ -540,6 +540,37 @@ int32_t showcase_useless_window() {
       ekg::action::activity
     );
 
+  ekg::item themes {
+    ekg::item("🐮", {
+      ekg::item("dark"),
+      ekg::item("light"),
+      ekg::item("pinky")
+    })
+  };
+
+  auto theme_switch_listbox = ekg::listbox("themes", themes, ekg::dock::fill | ekg::dock::next)
+    ->set_scaled_height(4);
+
+  ekg::label("Apply theme:", ekg::dock::next);
+  ekg::button("Apply", ekg::dock::fill)
+    ->set_task(
+      new ekg::task {
+        .info = {
+          .tag = "apply-theme"
+        },
+        .function = [theme_switch_listbox](ekg::info&) {
+          std::string_view theme_pick {};
+          for (ekg::item &items : theme_switch_listbox->p_value->at(0)) {
+            if (ekg_bitwise_contains(items.get_attr(), ekg::attr::focused)) {
+              ekg::theme().set_current_theme_scheme(items.get_value());
+              break;
+            }
+          }
+        }
+      },
+      ekg::action::activity
+    );
+
   fps = ekg::label("FPS: ", ekg::dock::fill | ekg::dock::next)
     ->set_font_size(ekg::font::big);
 
@@ -610,8 +641,8 @@ int32_t showcase_useless_window() {
   for (uint64_t it {}; it < content.size(); it++) {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    /*content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    /*content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
@@ -654,7 +685,7 @@ int32_t showcase_useless_window() {
 
   ekg::slider("meow1", 0.5f, 0.0f, 1.0f, ekg::dock::fill | ekg::dock::next)
     ->set_precision(2)
-    ->transfer_ownership(&ekg::theme().listbox_line_separator.w);
+    ->transfer_ownership(&ekg::current_theme_scheme().listbox_line_separator.w);
 
   auto p_dpi = ekg::checkbox("DPI-scale:", true, ekg::dock::next);
   ekg::textbox("DPI", "1920x1080", ekg::dock::fill)
@@ -709,27 +740,6 @@ int32_t showcase_useless_window() {
     ->set_precision(5)
     ->transfer_ownership(&clear_color.z)
     ->set_text_align(ekg::dock::center);
-
-  ekg::theme().gen_default_dark_theme();
-  ekg::checkbox("Light Theme", false, ekg::dock::fill | ekg::dock::next)
-    ->set_task(
-      new ekg::task {
-        .info = {
-          .tag = "theme-switcher",
-        },
-        .function = [](ekg::info &task_info) {
-          auto &theme {ekg::theme()};
-          std::string current_theme_name {theme.get_current_theme_name()};
-
-          if (current_theme_name == "dark") {
-            theme.gen_default_light_theme();
-          } else if (current_theme_name == "light") {
-            theme.gen_default_dark_theme();
-          }
-        }
-      },
-      ekg::action::activity
-    );
 
   labelresult = ekg::label("0", ekg::dock::fill | ekg::dock::next);
   labelresult->set_scaled_height(4);
@@ -1035,8 +1045,6 @@ int32_t laboratory_testing() {
     &runtime,
     &ekg_runtime_property
   );
-
-  ekg::theme().gen_default_dark_theme();
 
   bool running {true};
   uint64_t now {};

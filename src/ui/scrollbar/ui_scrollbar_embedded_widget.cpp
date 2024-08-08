@@ -311,9 +311,9 @@ void ekg::ui::scrollbar_embedded_widget::on_draw_refresh() {
     return;
   }
 
-  ekg::service::theme &theme {ekg::theme()};
+  ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
 
-  this->rect_vertical_scroll_bar.w = static_cast<float>(theme.scrollbar_pixel_thickness * this->is_vertical_enabled);
+  this->rect_vertical_scroll_bar.w = static_cast<float>(theme_scheme.scrollbar_pixel_thickness * this->is_vertical_enabled);
   this->rect_vertical_scroll_bar.x = (
     this->p_rect_mother->x + this->p_rect_mother->w - this->rect_vertical_scroll_bar.w
   );
@@ -323,7 +323,7 @@ void ekg::ui::scrollbar_embedded_widget::on_draw_refresh() {
 
   this->rect_vertical_scroll_bar.h = (
     this->p_rect_mother->h - (
-      static_cast<int32_t>(out_of_mother_height) < 0 ? this->p_rect_mother->h : ekg_max(out_of_mother_height, this->p_rect_mother->h - theme.scrollbar_min_bar_size)
+      static_cast<int32_t>(out_of_mother_height) < 0 ? this->p_rect_mother->h : ekg_max(out_of_mother_height, this->p_rect_mother->h - theme_scheme.scrollbar_min_bar_size)
     )
   );
 
@@ -334,11 +334,11 @@ void ekg::ui::scrollbar_embedded_widget::on_draw_refresh() {
     this->p_rect_mother->y + this->rect_vertical_scroll_bar.y,
     this->rect_vertical_scroll_bar.w,
     this->rect_vertical_scroll_bar.h,
-    theme.scrollbar_background,
+    theme_scheme.scrollbar_background,
     ekg::draw_mode::filled
   );
 
-  this->rect_horizontal_scroll_bar.h = static_cast<float>(theme.scrollbar_pixel_thickness * this->is_horizontal_enabled);
+  this->rect_horizontal_scroll_bar.h = static_cast<float>(theme_scheme.scrollbar_pixel_thickness * this->is_horizontal_enabled);
   this->rect_horizontal_scroll_bar.y = (
     this->p_rect_mother->y + this->p_rect_mother->h - this->rect_horizontal_scroll_bar.h
   );
@@ -348,7 +348,7 @@ void ekg::ui::scrollbar_embedded_widget::on_draw_refresh() {
 
   this->rect_horizontal_scroll_bar.w = (
     this->p_rect_mother->w - (
-      static_cast<int32_t>(out_of_mother_width) < 0 ? this->p_rect_mother->w : ekg_max(out_of_mother_width, this->p_rect_mother->w - theme.scrollbar_min_bar_size)
+      static_cast<int32_t>(out_of_mother_width) < 0 ? this->p_rect_mother->w : ekg_max(out_of_mother_width, this->p_rect_mother->w - theme_scheme.scrollbar_min_bar_size)
     )
   );
 
@@ -359,7 +359,7 @@ void ekg::ui::scrollbar_embedded_widget::on_draw_refresh() {
     this->rect_horizontal_scroll_bar.y,
     this->rect_horizontal_scroll_bar.w,
     this->rect_horizontal_scroll_bar.h,
-    theme.scrollbar_background,
+    theme_scheme.scrollbar_background,
     ekg::draw_mode::filled
   );
 }

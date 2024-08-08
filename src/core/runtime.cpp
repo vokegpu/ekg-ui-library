@@ -81,7 +81,6 @@ void ekg::runtime::init() {
 
 void ekg::runtime::quit() {
   this->gpu_allocator.quit();
-  this->service_theme.quit();
 }
 
 void ekg::runtime::process_event() {

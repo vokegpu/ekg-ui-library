@@ -29,6 +29,10 @@
 ekg::runtime *ekg::core {};
 bool ekg::running {};
 
+ekg::service::theme_scheme_t &ekg::current_theme_scheme() {
+  return ekg::core->service_theme.get_current_theme_scheme();
+}
+
 ekg::service::theme &ekg::theme() {
   return ekg::core->service_theme;
 }

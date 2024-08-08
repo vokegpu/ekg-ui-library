@@ -1,3 +1,4 @@
+
 /**
  * MIT License
  * 
@@ -26,14 +27,21 @@
 #define EKG_SERVICE_THEME_H
 
 #include <vector>
+#include <string_view>
+#include <map>
 #include "ekg/util/geometry.hpp"
 
 namespace ekg::service {
-  class theme {
-  protected:
-    std::vector<std::string> loaded_theme_list {};
-    std::string current_theme {};
+  struct theme_scheme_t {
   public:
+    std::string_view name {};
+    std::string_view author {};
+    std::string_view description {};
+    std::string_view path {};
+  public:
+    bool symmetric_layout {};
+    float min_widget_size {5};
+
     ekg::vec4 frame_background {};
     ekg::vec4 frame_border {};
     ekg::vec4 frame_outline {};
@@ -51,8 +59,8 @@ namespace ekg::service {
     ekg::vec4 checkbox_activity {};
     ekg::vec4 checkbox_highlight {};
 
-    ekg::vec4 slider_string {};
     ekg::vec4 slider_background {};
+    ekg::vec4 slider_string {};
     ekg::vec4 slider_outline {};
     ekg::vec4 slider_activity {};
     ekg::vec4 slider_activity_bar {};
@@ -64,8 +72,8 @@ namespace ekg::service {
     ekg::vec4 label_outline {};
     ekg::vec4 label_background {};
 
-    ekg::vec4 popup_string {};
     ekg::vec4 popup_background {};
+    ekg::vec4 popup_string {};
     ekg::vec4 popup_outline {};
     ekg::vec4 popup_highlight {};
     ekg::vec4 popup_separator {};
@@ -78,9 +86,9 @@ namespace ekg::service {
     ekg::vec4 textbox_select {};
 
     ekg::vec4 scrollbar_background {};
-    ekg::vec4 scrollbar_highlight {};
-    ekg::vec4 scrollbar_activity {};
     ekg::vec4 scrollbar_outline {};
+    ekg::vec4 scrollbar_activity {};
+    ekg::vec4 scrollbar_highlight {};
     int32_t scrollbar_pixel_thickness {};
     float scrollbar_min_bar_size {};
 
@@ -102,23 +110,49 @@ namespace ekg::service {
     ekg::vec4 listbox_drag_background {};
     ekg::vec4 listbox_drag_outline {};
     float listbox_subitem_offset_space {4.0f};
+  };
 
-    float min_widget_size {5};
-    bool symmetric_layout {};
+  class theme {
+  protected:
+    std::map<std::string_view, ekg::service::theme_scheme_t> theme_scheme_map {};
+    ekg::service::theme_scheme_t current_theme_scheme {};
   public:
+    /**
+     * Initialize default themes (dark, light, pinky etc) and update global theme scheme.
+     **/
     void init();
 
-    void quit();
+    /**
+     * Set the current theme global.
+     * Note: You must set a registered theme.
+     * 
+     * Returns true if exists, else false.
+     **/
+    bool set_current_theme_scheme(std::string_view name);
 
-    std::string get_current_theme_name();
+    /**
+     * Returns the current theme scheme global loaded.
+     **/
+    ekg::service::theme_scheme_t &get_current_theme_scheme();
 
-    void refresh_theme_list();
+    /**
+     * Dynamic registry one theme scheme on memory, you must not repeat themes name.
+     * Note: May you want save theme scheme in a file, use `ekg::service::theme::save`
+     * method to do that.
+     **/
+    void add(ekg::service::theme_scheme_t theme_scheme);
 
-    void load_theme(const std::string &theme);
+    /**
+     * Local save one theme scheme to a file.
+     * You need to register a theme before use this.
+     **/
+    void save(std::string_view name, std::string_view path);
 
-    void gen_default_light_theme();
-
-    void gen_default_dark_theme();
+    /**
+     * Read one theme scheme from a file and load it to memory; may replacing one
+     * if already exists.
+     **/
+    void read(std::string_view path, ekg::service::theme_scheme_t *p_theme_scheme);
   };
 }
 

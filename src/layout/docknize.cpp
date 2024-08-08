@@ -145,22 +145,22 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
 
   switch (type) {
     case ekg::type::frame: {
-      ekg::service::theme &theme {ekg::theme()};
+      ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
       ekg::ui::frame_widget *p_frame {(ekg::ui::frame_widget *) p_widget_parent};
 
-      initial_offset = static_cast<float>(theme.scrollbar_pixel_thickness);
+      initial_offset = static_cast<float>(theme_scheme.scrollbar_pixel_thickness);
       has_scroll_embedded = p_frame->p_scroll_embedded != nullptr;
 
       if (has_scroll_embedded) {
         p_frame->p_scroll_embedded->check_axis_states();
         is_vertical_enabled = p_frame->p_scroll_embedded->is_vertical_enabled;
-        initial_offset *= static_cast<float>(!theme.symmetric_layout);
+        initial_offset *= static_cast<float>(!theme_scheme.symmetric_layout);
 
         group_rect.w -= initial_offset * static_cast<float>(is_vertical_enabled);
         group_rect.h -= initial_offset * static_cast<float>(p_frame->p_scroll_embedded->is_horizontal_enabled);
       }
 
-      initial_offset = static_cast<float>(theme.scrollbar_pixel_thickness) * static_cast<float>(theme.symmetric_layout);
+      initial_offset = static_cast<float>(theme_scheme.scrollbar_pixel_thickness) * static_cast<float>(theme_scheme.symmetric_layout);
       break;
     }
 

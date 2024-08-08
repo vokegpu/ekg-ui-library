@@ -188,3 +188,5 @@
 -- Fixed a bug where the index header dragged is the same as the original (same it hover some header).
 -- Fixed a bug where the glyph that is not sampled returns wsize zero, which broken some widgets when is being calculated text width, now EKG get-once a wsize and map the new glyph on width calculation section (the rendering is also used to map the new glyph yet).
 -- Added typing state for textbox, instead of using state directly.
+-- Now focus items on listbox does not work (no state change) when is not being interacted (hovered).
+-- New theme system, mapped and scheme-based type.

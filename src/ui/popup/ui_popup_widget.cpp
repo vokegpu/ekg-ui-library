@@ -32,7 +32,7 @@ void ekg::ui::popup_widget::get_popup_path(std::string &path) {
     return;
   }
 
-  auto p_ui {(ekg::ui::popup *) this->p_data};
+  ekg::ui::popup *p_ui {(ekg::ui::popup *) this->p_data};
   auto &item {p_ui->get_item_list().at(this->hovered_element)};
 
   ekg::ui::popup_widget *p_popup {};
@@ -46,7 +46,7 @@ void ekg::ui::popup_widget::get_popup_path(std::string &path) {
 }
 
 bool ekg::ui::popup_widget::is_hovering_any_popup(int32_t top_level) {
-  auto p_ui {(ekg::ui::popup *) this->p_data};
+  ekg::ui::popup *p_ui {(ekg::ui::popup *) this->p_data};
   bool is_hovering {ekg::rect_collide_vec(this->get_abs_rect(), ekg::input::interact())};
 
   ekg::ui::item item {};
@@ -71,7 +71,7 @@ void ekg::ui::popup_widget::unset_visible_all_sub_popup() {
     return;
   }
 
-  auto p_ui {(ekg::ui::popup *) this->p_data};
+  ekg::ui::popup *p_ui {(ekg::ui::popup *) this->p_data};
   auto &item {p_ui->get_item_list().at(this->popup_opened)};
   auto p_popup {(ekg::ui::popup_widget *) ekg::core->get_fast_widget_by_id(item.linked_id)};
 
@@ -88,7 +88,7 @@ void ekg::ui::popup_widget::unset_visible_all_sub_popup() {
 void ekg::ui::popup_widget::on_reload() {
   ekg::ui::abstract_widget::on_reload();
 
-  auto p_ui {(ekg::ui::popup *) this->p_data};
+  ekg::ui::popup *p_ui {(ekg::ui::popup *) this->p_data};
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
   auto &item_list {p_ui->get_item_list()};
   ekg::layout::mask &mask {ekg::core->mask};
@@ -196,7 +196,7 @@ void ekg::ui::popup_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
   bool pressed {ekg::input::pressed() && ekg::input::action("popup-activity")};
   bool released {ekg::input::released()};
 
-  auto p_ui {(ekg::ui::popup *) this->p_data};
+  ekg::ui::popup *p_ui {(ekg::ui::popup *) this->p_data};
   auto &item_list {p_ui->get_item_list()};
   auto &rect {this->get_abs_rect()};
 
@@ -328,7 +328,7 @@ void ekg::ui::popup_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
 void ekg::ui::popup_widget::on_update() {
   auto &rect {this->get_abs_rect()};
   float animation {
-      ekg::smooth(static_cast<float>(ekg::theme().popup_drop_animation_delay), ekg::timing::ticks - this->elapsed_animation_ticks)
+      ekg::smooth(static_cast<float>(ekg::current_theme_scheme().popup_drop_animation_delay), ekg::timing::ticks - this->elapsed_animation_ticks)
   };
 
   this->scissor_opened_height = animation * this->dimension.h;
@@ -345,14 +345,14 @@ void ekg::ui::popup_widget::on_update() {
 }
 
 void ekg::ui::popup_widget::on_draw_refresh() {
-  auto p_ui {(ekg::ui::popup *) this->p_data};
+  ekg::ui::popup *p_ui {(ekg::ui::popup *) this->p_data};
   auto &rect {this->get_abs_rect()};
-  auto &theme {ekg::theme()};
+  auto &theme_scheme {ekg::current_theme_scheme()};
   auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
   auto &item_list {p_ui->get_item_list()};
 
   ekg::draw::sync_scissor(this ->scissor, rect, this->p_parent_scissor);
-  ekg::draw::rect(rect, theme.popup_background, ekg::draw_mode::filled, ekg_layer(ekg::layer::background));
+  ekg::draw::rect(rect, theme_scheme.popup_background, ekg::draw_mode::filled, ekg_layer(ekg::layer::background));
 
   ekg::rect button_rect {};
 
@@ -366,7 +366,7 @@ void ekg::ui::popup_widget::on_draw_refresh() {
         rect.y + item.rect_dimension.y + item.rect_dimension.h - ekg_pixel_div_2,
         item.rect_dimension.w,
         1.0f,
-        theme.popup_separator,
+        theme_scheme.popup_separator,
         ekg::draw_mode::filled
       );
     }
@@ -374,7 +374,7 @@ void ekg::ui::popup_widget::on_draw_refresh() {
     if (this->hovered_element == it) {
       ekg::draw::rect(
         item.rect_dimension + rect,
-        theme.popup_highlight,
+        theme_scheme.popup_highlight,
         ekg::draw_mode::filled,
         ekg_layer(ekg::layer::highlight)
       );
@@ -384,9 +384,9 @@ void ekg::ui::popup_widget::on_draw_refresh() {
       item.name,
       rect.x + item.rect_dimension.x + item.rect_content.x,
       rect.y + item.rect_dimension.y + item.rect_content.y,
-      theme.popup_string
+      theme_scheme.popup_string
     );
   }
 
-  ekg::draw::rect(rect, theme.popup_outline, ekg::draw_mode::outline);
+  ekg::draw::rect(rect, theme_scheme.popup_outline, ekg::draw_mode::outline);
 }

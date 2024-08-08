@@ -30,9 +30,9 @@
 void ekg::ui::button_widget::on_reload() {
   abstract_widget::on_reload();
 
-  auto p_ui {(ekg::ui::button *) this->p_data};
-  auto &rect {this->get_abs_rect()};
-  auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  ekg::ui::button *p_ui {(ekg::ui::button *) this->p_data};
+  ekg::rect &rect {this->get_abs_rect()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
   float text_width {f_renderer.get_text_width(p_ui->get_text())};
   float text_height {f_renderer.get_text_height()};
@@ -95,7 +95,7 @@ void ekg::ui::button_widget::on_event(ekg::os::io_event_serial &io_event_serial)
       ekg::action::activity
     );
 
-    auto p_ui {(ekg::ui::button*) this->p_data};
+    ekg::ui::button *p_ui {(ekg::ui::button*) this->p_data};
     if (p_ui->set_value(this->flag.hovered)) {
       ekg::reload(this);
     }
@@ -105,10 +105,10 @@ void ekg::ui::button_widget::on_event(ekg::os::io_event_serial &io_event_serial)
 }
 
 void ekg::ui::button_widget::on_draw_refresh() {
-  auto p_ui {(ekg::ui::button *) this->p_data};
-  auto &rect {this->get_abs_rect()};
-  auto &theme {ekg::theme()};
-  auto &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  ekg::ui::button *p_ui {(ekg::ui::button *) this->p_data};
+  ekg::rect &rect {this->get_abs_rect()};
+  ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
 
   if (p_ui->was_changed()) {
     ekg::reload(this);
@@ -119,7 +119,7 @@ void ekg::ui::button_widget::on_draw_refresh() {
 
   ekg::draw::rect(
     rect,
-    theme.button_background,
+    theme_scheme.button_background,
     ekg::draw_mode::filled,
     ekg_layer(ekg::layer::background)
   );
@@ -127,7 +127,7 @@ void ekg::ui::button_widget::on_draw_refresh() {
   if (this->flag.highlight) {
     ekg::draw::rect(
       rect,
-      theme.button_highlight,
+      theme_scheme.button_highlight,
       ekg::draw_mode::filled,
       ekg_layer(ekg::layer::highlight)
     );
@@ -136,14 +136,14 @@ void ekg::ui::button_widget::on_draw_refresh() {
   if (this->flag.activity) {
     ekg::draw::rect(
       rect,
-      theme.button_activity,
+      theme_scheme.button_activity,
       ekg::draw_mode::filled,
       ekg_layer(ekg::layer::activity)
     );
 
     ekg::draw::rect(
       rect,
-      ekg::vec4 {theme.button_activity, theme.button_outline.w},
+      ekg::vec4 {theme_scheme.button_activity, theme_scheme.button_outline.w},
       ekg::draw_mode::outline
     );
   }
@@ -152,12 +152,12 @@ void ekg::ui::button_widget::on_draw_refresh() {
     p_ui->get_text(),
     rect.x + this->rect_text.x,
     rect.y + this->rect_text.y,
-    theme.button_string
+    theme_scheme.button_string
   );
   
   ekg::draw::rect(
     rect,
-    theme.button_outline,
+    theme_scheme.button_outline,
     ekg::draw_mode::outline
   );
 }

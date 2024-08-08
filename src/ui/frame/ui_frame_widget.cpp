@@ -30,8 +30,8 @@
 
 void ekg::ui::frame_widget::on_reload() {
   abstract_widget::on_reload();
-  auto &rect {this->get_abs_rect()};
-  this->ui_theme_activity_offset = static_cast<float>(ekg::theme().frame_activity_offset);
+  ekg::rect &rect {this->get_abs_rect()};
+  this->ui_theme_activity_offset = static_cast<float>(ekg::current_theme_scheme().frame_activity_offset);
 }
 
 void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
@@ -42,9 +42,9 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
     return;
   }
 
-  auto &interact {ekg::input::interact()};
-  auto p_ui {(ekg::ui::frame *) this->p_data};
-  auto &rect {this->get_abs_rect()};
+  ekg::vec4 &interact {ekg::input::interact()};
+  ekg::ui::frame *p_ui {(ekg::ui::frame *) this->p_data};
+  ekg::rect &rect {this->get_abs_rect()};
 
   uint16_t drag_dock_flags {p_ui->get_drag_dock()};
   uint16_t resize_dock_flags {p_ui->get_resize_dock()};
@@ -212,8 +212,8 @@ void ekg::ui::frame_widget::on_update() {
 }
 
 void ekg::ui::frame_widget::on_draw_refresh() {
-  auto &rect {this->get_abs_rect()};
-  auto &theme {ekg::theme()};
+  ekg::rect &rect {this->get_abs_rect()};
+  ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
 
   if (this->p_scroll_embedded != nullptr) {
     this->p_scroll_embedded->scissor = this->scissor;
@@ -225,20 +225,20 @@ void ekg::ui::frame_widget::on_draw_refresh() {
 
   ekg::draw::rect(
     rect,
-    theme.frame_background,
+    theme_scheme.frame_background,
     ekg::draw_mode::filled,
     ekg_layer(ekg::layer::background)
   );
 
   ekg::draw::rect(
     this->docker_activity_drag.top,
-    theme.frame_border,
+    theme_scheme.frame_border,
     ekg::draw_mode::filled
   );
 
   ekg::draw::rect(
     rect,
-    theme.frame_outline,
+    theme_scheme.frame_outline,
     ekg::draw_mode::outline
   );
 }
