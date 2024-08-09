@@ -17,3 +17,6 @@ Slider contains a glitch were you can drag with no maximum limit.
 stupid ticking glitch.
 
 /* stupid scorlling glitch */
+
+rewrite slider
+fix listbox issue when scrolling and dragging?

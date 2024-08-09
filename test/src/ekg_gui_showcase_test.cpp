@@ -541,10 +541,10 @@ int32_t showcase_useless_window() {
     );
 
   ekg::item themes {
-    ekg::item("🐮", {
+    ekg::item("🐮 Theme Schemes", {
       ekg::item("dark"),
       ekg::item("light"),
-      ekg::item("pinky")
+      ekg::item("light-pinky")
     })
   };
 

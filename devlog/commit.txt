@@ -167,7 +167,6 @@
 -- Emoji(s) support on font rendering.
 -- Dynamic glyph char data, now EKG can render any type of char increasing the amount of mapped UTF-32 chars code.
 -- Ownership valuable memory address mapping to literal any-widget content.
--- Tiling layout DPI system.
 -- Performance improved, new redraw entire GUI flag way: moved to ekg::ui::display.
 -- New top-level frame feature, now you can have a top-level frame which bypass the drag action, dragging the top-level frame instead of low-level frame.
 -- Fixed fill pixel imperfect sizes.
@@ -190,3 +189,4 @@
 -- Added typing state for textbox, instead of using state directly.
 -- Now focus items on listbox does not work (no state change) when is not being interacted (hovered).
 -- New theme system, mapped and scheme-based type.
+-- New standart light-pinky theme scheme colors.
