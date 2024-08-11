@@ -25,3 +25,4 @@
 #include "ekg/os/platform.hpp"
 
 ekg::system_cursor ekg::cursor {};
+ekg::timing ekg::os::platform::last_time_wheel_was_fired {};

@@ -168,6 +168,8 @@ void ekg::os::sdl::get_special_key(io_key &key, ekg::special_key &special_key) {
 void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
   ekg::os::io_event_serial &serialized {ekg::core->io_event_serial};
 
+  float precise_interval {};
+
   switch (sdl_event.type) {
   case SDL_WINDOWEVENT:
     switch (sdl_event.window.event) {
@@ -219,7 +221,20 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
     serialized.mouse_wheel_y = sdl_event.wheel.y;
     serialized.mouse_wheel_precise_x = sdl_event.wheel.preciseX;
     serialized.mouse_wheel_precise_y = sdl_event.wheel.preciseY;
+
+    ekg::reset(ekg::os::platform::last_time_wheel_was_fired);
     ekg::poll_io_event = true;
+
+    precise_interval = static_cast<float>(
+      1000 - ekg_clamp(ekg::interval(ekg::os::platform::last_time_wheel_was_fired), 0, 1000)
+    );
+
+    precise_interval = (precise_interval / 1000.0f);
+    precise_interval = precise_interval + (static_cast<float>(precise_interval > 0.99) * 0.5f);
+    precise_interval = ekg_min(precise_interval, 0.2f);
+
+    serialized.mouse_wheel_precise_x = sdl_event.wheel.preciseX * precise_interval;
+    serialized.mouse_wheel_precise_y = sdl_event.wheel.preciseY * precise_interval;
     break;
 
   case SDL_MOUSEMOTION:

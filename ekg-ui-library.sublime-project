@@ -8,13 +8,17 @@
 	"settings":
 	{
 		"tab_size": 2,
-		"LSP": {
-    	"clangd": {
-      	"initializationOptions": {
-      		"clangd.compile-commands-dir": "./cmake-build-debug"
-      	}
-      }
-   	}
+		"LSP":
+		{
+    		"clangd":
+    		{
+      			"initializationOptions":
+      			{
+      				"clangd.compile-commands-dir": "./cmake-build-debug"
+      			}
+      		}
+      	},
+      	"SublimeLinter.linters.clangtidy.compile_commands": "./cmake-build-debug",
 	},
 	"build_systems":
 	[

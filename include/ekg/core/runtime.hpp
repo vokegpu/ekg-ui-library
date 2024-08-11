@@ -57,8 +57,6 @@ namespace ekg {
     static ekg::stack front;
   private:
     std::unordered_map<int32_t, ekg::ui::abstract_widget*> widget_map {};
-    std::unordered_map<int32_t, bool> processed_widget_map {};
-
     std::vector<ekg::ui::abstract_widget*> loaded_widget_list  {};
     std::vector<ekg::ui::abstract_widget*> refresh_widget_list  {};
     std::vector<ekg::ui::abstract_widget*> reload_widget_list  {};
@@ -85,6 +83,7 @@ namespace ekg {
     ekg::draw::font_renderer f_renderer_normal {};
     ekg::draw::font_renderer f_renderer_big {};
 
+    ekg::timing ui_scroll_timing {};
     ekg::timing ui_timing {};
     ekg::os::io_event_serial io_event_serial {};
 

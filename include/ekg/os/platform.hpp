@@ -25,8 +25,10 @@
 #ifndef EKG_OS_PLATFORM_H
 #define EKG_OS_PLATFORM_H
 
-#include <cstdint>  
+#include <cstdint>
 #include <string_view>
+
+#include "ekg/util/io.hpp"
 
 namespace ekg {
   enum class system_cursor {
@@ -104,6 +106,8 @@ namespace ekg::os {
   };
 
   class platform {
+  public:
+    static ekg::timing last_time_wheel_was_fired;
   public:
     int32_t monitor_resolution[2] {};
   public:

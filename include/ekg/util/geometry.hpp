@@ -265,7 +265,7 @@ namespace ekg {
   uint64_t get_index_by_scroll(float scroll, float dimension, uint64_t size);
 
   /**
-   * Get a index n-size by normalized-scroll amount.
+   * Get a index n-size by scroll amount.
    * Note: You must have a compatible scroll-size with the n-index-size.
    **/
   uint64_t get_index_by_normalized_scroll(float normalized, uint64_t size);

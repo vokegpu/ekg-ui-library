@@ -88,18 +88,28 @@ void ekg::runtime::process_event() {
 
   bool pressed {ekg::input::pressed()};
   bool released {ekg::input::released()};
+  bool motion {ekg::input::motion()};  
+  bool is_on_scrolling_timeout {!ekg::reach(this->ui_scroll_timing, 250)};
 
-  ekg::hovered.id *= !(pressed || released || ekg::input::motion());
+  ekg::hovered.id *= !(pressed || released || motion);
 
   if (
       this->p_abs_activity_widget != nullptr &&
-      this->p_abs_activity_widget->flag.absolute
+      (this->p_abs_activity_widget->flag.absolute || is_on_scrolling_timeout)
     ) {
+
+    if (!(pressed || released || motion)) {
+      ekg::reset(this->ui_scroll_timing);
+    }
 
     this->p_abs_activity_widget->on_pre_event(this->io_event_serial);
     this->p_abs_activity_widget->on_event(this->io_event_serial);
     this->p_abs_activity_widget->on_post_event(this->io_event_serial);
 
+    return;
+  }
+
+  if (is_on_scrolling_timeout) {
     return;
   }
 

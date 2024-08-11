@@ -190,3 +190,5 @@
 -- Now focus items on listbox does not work (no state change) when is not being interacted (hovered).
 -- New theme system, mapped and scheme-based type.
 -- New standart light-pinky theme scheme colors.
+-- New standart dark-pinky theme scheme colors.
+-- New "smooth" scrolling.

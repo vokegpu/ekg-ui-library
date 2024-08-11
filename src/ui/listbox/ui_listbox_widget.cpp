@@ -574,7 +574,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
       this->header_relative_x += placement_header.rect.w;
     }
-    
+
     break;
   }
 }

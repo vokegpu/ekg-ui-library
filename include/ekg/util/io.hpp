@@ -282,9 +282,13 @@ namespace ekg {
 namespace ekg {
   bool file_to_string(std::string &file_content, std::string_view path);
 
-  bool reach(ekg::timing &, uint64_t);
+  bool reach(ekg::timing &timing, int64_t ms);
 
-  bool reset(ekg::timing &);
+  bool reset(ekg::timing &timing);
+
+  bool extend(ekg::timing &timing, int64_t ms);
+
+  int64_t interval(ekg::timing &timing);
 }
 
 namespace ekg::input {

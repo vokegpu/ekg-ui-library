@@ -123,6 +123,12 @@ namespace ekg::service {
     void init();
 
     /**
+     * Returns all mapped schemes from theme service.
+     * Note: Use property register/deregister methods; may be unsafe.
+     **/
+    std::map<std::string_view, ekg::service::theme_scheme_t> &get_theme_scheme_map();
+
+    /**
      * Set the current theme global.
      * Note: You must set a registered theme.
      * 

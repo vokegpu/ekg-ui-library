@@ -541,12 +541,12 @@ int32_t showcase_useless_window() {
     );
 
   ekg::item themes {
-    ekg::item("🐮 Theme Schemes", {
-      ekg::item("dark"),
-      ekg::item("light"),
-      ekg::item("light-pinky")
-    })
+    ekg::item("🐮 Theme Schemes")
   };
+
+  for (auto &[name, theme] : ekg::theme().get_theme_scheme_map()) {
+    themes.at(0).emplace_back(name);
+  }
 
   auto theme_switch_listbox = ekg::listbox("themes", themes, ekg::dock::fill | ekg::dock::next)
     ->set_scaled_height(4);

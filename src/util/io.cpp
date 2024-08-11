@@ -116,7 +116,7 @@ bool ekg::log::tracked {};
 int64_t ekg::timing::second {};
 int64_t ekg::timing::ticks {};
 
-bool ekg::reach(ekg::timing &timing, uint64_t ms) {
+bool ekg::reach(ekg::timing &timing, int64_t ms) {
   timing.ticks_going_on = ekg::timing::ticks;
   timing.current_ticks = timing.ticks_going_on - timing.elapsed_ticks;
   return timing.current_ticks > ms;
@@ -125,6 +125,18 @@ bool ekg::reach(ekg::timing &timing, uint64_t ms) {
 bool ekg::reset(ekg::timing &timing) {
   timing.elapsed_ticks = timing.ticks_going_on;
   return true;
+}
+
+bool ekg::extend(ekg::timing &timing, int64_t ms) {
+  timing.elapsed_ticks = timing.ticks_going_on - ms;
+  return true;
+}
+
+int64_t ekg::interval(ekg::timing &timing) {
+  timing.ticks_going_on = ekg::timing::ticks;
+  return (
+    timing.current_ticks = timing.ticks_going_on - timing.elapsed_ticks
+  );
 }
 
 bool ekg::file_to_string(std::string &file_content, std::string_view path) {

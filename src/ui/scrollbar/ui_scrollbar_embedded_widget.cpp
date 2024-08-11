@@ -111,7 +111,7 @@ void ekg::ui::scrollbar_embedded_widget::on_reload() {
   float text_height {ekg::f_renderer(ekg::font::normal).get_text_height()};
 
   this->acceleration.x = text_height;
-  this->acceleration.y = text_height + (text_height / 2.0f);
+  this->acceleration.y = 1000.0f;
 
   for (int32_t &ids: this->child_id_list) {
     if ((p_widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr ||
@@ -133,6 +133,12 @@ void ekg::ui::scrollbar_embedded_widget::on_reload() {
 
     p_widgets->p_scroll = &this->scroll;
   }
+
+  /**
+   * May be better to do scrolling increased with font-height,
+   * sometimes scroll is too slow with a small amount of widgets.
+   **/
+  this->acceleration.y += text_height + (text_height / 2.0f);
 
   this->calculate_rect_bar_sizes();
   this->check_axis_states();
@@ -171,7 +177,7 @@ void ekg::ui::scrollbar_embedded_widget::on_pre_event(ekg::os::io_event_serial &
 void ekg::ui::scrollbar_embedded_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
   this->check_axis_states();
 
-  auto &interact {ekg::input::interact()};
+  ekg::vec4 &interact {ekg::input::interact()};
   bool hovered_and_action_scroll_fired {this->flag.hovered && ekg::input::action("scrollbar-scroll")};
 
 #if defined(ANDROID)
@@ -194,9 +200,7 @@ void ekg::ui::scrollbar_embedded_widget::on_event(ekg::os::io_event_serial &io_e
   if (hovered_and_action_scroll_fired && this->is_vertical_enabled) {
     bool over_max_motion {static_cast<int32_t>(interact.w) > 1 || static_cast<int32_t>(interact.w) < -1};
     this->scroll.w = ekg_clamp(
-      this->scroll.y + (interact.w * (
-        over_max_motion ? this->acceleration.y + this->acceleration.y : this->acceleration.y
-      )),
+      this->scroll.y + (interact.w * this->acceleration.y),
       this->p_rect_mother->h - this->rect_child.h,
       0.0f
     );
