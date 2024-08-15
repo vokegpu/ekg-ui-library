@@ -41,12 +41,60 @@ namespace ekg {
     redraw
   };
 
+  /**
+   * A widget stack collector, used in many things.
+   * You may want to create GUI scenes with auto-destruction.
+   * 
+   * E.g code:
+   * showcase = ekg::stack("gui-stack");
+   * // insert widgets
+   * showcase.end(); // detatch stack
+   * 
+   * // on GUI close
+   * showcase.destroy();
+   * // or destructor
+   * ~showcase();
+   **/
   struct stack {
+  protected:
+    bool was_destroyed {};
   public:
+    std::string_view tag {};
     std::vector<ekg::ui::abstract_widget*> ordered_list {};
     int32_t target_id {};
     bool target_id_found {};
   public:
+    stack() = default;
+
+    /**
+     * Create a stack and update on runtime, to disable it
+     * set true `do_not_trigger_stack_update` param var.
+     **/
+    stack(std::string_view tag, bool do_not_trigger_stack_update = false);
+
+    /**
+     * Destructor where all widgets stacked are killed.
+     **/
+    ~stack();
+
+    /**
+     * Push this stack to runtime, then collect widgets generated.
+     **/
+    void push();
+
+    /**
+     * Stop to stack widgets.
+     **/
+    void pop();
+
+    /**
+     * Destroy all widgets stacked.
+     **/
+    void destroy();
+
+    /**
+     * Just clear the stack without kill.
+     **/
     void clear();
   };
 }

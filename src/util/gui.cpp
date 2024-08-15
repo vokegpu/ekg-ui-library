@@ -62,6 +62,36 @@ void ekg::push_back_stack(ekg::ui::abstract_widget *p_widget, ekg::stack &stack)
   }
 }
 
+ekg::stack::stack(std::string_view tag, bool do_not_trigger_stack_update) {
+  this->tag = tag;
+
+  if (do_not_trigger_stack_update) {
+    return;
+  }
+
+  this->push();
+}
+
+ekg::stack::~stack() {
+  this->destroy();
+}
+
+void ekg::stack::push() {
+  ekg::core->set_current_stack(this);
+}
+
+void ekg::stack::pop() {
+  ekg::core->set_current_stack(nullptr);
+}
+
+void ekg::stack::destroy() {
+  for (ekg::ui::abstract_widget *p_widget : this->ordered_list) {
+    p_widget->p_data->destroy();
+  }
+
+  this->ordered_list.clear();
+}
+
 void ekg::stack::clear() {
   this->ordered_list.clear();
   this->target_id_found = false;

@@ -109,6 +109,8 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
   this->has_motion = false;
   this->was_typed = false;
 
+  float wheel_precise_interval {};
+
   switch (io_event_serialized.event_type) {
     case ekg::platform_event_type::text_input: {
       this->was_pressed = true;
@@ -255,8 +257,26 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
       this->callback("mouse-wheel-right", io_event_serialized.mouse_wheel_x > 0);
       this->callback("mouse-wheel-left", io_event_serialized.mouse_wheel_x < 0);
 
-      this->interact.z = io_event_serialized.mouse_wheel_precise_x;
-      this->interact.w = io_event_serialized.mouse_wheel_precise_y;
+      /**
+       * I do not know how actually implement smooth scroll,
+       * SDL/GLFW does not give an option to receive a precise smooth scrolling intensity.
+       * 
+       * So the interval between old event and new event, inverse to, 1000, returns
+       * the intensity.
+       **/
+
+      wheel_precise_interval = static_cast<float>(
+        1000 - ekg_clamp(ekg::interval(this->last_time_wheel_was_fired), 0, 1000)
+      );
+
+      wheel_precise_interval = (wheel_precise_interval / 1000.0f);
+      wheel_precise_interval = wheel_precise_interval + (static_cast<float>(wheel_precise_interval > 0.99) * 0.5f);
+      wheel_precise_interval = ekg_min(wheel_precise_interval, 0.2f);
+
+      this->interact.z = io_event_serialized.mouse_wheel_precise_x * wheel_precise_interval;
+      this->interact.w = io_event_serialized.mouse_wheel_precise_y * wheel_precise_interval;
+      
+      ekg::reset(this->last_time_wheel_was_fired);
       break;
     }
 

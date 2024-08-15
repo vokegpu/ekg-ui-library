@@ -204,6 +204,8 @@ void ekg::ui::scrollbar_embedded_widget::on_event(ekg::os::io_event_serial &io_e
       this->p_rect_mother->h - this->rect_child.h,
       0.0f
     );
+  std::cout << this->scroll.w << " , " << this->scroll.y << std::endl;
+
   }
 
   if (hovered_and_action_scroll_fired && this->is_horizontal_enabled) {

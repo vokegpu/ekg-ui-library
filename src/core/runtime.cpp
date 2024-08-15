@@ -545,6 +545,10 @@ void ekg::runtime::prepare_tasks() {
   };
 }
 
+void ekg::runtime::set_current_stack(ekg::stack *p_stack) {
+  this->p_current_stack = p_stack;
+}
+
 ekg::ui::abstract_widget *ekg::runtime::get_fast_widget_by_id(int32_t id) {
   /** widget ID 0 is defined as none, or be, ID token accumulation start with 1 and not 0 */
   return id ? this->widget_map[id] : nullptr;
@@ -770,6 +774,10 @@ void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {
 
   if (update_layout) {
     this->do_task_synclayout(p_widget_created);
+  }
+
+  if (this->p_current_stack) {
+    this->p_current_stack->ordered_list.emplace_back(p_widget_created);
   }
 
   ekg::dispatch(ekg::env::swap);

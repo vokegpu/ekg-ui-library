@@ -67,6 +67,7 @@ namespace ekg {
 
     ekg::ui::abstract *p_current_ui_container {};
     ekg::ui::abstract_widget *p_abs_activity_widget {};
+    ekg::stack *p_current_stack {};
 
     int32_t token_id {};
     int32_t widget_id_focused {};
@@ -97,8 +98,10 @@ namespace ekg {
 
     void prepare_ui_env();
 
-    void erase(int32_t id);    
+    void erase(int32_t id);
   public:
+    void set_current_stack(ekg::stack *p_stack);
+
     ekg::ui::abstract_widget *get_fast_widget_by_id(int32_t id);
 
     void gen_widget(ekg::ui::abstract *p_ui);

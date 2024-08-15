@@ -53,6 +53,7 @@ namespace ekg::service {
 
     ekg::vec4 last_finger_interact {};
     ekg::timing double_interact {};
+    ekg::timing last_time_wheel_was_fired {};
   public:
     ekg::timing timing_last_interact {};
     ekg::vec4 interact {};

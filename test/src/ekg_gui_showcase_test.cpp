@@ -322,13 +322,11 @@ std::string resultcalc(std::string_view text) {
   return result;
 }
 
-#define create_ui(ui) (this->widgets.emplace_back() = ui)
-
 struct message_gui {
 public:
   std::vector<std::string> msg_content {};
   std::vector<std::string> msg_send_content {};
-  std::vector<ekg::ui::abstract*> widgets {};
+  ekg::stack stack {};
   bool must_send {};
   ekg::task task {};
 public:
@@ -362,40 +360,32 @@ public:
       message_gui::send(static_cast<message_gui*>(info.p_data));
     };
 
-    create_ui(
-      ekg::frame("message-gui", {700, 600}, {400, 250})
-        ->set_drag(ekg::dock::top)
-    );
+    this->stack.tag = "msg-gui";
 
-    create_ui(
-      ekg::label("Message >< of uwu mumu meow", ekg::dock::fill | ekg::dock::next)
-        ->set_text_align(ekg::dock::center)
-    );
+    ekg::frame("message-gui", {700, 600}, {400, 250})
+      ->set_drag(ekg::dock::top);
 
-    create_ui(
-      ekg::textbox("message-content", "type:",  ekg::dock::fill | ekg::dock::next)
-        ->set_scaled_height(6)
-        ->transfer_ownership(&this->msg_content)
-        ->set_typing_state(ekg::state::disable)
-    );
+    ekg::label("Message >< of uwu mumu meow", ekg::dock::fill | ekg::dock::next)
+      ->set_text_align(ekg::dock::center);
 
-    create_ui(
-      ekg::textbox("Send", "meow", ekg::dock::fill | ekg::dock::next)
-        ->transfer_ownership(&this->msg_send_content)
-        ->set_task(&this->task, ekg::action::activity)
-    );
+    ekg::textbox("message-content", "type:",  ekg::dock::fill | ekg::dock::next)
+      ->set_scaled_height(6)
+      ->transfer_ownership(&this->msg_content)
+      ->set_typing_state(ekg::state::disable);
 
-    create_ui(
-      ekg::button("Enter", ekg::dock::none)
-        ->set_width(100)
-        ->set_task(&this->task, ekg::action::activity)
-    );
+    ekg::textbox("Send", "meow", ekg::dock::fill | ekg::dock::next)
+      ->transfer_ownership(&this->msg_send_content)
+      ->set_task(&this->task, ekg::action::activity);
+
+    ekg::button("Enter", ekg::dock::none)
+      ->set_width(100)
+      ->set_task(&this->task, ekg::action::activity);
+
+    this->stack.pop();
   }
 
   ~message_gui() {
-    for (ekg::ui::abstract *p_widgets : this->widgets) {
-      p_widgets->destroy();
-    }
+    this->stack.destroy();
   }
 };
 
@@ -1063,7 +1053,7 @@ int32_t laboratory_testing() {
   float prev_pos {10.2f};
   float scale {2.0f};
 
-  message_gui message_gui {};
+  message_gui msg_gui {};
 
   while (running) {
     last = now;

@@ -107,8 +107,6 @@ namespace ekg::os {
 
   class platform {
   public:
-    static ekg::timing last_time_wheel_was_fired;
-  public:
     int32_t monitor_resolution[2] {};
   public:
     virtual void init() {}
