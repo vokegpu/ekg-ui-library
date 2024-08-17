@@ -142,11 +142,6 @@ namespace ekg {
   ekg::ui::label *label(std::string_view text, uint16_t dock = ekg::dock::none);
 
   /**
-   * Create immutable label UI.
-   */
-  ekg::ui::label *imut_label(std::string_view text, uint16_t dock = ekg::dock::none);
-
-  /**
    * Create checkbox UI.
    */
   ekg::ui::checkbox *checkbox(std::string_view text, bool checked, uint16_t dock = ekg::dock::none);
@@ -159,8 +154,7 @@ namespace ekg {
   /**
    * Create popup UI.
    */
-  ekg::ui::popup *
-  popup(std::string_view tag, const std::vector<std::string> &component_list, bool interact_position = true);
+  ekg::ui::popup *popup(std::string_view tag, const std::vector<std::string> &component_list, bool interact_position = true);
 
   /**
    * Create textbox UI.

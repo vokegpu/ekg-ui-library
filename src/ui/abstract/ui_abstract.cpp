@@ -146,15 +146,6 @@ bool ekg::ui::abstract::is_visible() {
   return this->visible;
 }
 
-ekg::ui::abstract *ekg::ui::abstract::unsafe_set_immutable(bool is_now_immutable) {
-  this->immutable = is_now_immutable;
-  return this;
-}
-
-bool ekg::ui::abstract::is_immutable() {
-  return this->immutable;
-}
-
 void ekg::ui::abstract::destroy() {
   this->set_alive(false);
   this->unsafe_destroy_childs();

@@ -151,20 +151,6 @@ ekg::ui::drop_down_frame ekg::drop_down_frame(...) {
 
 ```
 
-### Immutable UI
-
-```cpp
-// ekg/ekg.cpp
-ekg::ui::label *imut_label(std::string_view text) {
-  ekg::ui::label *p_ui {new ekg::ui::label()};
-  
-  p_ui->unsafe_set_immutable(true);
-  p_ui->set_text(text);
-
-  return p_ui;
-}
-```
-
 # Lacunes
 
 - [1] The variable, function and method MUST follow: template, and default initialization value as-a-config.

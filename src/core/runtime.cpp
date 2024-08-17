@@ -408,16 +408,16 @@ void ekg::runtime::prepare_tasks() {
 
         p_widgets->was_reloaded = false;
 
-        auto &sync_flags {p_widgets->p_data->get_sync()};
+        uint16_t &sync_flags {p_widgets->p_data->get_sync()};
         if (ekg_bitwise_contains(sync_flags, static_cast<uint16_t>(ekg::ui_sync::reset))) {
           ekg_bitwise_remove(sync_flags, static_cast<uint16_t>(ekg::ui_sync::reset));
 
           switch (p_widgets->p_data->get_type()) {
             case ekg::type::frame: {
-              auto p_ui {(ekg::ui::frame *) p_widgets->p_data};
-              auto pos {p_ui->get_pos_initial()};
-              auto size {p_ui->get_size_initial()};
-              auto &rect_ui {p_ui->ui()};
+              ekg::ui::frame *p_ui {(ekg::ui::frame *) p_widgets->p_data};
+              ekg::vec2 pos {p_ui->get_pos_initial()};
+              ekg::vec2 size {p_ui->get_size_initial()};
+              ekg::rect &rect_ui {p_ui->ui()};
 
               rect.x = pos.x;
               rect.y = pos.y;
@@ -449,7 +449,7 @@ void ekg::runtime::prepare_tasks() {
         if (ekg_bitwise_contains(sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension))) {
           ekg_bitwise_remove(sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
 
-          auto &rect {p_widgets->p_data->ui()};
+          ekg::rect &rect {p_widgets->p_data->ui()};
           switch (p_widgets->p_data->get_level()) {
             case ekg::level::top_level: {
               p_widgets->dimension.w = rect.w;
@@ -824,7 +824,7 @@ void ekg::runtime::end_group_parent_flag() {
 }
 
 void ekg::runtime::erase(int32_t id) {
-  auto &all {this->loaded_widget_list};
+  std::vector<ekg::ui::abstract_widget*> &all {this->loaded_widget_list};
 
   for (size_t it {}; it < all.size(); it++) {
     ekg::ui::abstract_widget *&p_widget {all[it]};
@@ -841,7 +841,7 @@ void ekg::runtime::set_update_high_frequency(ekg::ui::abstract_widget *p_widget)
   if (p_widget != nullptr && !p_widget->is_high_frequency) {
     this->enable_high_priority_frequency = true;
 
-    auto &update {this->update_widget_list};
+    std::vector<ekg::ui::abstract_widget*> &update {this->update_widget_list};
     bool contains {};
 
     for (ekg::ui::abstract_widget *&p_widgets: update) {

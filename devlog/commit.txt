@@ -192,3 +192,4 @@
 -- New standart light-pinky theme scheme colors.
 -- New standart dark-pinky theme scheme colors.
 -- New "smooth" scrolling.
+-- Deprecated `immut` widgets (I do not think we should do this for now).

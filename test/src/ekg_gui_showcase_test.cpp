@@ -674,7 +674,9 @@ int32_t showcase_useless_window() {
   ->transfer_ownership(&content);
 
   ekg::slider("meow1", 0.5f, 0.0f, 1.0f, ekg::dock::fill | ekg::dock::next)
-    ->set_precision(2)
+    ->set_precision(6)
+    ->set_text_align(ekg::dock::center | ekg::dock::top)
+    ->set_font_size(ekg::font::big)
     ->transfer_ownership(&ekg::current_theme_scheme().listbox_line_separator.w);
 
   auto p_dpi = ekg::checkbox("DPI-scale:", true, ekg::dock::next);
