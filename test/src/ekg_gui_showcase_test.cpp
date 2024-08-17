@@ -492,8 +492,6 @@ int32_t showcase_useless_window() {
     );
 
   ekg::label("DPI tiling:", ekg::dock::next);
-  ekg::slider("DPI tiling", 4.0f, 1.0f, 50.0f, ekg::dock::fill)
-    ->transfer_ownership(&ekg::ui::dpi_tiling);
 
   ekg::scrollbar("scrollbar omg");
   ekg::pop_group();
@@ -632,17 +630,26 @@ int32_t showcase_useless_window() {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     /*content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
-    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());*/
   }
+
+  auto p = ekg::slider<float>(
+    "meow",
+    1.0f,
+    0.0f,
+    2.0f,
+    ekg::number::float32,
+    ekg::dock::fill | ekg::dock::next
+  );
 
   ekg::button("Dead-allocate the instance of life", ekg::dock::fill | ekg::dock::next)
     ->set_task(
@@ -672,12 +679,6 @@ int32_t showcase_useless_window() {
   ->set_scaled_height(16)
   ->set_mode(ekg::mode::singlecolumn)
   ->transfer_ownership(&content);
-
-  ekg::slider("meow1", 0.5f, 0.0f, 1.0f, ekg::dock::fill | ekg::dock::next)
-    ->set_precision(6)
-    ->set_text_align(ekg::dock::center | ekg::dock::top)
-    ->set_font_size(ekg::font::big)
-    ->transfer_ownership(&ekg::current_theme_scheme().listbox_line_separator.w);
 
   auto p_dpi = ekg::checkbox("DPI-scale:", true, ekg::dock::next);
   ekg::textbox("DPI", "1920x1080", ekg::dock::fill)
@@ -718,20 +719,6 @@ int32_t showcase_useless_window() {
   ekg::vec3 clear_color {};
 
   ekg::label("Clear Color: ", ekg::dock::next );
-  ekg::slider("clear-color-red", 0.0f, 0.0f, 1.0f, ekg::dock::fill)
-    ->set_precision(5)
-    ->transfer_ownership(&clear_color.x)
-    ->set_text_align(ekg::dock::center);
-
-  ekg::slider("clear-color-green", 0.0f, 0.0f, 1.0f, ekg::dock::fill)
-    ->set_precision(5)
-    ->transfer_ownership(&clear_color.y)
-    ->set_text_align(ekg::dock::center);
-
-  ekg::slider("clear-color-blue", 0.0f, 0.0f, 1.0f, ekg::dock::fill)
-    ->set_precision(5)
-    ->transfer_ownership(&clear_color.z)
-    ->set_text_align(ekg::dock::center);
 
   labelresult = ekg::label("0", ekg::dock::fill | ekg::dock::next);
   labelresult->set_scaled_height(4);

@@ -27,7 +27,7 @@
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 #include "ekg/ekg.hpp"
 
-ekg::ui::frame *ekg::ui::frame::set_place(uint16_t _dock) {
+ekg::ui::frame *ekg::ui::frame::set_place(ekg::flags _dock) {
   if (this->dock_flags != _dock) {
     this->dock_flags = _dock;
 
@@ -49,21 +49,21 @@ ekg::vec2 ekg::ui::frame::get_scale_factor() {
   return this->scale_factor;
 }
 
-ekg::ui::frame *ekg::ui::frame::set_drag(uint16_t dock) {
+ekg::ui::frame *ekg::ui::frame::set_drag(ekg::flags dock) {
   this->dock_drag = dock;
   return this;
 }
 
-uint16_t ekg::ui::frame::get_drag_dock() {
+ekg::flags ekg::ui::frame::get_drag_dock() {
   return this->dock_drag;
 }
 
-ekg::ui::frame *ekg::ui::frame::set_resize(uint16_t dock) {
+ekg::ui::frame *ekg::ui::frame::set_resize(ekg::flags dock) {
   this->dock_resize = dock;
   return this;
 }
 
-uint16_t ekg::ui::frame::get_resize_dock() {
+ekg::flags ekg::ui::frame::get_resize_dock() {
   return this->dock_resize;
 }
 
@@ -92,7 +92,7 @@ ekg::ui::frame *ekg::ui::frame::set_size(float w, float h) {
     this->sync_ui.w = w;
     this->sync_ui.h = h;
 
-    ekg_bitwise_add(this->sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
+    ekg_bitwise_add(this->sync_flags, static_cast<ekg::flags>(ekg::ui_sync::dimension));
     ekg::reload(this->id);
     ekg::synclayout(this->id);
     ekg::dispatch(ekg::env::redraw);
@@ -110,7 +110,7 @@ ekg::ui::frame *ekg::ui::frame::set_pos(float x, float y) {
     this->sync_ui.x = x;
     this->sync_ui.y = y;
 
-    ekg_bitwise_add(this->sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
+    ekg_bitwise_add(this->sync_flags, static_cast<ekg::flags>(ekg::ui_sync::dimension));
     ekg::reload(this->id);
     ekg::dispatch(ekg::env::redraw);
   }
@@ -144,7 +144,7 @@ ekg::ui::frame *ekg::ui::frame::set_width(float w) {
   if (this->sync_ui.w != w) {
     this->sync_ui.w = w;
 
-    ekg_bitwise_add(this->sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
+    ekg_bitwise_add(this->sync_flags, static_cast<ekg::flags>(ekg::ui_sync::dimension));
     ekg::reload(this->id);
     ekg::synclayout(this->id);
     ekg::dispatch(ekg::env::redraw);
@@ -161,7 +161,7 @@ ekg::ui::frame *ekg::ui::frame::set_height(float h) {
   if (this->sync_ui.h != h) {
     this->sync_ui.h = h;
 
-    ekg_bitwise_add(this->sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
+    ekg_bitwise_add(this->sync_flags, static_cast<ekg::flags>(ekg::ui_sync::dimension));
     ekg::reload(this->id);
     ekg::synclayout(this->id);
     ekg::dispatch(ekg::env::redraw);

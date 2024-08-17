@@ -29,6 +29,8 @@
 #include <string>
 #include <vector>
 
+#include "ekg/util/io.hpp"
+
 namespace ekg {
   /**
    * Returns a UTF string by `char32` converting
@@ -81,7 +83,7 @@ namespace ekg {
   /**
    * Return the index of last attribute-token and insert bits.
    */
-  uint8_t check_attribute_flags(std::string_view text, uint16_t &flags);
+  uint8_t check_attribute_flags(std::string_view text, ekg::flags &flags);
 
   /**
    * Return true if `string` contains `find_char`,

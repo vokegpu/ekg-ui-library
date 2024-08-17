@@ -58,7 +58,7 @@ void ekg::ui::listbox_widget::on_reload() {
 
   int32_t item_scaled_height {p_ui->get_item_scaled_height()};
   int32_t column_header_scaled_height {p_ui->get_column_header_scaled_height()};
-  uint16_t column_header_dock_flags {p_ui->get_column_header_align()};
+  ekg::flags column_header_dock_flags {p_ui->get_column_header_align()};
 
   float text_width {};
   int32_t text_lines {};
@@ -300,7 +300,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
   uint64_t arbitrary_index_pos {};
   uint64_t highest_arbitrary_index_pos {};
-  uint16_t flags {};
+  ekg::flags flags {};
   uint64_t visible_begin_index {};
   uint64_t visible_count {};
   uint64_t size {};
@@ -638,7 +638,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
 
   float bottom_place {this->rect_content_abs.y + this->rect_content_abs.h};
 
-  uint16_t flags {p_ui->get_column_header_align()};
+  ekg::flags flags {p_ui->get_column_header_align()};
   uint64_t rendering_cache_size {this->item_rendering_cache.size()};
 
   bool must_stop_rendering {};
@@ -739,7 +739,7 @@ void ekg::ui::listbox_widget::render_item(
   ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
   ekg::rect &rect {this->get_abs_rect()};
   ekg::rect item_rect {};
-  uint16_t flags {item_header.get_attr()};
+  ekg::flags flags {item_header.get_attr()};
   bool must_stop_rendering {};
   ekg::rect targeted_rect {this->rect_current_dragging_targeted_header};
   targeted_rect.y += rect.y;
@@ -958,7 +958,7 @@ void ekg::ui::listbox_template_reload(
 
   uint64_t it {};
   int32_t text_lines {};
-  uint16_t flags {};
+  ekg::flags flags {};
 
   bool is_empty {};
   bool is_major_column {arbitrary_index_pos == 0};
@@ -1086,7 +1086,7 @@ void ekg::ui::listbox_template_on_event(
   ekg::rect item_rect {};
 
   bool hovering {};
-  uint16_t flags {};
+  ekg::flags flags {};
   bool contains_flag {};
   bool multicolumn {mode == ekg::mode::multicolumn};
   uint64_t rendering_cache_size {rendering_cache.size()};

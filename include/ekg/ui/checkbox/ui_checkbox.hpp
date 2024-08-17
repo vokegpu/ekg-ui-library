@@ -33,7 +33,8 @@
 namespace ekg::ui {
   class checkbox : public ekg::ui::abstract, public ekg::value_t<bool, ekg::ui::checkbox> {
   protected:
-    uint16_t dock_text {}, dock_box {};
+    ekg::flags dock_text {};
+    ekg::flags dock_box {};
     std::string text {};
     ekg::font font_size {};
     task *callback {};
@@ -46,7 +47,7 @@ namespace ekg::ui {
 
     ekg::font get_font_size();
 
-    ekg::ui::checkbox *set_place(uint16_t dock);
+    ekg::ui::checkbox *set_place(ekg::flags dock);
 
     ekg::ui::checkbox *set_width(float w);
 
@@ -62,13 +63,13 @@ namespace ekg::ui {
 
     std::string_view get_text();
 
-    ekg::ui::checkbox *set_text_align(uint16_t dock);
+    ekg::ui::checkbox *set_text_align(ekg::flags dock);
 
-    uint16_t get_text_align();
+    ekg::flags get_text_align();
 
-    ekg::ui::checkbox *set_box_align(uint16_t dock);
+    ekg::ui::checkbox *set_box_align(ekg::flags dock);
 
-    uint16_t get_box_align();
+    ekg::flags get_box_align();
   };
 }
 

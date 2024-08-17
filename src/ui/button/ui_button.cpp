@@ -40,7 +40,7 @@ std::string_view ekg::ui::button::get_text() {
   return this->text;
 }
 
-ekg::ui::button *ekg::ui::button::set_text_align(uint16_t enum_docks) {
+ekg::ui::button *ekg::ui::button::set_text_align(ekg::flags enum_docks) {
   if (this->dock_text != enum_docks) {
     this->dock_text = enum_docks;
 
@@ -51,7 +51,7 @@ ekg::ui::button *ekg::ui::button::set_text_align(uint16_t enum_docks) {
   return this;
 }
 
-uint16_t ekg::ui::button::get_text_align() {
+ekg::flags ekg::ui::button::get_text_align() {
   return this->dock_text;
 }
 
@@ -73,7 +73,7 @@ ekg::ui::button *ekg::ui::button::set_width(float w) {
   if (this->sync_ui.w != w) {
     this->sync_ui.w = w;
 
-    ekg_bitwise_add(this->sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
+    ekg_bitwise_add(this->sync_flags, static_cast<ekg::flags>(ekg::ui_sync::dimension));
     ekg::reload(this->id);
     ekg::synclayout(this->parent_id);
   }
@@ -104,7 +104,7 @@ int32_t ekg::ui::button::get_scaled_height() {
   return this->scaled_height;
 }
 
-ekg::ui::button *ekg::ui::button::set_place(uint16_t flags) {
+ekg::ui::button *ekg::ui::button::set_place(ekg::flags flags) {
   if (this->dock_flags != flags) {
     this->dock_flags = flags;
 

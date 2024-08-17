@@ -192,28 +192,6 @@ ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, uint16_t doc
   return p_ui;
 }
 
-ekg::ui::slider *ekg::slider(std::string_view tag, float val, float min, float max, uint16_t dock) {
-  ekg::ui::slider *p_ui {new ekg::ui::slider()};
-  p_ui->registry(p_ui);
-  p_ui->unsafe_set_type(ekg::type::slider);
-  ekg::core->gen_widget(p_ui);
-
-  p_ui->set_tag(tag);
-  p_ui->set_place(dock);
-  p_ui->set_text_align(ekg::dock::center);
-  p_ui->set_bar_align(ekg::dock::left | ekg::dock::center);
-  p_ui->set_scaled_height(1);
-  p_ui->set_font_size(ekg::font::normal);
-  p_ui->set_value_min(min);
-  p_ui->set_value_max(max);
-  p_ui->set_precision(0);
-  p_ui->set_bar_axis(ekg::axis::horizontal);
-  p_ui->set_width(200);
-  p_ui->set_value(val);
-
-  return p_ui;
-}
-
 ekg::ui::popup *
 ekg::popup(std::string_view tag, const std::vector<std::string> &component_list, bool interact_position) {
   if (ekg::hovered.type == ekg::type::popup || ekg::hovered.down_type == ekg::type::popup) {

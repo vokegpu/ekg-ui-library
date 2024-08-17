@@ -31,8 +31,8 @@
 namespace ekg::ui {
   class frame_widget : public ekg::ui::abstract_widget {
   public:
-    uint16_t target_dock_drag {};
-    uint16_t target_dock_resize {};
+    ekg::flags target_dock_drag {};
+    ekg::flags target_dock_resize {};
 
     ekg::ui::frame_widget *p_frame_widget_top_level {};
     ekg::ui::scrollbar_embedded_widget *p_scroll_embedded {};

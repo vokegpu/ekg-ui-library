@@ -29,17 +29,6 @@
 
 namespace ekg::ui {
   class slider_widget : public ekg::ui::abstract_widget {
-  protected:
-    void update_bar(float, float);
-
-    void update_bar_axis(ekg::dock);
-  public:
-    ekg::rect rect_target {};
-    ekg::rect rect_text {};
-    ekg::rect rect_bar {};
-    ekg::rect rect_bar_value {};
-    std::string string_value {};
-    ekg::font font_render_size {};
   public:
     void on_reload() override;
 

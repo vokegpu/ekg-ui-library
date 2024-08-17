@@ -35,7 +35,7 @@ namespace ekg::ui {
   protected:
     std::vector<ekg::ui::item> item_list {};
 
-    uint16_t text_flags {};
+    ekg::flags text_flags {};
     int32_t scaled_height {}, token_id {};
     ekg::font font_size;
   public:
@@ -59,9 +59,9 @@ namespace ekg::ui {
 
     ekg::vec2 get_pos();
 
-    ekg::ui::popup *set_text_align(uint16_t dock);
+    ekg::ui::popup *set_text_align(ekg::flags dock);
 
-    uint16_t get_text_align();
+    ekg::flags get_text_align();
 
     ekg::ui::popup *set_width(float w);
 

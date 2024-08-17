@@ -31,6 +31,7 @@
 #include "ekg/util/geometry.hpp"
 #include "ekg/core/task.hpp"
 #include "ekg/gpu/api.hpp"
+#include "ekg/util/io.hpp"
 
 namespace ekg {
   enum class type {
@@ -94,7 +95,7 @@ namespace ekg {
       bool value {};
       uint32_t id {};
       uint32_t linked_id {};
-      uint16_t attributes {};
+      ekg::flags attributes {};
     public:
       ekg::rect rect_dimension {};
       ekg::rect rect_content {};
@@ -114,8 +115,8 @@ namespace ekg {
       bool alive {true};
       bool visible {true};
 
-      uint16_t dock_flags {};
-      uint16_t sync_flags {};
+      ekg::flags dock_flags {};
+      ekg::flags sync_flags {};
       std::string tag {};
 
       ekg::state state {};
@@ -243,9 +244,9 @@ namespace ekg {
 
       ekg::type get_type();
 
-      uint16_t get_place_dock();
+      ekg::flags get_place_dock();
 
-      uint16_t &get_sync();
+      ekg::flags &get_sync();
 
       /**
        * Set a task to an action, possibles actions:

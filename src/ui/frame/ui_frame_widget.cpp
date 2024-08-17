@@ -46,9 +46,9 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
   ekg::ui::frame *p_ui {(ekg::ui::frame *) this->p_data};
   ekg::rect &rect {this->get_abs_rect()};
 
-  uint16_t drag_dock_flags {p_ui->get_drag_dock()};
-  uint16_t resize_dock_flags {p_ui->get_resize_dock()};
-  uint16_t shown_cursor_dock_flags {};
+  ekg::flags drag_dock_flags {p_ui->get_drag_dock()};
+  ekg::flags resize_dock_flags {p_ui->get_resize_dock()};
+  ekg::flags shown_cursor_dock_flags {};
 
   bool pressed {ekg::input::pressed()};
   bool released {ekg::input::released()};
@@ -171,10 +171,10 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
   }
 
   if (shown_cursor_dock_flags) {
-    bool top {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<uint16_t>(ekg::dock::top)))};
-    bool bottom {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<uint16_t>(ekg::dock::bottom)))};
-    bool left {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<uint16_t>(ekg::dock::left)))};
-    bool right {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<uint16_t>(ekg::dock::right)))};
+    bool top {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<ekg::flags>(ekg::dock::top)))};
+    bool bottom {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<ekg::flags>(ekg::dock::bottom)))};
+    bool left {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<ekg::flags>(ekg::dock::left)))};
+    bool right {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<ekg::flags>(ekg::dock::right)))};
 
     if ((top && left) || (bottom && right)) {
       ekg::cursor = ekg::system_cursor::size_nwse;

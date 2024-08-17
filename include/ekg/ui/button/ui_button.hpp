@@ -33,8 +33,7 @@
 namespace ekg::ui {
   class button : public ekg::ui::abstract, public ekg::value_t<bool, ekg::ui::button> {
   protected:
-    uint16_t dock_text {};
-
+    ekg::flags dock_text {};
     std::string text {};
     task *callback {nullptr};
     ekg::font font_size {};
@@ -43,7 +42,7 @@ namespace ekg::ui {
 
     ekg::font get_font_size();
 
-    ekg::ui::button *set_place(uint16_t dock);
+    ekg::ui::button *set_place(ekg::flags dock);
 
     ekg::ui::button *set_width(float w);
 
@@ -63,9 +62,9 @@ namespace ekg::ui {
 
     std::string_view get_text();
 
-    ekg::ui::button *set_text_align(uint16_t dock);
+    ekg::ui::button *set_text_align(ekg::flags dock);
 
-    uint16_t get_text_align();
+    ekg::flags get_text_align();
   };
 }
 

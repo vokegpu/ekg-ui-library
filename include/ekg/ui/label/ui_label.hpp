@@ -32,14 +32,14 @@
 namespace ekg::ui {
   class label : public ekg::ui::abstract, public ekg::value_t<std::string, ekg::ui::label> {
   protected:
-    uint16_t dock_text {};
+    ekg::flags dock_text {};
     ekg::font font_size {};
   public:
     ekg::ui::label *set_font_size(ekg::font font);
 
     ekg::font get_font_size();
 
-    ekg::ui::label *set_place(uint16_t dock);
+    ekg::ui::label *set_place(ekg::flags dock);
 
     int32_t get_scaled_height();
 
@@ -55,9 +55,9 @@ namespace ekg::ui {
 
     std::string get_text();
 
-    ekg::ui::label *set_text_align(uint16_t dock);
+    ekg::ui::label *set_text_align(ekg::flags dock);
 
-    uint16_t get_text_align();
+    ekg::flags get_text_align();
   };
 }
 

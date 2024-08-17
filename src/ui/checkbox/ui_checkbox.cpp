@@ -54,7 +54,7 @@ ekg::font ekg::ui::checkbox::get_font_size() {
   return this->font_size;
 }
 
-ekg::ui::checkbox *ekg::ui::checkbox::set_place(uint16_t docks) {
+ekg::ui::checkbox *ekg::ui::checkbox::set_place(ekg::flags docks) {
   if (this->dock_flags != docks) {
     this->dock_flags = docks;
 
@@ -67,7 +67,7 @@ ekg::ui::checkbox *ekg::ui::checkbox::set_place(uint16_t docks) {
 ekg::ui::checkbox *ekg::ui::checkbox::set_width(float w) {
   if (this->sync_ui.w != w) {
     this->sync_ui.w = w;
-    ekg_bitwise_add(this->sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
+    ekg_bitwise_add(this->sync_flags, static_cast<ekg::flags>(ekg::ui_sync::dimension));
     ekg::reload(this->id);
     ekg::synclayout(this->parent_id);
   }
@@ -112,7 +112,7 @@ std::string_view ekg::ui::checkbox::get_text() {
   return this->text;
 }
 
-ekg::ui::checkbox *ekg::ui::checkbox::set_text_align(uint16_t docks) {
+ekg::ui::checkbox *ekg::ui::checkbox::set_text_align(ekg::flags docks) {
   if (this->dock_text != docks) {
     this->dock_text = docks;
     ekg::reload(this->id);
@@ -121,11 +121,11 @@ ekg::ui::checkbox *ekg::ui::checkbox::set_text_align(uint16_t docks) {
   return this;
 }
 
-uint16_t ekg::ui::checkbox::get_text_align() {
+ekg::flags ekg::ui::checkbox::get_text_align() {
   return this->dock_text;
 }
 
-ekg::ui::checkbox *ekg::ui::checkbox::set_box_align(uint16_t docks) {
+ekg::ui::checkbox *ekg::ui::checkbox::set_box_align(ekg::flags docks) {
   if (this->dock_box != docks) {
     this->dock_box = docks;
     ekg::reload(this->id);
@@ -134,6 +134,6 @@ ekg::ui::checkbox *ekg::ui::checkbox::set_box_align(uint16_t docks) {
   return this;
 }
 
-uint16_t ekg::ui::checkbox::get_box_align() {
+ekg::flags ekg::ui::checkbox::get_box_align() {
   return this->dock_box;
 }

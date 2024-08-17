@@ -246,7 +246,7 @@ std::string ekg::string_float_precision(float n, int32_t precision) {
   );
 }
 
-uint8_t ekg::check_attribute_flags(std::string_view text, uint16_t &flags) {
+uint8_t ekg::check_attribute_flags(std::string_view text, ekg::flags &flags) {
   for (uint8_t it {}; it < text.size(); it++) {
     switch (text.at(it)) {
       case '\t':

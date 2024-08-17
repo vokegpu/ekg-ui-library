@@ -408,9 +408,9 @@ void ekg::runtime::prepare_tasks() {
 
         p_widgets->was_reloaded = false;
 
-        uint16_t &sync_flags {p_widgets->p_data->get_sync()};
-        if (ekg_bitwise_contains(sync_flags, static_cast<uint16_t>(ekg::ui_sync::reset))) {
-          ekg_bitwise_remove(sync_flags, static_cast<uint16_t>(ekg::ui_sync::reset));
+        ekg::flags &sync_flags {p_widgets->p_data->get_sync()};
+        if (ekg_bitwise_contains(sync_flags, static_cast<ekg::flags>(ekg::ui_sync::reset))) {
+          ekg_bitwise_remove(sync_flags, static_cast<ekg::flags>(ekg::ui_sync::reset));
 
           switch (p_widgets->p_data->get_type()) {
             case ekg::type::frame: {
@@ -446,8 +446,8 @@ void ekg::runtime::prepare_tasks() {
           }
         }
 
-        if (ekg_bitwise_contains(sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension))) {
-          ekg_bitwise_remove(sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
+        if (ekg_bitwise_contains(sync_flags, static_cast<ekg::flags>(ekg::ui_sync::dimension))) {
+          ekg_bitwise_remove(sync_flags, static_cast<ekg::flags>(ekg::ui_sync::dimension));
 
           ekg::rect &rect {p_widgets->p_data->ui()};
           switch (p_widgets->p_data->get_level()) {

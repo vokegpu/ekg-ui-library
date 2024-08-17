@@ -35,7 +35,7 @@ namespace ekg::layout {
     struct rect {
     public:
       ekg::rect *p_rect {};
-      uint16_t flags {};
+      ekg::flags flags {};
     };
   protected:
     float respective_all {};
@@ -59,8 +59,8 @@ namespace ekg::layout {
   void extentnize(
     float &extent,
     ekg::ui::abstract_widget *p_widget,
-    uint16_t flag_ok,
-    uint16_t flag_stop,
+    ekg::flags flag_ok,
+    ekg::flags flag_stop,
     int64_t &begin_and_count,
     ekg::axis axis
   );

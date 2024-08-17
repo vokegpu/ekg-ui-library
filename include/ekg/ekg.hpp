@@ -146,10 +146,24 @@ namespace ekg {
    */
   ekg::ui::checkbox *checkbox(std::string_view text, bool checked, uint16_t dock = ekg::dock::none);
 
-  /**
-   * Create slider UI.
-   */
-  ekg::ui::slider *slider(std::string_view tag, float val, float min, float max, uint16_t dock = ekg::dock::none);
+  template<typename t>
+  ekg::ui::slider *slider(
+    std::string_view tag,
+    t val,
+    t min,
+    t max,
+    ekg::number number,
+    uint16_t dock = ekg::dock::none
+  ) {
+    ekg::ui::slider *p_ui {new ekg::ui::slider()};
+    ekg::feature *p_serializer {new ekg::ui::slider::serializer_t<t>()};
+    p_ui->registry(p_ui);
+    p_ui->transfer_ownership(&p_serializer);
+    p_ui->unsafe_set_number(number);
+    p_ui->unsafe_set_type(ekg::type::slider);
+    ekg::core->gen_widget(p_ui);
+    return p_ui;
+  }
 
   /**
    * Create popup UI.

@@ -57,7 +57,7 @@ namespace ekg::ui {
 
     ekg::font get_font_size();
 
-    ekg::ui::textbox *set_place(uint16_t dock);
+    ekg::ui::textbox *set_place(ekg::flags dock);
 
     int32_t get_scaled_height();
 

@@ -188,7 +188,7 @@ ekg::type ekg::ui::abstract::get_type() {
   return this->type;
 }
 
-uint16_t ekg::ui::abstract::get_place_dock() {
+ekg::flags ekg::ui::abstract::get_place_dock() {
   return this->dock_flags;
 }
 
@@ -209,7 +209,7 @@ std::string_view ekg::ui::abstract::get_tag() {
   return this->tag;
 }
 
-uint16_t &ekg::ui::abstract::get_sync() {
+ekg::flags &ekg::ui::abstract::get_sync() {
   return this->sync_flags;
 }
 

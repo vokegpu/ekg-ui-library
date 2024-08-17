@@ -31,27 +31,27 @@
 namespace ekg::ui {
   class frame : public ekg::ui::abstract {
   protected:
-    uint16_t dock_resize {};
-    uint16_t dock_drag {};
+    ekg::flags dock_resize {};
+    ekg::flags dock_drag {};
 
     ekg::rect rect_initial {};
     std::string tag {};
     ekg::vec2 scale_factor {};
     uint32_t top_level_frame_id {};
   public:
-    ekg::ui::frame *set_place(uint16_t dock);
+    ekg::ui::frame *set_place(ekg::flags dock);
 
     ekg::ui::frame *set_scale_factor(float x, float y);
 
     ekg::vec2 get_scale_factor();
 
-    ekg::ui::frame *set_drag(uint16_t dock);
+    ekg::ui::frame *set_drag(ekg::flags dock);
 
-    uint16_t get_drag_dock();
+    ekg::flags get_drag_dock();
 
-    ekg::ui::frame *set_resize(uint16_t dock);
+    ekg::ui::frame *set_resize(ekg::flags dock);
 
-    uint16_t get_resize_dock();
+    ekg::flags get_resize_dock();
 
     ekg::ui::frame *set_pos_initial(float x, float y);
 

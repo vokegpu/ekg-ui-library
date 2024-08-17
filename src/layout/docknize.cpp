@@ -10,8 +10,8 @@ ekg::rect ekg::layout::extent::v {};
 void ekg::layout::extentnize(
   float &extent,
   ekg::ui::abstract_widget *p_widget,
-  uint16_t flag_ok,
-  uint16_t flag_stop,
+  ekg::flags flag_ok,
+  ekg::flags flag_stop,
   int64_t &begin_and_count,
   ekg::axis axis
 ) {
@@ -22,7 +22,7 @@ void ekg::layout::extentnize(
 
   switch (axis) {
     case ekg::axis::horizontal: {
-      uint16_t flags {};
+      ekg::flags flags {};
       int32_t ids {};
       int64_t flag_ok_count {};
       int64_t it {begin_and_count};
@@ -175,7 +175,7 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
   group_rect.h -= total_offset;
 
   ekg::ui::abstract_widget *p_widgets {};
-  uint16_t flags {};
+  ekg::flags flags {};
   int64_t it {};
   float dimensional_extent {};
   int64_t count {};
@@ -185,7 +185,7 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
   ekg::rect top_rect {ekg::layout::offset + initial_offset, ekg::layout::offset + initial_offset, 0.0f, 0.0f};
   ekg::rect prev_widget_layout {};
 
-  uint16_t prev_flags {};
+  ekg::flags prev_flags {};
   bool should_reload_widget {};
   bool skip_widget {};
   float max_previous_height {};

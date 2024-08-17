@@ -44,7 +44,7 @@ uint8_t ekg::ui::textbox::get_tab_size() {
   return this->tab_size;
 }
 
-ekg::ui::textbox *ekg::ui::textbox::set_place(uint16_t flags) {
+ekg::ui::textbox *ekg::ui::textbox::set_place(ekg::flags flags) {
   if (this->dock_flags != flags) {
     this->dock_flags = flags;
     ekg::synclayout(this->parent_id);
@@ -71,7 +71,7 @@ ekg::ui::textbox *ekg::ui::textbox::set_width(float w) {
   if (this->sync_ui.w != w) {
     this->sync_ui.w = w;
 
-    ekg_bitwise_add(this->sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
+    ekg_bitwise_add(this->sync_flags, static_cast<ekg::flags>(ekg::ui_sync::dimension));
     ekg::reload(this->id);
     ekg::synclayout(this->parent_id);
   }

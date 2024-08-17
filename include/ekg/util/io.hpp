@@ -175,6 +175,30 @@ namespace ekg {
     }
   };
 
+  typedef uint32_t flags;
+
+  /**
+   * Number range types, used in specific-features.
+   **/
+  enum class number {
+    float64,
+    float32,
+    int64,
+    uint64,
+    int32,
+    uint32,
+    int16,
+    uint16,
+    int8,
+    uint8,
+  };
+
+  /**
+   * Base class for specific-features.
+   * Note: None.
+   **/
+  struct feature {};
+
   template<typename t, typename s>
   struct value_t {
   protected:

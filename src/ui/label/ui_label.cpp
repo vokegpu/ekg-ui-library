@@ -25,7 +25,7 @@
 #include "ekg/ui/label/ui_label.hpp"
 #include "ekg/util/gui.hpp"
 
-ekg::ui::label *ekg::ui::label::set_place(uint16_t flags) {
+ekg::ui::label *ekg::ui::label::set_place(ekg::flags flags) {
   if (this->dock_flags != flags) {
     this->dock_flags = flags;
     ekg::synclayout(this->parent_id);
@@ -34,7 +34,7 @@ ekg::ui::label *ekg::ui::label::set_place(uint16_t flags) {
   return this;
 }
 
-ekg::ui::label *ekg::ui::label::set_text_align(uint16_t flags) {
+ekg::ui::label *ekg::ui::label::set_text_align(ekg::flags flags) {
   if (this->dock_text != flags) {
     this->dock_text = flags;
     ekg::reload(this->id);
@@ -43,7 +43,7 @@ ekg::ui::label *ekg::ui::label::set_text_align(uint16_t flags) {
   return this;
 }
 
-uint16_t ekg::ui::label::get_text_align() {
+ekg::flags ekg::ui::label::get_text_align() {
   return this->dock_text;
 }
 
@@ -51,7 +51,7 @@ ekg::ui::label *ekg::ui::label::set_width(float width) {
   if (this->sync_ui.w != width) {
     this->sync_ui.w = width;
 
-    ekg_bitwise_add(this->sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
+    ekg_bitwise_add(this->sync_flags, static_cast<ekg::flags>(ekg::ui_sync::dimension));
     ekg::reload(this->id);
     ekg::synclayout(this->parent_id);
   }

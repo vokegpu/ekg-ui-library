@@ -45,7 +45,7 @@ ekg::ui::popup *ekg::ui::popup::insert(const std::vector<std::string> &item_name
 }
 
 ekg::ui::popup *ekg::ui::popup::insert(std::string_view item_name) {
-  uint16_t attribute_flags {};
+  ekg::flags attribute_flags {};
   uint8_t start_index {ekg::check_attribute_flags(item_name, attribute_flags)};
 
   if (start_index) {
@@ -107,7 +107,7 @@ std::vector<ekg::ui::item> &ekg::ui::popup::get_item_list() {
   return this->item_list;
 }
 
-ekg::ui::popup *ekg::ui::popup::set_text_align(uint16_t flags) {
+ekg::ui::popup *ekg::ui::popup::set_text_align(ekg::flags flags) {
   if (this->dock_flags != flags) {
     this->dock_flags = flags;
     ekg::reload(this->id);
@@ -116,7 +116,7 @@ ekg::ui::popup *ekg::ui::popup::set_text_align(uint16_t flags) {
   return this;
 }
 
-uint16_t ekg::ui::popup::get_text_align() {
+ekg::flags ekg::ui::popup::get_text_align() {
   return this->dock_flags;
 }
 
@@ -124,7 +124,7 @@ ekg::ui::popup *ekg::ui::popup::set_width(float width) {
   if (this->sync_ui.w != width) {
     this->sync_ui.w = width;
 
-    ekg_bitwise_add(this->sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
+    ekg_bitwise_add(this->sync_flags, static_cast<ekg::flags>(ekg::ui_sync::dimension));
     ekg::reload(this->id);
     ekg::synclayout(this->parent_id);
   }
@@ -175,7 +175,7 @@ ekg::ui::popup *ekg::ui::popup::set_pos(float x, float y) {
     this->sync_ui.x = x;
     this->sync_ui.y = y;
 
-    ekg_bitwise_add(this->sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
+    ekg_bitwise_add(this->sync_flags, static_cast<ekg::flags>(ekg::ui_sync::dimension));
     ekg::reload(this->id);
   }
 

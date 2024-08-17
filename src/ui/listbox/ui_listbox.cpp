@@ -56,7 +56,7 @@ ekg::ui::listbox *ekg::ui::listbox::set_width(float w) {
   if (this->sync_ui.w != w) {
     this->sync_ui.w = w;
 
-    ekg_bitwise_add(this->sync_flags, static_cast<uint16_t>(ekg::ui_sync::dimension));
+    ekg_bitwise_add(this->sync_flags, static_cast<ekg::flags>(ekg::ui_sync::dimension));
     ekg::reload(this->id);
     ekg::synclayout(this->parent_id);
   }
@@ -72,7 +72,7 @@ float ekg::ui::listbox::get_height() {
   return this->rect_widget.h;
 }
 
-ekg::ui::listbox *ekg::ui::listbox::set_place(uint16_t dock) {
+ekg::ui::listbox *ekg::ui::listbox::set_place(ekg::flags dock) {
   if (this->dock_flags != dock) {
     this->dock_flags = dock;
     ekg::synclayout(this->parent_id);
@@ -131,7 +131,7 @@ int32_t ekg::ui::listbox::get_item_scaled_height() {
   return this->item_scaled_height;
 }
 
-ekg::ui::listbox *ekg::ui::listbox::set_column_header_align(uint16_t flags) {
+ekg::ui::listbox *ekg::ui::listbox::set_column_header_align(ekg::flags flags) {
   if (this->column_header_dock_flags != flags) {
     this->column_header_dock_flags = flags;
     ekg::reload(this->id);
@@ -140,6 +140,6 @@ ekg::ui::listbox *ekg::ui::listbox::set_column_header_align(uint16_t flags) {
   return this;
 }
 
-uint16_t ekg::ui::listbox::get_column_header_align() {
+ekg::flags ekg::ui::listbox::get_column_header_align() {
   return this->column_header_dock_flags;
 }

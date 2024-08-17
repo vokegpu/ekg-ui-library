@@ -37,7 +37,7 @@ namespace ekg::ui {
     ekg::font column_header_font_size {};
     ekg::mode current_mode {};
 
-    uint16_t column_header_dock_flags {};
+    ekg::flags column_header_dock_flags {};
     int32_t column_header_scaled_height {1};
     int32_t item_scaled_height {1};
   public:
@@ -59,7 +59,7 @@ namespace ekg::ui {
 
     float get_height();
 
-    ekg::ui::listbox *set_place(uint16_t dock);
+    ekg::ui::listbox *set_place(ekg::flags dock);
 
     ekg::ui::listbox *set_mode(ekg::mode mode);
 
@@ -73,9 +73,9 @@ namespace ekg::ui {
 
     int32_t get_item_scaled_height();
 
-    ekg::ui::listbox *set_column_header_align(uint16_t dock);
+    ekg::ui::listbox *set_column_header_align(ekg::flags dock);
 
-    uint16_t get_column_header_align(); 
+    ekg::flags get_column_header_align(); 
   };
 }
 
