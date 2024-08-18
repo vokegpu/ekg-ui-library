@@ -36,15 +36,20 @@ namespace ekg::ui {
   {
   public:
     template<typename t>
-    struct serializer_t : public ekg::feature {
+    struct range {
     public:
       t min {};
       t max {};
+      ekg::value_t<t, ekg::ui::slider> value {};
+    };
 
-      std::vector<ekg::value_t<t, ekg::ui::slider>> value_list {};
+    template<typename t>
+    struct serializer_t : public ekg::feature {
+    public:
+      std::vector<ekg::ui::slider::range<t>> range_list {};
     public:
       serializer_t<t>() {
-        this->value_list.emplace_back();
+        this->range_list.emplace_back();
       }
     };
   public:
@@ -64,10 +69,10 @@ namespace ekg::ui {
         this->serializer<t>()
       };
 
-      ekg::value_t<t, ekg::ui::slider> &serialized_value {serializer.value_list.at(index)};
-      serialized_value.registry(this);
+      ekg::ui::slider::range<t> &serialized_range {serializer.range_list.at(index)};
+      serialized_range.value.registry(this);
 
-      return serialized_value;
+      return serialized_range.value;
     };
   public:
     /**

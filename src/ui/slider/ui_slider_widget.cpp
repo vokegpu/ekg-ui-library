@@ -47,14 +47,14 @@ void ekg::ui::slider_widget::on_reload() {
       this->dimension.w = ekg_min(this->dimension.w, base_text_height);
       this->dimension.h = (base_text_height + dimension_offset) * static_cast<float>(p_ui->get_scaled_height());
 
-      uint64_t value_list_size {
+      uint64_t range_list_size {
         ekg::ui::slider_widget_get_range_count(p_ui->get_value(), number)
       };
 
-      this->range_list.resize(value_list_size);
-      float range_rect_width {this->dimension.w / static_cast<float>(value_list_size)};
+      this->range_list.resize(range_list_size);
+      float range_rect_width {this->dimension.w / static_cast<float>(range_list_size)};
 
-      for (uint64_t it {}; it < value_list_size; it++) {
+      for (uint64_t it {}; it < range_list_size; it++) {
         ekg::ui::slider_widget::range &range {this->range_list.at(it)};
         
         range.rect.x = relative_rect.x;
@@ -87,7 +87,31 @@ void ekg::ui::slider_widget::on_pre_event(ekg::os::io_event_serial &io_event_ser
 }
 
 void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
+  bool pressed {ekg::input::pressed()};
 
+  if (!this->flag.activity && pressed && ekg::input::action("slider-drag-activity")) {
+    ekg::rect &rect {this->get_abs_rect()};
+    ekg::vec4 &interact {ekg::input::interact()};
+
+    for (uint64_t it {}; it < this->range_list.size(); it++) {
+      ekg::ui::slider_widget::range &range {this->range_list.at(it)};
+      if (ekg::rect_collide_vec(range.rect + rect, interact)) {
+        this->flag.activity = true;
+        this->targetted_range_index = it;
+        break;
+      }
+    }
+  } else if (this->flag.activity && this->targetted_range_index != UINT64_MAX && ekg::input::motion()) {
+    ekg::ui::slider_widget::range &range {this->range_list.at(this->targetted_range_index)};
+    ekg::ui::slider *p_ui {static_cast<ekg::ui::slider*>(this->p_data)};
+
+    switch (p_ui->get_axis()) {
+    case ekg::axis::horizontal:
+      break;
+    case ekg::axis::vertical:
+      break;
+    }
+  }
 }
 
 void ekg::ui::slider_widget::on_draw_refresh() {
@@ -116,25 +140,25 @@ void ekg::ui::slider_widget::on_draw_refresh() {
 uint64_t ekg::ui::slider_widget_get_range_count(ekg::feature *&p_feature, ekg::number number) {
   switch (number) {
   case ekg::number::float64:
-    return static_cast<ekg::ui::slider::serializer_t<double>*>(p_feature)->value_list.size();
+    return static_cast<ekg::ui::slider::serializer_t<double>*>(p_feature)->range_list.size();
   case ekg::number::float32:
-    return static_cast<ekg::ui::slider::serializer_t<float>*>(p_feature)->value_list.size();
+    return static_cast<ekg::ui::slider::serializer_t<float>*>(p_feature)->range_list.size();
   case ekg::number::int64:
-    return static_cast<ekg::ui::slider::serializer_t<int64_t>*>(p_feature)->value_list.size();
+    return static_cast<ekg::ui::slider::serializer_t<int64_t>*>(p_feature)->range_list.size();
   case ekg::number::uint64:
-    return static_cast<ekg::ui::slider::serializer_t<uint64_t>*>(p_feature)->value_list.size();
+    return static_cast<ekg::ui::slider::serializer_t<uint64_t>*>(p_feature)->range_list.size();
   case ekg::number::int32:
-    return static_cast<ekg::ui::slider::serializer_t<int32_t>*>(p_feature)->value_list.size();
+    return static_cast<ekg::ui::slider::serializer_t<int32_t>*>(p_feature)->range_list.size();
   case ekg::number::uint32:
-    return static_cast<ekg::ui::slider::serializer_t<uint32_t>*>(p_feature)->value_list.size();
+    return static_cast<ekg::ui::slider::serializer_t<uint32_t>*>(p_feature)->range_list.size();
   case ekg::number::int16:
-    return static_cast<ekg::ui::slider::serializer_t<int16_t>*>(p_feature)->value_list.size();
+    return static_cast<ekg::ui::slider::serializer_t<int16_t>*>(p_feature)->range_list.size();
   case ekg::number::uint16:
-    return static_cast<ekg::ui::slider::serializer_t<uint16_t>*>(p_feature)->value_list.size();
+    return static_cast<ekg::ui::slider::serializer_t<uint16_t>*>(p_feature)->range_list.size();
   case ekg::number::int8:
-    return static_cast<ekg::ui::slider::serializer_t<int8_t>*>(p_feature)->value_list.size();
+    return static_cast<ekg::ui::slider::serializer_t<int8_t>*>(p_feature)->range_list.size();
   case ekg::number::uint8:
-    return static_cast<ekg::ui::slider::serializer_t<uint8_t>*>(p_feature)->value_list.size();
+    return static_cast<ekg::ui::slider::serializer_t<uint8_t>*>(p_feature)->range_list.size();
   }
 
   return 0;

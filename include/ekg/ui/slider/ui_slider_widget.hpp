@@ -33,9 +33,11 @@ namespace ekg::ui {
     struct range {
     public:
       ekg::rect rect {};
+      ekg::vec2 target {};
     };
   public:
     std::vector<ekg::ui::slider_widget::range> range_list {};
+    uint64_t targetted_range_index {UINT64_MAX};
   public:
     void on_reload() override;
 

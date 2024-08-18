@@ -674,9 +674,9 @@ int32_t showcase_useless_window() {
     content,
     ekg::dock::fill | ekg::dock::next
   )
-  ->set_column_header_align(ekg::dock::none)
+  ->set_column_header_align(ekg::dock::fill)
   ->set_scaled_height(16)
-  ->set_mode(ekg::mode::singlecolumn)
+  ->set_mode(ekg::mode::multicolumn)
   ->transfer_ownership(&content);
 
   auto p_dpi = ekg::checkbox("DPI-scale:", true, ekg::dock::next);

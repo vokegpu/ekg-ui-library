@@ -642,8 +642,8 @@ void ekg::runtime::prepare_ui_env() {
   this->service_input.bind("listbox-activity-select-many", "lctrl+mouse-1");
   this->service_input.bind("listbox-activity-select-many", "rctrl+mouse-1");
 
-  this->service_input.bind("slider-activity", "mouse-1");
-  this->service_input.bind("slider-activity", "finger-click");
+  this->service_input.bind("slider-drag-activity", "mouse-1");
+  this->service_input.bind("slider-drag-activity", "finger-click");
   this->service_input.bind("slider-bar-increase", "mouse-wheel-up");
   this->service_input.bind("slider-bar-decrease", "mouse-wheel-down");
   this->service_input.bind("slider-bar-modifier", "lctrl");
