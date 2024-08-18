@@ -642,12 +642,11 @@ int32_t showcase_useless_window() {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());*/
   }
 
-  auto p = ekg::slider<float>(
+  auto p = ekg::slider<int32_t>(
     "meow",
-    1.0f,
-    0.0f,
-    2.0f,
-    ekg::number::float32,
+    2,
+    1,
+    3,
     ekg::dock::fill | ekg::dock::next
   );
 

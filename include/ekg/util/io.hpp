@@ -31,6 +31,7 @@
 #include <cstdint>
 #include <map>
 #include <memory>
+#include <typeinfo>
 
 #if defined(__ANDROID__)
 #include <android/log.h>
@@ -199,6 +200,32 @@ namespace ekg {
    **/
   struct feature {};
 
+  template<typename t>
+  ekg::number retreive_number_type_from_var_type() {
+    if (typeid(t) == typeid(double)) {
+      return ekg::number::float64;
+    } else if (typeid(t) == typeid(float)) {
+      return ekg::number::float32;
+    } else if (typeid(t) == typeid(int64_t)) {
+      return ekg::number::int64;
+    } else if (typeid(t) == typeid(uint64_t)) {
+      return ekg::number::uint64;
+    } else if (typeid(t) == typeid(int32_t)) {
+      return ekg::number::int32;
+    } else if (typeid(t) == typeid(uint32_t)) {
+      return ekg::number::uint32;
+    } else if (typeid(t) == typeid(int16_t)) {
+      return ekg::number::int16;
+    } else if (typeid(t) == typeid(uint16_t)) {
+      return ekg::number::uint16;
+    } else if (typeid(t) == typeid(int8_t)) {
+      return ekg::number::int8;
+    }
+
+    // typeid(t) == typeid(uint8_t)
+    return ekg::number::uint8;
+  }
+
   template<typename t, typename s>
   struct value_t {
   protected:
@@ -221,6 +248,11 @@ namespace ekg {
       if (this->p_mommy_s == nullptr) {
         this->p_mommy_s = p_mommy;
       }
+    }
+
+    s *box(t val) {
+      this->self = val;
+      return this->p_mommy_s;
     }
 
     s *transfer_ownership(t *p_address) {

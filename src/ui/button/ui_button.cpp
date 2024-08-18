@@ -55,20 +55,6 @@ ekg::flags ekg::ui::button::get_text_align() {
   return this->dock_text;
 }
 
-ekg::ui::button *ekg::ui::button::set_callback(task *event) {
-  if (this->callback != event && this->callback != nullptr) {
-    delete this->callback;
-    this->callback = nullptr;
-  }
-
-  this->callback = event;
-  return this;
-}
-
-ekg::task *ekg::ui::button::get_callback() {
-  return this->callback;
-}
-
 ekg::ui::button *ekg::ui::button::set_width(float w) {
   if (this->sync_ui.w != w) {
     this->sync_ui.w = w;

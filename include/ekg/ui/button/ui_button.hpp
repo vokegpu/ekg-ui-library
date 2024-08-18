@@ -35,7 +35,6 @@ namespace ekg::ui {
   protected:
     ekg::flags dock_text {};
     std::string text {};
-    task *callback {nullptr};
     ekg::font font_size {};
   public:
     ekg::ui::button *set_font_size(ekg::font font);
@@ -53,10 +52,6 @@ namespace ekg::ui {
     int32_t get_scaled_height();
 
     float get_height();
-
-    ekg::ui::button *set_callback(task *p_callback);
-
-    task *get_callback();
 
     ekg::ui::button *set_text(std::string_view text);
 

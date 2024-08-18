@@ -20,3 +20,4 @@ stupid ticking glitch.
 
 rewrite slider
 fix listbox issue when scrolling and dragging?
+reduce ekg::slider<t> verbose number setting.

@@ -129,22 +129,22 @@ namespace ekg {
   /**
    * Create embedded frame UI.
    */
-  ekg::ui::frame *frame(std::string_view tag, const ekg::vec2 &size, uint16_t dock = ekg::dock::none);
+  ekg::ui::frame *frame(std::string_view tag, const ekg::vec2 &size, ekg::flags dock = ekg::dock::none);
 
   /**
    * Create button UI.
    */
-  ekg::ui::button *button(std::string_view text, uint16_t dock = ekg::dock::none);
+  ekg::ui::button *button(std::string_view text, ekg::flags dock = ekg::dock::none);
 
   /**
    * Create label UI.
    */
-  ekg::ui::label *label(std::string_view text, uint16_t dock = ekg::dock::none);
+  ekg::ui::label *label(std::string_view text, ekg::flags dock = ekg::dock::none);
 
   /**
    * Create checkbox UI.
    */
-  ekg::ui::checkbox *checkbox(std::string_view text, bool checked, uint16_t dock = ekg::dock::none);
+  ekg::ui::checkbox *checkbox(std::string_view text, bool checked, ekg::flags dock = ekg::dock::none);
 
   template<typename t>
   ekg::ui::slider *slider(
@@ -152,15 +152,17 @@ namespace ekg {
     t val,
     t min,
     t max,
-    ekg::number number,
-    uint16_t dock = ekg::dock::none
+    ekg::flags dock = ekg::dock::none
   ) {
     ekg::ui::slider *p_ui {new ekg::ui::slider()};
-    ekg::feature *p_serializer {new ekg::ui::slider::serializer_t<t>()};
     p_ui->registry(p_ui);
-    p_ui->transfer_ownership(&p_serializer);
-    p_ui->unsafe_set_number(number);
+    p_ui->set_scaled_height(1);
+    p_ui->set_font_size(ekg::font::normal );
+    p_ui->set_axis(ekg::axis::horizontal);
+    p_ui->box(new ekg::ui::slider::serializer_t<t>());
+    p_ui->unsafe_set_number(ekg::retreive_number_type_from_var_type<t>());
     p_ui->unsafe_set_type(ekg::type::slider);
+    p_ui->set_place(dock);
     ekg::core->gen_widget(p_ui);
     return p_ui;
   }
@@ -173,12 +175,12 @@ namespace ekg {
   /**
    * Create textbox UI.
    */
-  ekg::ui::textbox *textbox(std::string_view tag, std::string_view text, uint16_t dock = ekg::dock::none);
+  ekg::ui::textbox *textbox(std::string_view tag, std::string_view text, ekg::flags dock = ekg::dock::none);
 
   /**
    * Create listbox container UI.
    */
-  ekg::ui::listbox *listbox_container(std::string_view tag, std::vector<ekg::ui::abstract*> element_list, uint16_t dock = ekg::dock::none);
+  ekg::ui::listbox *listbox_container(std::string_view tag, std::vector<ekg::ui::abstract*> element_list, ekg::flags dock = ekg::dock::none);
 
   /*
    * Create listbox container UI.
@@ -186,7 +188,7 @@ namespace ekg {
   ekg::ui::listbox *listbox(
     std::string_view tag,
     ekg::item item_list,
-    uint16_t dock = ekg::dock::none
+    ekg::flags dock = ekg::dock::none
   );
 
   /**

@@ -50,6 +50,8 @@ namespace ekg::ui {
   public:
     ekg::number number {};
     ekg::flags dock_text {};
+    ekg::axis axis {};
+    ekg::font font_size {};
   public:
     template<typename t>
     ekg::ui::slider::serializer_t<t> &serializer() {
@@ -73,6 +75,32 @@ namespace ekg::ui {
      * Unsafe due the loss-ptr address from serializer.
      **/
     ekg::ui::slider *unsafe_set_number(ekg::number number);
+  public:
+    ekg::number get_number();
+
+    ekg::ui::slider *set_axis(ekg::axis new_axis);
+
+    ekg::axis get_axis();
+
+    ekg::ui::slider *set_font_size(ekg::font font);
+
+    ekg::font get_font_size();
+
+    ekg::ui::slider *set_place(ekg::flags dock);
+
+    ekg::ui::slider *set_width(float w);
+
+    float get_width();
+
+    ekg::ui::slider *set_scaled_height(int32_t h);
+
+    int32_t get_scaled_height();
+
+    float get_height();
+
+    ekg::ui::slider *set_text_align(ekg::flags dock);
+
+    ekg::flags get_text_align();
   };
 }
 

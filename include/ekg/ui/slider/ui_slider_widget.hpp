@@ -30,6 +30,13 @@
 namespace ekg::ui {
   class slider_widget : public ekg::ui::abstract_widget {
   public:
+    struct range {
+    public:
+      ekg::rect rect {};
+    };
+  public:
+    std::vector<ekg::ui::slider_widget::range> range_list {};
+  public:
     void on_reload() override;
 
     void on_pre_event(ekg::os::io_event_serial &io_event_serial) override;
@@ -38,6 +45,10 @@ namespace ekg::ui {
 
     void on_draw_refresh() override;
   };
+}
+
+namespace ekg::ui {
+  uint64_t slider_widget_get_range_count(ekg::feature *&p_feature, ekg::number number);
 }
 
 #endif

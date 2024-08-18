@@ -128,7 +128,7 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &initial_positi
   return p_ui;
 }
 
-ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &size, uint16_t dock) {
+ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &size, ekg::flags dock) {
   ekg::ui::frame *p_ui {new ekg::ui::frame()};
 
   p_ui->set_tag(tag);
@@ -142,7 +142,7 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &size, uint16_t
   return p_ui;
 }
 
-ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
+ekg::ui::button *ekg::button(std::string_view text, ekg::flags dock) {
   ekg::ui::button *p_ui {new ekg::ui::button()};
   p_ui->registry(p_ui);
   p_ui->unsafe_set_type(ekg::type::button);
@@ -158,7 +158,7 @@ ekg::ui::button *ekg::button(std::string_view text, uint16_t dock) {
   return p_ui;
 }
 
-ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
+ekg::ui::label *ekg::label(std::string_view text, ekg::flags dock) {
   ekg::ui::label *p_ui {new ekg::ui::label()};
   p_ui->registry(p_ui);
   p_ui->unsafe_set_type(ekg::type::label);
@@ -174,7 +174,7 @@ ekg::ui::label *ekg::label(std::string_view text, uint16_t dock) {
   return p_ui;
 }
 
-ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, uint16_t dock) {
+ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, ekg::flags dock) {
   ekg::ui::checkbox *p_ui {new ekg::ui::checkbox()};
   p_ui->registry(p_ui);
   p_ui->unsafe_set_type(ekg::type::checkbox);
@@ -217,7 +217,7 @@ ekg::popup(std::string_view tag, const std::vector<std::string> &component_list,
   return p_ui;
 }
 
-ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint16_t dock) {
+ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, ekg::flags dock) {
   ekg::ui::textbox *p_ui {new ekg::ui::textbox()};
   p_ui->registry(p_ui);
   p_ui->unsafe_set_type(ekg::type::textbox);
@@ -237,7 +237,7 @@ ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, uint
 ekg::ui::listbox *ekg::listbox(
   std::string_view tag,
   ekg::item item_list,
-  uint16_t dock
+  ekg::flags dock
 ) {
   ekg::ui::listbox *p_ui {new ekg::ui::listbox()};
   p_ui->registry(p_ui);
@@ -258,7 +258,7 @@ ekg::ui::listbox *ekg::listbox(
 ekg::ui::listbox *ekg::listbox_container(
   std::string_view tag,
   std::vector<ekg::ui::abstract*> element_list,
-  uint16_t dock
+  ekg::flags dock
 ) {
   ekg::ui::listbox *p_ui {new ekg::ui::listbox()};
   p_ui->registry(p_ui);

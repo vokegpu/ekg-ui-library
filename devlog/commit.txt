@@ -194,3 +194,5 @@
 -- New "smooth" scrolling.
 -- Deprecated `immut` widgets (I do not think we should do this for now).
 -- Renamed `uint16_t` (flags) to `ekg::flags`.
+-- Dynamic type infer in `ekg::slide<t>` call.
+-- Added "box" option to `ekg::value_t<t, s>` (I know it is not how burrow and box from Rust works, just a stupid name).
