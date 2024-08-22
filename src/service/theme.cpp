@@ -81,6 +81,7 @@ void ekg::service::theme::init() {
   dark_theme_scheme.slider_activity = ekg::color(44, 166, 255, 200);
   dark_theme_scheme.slider_highlight = ekg::color(44, 166, 255, 50);
   dark_theme_scheme.slider_activity_bar = ekg::color(44, 166, 255, 200);
+  dark_theme_scheme.slider_outline_bar = ekg::color(202, 207, 222, 50);
   dark_theme_scheme.slider_bar_thickness = 100;
   dark_theme_scheme.slider_target_thickness = 0;
   dark_theme_scheme.label_string = ekg::color(202, 202, 202, 255);
@@ -147,6 +148,7 @@ void ekg::service::theme::init() {
   light_theme_scheme.slider_outline = ekg::color(202, 207, 222, 0);
   light_theme_scheme.slider_highlight = ekg::color(44, 166, 255, 50);
   light_theme_scheme.slider_activity_bar = ekg::color(44, 166, 255, 200);
+  dark_theme_scheme.slider_outline_bar = ekg::color(44, 166, 255, 2050);
   light_theme_scheme.slider_bar_thickness = 16;
   light_theme_scheme.slider_target_thickness = 0;
   light_theme_scheme.label_string = ekg::color(141, 141, 141, 255);
@@ -214,6 +216,7 @@ void ekg::service::theme::init() {
   light_pinky_theme_scheme.slider_outline = ekg::color(202, 207, 222, 0);
   light_pinky_theme_scheme.slider_highlight = ekg::color(245, 169, 184, 50);
   light_pinky_theme_scheme.slider_activity_bar = ekg::color(245, 169, 184, 200);
+  dark_theme_scheme.slider_outline_bar = ekg::color(245, 169, 184, 2050);
   light_pinky_theme_scheme.slider_bar_thickness = 16;
   light_pinky_theme_scheme.slider_target_thickness = 0;
   light_pinky_theme_scheme.label_string = ekg::color(141, 141, 141, 255);
@@ -280,6 +283,7 @@ void ekg::service::theme::init() {
   dark_pinky_theme_scheme.slider_activity = ekg::color(245, 169, 184, 200);
   dark_pinky_theme_scheme.slider_highlight = ekg::color(245, 169, 184, 50);
   dark_pinky_theme_scheme.slider_activity_bar = ekg::color(245, 169, 184, 200);
+  dark_theme_scheme.slider_outline_bar = ekg::color(202, 207, 222, 50);
   dark_pinky_theme_scheme.slider_bar_thickness = 100;
   dark_pinky_theme_scheme.slider_target_thickness = 0;
   dark_pinky_theme_scheme.label_string = ekg::color(202, 202, 202, 255);

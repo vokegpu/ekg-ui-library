@@ -202,7 +202,7 @@ bool load_ttf_emoji(ekg::gpu::sampler_t *p_sampler) {
 
   FT_Load_Char(
     typography_font_face.ft_face,
-    ekg::utf_string_to_char32("🐮"),
+    ekg::utf_string_to_char32("🐈"),
     FT_LOAD_RENDER | FT_LOAD_COLOR | FT_LOAD_DEFAULT
   );
 
@@ -642,13 +642,15 @@ int32_t showcase_useless_window() {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());*/
   }
 
-  auto p = ekg::slider<int32_t>(
+  auto p = ekg::slider<float>(
     "meow",
-    2,
-    1,
-    3,
+    30.0f,
+    10.0f,
+    100.0f,
     ekg::dock::fill | ekg::dock::next
   );
+
+  p->range<float>(1, -10.0f, 100.0f);
 
   ekg::button("Dead-allocate the instance of life", ekg::dock::fill | ekg::dock::next)
     ->set_task(

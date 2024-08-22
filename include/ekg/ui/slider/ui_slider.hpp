@@ -36,7 +36,7 @@ namespace ekg::ui {
   {
   public:
     template<typename t>
-    struct range {
+    struct range_t {
     public:
       t min {};
       t max {};
@@ -46,11 +46,7 @@ namespace ekg::ui {
     template<typename t>
     struct serializer_t : public ekg::feature {
     public:
-      std::vector<ekg::ui::slider::range<t>> range_list {};
-    public:
-      serializer_t<t>() {
-        this->range_list.emplace_back();
-      }
+      std::vector<ekg::ui::slider::range_t<t>> range_list {};
     };
   public:
     ekg::number number {};
@@ -69,10 +65,29 @@ namespace ekg::ui {
         this->serializer<t>()
       };
 
-      ekg::ui::slider::range<t> &serialized_range {serializer.range_list.at(index)};
+      ekg::ui::slider::range_t<t> &serialized_range {serializer.range_list.at(index)};
       serialized_range.value.registry(this);
 
       return serialized_range.value;
+    };
+
+    template<typename t>
+    ekg::ui::slider::range_t<t> &range(uint64_t index, t min, t max) {
+      ekg::ui::slider::serializer_t<t> &serializer {
+        this->serializer<t>()
+      };
+
+      if (index >= serializer.range_list.size()) {
+        serializer.range_list.resize(index + 1);
+      }
+
+      ekg::ui::slider::range_t<t> &serialized_range {serializer.range_list.at(index)};
+      serialized_range.min = min;
+      serialized_range.max = max;
+      serialized_range.value.registry(this);
+      serialized_range.value = {};
+
+      return serialized_range;
     };
   public:
     /**

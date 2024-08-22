@@ -33,11 +33,11 @@ namespace ekg::ui {
     struct range {
     public:
       ekg::rect rect {};
-      ekg::vec2 target {};
+      ekg::rect target {};
     };
   public:
     std::vector<ekg::ui::slider_widget::range> range_list {};
-    uint64_t targetted_range_index {UINT64_MAX};
+    uint64_t targetted_range_index {};
   public:
     void on_reload() override;
 
@@ -50,7 +50,37 @@ namespace ekg::ui {
 }
 
 namespace ekg::ui {
-  uint64_t slider_widget_get_range_count(ekg::feature *&p_feature, ekg::number number);
+  /**
+   * Calculate the target (value) position from widget dimension.
+   * Based on all supported number formats.
+   **/
+  float slider_widget_calculate_target_pos(
+    ekg::feature *&p_feature,
+    ekg::number number,
+    float dimension,
+    uint64_t index
+  );
+
+  /**
+   * Calculate the value by drag factor.
+   * Based on all supported number formats.
+   **/
+  void slider_widget_calculate_value(
+    ekg::feature *&p_feature,
+    ekg::number number,
+    float factor,
+    float dimension,
+    uint64_t index
+  );
+  
+  /**
+   * Returns the size of range list from slider.
+   * Based on all supported number formats.
+   **/
+  uint64_t slider_widget_get_range_count(
+    ekg::feature *&p_feature,
+    ekg::number number
+  );
 }
 
 #endif

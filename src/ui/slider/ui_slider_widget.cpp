@@ -34,13 +34,20 @@ void ekg::ui::slider_widget::on_reload() {
   ekg::axis axis {p_ui->get_axis()};
   ekg::number number {p_ui->get_number()};
   ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
+  ekg::feature *&p_feature {p_ui->get_value()};
 
   ekg::rect &rect {this->get_abs_rect()};
   ekg::rect relative_rect {};
+  ekg::flags text_align_flags {p_ui->get_text_align()};
 
   float base_text_height {f_renderer.get_text_height()};
   float dimension_offset {static_cast<float>((int32_t) (base_text_height / 2.0f))};
   float offset {ekg::find_min_offset(base_text_height, dimension_offset)};
+
+  float bar_thickness {
+    static_cast<float>(theme_scheme.slider_bar_thickness) / 100
+  };
 
   switch (axis) {
     case ekg::axis::horizontal: {
@@ -48,7 +55,7 @@ void ekg::ui::slider_widget::on_reload() {
       this->dimension.h = (base_text_height + dimension_offset) * static_cast<float>(p_ui->get_scaled_height());
 
       uint64_t range_list_size {
-        ekg::ui::slider_widget_get_range_count(p_ui->get_value(), number)
+        ekg::ui::slider_widget_get_range_count(p_feature, number)
       };
 
       this->range_list.resize(range_list_size);
@@ -56,14 +63,20 @@ void ekg::ui::slider_widget::on_reload() {
 
       for (uint64_t it {}; it < range_list_size; it++) {
         ekg::ui::slider_widget::range &range {this->range_list.at(it)};
-        
+
         range.rect.x = relative_rect.x;
         range.rect.y = relative_rect.y;
-
         range.rect.w = range_rect_width;
-        range.rect.h = this->dimension.h;
 
-        relative_rect.w += range_rect_width;
+        range.rect.h = this->dimension.h * bar_thickness;
+        range.rect.y = range.rect.y + ((this->dimension.h / 2) - (range.rect.h / 2));
+
+        range.target.x = range.rect.x;
+        range.target.y = range.rect.y;
+        range.target.h = range.rect.h;
+        range.target.w = range_rect_width;
+
+        relative_rect.x += range_rect_width;
       }
 
       break;
@@ -101,33 +114,110 @@ void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial)
         break;
       }
     }
+  } else if (this->flag.activity && ekg::input::released()) {
+    this->flag.activity = false;
+    this->targetted_range_index = UINT64_MAX;
   } else if (this->flag.activity && this->targetted_range_index != UINT64_MAX && ekg::input::motion()) {
     ekg::ui::slider_widget::range &range {this->range_list.at(this->targetted_range_index)};
     ekg::ui::slider *p_ui {static_cast<ekg::ui::slider*>(this->p_data)};
 
+    ekg::vec4 &interact {ekg::input::interact()};
+    ekg::rect &rect {this->get_abs_rect()};
+
+    ekg::rect bar {range.rect + rect};
+    float factor {};
+    float dimension {};
+
     switch (p_ui->get_axis()) {
     case ekg::axis::horizontal:
+      factor = ekg_clamp(interact.x - range.rect.x, 0.0f, range.rect.w);
+      dimension = range.rect.w;
       break;
     case ekg::axis::vertical:
+      factor = ekg_clamp(interact.y - range.rect.y, 0.0f, range.rect.h);
+      dimension = range.rect.h;
       break;
     }
+
+    ekg::ui::slider_widget_calculate_value(
+      p_ui->get_value(),
+      p_ui->get_number(),
+      factor,
+      dimension,
+      this->targetted_range_index
+    );
   }
 }
 
 void ekg::ui::slider_widget::on_draw_refresh() {
   ekg::rect &rect {this->get_abs_rect()};
   ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
+  ekg::ui::slider *p_ui {static_cast<ekg::ui::slider*>(this->p_data)};
+  ekg::feature *&p_feature {p_ui->get_value()};
+  ekg::number number {p_ui->get_number()};
 
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
 
-  for (ekg::ui::slider_widget::range &range : this->range_list) {
-    ekg::draw::rect(
-      range.rect + rect,
-      theme_scheme.slider_background,
-      ekg::draw_mode::outline,
-      ekg_layer(ekg::layer::background)
-    );
+  switch (p_ui->get_axis()) {
+  case ekg::axis::horizontal:
+    for (uint64_t it {}; it < this->range_list.size(); it++) {
+      ekg::ui::slider_widget::range &range {this->range_list.at(it)};
+
+      range.target.w = ekg::ui::slider_widget_calculate_target_pos(
+        p_feature,
+        number,
+        range.rect.w,
+        it
+      );
+
+      ekg::draw::rect(
+        range.rect + rect,
+        theme_scheme.slider_background,
+        ekg::draw_mode::filled,
+        ekg_layer(ekg::layer::background)
+      );
+
+      ekg::draw::rect(
+        range.target + rect,
+        theme_scheme.slider_activity_bar,
+        ekg::draw_mode::filled,
+        ekg_layer(ekg::layer::activity)
+      );
+
+      ekg::draw::rect(
+        range.rect + rect,
+        theme_scheme.slider_outline_bar,
+        ekg::draw_mode::outline
+      );
+    }
+    break;
+  case ekg::axis::vertical:
+    for (uint64_t it {}; it < this->range_list.size(); it++) {
+      ekg::ui::slider_widget::range &range {this->range_list.at(it)};
+
+      range.target.h = ekg::ui::slider_widget_calculate_target_pos(
+        p_feature,
+        number,
+        range.rect.h,
+        it
+      );
+
+      ekg::draw::rect(
+        range.rect + rect,
+        theme_scheme.slider_background,
+        ekg::draw_mode::filled,
+        ekg_layer(ekg::layer::background)
+      );
+
+      ekg::draw::rect(
+        range.target + rect,
+        theme_scheme.slider_activity_bar,
+        ekg::draw_mode::filled,
+        ekg_layer(ekg::layer::activity)
+      );
+    }
+    break;
   }
 
   ekg::draw::rect(
@@ -135,6 +225,252 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     theme_scheme.slider_outline,
     ekg::draw_mode::outline
   );
+}
+
+float ekg::ui::slider_widget_calculate_target_pos(
+  ekg::feature *&p_feature,
+  ekg::number number,
+  float dimension,
+  uint64_t index
+) {
+  switch (number) {
+    case ekg::number::float64: {
+      ekg::ui::slider::serializer_t<double> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<double>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<double> &range {p_serializer->range_list.at(index)};
+      return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
+    }
+
+    case ekg::number::float32: {
+      ekg::ui::slider::serializer_t<float> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<float>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<float> &range {p_serializer->range_list.at(index)};
+      return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
+    }
+    
+    case ekg::number::int64: {
+      ekg::ui::slider::serializer_t<int64_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<int64_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<int64_t> &range {p_serializer->range_list.at(index)};
+      return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
+    }
+    
+    case ekg::number::uint64: {
+      ekg::ui::slider::serializer_t<uint64_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<uint64_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<uint64_t> &range {p_serializer->range_list.at(index)};
+      return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
+    }
+    
+    case ekg::number::int32: {
+      ekg::ui::slider::serializer_t<int32_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<int32_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<int32_t> &range {p_serializer->range_list.at(index)};
+      return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
+    }
+    
+    case ekg::number::uint32: {
+      ekg::ui::slider::serializer_t<uint32_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<uint32_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<uint32_t> &range {p_serializer->range_list.at(index)};
+      return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
+    }
+    
+    case ekg::number::int16: {
+      ekg::ui::slider::serializer_t<int16_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<int16_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<int16_t> &range {p_serializer->range_list.at(index)};
+      return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
+    }
+    
+    case ekg::number::uint16: {
+      ekg::ui::slider::serializer_t<uint16_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<uint16_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<uint16_t> &range {p_serializer->range_list.at(index)};
+      return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
+    }
+    
+    case ekg::number::int8: {
+      ekg::ui::slider::serializer_t<int8_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<int8_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<int8_t> &range {p_serializer->range_list.at(index)};
+      return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
+    }
+    
+    case ekg::number::uint8: {
+      ekg::ui::slider::serializer_t<uint8_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<uint8_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<uint8_t> &range {p_serializer->range_list.at(index)};
+      return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
+    }
+  }
+
+  return 0.0f;  
+}
+
+void ekg::ui::slider_widget_calculate_value(ekg::feature *&p_feature, ekg::number number, float factor, float dimension, uint64_t index) {
+  switch (number) {
+    case ekg::number::float64: {
+      ekg::ui::slider::serializer_t<double> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<double>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<double> &range {p_serializer->range_list.at(index)};
+      if (factor == 0) {
+        range.value.set_value(range.min);
+      } else {
+        range.value.set_value(static_cast<double>((factor / dimension) * (range.max - range.min) + range.min));
+      }
+      break;
+    }
+    
+    case ekg::number::float32: {
+      ekg::ui::slider::serializer_t<float> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<float>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<float> &range {p_serializer->range_list.at(index)};
+      if (factor == 0) {
+        range.value.set_value(range.min);
+      } else {
+        range.value.set_value(static_cast<float>((factor / dimension) * (range.max - range.min) + range.min));
+      }
+
+      break;
+    }
+    
+    case ekg::number::int64: {
+      ekg::ui::slider::serializer_t<int64_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<int64_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<int64_t> &range {p_serializer->range_list.at(index)};
+      if (factor == 0) {
+        range.value.set_value(range.min);
+      } else {
+        range.value.set_value(static_cast<int64_t>((factor / dimension) * (range.max - range.min) + range.min));
+      }
+      break;
+    }
+    
+    case ekg::number::uint64: {
+      ekg::ui::slider::serializer_t<uint64_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<uint64_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<uint64_t> &range {p_serializer->range_list.at(index)};
+      if (factor == 0) {
+        range.value.set_value(range.min);
+      } else {
+        range.value.set_value(static_cast<uint64_t>((factor / dimension) * (range.max - range.min) + range.min));
+      }
+      break;
+    }
+    
+    case ekg::number::int32: {
+      ekg::ui::slider::serializer_t<int32_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<int32_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<int32_t> &range {p_serializer->range_list.at(index)};
+      if (factor == 0) {
+        range.value.set_value(range.min);
+      } else {
+        range.value.set_value(static_cast<int32_t>((factor / dimension) * (range.max - range.min) + range.min));
+      }
+      break;
+    }
+    
+    case ekg::number::uint32: {
+      ekg::ui::slider::serializer_t<uint32_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<uint32_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<uint32_t> &range {p_serializer->range_list.at(index)};
+      if (factor == 0) {
+        range.value.set_value(range.min);
+      } else {
+        range.value.set_value(static_cast<uint32_t>((factor / dimension) * (range.max - range.min) + range.min));
+      }
+      break;
+    }
+    
+    case ekg::number::int16: {
+      ekg::ui::slider::serializer_t<int16_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<int16_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<int16_t> &range {p_serializer->range_list.at(index)};
+      if (factor == 0) {
+        range.value.set_value(range.min);
+      } else {
+        range.value.set_value(static_cast<int16_t>((factor / dimension) * (range.max - range.min) + range.min));
+      }
+      break;
+    }
+    
+    case ekg::number::uint16: {
+      ekg::ui::slider::serializer_t<uint16_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<uint16_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<uint16_t> &range {p_serializer->range_list.at(index)};
+      if (factor == 0) {
+        range.value.set_value(range.min);
+      } else {
+        range.value.set_value(static_cast<uint16_t>((factor / dimension) * (range.max - range.min) + range.min));
+      }
+      break;
+    }
+    
+    case ekg::number::int8: {
+      ekg::ui::slider::serializer_t<int8_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<int8_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<int8_t> &range {p_serializer->range_list.at(index)};
+      if (factor == 0) {
+        range.value.set_value(range.min);
+      } else {
+        range.value.set_value(static_cast<int8_t>((factor / dimension) * (range.max - range.min) + range.min));
+      }
+      break;
+    }
+    
+    case ekg::number::uint8: {
+      ekg::ui::slider::serializer_t<uint8_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<uint8_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<uint8_t> &range {p_serializer->range_list.at(index)};
+      if (factor == 0) {
+        range.value.set_value(range.min);
+      } else {
+        range.value.set_value(static_cast<uint8_t>((factor / dimension) * (range.max - range.min) + range.min));
+      }
+      break;
+    }
+  }
 }
 
 uint64_t ekg::ui::slider_widget_get_range_count(ekg::feature *&p_feature, ekg::number number) {
