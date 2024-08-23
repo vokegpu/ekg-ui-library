@@ -71,11 +71,11 @@ jobs:
 
       - name: Read Title
         id: commit_title
-        run: echo ::set-output name=message::$(git log --format=%B -n 1 ${{ github.sha }})
+        run: echo "message=$(git log --format=%B -n 1 ${{ github.sha }})" >> $GITHUB_OUTPUT
 
       - name: Read Description
         id: commit_description
-        run: echo ::set-output name=message::$(git log --format=%B -n 1 ${{ github.sha }} | sed -n '2,$p')
+        run: echo "message=$(git log --format=%B -n 1 ${{ github.sha }} | sed -n '2,$p')" >> $GITHUB_OUTPUT
 
       - name: Release if Needed
         if: startsWith(steps.commit_title.outputs.message, '[release]')
