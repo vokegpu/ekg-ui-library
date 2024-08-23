@@ -92,4 +92,4 @@ For complete previously released logs, check [here](https://github.com/vokegpu/e
         f'gh release create {tag} ./{windows}.zip ./{linux}.zip --latest --title "EKG {version_descriptor}" --notes "{release}"'
     )
 
-    print("ok done >< mumu!")
+    print("ok done >< mumu! :blush: ")
