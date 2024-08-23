@@ -41,6 +41,9 @@ if __name__ == "__main__":
             metadata[store] += sys.argv[it]
             metadata[store] += " "
 
+    if metadata["-d"].endswith(" "):
+        metadata["-d"] = metadata["-d"][:-1]
+
     print("reading metadata:")
     print(metadata)
 
