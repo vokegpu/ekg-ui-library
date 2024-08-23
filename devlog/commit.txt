@@ -196,4 +196,4 @@
 -- Renamed `uint16_t` (flags) to `ekg::flags`.
 -- Dynamic type infer in `ekg::slide<t>` call.
 -- Added "box" option to `ekg::value_t<t, s>` (I know it is not how burrow and box from Rust works, just a stupid name).
--- Fixed memory issues from `ekg::value_t<t, s>` but I do not believe it is totally safe, God, my brain can not figure what must do.
+-- Fixed memory issues from `ekg::value_t<t, s>` but I do not believe it is totally safe, God my brain can not figure what must do.
