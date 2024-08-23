@@ -1,6 +1,7 @@
 from typing import List, Dict
 import sys, os, zipfile, shutil
 
+
 def create_release_zip_file(zip_filename: str, lib_directory: str) -> str:
     zip_output: str = f"./{zip_filename}.zip"
     to_zip_directory: str = f"./{zip_filename}/"
@@ -8,7 +9,7 @@ def create_release_zip_file(zip_filename: str, lib_directory: str) -> str:
     os.system(f"mkdir ./{zip_filename} && cd ./{zip_filename} && mkdir ./lib && cd ..")
 
     shutil.copytree("./include", f"./{zip_filename}/include/")
-    shutil.copy("./faq.txt", f"./{zip_filename}/")    
+    shutil.copy("./faq.txt", f"./{zip_filename}/")
     shutil.copy("./LICENSE.md", f"./{zip_filename}/")
     shutil.copy(f"./lib/{lib_directory}/libekg.a", f"./{zip_filename}/lib/libekg.a")
 
@@ -19,9 +20,10 @@ def create_release_zip_file(zip_filename: str, lib_directory: str) -> str:
             for file in files:
                 zipf.write(
                     os.path.join(root, file),
-                    os.path.relpath(os.path.join(root, file), to_zip_directory)
+                    os.path.relpath(os.path.join(root, file), to_zip_directory),
                 )
     return zip_output
+
 
 if __name__ == "__main__":
     print("initialising the most meow meow of live :3")
@@ -76,7 +78,7 @@ For complete previously released logs, check [here](https://github.com/vokegpu/e
 
     # Create tag and release.
     # But before pack/zip the faq, license, lib, and the include headers file.
-    
+
     tag: str = version_descriptor.split(" ")[0]
     windows: str = f"ekg-ui-library-{tag}-win32"
     linux: str = f"ekg-ui-library-{tag}"
@@ -86,6 +88,8 @@ For complete previously released logs, check [here](https://github.com/vokegpu/e
 
     os.system(f'git tag -a "{tag}" -m "{metadata["-d"]}"')
     os.system(f"git push origin {tag}")
-    os.system(f'gh release create {tag} ./{windows}.zip ./{linux}.zip --latest --title "EKG {version_descriptor}" --notes "{release}"')
+    os.system(
+        f'gh release create {tag} ./{windows}.zip ./{linux}.zip --latest --title "EKG {version_descriptor}" --notes "{release}"'
+    )
 
-    print("ok done >< mumu")
+    print("ok done >< mumu!")
