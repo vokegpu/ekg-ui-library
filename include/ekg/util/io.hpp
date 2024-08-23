@@ -230,15 +230,16 @@ namespace ekg {
   struct value_t {
   protected:
     bool changed {};
+    bool not_self_ownership {};
   protected:
     s *p_mommy_s {};
   public:
     t self {};
-    t *p_value {};
+    t *p_value {nullptr};
   public:
     value_t<t, s>() {
       this->p_value = &this->self;
-    }
+    };
 
     operator bool() {
       return this->changed;
@@ -257,11 +258,13 @@ namespace ekg {
 
     s *transfer_ownership(t *p_address) {
       this->p_value = p_address;
+      this->not_self_ownership = true;
       return this->p_mommy_s;
     }
 
     s *reset_ownership() {
       this->p_value = &this->self;
+      this->not_self_ownership = false;
       return this->p_mommy_s;
     }
 
@@ -284,6 +287,16 @@ namespace ekg {
       bool was {this->changed};
       this->changed = false;
       return was;
+    }
+
+    bool was_not_ownership_transfered() {
+      return this->not_self_ownership;
+    }
+
+    void align_ownership_mem_if_necessary() {
+      if (!this->not_self_ownership) {
+        this->p_value = &this->self;
+      }
     }
   };
 

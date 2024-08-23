@@ -160,6 +160,7 @@ namespace ekg {
     p_ui->set_font_size(ekg::font::normal);
     p_ui->set_axis(ekg::axis::horizontal);
     p_ui->box(new ekg::ui::slider::serializer_t<t>());
+    p_ui->reset_ownership();
     p_ui->unsafe_set_number(ekg::retreive_number_type_from_var_type<t>());
     p_ui->unsafe_set_type(ekg::type::slider);
     p_ui->set_place(dock);
@@ -188,7 +189,7 @@ namespace ekg {
    */
   ekg::ui::listbox *listbox(
     std::string_view tag,
-    ekg::item item_list,
+    const ekg::item &item_list,
     ekg::flags dock = ekg::dock::none
   );
 

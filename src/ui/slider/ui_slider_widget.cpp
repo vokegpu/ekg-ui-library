@@ -240,6 +240,7 @@ float ekg::ui::slider_widget_calculate_target_pos(
       };
 
       ekg::ui::slider::range_t<double> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
       return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
     }
 
@@ -249,6 +250,7 @@ float ekg::ui::slider_widget_calculate_target_pos(
       };
 
       ekg::ui::slider::range_t<float> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
       return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
     }
     
@@ -258,6 +260,7 @@ float ekg::ui::slider_widget_calculate_target_pos(
       };
 
       ekg::ui::slider::range_t<int64_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
       return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
     }
     
@@ -267,6 +270,7 @@ float ekg::ui::slider_widget_calculate_target_pos(
       };
 
       ekg::ui::slider::range_t<uint64_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
       return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
     }
     
@@ -276,6 +280,7 @@ float ekg::ui::slider_widget_calculate_target_pos(
       };
 
       ekg::ui::slider::range_t<int32_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
       return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
     }
     
@@ -285,6 +290,7 @@ float ekg::ui::slider_widget_calculate_target_pos(
       };
 
       ekg::ui::slider::range_t<uint32_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
       return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
     }
     
@@ -294,6 +300,7 @@ float ekg::ui::slider_widget_calculate_target_pos(
       };
 
       ekg::ui::slider::range_t<int16_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
       return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
     }
     
@@ -303,6 +310,7 @@ float ekg::ui::slider_widget_calculate_target_pos(
       };
 
       ekg::ui::slider::range_t<uint16_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
       return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
     }
     
@@ -312,6 +320,7 @@ float ekg::ui::slider_widget_calculate_target_pos(
       };
 
       ekg::ui::slider::range_t<int8_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
       return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
     }
     
@@ -321,6 +330,7 @@ float ekg::ui::slider_widget_calculate_target_pos(
       };
 
       ekg::ui::slider::range_t<uint8_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
       return (dimension * (range.value.get_value() - range.min) / (range.max - range.min));
     }
   }
@@ -336,6 +346,8 @@ void ekg::ui::slider_widget_calculate_value(ekg::feature *&p_feature, ekg::numbe
       };
 
       ekg::ui::slider::range_t<double> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+
       if (factor == 0) {
         range.value.set_value(range.min);
       } else {
@@ -346,10 +358,12 @@ void ekg::ui::slider_widget_calculate_value(ekg::feature *&p_feature, ekg::numbe
     
     case ekg::number::float32: {
       ekg::ui::slider::serializer_t<float> *p_serializer {
-        static_cast<ekg::ui::slider::serializer_t<float>*>(p_feature)
+        (ekg::ui::slider::serializer_t<float>*) p_feature
       };
 
       ekg::ui::slider::range_t<float> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+
       if (factor == 0) {
         range.value.set_value(range.min);
       } else {
@@ -365,6 +379,8 @@ void ekg::ui::slider_widget_calculate_value(ekg::feature *&p_feature, ekg::numbe
       };
 
       ekg::ui::slider::range_t<int64_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+
       if (factor == 0) {
         range.value.set_value(range.min);
       } else {
@@ -379,6 +395,8 @@ void ekg::ui::slider_widget_calculate_value(ekg::feature *&p_feature, ekg::numbe
       };
 
       ekg::ui::slider::range_t<uint64_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+
       if (factor == 0) {
         range.value.set_value(range.min);
       } else {
@@ -393,6 +411,8 @@ void ekg::ui::slider_widget_calculate_value(ekg::feature *&p_feature, ekg::numbe
       };
 
       ekg::ui::slider::range_t<int32_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+
       if (factor == 0) {
         range.value.set_value(range.min);
       } else {
@@ -407,6 +427,8 @@ void ekg::ui::slider_widget_calculate_value(ekg::feature *&p_feature, ekg::numbe
       };
 
       ekg::ui::slider::range_t<uint32_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+
       if (factor == 0) {
         range.value.set_value(range.min);
       } else {
@@ -421,6 +443,8 @@ void ekg::ui::slider_widget_calculate_value(ekg::feature *&p_feature, ekg::numbe
       };
 
       ekg::ui::slider::range_t<int16_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+
       if (factor == 0) {
         range.value.set_value(range.min);
       } else {
@@ -435,6 +459,8 @@ void ekg::ui::slider_widget_calculate_value(ekg::feature *&p_feature, ekg::numbe
       };
 
       ekg::ui::slider::range_t<uint16_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+
       if (factor == 0) {
         range.value.set_value(range.min);
       } else {
@@ -449,6 +475,8 @@ void ekg::ui::slider_widget_calculate_value(ekg::feature *&p_feature, ekg::numbe
       };
 
       ekg::ui::slider::range_t<int8_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+
       if (factor == 0) {
         range.value.set_value(range.min);
       } else {
@@ -463,6 +491,8 @@ void ekg::ui::slider_widget_calculate_value(ekg::feature *&p_feature, ekg::numbe
       };
 
       ekg::ui::slider::range_t<uint8_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+
       if (factor == 0) {
         range.value.set_value(range.min);
       } else {

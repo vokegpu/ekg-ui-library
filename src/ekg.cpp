@@ -145,6 +145,7 @@ ekg::ui::frame *ekg::frame(std::string_view tag, const ekg::vec2 &size, ekg::fla
 ekg::ui::button *ekg::button(std::string_view text, ekg::flags dock) {
   ekg::ui::button *p_ui {new ekg::ui::button()};
   p_ui->registry(p_ui);
+  p_ui->reset_ownership();
   p_ui->unsafe_set_type(ekg::type::button);
   ekg::core->gen_widget(p_ui);
 
@@ -161,6 +162,7 @@ ekg::ui::button *ekg::button(std::string_view text, ekg::flags dock) {
 ekg::ui::label *ekg::label(std::string_view text, ekg::flags dock) {
   ekg::ui::label *p_ui {new ekg::ui::label()};
   p_ui->registry(p_ui);
+  p_ui->reset_ownership();
   p_ui->unsafe_set_type(ekg::type::label);
   ekg::core->gen_widget(p_ui);
 
@@ -177,6 +179,7 @@ ekg::ui::label *ekg::label(std::string_view text, ekg::flags dock) {
 ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, ekg::flags dock) {
   ekg::ui::checkbox *p_ui {new ekg::ui::checkbox()};
   p_ui->registry(p_ui);
+  p_ui->reset_ownership();
   p_ui->unsafe_set_type(ekg::type::checkbox);
   ekg::core->gen_widget(p_ui);
 
@@ -220,6 +223,7 @@ ekg::popup(std::string_view tag, const std::vector<std::string> &component_list,
 ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, ekg::flags dock) {
   ekg::ui::textbox *p_ui {new ekg::ui::textbox()};
   p_ui->registry(p_ui);
+  p_ui->reset_ownership();
   p_ui->unsafe_set_type(ekg::type::textbox);
   ekg::core->gen_widget(p_ui);
 
@@ -236,11 +240,12 @@ ekg::ui::textbox *ekg::textbox(std::string_view tag, std::string_view text, ekg:
 
 ekg::ui::listbox *ekg::listbox(
   std::string_view tag,
-  ekg::item item_list,
+  const ekg::item &item_list,
   ekg::flags dock
 ) {
   ekg::ui::listbox *p_ui {new ekg::ui::listbox()};
   p_ui->registry(p_ui);
+  p_ui->reset_ownership();
   p_ui->unsafe_set_type(ekg::type::listbox);
   ekg::core->gen_widget(p_ui);
 
@@ -262,6 +267,7 @@ ekg::ui::listbox *ekg::listbox_container(
 ) {
   ekg::ui::listbox *p_ui {new ekg::ui::listbox()};
   p_ui->registry(p_ui);
+  p_ui->reset_ownership();
 
   p_ui->unsafe_set_type(ekg::type::listbox);
   ekg::core->gen_widget(p_ui);

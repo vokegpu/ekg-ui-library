@@ -85,7 +85,6 @@ namespace ekg::ui {
       serialized_range.min = min;
       serialized_range.max = max;
       serialized_range.value.registry(this);
-      serialized_range.value = {};
 
       return serialized_range;
     };
