@@ -173,7 +173,7 @@
 -- Removed trash layout service.
 -- Fixed pixel imperfect on scrolling and on all places.
 -- Moved `std::vector<t>` extends to `ekg::value_t<t>` in listbox and textbox.
--- Fixed pixel-unuscaled from font face size, now the text height is set to the specified font face size.
+-- Fixed pixel-unuscaled from font face si`1ze, now the text height is set to the specified font face size.
 -- Listbox performance increase for resize & events (highlight, press, open etc).
 -- Removed useless text width condition of button for set the width.
 -- Listbox highlight optmized.
@@ -197,3 +197,4 @@
 -- Dynamic type infer in `ekg::slide<t>` call.
 -- Added "box" option to `ekg::value_t<t, s>` (I know it is not how burrow and box from Rust works, just a stupid name).
 -- Fixed memory issues from `ekg::value_t<t, s>` but I do not believe it is totally safe, God my brain can not figure what must do.
+-- `ekg::string_float64_precision` added for double/float64.

@@ -235,13 +235,24 @@ void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_rea
   }
 }
 
-std::string ekg::string_float_precision(float n, int32_t precision) {
-  const std::string string {std::to_string(n)};
-  return string.substr(
+std::string_view ekg::string_float64_precision(double n, uint8_t precision) {
+  const std::string_view to_string_result {std::to_string(n)};
+  return to_string_result.substr(
     0,
     ekg_max(
-      static_cast<int32_t>(string.find('.') + precision + (1 * precision)),
-      static_cast<int32_t>(string.size())
+      static_cast<int32_t>(to_string_result.find('.') + precision + (1 * precision)),
+      static_cast<int32_t>(to_string_result.size())
+    )
+  );
+}
+
+std::string_view ekg::string_float_precision(float n, uint8_t precision) {
+  const std::string_view to_string_result {std::to_string(n)};
+  return to_string_result.substr(
+    0,
+    ekg_max(
+      static_cast<int32_t>(to_string_result.find('.') + precision + (1 * precision)),
+      static_cast<int32_t>(to_string_result.size())
     )
   );
 }

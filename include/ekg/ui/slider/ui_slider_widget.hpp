@@ -34,6 +34,8 @@ namespace ekg::ui {
     public:
       ekg::rect rect {};
       ekg::rect target {};
+      ekg::rect rect_text {};
+      std::string_view text {};
     };
   public:
     std::vector<ekg::ui::slider_widget::range> range_list {};
@@ -72,7 +74,7 @@ namespace ekg::ui {
     float dimension,
     uint64_t index
   );
-  
+    
   /**
    * Returns the size of range list from slider.
    * Based on all supported number formats.
@@ -80,6 +82,16 @@ namespace ekg::ui {
   uint64_t slider_widget_get_range_count(
     ekg::feature *&p_feature,
     ekg::number number
+  );
+
+  /**
+   * Returns the valeu label in string.
+   * Based on all supported number formats and precision (`ekg::float32`, `ekg::float64`).
+   **/
+  std::string_view slider_widget_get_value_label(
+    ekg::feature *&p_feature,
+    ekg::number number,
+    uint64_t index
   );
 }
 

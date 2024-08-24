@@ -40,6 +40,7 @@ namespace ekg::ui {
     public:
       t min {};
       t max {};
+      uint8_t display_precision {2};
       ekg::value_t<t, ekg::ui::slider> value {};
     };
 
@@ -72,7 +73,7 @@ namespace ekg::ui {
     };
 
     template<typename t>
-    ekg::ui::slider::range_t<t> &range(uint64_t index, t min, t max) {
+    ekg::ui::slider::range_t<t> &range(uint64_t index) {
       ekg::ui::slider::serializer_t<t> &serializer {
         this->serializer<t>()
       };
@@ -81,10 +82,19 @@ namespace ekg::ui {
         serializer.range_list.resize(index + 1);
       }
 
-      ekg::ui::slider::range_t<t> &serialized_range {serializer.range_list.at(index)};
+      return serializer.range_list.at(index);
+    };
+
+    template<typename t>
+    ekg::ui::slider::range_t<t> &range(uint64_t index, t min, t max, uint8_t display_precision = UINT8_MAX) {
+      ekg::ui::slider::range_t<t> &serialized_range {this->range<t>(index)};
+
       serialized_range.min = min;
       serialized_range.max = max;
-      serialized_range.value.registry(this);
+
+      if (display_precision != UINT8_MAX) {
+        serialized_range.display_precision = display_precision;
+      }
 
       return serialized_range;
     };

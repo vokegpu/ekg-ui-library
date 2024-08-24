@@ -76,9 +76,14 @@ namespace ekg {
   void utf_decode(std::string_view string, std::vector<std::string> &utf_decoded);
 
   /**
+   * Returns a customised float64 precision as a string.
+   **/
+  std::string_view string_float64_precision(double number, uint8_t precision);
+
+  /**
    * Returns a customised float precision as a string.
-   */
-  std::string string_float_precision(float number, int32_t precision);
+   **/
+  std::string_view string_float_precision(float number, uint8_t precision);
 
   /**
    * Return the index of last attribute-token and insert bits.

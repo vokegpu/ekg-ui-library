@@ -91,7 +91,7 @@ namespace ekg {
      * Unsafe by the performance directly effect.
      **/
     void unsafe_set_semaphore(bool *p_set_semaphore);
-
+    
     /**
      * Get the item-placement used for rendering.
      * Unsafe due the return as reference, bypassing the rendering states.
@@ -105,7 +105,7 @@ namespace ekg {
     void unsafe_set_visible_count(uint64_t count);
   public:
     void set_value(std::string_view new_value);
-    
+
     std::string get_value();
   
     void set_attr(uint16_t bits);

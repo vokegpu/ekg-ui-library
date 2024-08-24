@@ -34,6 +34,7 @@ void ekg::ui::slider_widget::on_reload() {
   ekg::axis axis {p_ui->get_axis()};
   ekg::number number {p_ui->get_number()};
   ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  ekg::draw::font_renderer &small_f_renderer {ekg::f_renderer(ekg::font::small)};
   ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
   ekg::feature *&p_feature {p_ui->get_value()};
 
@@ -45,9 +46,14 @@ void ekg::ui::slider_widget::on_reload() {
   float dimension_offset {static_cast<float>((int32_t) (base_text_height / 2.0f))};
   float offset {ekg::find_min_offset(base_text_height, dimension_offset)};
 
+  float text_width {};
+  float small_font_text_height {small_f_renderer.get_text_height()};
+
   float bar_thickness {
     static_cast<float>(theme_scheme.slider_bar_thickness) / 100
   };
+
+  ekg::layout::mask &mask {ekg::core->mask};
 
   switch (axis) {
     case ekg::axis::horizontal: {
@@ -60,6 +66,39 @@ void ekg::ui::slider_widget::on_reload() {
 
       this->range_list.resize(range_list_size);
       float range_rect_width {this->dimension.w / static_cast<float>(range_list_size)};
+
+      // left or right
+      // docknize all
+
+      // left top/bottom or right top/bottom or center top/bottom
+      // docknize with small font height
+
+      // center
+      // docknize with no small font (normal) height
+
+      // target
+      // no-docknize, target the drag cursor but with no small font (normal) height
+
+      // target top/bottom
+      // no-docknize, target the drag cursor with small font height
+
+      if (text_align_flags == ekg::dock::left || text_align_flags == ekg::dock::right) {
+        mask.preset({0.0f, offset, this->dimension.h}, axis, this->dimension.w);
+
+        for (uint64_t it {}; it < range_list_size; it++) {
+          ekg::ui::slider_widget::range &range {this->range_list.at(it)};
+
+          range.text = ekg::ui::slider_widget_get_value_label(
+            p_feature,
+            number,
+            it
+          );
+
+          mask.insert({&range.rect, text_align_flags});
+        }
+      } else {
+
+      }
 
       for (uint64_t it {}; it < range_list_size; it++) {
         ekg::ui::slider_widget::range &range {this->range_list.at(it)};
@@ -528,4 +567,114 @@ uint64_t ekg::ui::slider_widget_get_range_count(ekg::feature *&p_feature, ekg::n
   }
 
   return 0;
+}
+
+std::string_view ekg::ui::slider_widget_get_value_label(
+  ekg::feature *&p_feature,
+  ekg::number number,
+  uint64_t index
+) {
+  switch (number) {
+    case ekg::number::float64: {
+      ekg::ui::slider::serializer_t<double> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<double>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<double> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+      return ekg::string_float64_precision(range.value.get_value(), range.display_precision);
+    }
+
+    case ekg::number::float32: {
+      ekg::ui::slider::serializer_t<float> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<float>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<float> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+      return ekg::string_float_precision(range.value.get_value(), range.display_precision);
+    }
+    
+    case ekg::number::int64: {
+      ekg::ui::slider::serializer_t<int64_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<int64_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<int64_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+      return std::to_string(range.value.get_value());
+    }
+    
+    case ekg::number::uint64: {
+      ekg::ui::slider::serializer_t<uint64_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<uint64_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<uint64_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+      return std::to_string(range.value.get_value());
+    }
+    
+    case ekg::number::int32: {
+      ekg::ui::slider::serializer_t<int32_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<int32_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<int32_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+      return std::to_string(range.value.get_value());
+    }
+    
+    case ekg::number::uint32: {
+      ekg::ui::slider::serializer_t<uint32_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<uint32_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<uint32_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+      return std::to_string(range.value.get_value());
+    }
+    
+    case ekg::number::int16: {
+      ekg::ui::slider::serializer_t<int16_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<int16_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<int16_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+      return std::to_string(range.value.get_value());
+    }
+    
+    case ekg::number::uint16: {
+      ekg::ui::slider::serializer_t<uint16_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<uint16_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<uint16_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+      return std::to_string(range.value.get_value());
+    }
+    
+    case ekg::number::int8: {
+      ekg::ui::slider::serializer_t<int8_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<int8_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<int8_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+      return std::to_string(range.value.get_value());
+    }
+    
+    case ekg::number::uint8: {
+      ekg::ui::slider::serializer_t<uint8_t> *p_serializer {
+        static_cast<ekg::ui::slider::serializer_t<uint8_t>*>(p_feature)
+      };
+
+      ekg::ui::slider::range_t<uint8_t> &range {p_serializer->range_list.at(index)};
+      range.value.align_ownership_mem_if_necessary();
+      return std::to_string(range.value.get_value());
+    }
+  }
+
+  return "NaN";
 }
