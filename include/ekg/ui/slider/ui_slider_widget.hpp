@@ -27,6 +27,7 @@
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include "ekg/ui/slider/ui_slider.hpp"
+#include "ekg/draw/font_renderer.hpp"
 
 namespace ekg::ui {
   class slider_widget : public ekg::ui::abstract_widget {
@@ -36,7 +37,7 @@ namespace ekg::ui {
       ekg::rect rect {};
       ekg::rect target {};
       ekg::rect rect_text {};
-      std::string_view text {};
+      std::string text {};
       ekg::font font_size {};
     };
   public:
@@ -81,10 +82,23 @@ namespace ekg::ui {
    * Returns the valeu label in string.
    * Based on all supported number formats and precision (`ekg::float32`, `ekg::float64`).
    **/
-  std::string_view slider_widget_get_value_label(
+  std::string slider_widget_get_value_label(
     ekg::ui::slider *&p_ui,
     ekg::number number,
     uint64_t index
+  );
+
+  /**
+   * Returns both (min, max) text width metrics.
+   * Based on all supported number formats.
+   **/
+  void slider_widget_get_metrics(
+    ekg::ui::slider *&p_ui,
+    ekg::number number,
+    uint64_t index,
+    ekg::draw::font_renderer &f_renderer,
+    float *p_min_text_width,
+    float *p_max_text_width
   );
 }
 

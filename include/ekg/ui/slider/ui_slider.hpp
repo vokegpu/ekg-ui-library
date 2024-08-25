@@ -158,7 +158,7 @@ namespace ekg::ui {
     template<typename t>
     ekg::ui::slider *range(uint64_t index, t val, t min, t max, int32_t display_precision = -1) {
       ekg::ui::slider::range_t &range {this->range<t>(index)};
-      if (display_precision < 0) {
+      if (display_precision != -1) {
         range.display_precision = display_precision;
       }
 

@@ -471,8 +471,6 @@ void ekg::layout::mask::docknize() {
           1.0f
         );
 
-        std::cout << count << " " << dimensional_extent << " " << this->respective_all << std::endl;
-
         dock_rect.p_rect->w = dimensional_extent;
         opposite = 0;
         uniform = dock_rect.p_rect->w + this->offset.x;
@@ -485,9 +483,12 @@ void ekg::layout::mask::docknize() {
       );
 
       if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::center) && !left_or_right) {
-        dock_rect.p_rect->x = (this->respective_all / 2) - (dock_rect.p_rect->w / 2);
+        if ekg_bitwise_contains(dock_rect.flags, ekg::dock::full) {
+          dock_rect.p_rect->x = (this->respective_all / 2) - (dock_rect.p_rect->w / 2);
+          this->mask.w += dock_rect.p_rect->w + this->offset.x;
+        }
+
         dock_rect.p_rect->y = centered_dimension - (dock_rect.p_rect->h / 2);
-        this->mask.w += dock_rect.p_rect->w + this->offset.x;
       } else if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::center)) {
         dock_rect.p_rect->y = centered_dimension - (dock_rect.p_rect->h / 2);
       }

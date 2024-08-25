@@ -47,6 +47,8 @@ void ekg::ui::slider_widget::on_reload() {
   float dimension_offset {static_cast<float>((int32_t) (base_text_height / 2.0f))};
   float offset {ekg::find_min_offset(base_text_height, dimension_offset)};
 
+  float min_text_width {};
+  float max_text_width {};
   float text_width {};
   float small_font_text_height {small_f_renderer.get_text_height()};
 
@@ -84,8 +86,8 @@ void ekg::ui::slider_widget::on_reload() {
       // no-docknize, target the drag cursor with small font height
 
       if (text_align_flags == ekg::dock::left || text_align_flags == ekg::dock::right) {
-        mask.preset({0.0f, 0.0f, this->dimension.h}, axis, this->dimension.w);
-        
+        mask.preset({4.0f, 0.0f, this->dimension.h}, axis, this->dimension.w);
+
         for (uint64_t it {}; it < range_list_size; it++) {
           ekg::ui::slider_widget::range &range {this->range_list.at(it)};
 
@@ -95,15 +97,27 @@ void ekg::ui::slider_widget::on_reload() {
             it
           );
 
-          range.rect_text.w = f_renderer.get_text_width(range.text);
+          ekg::ui::slider_widget_get_metrics(
+            p_ui,
+            number,
+            it,
+            f_renderer,
+            &min_text_width,
+            &max_text_width
+          );
+
+          if (min_text_width > max_text_width) {
+            max_text_width = min_text_width;
+          }
+
+          range.rect_text.w = max_text_width;
           range.rect_text.h = base_text_height;
           range.font_size = base_font_size;
-          std::cout << range.text << std::endl;
 
           range.rect.h = this->dimension.h * bar_thickness;
 
-          //mask.insert({&range.rect_text, text_align_flags});
-          mask.insert({&range.rect, ekg::dock::fill});
+          mask.insert({&range.rect_text, text_align_flags});
+          mask.insert({&range.rect, ekg::dock::center | ekg::dock::fill});
         }
 
         mask.docknize();
@@ -174,6 +188,8 @@ void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial)
       dimension,
       this->targetted_range_index
     );
+
+    ekg::reload(this);
   }
 }
 
@@ -464,7 +480,7 @@ void ekg::ui::slider_widget_calculate_value(
   }
 }
 
-std::string_view ekg::ui::slider_widget_get_value_label(
+std::string ekg::ui::slider_widget_get_value_label(
   ekg::ui::slider *&p_ui,
   ekg::number number,
   uint64_t index
@@ -532,4 +548,115 @@ std::string_view ekg::ui::slider_widget_get_value_label(
   }
 
   return "NaN";
+}
+
+void ekg::ui::slider_widget_get_metrics(
+  ekg::ui::slider *&p_ui,
+  ekg::number number,
+  uint64_t index,
+  ekg::draw::font_renderer &f_renderer,
+  float *p_min_text_width,
+  float *p_max_text_width
+) {
+  switch (number) {
+    case ekg::number::float64: {
+      ekg::ui::slider::range_t &range {p_ui->range<double>(index)};
+      range.f64.align_ownership_mem_if_necessary();
+
+      *p_min_text_width = f_renderer.get_text_width(ekg::string_float64_precision(range.f64_min, range.display_precision));
+      *p_max_text_width = f_renderer.get_text_width(ekg::string_float64_precision(range.f64_min, range.display_precision));
+
+      break;
+    }
+
+    case ekg::number::float32: {
+      ekg::ui::slider::range_t &range {p_ui->range<float>(index)};
+      range.f32.align_ownership_mem_if_necessary();
+
+      *p_min_text_width = f_renderer.get_text_width(ekg::string_float_precision(range.f32_min, range.display_precision));
+      *p_max_text_width = f_renderer.get_text_width(ekg::string_float_precision(range.f32_max, range.display_precision));
+
+      break;
+    }
+    
+    case ekg::number::int64: {
+      ekg::ui::slider::range_t &range {p_ui->range<int64_t>(index)};
+      range.i64.align_ownership_mem_if_necessary();
+
+      *p_min_text_width = f_renderer.get_text_width(std::to_string(range.i64_min));
+      *p_max_text_width = f_renderer.get_text_width(std::to_string(range.i64_max));
+
+      break;
+    }
+    
+    case ekg::number::uint64: {
+      ekg::ui::slider::range_t &range {p_ui->range<uint64_t>(index)};
+      range.u64.align_ownership_mem_if_necessary();
+
+      *p_min_text_width = f_renderer.get_text_width(std::to_string(range.u64_min));
+      *p_max_text_width = f_renderer.get_text_width(std::to_string(range.u64_max));
+
+      break;
+    }
+    
+    case ekg::number::int32: {
+      ekg::ui::slider::range_t &range {p_ui->range<int32_t>(index)};
+      range.i32.align_ownership_mem_if_necessary();
+
+      *p_min_text_width = f_renderer.get_text_width(std::to_string(range.i32_min));
+      *p_max_text_width = f_renderer.get_text_width(std::to_string(range.i32_max));
+
+      break;
+    }
+    
+    case ekg::number::uint32: {
+      ekg::ui::slider::range_t &range {p_ui->range<uint32_t>(index)};
+      range.u32.align_ownership_mem_if_necessary();
+
+      *p_min_text_width = f_renderer.get_text_width(std::to_string(range.u32_min));
+      *p_max_text_width = f_renderer.get_text_width(std::to_string(range.u32_max));
+
+      break;
+    }
+    
+    case ekg::number::int16: {
+      ekg::ui::slider::range_t &range {p_ui->range<int16_t>(index)};
+      range.i16.align_ownership_mem_if_necessary();
+
+      *p_min_text_width = f_renderer.get_text_width(std::to_string(range.i16_min));
+      *p_max_text_width = f_renderer.get_text_width(std::to_string(range.i16_max));
+
+      break;
+    }
+    
+    case ekg::number::uint16: {
+      ekg::ui::slider::range_t &range {p_ui->range<uint16_t>(index)};
+      range.u16.align_ownership_mem_if_necessary();
+
+      *p_min_text_width = f_renderer.get_text_width(std::to_string(range.u16_min));
+      *p_max_text_width = f_renderer.get_text_width(std::to_string(range.u16_max));
+
+      break;
+    }
+    
+    case ekg::number::int8: {
+      ekg::ui::slider::range_t &range {p_ui->range<int8_t>(index)};
+      range.i8.align_ownership_mem_if_necessary();
+
+      *p_min_text_width = f_renderer.get_text_width(std::to_string(range.i8_min));
+      *p_max_text_width = f_renderer.get_text_width(std::to_string(range.i8_max));
+
+      break;
+    }
+    
+    case ekg::number::uint8: {
+      ekg::ui::slider::range_t &range {p_ui->range<uint8_t>(index)};
+      range.u8.align_ownership_mem_if_necessary();
+
+      *p_min_text_width = f_renderer.get_text_width(std::to_string(range.u8_min));
+      *p_max_text_width = f_renderer.get_text_width(std::to_string(range.u8_max));
+
+      break;
+    }
+  }
 }
