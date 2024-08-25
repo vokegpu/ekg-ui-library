@@ -120,8 +120,6 @@ float ekg::draw::font_renderer::get_text_width(std::string_view text) {
   bool break_text {};
   bool r_n_break_text {};
 
-  std::cout << text << std::endl;
-
   for (uint64_t it {}; it < text_size; it++) {
     char8 = static_cast<uint8_t>(text.at(it));
     it += ekg::utf_check_sequence(char8, char32, utf_string, text, it);

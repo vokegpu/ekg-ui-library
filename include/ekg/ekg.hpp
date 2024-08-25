@@ -152,13 +152,14 @@ namespace ekg {
     ekg::flags dock = ekg::dock::none
   ) {
     ekg::ui::slider *p_ui {new ekg::ui::slider()};
+    p_ui->unsafe_set_type(ekg::type::slider);
+    ekg::core->gen_widget(p_ui);
     p_ui->set_scaled_height(1);
     p_ui->set_font_size(ekg::font::normal);
     p_ui->set_axis(ekg::axis::horizontal);
+    p_ui->set_text_align(ekg::dock::left);
     p_ui->unsafe_set_number(ekg::retreive_number_type_from_var_type<t>());
-    p_ui->unsafe_set_type(ekg::type::slider);
     p_ui->set_place(dock);
-    ekg::core->gen_widget(p_ui);
     return p_ui;
   }
 

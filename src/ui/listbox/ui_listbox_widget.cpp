@@ -587,8 +587,6 @@ void ekg::ui::listbox_widget::on_post_event(ekg::os::io_event_serial &io_event_s
 }
 
 void ekg::ui::listbox_widget::on_update() {
-  std::cout << "MEOW" << std::endl;
-
   this->embedded_scroll.on_update();
   this->is_high_frequency = this->embedded_scroll.check_activity_state(this->flag.absolute || this->flag.focused || this->flag.hovered);
 }

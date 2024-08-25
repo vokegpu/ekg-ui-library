@@ -103,42 +103,52 @@ namespace ekg::ui {
       case ekg::number::float64:
         range.f64.set_value(static_cast<t>(val));
         range.f64.registry(this);
+        range.f64.align_ownership_mem_if_necessary();
         break;
       case ekg::number::float32:
         range.f32.set_value(static_cast<t>(val));
         range.f32.registry(this);
+        range.f32.align_ownership_mem_if_necessary();
         break;
       case ekg::number::int64:
         range.i64.set_value(static_cast<t>(val));
         range.i64.registry(this);
+        range.i64.align_ownership_mem_if_necessary();
         break;
       case ekg::number::uint64:
         range.u64.set_value(static_cast<t>(val));
         range.u64.registry(this);
+        range.u64.align_ownership_mem_if_necessary();
         break;
       case ekg::number::int32:
         range.i32.set_value(static_cast<t>(val));
         range.i32.registry(this);
+        range.i32.align_ownership_mem_if_necessary();
         break;
       case ekg::number::uint32:
         range.u32.set_value(static_cast<t>(val));
         range.u32.registry(this);
+        range.u32.align_ownership_mem_if_necessary();
         break;
       case ekg::number::int16:
         range.i16.set_value(static_cast<t>(val));
         range.i16.registry(this);
+        range.i16.align_ownership_mem_if_necessary();
         break;
       case ekg::number::uint16:
         range.u16.set_value(static_cast<t>(val));
         range.u16.registry(this);
+        range.u16.align_ownership_mem_if_necessary();
         break;
       case ekg::number::int8:
         range.i8.set_value(static_cast<t>(val));
         range.i8.registry(this);
+        range.i8.align_ownership_mem_if_necessary();
         break;
       case ekg::number::uint8:
         range.u8.set_value(static_cast<t>(val));
         range.u8.registry(this);
+        range.u8.align_ownership_mem_if_necessary();
         break;
       }
 
@@ -158,60 +168,70 @@ namespace ekg::ui {
         range.f64_min = min;
         range.f64_max = max;
         range.f64.registry(this);
+        range.f64.align_ownership_mem_if_necessary();
         break;
       case ekg::number::float32:
         range.f32.set_value(static_cast<t>(val));
         range.f32_min = min;
         range.f32_max = max;
         range.f32.registry(this);
+        range.f32.align_ownership_mem_if_necessary();
         break;
       case ekg::number::int64:
         range.i64.set_value(static_cast<t>(val));
         range.i64_min = min;
         range.i64_max = max;
         range.i64.registry(this);
+        range.i64.align_ownership_mem_if_necessary();
         break;
       case ekg::number::uint64:
         range.u64.set_value(static_cast<t>(val));
         range.u64_min = min;
         range.u64_max = max;
         range.u64.registry(this);
+        range.u64.align_ownership_mem_if_necessary();
         break;
       case ekg::number::int32:
         range.i32.set_value(static_cast<t>(val));
         range.i32_min = min;
         range.i32_max = max;
         range.i32.registry(this);
+        range.i32.align_ownership_mem_if_necessary();
         break;
       case ekg::number::uint32:
         range.u32.set_value(static_cast<t>(val));
         range.u32_min = min;
         range.u32_max = max;
         range.u32.registry(this);
+        range.u32.align_ownership_mem_if_necessary();
         break;
       case ekg::number::int16:
         range.i16.set_value(static_cast<t>(val));
         range.i16_min = min;
         range.i16_max = max;
         range.i16.registry(this);
+        range.i16.align_ownership_mem_if_necessary();
         break;
       case ekg::number::uint16:
         range.u16.set_value(static_cast<t>(val));
         range.u16_min = min;
         range.u16_max = max;
         range.u16.registry(this);
+        range.u16.align_ownership_mem_if_necessary();
         break;
       case ekg::number::int8:
         range.i8.set_value(static_cast<t>(val));
         range.i8_min = min;
         range.i8_max = max;
         range.i8.registry(this);
+        range.i8.align_ownership_mem_if_necessary();
         break;
       case ekg::number::uint8:
         range.u8.set_value(static_cast<t>(val));
         range.u8_min = min;
         range.u8_max = max;
         range.u8.registry(this);
+        range.u8.align_ownership_mem_if_necessary();
         break;
       }
 

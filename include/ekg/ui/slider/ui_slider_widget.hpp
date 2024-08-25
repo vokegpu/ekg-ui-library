@@ -37,6 +37,7 @@ namespace ekg::ui {
       ekg::rect target {};
       ekg::rect rect_text {};
       std::string_view text {};
+      ekg::font font_size {};
     };
   public:
     std::vector<ekg::ui::slider_widget::range> range_list {};

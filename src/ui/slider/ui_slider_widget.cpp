@@ -33,7 +33,8 @@ void ekg::ui::slider_widget::on_reload() {
   ekg::ui::slider *p_ui {static_cast<ekg::ui::slider*>(this->p_data)};
   ekg::axis axis {p_ui->get_axis()};
   ekg::number number {p_ui->get_number()};
-  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(p_ui->get_font_size())};
+  ekg::font base_font_size {p_ui->get_font_size()};
+  ekg::draw::font_renderer &f_renderer {ekg::f_renderer(base_font_size)};
   ekg::draw::font_renderer &small_f_renderer {ekg::f_renderer(ekg::font::small)};
   ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
   std::vector<ekg::ui::slider::range_t> &ui_range_list {p_ui->get_range_list()};
@@ -84,7 +85,7 @@ void ekg::ui::slider_widget::on_reload() {
 
       if (text_align_flags == ekg::dock::left || text_align_flags == ekg::dock::right) {
         mask.preset({0.0f, 0.0f, this->dimension.h}, axis, this->dimension.w);
-
+        
         for (uint64_t it {}; it < range_list_size; it++) {
           ekg::ui::slider_widget::range &range {this->range_list.at(it)};
 
@@ -96,13 +97,16 @@ void ekg::ui::slider_widget::on_reload() {
 
           range.rect_text.w = f_renderer.get_text_width(range.text);
           range.rect_text.h = base_text_height;
+          range.font_size = base_font_size;
+          std::cout << range.text << std::endl;
 
           range.rect.h = this->dimension.h * bar_thickness;
 
-          mask.insert({&range.rect_text, text_align_flags | ekg::dock::fill});
-          mask.insert({&range.rect, ekg::dock::center | ekg::dock::fill});
-          mask.docknize();
+          //mask.insert({&range.rect_text, text_align_flags});
+          mask.insert({&range.rect, ekg::dock::fill});
         }
+
+        mask.docknize();
       }
     }
 
@@ -154,11 +158,11 @@ void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial)
 
     switch (p_ui->get_axis()) {
     case ekg::axis::horizontal:
-      factor = ekg_clamp(interact.x - range.rect.x, 0.0f, range.rect.w);
+      factor = ekg_clamp(interact.x - bar.x, 0.0f, range.rect.w);
       dimension = range.rect.w;
       break;
     case ekg::axis::vertical:
-      factor = ekg_clamp(interact.y - range.rect.y, 0.0f, range.rect.h);
+      factor = ekg_clamp(interact.y - bar.y, 0.0f, range.rect.h);
       dimension = range.rect.h;
       break;
     }
@@ -187,6 +191,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
     for (uint64_t it {}; it < this->range_list.size(); it++) {
       ekg::ui::slider_widget::range &range {this->range_list.at(it)};
 
+      range.target = range.rect;
       range.target.w = ekg::ui::slider_widget_calculate_target_pos(
         p_ui,
         number,
@@ -212,6 +217,13 @@ void ekg::ui::slider_widget::on_draw_refresh() {
         range.rect + rect,
         theme_scheme.slider_outline_bar,
         ekg::draw_mode::outline
+      );
+
+      ekg::f_renderer(range.font_size).blit(
+        range.text,
+        range.rect_text.x + rect.x,
+        range.rect_text.y + rect.y,
+        theme_scheme.slider_string
       );
     }
     break;
@@ -259,51 +271,61 @@ float ekg::ui::slider_widget_calculate_target_pos(
   switch (number) {
     case ekg::number::float64: {
       ekg::ui::slider::range_t &range {p_ui->range<double>(index)};
+      range.f64.align_ownership_mem_if_necessary();
       return (dimension * (range.f64.get_value() - range.f64_min) / (range.f64_max - range.f64_min));
     }
 
     case ekg::number::float32: {
       ekg::ui::slider::range_t &range {p_ui->range<float>(index)};
+      range.f32.align_ownership_mem_if_necessary();
       return (dimension * (range.f32.get_value() - range.f32_min) / (range.f32_max - range.f32_min));
     }
     
     case ekg::number::int64: {
       ekg::ui::slider::range_t &range {p_ui->range<int64_t>(index)};
+      range.i64.align_ownership_mem_if_necessary();
       return (dimension * (range.i64.get_value() - range.i64_min) / (range.i64_max - range.i64_min));
     }
     
     case ekg::number::uint64: {
       ekg::ui::slider::range_t &range {p_ui->range<uint64_t>(index)};
+      range.u64.align_ownership_mem_if_necessary();
       return (dimension * (range.u64.get_value() - range.u64_min) / (range.u64_max - range.u64_min));
     }
     
     case ekg::number::int32: {
       ekg::ui::slider::range_t &range {p_ui->range<int32_t>(index)};
+      range.i32.align_ownership_mem_if_necessary();
       return (dimension * (range.i32.get_value() - range.i32_min) / (range.i32_max - range.i32_min));
     }
     
     case ekg::number::uint32: {
       ekg::ui::slider::range_t &range {p_ui->range<uint32_t>(index)};
+      range.u32.align_ownership_mem_if_necessary();
       return (dimension * (range.u32.get_value() - range.u32_min) / (range.u32_max - range.u32_min));
     }
     
     case ekg::number::int16: {
       ekg::ui::slider::range_t &range {p_ui->range<int16_t>(index)};
+      range.i16.align_ownership_mem_if_necessary();
       return (dimension * (range.i16.get_value() - range.i16_min) / (range.i16_max - range.i16_min));
     }
     
     case ekg::number::uint16: {
       ekg::ui::slider::range_t &range {p_ui->range<uint16_t>(index)};
+      range.u16.align_ownership_mem_if_necessary();
       return (dimension * (range.u16.get_value() - range.u16_min) / (range.u16_max - range.u16_min));
     }
     
     case ekg::number::int8: {
       ekg::ui::slider::range_t &range {p_ui->range<int8_t>(index)};
+      range.i8.align_ownership_mem_if_necessary();
       return (dimension * (range.i8.get_value() - range.i8_min) / (range.i8_max - range.i8_min));
     }
     
     case ekg::number::uint8: {
       ekg::ui::slider::range_t &range {p_ui->range<uint8_t>(index)};
+      range.u8.align_ownership_mem_if_necessary();
       return (dimension * (range.u8.get_value() - range.u8_min) / (range.u8_max - range.u8_min));
     }
   }
@@ -321,6 +343,7 @@ void ekg::ui::slider_widget_calculate_value(
   switch (number) {
     case ekg::number::float64: {
       ekg::ui::slider::range_t &range {p_ui->range<double>(index)};
+      range.f64.align_ownership_mem_if_necessary();
 
       if (factor == 0) {
         range.f64.set_value(range.f64_min);
@@ -332,6 +355,7 @@ void ekg::ui::slider_widget_calculate_value(
     
     case ekg::number::float32: {
       ekg::ui::slider::range_t &range {p_ui->range<float>(index)};
+      range.f32.align_ownership_mem_if_necessary();
 
       if (factor == 0) {
         range.f32.set_value(range.f32_min);
@@ -344,6 +368,7 @@ void ekg::ui::slider_widget_calculate_value(
     
     case ekg::number::int64: {
       ekg::ui::slider::range_t &range {p_ui->range<int64_t>(index)};
+      range.i64.align_ownership_mem_if_necessary();
 
       if (factor == 0) {
         range.i64.set_value(range.i64_min);
@@ -355,6 +380,7 @@ void ekg::ui::slider_widget_calculate_value(
     
     case ekg::number::uint64: {
       ekg::ui::slider::range_t &range {p_ui->range<uint64_t>(index)};
+      range.u64.align_ownership_mem_if_necessary();
 
       if (factor == 0) {
         range.u64.set_value(range.u64_min);
@@ -366,6 +392,7 @@ void ekg::ui::slider_widget_calculate_value(
     
     case ekg::number::int32: {
       ekg::ui::slider::range_t &range {p_ui->range<int32_t>(index)};
+      range.i32.align_ownership_mem_if_necessary();
 
       if (factor == 0) {
         range.i32.set_value(range.i32_min);
@@ -377,6 +404,7 @@ void ekg::ui::slider_widget_calculate_value(
     
     case ekg::number::uint32: {
       ekg::ui::slider::range_t &range {p_ui->range<uint32_t>(index)};
+      range.u32.align_ownership_mem_if_necessary();
 
       if (factor == 0) {
         range.u32.set_value(range.u32_min);
@@ -388,6 +416,7 @@ void ekg::ui::slider_widget_calculate_value(
     
     case ekg::number::int16: {
       ekg::ui::slider::range_t &range {p_ui->range<int16_t>(index)};
+      range.i16.align_ownership_mem_if_necessary();
 
       if (factor == 0) {
         range.i16.set_value(range.i16_min);
@@ -399,6 +428,7 @@ void ekg::ui::slider_widget_calculate_value(
     
     case ekg::number::uint16: {
       ekg::ui::slider::range_t &range {p_ui->range<uint16_t>(index)};
+      range.u16.align_ownership_mem_if_necessary();
 
       if (factor == 0) {
         range.u16.set_value(range.u16_min);
@@ -410,6 +440,7 @@ void ekg::ui::slider_widget_calculate_value(
     
     case ekg::number::int8: {
       ekg::ui::slider::range_t &range {p_ui->range<int8_t>(index)};
+      range.i8.align_ownership_mem_if_necessary();
 
       if (factor == 0) {
         range.i8.set_value(range.i8_min);
@@ -421,6 +452,7 @@ void ekg::ui::slider_widget_calculate_value(
     
     case ekg::number::uint8: {
       ekg::ui::slider::range_t &range {p_ui->range<uint8_t>(index)};
+      range.u8.align_ownership_mem_if_necessary();
 
       if (factor == 0) {
         range.u8.set_value(range.u8_min);
@@ -440,51 +472,61 @@ std::string_view ekg::ui::slider_widget_get_value_label(
   switch (number) {
     case ekg::number::float64: {
       ekg::ui::slider::range_t &range {p_ui->range<double>(index)};
+      range.f64.align_ownership_mem_if_necessary();
       return ekg::string_float64_precision(range.f64.get_value(), range.display_precision);
     }
 
     case ekg::number::float32: {
       ekg::ui::slider::range_t &range {p_ui->range<float>(index)};
+      range.f32.align_ownership_mem_if_necessary();
       return ekg::string_float_precision(range.f32.get_value(), range.display_precision);
     }
     
     case ekg::number::int64: {
       ekg::ui::slider::range_t &range {p_ui->range<int64_t>(index)};
+      range.i64.align_ownership_mem_if_necessary();
       return std::to_string(range.i64.get_value());
     }
     
     case ekg::number::uint64: {
       ekg::ui::slider::range_t &range {p_ui->range<uint64_t>(index)};
+      range.u64.align_ownership_mem_if_necessary();
       return std::to_string(range.u64.get_value());
     }
     
     case ekg::number::int32: {
       ekg::ui::slider::range_t &range {p_ui->range<int32_t>(index)};
+      range.i32.align_ownership_mem_if_necessary();
       return std::to_string(range.i32.get_value());
     }
     
     case ekg::number::uint32: {
       ekg::ui::slider::range_t &range {p_ui->range<uint32_t>(index)};
+      range.u32.align_ownership_mem_if_necessary();
       return std::to_string(range.u32.get_value());
     }
     
     case ekg::number::int16: {
       ekg::ui::slider::range_t &range {p_ui->range<int16_t>(index)};
+      range.i16.align_ownership_mem_if_necessary();
       return std::to_string(range.i16.get_value());
     }
     
     case ekg::number::uint16: {
       ekg::ui::slider::range_t &range {p_ui->range<uint16_t>(index)};
+      range.u16.align_ownership_mem_if_necessary();
       return std::to_string(range.u16.get_value());
     }
     
     case ekg::number::int8: {
       ekg::ui::slider::range_t &range {p_ui->range<int8_t>(index)};
+      range.i8.align_ownership_mem_if_necessary();
       return std::to_string(range.i8.get_value());
     }
     
     case ekg::number::uint8: {
       ekg::ui::slider::range_t &range {p_ui->range<uint8_t>(index)};
+      range.u8.align_ownership_mem_if_necessary();
       return std::to_string(range.u8.get_value());
     }
   }

@@ -409,10 +409,7 @@ void ekg::layout::mask::preset(const ekg::vec3 &mask_offset, ekg::axis mask_axis
 }
 
 void ekg::layout::mask::insert(const ekg::layout::mask::rect &dock_rect) {
-  if (
-      (static_cast<int32_t>(dock_rect.p_rect->w == 0) || static_cast<int32_t>(dock_rect.p_rect->h) == 0) ||
-      (ekg_bitwise_contains(dock_rect.flags, ekg::dock::none))
-    ) {
+  if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::none)) {
     return;
   }
 
@@ -474,12 +471,12 @@ void ekg::layout::mask::docknize() {
           1.0f
         );
 
+        std::cout << count << " " << dimensional_extent << " " << this->respective_all << std::endl;
+
         dock_rect.p_rect->w = dimensional_extent;
         opposite = 0;
         uniform = dock_rect.p_rect->w + this->offset.x;
         this->mask.w += dimensional_extent + this->offset.x + opposite;
-
-        std::cout << "dimensional_extent: " << dimensional_extent << std::endl;
       }
 
       left_or_right = (
