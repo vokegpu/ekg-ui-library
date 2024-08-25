@@ -31,73 +31,192 @@
 
 namespace ekg::ui {
   class slider :
-    public ekg::ui::abstract,
-    public ekg::value_t<ekg::feature*, ekg::ui::slider>
+    public ekg::ui::abstract
   {
   public:
-    template<typename t>
     struct range_t {
     public:
-      t min {};
-      t max {};
-      uint8_t display_precision {2};
-      ekg::value_t<t, ekg::ui::slider> value {};
-    };
+      ekg::value_t<double, ekg::ui::slider> f64 {};
+      double f64_min {};
+      double f64_max {};
 
-    template<typename t>
-    struct serializer_t : public ekg::feature {
+      ekg::value_t<float, ekg::ui::slider> f32 {};
+      float f32_min {};
+      float f32_max {};
+
+      ekg::value_t<uint64_t, ekg::ui::slider> u64 {};
+      uint64_t u64_min {};
+      uint64_t u64_max {};
+
+      ekg::value_t<int64_t, ekg::ui::slider> i64 {};
+      int64_t i64_min {};
+      int64_t i64_max {};
+
+      ekg::value_t<uint32_t, ekg::ui::slider> u32 {};
+      uint32_t u32_min {};
+      uint32_t u32_max {};
+
+      ekg::value_t<int32_t, ekg::ui::slider> i32 {};
+      int32_t i32_min {};
+      int32_t i32_max {};
+
+      ekg::value_t<uint16_t, ekg::ui::slider> u16 {};
+      uint16_t u16_min {};
+      uint16_t u16_max {};
+
+      ekg::value_t<int16_t, ekg::ui::slider> i16 {};
+      int16_t i16_min {};
+      int16_t i16_max {};
+
+      ekg::value_t<uint8_t, ekg::ui::slider> u8 {};
+      uint8_t u8_min {};
+      uint8_t u8_max {};
+
+      ekg::value_t<int8_t, ekg::ui::slider> i8 {};
+      int8_t i8_min {};
+      int8_t i8_max {};
+
+      int32_t display_precision {2};
     public:
-      std::vector<ekg::ui::slider::range_t<t>> range_list {};
+      // idc meow
     };
-  public:
+  protected:
     ekg::number number {};
     ekg::flags dock_text {};
     ekg::axis axis {};
     ekg::font font_size {};
+    std::vector<ekg::ui::slider::range_t> range_list {};
   public:
     template<typename t>
-    ekg::ui::slider::serializer_t<t> &serializer() {
-      return *static_cast<ekg::ui::slider::serializer_t<t>*>(this->get_value());
-    };
-
-    template<typename t>
-    ekg::value_t<t, ekg::ui::slider> &value(uint64_t index = 0) {
-      ekg::ui::slider::serializer_t<t> &serializer {
-        this->serializer<t>()
-      };
-
-      ekg::ui::slider::range_t<t> &serialized_range {serializer.range_list.at(index)};
-      serialized_range.value.registry(this);
-
-      return serialized_range.value;
-    };
-
-    template<typename t>
-    ekg::ui::slider::range_t<t> &range(uint64_t index) {
-      ekg::ui::slider::serializer_t<t> &serializer {
-        this->serializer<t>()
-      };
-
-      if (index >= serializer.range_list.size()) {
-        serializer.range_list.resize(index + 1);
+    ekg::ui::slider::range_t &range(uint64_t index = 0) {
+      if (index >= this->range_list.size()) {
+        this->range_list.resize(index + 1);
       }
 
-      return serializer.range_list.at(index);
+      return this->range_list.at(index);
     };
 
     template<typename t>
-    ekg::ui::slider::range_t<t> &range(uint64_t index, t min, t max, uint8_t display_precision = UINT8_MAX) {
-      ekg::ui::slider::range_t<t> &serialized_range {this->range<t>(index)};
-
-      serialized_range.min = min;
-      serialized_range.max = max;
-
-      if (display_precision != UINT8_MAX) {
-        serialized_range.display_precision = display_precision;
+    ekg::ui::slider::range_t &value(uint64_t index, t val) {
+      ekg::ui::slider::range_t &range {this->range_list.at(index)};
+      switch (this->number) {
+      case ekg::number::float64:
+        range.f64.set_value(static_cast<t>(val));
+        range.f64.registry(this);
+        break;
+      case ekg::number::float32:
+        range.f32.set_value(static_cast<t>(val));
+        range.f32.registry(this);
+        break;
+      case ekg::number::int64:
+        range.i64.set_value(static_cast<t>(val));
+        range.i64.registry(this);
+        break;
+      case ekg::number::uint64:
+        range.u64.set_value(static_cast<t>(val));
+        range.u64.registry(this);
+        break;
+      case ekg::number::int32:
+        range.i32.set_value(static_cast<t>(val));
+        range.i32.registry(this);
+        break;
+      case ekg::number::uint32:
+        range.u32.set_value(static_cast<t>(val));
+        range.u32.registry(this);
+        break;
+      case ekg::number::int16:
+        range.i16.set_value(static_cast<t>(val));
+        range.i16.registry(this);
+        break;
+      case ekg::number::uint16:
+        range.u16.set_value(static_cast<t>(val));
+        range.u16.registry(this);
+        break;
+      case ekg::number::int8:
+        range.i8.set_value(static_cast<t>(val));
+        range.i8.registry(this);
+        break;
+      case ekg::number::uint8:
+        range.u8.set_value(static_cast<t>(val));
+        range.u8.registry(this);
+        break;
       }
 
-      return serialized_range;
-    };
+      return range;
+    }
+
+    template<typename t>
+    ekg::ui::slider *range(uint64_t index, t val, t min, t max, int32_t display_precision = -1) {
+      ekg::ui::slider::range_t &range {this->range<t>(index)};
+      if (display_precision < 0) {
+        range.display_precision = display_precision;
+      }
+
+      switch (this->number) {
+      case ekg::number::float64:
+        range.f64.set_value(static_cast<t>(val));
+        range.f64_min = min;
+        range.f64_max = max;
+        range.f64.registry(this);
+        break;
+      case ekg::number::float32:
+        range.f32.set_value(static_cast<t>(val));
+        range.f32_min = min;
+        range.f32_max = max;
+        range.f32.registry(this);
+        break;
+      case ekg::number::int64:
+        range.i64.set_value(static_cast<t>(val));
+        range.i64_min = min;
+        range.i64_max = max;
+        range.i64.registry(this);
+        break;
+      case ekg::number::uint64:
+        range.u64.set_value(static_cast<t>(val));
+        range.u64_min = min;
+        range.u64_max = max;
+        range.u64.registry(this);
+        break;
+      case ekg::number::int32:
+        range.i32.set_value(static_cast<t>(val));
+        range.i32_min = min;
+        range.i32_max = max;
+        range.i32.registry(this);
+        break;
+      case ekg::number::uint32:
+        range.u32.set_value(static_cast<t>(val));
+        range.u32_min = min;
+        range.u32_max = max;
+        range.u32.registry(this);
+        break;
+      case ekg::number::int16:
+        range.i16.set_value(static_cast<t>(val));
+        range.i16_min = min;
+        range.i16_max = max;
+        range.i16.registry(this);
+        break;
+      case ekg::number::uint16:
+        range.u16.set_value(static_cast<t>(val));
+        range.u16_min = min;
+        range.u16_max = max;
+        range.u16.registry(this);
+        break;
+      case ekg::number::int8:
+        range.i8.set_value(static_cast<t>(val));
+        range.i8_min = min;
+        range.i8_max = max;
+        range.i8.registry(this);
+        break;
+      case ekg::number::uint8:
+        range.u8.set_value(static_cast<t>(val));
+        range.u8_min = min;
+        range.u8_max = max;
+        range.u8.registry(this);
+        break;
+      }
+
+      return this;
+    }
   public:
     /**
      * Set the numbebr, used to determine diff number serializer formats.
@@ -105,6 +224,11 @@ namespace ekg::ui {
      **/
     ekg::ui::slider *unsafe_set_number(ekg::number number);
   public:
+    /**
+     * Get the range list from slider.
+     **/
+    std::vector<ekg::ui::slider::range_t> &get_range_list();
+
     ekg::number get_number();
 
     ekg::ui::slider *set_axis(ekg::axis new_axis);

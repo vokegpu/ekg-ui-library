@@ -231,38 +231,13 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
         ekg::axis::horizontal
       );
 
-      /**
-       * The pixel imperfect issue was solved here...
-       * For a long time I did not know what was going on with the pixels,
-       * some solutions I used did not work, then I discovered that all the time
-       * was this dimension extent with float imprecision loss.
-       * 
-       * Each pixels represent 1.0f, if the GPU receives pixels with
-       * (n + f) `n` a non-floating point number and `f` a floating point;
-       * the rasterizer will jump between pixels, resulting in pixel-imperfect.
-       * 
-       * The following formula make you understand:
-       * ( (g - d) - (c * o) ) / c
-       * 
-       * g = group rect
-       * d = dimensional extent
-       * c = amount of widgets with fill property flag until any flag next
-       * o = UI offset setting
-       * 
-       * Float-only without the int32_t cast may results in pixel-imperfect
-       * due the influence of dimensional size of parent rect, font height, font width etc.
-       * 
-       * There is no problem with float32 to int32 (I guess)
-       * I do not believe in larger monitors size than 16k.
-       * 
-       * - Rina.
-       **/
       dimensional_extent = ekg_min(
-        (
-          (static_cast<int32_t>(group_rect.w) - static_cast<int32_t>(dimensional_extent))
-          -
-          static_cast<int32_t>(count * ekg::layout::offset)
-        ) / static_cast<int32_t>(count),
+        ekg_layout_get_dimensional_extent(
+          group_rect.w,
+          dimensional_extent,
+          ekg::layout::offset,
+          count
+        ),
         p_widgets->min_size.x
       );
 
@@ -335,6 +310,98 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
   }
 }
 
+void ekg::layout::mask::extentnize(
+  float &extent,
+  ekg::flags flag_ok,
+  ekg::flags flag_stop,
+  int64_t &begin_and_count,
+  ekg::axis axis
+) {
+  extent = 0.0f;
+  switch (axis) {
+    case ekg::axis::horizontal: {
+      ekg::flags flags {};
+      int32_t ids {};
+      int64_t flag_ok_count {};
+      int64_t it {begin_and_count};
+
+      if (
+          begin_and_count > static_cast<int64_t>(ekg::layout::extent::h.x) &&
+          begin_and_count < static_cast<int64_t>(ekg::layout::extent::h.y)
+        ) {
+        begin_and_count = static_cast<int64_t>(ekg::layout::extent::h.h);
+        extent = ekg::layout::extent::h.w;
+        return;
+      }
+
+      ekg::layout::extent::h.x = static_cast<float>(it);
+      uint64_t size {this->dock_rect_list.size()};
+      uint64_t latest_index {size - (!this->dock_rect_list.empty())};
+
+      bool is_last_index {};
+      bool is_ok_flag {};
+
+      /**
+       * The last index does not check if contains a next flag,
+       * so it is needed to brute-check to stop at end of index. 
+       *
+       * The extent data store the previous bounding indices,
+       * in simply words, prevent useless iteration.
+       *
+       * The min offset is added for extent, because we need count
+       * the offset position when split the fill width, but the
+       * last extent space is not necessary, so we need to subtract.
+       **/
+      for (it = it; it < size; it++) {
+        ekg::layout::mask::rect &dock_rect {this->dock_rect_list.at(it)};
+        if (dock_rect.p_rect == nullptr) {
+          continue;
+        }
+
+        is_last_index = it == latest_index;
+
+        if (
+            (ekg_bitwise_contains(dock_rect.flags, flag_stop) && it != begin_and_count) || is_last_index
+          ) {
+          extent -= this->offset.x;
+          flag_ok_count += (
+            (is_ok_flag = (!ekg_bitwise_contains(dock_rect.flags, flag_stop) && ekg_bitwise_contains(dock_rect.flags, flag_ok) && is_last_index))
+          );
+
+          /**
+           * Basically if the container/frame mother ends with any non flag ok (ekg::dock::fill)
+           * it MUST add the width size to extend.
+           *
+           * :blush:
+           **/
+          extent += (
+            (dock_rect.p_rect->w + this->offset.x) * (is_last_index && !ekg_bitwise_contains(dock_rect.flags, flag_ok))
+          );
+
+          ekg::layout::extent::h.y = static_cast<float>(it + is_last_index);
+          ekg::layout::extent::h.w = extent;
+          ekg::layout::extent::h.h = static_cast<float>(flag_ok_count == 0 ? 1 : flag_ok_count);
+          break;
+        }
+
+        if (ekg_bitwise_contains(dock_rect.flags, flag_ok)) {
+          flag_ok_count++;
+          continue;
+        }
+
+        extent += dock_rect.p_rect->w + this->offset.x;
+      }
+
+      begin_and_count = flag_ok_count == 0 ? 1 : flag_ok_count;
+      break;
+    }
+
+    case ekg::axis::vertical: {
+      break;
+    }
+  }
+}
+
 void ekg::layout::mask::preset(const ekg::vec3 &mask_offset, ekg::axis mask_axis, float initial_respective_size) {
   this->axis = mask_axis;
   this->offset = mask_offset;
@@ -353,53 +420,81 @@ void ekg::layout::mask::insert(const ekg::layout::mask::rect &dock_rect) {
 }
 
 void ekg::layout::mask::docknize() {
-  /*
-   * V is the the respective size (axis horizontal == width | axis vertical == height)
-   */
-  bool axis {this->axis == ekg::axis::horizontal};
-  if (this->dock_rect_list.empty()) {
-    this->mask.w = axis ? this->respective_all : this->offset.z;
-    this->mask.h = axis ? this->offset.z : this->respective_all;
-    return;
-  }
-
   float left_or_right {};
-  float v {this->respective_all};
   float centered_dimension {this->offset.z / 2};
-  float opposite {}, uniform {};
+  float opposite {};
+  float uniform {};
   float clamped_offset {};
 
-  /* check for opposite dock and get the full size respective for the axis dock */
-  if (v == 0) {
-    v = this->get_respective_size();
-  }
+  int64_t count {};
+  float dimensional_extent {};
 
-  /* offset z is the dimension respective (width if height else height) size */
-  this->mask.w = axis ? this->offset.x : this->offset.z;
-  this->mask.h = axis ? this->offset.z : this->offset.y;
-
-  /* axis false is equals X else is equals Y */
-  for (ekg::layout::mask::rect &dock_rect : this->dock_rect_list) {
-    if (dock_rect.p_rect == nullptr) {
-      continue;
+  switch (this->axis) {
+  case ekg::axis::horizontal:
+    if (this->dock_rect_list.empty()) {
+      this->mask.w = this->respective_all;
+      this->mask.h = this->offset.z;
+      return;
     }
 
-    if (axis) {
-      clamped_offset = (dock_rect.p_rect->h + this->offset.y) - this->offset.z > 0 ? 0 : this->offset.y;
+    this->mask.w = this->offset.x;
+    this->mask.h = this->offset.z;
+
+    for (uint64_t it {}; it < this->dock_rect_list.size(); it++) {
+      ekg::layout::mask::rect &dock_rect {this->dock_rect_list.at(it)};
+      if (dock_rect.p_rect == nullptr) {
+        continue;
+      }
+
+      clamped_offset = ekg_clamp(
+        (dock_rect.p_rect->h + this->offset.y) - this->offset.z,
+        0.0f,
+        this->offset.y
+      );
+
+      if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::fill)) {
+        dock_rect.p_rect->x = this->mask.w;
+
+        count = it;
+        this->extentnize(
+          dimensional_extent,
+          ekg::dock::fill,
+          ekg::dock::none,
+          count,
+          ekg::axis::horizontal
+        );
+
+        dimensional_extent = ekg_min(
+          ekg_layout_get_dimensional_extent(
+            this->respective_all,
+            dimensional_extent,
+            this->offset.x,
+            count
+          ),
+          1.0f
+        );
+
+        dock_rect.p_rect->w = dimensional_extent;
+        opposite = 0;
+        uniform = dock_rect.p_rect->w + this->offset.x;
+        this->mask.w += dimensional_extent + this->offset.x + opposite;
+
+        std::cout << "dimensional_extent: " << dimensional_extent << std::endl;
+      }
+
       left_or_right = (
         ekg_bitwise_contains(dock_rect.flags, ekg::dock::left) ||
         ekg_bitwise_contains(dock_rect.flags, ekg::dock::right)
       );
 
       if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::center) && !left_or_right) {
-        dock_rect.p_rect->x = (v / 2) - (dock_rect.p_rect->w / 2);
+        dock_rect.p_rect->x = (this->respective_all / 2) - (dock_rect.p_rect->w / 2);
         dock_rect.p_rect->y = centered_dimension - (dock_rect.p_rect->h / 2);
         this->mask.w += dock_rect.p_rect->w + this->offset.x;
       } else if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::center)) {
         dock_rect.p_rect->y = centered_dimension - (dock_rect.p_rect->h / 2);
       }
 
-      /* when there is a opposite dock, layout should dock position to actual position */
       if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::left)) {
         if (static_cast<int32_t>(opposite) != 0) {
           this->mask.w -= opposite;
@@ -417,7 +512,7 @@ void ekg::layout::mask::docknize() {
         }
 
         this->mask.w += dock_rect.p_rect->w;
-        dock_rect.p_rect->x = v - this->mask.w;
+        dock_rect.p_rect->x = this->respective_all - this->mask.w;
         this->mask.w += uniform + this->offset.x;
         opposite = dock_rect.p_rect->w + this->offset.x;
         uniform = 0;
@@ -428,10 +523,30 @@ void ekg::layout::mask::docknize() {
       } else if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::bottom)) {
         dock_rect.p_rect->y = this->offset.z - clamped_offset - dock_rect.p_rect->h;
       }
-    } else {
+    }
+
+    this->mask.w = ekg_min(this->respective_all, this->mask.w);
+    break;
+  case ekg::axis::vertical:
+    if (this->dock_rect_list.empty()) {
+      this->mask.w = this->offset.z;
+      this->mask.h = this->respective_all;
+      return;
+    }
+
+    this->mask.w = this->offset.z;
+    this->mask.h = this->offset.y;
+
+    for (uint64_t it {}; it < this->dock_rect_list.size(); it++) {
+      ekg::layout::mask::rect &dock_rect {this->dock_rect_list.at(it)};
+
+      if (dock_rect.p_rect == nullptr) {
+        continue;
+      }
+
       clamped_offset = ekg_clamp(
         (dock_rect.p_rect->w + this->offset.x) - this->offset.z,
-        0,
+        0.0f,
         this->offset.x
       );
 
@@ -447,7 +562,6 @@ void ekg::layout::mask::docknize() {
         dock_rect.p_rect->x = centered_dimension - (dock_rect.p_rect->w / 2);
       }
 
-      /* when there is a opposite dock, layout should fix the dock position to actual position */
       if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::top)) {
         if (static_cast<int32_t>(opposite) != 0) {
           this->mask.h -= opposite;
@@ -465,7 +579,7 @@ void ekg::layout::mask::docknize() {
         }
 
         this->mask.h += dock_rect.p_rect->h;
-        dock_rect.p_rect->y = v - this->mask.h;
+        dock_rect.p_rect->y = this->respective_all - this->mask.h;
         this->mask.h += uniform + this->offset.y;
         opposite = dock_rect.p_rect->h + this->offset.y;
         uniform = 0;
@@ -479,12 +593,9 @@ void ekg::layout::mask::docknize() {
         dock_rect.p_rect->x = this->offset.z - clamped_offset - dock_rect.p_rect->w;
       }
     }
-  }
 
-  if (axis) {
-    this->mask.w = ekg_min(v, this->mask.w);
-  } else {
-    this->mask.h = ekg_min(v, this->mask.h);
+    this->mask.h = ekg_min(this->respective_all, this->mask.h);
+    break;
   }
 
   this->dock_rect_list.clear();

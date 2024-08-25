@@ -4,6 +4,41 @@
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
 #include "ekg/util/geometry.hpp"
 
+/**
+ * Returns the dimensional extent based in count and the offset (space between rects). 
+ * 
+ * The pixel imperfect issue was solved here...
+ * For a long time I did not know what was going on with the pixels,
+ * some solutions I used did not work, then I discovered that all the time
+ * was this dimension extent with float imprecision loss.
+ * 
+ * Each pixels represent 1.0f, if the GPU receives pixels with
+ * (n + f) `n` a non-floating point number and `f` a floating point;
+ * the rasterizer will jump between pixels, resulting in pixel-imperfect.
+ * 
+ * The following formula make you understand:
+ * ( (g - d) - (c * o) ) / c
+ * 
+ * g = group rect
+ * d = dimensional extent
+ * c = amount of widgets with fill property flag until any flag next
+ * o = UI offset setting
+ * 
+ * Float-only without the int32_t cast may results in pixel-imperfect
+ * due the influence of dimensional size of parent rect, font height, font width etc.
+ * 
+ * There is no problem with float32 to int32 (I guess)
+ * I do not believe in larger monitors size than 16k.
+ * 
+ * - Rina.
+ **/
+#define ekg_layout_get_dimensional_extent(dimension, extent, offset, count) \
+( \
+  (static_cast<int32_t>(dimension) - static_cast<int32_t>(extent)) \
+    - \
+  (static_cast<int32_t>(count * offset)) \
+) / static_cast<int32_t>(count) \
+
 namespace ekg::layout {
   /**
    * The between widgets offset: Auto-scaled & pixel-fixed.
@@ -44,6 +79,14 @@ namespace ekg::layout {
     ekg::vec3 offset {};
     std::vector<ekg::layout::mask::rect> dock_rect_list {};
     ekg::rect mask {};
+  protected:
+    void extentnize(
+      float &extent,
+      ekg::flags flag_ok,
+      ekg::flags flag_stop,
+      int64_t &begin_and_count,
+      ekg::axis axis
+    );
   public:
     void preset(const ekg::vec3 &mask_offset, ekg::axis mask_axis, float initial_respective_size = 0.0f);
     void insert(const ekg::layout::mask::rect &dock_rect);

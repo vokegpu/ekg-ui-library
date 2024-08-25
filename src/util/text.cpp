@@ -235,7 +235,7 @@ void ekg::utf_decode(std::string_view string, std::vector<std::string> &utf8_rea
   }
 }
 
-std::string_view ekg::string_float64_precision(double n, uint8_t precision) {
+std::string_view ekg::string_float64_precision(double n, int32_t precision) {
   const std::string_view to_string_result {std::to_string(n)};
   return to_string_result.substr(
     0,
@@ -246,8 +246,8 @@ std::string_view ekg::string_float64_precision(double n, uint8_t precision) {
   );
 }
 
-std::string_view ekg::string_float_precision(float n, uint8_t precision) {
-  const std::string_view to_string_result {std::to_string(n)};
+std::string_view ekg::string_float_precision(float n, int32_t precision) {
+  std::string_view to_string_result {std::to_string(n)};
   return to_string_result.substr(
     0,
     ekg_max(

@@ -644,14 +644,12 @@ int32_t showcase_useless_window() {
 
   auto p = ekg::slider<float>(
     "meow",
-    30.0f,
-    10.0f,
-    20.0f,
     ekg::dock::fill | ekg::dock::next
-  );
-
-  p->range<float>(1, 0.0f, 1.0f);  
-  p->range<float>(2, -10.0f, 200.0f);
+  )
+  ->set_text_align(ekg::dock::left)
+  ->range<float>(1, 0.5f, 0.0f, 200.0f)
+  ->range<float>(2, 1.0f, 0.0f, 1.0f)
+  ->range<float>(2).f32.transfer_ownership(&ekg::current_theme_scheme().frame_background.w);
 
   ekg::button("Dead-allocate the instance of life", ekg::dock::fill | ekg::dock::next)
     ->set_task(

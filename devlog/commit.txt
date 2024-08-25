@@ -198,3 +198,4 @@
 -- Added "box" option to `ekg::value_t<t, s>` (I know it is not how burrow and box from Rust works, just a stupid name).
 -- Fixed memory issues from `ekg::value_t<t, s>` but I do not believe it is totally safe, God my brain can not figure what must do.
 -- `ekg::string_float64_precision` added for double/float64.
+-- Totally deprecated the dynamic range, due the insanely unsafe issues, now it is type-specification-based (you must invoke f32 to float, i64 to uint64 but you are able to ownership safety).

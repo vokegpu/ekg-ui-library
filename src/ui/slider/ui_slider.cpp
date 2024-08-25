@@ -31,6 +31,10 @@ ekg::ui::slider *ekg::ui::slider::unsafe_set_number(ekg::number number) {
   return this;
 }
 
+std::vector<ekg::ui::slider::range_t> &ekg::ui::slider::get_range_list() {
+  return this->range_list;
+}
+
 ekg::number ekg::ui::slider::get_number() {
   return this->number;
 }

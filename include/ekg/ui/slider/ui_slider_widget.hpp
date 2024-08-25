@@ -26,6 +26,7 @@
 #define EKG_UI_SLIDER_WIDGET_H
 
 #include "ekg/ui/abstract/ui_abstract_widget.hpp"
+#include "ekg/ui/slider/ui_slider.hpp"
 
 namespace ekg::ui {
   class slider_widget : public ekg::ui::abstract_widget {
@@ -57,7 +58,7 @@ namespace ekg::ui {
    * Based on all supported number formats.
    **/
   float slider_widget_calculate_target_pos(
-    ekg::feature *&p_feature,
+    ekg::ui::slider *&p_ui,
     ekg::number number,
     float dimension,
     uint64_t index
@@ -68,20 +69,11 @@ namespace ekg::ui {
    * Based on all supported number formats.
    **/
   void slider_widget_calculate_value(
-    ekg::feature *&p_feature,
+    ekg::ui::slider *&p_ui,
     ekg::number number,
     float factor,
     float dimension,
     uint64_t index
-  );
-    
-  /**
-   * Returns the size of range list from slider.
-   * Based on all supported number formats.
-   **/
-  uint64_t slider_widget_get_range_count(
-    ekg::feature *&p_feature,
-    ekg::number number
   );
 
   /**
@@ -89,7 +81,7 @@ namespace ekg::ui {
    * Based on all supported number formats and precision (`ekg::float32`, `ekg::float64`).
    **/
   std::string_view slider_widget_get_value_label(
-    ekg::feature *&p_feature,
+    ekg::ui::slider *&p_ui,
     ekg::number number,
     uint64_t index
   );
