@@ -341,6 +341,8 @@ void ekg::layout::mask::extentnize(
       bool is_last_index {};
       bool is_ok_flag {};
 
+      extent += this->offset.x;
+
       /**
        * The last index does not check if contains a next flag,
        * so it is needed to brute-check to stop at end of index. 
@@ -499,7 +501,7 @@ void ekg::layout::mask::docknize() {
       rect_height = dock_rect.p_rect->h;
 
       if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::fill)) {
-        count = it;
+        count = 0;
         this->extentnize(
           dimensional_extent,
           ekg::dock::fill,
@@ -567,65 +569,6 @@ void ekg::layout::mask::docknize() {
 
     this->mask.w = this->offset.z;
     this->mask.h = this->offset.y;
-
-    for (uint64_t it {}; it < this->dock_rect_list.size(); it++) {
-      ekg::layout::mask::rect &dock_rect {this->dock_rect_list.at(it)};
-
-      if (dock_rect.p_rect == nullptr) {
-        continue;
-      }
-
-      clamped_offset = ekg_clamp(
-        (dock_rect.p_rect->w + this->offset.x) - this->offset.z,
-        0.0f,
-        this->offset.x
-      );
-
-      left_or_right = (
-        ekg_bitwise_contains(dock_rect.flags, ekg::dock::left) ||
-        ekg_bitwise_contains(dock_rect.flags, ekg::dock::right)
-      );
-
-      if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::center) && !left_or_right) {
-        dock_rect.p_rect->y = (this->respective_center) + (dock_rect.p_rect->h / 2);
-        dock_rect.p_rect->x = centered_dimension - (dock_rect.p_rect->w / 2);
-      } else if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::center)) {
-        dock_rect.p_rect->x = centered_dimension - (dock_rect.p_rect->w / 2);
-      }
-
-      if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::top)) {
-        if (static_cast<int32_t>(opposite) != 0) {
-          this->mask.h -= opposite;
-        }
-
-        dock_rect.p_rect->y = this->mask.h;
-        this->mask.h += dock_rect.p_rect->h + this->offset.y + opposite;
-        opposite = 0;
-        uniform = dock_rect.p_rect->h + this->offset.y;
-      }
-
-      if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::bottom)) {
-        if (static_cast<int32_t>(uniform) != 0) {
-          this->mask.h -= uniform;
-        }
-
-        this->mask.h += dock_rect.p_rect->h;
-        dock_rect.p_rect->y = this->respective_all - this->mask.h;
-        this->mask.h += uniform + this->offset.y;
-        opposite = dock_rect.p_rect->h + this->offset.y;
-        uniform = 0;
-      }
-
-      if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::left)) {
-        dock_rect.p_rect->x = clamped_offset;
-      }
-
-      if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::right)) {
-        dock_rect.p_rect->x = this->offset.z - clamped_offset - dock_rect.p_rect->w;
-      }
-    }
-
-    this->mask.h = ekg_min(this->respective_all, this->mask.h);
     break;
   }
 

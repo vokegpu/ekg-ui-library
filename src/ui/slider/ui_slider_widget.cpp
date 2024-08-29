@@ -117,7 +117,7 @@ void ekg::ui::slider_widget::on_reload() {
           range.rect.h = this->dimension.h * bar_thickness;
 
           mask.insert({&range.rect_text, text_align_flags});
-          mask.insert({&range.rect, ekg::dock::center | ekg::dock::fill});
+          mask.insert({&range.rect, text_align_flags | ekg::dock::fill});
         }
 
         mask.docknize();
