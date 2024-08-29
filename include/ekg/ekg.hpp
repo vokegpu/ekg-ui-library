@@ -173,11 +173,6 @@ namespace ekg {
    */
   ekg::ui::textbox *textbox(std::string_view tag, std::string_view text, ekg::flags dock = ekg::dock::none);
 
-  /**
-   * Create listbox container UI.
-   */
-  ekg::ui::listbox *listbox_container(std::string_view tag, std::vector<ekg::ui::abstract*> element_list, ekg::flags dock = ekg::dock::none);
-
   /*
    * Create listbox container UI.
    */

@@ -425,6 +425,40 @@ void ekg::layout::mask::docknize() {
 
   int64_t count {};
   float dimensional_extent {};
+  float rect_height {};
+  float rect_width {};
+  float dimension_width {};
+  float dimension_height {};
+
+  bool is_left {};
+  bool is_right {};
+  bool is_center {};
+  bool is_top {};
+  bool is_bottom {};
+
+  /**
+   * All dock rects within left corner (ekg::dock::left)
+   * starts from left to right.
+   **/
+  ekg::rect left_corner {};
+
+  /**
+   * All dock rects within right corner (ekg::dock::right)
+   * starts from right (dimension width based) to left.
+   **/
+  ekg::rect right_corner {};
+
+  /**
+   * All dock rects within center left corner (ekg::dock::right & ekg::dock::center)
+   * starts from right (dimension width divided by 2 based) to left.
+   **/
+  ekg::rect center_left_corner {};
+
+  /**
+   * All dock rects within center right corner (ekg::dock::right & ekg::dock::center)
+   * starts from left (dimension width divided by 2 based) to right.
+   **/
+  ekg::rect center_right_corner {};
 
   switch (this->axis) {
   case ekg::axis::horizontal:
@@ -437,21 +471,34 @@ void ekg::layout::mask::docknize() {
     this->mask.w = this->offset.x;
     this->mask.h = this->offset.z;
 
+    dimension_width = this->respective_all;
+    dimension_height = this->offset.z;
+
+    left_corner.w += this->offset.x;
+    right_corner.w += this->offset.x;
+
+    center_left_corner.x = dimension_width / 2.0f;
+    center_left_corner.w = this->offset.x;
+
+    center_right_corner.x = dimension_width / 2.0f;
+    center_right_corner.w = this->offset.x;
+
     for (uint64_t it {}; it < this->dock_rect_list.size(); it++) {
       ekg::layout::mask::rect &dock_rect {this->dock_rect_list.at(it)};
       if (dock_rect.p_rect == nullptr) {
         continue;
       }
 
-      clamped_offset = ekg_clamp(
-        (dock_rect.p_rect->h + this->offset.y) - this->offset.z,
-        0.0f,
-        this->offset.y
-      );
+      is_left = ekg_bitwise_contains(dock_rect.flags, ekg::dock::left);
+      is_right = ekg_bitwise_contains(dock_rect.flags, ekg::dock::right);
+      is_center = ekg_bitwise_contains(dock_rect.flags, ekg::dock::center);
+      is_bottom = ekg_bitwise_contains(dock_rect.flags, ekg::dock::bottom);
+      is_top = ekg_bitwise_contains(dock_rect.flags, ekg::dock::top);
+
+      rect_width = dock_rect.p_rect->w;
+      rect_height = dock_rect.p_rect->h;
 
       if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::fill)) {
-        dock_rect.p_rect->x = this->mask.w;
-
         count = it;
         this->extentnize(
           dimensional_extent,
@@ -461,7 +508,7 @@ void ekg::layout::mask::docknize() {
           ekg::axis::horizontal
         );
 
-        dimensional_extent = ekg_min(
+        rect_width = ekg_min(
           ekg_layout_get_dimensional_extent(
             this->respective_all,
             dimensional_extent,
@@ -470,60 +517,46 @@ void ekg::layout::mask::docknize() {
           ),
           1.0f
         );
-
-        dock_rect.p_rect->w = dimensional_extent;
-        opposite = 0;
-        uniform = dock_rect.p_rect->w + this->offset.x;
-        this->mask.w += dimensional_extent + this->offset.x + opposite;
       }
 
-      left_or_right = (
-        ekg_bitwise_contains(dock_rect.flags, ekg::dock::left) ||
-        ekg_bitwise_contains(dock_rect.flags, ekg::dock::right)
-      );
-
-      if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::center) && !left_or_right) {
-        if ekg_bitwise_contains(dock_rect.flags, ekg::dock::full) {
-          dock_rect.p_rect->x = (this->respective_all / 2) - (dock_rect.p_rect->w / 2);
-          this->mask.w += dock_rect.p_rect->w + this->offset.x;
-        }
-
-        dock_rect.p_rect->y = centered_dimension - (dock_rect.p_rect->h / 2);
-      } else if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::center)) {
-        dock_rect.p_rect->y = centered_dimension - (dock_rect.p_rect->h / 2);
+      if (is_left && !is_center) {
+        dock_rect.p_rect->x = left_corner.w;
+        dock_rect.p_rect->w = rect_width;
+        left_corner.w += dock_rect.p_rect->w + this->offset.x;
+      } else if (is_right && !is_center) {
+        dock_rect.p_rect->w = rect_width;
+        dock_rect.p_rect->x = dimension_width - right_corner.w - dock_rect.p_rect->w;
+        right_corner.w += dock_rect.p_rect->w + this->offset.x;
+      } else if (is_left && is_center) {
+        dock_rect.p_rect->w = rect_width;
+        dock_rect.p_rect->x = center_left_corner.x - center_left_corner.w - dock_rect.p_rect->w;
+        center_left_corner.w += dock_rect.p_rect->w + this->offset.x; 
+      } else if (is_right && is_center) {
+        dock_rect.p_rect->x = center_right_corner.x + center_right_corner.w;
+        dock_rect.p_rect->w = rect_width;
+        center_right_corner.w += dock_rect.p_rect->w + this->offset.x; 
+      } else if (is_center) {
+        dock_rect.p_rect->w = rect_width;
+        dock_rect.p_rect->x = (dimension_width / 2.0f) - (dock_rect.p_rect->w / 2.0f);
       }
 
-      if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::left)) {
-        if (static_cast<int32_t>(opposite) != 0) {
-          this->mask.w -= opposite;
-        }
-
-        dock_rect.p_rect->x = this->mask.w;
-        this->mask.w += dock_rect.p_rect->w + this->offset.x + opposite;
-        opposite = 0;
-        uniform = dock_rect.p_rect->w + this->offset.x;
+      if (is_top | is_bottom) {
+        dock_rect.p_rect->y = (
+          is_top ? (this->offset.y)  : (dimension_height - rect_height - this->offset.y)
+        );
+      } else {
+        dock_rect.p_rect->y = (
+          (dimension_height / 2.0f) - (rect_height / 2.0f)
+        );
       }
 
-      if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::right)) {
-        if (static_cast<int32_t>(uniform) != 0) {
-          this->mask.w -= uniform;
-        }
-
-        this->mask.w += dock_rect.p_rect->w;
-        dock_rect.p_rect->x = this->respective_all - this->mask.w;
-        this->mask.w += uniform + this->offset.x;
-        opposite = dock_rect.p_rect->w + this->offset.x;
-        uniform = 0;
-      }
-
-      if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::top)) {
-        dock_rect.p_rect->y = clamped_offset;
-      } else if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::bottom)) {
-        dock_rect.p_rect->y = this->offset.z - clamped_offset - dock_rect.p_rect->h;
-      }
+      this->mask.h = dimension_height;
     }
 
-    this->mask.w = ekg_min(this->respective_all, this->mask.w);
+    this->mask.w = ekg_min(
+      this->respective_all,
+      left_corner.w + right_corner.w + center_left_corner.w + center_right_corner.w
+    );
     break;
   case ekg::axis::vertical:
     if (this->dock_rect_list.empty()) {

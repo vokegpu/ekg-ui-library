@@ -153,7 +153,7 @@ ekg::ui::button *ekg::button(std::string_view text, ekg::flags dock) {
   p_ui->set_place(dock);
   p_ui->set_scaled_height(1);
   p_ui->set_font_size(ekg::font::normal);
-  p_ui->set_text_align(ekg::dock::left | ekg::dock::center);
+  p_ui->set_text_align(ekg::dock::left);
   p_ui->set_tag(text);
 
   return p_ui;
@@ -170,7 +170,7 @@ ekg::ui::label *ekg::label(std::string_view text, ekg::flags dock) {
   p_ui->set_place(dock);
   p_ui->set_scaled_height(1);
   p_ui->set_font_size(ekg::font::normal);
-  p_ui->set_text_align(ekg::dock::left | ekg::dock::center);
+  p_ui->set_text_align(ekg::dock::left);
   p_ui->set_tag(text);
 
   return p_ui;
@@ -187,8 +187,8 @@ ekg::ui::checkbox *ekg::checkbox(std::string_view text, bool value, ekg::flags d
   p_ui->set_place(dock);
   p_ui->set_scaled_height(1);
   p_ui->set_font_size(ekg::font::normal);
-  p_ui->set_text_align(ekg::dock::left | ekg::dock::center);
-  p_ui->set_box_align(ekg::dock::left | ekg::dock::center);
+  p_ui->set_text_align(ekg::dock::left);
+  p_ui->set_box_align(ekg::dock::left);
   p_ui->set_tag(text);
   p_ui->set_value(value);
 
@@ -256,25 +256,6 @@ ekg::ui::listbox *ekg::listbox(
   p_ui->set_column_header_font_size(ekg::font::normal);
   p_ui->set_value(item_list);
   p_ui->set_column_header_align(ekg::dock::fill);
-
-  return p_ui;
-}
-
-ekg::ui::listbox *ekg::listbox_container(
-  std::string_view tag,
-  std::vector<ekg::ui::abstract*> element_list,
-  ekg::flags dock
-) {
-  ekg::ui::listbox *p_ui {new ekg::ui::listbox()};
-  p_ui->registry(p_ui);
-  p_ui->reset_ownership();
-
-  p_ui->unsafe_set_type(ekg::type::listbox);
-  ekg::core->gen_widget(p_ui);
-
-  p_ui->set_tag(tag);
-  p_ui->set_place(dock);
-  p_ui->set_scaled_height(6);
 
   return p_ui;
 }

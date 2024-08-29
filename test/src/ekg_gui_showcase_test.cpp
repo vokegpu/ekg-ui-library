@@ -642,15 +642,15 @@ int32_t showcase_useless_window() {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());*/
   }
 
-  auto p = ekg::slider<uint8_t>(
+  auto p = ekg::slider<float>(
     "meow",
     ekg::dock::fill | ekg::dock::next
   )
   ->set_text_align(ekg::dock::right)
-  ->range<uint8_t>(0, 0, 0, 100)
-  //->range<uint8_t>(0).f32.transfer_ownership(&ekg::current_theme_scheme().frame_outline.w)
-  ->range<uint8_t>(1, 10, 0, 127);
-  //->range<uint8_t>(1).f32.transfer_ownership(&ekg::current_theme_scheme().frame_background.w);
+  ->range<float>(0, 0.0f, 0.0f, 100.0f)
+  ->range<float>(0).f32.transfer_ownership(&ekg::current_theme_scheme().frame_outline.w)
+  ->range<float>(1, 10.0f, 0.0f, 127.0f)
+  ->range<float>(1).f32.transfer_ownership(&ekg::current_theme_scheme().frame_background.w);
 
   ekg::button("Dead-allocate the instance of life", ekg::dock::fill | ekg::dock::next)
     ->set_task(
@@ -681,7 +681,11 @@ int32_t showcase_useless_window() {
   ->set_mode(ekg::mode::multicolumn)
   ->transfer_ownership(&content);
 
-  auto p_dpi = ekg::checkbox("DPI-scale:", true, ekg::dock::next);
+  ekg::checkbox("DPI-scale:", true, ekg::dock::next | ekg::dock::fill)
+    ->set_box_align(ekg::dock::left)
+    ->set_text_align(ekg::dock::left)
+    ->transfer_ownership(&ekg::ui::auto_scale);
+
   ekg::textbox("DPI", "1920x1080", ekg::dock::fill)
     ->set_max_lines(1)
     ->set_task(
@@ -895,7 +899,6 @@ int32_t showcase_useless_window() {
         " GD: " + std::to_string(ekg::gpu::allocator::current_rendering_data_count)
       );
 
-      ekg::ui::auto_scale = p_dpi->get_value();
       frame_couting = 0;
     }
 
@@ -1043,7 +1046,16 @@ int32_t laboratory_testing() {
   float prev_pos {10.2f};
   float scale {2.0f};
 
-  message_gui msg_gui {};
+  ekg::frame("campo", {20, 20}, {200, 200})
+    ->set_drag(ekg::dock::full)
+    ->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+
+  ekg::checkbox("comer pasto pra ficar gorda", true, ekg::dock::fill)
+    ->set_box_align(ekg::dock::right | ekg::dock::fill)
+    ->set_text_align(ekg::dock::left | ekg::dock::fill)
+    ->set_scaled_height(1);
+
+  ekg::pop_group();
 
   while (running) {
     last = now;

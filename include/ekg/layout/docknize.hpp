@@ -73,11 +73,12 @@ namespace ekg::layout {
       ekg::flags flags {};
     };
   protected:
+    std::vector<ekg::layout::mask::rect> dock_rect_list {};
+
     float respective_all {};
     float respective_center {};
     ekg::axis axis {};
     ekg::vec3 offset {};
-    std::vector<ekg::layout::mask::rect> dock_rect_list {};
     ekg::rect mask {};
   protected:
     void extentnize(
