@@ -642,15 +642,20 @@ int32_t showcase_useless_window() {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());*/
   }
 
-  auto p = ekg::slider<float>(
+  auto p = ekg::slider<int32_t>(
     "meow",
     ekg::dock::fill | ekg::dock::next
   )
   ->set_text_align(ekg::dock::left)
-  ->range<float>(0, 0.3f, 0.0f, 1.0f)
-  ->range<float>(0).f32.transfer_ownership(&ekg::current_theme_scheme().frame_outline.w)
+  ->range<int32_t>(0, 0, 0, 32)
+  ->range<int32_t>(1, 1, 0, 32);
+  /*
+  ->set_text_align(ekg::dock::left)
+  ->range<double>(0, 0.3f, 0.0f, 1.0f)
+  ->range<double>(0).f32.transfer_ownership(&ekg::current_theme_scheme().frame_outline.w)
   ->range<float>(1, 0.55f, 0.0f, 1.0f)
   ->range<float>(1).f32.transfer_ownership(&ekg::current_theme_scheme().frame_background.w);
+  */
 
   ekg::button("Dead-allocate the instance of life", ekg::dock::fill | ekg::dock::next)
     ->set_task(

@@ -85,20 +85,20 @@ namespace ekg::ui {
     ekg::flags dock_text {};
     ekg::axis axis {};
     ekg::font font_size {};
-    std::vector<ekg::ui::slider::range_t> range_list {};
+    std::map<uint64_t, ekg::ui::slider::range_t*> range_map {};
   public:
     template<typename t>
     ekg::ui::slider::range_t &range(uint64_t index = 0) {
-      if (index >= this->range_list.size()) {
-        this->range_list.resize(index + 1);
+      if (!this->range_map.count(index)) {
+        this->range_map.insert({index, new ekg::ui::slider::range_t {}});
       }
 
-      return this->range_list.at(index);
+      return *this->range_map.at(index);
     };
 
     template<typename t>
     ekg::ui::slider::range_t &value(uint64_t index, t val) {
-      ekg::ui::slider::range_t &range {this->range_list.at(index)};
+      ekg::ui::slider::range_t &range {this->range<t>(index)};
       switch (this->number) {
       case ekg::number::float64:
         range.f64.set_value(static_cast<t>(val));
@@ -244,10 +244,7 @@ namespace ekg::ui {
      **/
     ekg::ui::slider *unsafe_set_number(ekg::number number);
   public:
-    /**
-     * Get the range list from slider.
-     **/
-    std::vector<ekg::ui::slider::range_t> &get_range_list();
+    uint64_t get_range_count();
 
     ekg::number get_number();
 

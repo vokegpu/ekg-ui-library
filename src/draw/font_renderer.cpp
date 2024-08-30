@@ -356,30 +356,46 @@ void ekg::draw::font_renderer::blit(std::string_view text, float x, float y, con
     coordinates.h = vertices.h / this->full_height;
 
     this->p_allocator->push_back_geometry(
-      vertices.x, vertices.y, coordinates.x, coordinates.y
+      vertices.x,
+      vertices.y,
+      coordinates.x,
+      coordinates.y
     );
 
     this->p_allocator->push_back_geometry(
-      vertices.x, vertices.y + vertices.h, coordinates.x,
+      vertices.x,
+      vertices.y + vertices.h,
+      coordinates.x,
       coordinates.y + coordinates.h
     );
 
     this->p_allocator->push_back_geometry(
-      vertices.x + vertices.w, vertices.y + vertices.h,
-      coordinates.x + coordinates.w, coordinates.y + coordinates.h
+      vertices.x + vertices.w,
+      vertices.y + vertices.h,
+      coordinates.x + coordinates.w,
+      coordinates.y + coordinates.h
     );
 
     this->p_allocator->push_back_geometry(
-      vertices.x + vertices.w, vertices.y + vertices.h,
-      coordinates.x + coordinates.w, coordinates.y + coordinates.h
+      vertices.x + vertices.w,
+      vertices.y + vertices.h,
+      coordinates.x + coordinates.w,
+      coordinates.y + coordinates.h
     );
 
     this->p_allocator->push_back_geometry(
-      vertices.x + vertices.w, vertices.y, coordinates.x + coordinates.w,
+      vertices.x + vertices.w,
+      vertices.y,
+      coordinates.x + coordinates.w,
       coordinates.y
     );
 
-    this->p_allocator->push_back_geometry(vertices.x, vertices.y, coordinates.x, coordinates.y);
+    this->p_allocator->push_back_geometry(
+      vertices.x,
+      vertices.y,
+      coordinates.x,
+      coordinates.y
+    );
 
     x += char_data.wsize;
     ft_uint_previous = char32;

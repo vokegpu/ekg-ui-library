@@ -37,7 +37,6 @@ void ekg::ui::slider_widget::on_reload() {
   ekg::draw::font_renderer &f_renderer {ekg::f_renderer(base_font_size)};
   ekg::draw::font_renderer &small_f_renderer {ekg::f_renderer(ekg::font::small)};
   ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
-  std::vector<ekg::ui::slider::range_t> &ui_range_list {p_ui->get_range_list()};
 
   ekg::rect &rect {this->get_abs_rect()};
   ekg::rect relative_rect {};
@@ -57,6 +56,7 @@ void ekg::ui::slider_widget::on_reload() {
   };
 
   ekg::layout::mask &mask {ekg::core->mask};
+  std::string text {};
 
   switch (axis) {
     case ekg::axis::horizontal: {
@@ -64,7 +64,7 @@ void ekg::ui::slider_widget::on_reload() {
       this->dimension.h = (base_text_height + dimension_offset) * static_cast<float>(p_ui->get_scaled_height());
 
       uint64_t range_list_size {
-        ui_range_list.size()
+        p_ui->get_range_count()
       };
 
       this->range_list.resize(range_list_size);
@@ -91,11 +91,19 @@ void ekg::ui::slider_widget::on_reload() {
         for (uint64_t it {}; it < range_list_size; it++) {
           ekg::ui::slider_widget::range &range {this->range_list.at(it)};
 
-          range.text = ekg::ui::slider_widget_get_value_label(
+          ekg::ui::slider_widget_get_value_label(
             p_ui,
             number,
-            it
+            it,
+            range.text
           );
+
+          /**
+           * Note: EKG allocator contains an issue on rendering where the next
+           * UV coords is jittering due some stupid text size (unknown wsize).
+           * May you want know more: https://github.com/vokegpu/ekg-ui-library/issues/22
+           **/
+          range.text += " ";
 
           ekg::ui::slider_widget_get_metrics(
             p_ui,
@@ -480,74 +488,83 @@ void ekg::ui::slider_widget_calculate_value(
   }
 }
 
-std::string ekg::ui::slider_widget_get_value_label(
+void ekg::ui::slider_widget_get_value_label(
   ekg::ui::slider *&p_ui,
   ekg::number number,
-  uint64_t index
+  uint64_t index,
+  std::string &content
 ) {
   switch (number) {
     case ekg::number::float64: {
       ekg::ui::slider::range_t &range {p_ui->range<double>(index)};
       range.f64.align_ownership_mem_if_necessary();
-      return ekg::string_float64_precision(range.f64.get_value(), range.display_precision);
+      content = ekg::string_float64_precision(range.f64.get_value(), range.display_precision);
+      break;
     }
 
     case ekg::number::float32: {
       ekg::ui::slider::range_t &range {p_ui->range<float>(index)};
       range.f32.align_ownership_mem_if_necessary();
-      return ekg::string_float_precision(range.f32.get_value(), range.display_precision);
+      content = ekg::string_float_precision(range.f32.get_value(), range.display_precision);
+      break;
     }
     
     case ekg::number::int64: {
       ekg::ui::slider::range_t &range {p_ui->range<int64_t>(index)};
       range.i64.align_ownership_mem_if_necessary();
-      return std::to_string(range.i64.get_value());
+      content = std::to_string(range.i64.get_value());
+      break;
     }
     
     case ekg::number::uint64: {
       ekg::ui::slider::range_t &range {p_ui->range<uint64_t>(index)};
       range.u64.align_ownership_mem_if_necessary();
-      return std::to_string(range.u64.get_value());
+      content = std::to_string(range.u64.get_value());
+      break;
     }
-    
+
     case ekg::number::int32: {
       ekg::ui::slider::range_t &range {p_ui->range<int32_t>(index)};
       range.i32.align_ownership_mem_if_necessary();
-      return std::to_string(range.i32.get_value());
+      content = std::to_string(range.i32.get_value());
+      break;
     }
     
     case ekg::number::uint32: {
       ekg::ui::slider::range_t &range {p_ui->range<uint32_t>(index)};
       range.u32.align_ownership_mem_if_necessary();
-      return std::to_string(range.u32.get_value());
+      content = std::to_string(range.u32.get_value());
+      break;
     }
     
     case ekg::number::int16: {
       ekg::ui::slider::range_t &range {p_ui->range<int16_t>(index)};
       range.i16.align_ownership_mem_if_necessary();
-      return std::to_string(range.i16.get_value());
+      content = std::to_string(range.i16.get_value());
+      break;
     }
     
     case ekg::number::uint16: {
       ekg::ui::slider::range_t &range {p_ui->range<uint16_t>(index)};
       range.u16.align_ownership_mem_if_necessary();
-      return std::to_string(range.u16.get_value());
+      content = std::to_string(range.u16.get_value());
+      break;
     }
     
     case ekg::number::int8: {
       ekg::ui::slider::range_t &range {p_ui->range<int8_t>(index)};
       range.i8.align_ownership_mem_if_necessary();
-      return std::to_string(range.i8.get_value());
+      content = std::to_string(range.i8.get_value());
+      break;
     }
     
     case ekg::number::uint8: {
       ekg::ui::slider::range_t &range {p_ui->range<uint8_t>(index)};
       range.u8.align_ownership_mem_if_necessary();
-      return std::to_string(range.u8.get_value());
+      content = std::to_string(range.u8.get_value());
+      break;
     }
   }
-
-  return "NaN";
 }
 
 void ekg::ui::slider_widget_get_metrics(

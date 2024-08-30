@@ -82,10 +82,11 @@ namespace ekg::ui {
    * Returns the valeu label in string.
    * Based on all supported number formats and precision (`ekg::float32`, `ekg::float64`).
    **/
-  std::string slider_widget_get_value_label(
+  void slider_widget_get_value_label(
     ekg::ui::slider *&p_ui,
     ekg::number number,
-    uint64_t index
+    uint64_t index,
+    std::string &content
   );
 
   /**
