@@ -76,6 +76,7 @@ void ekg::service::theme::init() {
   dark_theme_scheme.checkbox_activity = ekg::color(44, 166, 255, 200);
   dark_theme_scheme.checkbox_highlight = ekg::color(44, 166, 255, 50);
   dark_theme_scheme.slider_background = ekg::color(85, 85, 85, 50);
+  dark_theme_scheme.slider_bar_background = ekg::color(85, 85, 85, 50);
   dark_theme_scheme.slider_string = ekg::color(202, 202, 202, 255);
   dark_theme_scheme.slider_outline = ekg::color(202, 207, 222, 0);
   dark_theme_scheme.slider_activity = ekg::color(44, 166, 255, 200);
@@ -144,6 +145,7 @@ void ekg::service::theme::init() {
   light_theme_scheme.checkbox_highlight = ekg::color(44, 166, 255, 50);
   light_theme_scheme.slider_string = ekg::color(141, 141, 141, 255);
   light_theme_scheme.slider_background = ekg::color(204, 204, 204, 50);
+  light_theme_scheme.slider_bar_background = ekg::color(204, 204, 204, 50);
   light_theme_scheme.slider_activity = ekg::color(44, 166, 255, 200);
   light_theme_scheme.slider_outline = ekg::color(202, 207, 222, 0);
   light_theme_scheme.slider_highlight = ekg::color(44, 166, 255, 50);
@@ -212,6 +214,7 @@ void ekg::service::theme::init() {
   light_pinky_theme_scheme.checkbox_highlight = ekg::color(245, 169, 184, 50);
   light_pinky_theme_scheme.slider_string = ekg::color(141, 141, 141, 255);
   light_pinky_theme_scheme.slider_background = ekg::color(204, 204, 204, 50);
+  light_pinky_theme_scheme.slider_bar_background = ekg::color(204, 204, 204, 50);
   light_pinky_theme_scheme.slider_activity = ekg::color(245, 169, 184, 200);
   light_pinky_theme_scheme.slider_outline = ekg::color(202, 207, 222, 0);
   light_pinky_theme_scheme.slider_highlight = ekg::color(245, 169, 184, 50);
@@ -278,6 +281,7 @@ void ekg::service::theme::init() {
   dark_pinky_theme_scheme.checkbox_activity = ekg::color(245, 169, 184, 200);
   dark_pinky_theme_scheme.checkbox_highlight = ekg::color(245, 169, 184, 50);
   dark_pinky_theme_scheme.slider_background = ekg::color(85, 85, 85, 50);
+  dark_pinky_theme_scheme.slider_bar_background = ekg::color(85, 85, 85, 50);
   dark_pinky_theme_scheme.slider_string = ekg::color(202, 202, 202, 255);
   dark_pinky_theme_scheme.slider_outline = ekg::color(202, 207, 222, 0);
   dark_pinky_theme_scheme.slider_activity = ekg::color(245, 169, 184, 200);

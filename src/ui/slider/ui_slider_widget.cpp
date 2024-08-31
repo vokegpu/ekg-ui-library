@@ -56,7 +56,6 @@ void ekg::ui::slider_widget::on_reload() {
   };
 
   ekg::layout::mask &mask {ekg::core->mask};
-  std::string text {};
 
   switch (axis) {
     case ekg::axis::horizontal: {
@@ -68,7 +67,6 @@ void ekg::ui::slider_widget::on_reload() {
       };
 
       this->range_list.resize(range_list_size);
-      float range_rect_width {this->dimension.w / static_cast<float>(range_list_size)};
 
       // left or right
       // docknize all
@@ -210,6 +208,13 @@ void ekg::ui::slider_widget::on_draw_refresh() {
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
 
+  ekg::draw::rect(
+    rect,
+    theme_scheme.slider_bar_background,
+    ekg::draw_mode::filled,
+    ekg_layer(ekg::layer::background)
+  );
+
   switch (p_ui->get_axis()) {
   case ekg::axis::horizontal:
     for (uint64_t it {}; it < this->range_list.size(); it++) {
@@ -227,7 +232,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
         range.rect + rect,
         theme_scheme.slider_background,
         ekg::draw_mode::filled,
-        ekg_layer(ekg::layer::background)
+        ekg_layer(ekg::layer::sub_background)
       );
 
       ekg::draw::rect(
@@ -266,7 +271,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
         range.rect + rect,
         theme_scheme.slider_background,
         ekg::draw_mode::filled,
-        ekg_layer(ekg::layer::background)
+        ekg_layer(ekg::layer::sub_background)
       );
 
       ekg::draw::rect(

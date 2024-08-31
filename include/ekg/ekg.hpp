@@ -154,6 +154,7 @@ namespace ekg {
     ekg::ui::slider *p_ui {new ekg::ui::slider()};
     p_ui->unsafe_set_type(ekg::type::slider);
     ekg::core->gen_widget(p_ui);
+    p_ui->set_tag(tag);
     p_ui->set_scaled_height(1);
     p_ui->set_font_size(ekg::font::normal);
     p_ui->set_axis(ekg::axis::horizontal);

@@ -60,6 +60,7 @@ namespace ekg::service {
     ekg::vec4 checkbox_highlight {};
 
     ekg::vec4 slider_background {};
+    ekg::vec4 slider_bar_background {};
     ekg::vec4 slider_string {};
     ekg::vec4 slider_outline {};
     ekg::vec4 slider_activity {};

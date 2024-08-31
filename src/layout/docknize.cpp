@@ -4,8 +4,8 @@
 #include "ekg/ui/frame/ui_frame_widget.hpp"
 
 float ekg::layout::offset {2.0f};
-ekg::rect ekg::layout::extent::h {};
-ekg::rect ekg::layout::extent::v {};
+ekg::layout::extent_t ekg::layout::v_extent = {};
+ekg::layout::extent_t ekg::layout::h_extent = {};
 
 void ekg::layout::extentnize(
   float &extent,
@@ -28,15 +28,15 @@ void ekg::layout::extentnize(
       int64_t it {begin_and_count};
 
       if (
-          begin_and_count > static_cast<int64_t>(ekg::layout::extent::h.x) &&
-          begin_and_count < static_cast<int64_t>(ekg::layout::extent::h.y)
+          begin_and_count > static_cast<int64_t>(ekg::layout::h_extent.begin_index) &&
+          begin_and_count < static_cast<int64_t>(ekg::layout::h_extent.end_index)
         ) {
-        begin_and_count = static_cast<int64_t>(ekg::layout::extent::h.h);
-        extent = ekg::layout::extent::h.w;
+        begin_and_count = static_cast<int64_t>(ekg::layout::h_extent.count);
+        extent = ekg::layout::h_extent.extent;
         return;
       }
 
-      ekg::layout::extent::h.x = static_cast<float>(it);
+      ekg::layout::h_extent.begin_index = static_cast<float>(it);
       ekg::ui::abstract_widget *p_widgets {};
       std::vector<int32_t> &child_id_list {p_widget->p_data->get_child_id_list()};
 
@@ -86,9 +86,10 @@ void ekg::layout::extentnize(
             (p_widgets->dimension.w + ekg::layout::offset) * (is_last_index && !ekg_bitwise_contains(flags, flag_ok) && !is_scrollbar)
           );
 
-          ekg::layout::extent::h.y = static_cast<float>(it + is_last_index);
-          ekg::layout::extent::h.w = extent;
-          ekg::layout::extent::h.h = static_cast<float>(flag_ok_count == 0 ? 1 : flag_ok_count);
+          ekg::layout::h_extent.end_index = static_cast<float>(it + is_last_index);
+          ekg::layout::h_extent.extent = extent;
+          ekg::layout::h_extent.count = static_cast<float>(flag_ok_count == 0 ? 1 : flag_ok_count);
+
           break;
         }
 
@@ -190,9 +191,9 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
   bool skip_widget {};
   float max_previous_height {};
 
-  ekg::layout::extent::h = {};
-  ekg::rect h_extent_backup {};
-  ekg::rect v_extent_backup {};
+  ekg::layout::h_extent = {};
+  ekg::layout::extent_t h_extent_backup {};
+  ekg::layout::extent_t v_extent_backup {};
 
   for (int32_t &ids: p_widget_parent->p_data->get_child_id_list()) {
     if (ids == 0 || (p_widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr) {
@@ -210,6 +211,7 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
       it++;
       continue;
     }
+
 
     if (ekg_bitwise_contains(flags, ekg::dock::fill)) {
       if (ekg_bitwise_contains(flags, ekg::dock::next)) {
@@ -230,6 +232,7 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
         count,
         ekg::axis::horizontal
       );
+
 
       dimensional_extent = ekg_min(
         ekg_layout_get_dimensional_extent(
@@ -288,13 +291,14 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
       p_widgets->on_reload();
     }
 
-    h_extent_backup = ekg::layout::extent::h;
+    h_extent_backup = ekg::layout::h_extent;
 
     if (p_widgets->p_data->has_children()) {
       ekg::layout::docknize(p_widgets);
     }
 
-    ekg::layout::extent::h = h_extent_backup;
+    ekg::layout::h_extent = h_extent_backup;
+
     prev_widget_layout = layout;
     prev_flags = flags;
     it++;
@@ -326,15 +330,15 @@ void ekg::layout::mask::extentnize(
       int64_t it {begin_and_count};
 
       if (
-          begin_and_count > static_cast<int64_t>(ekg::layout::extent::h.x) &&
-          begin_and_count < static_cast<int64_t>(ekg::layout::extent::h.y)
+          begin_and_count > this->h_extent.begin_index &&
+          begin_and_count < this->h_extent.end_index
         ) {
-        begin_and_count = static_cast<int64_t>(ekg::layout::extent::h.h);
-        extent = ekg::layout::extent::h.w;
+        begin_and_count = this->h_extent.count;
+        extent = this->h_extent.extent;
         return;
       }
 
-      ekg::layout::extent::h.x = static_cast<float>(it);
+      ekg::layout::h_extent.begin_index = static_cast<float>(it);
       uint64_t size {this->dock_rect_list.size()};
       uint64_t latest_index {size - (!this->dock_rect_list.empty())};
 
@@ -380,9 +384,9 @@ void ekg::layout::mask::extentnize(
             (dock_rect.p_rect->w + this->offset.x) * (is_last_index && !ekg_bitwise_contains(dock_rect.flags, flag_ok))
           );
 
-          ekg::layout::extent::h.y = static_cast<float>(it + is_last_index);
-          ekg::layout::extent::h.w = extent;
-          ekg::layout::extent::h.h = static_cast<float>(flag_ok_count == 0 ? 1 : flag_ok_count);
+          this->h_extent.end_index = static_cast<float>(it + is_last_index);
+          this->h_extent.extent = extent;
+          this->h_extent.count = static_cast<float>(flag_ok_count == 0 ? 1 : flag_ok_count);
           break;
         }
 
@@ -408,6 +412,8 @@ void ekg::layout::mask::preset(const ekg::vec3 &mask_offset, ekg::axis mask_axis
   this->axis = mask_axis;
   this->offset = mask_offset;
   this->respective_all = initial_respective_size;
+  this->v_extent = {};
+  this->h_extent = {};
 }
 
 void ekg::layout::mask::insert(const ekg::layout::mask::rect &dock_rect) {
@@ -577,42 +583,4 @@ void ekg::layout::mask::docknize() {
 
 ekg::rect &ekg::layout::mask::get_rect() {
   return this->mask;
-}
-
-float ekg::layout::mask::get_respective_size() {
-  if (this->dock_rect_list.empty()) {
-    return 0;
-  }
-
-  float respective_size {(this->axis == ekg::axis::horizontal) ? this->offset.x : this->offset.y};
-  float respective_center_size {respective_size};
-  float size {};
-
-  int32_t only_center_count {};
-
-  for (ekg::layout::mask::rect &dock_rect : this->dock_rect_list) {
-    if (dock_rect.p_rect == nullptr) {
-      continue;
-    }
-
-    size = (
-      this->axis == ekg::axis::horizontal ?
-      (dock_rect.p_rect->w + this->offset.x) : (dock_rect.p_rect->h + this->offset.y)
-    );
-
-    if (
-        ekg_bitwise_contains(dock_rect.flags, ekg::dock::center) &&
-        !(ekg_bitwise_contains(dock_rect.flags, ekg::dock::left) || ekg_bitwise_contains(dock_rect.flags, ekg::dock::right))
-      ) {
-      respective_center_size += size;
-      only_center_count++;
-    }
-
-    respective_size += size;
-  }
-
-  this->respective_center = (only_center_count != 0 ? (respective_center_size / only_center_count) : 0.0f);
-  this->respective_all = ekg_min(this->respective_all, respective_size);
-
-  return this->respective_all;
 }

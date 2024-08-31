@@ -642,20 +642,20 @@ int32_t showcase_useless_window() {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());*/
   }
 
-  auto p = ekg::slider<int32_t>(
+  auto p = ekg::slider<float>(
     "meow",
     ekg::dock::fill | ekg::dock::next
   )
+  /*
   ->set_text_align(ekg::dock::left)
   ->range<int32_t>(0, 0, 0, 32)
-  ->range<int32_t>(1, 1, 0, 32);
-  /*
+  ->range<int32_t>(1, 1, 0, 32);*/
   ->set_text_align(ekg::dock::left)
   ->range<double>(0, 0.3f, 0.0f, 1.0f)
   ->range<double>(0).f32.transfer_ownership(&ekg::current_theme_scheme().frame_outline.w)
   ->range<float>(1, 0.55f, 0.0f, 1.0f)
-  ->range<float>(1).f32.transfer_ownership(&ekg::current_theme_scheme().frame_background.w);
-  */
+  ->range<float>(1).f32.transfer_ownership(&ekg::current_theme_scheme().frame_background.w)
+  ->range<float>(2, 0.55f, 0.0f, 1.0f);
 
   ekg::button("Dead-allocate the instance of life", ekg::dock::fill | ekg::dock::next)
     ->set_task(
@@ -1055,10 +1055,25 @@ int32_t laboratory_testing() {
     ->set_drag(ekg::dock::full)
     ->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
 
-  ekg::checkbox("comer pasto pra ficar gorda", true, ekg::dock::fill)
-    ->set_box_align(ekg::dock::right | ekg::dock::fill)
-    ->set_text_align(ekg::dock::left | ekg::dock::fill)
-    ->set_scaled_height(1);
+  ekg::button("oi", ekg::dock::fill | ekg::dock::next);
+  ekg::button("tudo", ekg::dock::fill | ekg::dock::next);
+  ekg::button("bem", ekg::dock::fill | ekg::dock::next);
+
+  auto p = ekg::slider<float>(
+    "amo comer pasto faco mu",
+    ekg::dock::fill | ekg::dock::next
+  )
+  /*
+  ->set_text_align(ekg::dock::left)
+  ->range<int32_t>(0, 0, 0, 32)
+  ->range<int32_t>(1, 1, 0, 32);*/
+  ->set_text_align(ekg::dock::left)
+  ->range<double>(0, 0.3f, 0.0f, 1.0f)
+  ->range<double>(0).f32.transfer_ownership(&ekg::current_theme_scheme().frame_outline.w)
+  ->range<float>(1, 0.55f, 0.0f, 1.0f)
+  ->range<float>(1).f32.transfer_ownership(&ekg::current_theme_scheme().frame_background.w);
+  //->range<float>(2, 0.55f, 0.0f, 1.0f);
+  ekg::button("oi mu", ekg::dock::fill | ekg::dock::next);
 
   ekg::pop_group();
 
@@ -1100,5 +1115,5 @@ int32_t laboratory_testing() {
 }
 
 int32_t main(int32_t, char**) {
-  return showcase_useless_window();
+  return laboratory_testing();
 }

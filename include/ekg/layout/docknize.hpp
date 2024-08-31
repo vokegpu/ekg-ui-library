@@ -49,11 +49,16 @@ namespace ekg::layout {
    * Column and row store extent values, used to calculate
    * the remains size for `ekg::dock::fill`.
    **/
-  struct extent {
+  struct extent_t {
   public:
-    static ekg::rect h;
-    static ekg::rect v;
+    int64_t end_index {};
+    int64_t begin_index {};
+    int64_t count {};
+    float extent {};
   };
+
+  extern ekg::layout::extent_t h_extent;
+  extern ekg::layout::extent_t v_extent;
 
   /**
    * The between rects from widgets can be docknized
@@ -74,12 +79,13 @@ namespace ekg::layout {
     };
   protected:
     std::vector<ekg::layout::mask::rect> dock_rect_list {};
-
     float respective_all {};
     float respective_center {};
     ekg::axis axis {};
     ekg::vec3 offset {};
     ekg::rect mask {};
+    ekg::layout::extent_t v_extent {};
+    ekg::layout::extent_t h_extent {};
   protected:
     void extentnize(
       float &extent,
@@ -92,8 +98,6 @@ namespace ekg::layout {
     void preset(const ekg::vec3 &mask_offset, ekg::axis mask_axis, float initial_respective_size = 0.0f);
     void insert(const ekg::layout::mask::rect &dock_rect);
     void docknize();
-
-    float get_respective_size();
     ekg::rect &get_rect();
   };
 

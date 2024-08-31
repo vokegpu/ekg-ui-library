@@ -200,3 +200,4 @@
 -- `ekg::string_float64_precision` added for double/float64.
 -- Totally deprecated the dynamic range, due the insanely unsafe issues, now it is type-specification-based (you must invoke f32 to float, i64 to uint64 but you are able to ownership safety).
 -- Added the left/right corners option to text in slider.
+-- `ekg::layout::extent` now an type object `ekg::layout::extent_t`, plus two new externs (ekg::layout::v_extent & ekg::layout::h_extent).
