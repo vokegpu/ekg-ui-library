@@ -292,13 +292,11 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
     }
 
     h_extent_backup = ekg::layout::h_extent;
-
     if (p_widgets->p_data->has_children()) {
       ekg::layout::docknize(p_widgets);
     }
 
     ekg::layout::h_extent = h_extent_backup;
-
     prev_widget_layout = layout;
     prev_flags = flags;
     it++;
@@ -418,6 +416,8 @@ void ekg::layout::mask::preset(const ekg::vec3 &mask_offset, ekg::axis mask_axis
 
 void ekg::layout::mask::insert(const ekg::layout::mask::rect &dock_rect) {
   if (ekg_bitwise_contains(dock_rect.flags, ekg::dock::none)) {
+    dock_rect.p_rect->w = 0.0f;
+    dock_rect.p_rect->h = 0.0f;
     return;
   }
 

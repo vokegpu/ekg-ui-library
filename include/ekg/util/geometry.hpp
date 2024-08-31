@@ -56,7 +56,7 @@
 
 namespace ekg {
   enum dock {
-    none   = 0,
+    none   = 2 << 1,
     free   = 2 << 2,
     top    = 2 << 3,
     bottom = 2 << 4,

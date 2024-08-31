@@ -83,18 +83,25 @@ void ekg::ui::slider_widget::on_reload() {
       // target top/bottom
       // no-docknize, target the drag cursor with small font height
 
-      if (text_align_flags == ekg::dock::left || text_align_flags == ekg::dock::right) {
-        mask.preset({4.0f, 0.0f, this->dimension.h}, axis, this->dimension.w);
+      if (text_align_flags == ekg::dock::left || text_align_flags == ekg::dock::right || ekg_bitwise_contains(text_align_flags, ekg::dock::none)) {
+        mask.preset(
+          {4.0f * !ekg_bitwise_contains(text_align_flags, ekg::dock::none), 0.0f, this->dimension.h},
+          axis,
+          this->dimension.w
+        );
 
         for (uint64_t it {}; it < range_list_size; it++) {
           ekg::ui::slider_widget::range &range {this->range_list.at(it)};
+          range.text = "";
 
-          ekg::ui::slider_widget_get_value_label(
-            p_ui,
-            number,
-            it,
-            range.text
-          );
+          if (!ekg_bitwise_contains(text_align_flags, ekg::dock::none)) {
+            ekg::ui::slider_widget_get_value_label(
+              p_ui,
+              number,
+              it,
+              range.text
+            );
+          }
 
           /**
            * Note: EKG allocator contains an issue on rendering where the next
@@ -123,7 +130,9 @@ void ekg::ui::slider_widget::on_reload() {
           range.rect.h = this->dimension.h * bar_thickness;
 
           mask.insert({&range.rect_text, text_align_flags});
-          mask.insert({&range.rect, text_align_flags | ekg::dock::fill});
+          mask.insert(
+            {&range.rect, (ekg_bitwise_contains(text_align_flags, ekg::dock::none) ? ekg::dock::left : text_align_flags) | ekg::dock::fill}
+          );
         }
 
         mask.docknize();
@@ -244,7 +253,7 @@ void ekg::ui::slider_widget::on_draw_refresh() {
 
       ekg::draw::rect(
         range.rect + rect,
-        theme_scheme.slider_outline_bar,
+        theme_scheme.slider_bar_outline,
         ekg::draw_mode::outline
       );
 

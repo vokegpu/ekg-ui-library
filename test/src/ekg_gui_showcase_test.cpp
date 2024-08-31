@@ -1115,5 +1115,5 @@ int32_t laboratory_testing() {
 }
 
 int32_t main(int32_t, char**) {
-  return laboratory_testing();
+  return showcase_useless_window();
 }

@@ -65,7 +65,7 @@ namespace ekg::service {
     ekg::vec4 slider_outline {};
     ekg::vec4 slider_activity {};
     ekg::vec4 slider_activity_bar {};
-    ekg::vec4 slider_outline_bar {};
+    ekg::vec4 slider_bar_outline {};
     ekg::vec4 slider_highlight {};
     int32_t slider_bar_thickness {};
     int32_t slider_target_thickness {};
