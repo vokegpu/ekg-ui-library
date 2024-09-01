@@ -226,14 +226,16 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     this->flag.extra_state
   };
 
-
   this->embedded_scroll.on_event(io_event_serial);
 
-  if ((this->flag.hovered || (this->flag.absolute && !is_some_header_targeted)) && !this->is_high_frequency) {
-    ekg::update_high_frequency(this);
+  this->flag.was_hovered = this->flag.hovered;
+  if (!this->flag.was_hovered && this->is_high_frequency) {
+    this->flag.was_hovered = false;
   }
 
-  this->flag.focused = this->flag.hovered;
+  if ((this->flag.hovered || (this->flag.absolute && !is_some_header_targeted) || this->embedded_scroll.flag.activity) && !this->is_high_frequency) {
+    ekg::update_high_frequency(this);
+  }
 
   if (is_some_header_targeted && released) {
     this->latest_target_dragging = this->target_dragging;
@@ -593,7 +595,7 @@ void ekg::ui::listbox_widget::on_post_event(ekg::os::io_event_serial &io_event_s
 
 void ekg::ui::listbox_widget::on_update() {
   this->embedded_scroll.on_update();
-  this->is_high_frequency = this->embedded_scroll.check_activity_state(this->flag.focused || this->flag.hovered);
+  this->is_high_frequency = this->embedded_scroll.check_activity_state(this->flag.was_hovered);
 }
 
 void ekg::ui::listbox_widget::on_draw_refresh() {

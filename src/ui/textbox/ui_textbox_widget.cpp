@@ -837,9 +837,13 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
   // @TODO dragging scroll horizontal not working
   this->embedded_scroll.on_event(io_event_serial);
-  this->flag.highlight = this->flag.hovered;
 
-  if ((this->flag.focused || this->flag.hovered || this->flag.absolute) && !this->is_high_frequency) {
+  this->flag.was_hovered = this->flag.hovered;
+  if (!this->flag.was_hovered && this->is_high_frequency) {
+    this->flag.was_hovered = false;
+  }
+
+  if ((this->flag.focused || this->flag.hovered || this->flag.absolute || this->embedded_scroll.flag.activity) && !this->is_high_frequency) {
     ekg::update_high_frequency(this);
   }
 
@@ -1008,7 +1012,7 @@ void ekg::ui::textbox_widget::on_update() {
   }
 
   this->embedded_scroll.on_update();
-  this->is_high_frequency = this->embedded_scroll.check_activity_state(this->flag.focused || this->flag.hovered);
+  this->is_high_frequency = this->embedded_scroll.check_activity_state(this->flag.was_hovered);
 }
 
 /**

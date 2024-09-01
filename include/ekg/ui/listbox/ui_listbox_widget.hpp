@@ -71,6 +71,8 @@ namespace ekg::ui {
     int32_t target_dragging {-1};
     int32_t latest_target_dragging {-1};
     int32_t target_drag_set_index {-1};
+
+    int32_t test {};
   public:
     void on_create() override;
 

@@ -46,9 +46,13 @@ void ekg::ui::scrollbar_widget::on_event(ekg::os::io_event_serial &io_event_seri
   this->flag.scrolling = this->scroll.flag.scrolling;
   this->scroll.on_event(io_event_serial);
 
+  this->flag.was_hovered = this->flag.hovered;
+  if (!this->flag.was_hovered && this->is_high_frequency) {
+    this->flag.was_hovered = false;
+  }
+
   if ((this->flag.absolute || this->scroll.flag.activity) && !this->is_high_frequency) {
     ekg::update_high_frequency(this);
-    this->is_high_frequency = true;
   }
 
   if (this->scroll.flag.state || this->scroll.flag.extra_state || this->flag.absolute) {
@@ -64,7 +68,7 @@ void ekg::ui::scrollbar_widget::on_post_event(ekg::os::io_event_serial &io_event
 
 void ekg::ui::scrollbar_widget::on_update() {
   this->scroll.on_update();
-  this->is_high_frequency = this->scroll.check_activity_state(this->flag.hovered || this->scroll.flag.activity);
+  this->is_high_frequency = this->scroll.check_activity_state(this->flag.was_hovered || this->scroll.flag.activity);
 }
 
 void ekg::ui::scrollbar_widget::on_draw_refresh() {

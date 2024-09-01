@@ -199,12 +199,18 @@ bool load_ttf_emoji(ekg::gpu::sampler_t *p_sampler) {
   // 🐈
   // 🐮
   // 🤓
+  // 🐄
+
+  uint32_t previous_size {f_renderer.font_size};
+  f_renderer.set_size(512);
 
   FT_Load_Char(
     typography_font_face.ft_face,
     ekg::utf_string_to_char32("🐈"),
     FT_LOAD_RENDER | FT_LOAD_COLOR | FT_LOAD_DEFAULT
   );
+
+  f_renderer.set_size(previous_size);
 
   sampler_alloc_info.w = static_cast<int32_t>(typography_font_face.ft_face->glyph->bitmap.width);
   sampler_alloc_info.h = static_cast<int32_t>(typography_font_face.ft_face->glyph->bitmap.rows);
@@ -216,7 +222,7 @@ bool load_ttf_emoji(ekg::gpu::sampler_t *p_sampler) {
   sampler_alloc_info.gl_internal_format = GL_RGBA;
   sampler_alloc_info.gl_format = GL_BGRA;
   sampler_alloc_info.gl_type = GL_UNSIGNED_BYTE;
-  //sampler_alloc_info.gl_generate_mipmap = GL_TRUE;
+  sampler_alloc_info.gl_generate_mipmap = GL_TRUE;
   sampler_alloc_info.p_data = typography_font_face.ft_face->glyph->bitmap.buffer;
 
   return ekg::allocate_sampler(
@@ -1071,14 +1077,110 @@ int32_t laboratory_testing() {
   //->range<float>(2, 0.55f, 0.0f, 1.0f);
   ekg::button("oi mu", ekg::dock::fill | ekg::dock::next);
 
+  ekg::item content = ekg::item {
+    ekg::item(
+      "😊 Nome",
+      {
+        ekg::item("🤭"),
+        ekg::item("🐈 Potato"),
+        ekg::item("Astah", {
+          ekg::item("meow"),
+          ekg::item("meow")
+        }),
+        ekg::item("Malboro"),
+        ekg::item("Leviata")
+      },
+      ekg::attr::disabled | ekg::attr::locked
+    ),
+    ekg::item(
+      "Estado",
+      {
+        ekg::item("No Ceu"),
+        ekg::item("Brincando la fora"),
+        ekg::item("🐈 ", {
+          ekg::item("meow"),
+          ekg::item("🐈", {
+            ekg::item("Brincando la fora"),
+            ekg::item("🐈"),
+            ekg::item("🐈", {
+              ekg::item("Brincando la fora"),
+              ekg::item("🐈"),
+              ekg::item("🐈")
+            })
+          })
+        }),
+        ekg::item("Mordendo a Astah"),
+        ekg::item("Correndo")
+      }
+    ),
+    ekg::item(
+      "Cor",
+      {
+        ekg::item("Azul"),
+        ekg::item("Azul"),
+        ekg::item("Azul", {
+          ekg::item("meow?"),
+          ekg::item("meow?")
+        }),
+        ekg::item("Azul"),
+        ekg::item("Azul")
+      }
+    ),
+    ekg::item(
+      "Cachorro",
+      {
+        ekg::item("Au"),
+        ekg::item("A"),
+        ekg::item("J", {
+          ekg::item("K?"),
+          ekg::item("L?")
+        }),
+        ekg::item("Meow"),
+        ekg::item("Oi")
+      }
+    )
+  };
+
+  for (uint64_t it {}; it < content.size(); it++) {
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    /*content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());
+    content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());*/
+  }
+
+  /*auto list = ekg::listbox(
+    "hello",
+    content,
+    ekg::dock::fill | ekg::dock::next
+  )
+  ->set_column_header_align(ekg::dock::fill)
+  ->set_scaled_height(16)
+  ->set_mode(ekg::mode::multicolumn)
+  ->transfer_ownership(&content);*/
+
+  ekg::textbox("principal", "adeus", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+
+  ekg::scrollbar("wtf");
+  ekg::pop_group();
+
+  ekg::frame("text", {20, 20}, {200, 200})
+    ->set_drag(ekg::dock::full)
+    ->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
+
+  ekg::textbox("fora", "adeus", ekg::dock::fill)->set_scaled_height(12);
   ekg::pop_group();
 
   while (running) {
-    last = now;
-    now = SDL_GetPerformanceCounter();
-    ekg::ui::dt = static_cast<float>(
-      (now - last) * 1000 / SDL_GetPerformanceFrequency()
-    ) * 0.01f;
+    ekg::ui::dt = 1.0f / last_frame;
 
     if (ekg::reach(fps_timing, 1000) && ekg::reset(fps_timing)) {
       last_frame = frame_couting;
@@ -1101,10 +1203,10 @@ int32_t laboratory_testing() {
 
     ekg::render();
 
+    frame_couting++;
+
     SDL_GL_SwapWindow(app.p_sdl_win);
-    if (app.vsync) {
-      SDL_Delay(6);
-    }
+    SDL_Delay(6);
   }
 
   return 0;

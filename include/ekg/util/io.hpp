@@ -339,6 +339,7 @@ namespace ekg {
     bool state {};
     bool extra_state {};
     bool absolute {};
+    bool was_hovered {};
     bool scrolling {};
   };
 

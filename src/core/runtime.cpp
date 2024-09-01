@@ -142,6 +142,7 @@ void ekg::runtime::process_event() {
     );
 
     if (hovered) {
+      p_widget_focused != nullptr && (p_widget_focused->flag.was_hovered = false);
       ekg::hovered.id = p_widgets->p_data->get_id();
       p_widget_focused = p_widgets;
       first_absolute = false;
@@ -173,6 +174,7 @@ void ekg::runtime::process_event() {
 
     p_widgets->on_post_event(this->io_event_serial);
     if (!hovered && !p_widgets->flag.absolute) {
+      p_widgets->flag.was_hovered = false;
       p_widgets->on_event(this->io_event_serial);
     }
   }
@@ -220,21 +222,19 @@ void ekg::runtime::process_update() {
 
   this->service_input.on_update();
 
-  if (this->enable_high_priority_frequency) {
+  if (!this->update_widget_list.empty()) {
     size_t counter {};
-
-    for (ekg::ui::abstract_widget *&p_widgets: this->update_widget_list) {
-      if (p_widgets == nullptr || !p_widgets->is_high_frequency) {
-        ++counter;
-        continue;
+    for (uint64_t it {}; it < this->update_widget_list.size(); it++) {
+      if (it >= this->update_widget_list.size()) {
+        break;
       }
 
+      ekg::ui::abstract_widget *&p_widgets {this->update_widget_list.at(it)};
       p_widgets->on_update();
-    }
 
-    if (counter == this->update_widget_list.size()) {
-      this->enable_high_priority_frequency = false;
-      this->update_widget_list.clear();
+      if (!p_widgets->is_high_frequency) {
+        this->update_widget_list.erase(this->update_widget_list.begin() + it);
+      }
     }
   }
 
