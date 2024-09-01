@@ -128,3 +128,16 @@ ekg::ui::slider *ekg::ui::slider::set_font_size(ekg::font font) {
 ekg::font ekg::ui::slider::get_font_size() {
   return this->font_size;
 }
+
+ekg::ui::slider *ekg::ui::slider::set_bar_offset(float offset) {
+  if (this->bar_offset != offset) {
+    this->bar_offset = offset;
+    ekg::reload(this->id);
+  }
+
+  return this;
+}
+
+float ekg::ui::slider::get_bar_offset() {
+  return this->bar_offset;
+}

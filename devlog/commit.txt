@@ -202,3 +202,5 @@
 -- Added the left/right corners option to text in slider.
 -- `ekg::layout::extent` now an type object `ekg::layout::extent_t`, plus two new externs (ekg::layout::v_extent & ekg::layout::h_extent).
 -- `ekg::dock::none` option to the text in slider.
+-- Fixed the scrolling timeout. Now it is working smooth.
+-- Fixed a bug where the listbox was not scrolling if previouly another widget was being hovered. Solution: Added a small focus state to listbox.

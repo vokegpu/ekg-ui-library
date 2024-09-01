@@ -68,9 +68,6 @@ void ekg::ui::slider_widget::on_reload() {
 
       this->range_list.resize(range_list_size);
 
-      // left or right
-      // docknize all
-
       // left top/bottom or right top/bottom or center top/bottom
       // docknize with small font height
 
@@ -85,7 +82,7 @@ void ekg::ui::slider_widget::on_reload() {
 
       if (text_align_flags == ekg::dock::left || text_align_flags == ekg::dock::right || ekg_bitwise_contains(text_align_flags, ekg::dock::none)) {
         mask.preset(
-          {4.0f * !ekg_bitwise_contains(text_align_flags, ekg::dock::none), 0.0f, this->dimension.h},
+          {p_ui->get_bar_offset(), 0.0f, this->dimension.h},
           axis,
           this->dimension.w
         );
@@ -136,6 +133,8 @@ void ekg::ui::slider_widget::on_reload() {
         }
 
         mask.docknize();
+      } else if (ekg_bitwise_contains(text_align_flags, ekg::dock::top) || ekg_bitwise_contains(text_align_flags, ekg::dock::bottom)) {
+        // pass ue
       }
     }
 

@@ -43,6 +43,7 @@ void ekg::ui::scrollbar_widget::on_pre_event(ekg::os::io_event_serial &io_event_
 
 void ekg::ui::scrollbar_widget::on_event(ekg::os::io_event_serial &io_event_serial) {
   this->flag.hovered = this->scroll.flag.hovered;
+  this->flag.scrolling = this->scroll.flag.scrolling;
   this->scroll.on_event(io_event_serial);
 
   if ((this->flag.absolute || this->scroll.flag.activity) && !this->is_high_frequency) {

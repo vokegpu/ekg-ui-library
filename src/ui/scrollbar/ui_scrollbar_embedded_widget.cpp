@@ -114,8 +114,9 @@ void ekg::ui::scrollbar_embedded_widget::on_reload() {
   this->acceleration.y = 1000.0f;
 
   for (int32_t &ids: this->child_id_list) {
-    if ((p_widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr ||
-        p_widgets->p_data->get_type() == ekg::type::scrollbar) {
+    if (
+        (p_widgets = ekg::core->get_fast_widget_by_id(ids)) == nullptr || p_widgets->p_data->get_type() == ekg::type::scrollbar
+      ) {
       continue;
     }
 
@@ -178,10 +179,10 @@ void ekg::ui::scrollbar_embedded_widget::on_event(ekg::os::io_event_serial &io_e
   this->check_axis_states();
 
   ekg::vec4 &interact {ekg::input::interact()};
-  bool hovered_and_action_scroll_fired {this->flag.hovered && ekg::input::action("scrollbar-scroll")};
+  this->flag.scrolling = this->flag.hovered && ekg::input::action("scrollbar-scroll");
 
 #if defined(ANDROID)
-  if (hovered_and_action_scroll_fired && this->is_vertical_enabled) {
+  if (this->flag.scrolling && this->is_vertical_enabled) {
     this->scroll.w = ekg_clamp(
       this->scroll.y + (interact.w * this->acceleration.y),
       this->p_rect_mother->h - this->rect_child.h,
@@ -189,7 +190,7 @@ void ekg::ui::scrollbar_embedded_widget::on_event(ekg::os::io_event_serial &io_e
     );
   }
 
-  if (hovered_and_action_scroll_fired && this->is_horizontal_enabled) {
+  if (this->flag.scrolling && this->is_horizontal_enabled) {
     this->scroll.z = ekg_clamp(
       this->scroll.x + (-interact.z * this->acceleration.y),
       this->p_rect_mother->w - this->rect_child.w,
@@ -197,18 +198,16 @@ void ekg::ui::scrollbar_embedded_widget::on_event(ekg::os::io_event_serial &io_e
     );
   }
 #else
-  if (hovered_and_action_scroll_fired && this->is_vertical_enabled) {
+  if (this->flag.scrolling && this->is_vertical_enabled) {
     bool over_max_motion {static_cast<int32_t>(interact.w) > 1 || static_cast<int32_t>(interact.w) < -1};
     this->scroll.w = ekg_clamp(
       this->scroll.y + (interact.w * this->acceleration.y),
       this->p_rect_mother->h - this->rect_child.h,
       0.0f
     );
-  std::cout << this->scroll.w << " , " << this->scroll.y << std::endl;
-
   }
 
-  if (hovered_and_action_scroll_fired && this->is_horizontal_enabled) {
+  if (this->flag.scrolling && this->is_horizontal_enabled) {
     bool over_max_motion {static_cast<int32_t>(interact.z) >= 2 || static_cast<int32_t>(interact.z) <= -2};
     this->scroll.z = ekg_clamp(
       this->scroll.x + (-interact.z * (
@@ -217,6 +216,7 @@ void ekg::ui::scrollbar_embedded_widget::on_event(ekg::os::io_event_serial &io_e
       this->p_rect_mother->w - this->rect_child.w,
       0.0f
     );
+
   }
 #endif
 

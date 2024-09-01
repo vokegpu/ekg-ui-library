@@ -339,6 +339,7 @@ namespace ekg {
     bool state {};
     bool extra_state {};
     bool absolute {};
+    bool scrolling {};
   };
 
   enum class clipboard {

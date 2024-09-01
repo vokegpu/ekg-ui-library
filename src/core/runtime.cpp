@@ -98,14 +98,14 @@ void ekg::runtime::process_event() {
       (this->p_abs_activity_widget->flag.absolute || is_on_scrolling_timeout)
     ) {
 
-    if (!(pressed || released || motion)) {
+    this->p_abs_activity_widget->on_pre_event(this->io_event_serial);
+    this->p_abs_activity_widget->on_event(this->io_event_serial);
+
+    if (this->p_abs_activity_widget->flag.scrolling) {
       ekg::reset(this->ui_scroll_timing);
     }
 
-    this->p_abs_activity_widget->on_pre_event(this->io_event_serial);
-    this->p_abs_activity_widget->on_event(this->io_event_serial);
     this->p_abs_activity_widget->on_post_event(this->io_event_serial);
-
     return;
   }
 
@@ -153,6 +153,7 @@ void ekg::runtime::process_event() {
      *
      * The order of scrollable widgets like scroll widget is not sequentially,
      * e.g, the mouse is hovering some children of frame 2 and absolute widget scroll from frame 2 is fired:
+     *
      * frame 1           // hovered, check for the first absolute
      *
      * frame 2 (frame 1) // hovered, then reset and find for the first absolute again

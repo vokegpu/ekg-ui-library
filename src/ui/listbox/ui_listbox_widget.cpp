@@ -201,7 +201,6 @@ void ekg::ui::listbox_widget::on_reload() {
 
 void ekg::ui::listbox_widget::on_pre_event(ekg::os::io_event_serial &io_event_serial) {
   abstract_widget::on_pre_event(io_event_serial);
-
   this->embedded_scroll.on_pre_event(io_event_serial);
 
   /**
@@ -227,11 +226,14 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     this->flag.extra_state
   };
 
+
   this->embedded_scroll.on_event(io_event_serial);
 
-  if ((this->flag.focused || this->flag.hovered || (this->flag.absolute && !is_some_header_targeted)) && !this->is_high_frequency) {
+  if ((this->flag.hovered || (this->flag.absolute && !is_some_header_targeted)) && !this->is_high_frequency) {
     ekg::update_high_frequency(this);
   }
+
+  this->flag.focused = this->flag.hovered;
 
   if (is_some_header_targeted && released) {
     this->latest_target_dragging = this->target_dragging;
@@ -243,31 +245,34 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     this->flag.absolute = false;
   }
 
+  bool unnecessary_operations {
+    (!motion && !released && !pressed_select && !pressed_open && !pressed_select_many)
+  };
+
+  /**
+   * If input interact position is not colliding with the listbox,
+   * there is no reason to waste calls; but with exception of absolute flag,
+   * because when a header is targeted the absolute flag is set to true,
+   * but if the interact position is out of listbox boudings, it must keep
+   * process the header targeted (drag or resize).
+   **/
+  bool not_hovering_or_is_not_refresh_time {
+    !this->flag.hovered && !this->was_hovered && !is_some_header_targeted && !this->was_selected
+  };
+
+  bool hovering_scroll_bars_or_updating_items {
+    (this->embedded_scroll.flag.hovered || this->must_update_items)
+  };
+
+  bool stop_processs_if_scrolling {
+    (this->flag.absolute && !is_some_header_targeted)
+  };
+
   if (
-      /**
-       * This one checks if an unnecessary operation is going on,
-       * if all input actions are not flagged, there is no reason to waste calls.
-       **/
-      (!motion && !released && !pressed_select && !pressed_open && !pressed_select_many) ||
-      /**
-       * If input interact position is not colliding with the listbox,
-       * there is no reason to waste calls; but with exception of absolute flag,
-       * because when a header is targeted the absolute flag is set to true,
-       * but if the interact position is out of listbox boudings, it must keep
-       * process the header targeted (drag or resize).
-       **/
-      (!this->flag.hovered && !this->was_hovered && !is_some_header_targeted && !this->was_selected) ||
-      /**
-       * Also stop the process if scroll bar is hovered or if there is an update
-       * items. 
-       **/
-      (this->embedded_scroll.flag.hovered || this->must_update_items) ||
-      /**
-       * The absolute flag is also used to do scrolling (when dragging the scroll bar)
-       * then we must stop the process instead of waste calls; but with exception of
-       * header target, must not stop like previously said.
-       **/
-      (this->flag.absolute && !is_some_header_targeted)
+      unnecessary_operations ||
+      not_hovering_or_is_not_refresh_time ||
+      hovering_scroll_bars_or_updating_items ||
+      stop_processs_if_scrolling
     ) {
     return;
   }
@@ -276,8 +281,8 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     is_some_header_targeted = false;
   }
 
-  this->was_hovered = this->flag.hovered;
   ekg::rect &rect {this->get_abs_rect()};
+  this->was_hovered = this->flag.hovered;
   this->was_selected = false;
 
   ekg::rect relative_largest_rect {};
@@ -298,9 +303,9 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
   bool hovering {};
   bool contains_flag {};
 
+  ekg::flags flags {};
   uint64_t arbitrary_index_pos {};
   uint64_t highest_arbitrary_index_pos {};
-  ekg::flags flags {};
   uint64_t visible_begin_index {};
   uint64_t visible_count {};
   uint64_t size {};
@@ -588,7 +593,7 @@ void ekg::ui::listbox_widget::on_post_event(ekg::os::io_event_serial &io_event_s
 
 void ekg::ui::listbox_widget::on_update() {
   this->embedded_scroll.on_update();
-  this->is_high_frequency = this->embedded_scroll.check_activity_state(this->flag.absolute || this->flag.focused || this->flag.hovered);
+  this->is_high_frequency = this->embedded_scroll.check_activity_state(this->flag.focused || this->flag.hovered);
 }
 
 void ekg::ui::listbox_widget::on_draw_refresh() {

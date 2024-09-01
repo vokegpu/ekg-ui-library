@@ -85,17 +85,27 @@ namespace ekg::ui {
     ekg::flags dock_text {};
     ekg::axis axis {};
     ekg::font font_size {};
-    std::map<uint64_t, ekg::ui::slider::range_t*> range_map {};
+    std::map<uint64_t, ekg::ui::slider::range_t> range_map {};
+    float bar_offset {4.0f};
   public:
+    /**
+     * Returns a range-based slider with `ekg::dock::value_t<number_type, ekg::ui::slider>` option.
+     **/
     template<typename t>
     ekg::ui::slider::range_t &range(uint64_t index = 0) {
       if (!this->range_map.count(index)) {
-        this->range_map.insert({index, new ekg::ui::slider::range_t {}});
+        this->range_map.insert(
+          {index, ekg::ui::slider::range_t {}}
+        );
       }
 
-      return *this->range_map.at(index);
+      return this->range_map.at(index);
     };
 
+    /**
+     * Set a new value to an existing range.
+     * Returns an reference to the range.
+     **/
     template<typename t>
     ekg::ui::slider::range_t &value(uint64_t index, t val) {
       ekg::ui::slider::range_t &range {this->range<t>(index)};
@@ -155,6 +165,10 @@ namespace ekg::ui {
       return range;
     }
 
+    /**
+     * Create a new range but instead of returning the range,
+     * returns the UI.
+     **/
     template<typename t>
     ekg::ui::slider *range(uint64_t index, t val, t min, t max, int32_t display_precision = -1) {
       ekg::ui::slider::range_t &range {this->range<t>(index)};
@@ -244,33 +258,86 @@ namespace ekg::ui {
      **/
     ekg::ui::slider *unsafe_set_number(ekg::number number);
   public:
+    /**
+     * Returns the size of range list (multi-ranger slider).
+     **/
     uint64_t get_range_count();
 
+    /**
+     * Get the number type used in slider value.
+     **/
     ekg::number get_number();
 
+    /**
+     * Set the current slider axis. Horizontal or vertical.
+     **/
     ekg::ui::slider *set_axis(ekg::axis new_axis);
 
+    /**
+     * Get the current axis set.
+     **/
     ekg::axis get_axis();
 
+    /**
+     * Set the base font size.
+     * Note: Only `ekg::dock::left` or `ekg::dock::right` applies.
+     **/
     ekg::ui::slider *set_font_size(ekg::font font);
 
+    /**
+     * Get the font size base.
+     **/
     ekg::font get_font_size();
 
+    /**
+     * Set the dock place.
+     **/
     ekg::ui::slider *set_place(ekg::flags dock);
 
+    /**
+     * Set a new width.
+     **/
     ekg::ui::slider *set_width(float w);
 
+    /**
+     * Get the width.
+     **/
     float get_width();
 
+    /**
+     * Set the scaled height.
+     **/
     ekg::ui::slider *set_scaled_height(int32_t h);
 
+    /**
+     * Get the scaled height.
+     **/
     int32_t get_scaled_height();
 
+    /**
+     * Get the height.
+     **/
     float get_height();
 
+    /**
+     * Set the text dock align.
+     **/
     ekg::ui::slider *set_text_align(ekg::flags dock);
 
+    /**
+     * Get the text dock align flags.
+     **/
     ekg::flags get_text_align();
+
+    /**
+     * Set the offset between bars and text.
+     **/
+    ekg::ui::slider *set_bar_offset(float offset);
+
+    /**
+     * Get the offset between bars and text.
+     **/
+    float get_bar_offset();
   };
 }
 
