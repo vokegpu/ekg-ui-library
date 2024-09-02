@@ -212,7 +212,6 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
       continue;
     }
 
-
     if (ekg_bitwise_contains(flags, ekg::dock::fill)) {
       if (ekg_bitwise_contains(flags, ekg::dock::next)) {
         top_rect.h += max_previous_height + ekg::layout::offset;
@@ -232,7 +231,6 @@ void ekg::layout::docknize(ekg::ui::abstract_widget *p_widget_parent) {
         count,
         ekg::axis::horizontal
       );
-
 
       dimensional_extent = ekg_min(
         ekg_layout_get_dimensional_extent(
@@ -531,18 +529,22 @@ void ekg::layout::mask::docknize() {
         dock_rect.p_rect->x = left_corner.w;
         dock_rect.p_rect->w = rect_width;
         left_corner.w += dock_rect.p_rect->w + this->offset.x;
+        this->mask.w += dock_rect.p_rect->w + this->offset.x;
       } else if (is_right && !is_center) {
         dock_rect.p_rect->w = rect_width;
         dock_rect.p_rect->x = dimension_width - right_corner.w - dock_rect.p_rect->w;
         right_corner.w += dock_rect.p_rect->w + this->offset.x;
+        this->mask.w += dock_rect.p_rect->w + this->offset.x;
       } else if (is_left && is_center) {
         dock_rect.p_rect->w = rect_width;
         dock_rect.p_rect->x = center_left_corner.x - center_left_corner.w - dock_rect.p_rect->w;
-        center_left_corner.w += dock_rect.p_rect->w + this->offset.x; 
+        center_left_corner.w += dock_rect.p_rect->w + this->offset.x;
+        this->mask.w += dock_rect.p_rect->w + this->offset.x;
       } else if (is_right && is_center) {
         dock_rect.p_rect->x = center_right_corner.x + center_right_corner.w;
         dock_rect.p_rect->w = rect_width;
-        center_right_corner.w += dock_rect.p_rect->w + this->offset.x; 
+        center_right_corner.w += dock_rect.p_rect->w + this->offset.x;
+        this->mask.w += dock_rect.p_rect->w + this->offset.x;
       } else if (is_center) {
         dock_rect.p_rect->w = rect_width;
         dock_rect.p_rect->x = (dimension_width / 2.0f) - (dock_rect.p_rect->w / 2.0f);
@@ -563,7 +565,7 @@ void ekg::layout::mask::docknize() {
 
     this->mask.w = ekg_min(
       this->respective_all,
-      left_corner.w + right_corner.w + center_left_corner.w + center_right_corner.w
+      this->mask.w
     );
     break;
   case ekg::axis::vertical:

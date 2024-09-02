@@ -196,10 +196,17 @@ bool load_ttf_emoji(ekg::gpu::sampler_t *p_sampler) {
   ekg::draw::font_face_t &typography_font_face {f_renderer.font_face_emoji};
 
   // 🏳️‍⚧️
+  // 🥞
   // 🐈
   // 🐮
   // 🤓
   // 🐄
+  // 🦖
+  // 💦
+  // 🍑
+  // 🎃
+  // 🦋
+  // 🇧🇷
 
   uint32_t previous_size {f_renderer.font_size};
   f_renderer.set_size(512);
@@ -648,16 +655,21 @@ int32_t showcase_useless_window() {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());*/
   }
 
+  ekg::label("Background Color:", ekg::dock::next);
+  ekg::vec3 clear_color {};
+
   auto p = ekg::slider<float>(
-    "meow",
-    ekg::dock::fill | ekg::dock::next
+    "clear_color",
+    ekg::dock::fill
   )
   ->set_text_align(ekg::dock::left)
+  ->set_font_size(ekg::font::big)
   ->range<double>(0, 0.3f, 0.0f, 1.0f)
-  ->range<double>(0).f32.transfer_ownership(&ekg::current_theme_scheme().frame_outline.w)
-  ->range<float>(1, 0.55f, 0.0f, 1.0f)
-  ->range<float>(1).f32.transfer_ownership(&ekg::current_theme_scheme().frame_background.w)
-  ->range<float>(2, 0.55f, 0.0f, 1.0f);
+  ->range<double>(0).f32.transfer_ownership(&clear_color.x)
+  ->range<double>(1, 0.3f, 0.0f, 1.0f)
+  ->range<double>(1).f32.transfer_ownership(&clear_color.y)
+  ->range<double>(2, 0.3f, 0.0f, 1.0f)
+  ->range<double>(2).f32.transfer_ownership(&clear_color.z);
 
   ekg::button("Dead-allocate the instance of life", ekg::dock::fill | ekg::dock::next)
     ->set_task(
@@ -727,10 +739,6 @@ int32_t showcase_useless_window() {
       },
       ekg::action::activity
     );
-
-  ekg::vec3 clear_color {};
-
-  ekg::label("Clear Color: ", ekg::dock::next );
 
   labelresult = ekg::label("0", ekg::dock::fill | ekg::dock::next);
   labelresult->set_scaled_height(4);
@@ -1057,8 +1065,8 @@ int32_t laboratory_testing() {
     ->set_drag(ekg::dock::full)
     ->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
 
-  ekg::button("oi", ekg::dock::fill | ekg::dock::next);
-  ekg::button("tudo", ekg::dock::fill | ekg::dock::next);
+  ekg::label("oi:", ekg::dock::next);
+  ekg::button("tudo", ekg::dock::fill);
   ekg::button("bem", ekg::dock::fill | ekg::dock::next);
 
   auto p = ekg::slider<float>(
@@ -1172,7 +1180,7 @@ int32_t laboratory_testing() {
   ekg::scrollbar("wtf");
   ekg::pop_group();
 
-  ekg::frame("text", {20, 20}, {200, 200})
+  ekg::frame("text", {500, 20}, {200, 200})
     ->set_drag(ekg::dock::full)
     ->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
 
