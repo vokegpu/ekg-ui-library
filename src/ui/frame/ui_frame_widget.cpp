@@ -42,7 +42,6 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
     return;
   }
 
-  ekg::vec4 &interact {ekg::input::interact()};
   ekg::ui::frame *p_ui {(ekg::ui::frame *) this->p_data};
   ekg::rect &rect {this->get_abs_rect()};
 
@@ -63,7 +62,9 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
       this->flag.hovered && !this->flag.activity &&
       (ekg::input::action("frame-drag-activity") || ekg::input::action("frame-resize-activity"))
      ) {
+    ekg::vec4 &interact {ekg::input::interact()};
     const ekg::vec2 vec_limit_offset {this->ui_theme_activity_offset, this->ui_theme_activity_offset};
+
     ekg::set_dock_scaled(this->scissor, vec_limit_offset, this->docker_activity_drag);
     ekg::set_dock_scaled(this->scissor, vec_limit_offset / 4.0f, this->docker_activity_resize);
 
@@ -76,6 +77,7 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
     this->rect_delta.y = interact.y - rect.y;
     this->rect_delta.w = rect.w;
     this->rect_delta.h = rect.h;
+    this->old_rect = rect;
 
     this->flag.activity = this->target_dock_drag != ekg::dock::none || this->target_dock_resize != ekg::dock::none;
     this->flag.absolute = this->flag.activity;
@@ -100,7 +102,11 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
     );
   } else if (motion && this->flag.activity) {
     ekg::rect new_rect {rect};
+    ekg::vec4 interact {ekg::input::interact()};
     shown_cursor_dock_flags = this->target_dock_resize;
+
+    interact.x = ekg_min(interact.x, this->rect_delta.x);
+    interact.y = ekg_min(interact.y, this->rect_delta.y);
 
     if (this->target_dock_drag != ekg::dock::none && this->target_dock_resize == ekg::dock::none) {
       ekg_action_dispatch(
@@ -121,7 +127,7 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
 
       if (ekg_bitwise_contains(this->target_dock_resize, ekg::dock::left)) {
         float diff {((interact.x - new_rect.x) - this->rect_delta.x)};
-        new_rect.x = (interact.x - this->rect_delta.x);
+        new_rect.x = ekg_max(interact.x - this->rect_delta.x, this->old_rect.x + this->old_rect.w);
         new_rect.w -= diff;
       }
 
@@ -131,7 +137,7 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
 
       if (ekg_bitwise_contains(this->target_dock_resize, ekg::dock::top)) {
         float diff {((interact.y - new_rect.y) - this->rect_delta.y)};
-        new_rect.y = (interact.y - this->rect_delta.y);
+        new_rect.y = ekg_max(interact.y - this->rect_delta.y, this->old_rect.y + this->old_rect.h);
         new_rect.h -= diff;
       }
 
@@ -166,23 +172,35 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
     }
   } else if (resize_dock_flags != ekg::dock::none && this->flag.hovered && !this->flag.activity) {
     const ekg::vec2 vec_limit_offset {this->ui_theme_activity_offset, this->ui_theme_activity_offset};
+    ekg::vec4 &interact {ekg::input::interact()};
     ekg::set_dock_scaled(this->scissor, vec_limit_offset / 4.0f, this->docker_activity_resize);
     shown_cursor_dock_flags = ekg::find_collide_dock(this->docker_activity_resize, resize_dock_flags, interact);
   }
 
   if (shown_cursor_dock_flags) {
-    bool top {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<ekg::flags>(ekg::dock::top)))};
-    bool bottom {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<ekg::flags>(ekg::dock::bottom)))};
-    bool left {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<ekg::flags>(ekg::dock::left)))};
-    bool right {static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, static_cast<ekg::flags>(ekg::dock::right)))};
+    bool is_top {
+      static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, ekg::dock::top))
+    };
+    
+    bool is_bottom {
+      static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, ekg::dock::bottom))
+    };
 
-    if ((top && left) || (bottom && right)) {
+    bool is_left {
+      static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, ekg::dock::left))
+    };
+    
+    bool is_right {
+      static_cast<bool>(ekg_bitwise_contains(shown_cursor_dock_flags, ekg::dock::right))
+    };
+
+    if ((is_top && is_left) || (is_bottom && is_right)) {
       ekg::cursor = ekg::system_cursor::size_nwse;
-    } else if ((top && right) || (bottom && left)) {
+    } else if ((is_top && is_right) || (is_bottom && is_left)) {
       ekg::cursor = ekg::system_cursor::size_nesw;
-    } else if (top || bottom) {
+    } else if (is_top || is_bottom) {
       ekg::cursor = ekg::system_cursor::size_ns;
-    } else if (left || right) {
+    } else if (is_left || is_right) {
       ekg::cursor = ekg::system_cursor::size_we;
     }
   }

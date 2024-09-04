@@ -843,7 +843,7 @@ int32_t showcase_useless_window() {
 
   auto p_cow_ttf_frame = ekg::frame("meow", {200, 200}, {400, 400})
     ->set_drag(ekg::dock::full)
-    ->set_resize(ekg::dock::left | ekg::dock::bottom | ekg::dock::right)
+    ->set_resize(ekg::dock::left | ekg::dock::top | ekg::dock::bottom | ekg::dock::right)
     ->set_layer(&ttf_cow_sampler, ekg::layer::background);
 
   p_terminal->set_layer(&ttf_cow_sampler, ekg::layer::background);

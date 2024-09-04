@@ -205,3 +205,4 @@
 -- Fixed the scrolling timeout. Now it is working smooth.
 -- Fixed a bug where the listbox was not scrolling if previouly another widget was being hovered. Solution: Added a small focus state to listbox.
 -- Fixed the scroll issue randomly stopping, the issue was happening due the high frequency not totally clean, then not letting a new scroll happens.
+-- Fixed a glitch where the resize action was dragging the frame if top or left, also resizing unproportionally both axis if window left/top corner is hit.
