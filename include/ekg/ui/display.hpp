@@ -106,6 +106,11 @@ namespace ekg::ui {
   extern float dpi_tiling;
 
   /**
+   * Min frame width & height.
+   **/
+  extern float min_frame_size;
+
+  /**
    * Redraw the entire GUI.
    **/
   extern bool redraw;

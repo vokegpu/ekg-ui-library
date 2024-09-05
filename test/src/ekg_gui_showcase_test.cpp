@@ -213,7 +213,7 @@ bool load_ttf_emoji(ekg::gpu::sampler_t *p_sampler) {
 
   FT_Load_Char(
     typography_font_face.ft_face,
-    ekg::utf_string_to_char32("🐈"),
+    ekg::utf_string_to_char32("🐄"),
     FT_LOAD_RENDER | FT_LOAD_COLOR | FT_LOAD_DEFAULT
   );
 
@@ -846,7 +846,7 @@ int32_t showcase_useless_window() {
     ->set_resize(ekg::dock::left | ekg::dock::top | ekg::dock::bottom | ekg::dock::right)
     ->set_layer(&ttf_cow_sampler, ekg::layer::background);
 
-  p_terminal->set_layer(&ttf_cow_sampler, ekg::layer::background);
+  //p_terminal->set_layer(&ttf_cow_sampler, ekg::layer::background);
   p_terminal->set_layer(&ttf_cow_sampler, ekg::layer::highlight);
 
   #ifdef application_enable_stb_image_test
@@ -1061,7 +1061,7 @@ int32_t laboratory_testing() {
   float prev_pos {10.2f};
   float scale {2.0f};
 
-  ekg::frame("campo", {20, 20}, {200, 200})
+  ekg::frame("campo", {20, 20}, {500, 400})
     ->set_drag(ekg::dock::full)
     ->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
 
@@ -1180,13 +1180,6 @@ int32_t laboratory_testing() {
   ekg::scrollbar("wtf");
   ekg::pop_group();
 
-  ekg::frame("text", {500, 20}, {200, 200})
-    ->set_drag(ekg::dock::full)
-    ->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
-
-  ekg::textbox("fora", "adeus", ekg::dock::fill)->set_scaled_height(12);
-  ekg::pop_group();
-
   while (running) {
     ekg::ui::dt = 1.0f / last_frame;
 
@@ -1221,5 +1214,5 @@ int32_t laboratory_testing() {
 }
 
 int32_t main(int32_t, char**) {
-  return showcase_useless_window();
+  return laboratory_testing();
 }

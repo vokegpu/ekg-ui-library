@@ -105,9 +105,6 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
     ekg::vec4 interact {ekg::input::interact()};
     shown_cursor_dock_flags = this->target_dock_resize;
 
-    interact.x = ekg_min(interact.x, this->rect_delta.x);
-    interact.y = ekg_min(interact.y, this->rect_delta.y);
-
     if (this->target_dock_drag != ekg::dock::none && this->target_dock_resize == ekg::dock::none) {
       ekg_action_dispatch(
         ekg::timing::second > ekg::ui::latency,
@@ -126,27 +123,30 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
       );
 
       if (ekg_bitwise_contains(this->target_dock_resize, ekg::dock::left)) {
-        float diff {((interact.x - new_rect.x) - this->rect_delta.x)};
-        new_rect.x = ekg_max(interact.x - this->rect_delta.x, this->old_rect.x + this->old_rect.w);
-        new_rect.w -= diff;
+        interact.x = ekg_min(interact.x, this->rect_delta.x);
+        new_rect.x = ekg_max(interact.x - this->rect_delta.x, this->old_rect.x + this->old_rect.w - ekg::ui::min_frame_size);
+        new_rect.w = (this->old_rect.x + this->old_rect.w) - new_rect.x;
       }
 
       if (ekg_bitwise_contains(this->target_dock_resize, ekg::dock::right)) {
-        new_rect.w = this->rect_delta.w + ((interact.x - new_rect.x) - this->rect_delta.x);
+        new_rect.w = ekg_min(this->rect_delta.w + ((interact.x - new_rect.x) - this->rect_delta.x), ekg::ui::min_frame_size);
       }
 
       if (ekg_bitwise_contains(this->target_dock_resize, ekg::dock::top)) {
-        float diff {((interact.y - new_rect.y) - this->rect_delta.y)};
-        new_rect.y = ekg_max(interact.y - this->rect_delta.y, this->old_rect.y + this->old_rect.h);
-        new_rect.h -= diff;
+        interact.y = ekg_min(interact.y, this->rect_delta.y);
+        new_rect.y = ekg_max(interact.y - this->rect_delta.y, this->old_rect.y + this->old_rect.h - ekg::ui::min_frame_size);
+        new_rect.h = (this->old_rect.y + this->old_rect.h) - new_rect.y;
       }
 
       if (ekg_bitwise_contains(this->target_dock_resize, ekg::dock::bottom)) {
-        new_rect.h = this->rect_delta.h + ((interact.y - new_rect.y) - this->rect_delta.y);
+        new_rect.h = ekg_min(this->rect_delta.h + ((interact.y - new_rect.y) - this->rect_delta.y), ekg::ui::min_frame_size);
       }
     }
 
-    ekg::set_rect_clamped(new_rect, 30.0f);
+    ekg::set_rect_clamped(
+      new_rect,
+      ekg::ui::min_frame_size
+    );
 
     if (rect != new_rect) {
       if (p_ui->has_parent()) {
@@ -165,7 +165,7 @@ void ekg::ui::frame_widget::on_event(ekg::os::io_event_serial &io_event_serial) 
       if (this->target_dock_resize != ekg::dock::none) {
         this->is_targeting_absolute_parent = true;
         ekg::synclayout(this);
-        ekg::reload(this);
+        //ekg::reload(this);
       }
 
       ekg::ui::redraw = true;

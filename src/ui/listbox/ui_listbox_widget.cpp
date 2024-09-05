@@ -327,7 +327,6 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
 
     if (this->latest_target_dragging != -1) {
       uint64_t set_header_new_index {static_cast<uint64_t>(this->latest_target_dragging)};
-
       point.x = ekg_clamp(interact.x, rect.x, rect.x + rect.w);
 
       for (uint64_t it {}; it < size; it++) {
