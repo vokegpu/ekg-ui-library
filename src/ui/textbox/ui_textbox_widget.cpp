@@ -171,7 +171,8 @@ void ekg::ui::textbox_widget::update_ui_text_data() {
     this->rect_text.w = ekg_min(this->rect_text.w, f_renderer.get_text_width(p_ui->p_value->at(chunk_index)));
   }
 
-  this->embedded_scroll.acceleration.y = (this->text_height * 3.0f) + (this->text_offset * 2.0f);
+  this->embedded_scroll.acceleration.x = (this->text_height * 3.0f) + (this->text_offset * 2.0f);
+  this->embedded_scroll.acceleration.y = this->embedded_scroll.acceleration.x;
   this->rect_text.w += this->text_offset * 2.0f;
   p_ui->set_must_format_text(true);
 }
@@ -585,7 +586,7 @@ void ekg::ui::textbox_widget::check_cursor_text_bounding(
   float y {rect.y + this->embedded_scroll.scroll.y + this->text_offset};
 
   ekg::rect char_rect {};
-  ekg::vec4 &interact {ekg::input::interact()};
+  ekg::vec4 interact {ekg::input::interact()};
 
   interact.x = ekg_clamp(interact.x, rect.x + this->rect_cursor.w, rect.x + rect.w - this->rect_cursor.w);
   interact.y = ekg_clamp(interact.y, rect.y + this->text_offset * 2.0f, rect.y + rect.h - this->text_offset * 2.0f);
@@ -835,7 +836,6 @@ void ekg::ui::textbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
     this->flag.state = false;
   }
 
-  // @TODO dragging scroll horizontal not working
   this->embedded_scroll.on_event(io_event_serial);
 
   this->flag.was_hovered = this->flag.hovered;
@@ -1395,7 +1395,7 @@ void ekg::ui::textbox_widget::on_draw_refresh() {
   allocator.dispatch();
 
   bool draw_cursor {this->flag.focused && !ekg::reach(ekg::core->ui_timing, 500)};
-  for (ekg::rect &cursor_rect: this->cursor_draw_data_list) {
+  for (ekg::rect &cursor_rect : this->cursor_draw_data_list) {
     cursor_rect.x = cursor_rect.x + rect.x + this->embedded_scroll.scroll.x;
     cursor_rect.y = cursor_rect.y + f_renderer.offset_text_height + f_renderer.offset_text_height + rect.y;
 

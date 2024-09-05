@@ -28,6 +28,7 @@
 #include <iostream>
 #include <cstdint>
 #include <cfloat>
+#include <sstream>
 #include <cmath>
 
 #define ekg_equals_float(x, y) ((fabsf((x) - (y))) <= FLT_EPSILON * fmaxf(1.0f, fmaxf(fabsf(x), fabsf(y))))
@@ -203,6 +204,21 @@ namespace ekg {
       this->y = _l.y;
       this->w = _r.x;
       this->h = _r.y;
+    }
+
+    /**
+     * Logs the dimensions.
+     **/
+    operator std::string() {
+      std::ostringstream buffer {};
+
+      buffer <<
+        " x: " << this->x <<
+        " y: " << this->y <<
+        " w: " << this->w <<
+        " h: " << this->h;
+
+      return buffer.str();
     }
   } rect;
 

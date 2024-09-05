@@ -654,6 +654,12 @@ void ekg::runtime::prepare_ui_env() {
   this->service_input.bind("scrollbar-drag", "finger-click");
   this->service_input.bind("scrollbar-scroll", "mouse-wheel");
   this->service_input.bind("scrollbar-scroll", "finger-swipe");
+
+  // I think it is a severe problem with EKG input-bind system, but I will fix soon.
+  this->service_input.bind("scrollbar-scroll", "lshift+mouse-wheel");
+  this->service_input.bind("scrollbar-scroll", "rshift+mouse-wheel");
+  this->service_input.bind("scrollbar-horizontal-scroll", "lshift+mouse-wheel");
+  this->service_input.bind("scrollbar-horizontal-scroll", "rshift+mouse-wheel");
 }
 
 void ekg::runtime::gen_widget(ekg::ui::abstract *p_ui) {

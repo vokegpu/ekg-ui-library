@@ -120,11 +120,11 @@ void ekg::ui::scrollbar_embedded_widget::on_reload() {
       continue;
     }
 
-    if (p_widgets->dimension.x > this->rect_child.w) {
+    if (p_widgets->dimension.x + p_widgets->dimension.w > this->rect_child.w) {
       this->rect_child.w = p_widgets->dimension.x + p_widgets->dimension.w;
     }
 
-    if (p_widgets->dimension.y > this->rect_child.h) {
+    if (p_widgets->dimension.y + p_widgets->dimension.h > this->rect_child.h) {
       this->rect_child.h = p_widgets->dimension.y + p_widgets->dimension.h;
     }
 
@@ -198,8 +198,9 @@ void ekg::ui::scrollbar_embedded_widget::on_event(ekg::os::io_event_serial &io_e
     );
   }
 #else
-  if (this->flag.scrolling && this->is_vertical_enabled) {
-    bool over_max_motion {static_cast<int32_t>(interact.w) > 1 || static_cast<int32_t>(interact.w) < -1};
+  bool is_horizontal_scroll {ekg::input::action("scrollbar-horizontal-scroll")};
+
+  if (this->flag.scrolling && this->is_vertical_enabled && !is_horizontal_scroll) {
     this->scroll.w = ekg_clamp(
       this->scroll.y + (interact.w * this->acceleration.y),
       this->p_rect_mother->h - this->rect_child.h,
@@ -208,15 +209,12 @@ void ekg::ui::scrollbar_embedded_widget::on_event(ekg::os::io_event_serial &io_e
   }
 
   if (this->flag.scrolling && this->is_horizontal_enabled) {
-    bool over_max_motion {static_cast<int32_t>(interact.z) >= 2 || static_cast<int32_t>(interact.z) <= -2};
+    float scroll_dir {is_horizontal_scroll ? interact.w : interact.z};
     this->scroll.z = ekg_clamp(
-      this->scroll.x + (-interact.z * (
-        over_max_motion ? this->acceleration.x + this->acceleration.x : this->acceleration.x
-      )),
+      this->scroll.x + (scroll_dir * this->acceleration.x),
       this->p_rect_mother->w - this->rect_child.w,
       0.0f
     );
-
   }
 #endif
 

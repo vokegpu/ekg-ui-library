@@ -249,7 +249,10 @@ void ekg::service::input::on_event(ekg::os::io_event_serial &io_event_serialized
     }
 
     case ekg::platform_event_type::mouse_wheel: {
-      this->callback("mouse-wheel", true);
+      std::string string_builder {};
+      this->complete_with_units(string_builder, "mouse-wheel");
+      this->callback(string_builder, true);
+      this->input_released_list.push_back(string_builder);
       this->was_wheel = true;
 
       this->callback("mouse-wheel-up", io_event_serialized.mouse_wheel_y > 0);

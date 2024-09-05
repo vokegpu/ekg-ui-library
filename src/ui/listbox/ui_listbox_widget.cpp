@@ -192,7 +192,8 @@ void ekg::ui::listbox_widget::on_reload() {
     this->embedded_scroll.rect_child.w = relative_largest_rect.w;
   }
 
-  this->embedded_scroll.acceleration.y = (text_height * 3.0f) + (offset * 2.0f);
+  this->embedded_scroll.acceleration.x = (text_height * 3.0f) + (offset * 2.0f);
+  this->embedded_scroll.acceleration.y = this->embedded_scroll.acceleration.x;
   this->embedded_scroll.p_rect_mother = &this->rect_content_abs;
   this->embedded_scroll.widget_id = this->p_data->get_id();
   this->embedded_scroll.on_reload();

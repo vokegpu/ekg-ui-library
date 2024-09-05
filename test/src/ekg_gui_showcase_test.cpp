@@ -885,7 +885,7 @@ int32_t showcase_useless_window() {
   uint64_t last_frame {1};
   ekg::timing fps_timing {};
 
-  ekg::input::bind("amovc", "mouse-3");
+  ekg::input::bind("amovc", "lshift+mouse-3");
 
   bool multithreading {false};
   std::thread update_thread {};
@@ -1175,9 +1175,16 @@ int32_t laboratory_testing() {
   ->set_mode(ekg::mode::multicolumn)
   ->transfer_ownership(&content);*/
 
-  ekg::textbox("principal", "adeus", ekg::dock::fill | ekg::dock::next)->set_scaled_height(6);
+  ekg::slider<float>("mouse:", ekg::dock::fill | ekg::dock::next)
+    ->range<float>(0, 0.0f, 0.0f, 1000.0f)
+    ->range<float>(0).f32.transfer_ownership(&ekg::input::interact().x)
+    ->range<float>(1, 0.0f, 0.0f, 1000.0f)
+    ->range<float>(1).f32.transfer_ownership(&ekg::input::interact().y);
 
-  ekg::scrollbar("wtf");
+  ekg::textbox("principal", "adeus", ekg::dock::next | ekg::dock::fill)
+    ->set_scaled_height(6)
+    ->set_width(500.0f);
+  ekg::scrollbar("oiiii mumu");
   ekg::pop_group();
 
   while (running) {
@@ -1214,5 +1221,5 @@ int32_t laboratory_testing() {
 }
 
 int32_t main(int32_t, char**) {
-  return laboratory_testing();
+  return showcase_useless_window();
 }
