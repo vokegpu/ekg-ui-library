@@ -149,7 +149,7 @@
 -- Performance boost excluding mapped scissors.
 -- State-based for abstract UI elements.
 -- Cross-platform API now contains a serialized event type.
--- Keybinds and special keys, little optmized.
+-- Keybinds and special keys, little optimized.
 -- Fixed slider glitch/broken.
 -- Removed unused features-functions/methods.
 -- CMake new features and d-vars: `EKG_FORCE_WINDOWS`, `EKG_FORCE_ANDROID` and `EKG_FORCE_LINUX`:
@@ -173,10 +173,10 @@
 -- Removed trash layout service.
 -- Fixed pixel imperfect on scrolling and on all places.
 -- Moved `std::vector<t>` extends to `ekg::value_t<t>` in listbox and textbox.
--- Fixed pixel-unuscaled from font face si`1ze, now the text height is set to the specified font face size.
+-- Fixed pixel-unuscaled from font face size, now the text height is set to the specified font face size.
 -- Listbox performance increase for resize & events (highlight, press, open etc).
 -- Removed useless text width condition of button for set the width.
--- Listbox highlight optmized.
+-- Listbox highlight optimized.
 -- Fixed a glitch where the latest widget was not adding the extent if widget did not have flag ok --- ekg::dock::next ---.
 -- Fixed scrollbar embedded not excluding if was not enable a scroll direction.
 -- Fixed listbox headers together when a item was open.
@@ -185,7 +185,7 @@
 -- Added horizontal resize feature to listbox.
 -- Solved the "tchup tchup" on listbox header target (imagine a extra-offset added for no reason on header resize).
 -- Fixed a bug where the index header dragged is the same as the original (same it hover some header).
--- Fixed a bug where the glyph that is not sampled returns wsize zero, which broken some widgets when is being calculated text width, now EKG get-once a wsize and map the new glyph on width calculation section (the rendering is also used to map the new glyph yet).
+-- Fixed a bug where the glyph that is not sampled returns glyph width size zero, which broken some widgets when is being calculated text width, now EKG get-once a wsize and map the new glyph on width calculation section (the rendering is also used to map the new glyph yet).
 -- Added typing state for textbox, instead of using state directly.
 -- Now focus items on listbox does not work (no state change) when is not being interacted (hovered).
 -- New theme system, mapped and scheme-based type.
@@ -198,12 +198,14 @@
 -- Added "box" option to `ekg::value_t<t, s>` (I know it is not how burrow and box from Rust works, just a stupid name).
 -- Fixed memory issues from `ekg::value_t<t, s>` but I do not believe it is totally safe, God my brain can not figure what must do.
 -- `ekg::string_float64_precision` added for double/float64.
--- Totally deprecated the dynamic range, due the insanely unsafe issues, now it is type-specification-based (you must invoke f32 to float, i64 to uint64 but you are able to ownership safety).
+-- Totally deprecated the dynamic range, due the insanely unsafe issues, now it is type-specification-based (you must invoke f32 to float, i64 to uint64 but you are able to ownership infer type safety).
 -- Added the left/right corners option to text in slider.
 -- `ekg::layout::extent` now an type object `ekg::layout::extent_t`, plus two new externs (ekg::layout::v_extent & ekg::layout::h_extent).
 -- `ekg::dock::none` option to the text in slider.
 -- Fixed the scrolling timeout. Now it is working smooth.
--- Fixed a bug where the listbox was not scrolling if previouly another widget was being hovered. Solution: Added a small focus state to listbox.
+-- Fixed a bug where the listbox was not scrolling if previously another widget was being hovered. Solution: Added a small focus state to listbox.
 -- Fixed the scroll issue randomly stopping, the issue was happening due the high frequency not totally clean, then not letting a new scroll happens.
 -- Fixed a glitch where the resize action was dragging the frame if top or left, also resizing unproportionally both axis if window left/top corner is hit.
 -- New lshift/rshift+mouse-wheel input bind to do horizontal scrolling (scroll widget, textbox widget, listbox widget, etc).
+-- Fixed a glitch where the item hover attr flag was being spammed if scrolling fast.
+-- Fixed a glitch where the addresed value was not clamped in slider widget.

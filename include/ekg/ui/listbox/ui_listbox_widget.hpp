@@ -45,6 +45,7 @@ namespace ekg::ui {
       float normalized_horizontal_scroll,
       bool is_header_targeted,
       bool is_column_header_top,
+      bool is_multicolumn,
       ekg::draw::font_renderer &f_renderer
     );
   public:
@@ -71,8 +72,6 @@ namespace ekg::ui {
     int32_t target_dragging {-1};
     int32_t latest_target_dragging {-1};
     int32_t target_drag_set_index {-1};
-
-    int32_t test {};
   public:
     void on_create() override;
 

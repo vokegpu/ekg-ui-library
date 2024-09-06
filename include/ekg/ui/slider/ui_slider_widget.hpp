@@ -39,6 +39,7 @@ namespace ekg::ui {
       ekg::rect rect_text {};
       std::string text {};
       ekg::font font_size {};
+      float last_dimension {};
     };
   public:
     std::vector<ekg::ui::slider_widget::range> range_list {};

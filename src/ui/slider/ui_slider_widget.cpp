@@ -80,33 +80,17 @@ void ekg::ui::slider_widget::on_reload() {
       // target top/bottom
       // no-docknize, target the drag cursor with small font height
 
-      if (text_align_flags == ekg::dock::left || text_align_flags == ekg::dock::right || ekg_bitwise_contains(text_align_flags, ekg::dock::none)) {
-        mask.preset(
-          {p_ui->get_bar_offset(), 0.0f, this->dimension.h},
-          axis,
-          this->dimension.w
-        );
+      mask.preset(
+        {p_ui->get_bar_offset(), 0.0f, this->dimension.h},
+        axis,
+        this->dimension.w
+      );
 
-        for (uint64_t it {}; it < range_list_size; it++) {
-          ekg::ui::slider_widget::range &range {this->range_list.at(it)};
-          range.text = "";
+      for (uint64_t it {}; it < range_list_size; it++) {
+        ekg::ui::slider_widget::range &range {this->range_list.at(it)};
+        range.rect.h = this->dimension.h * bar_thickness;
 
-          if (!ekg_bitwise_contains(text_align_flags, ekg::dock::none)) {
-            ekg::ui::slider_widget_get_value_label(
-              p_ui,
-              number,
-              it,
-              range.text
-            );
-          }
-
-          /**
-           * Note: EKG allocator contains an issue on rendering where the next
-           * UV coords is jittering due some stupid text size (unknown wsize).
-           * May you want know more: https://github.com/vokegpu/ekg-ui-library/issues/22
-           **/
-          range.text += " ";
-
+        if (!ekg_bitwise_contains(text_align_flags, ekg::dock::none)) {        
           ekg::ui::slider_widget_get_metrics(
             p_ui,
             number,
@@ -115,7 +99,7 @@ void ekg::ui::slider_widget::on_reload() {
             &min_text_width,
             &max_text_width
           );
-
+  
           if (min_text_width > max_text_width) {
             max_text_width = min_text_width;
           }
@@ -124,18 +108,23 @@ void ekg::ui::slider_widget::on_reload() {
           range.rect_text.h = base_text_height;
           range.font_size = base_font_size;
 
-          range.rect.h = this->dimension.h * bar_thickness;
-
+          range.last_dimension = -1.0f;
+        }
+  
+        if (text_align_flags == ekg::dock::left || text_align_flags == ekg::dock::right || ekg_bitwise_contains(text_align_flags, ekg::dock::none)) {
           mask.insert({&range.rect_text, text_align_flags});
           mask.insert(
             {&range.rect, (ekg_bitwise_contains(text_align_flags, ekg::dock::none) ? ekg::dock::left : text_align_flags) | ekg::dock::fill}
           );
+        } else if (ekg_bitwise_contains(text_align_flags, ekg::dock::top) || ekg_bitwise_contains(text_align_flags, ekg::dock::bottom)) {
+          mask.insert(
+            {&range.rect, ekg::dock::left | ekg::dock::fill}
+          );
         }
-
-        mask.docknize();
-      } else if (ekg_bitwise_contains(text_align_flags, ekg::dock::top) || ekg_bitwise_contains(text_align_flags, ekg::dock::bottom)) {
-        // pass ue
       }
+  
+      mask.docknize();
+      break;
     }
 
     case ekg::axis::vertical: {
@@ -212,6 +201,8 @@ void ekg::ui::slider_widget::on_draw_refresh() {
   ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
   ekg::ui::slider *p_ui {static_cast<ekg::ui::slider*>(this->p_data)};
   ekg::number number {p_ui->get_number()};
+  ekg::flags text_align_flags {p_ui->get_text_align()};
+  bool is_text_enabled {!ekg_bitwise_contains(text_align_flags, ekg::dock::none)};
 
   ekg::draw::sync_scissor(this->scissor, rect, this->p_parent_scissor);
   ekg_draw_assert_scissor();
@@ -229,12 +220,37 @@ void ekg::ui::slider_widget::on_draw_refresh() {
       ekg::ui::slider_widget::range &range {this->range_list.at(it)};
 
       range.target = range.rect;
-      range.target.w = ekg::ui::slider_widget_calculate_target_pos(
-        p_ui,
-        number,
-        range.rect.w,
-        it
+      range.target.w = ekg_clamp(
+        ekg::ui::slider_widget_calculate_target_pos(
+          p_ui,
+          number,
+          range.rect.w,
+          it
+        ),
+        0.0f,
+        range.rect.w
       );
+
+      /**
+       * May it be a risky to EKG performance, but I believe it is the best
+       * temp solution for low-latency CPU usage.
+       **/
+      if (is_text_enabled && range.last_dimension != range.target.w) {
+        range.last_dimension = range.target.w;
+        ekg::ui::slider_widget_get_value_label(
+          p_ui,
+          number,
+          it,
+          range.text
+        );
+
+        /**
+         * Note: EKG allocator contains an issue on rendering where the next
+         * UV coords is jittering due some stupid text size (unknown wsize).
+         * May you want know more: https://github.com/vokegpu/ekg-ui-library/issues/22
+         **/
+        range.text += " ";
+      }
 
       ekg::draw::rect(
         range.rect + rect,
@@ -309,60 +325,70 @@ float ekg::ui::slider_widget_calculate_target_pos(
     case ekg::number::float64: {
       ekg::ui::slider::range_t &range {p_ui->range<double>(index)};
       range.f64.align_ownership_mem_if_necessary();
+      range.f64.set_value(ekg_clamp(range.f64.get_value(), range.f64_min, range.f64_max));
       return (dimension * (range.f64.get_value() - range.f64_min) / (range.f64_max - range.f64_min));
     }
 
     case ekg::number::float32: {
       ekg::ui::slider::range_t &range {p_ui->range<float>(index)};
       range.f32.align_ownership_mem_if_necessary();
+      range.f32.set_value(ekg_clamp(range.f32.get_value(), range.f32_min, range.f32_max));
       return (dimension * (range.f32.get_value() - range.f32_min) / (range.f32_max - range.f32_min));
     }
     
     case ekg::number::int64: {
       ekg::ui::slider::range_t &range {p_ui->range<int64_t>(index)};
       range.i64.align_ownership_mem_if_necessary();
+      range.i64.set_value(ekg_clamp(range.i64.get_value(), range.i64_min, range.i64_max));
       return (dimension * (range.i64.get_value() - range.i64_min) / (range.i64_max - range.i64_min));
     }
     
     case ekg::number::uint64: {
       ekg::ui::slider::range_t &range {p_ui->range<uint64_t>(index)};
       range.u64.align_ownership_mem_if_necessary();
+      range.u64.set_value(ekg_clamp(range.u64.get_value(), range.u64_min, range.u64_max));
       return (dimension * (range.u64.get_value() - range.u64_min) / (range.u64_max - range.u64_min));
     }
     
     case ekg::number::int32: {
       ekg::ui::slider::range_t &range {p_ui->range<int32_t>(index)};
       range.i32.align_ownership_mem_if_necessary();
+      range.i32.set_value(ekg_clamp(range.i32.get_value(), range.i32_min, range.i32_max));
       return (dimension * (range.i32.get_value() - range.i32_min) / (range.i32_max - range.i32_min));
     }
     
     case ekg::number::uint32: {
       ekg::ui::slider::range_t &range {p_ui->range<uint32_t>(index)};
       range.u32.align_ownership_mem_if_necessary();
+      range.u32.set_value(ekg_clamp(range.u32.get_value(), range.u32_min, range.u32_max));
       return (dimension * (range.u32.get_value() - range.u32_min) / (range.u32_max - range.u32_min));
     }
     
     case ekg::number::int16: {
       ekg::ui::slider::range_t &range {p_ui->range<int16_t>(index)};
       range.i16.align_ownership_mem_if_necessary();
+      range.i16.set_value(ekg_clamp(range.i16.get_value(), range.i16_min, range.i16_max));
       return (dimension * (range.i16.get_value() - range.i16_min) / (range.i16_max - range.i16_min));
     }
     
     case ekg::number::uint16: {
       ekg::ui::slider::range_t &range {p_ui->range<uint16_t>(index)};
       range.u16.align_ownership_mem_if_necessary();
+      range.u16.set_value(ekg_clamp(range.u16.get_value(), range.u16_min, range.u16_max));
       return (dimension * (range.u16.get_value() - range.u16_min) / (range.u16_max - range.u16_min));
     }
     
     case ekg::number::int8: {
       ekg::ui::slider::range_t &range {p_ui->range<int8_t>(index)};
       range.i8.align_ownership_mem_if_necessary();
+      range.i8.set_value(ekg_clamp(range.i8.get_value(), range.i8_min, range.i8_max));
       return (dimension * (range.i8.get_value() - range.i8_min) / (range.i8_max - range.i8_min));
     }
     
     case ekg::number::uint8: {
       ekg::ui::slider::range_t &range {p_ui->range<uint8_t>(index)};
       range.u8.align_ownership_mem_if_necessary();
+      range.u8.set_value(ekg_clamp(range.u8.get_value(), range.u8_min, range.u8_max));
       return (dimension * (range.u8.get_value() - range.u8_min) / (range.u8_max - range.u8_min));
     }
   }
@@ -381,6 +407,7 @@ void ekg::ui::slider_widget_calculate_value(
     case ekg::number::float64: {
       ekg::ui::slider::range_t &range {p_ui->range<double>(index)};
       range.f64.align_ownership_mem_if_necessary();
+      range.f64.set_value(ekg_clamp(range.f64.get_value(), range.f64_min, range.f64_max));
 
       if (factor == 0) {
         range.f64.set_value(range.f64_min);
@@ -393,6 +420,7 @@ void ekg::ui::slider_widget_calculate_value(
     case ekg::number::float32: {
       ekg::ui::slider::range_t &range {p_ui->range<float>(index)};
       range.f32.align_ownership_mem_if_necessary();
+      range.f32.set_value(ekg_clamp(range.f32.get_value(), range.f32_min, range.f32_max));
 
       if (factor == 0) {
         range.f32.set_value(range.f32_min);
@@ -406,6 +434,7 @@ void ekg::ui::slider_widget_calculate_value(
     case ekg::number::int64: {
       ekg::ui::slider::range_t &range {p_ui->range<int64_t>(index)};
       range.i64.align_ownership_mem_if_necessary();
+      range.i64.set_value(ekg_clamp(range.i64.get_value(), range.i64_min, range.i64_max));
 
       if (factor == 0) {
         range.i64.set_value(range.i64_min);
@@ -418,6 +447,7 @@ void ekg::ui::slider_widget_calculate_value(
     case ekg::number::uint64: {
       ekg::ui::slider::range_t &range {p_ui->range<uint64_t>(index)};
       range.u64.align_ownership_mem_if_necessary();
+      range.u64.set_value(ekg_clamp(range.u64.get_value(), range.u64_min, range.u64_max));
 
       if (factor == 0) {
         range.u64.set_value(range.u64_min);
@@ -430,6 +460,7 @@ void ekg::ui::slider_widget_calculate_value(
     case ekg::number::int32: {
       ekg::ui::slider::range_t &range {p_ui->range<int32_t>(index)};
       range.i32.align_ownership_mem_if_necessary();
+      range.i32.set_value(ekg_clamp(range.i32.get_value(), range.i32_min, range.i32_max));
 
       if (factor == 0) {
         range.i32.set_value(range.i32_min);
@@ -442,6 +473,7 @@ void ekg::ui::slider_widget_calculate_value(
     case ekg::number::uint32: {
       ekg::ui::slider::range_t &range {p_ui->range<uint32_t>(index)};
       range.u32.align_ownership_mem_if_necessary();
+      range.u32.set_value(ekg_clamp(range.u32.get_value(), range.u32_min, range.u32_max));
 
       if (factor == 0) {
         range.u32.set_value(range.u32_min);
@@ -454,6 +486,7 @@ void ekg::ui::slider_widget_calculate_value(
     case ekg::number::int16: {
       ekg::ui::slider::range_t &range {p_ui->range<int16_t>(index)};
       range.i16.align_ownership_mem_if_necessary();
+      range.i16.set_value(ekg_clamp(range.i16.get_value(), range.i16_min, range.i16_max));
 
       if (factor == 0) {
         range.i16.set_value(range.i16_min);
@@ -466,6 +499,7 @@ void ekg::ui::slider_widget_calculate_value(
     case ekg::number::uint16: {
       ekg::ui::slider::range_t &range {p_ui->range<uint16_t>(index)};
       range.u16.align_ownership_mem_if_necessary();
+      range.u16.set_value(ekg_clamp(range.u16.get_value(), range.u16_min, range.u16_max));
 
       if (factor == 0) {
         range.u16.set_value(range.u16_min);
@@ -478,6 +512,7 @@ void ekg::ui::slider_widget_calculate_value(
     case ekg::number::int8: {
       ekg::ui::slider::range_t &range {p_ui->range<int8_t>(index)};
       range.i8.align_ownership_mem_if_necessary();
+      range.i8.set_value(ekg_clamp(range.i8.get_value(), range.i8_min, range.i8_max));
 
       if (factor == 0) {
         range.i8.set_value(range.i8_min);
@@ -490,6 +525,7 @@ void ekg::ui::slider_widget_calculate_value(
     case ekg::number::uint8: {
       ekg::ui::slider::range_t &range {p_ui->range<uint8_t>(index)};
       range.u8.align_ownership_mem_if_necessary();
+      range.u8.set_value(ekg_clamp(range.u8.get_value(), range.u8_min, range.u8_max));
 
       if (factor == 0) {
         range.u8.set_value(range.u8_min);
@@ -511,6 +547,7 @@ void ekg::ui::slider_widget_get_value_label(
     case ekg::number::float64: {
       ekg::ui::slider::range_t &range {p_ui->range<double>(index)};
       range.f64.align_ownership_mem_if_necessary();
+      range.f64.set_value(ekg_clamp(range.f64.get_value(), range.f64_min, range.f64_max));
       content = ekg::string_float64_precision(range.f64.get_value(), range.display_precision);
       break;
     }
@@ -518,6 +555,7 @@ void ekg::ui::slider_widget_get_value_label(
     case ekg::number::float32: {
       ekg::ui::slider::range_t &range {p_ui->range<float>(index)};
       range.f32.align_ownership_mem_if_necessary();
+      range.f32.set_value(ekg_clamp(range.f32.get_value(), range.f32_min, range.f32_max));
       content = ekg::string_float_precision(range.f32.get_value(), range.display_precision);
       break;
     }
@@ -525,6 +563,7 @@ void ekg::ui::slider_widget_get_value_label(
     case ekg::number::int64: {
       ekg::ui::slider::range_t &range {p_ui->range<int64_t>(index)};
       range.i64.align_ownership_mem_if_necessary();
+      range.i64.set_value(ekg_clamp(range.i64.get_value(), range.i64_min, range.i64_max));
       content = std::to_string(range.i64.get_value());
       break;
     }
@@ -532,6 +571,7 @@ void ekg::ui::slider_widget_get_value_label(
     case ekg::number::uint64: {
       ekg::ui::slider::range_t &range {p_ui->range<uint64_t>(index)};
       range.u64.align_ownership_mem_if_necessary();
+      range.u64.set_value(ekg_clamp(range.u64.get_value(), range.u64_min, range.u64_max));
       content = std::to_string(range.u64.get_value());
       break;
     }
@@ -539,6 +579,7 @@ void ekg::ui::slider_widget_get_value_label(
     case ekg::number::int32: {
       ekg::ui::slider::range_t &range {p_ui->range<int32_t>(index)};
       range.i32.align_ownership_mem_if_necessary();
+      range.i32.set_value(ekg_clamp(range.i32.get_value(), range.i32_min, range.i32_max));
       content = std::to_string(range.i32.get_value());
       break;
     }
@@ -546,6 +587,7 @@ void ekg::ui::slider_widget_get_value_label(
     case ekg::number::uint32: {
       ekg::ui::slider::range_t &range {p_ui->range<uint32_t>(index)};
       range.u32.align_ownership_mem_if_necessary();
+      range.u32.set_value(ekg_clamp(range.u32.get_value(), range.u32_min, range.u32_max));
       content = std::to_string(range.u32.get_value());
       break;
     }
@@ -553,6 +595,7 @@ void ekg::ui::slider_widget_get_value_label(
     case ekg::number::int16: {
       ekg::ui::slider::range_t &range {p_ui->range<int16_t>(index)};
       range.i16.align_ownership_mem_if_necessary();
+      range.i16.set_value(ekg_clamp(range.i16.get_value(), range.i16_min, range.i16_max));
       content = std::to_string(range.i16.get_value());
       break;
     }
@@ -560,6 +603,7 @@ void ekg::ui::slider_widget_get_value_label(
     case ekg::number::uint16: {
       ekg::ui::slider::range_t &range {p_ui->range<uint16_t>(index)};
       range.u16.align_ownership_mem_if_necessary();
+      range.u16.set_value(ekg_clamp(range.u16.get_value(), range.u16_min, range.u16_max));
       content = std::to_string(range.u16.get_value());
       break;
     }
@@ -567,6 +611,7 @@ void ekg::ui::slider_widget_get_value_label(
     case ekg::number::int8: {
       ekg::ui::slider::range_t &range {p_ui->range<int8_t>(index)};
       range.i8.align_ownership_mem_if_necessary();
+      range.i8.set_value(ekg_clamp(range.i8.get_value(), range.i8_min, range.i8_max));
       content = std::to_string(range.i8.get_value());
       break;
     }
@@ -574,6 +619,7 @@ void ekg::ui::slider_widget_get_value_label(
     case ekg::number::uint8: {
       ekg::ui::slider::range_t &range {p_ui->range<uint8_t>(index)};
       range.u8.align_ownership_mem_if_necessary();
+      range.u8.set_value(ekg_clamp(range.u8.get_value(), range.u8_min, range.u8_max));
       content = std::to_string(range.u8.get_value());
       break;
     }
@@ -592,6 +638,7 @@ void ekg::ui::slider_widget_get_metrics(
     case ekg::number::float64: {
       ekg::ui::slider::range_t &range {p_ui->range<double>(index)};
       range.f64.align_ownership_mem_if_necessary();
+      range.f64.set_value(ekg_clamp(range.f64.get_value(), range.f64_min, range.f64_max));
 
       *p_min_text_width = f_renderer.get_text_width(ekg::string_float64_precision(range.f64_min, range.display_precision));
       *p_max_text_width = f_renderer.get_text_width(ekg::string_float64_precision(range.f64_min, range.display_precision));
@@ -602,6 +649,7 @@ void ekg::ui::slider_widget_get_metrics(
     case ekg::number::float32: {
       ekg::ui::slider::range_t &range {p_ui->range<float>(index)};
       range.f32.align_ownership_mem_if_necessary();
+      range.f32.set_value(ekg_clamp(range.f32.get_value(), range.f32_min, range.f32_max));
 
       *p_min_text_width = f_renderer.get_text_width(ekg::string_float_precision(range.f32_min, range.display_precision));
       *p_max_text_width = f_renderer.get_text_width(ekg::string_float_precision(range.f32_max, range.display_precision));
@@ -612,6 +660,7 @@ void ekg::ui::slider_widget_get_metrics(
     case ekg::number::int64: {
       ekg::ui::slider::range_t &range {p_ui->range<int64_t>(index)};
       range.i64.align_ownership_mem_if_necessary();
+      range.i64.set_value(ekg_clamp(range.i64.get_value(), range.i64_min, range.i64_max));
 
       *p_min_text_width = f_renderer.get_text_width(std::to_string(range.i64_min));
       *p_max_text_width = f_renderer.get_text_width(std::to_string(range.i64_max));
@@ -622,6 +671,7 @@ void ekg::ui::slider_widget_get_metrics(
     case ekg::number::uint64: {
       ekg::ui::slider::range_t &range {p_ui->range<uint64_t>(index)};
       range.u64.align_ownership_mem_if_necessary();
+      range.u64.set_value(ekg_clamp(range.u64.get_value(), range.u64_min, range.u64_max));
 
       *p_min_text_width = f_renderer.get_text_width(std::to_string(range.u64_min));
       *p_max_text_width = f_renderer.get_text_width(std::to_string(range.u64_max));
@@ -632,6 +682,7 @@ void ekg::ui::slider_widget_get_metrics(
     case ekg::number::int32: {
       ekg::ui::slider::range_t &range {p_ui->range<int32_t>(index)};
       range.i32.align_ownership_mem_if_necessary();
+      range.i32.set_value(ekg_clamp(range.i32.get_value(), range.i32_min, range.i32_max));
 
       *p_min_text_width = f_renderer.get_text_width(std::to_string(range.i32_min));
       *p_max_text_width = f_renderer.get_text_width(std::to_string(range.i32_max));
@@ -642,6 +693,7 @@ void ekg::ui::slider_widget_get_metrics(
     case ekg::number::uint32: {
       ekg::ui::slider::range_t &range {p_ui->range<uint32_t>(index)};
       range.u32.align_ownership_mem_if_necessary();
+      range.u32.set_value(ekg_clamp(range.u32.get_value(), range.u32_min, range.u32_max));
 
       *p_min_text_width = f_renderer.get_text_width(std::to_string(range.u32_min));
       *p_max_text_width = f_renderer.get_text_width(std::to_string(range.u32_max));
@@ -652,6 +704,7 @@ void ekg::ui::slider_widget_get_metrics(
     case ekg::number::int16: {
       ekg::ui::slider::range_t &range {p_ui->range<int16_t>(index)};
       range.i16.align_ownership_mem_if_necessary();
+      range.i16.set_value(ekg_clamp(range.i16.get_value(), range.i16_min, range.i16_max));
 
       *p_min_text_width = f_renderer.get_text_width(std::to_string(range.i16_min));
       *p_max_text_width = f_renderer.get_text_width(std::to_string(range.i16_max));
@@ -662,6 +715,7 @@ void ekg::ui::slider_widget_get_metrics(
     case ekg::number::uint16: {
       ekg::ui::slider::range_t &range {p_ui->range<uint16_t>(index)};
       range.u16.align_ownership_mem_if_necessary();
+      range.u16.set_value(ekg_clamp(range.u16.get_value(), range.u16_min, range.u16_max));
 
       *p_min_text_width = f_renderer.get_text_width(std::to_string(range.u16_min));
       *p_max_text_width = f_renderer.get_text_width(std::to_string(range.u16_max));
@@ -672,6 +726,7 @@ void ekg::ui::slider_widget_get_metrics(
     case ekg::number::int8: {
       ekg::ui::slider::range_t &range {p_ui->range<int8_t>(index)};
       range.i8.align_ownership_mem_if_necessary();
+      range.i8.set_value(ekg_clamp(range.i8.get_value(), range.i8_min, range.i8_max));
 
       *p_min_text_width = f_renderer.get_text_width(std::to_string(range.i8_min));
       *p_max_text_width = f_renderer.get_text_width(std::to_string(range.i8_max));
@@ -682,6 +737,7 @@ void ekg::ui::slider_widget_get_metrics(
     case ekg::number::uint8: {
       ekg::ui::slider::range_t &range {p_ui->range<uint8_t>(index)};
       range.u8.align_ownership_mem_if_necessary();
+      range.u8.set_value(ekg_clamp(range.u8.get_value(), range.u8_min, range.u8_max));
 
       *p_min_text_width = f_renderer.get_text_width(std::to_string(range.u8_min));
       *p_max_text_width = f_renderer.get_text_width(std::to_string(range.u8_max));

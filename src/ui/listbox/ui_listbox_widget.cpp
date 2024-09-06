@@ -268,7 +268,7 @@ void ekg::ui::listbox_widget::on_event(ekg::os::io_event_serial &io_event_serial
   };
 
   bool stop_processs_if_scrolling {
-    (this->flag.absolute && !is_some_header_targeted)
+    false
   };
 
   if (
@@ -648,6 +648,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
 
   bool must_stop_rendering {};
   bool is_header_targeted {};
+  bool is_multicolumn {p_ui->get_mode() == ekg::mode::multicolumn};
 
   bool is_column_header_top {
     ekg_bitwise_contains(flags, ekg::dock::top) ||
@@ -678,6 +679,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
       normalized_horizontal_scroll,
       is_header_targeted,
       is_column_header_top,
+      is_multicolumn,
       f_renderer
     );
 
@@ -722,6 +724,7 @@ void ekg::ui::listbox_widget::on_draw_refresh() {
       normalized_horizontal_scroll,
       is_header_targeted,
       is_column_header_top,
+      is_multicolumn,
       f_renderer
     );
 
@@ -739,11 +742,14 @@ void ekg::ui::listbox_widget::render_item(
   float normalized_horizontal_scroll,
   bool is_header_targeted,
   bool is_column_header_top,
+  bool is_multicolumn,
   ekg::draw::font_renderer &f_renderer
 ) {
   ekg::service::theme_scheme_t &theme_scheme {ekg::current_theme_scheme()};
+  ekg::vec4 &interact {ekg::input::interact()};
   ekg::rect &rect {this->get_abs_rect()};
   ekg::rect item_rect {};
+  ekg::rect multicolumn_item_rect {};
   ekg::flags flags {item_header.get_attr()};
   bool must_stop_rendering {};
   ekg::rect targeted_rect {this->rect_current_dragging_targeted_header};
@@ -876,6 +882,27 @@ void ekg::ui::listbox_widget::render_item(
         theme_scheme.listbox_item_highlight_outline,
         ekg::draw_mode::outline
       );
+
+      /**
+       * I chosen to desync the cache and the item, due a glitch while hovering and
+       * scrolling fast, making spam tons of items-hovered;
+       *
+       * Normally it is unhovered but if the input is totally stop, item does not,
+       * also the not-rendering items are stop, then on rendering is the best
+       * place to clean items flags. 
+       **/
+
+      multicolumn_item_rect = item_rect;
+      multicolumn_item_rect.x = rect.x;
+      multicolumn_item_rect.w = rect.w;
+
+      if (
+          (is_multicolumn && !ekg::rect_collide_vec(multicolumn_item_rect, interact))
+          ||
+          (!is_multicolumn && !ekg::rect_collide_vec(item_rect, interact))
+        ) {
+        item.set_attr(ekg_bitwise_remove(flags, ekg::attr::hovering));
+      }
     }
 
     if (ekg_bitwise_contains(flags, ekg::attr::focused)) {

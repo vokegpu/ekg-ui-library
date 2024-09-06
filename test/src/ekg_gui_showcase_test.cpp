@@ -655,6 +655,31 @@ int32_t showcase_useless_window() {
     content.at(it).insert(content.at(it).end(), content.at(it).begin(), content.at(it).end());*/
   }
 
+  uint16_t muuuuu {};
+
+  ekg::button("count muu:", ekg::dock::next)
+    ->set_width(200.0f)
+    ->set_task(
+      new ekg::task {
+        .info = {
+          .tag = "count-button"
+        },
+        .function = [&muuuuu](ekg::info &info) {
+          muuuuu++;
+        }
+      },
+      ekg::action::activity
+    );
+
+  auto incremment = ekg::slider<uint16_t>(
+    "increment",
+    ekg::dock::fill
+  )
+  ->set_text_align(ekg::dock::left)
+  ->set_font_size(ekg::font::normal)
+  ->range<uint16_t>(0, 1, 0, 100)
+  ->range<uint16_t>(0).u16.transfer_ownership(&muuuuu);
+
   ekg::label("Background Color:", ekg::dock::next);
   ekg::vec3 clear_color {};
 
@@ -663,7 +688,7 @@ int32_t showcase_useless_window() {
     ekg::dock::fill
   )
   ->set_text_align(ekg::dock::left)
-  ->set_font_size(ekg::font::big)
+  ->set_font_size(ekg::font::normal)
   ->range<double>(0, 0.3f, 0.0f, 1.0f)
   ->range<double>(0).f32.transfer_ownership(&clear_color.x)
   ->range<double>(1, 0.3f, 0.0f, 1.0f)
