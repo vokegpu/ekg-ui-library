@@ -36,7 +36,7 @@ ekg::ui::abstract_widget::~abstract_widget() {
 }
 
 void ekg::ui::abstract_widget::on_create() {
-
+  this->is_just_created = true;
 }
 
 void ekg::ui::abstract_widget::on_destroy() {

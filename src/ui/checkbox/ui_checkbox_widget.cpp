@@ -61,7 +61,7 @@ void ekg::ui::checkbox_widget::on_reload() {
   mask.docknize();
 
   ekg::rect &layout_mask {mask.get_rect()};
-  this->dimension.w = this->dimension.w <= text_width ? layout_mask.w : this->dimension.w;
+  this->dimension.w = ekg_min(this->dimension.w, layout_mask.w);
   this->dimension.h = ekg_min(this->dimension.h, layout_mask.h);
 }
 

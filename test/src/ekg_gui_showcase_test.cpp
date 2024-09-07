@@ -658,7 +658,6 @@ int32_t showcase_useless_window() {
   uint16_t muuuuu {};
 
   ekg::button("count muu:", ekg::dock::next)
-    ->set_width(200.0f)
     ->set_task(
       new ekg::task {
         .info = {
@@ -948,6 +947,8 @@ int32_t showcase_useless_window() {
       switch (sdl_event.type) {
       case SDL_QUIT:
         running = false;
+      case SDL_MOUSEBUTTONDOWN:
+        ekg::popup("oiiiii", {"oi tudo bem", "com vc", "eu estou bem", "meow"});
         break;
       }
     }
@@ -1191,9 +1192,9 @@ int32_t laboratory_testing() {
     "clear_color",
     ekg::dock::fill
   )
-  ->set_text_align(ekg::dock::center)
+  ->set_text_align(ekg::dock::left | ekg::dock::center)
   ->set_font_size(ekg::font::normal)
-  ->set_scaled_height(3)
+  ->set_scaled_height(1)
   ->range<double>(0, 0.3f, 0.0f, 1.0f)
   ->range<double>(0).f32.transfer_ownership(&clear_color.x)
   ->range<double>(1, 0.3f, 0.0f, 1.0f)
@@ -1241,5 +1242,5 @@ int32_t laboratory_testing() {
 }
 
 int32_t main(int32_t, char**) {
-  return laboratory_testing();
+  return showcase_useless_window();
 }

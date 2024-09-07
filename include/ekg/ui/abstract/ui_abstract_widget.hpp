@@ -64,6 +64,7 @@ namespace ekg::ui {
 
     bool is_high_frequency {};
     bool is_targeting_absolute_parent {};
+    bool is_just_created {};
   public:
     bool was_reloaded {};
     bool was_refreshed {};

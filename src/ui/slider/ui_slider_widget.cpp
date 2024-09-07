@@ -132,7 +132,7 @@ void ekg::ui::slider_widget::on_reload() {
           mask.insert(
             {
               &range.rect,
-              (ekg_bitwise_contains(text_align_flags, ekg::dock::left) ? static_cast<ekg::flags>(ekg::dock::left) : static_cast<ekg::flags>(ekg::dock::right)) | ekg::dock::fill | ekg::dock::bind
+              (ekg_bitwise_contains(text_align_flags, ekg::dock::right) ? static_cast<ekg::flags>(ekg::dock::right) : static_cast<ekg::flags>(ekg::dock::left)) | ekg::dock::fill | ekg::dock::bind
             }
           );
 
