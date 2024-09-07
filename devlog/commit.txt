@@ -183,7 +183,7 @@
 -- Fixed the unscrollable listbox when starts for the first time.
 -- Fixed listbox being resized breaking the horizontal scroll (due the size calculations be wrong).
 -- Added horizontal resize feature to listbox.
--- Solved the "tchup tchup" on listbox header target (imagine a extra-offset added for no reason on header resize).
+-- Solved the "tchup tchup" on listbox header target (imagine a extra-offset added for no reason on header resize
 -- Fixed a bug where the index header dragged is the same as the original (same it hover some header).
 -- Fixed a bug where the glyph that is not sampled returns glyph width size zero, which broken some widgets when is being calculated text width, now EKG get-once a wsize and map the new glyph on width calculation section (the rendering is also used to map the new glyph yet).
 -- Added typing state for textbox, instead of using state directly.
@@ -209,3 +209,4 @@
 -- New lshift/rshift+mouse-wheel input bind to do horizontal scrolling (scroll widget, textbox widget, listbox widget, etc).
 -- Fixed a glitch where the item hover attr flag was being spammed if scrolling fast.
 -- Fixed a glitch where the addresed value was not clamped in slider widget.
+-- Added `ekg::dock::bind` feature flag to the Extentnize, which do not increase the dimension and stand stop unless next dock is not `ekg::dock::bind`.

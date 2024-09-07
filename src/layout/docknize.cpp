@@ -86,9 +86,9 @@ void ekg::layout::extentnize(
             (p_widgets->dimension.w + ekg::layout::offset) * (is_last_index && !ekg_bitwise_contains(flags, flag_ok) && !is_scrollbar)
           );
 
-          ekg::layout::h_extent.end_index = static_cast<float>(it + is_last_index);
+          ekg::layout::h_extent.end_index = it + is_last_index;
           ekg::layout::h_extent.extent = extent;
-          ekg::layout::h_extent.count = static_cast<float>(flag_ok_count == 0 ? 1 : flag_ok_count);
+          ekg::layout::h_extent.count = flag_ok_count + (flag_ok_count == 0);
 
           break;
         }
@@ -101,7 +101,7 @@ void ekg::layout::extentnize(
         extent += p_widgets->dimension.w + ekg::layout::offset;
       }
 
-      begin_and_count = flag_ok_count == 0 ? 1 : flag_ok_count;
+      begin_and_count = flag_ok_count + (flag_ok_count == 0);
       break;
     }
 
@@ -337,10 +337,11 @@ void ekg::layout::mask::extentnize(
       ekg::layout::h_extent.begin_index = static_cast<float>(it);
       uint64_t size {this->dock_rect_list.size()};
       uint64_t latest_index {size - (!this->dock_rect_list.empty())};
+      int32_t should_skip_next {};
 
       bool is_last_index {};
       bool is_ok_flag {};
-
+ 
       extent += this->offset.x;
 
       /**
@@ -367,7 +368,7 @@ void ekg::layout::mask::extentnize(
           ) {
           extent -= this->offset.x;
           flag_ok_count += (
-            (is_ok_flag = (!ekg_bitwise_contains(dock_rect.flags, flag_stop) && ekg_bitwise_contains(dock_rect.flags, flag_ok) && is_last_index))
+            (is_ok_flag = (!ekg_bitwise_contains(dock_rect.flags, flag_stop) && (ekg_bitwise_contains(dock_rect.flags, flag_ok)) && is_last_index))
           );
 
           /**
@@ -376,14 +377,22 @@ void ekg::layout::mask::extentnize(
            *
            * :blush:
            **/
-          extent += (
-            (dock_rect.p_rect->w + this->offset.x) * (is_last_index && !ekg_bitwise_contains(dock_rect.flags, flag_ok))
+          extent += ( 
+            (dock_rect.p_rect->w + this->offset.x) * (is_last_index && (!ekg_bitwise_contains(dock_rect.flags, flag_ok) && should_skip_next == 0))
           );
 
-          this->h_extent.end_index = static_cast<float>(it + is_last_index);
+          this->h_extent.end_index = it + is_last_index;
           this->h_extent.extent = extent;
-          this->h_extent.count = static_cast<float>(flag_ok_count == 0 ? 1 : flag_ok_count);
+          this->h_extent.count = flag_ok_count + (flag_ok_count == 0);
           break;
+        }
+
+        should_skip_next += static_cast<bool>(ekg_bitwise_contains(dock_rect.flags, ekg::dock::bind));
+
+        if (should_skip_next > 0) {
+          should_skip_next = (should_skip_next + 1) * (should_skip_next < 2);
+          flag_ok_count += static_cast<bool>(ekg_bitwise_contains(dock_rect.flags, flag_ok));
+          continue;
         }
 
         if (ekg_bitwise_contains(dock_rect.flags, flag_ok)) {
@@ -394,7 +403,7 @@ void ekg::layout::mask::extentnize(
         extent += dock_rect.p_rect->w + this->offset.x;
       }
 
-      begin_and_count = flag_ok_count == 0 ? 1 : flag_ok_count;
+      begin_and_count = flag_ok_count + (flag_ok_count == 0);
       break;
     }
 
@@ -435,12 +444,15 @@ void ekg::layout::mask::docknize() {
   float rect_width {};
   float dimension_width {};
   float dimension_height {};
+  float dimension_bind {};
 
   bool is_left {};
   bool is_right {};
   bool is_center {};
   bool is_top {};
   bool is_bottom {};
+  bool is_not_bind {};
+  bool is_bind_dimension_not_zero {};
 
   /**
    * All dock rects within left corner (ekg::dock::left)
@@ -500,6 +512,8 @@ void ekg::layout::mask::docknize() {
       is_center = ekg_bitwise_contains(dock_rect.flags, ekg::dock::center);
       is_bottom = ekg_bitwise_contains(dock_rect.flags, ekg::dock::bottom);
       is_top = ekg_bitwise_contains(dock_rect.flags, ekg::dock::top);
+      is_not_bind = !ekg_bitwise_contains(dock_rect.flags, ekg::dock::bind);
+      is_bind_dimension_not_zero = (dimension_bind > 0.0f);
 
       rect_width = dock_rect.p_rect->w;
       rect_height = dock_rect.p_rect->h;
@@ -525,27 +539,43 @@ void ekg::layout::mask::docknize() {
         );
       }
 
-      if (is_left && !is_center) {
-        dock_rect.p_rect->x = left_corner.w;
+      if (is_left) {
+        dock_rect.p_rect->x = (is_bind_dimension_not_zero * this->offset.x) + left_corner.w;
         dock_rect.p_rect->w = rect_width;
-        left_corner.w += dock_rect.p_rect->w + this->offset.x;
-        this->mask.w += dock_rect.p_rect->w + this->offset.x;
-      } else if (is_right && !is_center) {
+
+        if (is_not_bind) {
+          dimension_bind += (this->offset.x * is_bind_dimension_not_zero) + ((dock_rect.p_rect->w + this->offset.x) * !is_bind_dimension_not_zero);
+          left_corner.w += dimension_bind;
+          this->mask.w += dimension_bind;
+        }
+      } else if (is_right) {
         dock_rect.p_rect->w = rect_width;
-        dock_rect.p_rect->x = dimension_width - right_corner.w - dock_rect.p_rect->w;
-        right_corner.w += dock_rect.p_rect->w + this->offset.x;
-        this->mask.w += dock_rect.p_rect->w + this->offset.x;
-      } else if (is_left && is_center) {
+        dock_rect.p_rect->x = (is_bind_dimension_not_zero * this->offset.x) + dimension_width - right_corner.w - dock_rect.p_rect->w;
+
+        if (is_not_bind) {
+          dimension_bind += (this->offset.x * is_bind_dimension_not_zero) + ((dock_rect.p_rect->w + this->offset.x) * !is_bind_dimension_not_zero);
+          right_corner.w += dimension_bind;
+          this->mask.w += dimension_bind;
+        }
+      } else if (is_left) {
         dock_rect.p_rect->w = rect_width;
-        dock_rect.p_rect->x = center_left_corner.x - center_left_corner.w - dock_rect.p_rect->w;
-        center_left_corner.w += dock_rect.p_rect->w + this->offset.x;
-        this->mask.w += dock_rect.p_rect->w + this->offset.x;
-      } else if (is_right && is_center) {
-        dock_rect.p_rect->x = center_right_corner.x + center_right_corner.w;
+        dock_rect.p_rect->x = (is_bind_dimension_not_zero * this->offset.x) + center_left_corner.x - center_left_corner.w - dock_rect.p_rect->w;
+
+        if (is_not_bind) {
+          dimension_bind += (this->offset.x * is_bind_dimension_not_zero) + ((dock_rect.p_rect->w + this->offset.x) * !is_bind_dimension_not_zero);
+          center_left_corner.w += dimension_bind;
+          this->mask.w += dimension_bind;
+        }
+      } else if (is_right) {
+        dock_rect.p_rect->x = (is_bind_dimension_not_zero * this->offset.x) + center_right_corner.x + center_right_corner.w;
         dock_rect.p_rect->w = rect_width;
-        center_right_corner.w += dock_rect.p_rect->w + this->offset.x;
-        this->mask.w += dock_rect.p_rect->w + this->offset.x;
-      } else if (is_center) {
+
+        if (is_not_bind) {
+          dimension_bind += (this->offset.x * is_bind_dimension_not_zero) + ((dock_rect.p_rect->w + this->offset.x) * !is_bind_dimension_not_zero);
+          center_right_corner.w += dimension_bind;
+          this->mask.w += dimension_bind;
+        }
+      } else if (dock_rect.flags == ekg::dock::center) {
         dock_rect.p_rect->w = rect_width;
         dock_rect.p_rect->x = (dimension_width / 2.0f) - (dock_rect.p_rect->w / 2.0f);
       }
@@ -554,10 +584,16 @@ void ekg::layout::mask::docknize() {
         dock_rect.p_rect->y = (
           is_top ? (this->offset.y)  : (dimension_height - rect_height - this->offset.y)
         );
-      } else {
+      } else if (is_center) {
         dock_rect.p_rect->y = (
           (dimension_height / 2.0f) - (rect_height / 2.0f)
         );
+      }
+
+      if (!is_not_bind && dock_rect.p_rect->w > dimension_bind) {
+        dimension_bind = dock_rect.p_rect->w;
+      } else if (is_not_bind) {
+        dimension_bind = 0.0f;
       }
 
       this->mask.h = dimension_height;

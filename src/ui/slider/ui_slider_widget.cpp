@@ -42,9 +42,12 @@ void ekg::ui::slider_widget::on_reload() {
   ekg::rect relative_rect {};
   ekg::flags text_align_flags {p_ui->get_text_align()};
 
+  bool is_text_enabled {static_cast<bool>(ekg_bitwise_contains(text_align_flags, ekg::dock::none))};
+
   float base_text_height {f_renderer.get_text_height()};
   float dimension_offset {static_cast<float>((int32_t) (base_text_height / 2.0f))};
   float offset {ekg::find_min_offset(base_text_height, dimension_offset)};
+  float bar_offset {p_ui->get_bar_offset()};
 
   float min_text_width {};
   float max_text_width {};
@@ -81,7 +84,7 @@ void ekg::ui::slider_widget::on_reload() {
       // no-docknize, target the drag cursor with small font height
 
       mask.preset(
-        {p_ui->get_bar_offset(), 0.0f, this->dimension.h},
+        {bar_offset, bar_offset, this->dimension.h},
         axis,
         this->dimension.w
       );
@@ -90,7 +93,7 @@ void ekg::ui::slider_widget::on_reload() {
         ekg::ui::slider_widget::range &range {this->range_list.at(it)};
         range.rect.h = this->dimension.h * bar_thickness;
 
-        if (!ekg_bitwise_contains(text_align_flags, ekg::dock::none)) {        
+        if (!is_text_enabled) {
           ekg::ui::slider_widget_get_metrics(
             p_ui,
             number,
@@ -99,7 +102,7 @@ void ekg::ui::slider_widget::on_reload() {
             &min_text_width,
             &max_text_width
           );
-  
+
           if (min_text_width > max_text_width) {
             max_text_width = min_text_width;
           }
@@ -111,14 +114,30 @@ void ekg::ui::slider_widget::on_reload() {
           range.last_dimension = -1.0f;
         }
   
-        if (text_align_flags == ekg::dock::left || text_align_flags == ekg::dock::right || ekg_bitwise_contains(text_align_flags, ekg::dock::none)) {
-          mask.insert({&range.rect_text, text_align_flags});
+        if (text_align_flags == ekg::dock::left || text_align_flags == ekg::dock::right || is_text_enabled) {
           mask.insert(
-            {&range.rect, (ekg_bitwise_contains(text_align_flags, ekg::dock::none) ? ekg::dock::left : text_align_flags) | ekg::dock::fill}
+            {&range.rect_text, text_align_flags}
           );
-        } else if (ekg_bitwise_contains(text_align_flags, ekg::dock::top) || ekg_bitwise_contains(text_align_flags, ekg::dock::bottom)) {
+
           mask.insert(
-            {&range.rect, ekg::dock::left | ekg::dock::fill}
+            {&range.rect, (is_text_enabled ? ekg::dock::left : text_align_flags) | ekg::dock::fill}
+          );
+        } else if (
+            (ekg_bitwise_contains(text_align_flags, ekg::dock::top))
+            ||
+            (ekg_bitwise_contains(text_align_flags, ekg::dock::bottom))
+            ||
+            (ekg_bitwise_contains(text_align_flags, ekg::dock::center))
+          ) {
+          mask.insert(
+            {
+              &range.rect,
+              (ekg_bitwise_contains(text_align_flags, ekg::dock::left) ? static_cast<ekg::flags>(ekg::dock::left) : static_cast<ekg::flags>(ekg::dock::right)) | ekg::dock::fill | ekg::dock::bind
+            }
+          );
+
+          mask.insert(
+            {&range.rect_text, text_align_flags}
           );
         }
       }
@@ -168,8 +187,8 @@ void ekg::ui::slider_widget::on_event(ekg::os::io_event_serial &io_event_serial)
 
     ekg::vec4 &interact {ekg::input::interact()};
     ekg::rect &rect {this->get_abs_rect()};
-
     ekg::rect bar {range.rect + rect};
+
     float factor {};
     float dimension {};
 

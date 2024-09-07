@@ -67,15 +67,16 @@ namespace ekg {
     full   = 2 << 8,
     next   = 2 << 9,
     fill   = 2 << 10,
-    resize = 2 << 11
+    resize = 2 << 11,
+    bind   = 2 << 12
   };
 
   /*
    * Enum linked to dock.
    */
   enum axis {
-    vertical = 12 << 2,
-    horizontal = 13 << 2
+    vertical = 2 << 13,
+    horizontal = 2 << 14
   };
 
   typedef struct vec2 {

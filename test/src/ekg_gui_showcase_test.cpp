@@ -687,7 +687,7 @@ int32_t showcase_useless_window() {
     "clear_color",
     ekg::dock::fill
   )
-  ->set_text_align(ekg::dock::left)
+  ->set_text_align(ekg::dock::top | ekg::dock::left)
   ->set_font_size(ekg::font::normal)
   ->range<double>(0, 0.3f, 0.0f, 1.0f)
   ->range<double>(0).f32.transfer_ownership(&clear_color.x)
@@ -1090,25 +1090,9 @@ int32_t laboratory_testing() {
     ->set_drag(ekg::dock::full)
     ->set_resize(ekg::dock::left | ekg::dock::right | ekg::dock::bottom);
 
-  ekg::label("oi:", ekg::dock::next);
-  ekg::button("tudo", ekg::dock::fill);
-  ekg::button("bem", ekg::dock::fill | ekg::dock::next);
-
-  auto p = ekg::slider<float>(
-    "amo comer pasto faco mu",
-    ekg::dock::fill | ekg::dock::next
-  )
-  /*
-  ->set_text_align(ekg::dock::left)
-  ->range<int32_t>(0, 0, 0, 32)
-  ->range<int32_t>(1, 1, 0, 32);*/
-  ->set_text_align(ekg::dock::left)
-  ->range<double>(0, 0.3f, 0.0f, 1.0f)
-  ->range<double>(0).f32.transfer_ownership(&ekg::current_theme_scheme().frame_outline.w)
-  ->range<float>(1, 0.55f, 0.0f, 1.0f)
-  ->range<float>(1).f32.transfer_ownership(&ekg::current_theme_scheme().frame_background.w);
-  //->range<float>(2, 0.55f, 0.0f, 1.0f);
-  ekg::button("oi mu", ekg::dock::fill | ekg::dock::next);
+  // ekg::label("oi:", ekg::dock::next);
+  // ekg::button("tudo", ekg::dock::fill);
+  // ekg::button("bem", ekg::dock::fill | ekg::dock::next);
 
   ekg::item content = ekg::item {
     ekg::item(
@@ -1200,15 +1184,26 @@ int32_t laboratory_testing() {
   ->set_mode(ekg::mode::multicolumn)
   ->transfer_ownership(&content);*/
 
-  ekg::slider<float>("mouse:", ekg::dock::fill | ekg::dock::next)
-    ->range<float>(0, 0.0f, 0.0f, 1000.0f)
-    ->range<float>(0).f32.transfer_ownership(&ekg::input::interact().x)
-    ->range<float>(1, 0.0f, 0.0f, 1000.0f)
-    ->range<float>(1).f32.transfer_ownership(&ekg::input::interact().y);
+  // ekg::label("Background Color:", ekg::dock::next);
+  ekg::vec3 clear_color {};
 
-  ekg::textbox("principal", "adeus", ekg::dock::next | ekg::dock::fill)
-    ->set_scaled_height(6)
-    ->set_width(500.0f);
+  auto p = ekg::slider<float>(
+    "clear_color",
+    ekg::dock::fill
+  )
+  ->set_text_align(ekg::dock::center)
+  ->set_font_size(ekg::font::normal)
+  ->set_scaled_height(3)
+  ->range<double>(0, 0.3f, 0.0f, 1.0f)
+  ->range<double>(0).f32.transfer_ownership(&clear_color.x)
+  ->range<double>(1, 0.3f, 0.0f, 1.0f)
+  ->range<double>(1).f32.transfer_ownership(&clear_color.y)
+  ->range<double>(2, 0.3f, 0.0f, 1.0f)
+  ->range<double>(2).f32.transfer_ownership(&clear_color.z);
+
+  // ekg::textbox("principal", "adeus", ekg::dock::next | ekg::dock::fill)
+    // ->set_scaled_height(6)
+    // ->set_width(500.0f);
   ekg::scrollbar("oiiii mumu");
   ekg::pop_group();
 
@@ -1231,7 +1226,7 @@ int32_t laboratory_testing() {
     ekg::update();
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.0f);
     glViewport(0.0f, 0.0f, ekg::ui::width, ekg::ui::height);
 
     ekg::render();
@@ -1246,5 +1241,5 @@ int32_t laboratory_testing() {
 }
 
 int32_t main(int32_t, char**) {
-  return showcase_useless_window();
+  return laboratory_testing();
 }

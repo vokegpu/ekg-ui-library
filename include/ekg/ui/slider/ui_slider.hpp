@@ -86,7 +86,7 @@ namespace ekg::ui {
     ekg::axis axis {};
     ekg::font font_size {};
     std::map<uint64_t, ekg::ui::slider::range_t> range_map {};
-    float bar_offset {4.0f};
+    float bar_offset {1.0f};
   public:
     /**
      * Returns a range-based slider with `ekg::dock::value_t<number_type, ekg::ui::slider>` option.
