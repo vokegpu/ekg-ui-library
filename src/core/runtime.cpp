@@ -181,6 +181,7 @@ void ekg::runtime::process_event() {
 
   ekg::hovered.type = ekg::type::abstract;
 
+
   if (p_widget_focused != nullptr) {
     p_widget_focused->on_pre_event(this->io_event_serial);
     p_widget_focused->on_event(this->io_event_serial);

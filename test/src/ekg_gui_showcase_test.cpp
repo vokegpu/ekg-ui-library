@@ -1205,6 +1205,7 @@ int32_t laboratory_testing() {
   // ekg::textbox("principal", "adeus", ekg::dock::next | ekg::dock::fill)
     // ->set_scaled_height(6)
     // ->set_width(500.0f);
+
   ekg::scrollbar("oiiii mumu");
   ekg::pop_group();
 

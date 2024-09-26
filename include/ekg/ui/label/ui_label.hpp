@@ -51,10 +51,6 @@ namespace ekg::ui {
 
     float get_height();
 
-    ekg::ui::label *set_text(std::string_view text);
-
-    std::string get_text();
-
     ekg::ui::label *set_text_align(ekg::flags dock);
 
     ekg::flags get_text_align();

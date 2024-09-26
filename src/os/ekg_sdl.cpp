@@ -234,14 +234,14 @@ void ekg::os::sdl_poll_event(SDL_Event &sdl_event) {
   case SDL_FINGERUP:
     serialized.event_type = ekg::platform_event_type::finger_up;
     serialized.finger_x = sdl_event.tfinger.x;
-    serialized.finger_y = sdl_event.tfinger.y;        
+    serialized.finger_y = sdl_event.tfinger.y;
     ekg::poll_io_event = true;
     break;
 
   case SDL_FINGERDOWN:
     serialized.event_type = ekg::platform_event_type::finger_down;
     serialized.finger_x = sdl_event.tfinger.x;
-    serialized.finger_y = sdl_event.tfinger.y;   
+    serialized.finger_y = sdl_event.tfinger.y;
     ekg::poll_io_event = true;
     break;
 
