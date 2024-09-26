@@ -1,5 +1,5 @@
 from typing import List, Dict
-import sys, os, zipfile, shutil, shlex
+import sys, os, zipfile, shutil, shlex, subprocess
 
 
 def create_release_zip_file(zip_filename: str, lib_directory: str) -> str:
