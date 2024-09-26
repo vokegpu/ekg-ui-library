@@ -27,7 +27,7 @@ def create_release_zip_file(zip_filename: str, lib_directory: str) -> str:
 
 if __name__ == "__main__":
     print("initialising the most meow meow of live :3")
-    print("mumu mumu meow meow")
+    print("mumu mumu meow meow mu")
 
     metadata: Dict[str, str] = {"-m": "", "-d": ""}
     store: str = ""
