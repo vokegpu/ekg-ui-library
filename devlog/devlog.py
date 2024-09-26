@@ -65,10 +65,10 @@ if __name__ == "__main__":
     release: str = f"""
 # EKG {version_descriptor}
 
-{metadata["-d"]}
+
 
 News:
-{news_descriptor}
+
 
 ---
 
