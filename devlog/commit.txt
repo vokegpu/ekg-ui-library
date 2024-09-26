@@ -183,7 +183,7 @@
 -- Fixed the unscrollable listbox when starts for the first time.
 -- Fixed listbox being resized breaking the horizontal scroll (due the size calculations be wrong).
 -- Added horizontal resize feature to listbox.
--- Solved the "tchup tchup" on listbox header target (imagine a extra-offset added for no reason on header resize
+-- Solved the tchup tchup on listbox header target (imagine a extra-offset added for no reason on header resize
 -- Fixed a bug where the index header dragged is the same as the original (same it hover some header).
 -- Fixed a bug where the glyph that is not sampled returns glyph width size zero, which broken some widgets when is being calculated text width, now EKG get-once a wsize and map the new glyph on width calculation section (the rendering is also used to map the new glyph yet).
 -- Added typing state for textbox, instead of using state directly.
@@ -191,11 +191,11 @@
 -- New theme system, mapped and scheme-based type.
 -- New standart light-pinky theme scheme colors.
 -- New standart dark-pinky theme scheme colors.
--- New "smooth" scrolling.
+-- New smooth scrolling.
 -- Deprecated `immut` widgets (I do not think we should do this for now).
 -- Renamed `uint16_t` (flags) to `ekg::flags`.
 -- Dynamic type infer in `ekg::slide<t>` call.
--- Added "box" option to `ekg::value_t<t, s>` (I know it is not how burrow and box from Rust works, just a stupid name).
+-- Added box option to `ekg::value_t<t, s>` (I know it is not how burrow and box from Rust works, just a stupid name).
 -- Fixed memory issues from `ekg::value_t<t, s>` but I do not believe it is totally safe, God my brain can not figure what must do.
 -- `ekg::string_float64_precision` added for double/float64.
 -- Totally deprecated the dynamic range, due the insanely unsafe issues, now it is type-specification-based (you must invoke f32 to float, i64 to uint64 but you are able to ownership infer type safety).
