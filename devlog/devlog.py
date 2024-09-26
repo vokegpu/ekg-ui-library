@@ -1,5 +1,5 @@
 from typing import List, Dict
-import sys, os, zipfile, shutil
+import sys, os, zipfile, shutil, shlex
 
 
 def create_release_zip_file(zip_filename: str, lib_directory: str) -> str:
@@ -68,7 +68,7 @@ if __name__ == "__main__":
 {metadata["-d"]}
 
 News:
-
+{news_descriptor}
 
 ---
 
@@ -89,10 +89,34 @@ For complete previously released logs, check [here](https://github.com/vokegpu/e
     create_release_zip_file(windows, "windows")
     create_release_zip_file(linux, "linux")
 
+    """
     os.system(f'git tag -a "{tag}" -m "{metadata["-d"]}"')
     os.system(f"git push origin {tag}")
     os.system(
         f'gh release create {tag} ./{windows}.zip ./{linux}.zip --latest --title "EKG {version_descriptor}" --notes "{release}"'
+    )
+    """
+
+    subprocess.run(["git", "tag", "-a", tag, "-m", metadata["-d"]], check=True)
+    subprocess.run(["git", "push", "origin", tag], check=True)
+
+    escaped_release_notes: str = shlex.quote(release)
+
+    subprocess.run(
+        [
+            "gh",
+            "release",
+            "create",
+            tag,
+            f"./{windows}.zip",
+            f"./{linux}.zip",
+            "--latest",
+            "--title",
+            f"EKG {version_descriptor}",
+            "--notes",
+            escaped_release_notes,
+        ],
+        check=True,
     )
 
     print("ok done >< mumu! :blush: ")

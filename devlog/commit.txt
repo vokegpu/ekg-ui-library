@@ -183,7 +183,7 @@
 -- Fixed the unscrollable listbox when starts for the first time.
 -- Fixed listbox being resized breaking the horizontal scroll (due the size calculations be wrong).
 -- Added horizontal resize feature to listbox.
--- Solved the tchup tchup on listbox header target (imagine a extra-offset added for no reason on header resize
+-- Solved the tchup tchup on listbox header target (imagine a extra-offset added for no reason on header resize).
 -- Fixed a bug where the index header dragged is the same as the original (same it hover some header).
 -- Fixed a bug where the glyph that is not sampled returns glyph width size zero, which broken some widgets when is being calculated text width, now EKG get-once a wsize and map the new glyph on width calculation section (the rendering is also used to map the new glyph yet).
 -- Added typing state for textbox, instead of using state directly.
@@ -200,7 +200,7 @@
 -- `ekg::string_float64_precision` added for double/float64.
 -- Totally deprecated the dynamic range, due the insanely unsafe issues, now it is type-specification-based (you must invoke f32 to float, i64 to uint64 but you are able to ownership infer type safety).
 -- Added the left/right corners option to text in slider.
--- `ekg::layout::extent` now an type object `ekg::layout::extent_t`, plus two new externs (ekg::layout::v_extent & ekg::layout::h_extent).
+-- `ekg::layout::extent` now an type object `ekg::layout::extent_t`, plus two new externs (`ekg::layout::v_extent` & `ekg::layout::h_extent`).
 -- `ekg::dock::none` option to the text in slider.
 -- Fixed the scrolling timeout. Now it is working smooth.
 -- Fixed a bug where the listbox was not scrolling if previously another widget was being hovered. Solution: Added a small focus state to listbox.
