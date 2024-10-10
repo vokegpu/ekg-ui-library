@@ -125,7 +125,6 @@ void ekg::update_high_frequency(ekg::ui::abstract_widget *p_widget) {
 void ekg::dispatch(task *p_task) {
   if (!p_task->is_dispatched) {
     ekg::core->service_handler.dispatch(p_task);
-    //p_task->is_dispatched = true;
   }
 }
 

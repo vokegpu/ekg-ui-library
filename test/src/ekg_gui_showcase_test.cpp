@@ -5,7 +5,7 @@
 #include <chrono>
 #include "application.hpp"
 
-//#define application_enable_stb_image_test
+#define application_enable_stb_image_test
 #ifdef application_enable_stb_image_test
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
@@ -207,13 +207,14 @@ bool load_ttf_emoji(ekg::gpu::sampler_t *p_sampler) {
   // 🎃
   // 🦋
   // 🇧🇷
+  // 👽
 
   uint32_t previous_size {f_renderer.font_size};
   f_renderer.set_size(512);
 
   FT_Load_Char(
     typography_font_face.ft_face,
-    ekg::utf_string_to_char32("🐄"),
+    ekg::utf_string_to_char32("🦋"),
     FT_LOAD_RENDER | FT_LOAD_COLOR | FT_LOAD_DEFAULT
   );
 
@@ -374,6 +375,7 @@ public:
     };
 
     this->stack.tag = "msg-gui";
+    this->stack.push();
 
     ekg::frame("message-gui", {700, 600}, {400, 250})
       ->set_drag(ekg::dock::top);
@@ -395,6 +397,7 @@ public:
       ->set_task(&this->task, ekg::action::activity);
 
     this->stack.pop();
+    auto button = this->stack.find<ekg::ui::button>("Enter")->set_width(300.0f);
   }
 
   ~message_gui() {
@@ -909,7 +912,7 @@ int32_t showcase_useless_window() {
   uint64_t last_frame {1};
   ekg::timing fps_timing {};
 
-  ekg::input::bind("amovc", "lshift+mouse-3");
+  ekg::input::bind("amovc", "mouse");
 
   bool multithreading {false};
   std::thread update_thread {};
@@ -948,7 +951,7 @@ int32_t showcase_useless_window() {
       case SDL_QUIT:
         running = false;
       case SDL_MOUSEBUTTONDOWN:
-        ekg::popup("oiiiii", {"oi tudo bem", "com vc", "eu estou bem", "meow"});
+        //ekg::popup("oiiiii", {"oi tudo bem", "com vc", "eu estou bem", "meow"});
         break;
       }
     }

@@ -5,6 +5,14 @@ message("-- EKG GUI showcase test building")
 
 project(ekg-gui-showcase-test)
 
+if(
+    CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
+    OR
+    CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+  )
+  add_compile_options(-O3)
+endif()
+
 if (WIN32)
   set(PLATFORM               "windows")
   set(EXECUTABLE_OUTPUT_PATH ../bin/)
@@ -21,8 +29,6 @@ else()
 endif()
 
 include_directories(../include)
-
-add_compile_options(-O3)
 add_executable(ekg-gui-showcase-test "src/ekg_gui_showcase_test.cpp")
 
 file(GLOB LIBRARY_PATH "../lib/${PLATFORM}/libekg.a")

@@ -96,6 +96,21 @@ namespace ekg {
      * Just clear the stack without kill.
      **/
     void clear();
+
+    /**
+     * Find for a UI based-by the tag.
+     * Returns nullptr if not found.
+     **/
+    template<typename t>
+    constexpr t *find(std::string_view tag) {
+      for (ekg::ui::abstract_widget *&p_widgets : this->ordered_list) {
+        if (p_widgets->p_data->get_tag() == tag) {
+          return (t*) (p_widgets->p_data);
+        }
+      }
+
+      return nullptr;
+    }
   };
 }
 
