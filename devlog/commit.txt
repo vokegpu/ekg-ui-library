@@ -210,4 +210,4 @@
 -- Fixed a glitch where the item hover attr flag was being spammed if scrolling fast.
 -- Fixed a glitch where the addresed value was not clamped in slider widget.
 -- Added `ekg::dock::bind` feature flag to the Extentnize, which do not increase the dimension and stand stop unless next dock is not `ekg::dock::bind`.
--- Added `ekg::stack::find<t>(std::string_view tag)` for find UI objects on a stack.
+-- Added `ekg::stack::find<t>(std::string_view tag)` for find UI objects in a stack.
