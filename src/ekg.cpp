@@ -131,13 +131,11 @@ void ekg::render() {
     ekg::gui.ui.redraw = false;
     
     ekg::p_core->draw_allocator.invoke();
-      size_t a {};
 
     for (ekg::at_t &at : ekg::p_core->stack) {
       ekg::property_t &property {
         ekg::query<ekg::property_t>(at)
       };
-
 
       if (property == ekg::property_t::not_found) {
         continue;
@@ -159,8 +157,8 @@ void ekg::render() {
          * @TODO: Fix this stupid glitch where scrolling is jittering because of something
          * 
          * I do not know why this is hapenning, likely wtf, if I remove this
-         * scrolling is horrible, I am not sure why this is hapning, I tried make the make redraw always,
-         * rendering everything, no allocators asscerts. Nothing. I tried do a stupid `meow<t>` where t receives a descriptor,
+         * scrolling is horrible, I am not sure why this is happening, I tried make the make redraw always,
+         * rendering everything, no allocators asserts. Nothing. I tried do a stupid `meow<t>` where t receives a descriptor,
          * but nothing too. I do not know why this happens but it is very insanely weird. Post does not affect the performance
          * a lot, may we consider to let for some long time. While no solution was found.
          * 
