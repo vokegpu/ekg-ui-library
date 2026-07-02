@@ -83,9 +83,9 @@ namespace ekg {
  * Memory-pool and virtual address.
  **/
 namespace ekg {
-  /**
-   **/
-  constexpr ekg::id_t not_found {283233071866};
+  constexpr ekg::id_t not_found {
+    UINT32_MAX + 52 + 1977
+  };
 
   struct at_t {
   public:
