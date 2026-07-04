@@ -1,29 +1,6 @@
-/* DPI, UI, and Scale */
-
-The current stupid system of EKG for scalling is actually useless; the scaled height factors at each widget,
-is not really scaled by the layout, so, I want to use scaled height factor but scale with the DPI/UI scale.
-
-So 800x600 will be the same as 1920x1080 indifferent of font-size.
-How? idk, i will use the mother/parent frame as base/factor and the height font too as base.
-So the layout service will get the perfect sized DPI and scale.
-Some day I do this.
-
-/* Slider must be rewrite the part of docking text value! */
-
-Slider contains a glitch were you can drag with no maximum limit.
-
-/* Textbox is not updating newer text! */
-
-stupid ticking glitch.
-
-/* stupid scorlling glitch */
-
-rewrite slider
-fix listbox issue when scrolling and dragging?
-reduce ekg::slider<t> verbose number setting.
-
-// Add checkbox
-
-✔
-
-// add `set_width` and `set_height` to all widgets setters dimension methods >< meowg
+text chunk-based for textbox:
+1- chunk is opportunish, any inserted text will occup any chunk if is not limited
+2- if chunk is full a new one is created
+3- copypasting should be calculated to fit or generate news chunks if necessary
+4- if textbox is unfocused, once time should re-index and fix incorrect text align --- this may affect perf but idc for now
+5- the user-programmer will use the `ekg::text` class for handling texts --- but should be like an equals one

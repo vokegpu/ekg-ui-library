@@ -128,26 +128,31 @@ void ekg::handler::input::init() {
 
   this->insert_input_bind("textbox-focus", "mouse-1");
   this->insert_input_bind("textbox-focus", "finger-click");
-  this->insert_input_bind("textbox-action-break", "return");
-  this->insert_input_bind("textbox-action-break", "keypad enter");
 
   this->insert_input_bind("textbox-action-select-all", "lctrl+a");
   this->insert_input_bind("textbox-action-select-all", "rctrl+a");
 
   this->insert_input_bind("textbox-action-select-all-inline", "mouse-1");
-  this->insert_input_bind("textbox-action-select", "lshift");
+
+  this->insert_input_bind("textbox-action-select", "rshift");
   this->insert_input_bind("textbox-action-select", "rshift");
 
   this->insert_input_bind("textbox-action-select-word", "mouse-1-double");
   this->insert_input_bind("textbox-action-select-word", "finger-hold");
 
-  this->insert_input_bind("textbox-action-delete-left", "abs-backspace");
-  this->insert_input_bind("textbox-action-delete-right", "abs-delete");
+  this->insert_input_bind("textbox-action-erase-left", "abs-backspace");
+  this->insert_input_bind("textbox-action-erase-right", "abs-delete");
   this->insert_input_bind("textbox-action-break-line", "return");
   this->insert_input_bind("textbox-action-break-line", "keypad enter");
   this->insert_input_bind("textbox-action-break-line", "lshift+return");
   this->insert_input_bind("textbox-action-break-line", "rshift+return");
   this->insert_input_bind("textbox-action-tab", "tab");
+
+  this->insert_input_bind("textbox-action-cursor", "abs-mouse-1");
+  this->insert_input_bind("textbox-action-multicursor", "lctrl+mouse-1");
+  this->insert_input_bind("textbox-action-multicursor", "rctrl+mouse-1");
+  this->insert_input_bind("textbox-action-select", "lshift");
+  this->insert_input_bind("textbox-action-select", "rshift");
   this->insert_input_bind("textbox-action-modifier", "lctrl");
   this->insert_input_bind("textbox-action-modifier", "rctrl");
 
@@ -256,45 +261,49 @@ void ekg::handler::input::poll_event() {
     case ekg::io::event_type::text_input: {
       this->input.was_pressed = true;
       this->input.was_typed = true;
+      this->input.typed = platform_event.text_input;
       break;
     }
 
     case ekg::io::event_type::key_down: {
       this->input.was_pressed = true;
-      this->input.was_typed = true;
 
-      std::string key_name {};
-      std::string string_builder {};
+      this->string_builder.clear();
 
       ekg::p_core->p_platform_base->get_key_name(
         platform_event.key,
-        key_name
+        this->key_name
       );
 
       ekg::special_key special_key {ekg::special_key::unknown};
       ekg::p_core->p_platform_base->get_special_key(platform_event.key, special_key);
 
       if (special_key != ekg::special_key::unknown) {
-        this->special_keys[static_cast<uint64_t>(special_key)][0] = key_name[0];
-        string_builder += key_name;
+        this->special_keys[static_cast<uint64_t>(special_key)][0] = this->key_name[0];
 
-        this->set_input_state(string_builder, true);
+        this->string_builder += "abs-";
+        this->string_builder += this->key_name;
+        this->set_input_state(this->string_builder, true);
+        this->input_released_list.push_back(this->string_builder);
+
+        this->string_builder.clear();
+        this->string_builder += this->key_name;
+        this->set_input_state(this->string_builder, true);
         this->is_special_keys_released = true;
       } else {
-        std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
-        string_builder += "abs-";
-        string_builder += key_name;
+        std::transform(this->key_name.begin(), this->key_name.end(), this->key_name.begin(), ::tolower);
+        this->string_builder += "abs-";
+        this->string_builder += this->key_name;
+        this->set_input_state(this->string_builder, true);
+        this->input_released_list.push_back(this->string_builder);
 
-        this->set_input_state(string_builder, true);
-        this->input_released_list.push_back(string_builder);
+        this->string_builder.clear();
+        this->complete_with_units(this->string_builder, this->key_name);
+        this->set_input_state(this->string_builder, true);
+        this->input_released_list.push_back(this->string_builder);
 
-        string_builder.clear();
-        this->complete_with_units(string_builder, key_name);
-        this->set_input_state(string_builder, true);
-        this->input_released_list.push_back(string_builder);
-
-        if (string_builder != key_name && !this->contains_unit(string_builder)) {
-          this->special_keys_unit_pressed.push_back(string_builder);
+        if (this->string_builder != this->key_name && !this->contains_unit(this->string_builder)) {
+          this->special_keys_unit_pressed.push_back(this->string_builder);
         }
       }
 
@@ -303,12 +312,10 @@ void ekg::handler::input::poll_event() {
 
     case ekg::io::event_type::key_up: {
       this->input.was_released = true;
-      std::string key_name {};
-      std::string string_builder {};
 
       ekg::p_core->p_platform_base->get_key_name(
         platform_event.key,
-        key_name
+        this->key_name
       );
 
       ekg::special_key special_key {ekg::special_key::unknown};
@@ -316,55 +323,72 @@ void ekg::handler::input::poll_event() {
 
       if (special_key != ekg::special_key::unknown) {
         this->special_keys[static_cast<uint64_t>(special_key)][0] = '\0';
-        string_builder += key_name;
 
-        this->set_input_state(string_builder, false);
+        this->string_builder = "abs-";
+        this->string_builder += this->key_name;
+        this->set_input_state(this->string_builder, true);
+        this->input_released_list.push_back(this->string_builder);
+
+        this->string_builder = this->key_name;
+        this->set_input_state(this->string_builder, false);
         this->is_special_keys_released = true;
 
-        string_builder += "-up";
-        this->set_input_state(string_builder, true);
+        this->string_builder += "-up";
+        this->set_input_state(this->string_builder, true);
       } else {
-        std::transform(key_name.begin(), key_name.end(), key_name.begin(), ::tolower);
-        string_builder += "abs-";
-        string_builder += key_name;
-        string_builder += "-up";
+        std::transform(this->key_name.begin(), this->key_name.end(), this->key_name.begin(), ::tolower);
+        this->string_builder = "abs-";
+        this->string_builder += this->key_name;
+        this->string_builder += "-up";
+        this->set_input_state(this->string_builder, true);
+        this->input_released_list.push_back(this->string_builder);
 
-        this->set_input_state(string_builder, true);
-        this->input_released_list.push_back(string_builder);
-
-        string_builder.clear();
-        this->complete_with_units(string_builder, key_name);
-        string_builder += "-up";
-
-        this->set_input_state(string_builder, true);
-        this->input_released_list.push_back(string_builder);
+        this->string_builder.clear();
+        this->complete_with_units(this->string_builder, this->key_name);
+        this->string_builder += "-up";
+        this->set_input_state(this->string_builder, true);
+        this->input_released_list.push_back(this->string_builder);
       }
       
       break;
     }
 
     case ekg::io::event_type::mouse_button_down: {
-      std::string string_builder {};
-      std::string key_name {"mouse"};
-
-      this->set_input_state(key_name, true);
-      this->input_released_list.push_back(key_name);
-
-      key_name = "mouse-";
-      key_name += std::to_string(platform_event.mouse_button);
-
       this->input.was_pressed = true;
-      this->complete_with_units(string_builder, key_name);
-      this->set_input_state(string_builder, true);
-      this->input_released_list.push_back(string_builder);
+      this->key_name = "mouse";
+
+      this->string_builder = "abs-";
+      this->string_builder += this->key_name;
+      this->set_input_state(this->string_builder, true);
+      this->input_released_list.push_back(this->string_builder);
+
+      this->set_input_state(this->key_name, true);
+      this->input_released_list.push_back(this->key_name);
+
+      this->key_name = "mouse-";
+      this->key_name += std::to_string(platform_event.mouse_button);
+
+      this->string_builder = "abs-";
+      this->string_builder += this->key_name;
+      this->set_input_state(this->string_builder, true);
+      this->input_released_list.push_back(this->string_builder);
+
+      this->string_builder.clear();
+      this->complete_with_units(this->string_builder, this->key_name);
+      this->set_input_state(this->string_builder, true);
+      this->input_released_list.push_back(this->string_builder);
 
       bool double_click_factor {ekg::reach(this->double_interact, 500)};
       if (!double_click_factor) {
-        string_builder += "-double";
-        this->set_input_state(string_builder, true);
+        this->string_builder += "-double";
+        this->set_input_state(this->string_builder, true);
 
-        this->double_click_mouse_buttons_pressed.push_back(string_builder);
-        this->input_released_list.push_back(string_builder);
+        this->string_builder = "abs-" + this->string_builder;
+        this->set_input_state(this->string_builder, true);
+        this->input_released_list.push_back(this->string_builder);
+
+        this->double_click_mouse_buttons_pressed.push_back(this->string_builder);
+        this->input_released_list.push_back(this->string_builder);
       }
 
       if (double_click_factor) {
@@ -375,21 +399,32 @@ void ekg::handler::input::poll_event() {
     }
 
     case ekg::io::event_type::mouse_button_up: {
-      std::string string_builder {};
-      std::string key_name {"mouse-up"};
-
       this->input.was_released = true;
-      this->set_input_state(key_name, true);
-      this->input_released_list.push_back(key_name);
+      this->key_name = "mouse-up";
 
-      key_name = "mouse-";
-      key_name += std::to_string(platform_event.mouse_button);
+      this->string_builder = "abs-";
+      this->string_builder += this->key_name;
+      this->set_input_state(this->string_builder, true);
+      this->input_released_list.push_back(this->string_builder);
 
-      this->complete_with_units(string_builder, key_name);
-      string_builder += "-up";
+      this->set_input_state(this->key_name, true);
+      this->input_released_list.push_back(this->key_name);
 
-      this->set_input_state(string_builder, true);
-      this->input_released_list.push_back(string_builder);
+      this->key_name = "mouse-";
+      this->key_name += std::to_string(platform_event.mouse_button);
+
+      this->string_builder = "abs-";
+      this->string_builder += this->key_name;
+      this->string_builder += "-up";
+      this->set_input_state(this->string_builder, true);
+      this->input_released_list.push_back(this->string_builder);
+
+      this->string_builder.clear();
+      this->complete_with_units(this->string_builder, this->key_name);
+      this->string_builder += "-up";
+
+      this->set_input_state(this->string_builder, true);
+      this->input_released_list.push_back(this->string_builder);
       break;
     }
 
@@ -401,10 +436,10 @@ void ekg::handler::input::poll_event() {
     }
 
     case ekg::io::event_type::mouse_wheel: {
-      std::string string_builder {};
-      this->complete_with_units(string_builder, "mouse-wheel");
-      this->set_input_state(string_builder, true);
-      this->input_released_list.push_back(string_builder);
+      this->string_builder.clear();
+      this->complete_with_units(this->string_builder, "mouse-wheel");
+      this->set_input_state(this->string_builder, true);
+      this->input_released_list.push_back(this->string_builder);
       this->input.was_wheel = true;
 
       this->set_input_state("mouse-wheel-up", platform_event.mouse_wheel_y > 0);
@@ -428,9 +463,37 @@ void ekg::handler::input::poll_event() {
       wheel_precise_interval = wheel_precise_interval + (static_cast<float>(wheel_precise_interval > 0.99) * 0.5f);
       wheel_precise_interval = ekg::clamp_min<float>(wheel_precise_interval, 0.2f);
 
-      this->input.interact.z = platform_event.mouse_wheel_precise_x * wheel_precise_interval;
-      this->input.interact.w = platform_event.mouse_wheel_precise_y * wheel_precise_interval;
-      
+      bool cooldown {ekg::reach(this->cooldown_wheel, 350)};
+      ekg::reset(this->cooldown_wheel);
+
+      if (
+        !cooldown
+        &&
+        (
+          (platform_event.mouse_wheel_precise_x < 0 && this->input.interact.z < 0)
+          ||
+          (platform_event.mouse_wheel_precise_x > 0 && this->input.interact.z > 0)
+        )
+      ) {
+        this->input.interact.z += platform_event.mouse_wheel_precise_x * wheel_precise_interval * 0.5f;       
+      } else {
+        this->input.interact.z = platform_event.mouse_wheel_precise_x * wheel_precise_interval;        
+      }
+
+      if (
+        !cooldown
+        &&
+        (
+          (platform_event.mouse_wheel_precise_y < 0 && this->input.interact.w < 0)
+          ||
+          (platform_event.mouse_wheel_precise_y > 0 && this->input.interact.w > 0)
+        )
+      ) {
+        this->input.interact.w += platform_event.mouse_wheel_precise_y * wheel_precise_interval * 0.5f; 
+      } else {
+        this->input.interact.w = platform_event.mouse_wheel_precise_y * wheel_precise_interval;        
+      }
+
       ekg::reset(this->last_time_wheel_was_fired);
       break;
     }
@@ -521,7 +584,7 @@ void ekg::handler::input::update() {
   #endif
 
   ekg::reset_if_reach(this->input.ui_timing, 1000);
-  ekg::timing_t::second = this->input.ui_timing.elapsed_ticks;
+  ekg::timing_t::second = this->input.ui_timing.current_ticks;
 }
 
 void ekg::handler::input::insert_input_bind(
@@ -599,13 +662,17 @@ void ekg::handler::input::erase_input_bind(
 
   // input_bind.registry.clear();
   this->input_bind_map.erase(tag.data());
-}
+} 
 
 void ekg::handler::input::set_input_state(
   std::string_view key,
   bool state
 ) {
   this->input_map[key.data()] = state;
+
+  if (this->input_bind_listener_function) {
+    this->input_bind_listener_function(key, state);
+  }
 
   for (bool *p_address : this->input_bindings_map[key.data()]) {
     if (!p_address) {
@@ -668,4 +735,10 @@ bool ekg::handler::input::get_input_bind_state(
   std::string_view tag
 ) {
   return this->input_bind_map[tag.data()].state;
+}
+
+void ekg::handler::input::set_input_bind_listener(
+  ekg::input_bind_function_t input_bind_listener_function
+) {
+  this->input_bind_listener_function = input_bind_listener_function;
 }

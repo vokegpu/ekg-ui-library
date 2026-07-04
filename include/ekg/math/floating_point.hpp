@@ -1,4 +1,4 @@
-/**
+ /**
  * MIT License
  * 
  * Copyright (c) 2022-2025 Rina Wilk / vokegpu@gmail.com
@@ -28,8 +28,6 @@
 #include <cmath>
 
 namespace ekg {
-  constexpr float pi {3.1415927f};
-
   constexpr bool fequalsf(float compare, float compared) {
     return (
       fabsf(compare - compared)

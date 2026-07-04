@@ -50,11 +50,13 @@ namespace ekg::draw {
     uint32_t font_size {};
     float text_height {};
     float non_swizzlable_range {};
+    float space_wsize {};
     FT_Bool ft_bool_kerning {};
 
     bool font_size_changed {};
     bool was_initialized {};
     bool is_any_functional_font_face_loaded {};
+    bool is_monospaced {};
   public:
     void init();
     void quit();

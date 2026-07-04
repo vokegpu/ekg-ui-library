@@ -29,6 +29,13 @@ namespace ekg::handler {
 
     ekg::timing_t double_interact {};
     ekg::timing_t last_time_wheel_was_fired {};
+    ekg::timing_t cooldown_wheel {};
+
+    // prevent too many unoptmized use of string allocations
+    std::string key_name {};
+    std::string string_builder {};
+
+    ekg::input_bind_function_t input_bind_listener_function {};
   public:
     ekg::input_info_t input {};
   protected:
@@ -80,6 +87,10 @@ namespace ekg::handler {
 
     bool get_input_state(
       std::string_view tag
+    );
+    
+    void set_input_bind_listener(
+      ekg::input_bind_function_t input_bind_listener_function
     );
   };
 }

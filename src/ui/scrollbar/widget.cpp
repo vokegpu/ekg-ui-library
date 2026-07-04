@@ -187,7 +187,6 @@ void ekg::ui::reload(
   parent.scroll.nearest_scroll_bar_thickness = scrollbar.color_scheme.bar_thickness;
 }
 
-
 void ekg::ui::event(
   ekg::property_t &property,
   ekg::scrollbar_t &scrollbar,
@@ -207,7 +206,7 @@ void ekg::ui::event(
         input.has_motion
         ||
         input.was_wheel
-      ) {        
+      ) {
         bool is_visible {
           ekg::rect_collide_vec2<float>(property.widget.rect_scissor, interact)
         };
@@ -217,7 +216,7 @@ void ekg::ui::event(
           &&
           (property.scroll.is_enabled.x || property.scroll.is_enabled.y)
           &&
-          (ekg::fire("scrollbar-scroll") || ekg::fire("scrollbar-scroll-horizontal"))
+          (ekg::fired("scrollbar-scroll") || ekg::fired("scrollbar-scroll-horizontal"))
         );
 
         ekg::rect_t<float> h_bar {scrollbar.widget.rect_horizontal};
@@ -238,6 +237,7 @@ void ekg::ui::event(
           ekg::rect_precise_collide_vec2(v_bar, interact)
         );
 
+        property.states.is_focused = is_visible;
         property.states.is_hovering = (
           property.states.is_active
           ||
@@ -271,7 +271,7 @@ void ekg::ui::event(
       );
     
       ekg::input_info_t &input {ekg::p_core->handler_input.input};
-      bool is_scroll_fired {ekg::fire("scrollbar-scroll")};
+      bool is_scroll_fired {ekg::fired("scrollbar-scroll")};
     
       property.scroll.is_scrolling.x = false;
       property.scroll.is_scrolling.y = false;
@@ -296,7 +296,7 @@ void ekg::ui::event(
         }
       #else
         bool is_scroll_horizontal_fired {
-          ekg::fire("scrollbar-scroll-horizontal")
+          ekg::fired("scrollbar-scroll-horizontal")
         };
     
         if (
@@ -351,7 +351,7 @@ void ekg::ui::event(
         &&
         input.was_pressed
         &&
-        ekg::fire("scrollbar-drag")
+        ekg::fired("scrollbar-drag")
       ) {
         ekg::rect_t<float> h_bar {scrollbar.widget.rect_horizontal};
         h_bar.x += rect_parent.x;
@@ -536,6 +536,22 @@ void ekg::ui::event(
     parent.widget.rect
   );
 
+  if (stage == ekg::io::stage::pre) {
+    /*
+    property.states.is_hovering = (
+      !property.states.is_active
+      &&
+      (
+        property.states.is_focused
+        ||
+        scrollbar.widget.states_horizontal_bar.is_hovering
+        ||
+        scrollbar.widget.states_vertical_bar.is_hovering
+      )
+    );
+    */
+  }
+
   if (
     (
       property.scroll.is_scrolling.x
@@ -638,13 +654,6 @@ void ekg::ui::buffering(
   ekg::rect_t<float> &rect_parent,
   ekg::rect_t<float> &rect_parent_scissor
 ) {
-  ekg_draw_allocator_assert_scissor(
-    property.widget.rect_scissor,
-    rect_parent,
-    rect_parent_scissor,
-    ekg::always_parented
-  );
-
   scrollbar.widget.rect_horizontal.w = 0.0f;
   scrollbar.widget.rect_vertical.h = 0.0f;
 
@@ -656,7 +665,7 @@ void ekg::ui::buffering(
     &&
     !property.scroll.is_enabled.y
   ) {
-    ekg_draw_allocator_pass();
+    return;
   }
 
   ekg::rect_t<float> bar {};
@@ -835,8 +844,6 @@ void ekg::ui::buffering(
     ekg::draw::mode::outline,
     scrollbar.layers[ekg::layer::outline]
   );
-
-  ekg_draw_allocator_pass();
 }
 
 void ekg::ui::buffering(
@@ -847,12 +854,21 @@ void ekg::ui::buffering(
     ekg::query<ekg::property_t>(property.parent_at)
   };
 
+  ekg_draw_allocator_assert_scissor(
+    property.widget.rect_scissor,
+    property_parent.widget.rect,
+    property_parent.widget.rect_scissor,
+    ekg::always_parented
+  );
+
   ekg::ui::buffering(
     property,
     scrollbar,
     property_parent.widget.rect,
     property_parent.widget.rect_scissor
   );
+
+  ekg_draw_allocator_pass();
 }
 
 void ekg::ui::unmap(

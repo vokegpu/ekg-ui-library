@@ -71,7 +71,10 @@ namespace ekg {
     bool has_motion {};
     bool was_wheel {};
     bool was_typed {};
+    std::string_view typed {};
   };
+
+  using input_bind_function_t = ekg::result (*)(std::string_view, bool);
 
   struct input_key_t {
   public:
@@ -89,10 +92,11 @@ namespace ekg {
 
 namespace ekg {
   ekg::input_info_t &input();
-  bool fire(std::string_view tag);
+  bool fired(std::string_view tag);
   bool input(std::string_view input);
   void bind(std::string_view tag, std::string_view input);
   void bind(std::string_view tag, std::vector<std::string_view> inputs);
+  void listener(ekg::input_bind_function_t input_bind_listener_function);
 }
 
 #endif

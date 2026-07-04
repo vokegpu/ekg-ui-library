@@ -35,7 +35,7 @@
 namespace ekg {
   ekg::flags_t init(
     ekg::runtime_properties_info_t &runtime_properties_info,
-    ekg::runtime_t *p_runtime
+    ekg::runtime_t &runtime
   );
 
   void quit();

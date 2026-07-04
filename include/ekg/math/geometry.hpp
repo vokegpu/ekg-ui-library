@@ -32,6 +32,7 @@ namespace ekg {
   typedef int32_t pixel_thickness_t;
   typedef float pixel_t;
 
+  constexpr float pi {3.1415927f};
   constexpr float one_pixel {1.0000000f};
   constexpr float half_pixel {0.5000000f};
 
@@ -93,6 +94,14 @@ namespace ekg {
         this->x / div_by,
         this->y / div_by
       };
+    }
+
+    bool operator == (const ekg::vec2_t<t> &vec) {
+      return this->x == vec.x && this->y == vec.y;
+    }
+
+    bool operator != (const ekg::vec2_t<t> &vec) {
+      return !(*this == vec);
     }
   };
 
@@ -411,12 +420,12 @@ namespace ekg {
     ekg::rect_t<t> rect,
     float square
   ) {
-    const t zero {}; 
+    const t zero {};
     return ekg::rect_t<t> {
       ekg::clamp_min<t>(rect.x, zero),
       ekg::clamp_min<t>(rect.y, zero),
-      ekg::clamp_max<t>(rect.w, square),
-      ekg::clamp_max<t>(rect.h, square)
+      ekg::clamp_min<t>(rect.w, square),
+      ekg::clamp_min<t>(rect.h, square)
     };
   }
 
@@ -619,7 +628,15 @@ namespace ekg {
   }
 
   template<typename t>
-  using rgba_t =ekg::vec4_t<t>;
+  using rgba_t = ekg::vec4_t<t>;
+
+  template<typename t>
+  constexpr t arithmetic_normalize(
+    t x,
+    t len
+  ) {
+    return x / len;
+  }
 
   void ortho(
     float *p_mat4x4,

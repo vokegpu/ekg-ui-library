@@ -40,16 +40,11 @@ bool ekg::log::buffered {};
 
 ekg::flags_t ekg::init(
   ekg::runtime_properties_info_t &runtime_properties_info,
-  ekg::runtime_t *p_runtime
+  ekg::runtime_t &runtime
 ) {
-  if (p_runtime == nullptr) {
-    ekg::log("~ERROR~ invalid (?) `ekg::runtime_t` pointer address: nullptr");
-    return ekg::result::failed;
-  }
-
   ekg::log() << "Initializing EKG version " << EKG_VERSION;
 
-  ekg::p_core = p_runtime;
+  ekg::p_core = &runtime;
 
   ekg::p_core->p_platform_base = runtime_properties_info.p_platform_base;
   ekg::p_core->p_gpu_api = runtime_properties_info.p_gpu_api;
@@ -79,6 +74,7 @@ ekg::flags_t ekg::init(
 
   ekg::info_t info {};
   ekg::core::scalenize(info);
+  ekg::gui.ui.redraw = true;
 
   ekg::log() << "Successfully initialized";
   return ekg::result::success;
@@ -125,8 +121,6 @@ void ekg::update() {
   ekg::p_core->handler_callback.update();
   ekg::p_core->p_platform_base->update();
   ekg::p_core->p_platform_base->event.type = ekg::io::event_type::none;
-
-  ekg::log::flush();
 }
 
 void ekg::render() {
@@ -164,7 +158,7 @@ void ekg::render() {
          * @TODO: Fix this stupid glitch where scrolling is jittering because of something
          * 
          * I do not know why this is hapenning, likely wtf, if I remove this
-         * scrolling is horrible, I am not sure why this is hapning, I tried make the make redraw always,
+         * scrolling is horrible, I am not sure why this is happening, I tried make the make redraw always,
          * rendering everything, no allocators asserts. Nothing. I tried do a stupid `meow<t>` where t receives a descriptor,
          * but nothing too. I do not know why this happens but it is very insanely weird. Post does not affect the performance
          * a lot, may we consider to let for some long time. While no solution was found.
@@ -183,6 +177,7 @@ void ekg::render() {
         }
 
         ekg::ui::buffering(property, descriptor);
+        //property.widget.should_buffering = false;
       );
     }
 

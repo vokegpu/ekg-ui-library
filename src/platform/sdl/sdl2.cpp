@@ -46,15 +46,15 @@ ekg::sdl2::sdl2(
   SDL_SetWindowSize(this->p_sdl_win, w++, h++);
 }
 
-void ekg::sdl2::set_clipboard_text(const char *p_text) {
-  SDL_SetClipboardText(p_text);
+void ekg::sdl2::set_clipboard_text(std::string_view text) {
+  SDL_SetClipboardText(text.data());
 }
 
 bool ekg::sdl2::has_clipboard_text() {
   return SDL_HasClipboardText();
 }
 
-const char *ekg::sdl2::get_clipboard_text() {
+std::string_view ekg::sdl2::get_clipboard_text() {
   return SDL_GetClipboardText();
 }
 

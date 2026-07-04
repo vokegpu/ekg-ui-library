@@ -184,7 +184,7 @@ void ekg::ui::event(
           &&
           check.states.is_highlight
           &&
-          ekg::fire("button-active")
+          ekg::fired("button-active")
         ) {
           ekg_action(
             check.actions,

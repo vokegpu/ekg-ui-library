@@ -25,6 +25,7 @@
 #define EKG_PLATFORM_HPP
 
 #include "ekg/io/event.hpp"
+#include <string_view>
 
 namespace ekg::platform {
   class base {
@@ -40,8 +41,8 @@ namespace ekg::platform {
     virtual void update() {};
     virtual void get_key_name(ekg::input_key_t &key, std::string &name) {};
     virtual void get_special_key(ekg::input_key_t &key, ekg::special_key &espcial_key) {};
-    virtual const char *get_clipboard_text() { return nullptr; };
-    virtual void set_clipboard_text(const char *p_text) {};
+    virtual std::string_view get_clipboard_text() { return ""; };
+    virtual void set_clipboard_text(std::string_view text) {};
     virtual bool has_clipboard_text() { return false; };
   };
 }

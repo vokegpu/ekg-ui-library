@@ -11,7 +11,7 @@
 # 
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 1
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -41,17 +41,13 @@ find_package(Freetype REQUIRED)
 file(GLOB_RECURSE HEADER_FILES "include/*.hpp")
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp")
 
-# exclude_files_by_regex(SOURCE_FILES /* regex */)
-
 add_library(
-  ekg STATIC
-  ${SOURCE_FILES}
+  ekg STATIC ${SOURCE_FILES}
 )
 
 target_include_directories(
-  ekg PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
+  ekg PRIVATE
+  ./include
   ${FREETYPE_INCLUDE_DIRS}
 )
 
@@ -66,6 +62,7 @@ target_compile_options(
 target_compile_definitions(
   ekg PRIVATE
   EKG_VERSION="${EKG_VERSION}"
+  EKG_EOF_SYSTEM="${PLATFORM_EOF_SYSTEM}"
 )
 
 set_target_properties(

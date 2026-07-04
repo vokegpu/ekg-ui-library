@@ -50,6 +50,9 @@
 #include "ekg/ui/popup/popup.hpp"
 #include "ekg/ui/popup/widget.hpp"
 
+#include "ekg/ui/textbox/textbox.hpp"
+#include "ekg/ui/textbox/widget.hpp"
+
 namespace ekg::core {
   void registry(ekg::property_t &property);
 }
@@ -80,6 +83,7 @@ namespace ekg::core {
     ekg_core_widget_call_impl(ekg::scrollbar_t, widget_descriptor_at, todo); \
     ekg_core_widget_call_impl(ekg::slider_t, widget_descriptor_at, todo); \
     ekg_core_widget_call_impl(ekg::popup_t, widget_descriptor_at, todo); \
+    ekg_core_widget_call_impl(ekg::textbox_t, widget_descriptor_at, todo); \
   }
 
 #define ekg_core_unique_widget_call(descriptor_t, widget_descriptor_type, widget_descriptor_at, todo) \
@@ -155,6 +159,9 @@ namespace ekg {
 
     ekg::pool<ekg::property_t> popup_property {};
     ekg::pool<ekg::popup_t> popup {};
+
+    ekg::pool<ekg::property_t> textbox_property {};
+    ekg::pool<ekg::textbox_t> textbox {};
   } pools;
 
   template<typename t>
@@ -200,6 +207,10 @@ namespace ekg {
         return ekg::io::any_static_cast<t>(
           &ekg::pools.popup_property.query(at)
         );
+      case ekg::type::textbox:
+        return ekg::io::any_static_cast<t>(
+          &ekg::pools.textbox_property.query(at)
+        );
       }
     case ekg::type::button:
       return ekg::io::any_static_cast<t>(
@@ -224,6 +235,10 @@ namespace ekg {
     case ekg::type::popup:
       return ekg::io::any_static_cast<t>(
         &ekg::pools.popup.query(at)
+      );
+    case ekg::type::textbox:
+      return ekg::io::any_static_cast<t>(
+        &ekg::pools.textbox.query(at)
       );
     }
 
@@ -318,6 +333,20 @@ namespace ekg {
             property.states.is_visible = false;
 
             widget.color_scheme = global_theme.popup_color_scheme;
+          }
+        );
+      }
+
+      case ekg::type::textbox: {
+        ekg_registry_widget_impl(
+          ekg::textbox_t,
+          ekg::pools.textbox,
+          ekg::pools.textbox_property,
+          false,
+          {
+            property.is_childnizate = false;
+            property.is_children_docknizable = false;
+            widget.color_scheme = global_theme.textbox_color_scheme;
           }
         );
       }

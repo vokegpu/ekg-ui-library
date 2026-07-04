@@ -1,5 +1,3 @@
-#include "ekg/draw/typography/font.hpp"
-
 /**
  * MIT License
  * 
@@ -401,6 +399,12 @@ void ekg::draw::font::reload() {
     );
   }
 
+  this->is_monospaced = FT_IS_FIXED_WIDTH(text_font_face.ft_face);
+  this->space_wsize = this->text_height / 3.0f;
+
+  FT_Vector space_char_metrics {};
+  FT_Get_Kerning(text_font_face.ft_face, 32, 32, 0, &space_char_metrics);
+
   this->text_height = static_cast<float>(this->font_size);
   this->offset_text_height = this->text_height / 6;
 
@@ -423,11 +427,11 @@ void ekg::draw::font::blit(
   const ekg::rgba_t<uint8_t> &color
 ) {
   if (
-      !this->is_any_functional_font_face_loaded
-      ||
-      color.w < 0.1f 
-      ||
-      text.empty()
+    !this->is_any_functional_font_face_loaded
+    ||
+    color.w < 0.1f 
+    ||
+    text.empty()
   ) {
     return;
   }
@@ -435,7 +439,9 @@ void ekg::draw::font::blit(
   x = static_cast<float>(static_cast<int32_t>(x));
   y = static_cast<float>(static_cast<int32_t>(y - this->offset_text_height));
 
-  ekg::gpu::data_t &data {ekg::p_core->draw_allocator.bind_current_data()};
+  ekg::gpu::data_t &data {
+    ekg::p_core->draw_allocator.bind_current_data()
+  };
 
   data.buffer[0] = x;
   data.buffer[1] = y;

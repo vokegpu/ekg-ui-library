@@ -36,14 +36,14 @@ namespace ekg::draw {
   void rect(
     const ekg::rect_t<float> &rect,
     const ekg::rgba_t<uint8_t> &color,
-    ekg::pixel_thickness_t line_thicnkess,
+    ekg::pixel_thickness_t line_thickness,
     ekg::at_t &sampler_at
   );
 
   void rect(
     float x, float y, float w, float h,
     const ekg::rgba_t<uint8_t> &color,
-    ekg::pixel_thickness_t line_thicnkess,
+    ekg::pixel_thickness_t line_thickness,
     ekg::at_t &sampler_at
   );
 
