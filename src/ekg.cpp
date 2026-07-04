@@ -74,6 +74,7 @@ ekg::flags_t ekg::init(
 
   ekg::info_t info {};
   ekg::core::scalenize(info);
+  ekg::gui.ui.redraw = true;
 
   ekg::log() << "Successfully initialized";
   return ekg::result::success;

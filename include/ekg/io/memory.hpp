@@ -198,6 +198,9 @@ namespace ekg::io {
   value(cast_type_t val) { \
     ekg_io_memory_strictly_set_impl(cast_type_t, val); \
   } \
+  value(cast_type_t *p) { \
+    ekg_io_memory_ownership_impl(cast_type_t, p); \
+  } \
   cast_type_t &set(cast_type_t val) { \
     return (this->get() = val); \
   } \
@@ -256,6 +259,7 @@ namespace ekg {
     ekg_io_memory_strictly_format_impl(t, std::string);
     ekg_io_memory_strictly_format_impl(t, const char*);
     ekg_io_memory_strictly_format_impl(t, bool);
+
     ekg_io_memory_unstrictly_format_impl(t, double);
     ekg_io_memory_unstrictly_format_impl(t, float);
     ekg_io_memory_unstrictly_format_impl(t, uint64_t);
